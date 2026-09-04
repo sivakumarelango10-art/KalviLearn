@@ -507,3 +507,97 @@ function getFallbackRoster(): MentorStudent[] {
     },
   ]
 }
+
+export interface AddStudentParams {
+  name: string
+  email: string
+}
+
+export interface AddStudentResult {
+  success: boolean
+  student?: MentorStudent
+  error?: string
+}
+
+/**
+ * Registers a new student into the PostgreSQL database.
+ * The newly added student can immediately login with Google.
+ */
+export async function addStudent(params: AddStudentParams): Promise<AddStudentResult> {
+  const name = params.name.trim()
+  const email = params.email.trim().toLowerCase()
+
+  if (!name) {
+    return { success: false, error: 'Student full name is required.' }
+  }
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    return { success: false, error: 'Please enter a valid email address.' }
+  }
+
+  try {
+    // 1. Check if email is already registered
+    const { data: existing } = await supabase
+      .from('users')
+      .select('id, email, role')
+      .ilike('email', email)
+      .maybeSingle()
+
+    if (existing) {
+      return { success: false, error: `A user with email "${email}" is already registered.` }
+    }
+
+    // 2. Insert new student into public.users
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        name,
+        email,
+        role: 'STUDENT',
+        status: 'ACTIVE',
+      })
+      .select('id, email, name, role, status, createdAt')
+      .single()
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    const newStudent: MentorStudent = {
+      id: data.id,
+      name: data.name || name,
+      email: data.email,
+      belt: 'Belt 1',
+      beltColor: '#3B82F6',
+      progressPercent: 0,
+      solvedCount: 0,
+      totalProblems: 85,
+      streak: 0,
+      language: 'python',
+      lastActive: 'Just registered',
+      status: 'ACTIVE',
+      needsAttention: false,
+      joinedDate: 'Just now',
+    }
+
+    return { success: true, student: newStudent }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return { success: false, error: msg }
+  }
+}
+
+/**
+ * Removes a student from the database.
+ */
+export async function removeStudent(studentId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from('users').delete().eq('id', studentId)
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return { success: false, error: msg }
+  }
+}
+
