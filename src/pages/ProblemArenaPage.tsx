@@ -441,6 +441,18 @@ export const ProblemArenaPage: React.FC = () => {
               e.preventDefault()
               triggerAntiCheatWarning()
             }}
+            onPaste={(e) => {
+              e.preventDefault()
+              triggerAntiCheatWarning()
+            }}
+            onCopy={(e) => {
+              e.preventDefault()
+              triggerAntiCheatWarning()
+            }}
+            onCut={(e) => {
+              e.preventDefault()
+              triggerAntiCheatWarning()
+            }}
           >
             <Editor
               height="100%"
@@ -498,7 +510,7 @@ export const ProblemArenaPage: React.FC = () => {
                     >
                       {isPassed === true && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
                       {isPassed === false && <XCircle className="w-3 h-3 text-red-400" />}
-                      <span>Case {num}</span>
+                      <span>Case {num} {!isVisible && '🔒'}</span>
                     </button>
                   )
                 })}
@@ -520,19 +532,64 @@ export const ProblemArenaPage: React.FC = () => {
 
                 if (!targetCase) return <div className="text-neutral-500">Run code to see test results.</div>
 
+                const isHiddenCase = targetCase.isHidden || activeCaseTab > 3
+
+                if (isHiddenCase) {
+                  return (
+                    <div className="space-y-4 font-sans">
+                      <div className="p-3 bg-neutral-950/80 rounded-lg border border-neutral-800 text-neutral-400 text-xs space-y-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-neutral-200">
+                          <span>🔒 Hidden Test Case #{activeCaseTab}</span>
+                          <span className="text-[10px] font-normal text-neutral-500">• 1 of 7 Hidden Tests</span>
+                        </div>
+                        <p className="text-[11px] text-neutral-400 leading-relaxed">
+                          Test inputs and expected benchmarks are concealed for hidden test cases to thoroughly evaluate edge cases, boundary constraints, and prevent hardcoded answers.
+                        </p>
+                      </div>
+
+                      {'actualOutput' in targetCase && (
+                        <div className="space-y-2">
+                          <div className="text-[11px] text-neutral-400 font-medium">Evaluation Result:</div>
+                          <div
+                            className={cn(
+                              'p-3 rounded-lg border text-xs font-semibold flex items-center gap-2',
+                              (targetCase as any).passed
+                                ? 'bg-emerald-950/40 border-emerald-900/80 text-emerald-300'
+                                : 'bg-red-950/40 border-red-900/80 text-red-300'
+                            )}
+                          >
+                            {(targetCase as any).passed ? (
+                              <>
+                                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                                <span>Passed (Matches hidden test benchmark)</span>
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                                <span>Failed (Output did not match expected benchmark)</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                }
+
                 return (
                   <div className="space-y-3">
-                    {/* Input */}
+                    {/* Visible Input */}
                     <div>
-                      <div className="text-[11px] font-sans text-neutral-400 mb-1">
-                        Input:
+                      <div className="text-[11px] font-sans text-neutral-400 mb-1 flex items-center justify-between">
+                        <span>Input:</span>
+                        <span className="text-[10px] text-neutral-500">Visible Case {activeCaseTab}</span>
                       </div>
                       <div className="p-2.5 bg-neutral-950 rounded border border-neutral-800 text-neutral-200 whitespace-pre-wrap">
                         {targetCase.input}
                       </div>
                     </div>
 
-                    {/* Expected Output */}
+                    {/* Visible Expected Output */}
                     <div>
                       <div className="text-[11px] font-sans text-neutral-400 mb-1">
                         Expected Output:
