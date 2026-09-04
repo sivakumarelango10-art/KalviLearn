@@ -16,8 +16,10 @@ import {
 import problemsData from '@/data/problems.json'
 import curriculumData from '@/data/curriculum.json'
 import { getUserState, UserState } from '@/lib/progress'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const DashboardPage: React.FC = () => {
+  const { user } = useAuth()
   const [userState, setUserState] = useState<UserState>({
     xp: 0,
     streak: 1,
@@ -25,6 +27,8 @@ export const DashboardPage: React.FC = () => {
     progress: {},
     submissions: [],
   })
+
+  const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Kalvi Scholar')
 
   useEffect(() => {
     const updateStats = () => {
@@ -98,7 +102,7 @@ export const DashboardPage: React.FC = () => {
               <span>Kalvi Learn Student Platform</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Welcome back, Kalvi Scholar
+              Welcome back, {displayName}
             </h1>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
               Continue your journey through 85 Belt problems and 10 curriculum modules. Test your algorithmic logic in the Practice Arena and hone your speed.

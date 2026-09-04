@@ -3,8 +3,10 @@ import { Outlet } from 'react-router-dom'
 import { Menu, X, Zap, Flame, Award } from 'lucide-react'
 import { AppSidebar } from '@/components/common/AppSidebar'
 import { getUserState } from '@/lib/progress'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const AppLayout: React.FC = () => {
+  const { user } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [xp, setXp] = useState(0)
   const [streak, setStreak] = useState(1)
@@ -78,8 +80,16 @@ export const AppLayout: React.FC = () => {
             </button>
             <div className="hidden sm:flex items-center gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Kalvi Learn Platform
+                Kalvi Learn
               </span>
+              {user?.name && (
+                <>
+                  <span className="text-neutral-300">•</span>
+                  <span className="text-xs font-semibold text-neutral-700 bg-neutral-100 px-2.5 py-0.5 rounded-full">
+                    {user.name}
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
