@@ -4,10 +4,9 @@ import {
   Flame,
   CheckCircle2,
   ShieldCheck,
-  Trash2,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { getUserState, saveUserState, subscribeProgress, UserState } from '@/lib/progress'
+import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
@@ -20,7 +19,6 @@ export const ProfilePage: React.FC = () => {
     progress: {},
     submissions: [],
   })
-  const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [preferredLang, setPreferredLang] = useState<string>('python')
 
   useEffect(() => {
@@ -62,20 +60,6 @@ export const ProfilePage: React.FC = () => {
       hard: { solved: hardSolved, total: hardTotal },
     }
   }, [userState.solvedSlugs])
-
-  // Reset Progress handler
-  const handleResetProgress = () => {
-    const resetState: UserState = {
-      xp: 0,
-      streak: 1,
-      solvedSlugs: [],
-      progress: {},
-      submissions: [],
-    }
-    saveUserState(resetState)
-    setUserState(resetState)
-    setShowResetConfirm(false)
-  }
 
   const solvedCount = userState.solvedSlugs.length
 
@@ -334,43 +318,6 @@ export const ProfilePage: React.FC = () => {
               </button>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Danger Zone: Reset Progress for testing */}
-      <div className="bg-red-50/50 rounded-2xl p-6 border border-red-200/80 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-red-900">Reset Practice Session</h3>
-            <p className="text-xs text-red-600 mt-0.5">
-              Clear your solved problem history, XP, and submissions on this browser.
-            </p>
-          </div>
-
-          {showResetConfirm ? (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowResetConfirm(false)}
-                className="px-3 py-1.5 rounded-lg bg-neutral-200 text-neutral-800 text-xs font-semibold hover:bg-neutral-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleResetProgress}
-                className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700 shadow-sm"
-              >
-                Confirm Reset
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowResetConfirm(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-red-300 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Reset Data</span>
-            </button>
-          )}
         </div>
       </div>
     </div>
