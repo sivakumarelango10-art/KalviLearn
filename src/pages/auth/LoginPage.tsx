@@ -19,7 +19,7 @@ export const LoginPage: React.FC = () => {
   const from = (location.state as any)?.from?.pathname || '/dashboard'
 
   useEffect(() => {
-    document.title = 'KalviCode — Login'
+    document.title = 'KalviLearn — Login'
   }, [])
 
   // If already authorized, proceed to preserved destination or dashboard

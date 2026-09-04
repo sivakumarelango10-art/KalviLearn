@@ -4,12 +4,12 @@ import { ArrowLeft, FileText, Mail, MapPin } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
 
 /**
- * KalviCode — Terms & Conditions Page
+ * KalviLearn — Terms & Conditions Page
  * Public route accessible to all users detailing the academic code of conduct and service terms.
  */
 export const TermsAndConditionsPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'KalviCode — Terms & Conditions'
+    document.title = 'KalviLearn — Terms & Conditions'
     window.scrollTo(0, 0)
   }, [])
 
@@ -18,7 +18,7 @@ export const TermsAndConditionsPage: React.FC = () => {
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-8 py-3.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2" aria-label="KalviCode Home">
+          <Link to="/" className="flex items-center gap-2" aria-label="KalviLearn Home">
             <BrandLogo size="sm" orientation="horizontal" />
           </Link>
 
@@ -59,7 +59,7 @@ export const TermsAndConditionsPage: React.FC = () => {
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing, browsing, registering for, or using KalviCode (&quot;the Platform&quot;), you acknowledge that you have read, understood, and agreed to be bound by these Terms &amp; Conditions. If you do not agree to these terms, you must discontinue using the Platform immediately.
+                By accessing, browsing, registering for, or using KalviLearn (&quot;the Platform&quot;), you acknowledge that you have read, understood, and agreed to be bound by these Terms &amp; Conditions. If you do not agree to these terms, you must discontinue using the Platform immediately.
               </p>
             </section>
 
@@ -70,7 +70,7 @@ export const TermsAndConditionsPage: React.FC = () => {
               </h2>
               <ul className="list-disc pl-5 space-y-2 text-neutral-600">
                 <li>
-                  <strong className="text-neutral-800">Authorized Academic Access:</strong> KalviCode is an educational learning portal designed for verified students, educators, and community members of Kalvium. Access to practice arenas, curricula, and evaluation services requires authentication via an authorized institutional Google account.
+                  <strong className="text-neutral-800">Authorized Academic Access:</strong> KalviLearn is an educational learning portal designed for verified students, educators, and community members of Kalvium. Access to practice arenas, curricula, and evaluation services requires authentication via an authorized institutional Google account.
                 </li>
                 <li>
                   <strong className="text-neutral-800">Account Responsibility:</strong> You are responsible for safeguarding your login credentials and maintaining the confidentiality of your account session. You agree to notify administrators immediately of any unauthorized access.
@@ -86,7 +86,7 @@ export const TermsAndConditionsPage: React.FC = () => {
               <h2 className="text-base sm:text-lg font-bold text-neutral-900">
                 3. User Conduct &amp; Academic Honesty
               </h2>
-              <p>KalviCode promotes genuine learning and algorithmic mastery. Users must adhere strictly to academic honesty:</p>
+              <p>KalviLearn promotes genuine learning and algorithmic mastery. Users must adhere strictly to academic honesty:</p>
               <ul className="list-disc pl-5 space-y-1.5 text-neutral-600">
                 <li>
                   <strong className="text-neutral-800">Manual Coding Practice:</strong> The Practice Arena strictly prohibits unauthorized clipboard automation, copy-pasting code from third-party sources, or using artificial intelligence tools to generate answers without instructor approval.
@@ -128,10 +128,10 @@ export const TermsAndConditionsPage: React.FC = () => {
               </h2>
               <ul className="list-disc pl-5 space-y-2 text-neutral-600">
                 <li>
-                  <strong className="text-neutral-800">Platform Materials:</strong> All curriculum modules, problem problem descriptions, test case suites, graphics, interface designs, and branding are the exclusive property of KalviCode and its licensors. You may not distribute, reproduce, or resell curriculum content without prior written permission.
+                  <strong className="text-neutral-800">Platform Materials:</strong> All curriculum modules, problem problem descriptions, test case suites, graphics, interface designs, and branding are the exclusive property of KalviLearn and its licensors. You may not distribute, reproduce, or resell curriculum content without prior written permission.
                 </li>
                 <li>
-                  <strong className="text-neutral-800">Student Submissions:</strong> You retain ownership of your original algorithmic source code submissions. By submitting code to the Platform, you grant KalviCode a non-exclusive license to compile, analyze, evaluate, and store the code for educational and administrative purposes.
+                  <strong className="text-neutral-800">Student Submissions:</strong> You retain ownership of your original algorithmic source code submissions. By submitting code to the Platform, you grant KalviLearn a non-exclusive license to compile, analyze, evaluate, and store the code for educational and administrative purposes.
                 </li>
               </ul>
             </section>
@@ -152,10 +152,10 @@ export const TermsAndConditionsPage: React.FC = () => {
                 7. Disclaimers &amp; Limitation of Liability
               </h2>
               <p>
-                KalviCode is provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis. To the maximum extent permitted by applicable law, we disclaim all warranties, express or implied, including fitness for a particular purpose and non-infringement.
+                KalviLearn is provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis. To the maximum extent permitted by applicable law, we disclaim all warranties, express or implied, including fitness for a particular purpose and non-infringement.
               </p>
               <p>
-                In no event shall KalviCode, its founders, educators, or affiliates be liable for any indirect, incidental, consequential, or punitive damages arising out of your access to or inability to access the platform.
+                In no event shall KalviLearn, its founders, educators, or affiliates be liable for any indirect, incidental, consequential, or punitive damages arising out of your access to or inability to access the platform.
               </p>
             </section>
 
@@ -189,7 +189,7 @@ export const TermsAndConditionsPage: React.FC = () => {
               </p>
 
               <div className="space-y-2 pt-1 text-xs sm:text-sm text-neutral-800">
-                <div className="font-bold text-neutral-900">KalviCode</div>
+                <div className="font-bold text-neutral-900">KalviLearn</div>
                 <div className="flex items-center gap-2 text-neutral-600">
                   <Mail className="w-4 h-4 text-[#ED2A2B] flex-shrink-0" />
                   <span>Email: <a href="mailto:codingplatform10@gmail.com" className="font-medium text-neutral-900 hover:underline">codingplatform10@gmail.com</a></span>

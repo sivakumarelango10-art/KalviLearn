@@ -5,7 +5,7 @@ import { BrandLogo } from '@/components/common/BrandLogo'
 
 /**
  * Dedicated 404 Page Not Found Screen
- * Clean, branded, accessible 404 error page adhering to the KalviCode design system.
+ * Clean, branded, accessible 404 error page adhering to the KalviLearn design system.
  */
 export const NotFoundPage: React.FC = () => {
   const navigate = useNavigate()

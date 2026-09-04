@@ -4,12 +4,12 @@ import { ArrowLeft, ShieldCheck, Mail, MapPin } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
 
 /**
- * KalviCode — Privacy Policy Page
+ * KalviLearn — Privacy Policy Page
  * Public route accessible to all users with complete legal disclosures.
  */
 export const PrivacyPolicyPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'KalviCode — Privacy Policy'
+    document.title = 'KalviLearn — Privacy Policy'
     window.scrollTo(0, 0)
   }, [])
 
@@ -18,7 +18,7 @@ export const PrivacyPolicyPage: React.FC = () => {
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-8 py-3.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2" aria-label="KalviCode Home">
+          <Link to="/" className="flex items-center gap-2" aria-label="KalviLearn Home">
             <BrandLogo size="sm" orientation="horizontal" />
           </Link>
 
@@ -59,7 +59,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                 1. Introduction &amp; Overview
               </h2>
               <p>
-                Welcome to KalviCode (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), an academic learning and coding practice platform designed for students, educators, and institutions. We are committed to protecting your privacy and ensuring the security of your personal information.
+                Welcome to KalviLearn (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), an academic learning and coding practice platform designed for students, educators, and institutions. We are committed to protecting your privacy and ensuring the security of your personal information.
               </p>
               <p>
                 This Privacy Policy explains how we collect, use, store, process, and safeguard your data when you visit our website, sign in via Google authentication, utilize our practice arena, submit code solutions, or interact with our learning curricula.
@@ -113,7 +113,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                 4. Code Execution &amp; Sandbox Security
               </h2>
               <p>
-                Student code submitted to KalviCode is executed within isolated, resource-constrained execution sandboxes. Code is tested against both visible example inputs and server-side hidden test cases. Hidden test inputs and benchmarks are maintained strictly server-side to safeguard academic evaluation integrity and prevent hardcoded exploits.
+                Student code submitted to KalviLearn is executed within isolated, resource-constrained execution sandboxes. Code is tested against both visible example inputs and server-side hidden test cases. Hidden test inputs and benchmarks are maintained strictly server-side to safeguard academic evaluation integrity and prevent hardcoded exploits.
               </p>
             </section>
 
@@ -147,7 +147,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                 6. Data Retention &amp; Protection
               </h2>
               <p>
-                We retain your account data and submission history for as long as your account remains registered with KalviCode. We employ industry-standard administrative, physical, and technical safeguards, including HTTPS encryption in transit, salted session hashes, and strict database access controls.
+                We retain your account data and submission history for as long as your account remains registered with KalviLearn. We employ industry-standard administrative, physical, and technical safeguards, including HTTPS encryption in transit, salted session hashes, and strict database access controls.
               </p>
             </section>
 
@@ -156,7 +156,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               <h2 className="text-base sm:text-lg font-bold text-neutral-900">
                 7. Your Rights &amp; Choices
               </h2>
-              <p>As a student or user of KalviCode, you retain rights regarding your information:</p>
+              <p>As a student or user of KalviLearn, you retain rights regarding your information:</p>
               <ul className="list-disc pl-5 space-y-1.5 text-neutral-600">
                 <li>Access and review all past code submissions through your Solution Vault.</li>
                 <li>Request verification or correction of your registered student profile information.</li>
@@ -185,7 +185,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               </p>
 
               <div className="space-y-2 pt-1 text-xs sm:text-sm text-neutral-800">
-                <div className="font-bold text-neutral-900">KalviCode</div>
+                <div className="font-bold text-neutral-900">KalviLearn</div>
                 <div className="flex items-center gap-2 text-neutral-600">
                   <Mail className="w-4 h-4 text-[#ED2A2B] flex-shrink-0" />
                   <span>Email: <a href="mailto:codingplatform10@gmail.com" className="font-medium text-neutral-900 hover:underline">codingplatform10@gmail.com</a></span>
