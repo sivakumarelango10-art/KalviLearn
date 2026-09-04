@@ -30,6 +30,7 @@ export interface UserState {
 }
 
 const STORAGE_KEY = 'kalvi_learn_user_state_v1'
+const MAX_STORED_SUBMISSIONS = 50
 
 const defaultState: UserState = {
   xp: 0,
@@ -43,7 +44,12 @@ export function getUserState(): UserState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState
-    return JSON.parse(raw)
+    const parsed = JSON.parse(raw)
+    // Ensure submissions array exists
+    if (!Array.isArray(parsed.submissions)) {
+      parsed.submissions = []
+    }
+    return parsed
   } catch {
     return defaultState
   }
@@ -51,14 +57,44 @@ export function getUserState(): UserState {
 
 const PROGRESS_EVENT = 'kalvi_progress_updated'
 
+/**
+ * Safely persists user state with quota protection.
+ * If browser localStorage quota (typically 5MB) is reached, it automatically prunes
+ * older submission histories to protect student XP, solved problems, and best codes.
+ */
 export function saveUserState(state: UserState) {
   try {
+    // Keep submissions history capped to prevent unbounded memory growth
+    if (state.submissions && state.submissions.length > MAX_STORED_SUBMISSIONS) {
+      state.submissions = state.submissions.slice(0, MAX_STORED_SUBMISSIONS)
+    }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(PROGRESS_EVENT))
     }
-  } catch (err) {
-    console.error('Failed to save state to localStorage', err)
+  } catch (err: any) {
+    console.warn('Initial localStorage save failed, attempting quota recovery:', err?.message)
+    try {
+      // Stage 1 Quota Recovery: Keep only last 15 submissions
+      state.submissions = state.submissions.slice(0, 15)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent(PROGRESS_EVENT))
+      }
+    } catch (secondErr: any) {
+      console.warn('Stage 1 quota recovery failed, dropping submissions to protect core progress:', secondErr?.message)
+      try {
+        // Stage 2 Quota Recovery: Purge submissions array completely to guarantee XP and solved status
+        state.submissions = []
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent(PROGRESS_EVENT))
+        }
+      } catch (fatalErr) {
+        console.error('Fatal storage quota error: Unable to write to localStorage', fatalErr)
+      }
+    }
   }
 }
 

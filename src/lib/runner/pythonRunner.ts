@@ -4,21 +4,93 @@
  */
 
 // Global string & array method extensions for Python compatibility
+// Global string & array method extensions for Python compatibility
 if (typeof String !== 'undefined') {
-  if (!(String.prototype as any).strip) {
-    (String.prototype as any).strip = function () {
-      return this.trim()
+  const sp = String.prototype as any
+  if (!sp.strip) sp.strip = function () { return this.trim() }
+  if (!sp.rstrip) sp.rstrip = function () { return this.trimEnd() }
+  if (!sp.lstrip) sp.lstrip = function () { return this.trimStart() }
+  if (!sp.join) {
+    sp.join = function (arr: any) {
+      if (!arr) return ''
+      const list = Array.isArray(arr) ? arr : Array.from(arr)
+      return list.join(this.toString())
     }
   }
-  if (!(String.prototype as any).rstrip) {
-    (String.prototype as any).rstrip = function () {
-      return this.trimEnd()
+  if (!sp.startswith) sp.startswith = function (p: string) { return this.startsWith(p) }
+  if (!sp.endswith) sp.endswith = function (s: string) { return this.endsWith(s) }
+  if (!sp.isdigit) sp.isdigit = function () { return /^\d+$/.test(this) }
+  if (!sp.isalpha) sp.isalpha = function () { return /^[a-zA-Z]+$/.test(this) }
+  if (!sp.isalnum) sp.isalnum = function () { return /^[a-zA-Z0-9]+$/.test(this) }
+  if (!sp.isupper) sp.isupper = function () { return this === this.toUpperCase() && this !== this.toLowerCase() }
+  if (!sp.islower) sp.islower = function () { return this === this.toLowerCase() && this !== this.toUpperCase() }
+  if (!sp.count) {
+    sp.count = function (sub: string) {
+      if (!sub) return 0
+      let count = 0
+      let pos = 0
+      while ((pos = this.indexOf(sub, pos)) !== -1) {
+        count++
+        pos += sub.length
+      }
+      return count
     }
   }
-  if (!(String.prototype as any).lstrip) {
-    (String.prototype as any).lstrip = function () {
-      return this.trimStart()
+  if (!sp.find) sp.find = function (sub: string, start?: number) { return this.indexOf(sub, start) }
+  if (!sp.index) {
+    sp.index = function (sub: string, start?: number) {
+      const idx = this.indexOf(sub, start)
+      if (idx === -1) throw new Error(`ValueError: substring not found: ${sub}`)
+      return idx
     }
+  }
+}
+
+if (typeof Array !== 'undefined') {
+  const ap = Array.prototype as any
+  if (!ap.count) {
+    ap.count = function (val: any) {
+      let c = 0
+      for (let i = 0; i < this.length; i++) {
+        if (this[i] === val) c++
+      }
+      return c
+    }
+  }
+  if (!ap.index) {
+    ap.index = function (val: any) {
+      const idx = this.indexOf(val)
+      if (idx === -1) throw new Error(`ValueError: ${val} is not in list`)
+      return idx
+    }
+  }
+  if (!ap.remove) {
+    ap.remove = function (val: any) {
+      const idx = this.indexOf(val)
+      if (idx === -1) throw new Error(`ValueError: list.remove(x): x not in list`)
+      this.splice(idx, 1)
+    }
+  }
+  if (!ap.extend) {
+    ap.extend = function (iterable: any) {
+      if (iterable) {
+        for (const item of iterable) {
+          this.push(item)
+        }
+      }
+    }
+  }
+  // Ensure arr.sort() in Python context sorts numbers numerically rather than lexicographically
+  const originalSort = Array.prototype.sort
+  Array.prototype.sort = function (compareFn?: any) {
+    if (typeof compareFn === 'function') {
+      return originalSort.call(this, compareFn)
+    }
+    const allNumeric = this.length > 0 && this.every((x: any) => typeof x === 'number' && !isNaN(x))
+    if (allNumeric) {
+      return originalSort.call(this, (a: number, b: number) => a - b)
+    }
+    return originalSort.call(this)
   }
 }
 
@@ -46,8 +118,50 @@ export function executePython(code: string, input: string): { output: string; er
     },
   }
 
+  const math = {
+    sqrt: Math.sqrt,
+    floor: Math.floor,
+    ceil: Math.ceil,
+    pow: Math.pow,
+    abs: Math.abs,
+    pi: Math.PI,
+    e: Math.E,
+    inf: Infinity,
+    gcd: (a: number, b: number) => {
+      let x = Math.abs(Math.round(a))
+      let y = Math.abs(Math.round(b))
+      while (y) {
+        const t = y
+        y = x % y
+        x = t
+      }
+      return x
+    },
+    lcm: (a: number, b: number) => {
+      if (a === 0 || b === 0) return 0
+      let x = Math.abs(Math.round(a))
+      let y = Math.abs(Math.round(b))
+      const prod = x * y
+      while (y) {
+        const t = y
+        y = x % y
+        x = t
+      }
+      return Math.round(prod / x)
+    },
+    factorial: (n: number) => {
+      let r = 1
+      for (let i = 2; i <= n; i++) r *= i
+      return r
+    },
+    log: Math.log,
+    log2: Math.log2,
+    log10: Math.log10,
+  }
+
   const env: Record<string, any> = {
     sys,
+    math,
     int: (val: any) => {
       if (val === undefined || val === null || val === '') return 0
       const parsed = parseInt(String(val).trim(), 10)
@@ -73,6 +187,14 @@ export function executePython(code: string, input: string): { output: string; er
       return arr.reduce((a, b) => a + Number(b), 0)
     },
     abs: (n: number) => Math.abs(n),
+    round: (n: number, decimals: number = 0) =>
+      decimals === 0 ? Math.round(n) : Number(n.toFixed(decimals)),
+    pow: (base: number, exp: number, mod?: number) => {
+      if (mod) {
+        return Number((BigInt(Math.floor(base)) ** BigInt(Math.floor(exp))) % BigInt(Math.floor(mod)))
+      }
+      return Math.pow(base, exp)
+    },
     sorted: (arr: any) => {
       if (!Array.isArray(arr)) return []
       return [...arr].sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
@@ -84,6 +206,36 @@ export function executePython(code: string, input: string): { output: string; er
       }
       return []
     },
+    dict: () => ({}),
+    set: (iterable?: any) => new Set(iterable ? (Array.isArray(iterable) ? iterable : Array.from(iterable)) : []),
+    enumerate: (iterable: any, start: number = 0) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || [])
+      return arr.map((item, idx) => [idx + start, item])
+    },
+    zip: (...iters: any[]) => {
+      const arrays = iters.map((it) => (Array.isArray(it) ? it : Array.from(it || [])))
+      const minLen = Math.min(...arrays.map((a) => a.length))
+      const result = []
+      for (let i = 0; i < minLen; i++) {
+        result.push(arrays.map((a) => a[i]))
+      }
+      return result
+    },
+    reversed: (iterable: any) => {
+      const arr = Array.isArray(iterable) ? [...iterable] : Array.from(iterable || [])
+      return arr.reverse()
+    },
+    all: (iterable: any) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || [])
+      return arr.every(Boolean)
+    },
+    any: (iterable: any) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || [])
+      return arr.some(Boolean)
+    },
+    chr: (code: number) => String.fromCharCode(code),
+    ord: (char: string) => (char ? char.charCodeAt(0) : 0),
+    intDiv: (a: number, b: number) => Math.floor(a / b),
     map: (fn: any, iterable: any) => {
       if (!iterable) return []
       const arr = Array.isArray(iterable) ? iterable : Array.from(iterable)
@@ -166,6 +318,33 @@ export function executePython(code: string, input: string): { output: string; er
       if (trimmed === 'solve()' || trimmed === 'main()') {
         hasMainExecution = true
       }
+
+      // Replace Python integer division // with Math.floor(...)
+      let divPrev: string
+      do {
+        divPrev = line
+        line = line
+          .replace(/\(([^()]+)\)\s*\/\/\s*\(([^()]+)\)/g, 'Math.floor(($1) / ($2))')
+          .replace(/\(([^()]+)\)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'Math.floor(($1) / $2)')
+          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*\(([^()]+)\)/g, 'Math.floor($1 / ($2))')
+          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'Math.floor($1 / $2)')
+      } while (line !== divPrev)
+
+      // Replace simple list comprehensions: [expr for x in iterable]
+      line = line.replace(
+        /\[\s*([a-zA-Z0-9_().+*\/ -]+)\s+for\s+([a-zA-Z0-9_]+)\s+in\s+([^\]]+)\]/g,
+        '($3).map(($2) => $1)'
+      )
+
+      // Replace membership 'in' within if statements
+      line = line.replace(
+        /if\s+([a-zA-Z0-9_'"\(\)]+)\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
+        'if (($2).includes ? ($2).includes($1) : ($1 in $2)) {'
+      )
+      line = line.replace(
+        /if\s+([a-zA-Z0-9_'"\(\)]+)\s+not\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
+        'if (!(($2).includes ? ($2).includes($1) : ($1 in $2))) {'
+      )
 
       // Syntax transformations
       line = line

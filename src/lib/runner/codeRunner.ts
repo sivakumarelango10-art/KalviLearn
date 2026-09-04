@@ -1,14 +1,17 @@
-import { executePython } from './pythonRunner'
+import { executeInWorker, type ExecutionResult } from './workerRunner'
 
 export interface TestCaseExecution {
   testIndex: number
-  input: string
-  expectedOutput: string
-  actualOutput: string
+  status: 'passed' | 'failed' | 'time_limit_exceeded' | 'runtime_error'
   passed: boolean
   isHidden: boolean
-  error?: string
   executionTimeMs: number
+  // Defined ONLY for visible test cases (1-3); NEVER defined for hidden cases (4-10)
+  input?: string
+  expectedOutput?: string
+  actualOutput?: string
+  error?: string
+  isTimeLimitExceeded?: boolean
 }
 
 export interface RunResult {
@@ -17,6 +20,7 @@ export interface RunResult {
   totalCount: number
   results: TestCaseExecution[]
   overallTimeMs: number
+  compilationError?: string
 }
 
 function normalizeOutput(str: string): string {
@@ -30,101 +34,131 @@ function normalizeOutput(str: string): string {
 }
 
 /**
- * Executes student code in JavaScript sandbox
+ * Universal runner that executes student code against all 10 test cases.
+ * Calls backend POST /api/execute for server-side evaluation where hidden test cases
+ * are kept strictly secure and never transmitted to the frontend.
  */
-export function executeJavaScript(code: string, input: string): { output: string; error?: string } {
-  const outputs: string[] = []
-
-  const customConsole = {
-    log: (...args: any[]) => {
-      outputs.push(args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' '))
-    },
-    error: (...args: any[]) => {
-      outputs.push(args.map(a => String(a)).join(' '))
-    },
-    warn: () => {},
-  }
-
-  const mockFs = {
-    readFileSync: (_fd: any, _enc?: string) => input,
-  }
-
-  const mockRequire = (mod: string) => {
-    if (mod === 'fs') return mockFs
-    return {}
-  }
+export async function executeCode(
+  questionSlug: string,
+  language: string,
+  code: string,
+  clientVisibleCases?: Array<{ testIndex: number; input: string; expectedOutput: string }>
+): Promise<RunResult> {
+  const startTime = performance.now()
 
   try {
-    const wrapped = new Function('console', 'require', 'input', `
-      const fs = require('fs');
-      ${code}
-    `)
-    wrapped(customConsole, mockRequire, input)
-    return { output: outputs.join('\n').trim() }
-  } catch (err: any) {
-    return { output: outputs.join('\n').trim(), error: err.message || 'Runtime Error' }
+    const response = await fetch('/api/execute', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        questionSlug,
+        language,
+        code,
+      }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (!data.success && data.error === 'Compilation Error') {
+        return {
+          passed: false,
+          passedCount: 0,
+          totalCount: 10,
+          results: [],
+          overallTimeMs: Math.round(performance.now() - startTime),
+          compilationError: data.message || 'Compilation failed.',
+        }
+      }
+
+      if (Array.isArray(data.testCases) && data.testCases.length === 10) {
+        const mappedResults: TestCaseExecution[] = data.testCases.map((tc: any) => ({
+          testIndex: tc.testIndex,
+          status: tc.status,
+          passed: tc.status === 'passed',
+          isHidden: !tc.visible,
+          executionTimeMs: tc.executionTimeMs || 0,
+          input: tc.visible ? tc.input : undefined,
+          expectedOutput: tc.visible ? tc.expectedOutput : undefined,
+          actualOutput: tc.visible ? tc.actualOutput : undefined,
+          error: tc.visible ? tc.error : undefined,
+          isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
+        }))
+
+        return {
+          passed: data.passed === 10,
+          passedCount: data.passed,
+          totalCount: 10,
+          results: mappedResults,
+          overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
+        }
+      }
+    }
+  } catch (apiError) {
+    console.warn('Backend /api/execute unavailable, attempting local fallback evaluation:', apiError)
+  }
+
+  // Fallback if network/API is offline:
+  // Execute visible cases client-side if available, and mock hidden status strictly without leaking data
+  const results: TestCaseExecution[] = []
+  let passedCount = 0
+
+  if (clientVisibleCases && clientVisibleCases.length > 0) {
+    for (let i = 0; i < 10; i++) {
+      const isVisible = i < 3
+      const num = i + 1
+
+      if (isVisible && clientVisibleCases[i]) {
+        const tc = clientVisibleCases[i]
+        const execResult: ExecutionResult = await executeInWorker(code, language, tc.input, 3000)
+        const normActual = normalizeOutput(execResult.output)
+        const normExpected = normalizeOutput(tc.expectedOutput)
+        const passed = !execResult.error && normActual === normExpected
+        if (passed) passedCount++
+
+        results.push({
+          testIndex: num,
+          status: passed ? 'passed' : 'failed',
+          passed,
+          isHidden: false,
+          executionTimeMs: execResult.executionTimeMs,
+          input: tc.input,
+          expectedOutput: tc.expectedOutput,
+          actualOutput: execResult.output || (execResult.error ? `Error: ${execResult.error}` : '(no output)'),
+          error: execResult.error,
+          isTimeLimitExceeded: !!execResult.isTimeLimitExceeded,
+        })
+      } else {
+        // Hidden case in offline fallback: never guess or leak
+        results.push({
+          testIndex: num,
+          status: 'failed',
+          passed: false,
+          isHidden: true,
+          executionTimeMs: 0,
+        })
+      }
+    }
+  }
+
+  return {
+    passed: passedCount === 10,
+    passedCount,
+    totalCount: 10,
+    results,
+    overallTimeMs: Math.round(performance.now() - startTime),
   }
 }
 
-/**
- * Universal runner executing code against a set of test cases
- */
-export async function runTestCases(
+// Deprecated alias for backwards compatibility
+export const runTestCases = (
   code: string,
   language: string,
   testCases: Array<{ testIndex: number; input: string; expectedOutput: string; isHidden: boolean }>
-): Promise<RunResult> {
-  const results: TestCaseExecution[] = []
-  const startTime = performance.now()
-  let passedCount = 0
-
-  for (const tc of testCases) {
-    const tcStart = performance.now()
-    let actualOutput = ''
-    let error: string | undefined
-
-    if (language === 'python') {
-      const exec = executePython(code, tc.input)
-      actualOutput = exec.output
-      error = exec.error
-    } else if (language === 'javascript') {
-      const exec = executeJavaScript(code, tc.input)
-      actualOutput = exec.output
-      error = exec.error
-    } else {
-      // C++ or Java simulation: if student provides working code, run JavaScript translation
-      // or evaluate directly
-      const exec = executeJavaScript(code, tc.input)
-      actualOutput = exec.output
-      error = exec.error
-    }
-
-    const tcTime = Math.round(performance.now() - tcStart)
-    const normActual = normalizeOutput(actualOutput)
-    const normExpected = normalizeOutput(tc.expectedOutput)
-    const passed = !error && normActual === normExpected
-
-    if (passed) passedCount++
-
-    results.push({
-      testIndex: tc.testIndex,
-      input: tc.input,
-      expectedOutput: tc.expectedOutput,
-      actualOutput: actualOutput || (error ? `Error: ${error}` : '(no output)'),
-      passed,
-      isHidden: tc.isHidden,
-      error,
-      executionTimeMs: tcTime,
-    })
-  }
-
-  const overallTimeMs = Math.round(performance.now() - startTime)
-
-  return {
-    passed: passedCount === testCases.length,
-    passedCount,
-    totalCount: testCases.length,
-    results,
-    overallTimeMs,
-  }
+) => {
+  return executeCode('', language, code, testCases)
 }
+
+

@@ -7,17 +7,15 @@ import {
   Send,
   CheckCircle2,
   XCircle,
-  ArrowRight,
-  RotateCcw,
-  Sparkles,
   FileText,
   History,
   HelpCircle,
   ChevronRight,
   ShieldAlert,
+  AlertTriangle,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { runTestCases, TestCaseExecution } from '@/lib/runner/codeRunner'
+import { executeCode, TestCaseExecution } from '@/lib/runner/codeRunner'
 import {
   getUserState,
   recordProblemSuccess,
@@ -25,6 +23,7 @@ import {
   SubmissionRecord,
 } from '@/lib/progress'
 import { cn } from '@/lib/utils'
+import { QuestionCompletionModal } from '@/components/arena/QuestionCompletionModal'
 
 export const ProblemArenaPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -63,6 +62,7 @@ export const ProblemArenaPage: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [testResults, setTestResults] = useState<TestCaseExecution[] | null>(null)
+  const [compilationError, setCompilationError] = useState<string | null>(null)
   const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
   const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -86,8 +86,10 @@ export const ProblemArenaPage: React.FC = () => {
     }
 
     setTestResults(null)
+    setCompilationError(null)
     setShowSuccessModal(false)
     setSubmissionFailed(null)
+    setActiveCaseTab(1)
 
     // Load submission history for this problem
     const subs = userState.submissions.filter(s => s.problemSlug === currentProblem.slug)
@@ -114,7 +116,7 @@ export const ProblemArenaPage: React.FC = () => {
       }
     })
 
-    // Disable editor context menu
+    // Disable editor context menu and configure for high-performance low-spec laptops
     editor.updateOptions({
       contextmenu: false,
       minimap: { enabled: false },
@@ -125,74 +127,112 @@ export const ProblemArenaPage: React.FC = () => {
       scrollBeyondLastLine: false,
       automaticLayout: true,
       tabSize: 4,
+      stopRenderingLineAfter: 1500,
+      renderWhitespace: 'none',
+      quickSuggestions: { other: true, comments: false, strings: false },
+      scrollbar: {
+        verticalScrollbarSize: 8,
+        horizontalScrollbarSize: 8,
+      },
     })
   }
 
-  // Execute Visible 3 Test Cases
-  const handleRun = async () => {
-    setIsRunning(true)
-    setSubmissionFailed(null)
+  // Unified Execution Pipeline across all 10 Test Cases
+  const handleExecute = async (isSubmit: boolean) => {
+    if (isRunning || isSubmitting) return
 
-    // Run first 3 visible test cases
-    const visibleCases = currentProblem.testCases.slice(0, 3)
-    const result = await runTestCases(code, language, visibleCases)
-
-    setTestResults(result.results)
-    setActiveCaseTab(1)
-    setIsRunning(false)
-  }
-
-  // Execute All 10 Test Cases (3 visible + 7 hidden)
-  const handleSubmit = async () => {
-    setIsSubmitting(true)
-    setSubmissionFailed(null)
-
-    // Run all 10 test cases
-    const allCases = currentProblem.testCases
-    const result = await runTestCases(code, language, allCases)
-
-    setTestResults(result.results)
-    setIsSubmitting(false)
-
-    if (result.passed) {
-      // Record success, reward XP
-      recordProblemSuccess(
-        currentProblem.slug,
-        currentProblem.title,
-        language,
-        code,
-        result.overallTimeMs
-      )
-
-      // Fire confetti burst!
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      })
-
-      setShowSuccessModal(true)
+    if (isSubmit) {
+      setIsSubmitting(true)
     } else {
-      // Record attempt
-      recordProblemAttempt(
-        currentProblem.slug,
-        currentProblem.title,
-        language,
-        code,
-        result.passedCount,
-        result.totalCount,
-        result.overallTimeMs
-      )
-
-      setSubmissionFailed({
-        passed: result.passedCount,
-        total: result.totalCount,
-      })
+      setIsRunning(true)
     }
 
-    // Refresh submission list
-    const state = getUserState()
-    setRecentSubmissions(state.submissions.filter(s => s.problemSlug === currentProblem.slug))
+    setSubmissionFailed(null)
+    setCompilationError(null)
+
+    const visibleCases = (currentProblem.testCases || []).slice(0, 3).map((tc: any, idx: number) => ({
+      testIndex: tc.testIndex || idx + 1,
+      input: tc.input || '',
+      expectedOutput: tc.expectedOutput || '',
+    }))
+
+    try {
+      const result = await executeCode(currentProblem.slug, language, code, visibleCases)
+
+      if (result.compilationError) {
+        setCompilationError(result.compilationError)
+        setTestResults(null)
+        setSubmissionFailed({ passed: 0, total: 10 })
+        return
+      }
+
+      setTestResults(result.results)
+
+      if (result.passed && result.passedCount === 10) {
+        // All 10 passed! Fire celebratory confetti and display completion modal
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        })
+        setShowSuccessModal(true)
+      } else {
+        // Record attempt
+        recordProblemAttempt(
+          currentProblem.slug,
+          currentProblem.title,
+          language,
+          code,
+          result.passedCount,
+          10,
+          result.overallTimeMs
+        )
+
+        setSubmissionFailed({
+          passed: result.passedCount,
+          total: 10,
+        })
+
+        // Refresh recent submissions
+        const state = getUserState()
+        setRecentSubmissions(state.submissions.filter(s => s.problemSlug === currentProblem.slug))
+      }
+    } catch (err: any) {
+      setCompilationError(err?.message || 'An unexpected execution error occurred.')
+      setTestResults(null)
+      setSubmissionFailed({ passed: 0, total: 10 })
+    } finally {
+      setIsRunning(false)
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleRun = () => handleExecute(false)
+  const handleSubmit = () => handleExecute(true)
+
+  // Handlers for QuestionCompletionModal
+  const handleContinue = () => {
+    const totalTime = testResults?.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || 0
+    recordProblemSuccess(
+      currentProblem.slug,
+      currentProblem.title,
+      language,
+      code,
+      totalTime
+    )
+
+    setShowSuccessModal(false)
+
+    if (nextProblemSlug) {
+      navigate(`/practice/${nextProblemSlug}`)
+    } else {
+      navigate('/practice')
+    }
+  }
+
+  const handleCancel = () => {
+    // Keep user on the current problem, retain code editor state and test results intact
+    setShowSuccessModal(false)
   }
 
   return (
@@ -467,13 +507,13 @@ export const ProblemArenaPage: React.FC = () => {
             />
           </div>
 
-          {/* Failure Alert Banner with smooth slide-down drop */}
+          {/* Failure Alert Banner with exact required specification */}
           {submissionFailed && (
             <div className="px-4 py-3 bg-red-950/80 border-t border-red-900/80 flex items-center justify-between text-xs animate-banner-drop">
               <div className="flex items-center gap-2 text-red-300">
                 <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 animate-pulse-subtle" />
                 <span>
-                  Some test cases failed. Passed: <strong>{submissionFailed.passed} / {submissionFailed.total}</strong>
+                  ❌ <strong>{submissionFailed.passed}/10</strong> test cases passed. Fix your solution and try again.
                 </span>
               </div>
               <button
@@ -485,99 +525,164 @@ export const ProblemArenaPage: React.FC = () => {
             </div>
           )}
 
-          {/* Test Cases Bottom Drawer */}
+          {/* Test Cases Bottom Drawer (Strictly 10 Test Cases: 3 Visible, 7 Hidden) */}
           <div className="h-64 border-t border-neutral-800 bg-neutral-900 flex flex-col overflow-hidden">
             {/* Drawer Tabs */}
             <div className="h-10 bg-neutral-950 px-3 flex items-center justify-between border-b border-neutral-800 flex-shrink-0">
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-semibold text-neutral-400 mr-2">
+              <div className="flex items-center gap-1 overflow-x-auto py-1">
+                <span className="text-xs font-semibold text-neutral-400 mr-1.5 flex-shrink-0">
                   Test Cases:
                 </span>
-                {(testResults || currentProblem.testCases.slice(0, 3)).map((tc: any, i: number) => {
-                  const num = i + 1
-                  const isVisible = i < 3
-                  if (!isVisible && !testResults) return null
-
-                  const isPassed = tc.passed !== undefined ? tc.passed : null
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((caseNum) => {
+                  const isVisible = caseNum <= 3
+                  const tcResult = testResults ? testResults[caseNum - 1] : null
+                  const isPassed = tcResult ? tcResult.passed : null
 
                   return (
                     <button
-                      key={num}
-                      onClick={() => setActiveCaseTab(num)}
+                      key={caseNum}
+                      onClick={() => setActiveCaseTab(caseNum)}
                       className={cn(
-                        'px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition-all duration-200 interactive-tab',
-                        activeCaseTab === num
-                          ? 'bg-neutral-800 text-white shadow-sm scale-105'
+                        'px-2 py-1 rounded text-xs font-medium flex items-center gap-1 transition-all duration-200 interactive-tab flex-shrink-0',
+                        activeCaseTab === caseNum
+                          ? 'bg-neutral-800 text-white shadow-sm ring-1 ring-neutral-700'
                           : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
                       )}
                     >
-                      {isPassed === true && <CheckCircle2 className="w-3 h-3 text-emerald-400 animate-in zoom-in-75 duration-200" />}
-                      {isPassed === false && <XCircle className="w-3 h-3 text-red-400 animate-in zoom-in-75 duration-200" />}
-                      <span>Case {num} {!isVisible && '🔒'}</span>
+                      {(isRunning || isSubmitting) ? (
+                        <span className="text-amber-400 text-[10px] animate-pulse">⏳</span>
+                      ) : isPassed === true ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                      ) : isPassed === false ? (
+                        <XCircle className="w-3.5 h-3.5 text-red-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                      ) : null}
+                      <span>Case {caseNum} {!isVisible && '🔒'}</span>
                     </button>
                   )
                 })}
               </div>
 
-              {testResults && (
-                <div className="text-[11px] text-neutral-400 font-mono">
-                  Passed {testResults.filter(t => t.passed).length} / {testResults.length}
-                </div>
-              )}
+              {/* Status Header */}
+              <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
+                {(isRunning || isSubmitting) ? (
+                  <span className="text-amber-400 flex items-center gap-1.5">
+                    <span className="animate-spin text-xs">⏳</span> Evaluating 10 Test Cases...
+                  </span>
+                ) : compilationError ? (
+                  <span className="text-red-400 font-semibold">Passed 0 / 10</span>
+                ) : testResults ? (
+                  <span
+                    className={cn(
+                      'font-semibold',
+                      testResults.filter(t => t.passed).length === 10
+                        ? 'text-emerald-400'
+                        : 'text-amber-400'
+                    )}
+                  >
+                    Passed {testResults.filter(t => t.passed).length} / 10
+                  </span>
+                ) : (
+                  <span className="text-neutral-500">Passed 0 / 10</span>
+                )}
+              </div>
             </div>
 
-            {/* Active Test Case Details with smooth fade */}
+            {/* Active Test Case Details */}
             <div key={activeCaseTab} className="flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3 animate-page-enter">
               {(() => {
-                const targetCase =
-                  testResults?.[activeCaseTab - 1] ||
-                  currentProblem.testCases[activeCaseTab - 1]
+                if (isRunning || isSubmitting) {
+                  return (
+                    <div className="flex flex-col items-center justify-center py-8 space-y-3 font-sans">
+                      <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                      <div className="text-xs text-neutral-300 font-medium">
+                        Running all 10 test cases in isolated sandbox...
+                      </div>
+                      <div className="text-[11px] text-neutral-500">
+                        Validating edge cases, boundary constraints, and performance (3000ms limit)
+                      </div>
+                    </div>
+                  )
+                }
 
-                if (!targetCase) return <div className="text-neutral-500">Run code to see test results.</div>
+                if (compilationError) {
+                  return (
+                    <div className="space-y-3 font-sans">
+                      <div className="p-3 bg-red-950/60 border border-red-900/80 rounded-lg text-red-200 text-xs flex items-center gap-2 font-semibold">
+                        <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                        <span>Compilation / Syntax Error: Test cases not executed</span>
+                      </div>
+                      <div className="p-3 bg-neutral-950 rounded-lg border border-neutral-800 text-red-400 font-mono text-xs whitespace-pre-wrap overflow-x-auto">
+                        {compilationError}
+                      </div>
+                    </div>
+                  )
+                }
 
-                const isHiddenCase = targetCase.isHidden || activeCaseTab > 3
+                const isHiddenCase = activeCaseTab > 3
+                const tcResult = testResults ? testResults[activeCaseTab - 1] : null
 
                 if (isHiddenCase) {
                   return (
-                    <div className="space-y-4 font-sans">
+                    <div className="space-y-3 font-sans">
                       <div className="p-3 bg-neutral-950/80 rounded-lg border border-neutral-800 text-neutral-400 text-xs space-y-1.5">
                         <div className="flex items-center gap-1.5 font-bold text-neutral-200">
                           <span>🔒 Hidden Test Case #{activeCaseTab}</span>
                           <span className="text-[10px] font-normal text-neutral-500">• 1 of 7 Hidden Tests</span>
                         </div>
                         <p className="text-[11px] text-neutral-400 leading-relaxed">
-                          Test inputs and expected benchmarks are concealed for hidden test cases to thoroughly evaluate edge cases, boundary constraints, and prevent hardcoded answers.
+                          Test inputs and expected benchmarks are concealed for hidden test cases to evaluate edge cases, boundary constraints, and prevent hardcoded solutions.
                         </p>
                       </div>
 
-                      {'actualOutput' in targetCase && (
+                      {tcResult ? (
                         <div className="space-y-2">
-                          <div className="text-[11px] text-neutral-400 font-medium">Evaluation Result:</div>
+                          <div className="text-[11px] text-neutral-400 font-medium flex items-center justify-between">
+                            <span>Evaluation Result:</span>
+                            {tcResult.executionTimeMs !== undefined && (
+                              <span className="text-[10px] text-neutral-500 font-mono">
+                                {tcResult.executionTimeMs}ms
+                              </span>
+                            )}
+                          </div>
                           <div
                             className={cn(
                               'p-3 rounded-lg border text-xs font-semibold flex items-center gap-2',
-                              (targetCase as any).passed
+                              tcResult.passed
                                 ? 'bg-emerald-950/40 border-emerald-900/80 text-emerald-300'
+                                : tcResult.isTimeLimitExceeded
+                                ? 'bg-amber-950/40 border-amber-900/80 text-amber-300'
                                 : 'bg-red-950/40 border-red-900/80 text-red-300'
                             )}
                           >
-                            {(targetCase as any).passed ? (
+                            {tcResult.passed ? (
                               <>
                                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                                <span>Passed (Matches hidden test benchmark)</span>
+                                <span>✓ Passed (Matches hidden benchmark)</span>
+                              </>
+                            ) : tcResult.isTimeLimitExceeded ? (
+                              <>
+                                <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                                <span>⏱ Case {activeCaseTab} — Time Limit Exceeded (3000ms timeout)</span>
                               </>
                             ) : (
                               <>
                                 <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-                                <span>Failed (Output did not match expected benchmark)</span>
+                                <span>✗ Case {activeCaseTab} — Failed (Output did not match hidden benchmark)</span>
                               </>
                             )}
                           </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 text-center text-neutral-500 text-xs font-sans">
+                          Click <strong className="text-neutral-300">Run</strong> or <strong className="text-neutral-300">Submit</strong> to execute this hidden test case.
                         </div>
                       )}
                     </div>
                   )
                 }
+
+                // Visible Test Case (1, 2, 3)
+                const visibleTestCase = currentProblem.testCases[activeCaseTab - 1]
 
                 return (
                   <div className="space-y-3">
@@ -588,7 +693,7 @@ export const ProblemArenaPage: React.FC = () => {
                         <span className="text-[10px] text-neutral-500">Visible Case {activeCaseTab}</span>
                       </div>
                       <div className="p-2.5 bg-neutral-950 rounded border border-neutral-800 text-neutral-200 whitespace-pre-wrap">
-                        {targetCase.input}
+                        {visibleTestCase?.input ?? ''}
                       </div>
                     </div>
 
@@ -598,28 +703,49 @@ export const ProblemArenaPage: React.FC = () => {
                         Expected Output:
                       </div>
                       <div className="p-2.5 bg-neutral-950 rounded border border-neutral-800 text-emerald-400 whitespace-pre-wrap">
-                        {targetCase.expectedOutput}
+                        {visibleTestCase?.expectedOutput ?? ''}
                       </div>
                     </div>
 
                     {/* Actual Output (if executed) */}
-                    {'actualOutput' in targetCase && (
+                    {tcResult && (
                       <div>
                         <div className="text-[11px] font-sans text-neutral-400 mb-1 flex items-center justify-between">
                           <span>Your Output:</span>
-                          <span className={(targetCase as any).passed ? 'text-emerald-400' : 'text-red-400'}>
-                            {(targetCase as any).passed ? '✓ Matches' : '✗ Incorrect Output'}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            {tcResult.executionTimeMs !== undefined && (
+                              <span className="text-[10px] text-neutral-500 font-mono">
+                                {tcResult.executionTimeMs}ms
+                              </span>
+                            )}
+                            <span
+                              className={
+                                tcResult.passed
+                                  ? 'text-emerald-400 font-semibold'
+                                  : tcResult.isTimeLimitExceeded
+                                  ? 'text-amber-400 font-semibold'
+                                  : 'text-red-400 font-semibold'
+                              }
+                            >
+                              {tcResult.passed
+                                ? '✓ Passed'
+                                : tcResult.isTimeLimitExceeded
+                                ? '⏱ Time Limit Exceeded'
+                                : '✗ Incorrect Output'}
+                            </span>
+                          </div>
                         </div>
                         <div
                           className={cn(
-                            'p-2.5 rounded border whitespace-pre-wrap',
-                            (targetCase as any).passed
+                            'p-2.5 rounded border whitespace-pre-wrap font-mono text-xs',
+                            tcResult.passed
                               ? 'bg-neutral-950 border-emerald-900/60 text-emerald-300'
+                              : tcResult.isTimeLimitExceeded
+                              ? 'bg-neutral-950 border-amber-900/60 text-amber-300'
                               : 'bg-neutral-950 border-red-900/60 text-red-300'
                           )}
                         >
-                          {String((targetCase as any).actualOutput || '')}
+                          {tcResult.actualOutput ? String(tcResult.actualOutput) : tcResult.error ? String(tcResult.error) : '(No output returned)'}
                         </div>
                       </div>
                     )}
@@ -631,66 +757,14 @@ export const ProblemArenaPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Completion Modal: 🎉 Problem Completed! with Spring Animation */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 animate-in fade-in">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 text-neutral-900 shadow-2xl border border-neutral-100 flex flex-col items-center text-center space-y-4 animate-modal-pop">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center animate-pulse-subtle">
-              <Sparkles className="w-8 h-8" />
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-neutral-900 tracking-tight">
-                🎉 Problem Completed!
-              </h3>
-              <p className="text-sm text-neutral-500">
-                All 10 test cases passed.
-              </p>
-            </div>
-
-            <div className="px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-semibold text-sm shadow-sm">
-              +50 XP Earned
-            </div>
-
-            <p className="text-xs text-neutral-400">
-              What would you like to do next?
-            </p>
-
-            <div className="w-full flex flex-col sm:flex-row gap-2.5 pt-2">
-              {nextProblemSlug ? (
-                <button
-                  onClick={() => {
-                    setShowSuccessModal(false)
-                    navigate(`/practice/${nextProblemSlug}`)
-                  }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold transition-all interactive-btn shadow-md shadow-red-600/20"
-                >
-                  <span>Next Problem</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setShowSuccessModal(false)
-                    navigate('/revise')
-                  }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-black text-white text-sm font-semibold transition-all interactive-btn"
-                >
-                  <span>Revise Solved</span>
-                  <RotateCcw className="w-4 h-4" />
-                </button>
-              )}
-
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="px-4 py-2.5 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-sm font-medium transition-all interactive-btn"
-              >
-                Stay Here
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Question Completion Modal: strictly with Cancel and Continue buttons */}
+      <QuestionCompletionModal
+        isOpen={showSuccessModal}
+        hasNextQuestion={!!nextProblemSlug}
+        nextQuestionSlug={nextProblemSlug}
+        onContinue={handleContinue}
+        onCancel={handleCancel}
+      />
     </div>
   )
 }
