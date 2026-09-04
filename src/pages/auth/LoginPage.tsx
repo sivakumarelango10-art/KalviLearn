@@ -14,17 +14,26 @@ import { useAuth } from '@/contexts/AuthContext'
  * - NOT EXISTS -> Show AccessDeniedCard ("Account not registered")
  */
 export const LoginPage: React.FC = () => {
-  const { user, accessDenied, deniedEmail, clearAccessDenied } = useAuth()
+  const { user, accessDenied, deniedEmail, deniedReason, clearAccessDenied } = useAuth()
   const location = useLocation()
-  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/dashboard'
+  const defaultDestination = user?.role === 'MENTOR' ? '/mentor' : '/dashboard'
+  const stateFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
+  let targetDestination = defaultDestination
+  if (stateFrom && stateFrom !== '/' && stateFrom !== '/login') {
+    if (user?.role === 'MENTOR') {
+      targetDestination = stateFrom.startsWith('/mentor') ? stateFrom : '/mentor'
+    } else {
+      targetDestination = stateFrom
+    }
+  }
 
   useEffect(() => {
     document.title = 'KalviLearn — Login'
   }, [])
 
-  // If already authorized, proceed to preserved destination or dashboard
+  // If already authorized, proceed to preserved destination or role home
   if (user && !accessDenied) {
-    return <Navigate to={from} replace />
+    return <Navigate to={targetDestination} replace />
   }
 
   return (
@@ -32,6 +41,7 @@ export const LoginPage: React.FC = () => {
       {accessDenied ? (
         <AccessDeniedCard
           deniedEmail={deniedEmail}
+          reason={deniedReason}
           onTryAgain={clearAccessDenied}
         />
       ) : (

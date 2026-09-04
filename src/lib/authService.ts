@@ -15,10 +15,13 @@ export interface VerificationResult {
 }
 
 // Fallback authorized roster in sync with PostgreSQL database
-const AUTHORIZED_FALLBACK_EMAILS = [
-  'kavya.ramesh.s.121@kalvium.community',
-  'prajith.p.s.121@kalvium.community',
-]
+const AUTHORIZED_FALLBACK_USERS: Record<string, { role: string; name: string; status: string }> = {
+  'kavya.ramesh.s.121@kalvium.community': { role: 'STUDENT', name: 'Kavya Ramesh', status: 'ACTIVE' },
+  'prajith.p.s.121@kalvium.community': { role: 'STUDENT', name: 'Prajith P S', status: 'ACTIVE' },
+  'rahul@kalvium.community': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
+  'rahul.mentor@kalvium.community': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
+  'sivakumarelango10@gmail.com': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
+}
 
 const AUTH_CACHE_KEY = 'kalvi_verified_user_cache_v1'
 const AUTH_CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes cache for 200+ concurrent users
@@ -132,13 +135,17 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
     }
 
     // Check fallback whitelist
-    if (AUTHORIZED_FALLBACK_EMAILS.includes(normalizedEmail)) {
+    const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
+    if (fallback) {
+      if (fallback.status !== 'ACTIVE') {
+        return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
+      }
       const fallbackUser: DbUser = {
         id: 'local_' + normalizedEmail,
         email: normalizedEmail,
-        role: 'STUDENT',
-        status: 'ACTIVE',
-        name: normalizedEmail.split('@')[0].replace(/\./g, ' ').toUpperCase(),
+        role: fallback.role,
+        status: fallback.status,
+        name: fallback.name,
       }
       setCachedVerification(normalizedEmail, fallbackUser)
       return { allowed: true, user: fallbackUser }
@@ -150,13 +157,17 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
   // 3. Check if record exists
   if (!data) {
     // Check fallback whitelist before denying
-    if (AUTHORIZED_FALLBACK_EMAILS.includes(normalizedEmail)) {
+    const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
+    if (fallback) {
+      if (fallback.status !== 'ACTIVE') {
+        return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
+      }
       const fallbackUser: DbUser = {
         id: 'local_' + normalizedEmail,
         email: normalizedEmail,
-        role: 'STUDENT',
-        status: 'ACTIVE',
-        name: normalizedEmail.split('@')[0].replace(/\./g, ' ').toUpperCase(),
+        role: fallback.role,
+        status: fallback.status,
+        name: fallback.name,
       }
       setCachedVerification(normalizedEmail, fallbackUser)
       return { allowed: true, user: fallbackUser }

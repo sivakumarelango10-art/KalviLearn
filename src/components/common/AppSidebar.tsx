@@ -130,6 +130,17 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
           <LogOut className="w-4 h-4" />
         </button>
       </div>
+
+      {user?.role === 'MENTOR' && (
+        <div className="px-4 pb-3">
+          <Link
+            to="/mentor"
+            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 text-[#ED2A2B] border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors shadow-2xs"
+          >
+            <span>Mentor Cockpit →</span>
+          </Link>
+        </div>
+      )}
     </aside>
   )
 }

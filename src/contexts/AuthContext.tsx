@@ -9,6 +9,9 @@ interface AuthContextType {
   isLoading: boolean
   accessDenied: boolean
   deniedEmail: string | null
+  deniedReason: 'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null
+  isMentor: boolean
+  isStudent: boolean
   clearAccessDenied: () => void
   loginWithGoogle: () => Promise<void>
   logout: () => Promise<void>
@@ -47,10 +50,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [accessDenied, setAccessDenied] = useState<boolean>(false)
   const [deniedEmail, setDeniedEmail] = useState<string | null>(null)
+  const [deniedReason, setDeniedReason] = useState<'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null>(null)
 
   const clearAccessDenied = () => {
     setAccessDenied(false)
     setDeniedEmail(null)
+    setDeniedReason(null)
   }
 
   // Verify and sync session
@@ -88,15 +93,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(result.user)
           setAccessDenied(false)
           setDeniedEmail(null)
+          setDeniedReason(null)
           localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
           syncUserData(result.user.id).catch(console.warn)
         } else {
-          // Access Denied: User not registered in database
-          console.warn(`User ${email} rejected: Account not registered in database.`)
+          // Access Denied: User not registered or inactive in database
+          console.warn(`User ${email} rejected: ${result.reason || 'Account not registered'}`)
           await signOutUser()
           setUser(null)
           setAccessDenied(true)
           setDeniedEmail(email)
+          setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
           localStorage.removeItem(LOCAL_USER_KEY)
           resetUserState()
         }
@@ -129,14 +136,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(result.user)
             setAccessDenied(false)
             setDeniedEmail(null)
+            setDeniedReason(null)
             localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
             syncUserData(result.user.id).catch(console.warn)
           } else {
-            console.warn(`User ${email} access denied by whitelist check.`)
+            console.warn(`User ${email} access denied: ${result.reason || 'whitelist check'}`)
             await signOutUser()
             setUser(null)
             setAccessDenied(true)
             setDeniedEmail(email)
+            setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
             localStorage.removeItem(LOCAL_USER_KEY)
             resetUserState()
           }
@@ -170,6 +179,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         accessDenied,
         deniedEmail,
+        deniedReason,
+        isMentor: user?.role === 'MENTOR',
+        isStudent: user?.role === 'STUDENT',
         clearAccessDenied,
         loginWithGoogle,
         logout,

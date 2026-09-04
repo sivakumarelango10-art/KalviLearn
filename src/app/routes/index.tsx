@@ -1,7 +1,9 @@
 import { Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
+import { MentorLayout } from '@/layouts/MentorLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
 
@@ -46,6 +48,30 @@ const PrivacyPolicyPage = lazyWithRetry(
 const TermsAndConditionsPage = lazyWithRetry(
   () => import('@/pages/TermsAndConditionsPage').then((m) => ({ default: m.TermsAndConditionsPage })),
   'TermsAndConditionsPage'
+)
+const MentorDashboardPage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorDashboardPage').then((m) => ({ default: m.MentorDashboardPage })),
+  'MentorDashboardPage'
+)
+const MentorStudentsPage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorStudentsPage').then((m) => ({ default: m.MentorStudentsPage })),
+  'MentorStudentsPage'
+)
+const MentorSubmissionsPage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorSubmissionsPage').then((m) => ({ default: m.MentorSubmissionsPage })),
+  'MentorSubmissionsPage'
+)
+const MentorCurriculumPage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorCurriculumPage').then((m) => ({ default: m.MentorCurriculumPage })),
+  'MentorCurriculumPage'
+)
+const MentorAnnouncementsPage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorAnnouncementsPage').then((m) => ({ default: m.MentorAnnouncementsPage })),
+  'MentorAnnouncementsPage'
+)
+const MentorProfilePage = lazyWithRetry(
+  () => import('@/pages/mentor/MentorProfilePage').then((m) => ({ default: m.MentorProfilePage })),
+  'MentorProfilePage'
 )
 
 const PageLoader = () => (
@@ -122,6 +148,51 @@ export const router = createBrowserRouter([
           {
             path: 'profile',
             element: withSuspense(<ProfilePage />),
+          },
+          {
+            path: '*',
+            element: withSuspense(<NotFoundPage />),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/mentor',
+    element: <MentorProtectedRoute />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        path: '',
+        element: <MentorLayout />,
+        children: [
+          {
+            index: true,
+            element: withSuspense(<MentorDashboardPage />),
+          },
+          {
+            path: 'dashboard',
+            element: withSuspense(<MentorDashboardPage />),
+          },
+          {
+            path: 'students',
+            element: withSuspense(<MentorStudentsPage />),
+          },
+          {
+            path: 'submissions',
+            element: withSuspense(<MentorSubmissionsPage />),
+          },
+          {
+            path: 'curriculum',
+            element: withSuspense(<MentorCurriculumPage />),
+          },
+          {
+            path: 'announcements',
+            element: withSuspense(<MentorAnnouncementsPage />),
+          },
+          {
+            path: 'profile',
+            element: withSuspense(<MentorProfilePage />),
           },
           {
             path: '*',

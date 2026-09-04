@@ -30,6 +30,18 @@ async function main() {
       status: 'ACTIVE',
       name: 'Prajith P S',
     },
+    {
+      email: 'rahul@kalvium.community',
+      role: 'MENTOR',
+      status: 'ACTIVE',
+      name: 'Rahul',
+    },
+    {
+      email: 'sivakumarelango10@gmail.com',
+      role: 'MENTOR',
+      status: 'ACTIVE',
+      name: 'Rahul',
+    },
   ];
 
   for (const u of allowedUsers) {
