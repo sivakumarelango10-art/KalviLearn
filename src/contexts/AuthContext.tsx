@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase, signInWithGoogle } from '@/lib/supabase'
 import { verifyUserInDatabase, signOutUser, DbUser } from '@/lib/authService'
+import { fetchUserProgressFromCloud, uploadLocalProgressToCloud } from '@/lib/cloudSync'
+import { getUserState, hydrateStateFromCloud, resetUserState } from '@/lib/progress'
 
 interface AuthContextType {
   user: DbUser | null
@@ -15,6 +17,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const LOCAL_USER_KEY = 'kalvi_active_user'
+
+async function syncUserData(userId: string) {
+  try {
+    const localState = getUserState()
+    // 1. If student solved any problems offline/as guest, upload them to Supabase
+    if (localState.solvedSlugs && localState.solvedSlugs.length > 0) {
+      await uploadLocalProgressToCloud(userId, localState)
+    }
+    // 2. Fetch full progress, solved problems, best code, and submissions from Supabase
+    const cloudState = await fetchUserProgressFromCloud(userId)
+    if (cloudState) {
+      hydrateStateFromCloud(cloudState)
+    }
+  } catch (err) {
+    console.warn('Cross-device cloud synchronization error:', err)
+  }
+}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<DbUser | null>(() => {
@@ -60,6 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setAccessDenied(false)
           setDeniedEmail(null)
           localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
+          syncUserData(result.user.id).catch(console.warn)
         } else {
           // Access Denied: User not registered in database
           console.warn(`User ${email} rejected: Account not registered in database.`)
@@ -68,6 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setAccessDenied(true)
           setDeniedEmail(email)
           localStorage.removeItem(LOCAL_USER_KEY)
+          resetUserState()
         }
       } catch (err) {
         console.error('Session verification error:', err)
@@ -84,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_OUT' || !session?.user?.email) {
           setUser(null)
           localStorage.removeItem(LOCAL_USER_KEY)
+          resetUserState()
           setIsLoading(false)
           return
         }
@@ -98,6 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setAccessDenied(false)
             setDeniedEmail(null)
             localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
+            syncUserData(result.user.id).catch(console.warn)
           } else {
             console.warn(`User ${email} access denied by whitelist check.`)
             await signOutUser()
@@ -105,6 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setAccessDenied(true)
             setDeniedEmail(email)
             localStorage.removeItem(LOCAL_USER_KEY)
+            resetUserState()
           }
           setIsLoading(false)
         }
@@ -126,6 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signOutUser()
     setUser(null)
     clearAccessDenied()
+    resetUserState()
   }
 
   return (

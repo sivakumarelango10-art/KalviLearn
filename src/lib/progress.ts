@@ -40,6 +40,16 @@ const defaultState: UserState = {
   submissions: [],
 }
 
+export function resetUserState() {
+  saveUserState({
+    xp: 0,
+    streak: 1,
+    solvedSlugs: [],
+    progress: {},
+    submissions: [],
+  })
+}
+
 export function getUserState(): UserState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -116,6 +126,103 @@ export function subscribeProgress(callback: () => void): () => void {
   }
 }
 
+import { saveSuccessToCloud, saveAttemptToCloud } from './cloudSync'
+
+export function getActiveUserId(): string | null {
+  try {
+    const raw = localStorage.getItem('kalvi_active_user')
+    if (!raw) return null
+    const user = JSON.parse(raw)
+    return user?.id || null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Merges cloud progress from Supabase into local storage.
+ * Ensures that opening Kalvi Learn on any new device instantly restores all solved problems,
+ * best code, XP, and past submissions without overwriting recent local updates.
+ */
+export function hydrateStateFromCloud(cloudState: UserState) {
+  if (!cloudState) return
+  const localState = getUserState()
+
+  // Union of solved slugs
+  const allSolved = Array.from(new Set([...(cloudState.solvedSlugs || []), ...(localState.solvedSlugs || [])]))
+
+  // Merge progress maps intelligently: ensure best code is never wiped out
+  const allSlugs = Array.from(
+    new Set([
+      ...Object.keys(localState.progress || {}),
+      ...Object.keys(cloudState.progress || {}),
+      ...allSolved,
+    ])
+  )
+
+  const mergedProgress: Record<string, UserProgressRecord> = {}
+
+  for (const slug of allSlugs) {
+    const localP = localState.progress?.[slug]
+    const cloudP = cloudState.progress?.[slug]
+    const isSolved = allSolved.includes(slug) || localP?.status === 'SOLVED' || cloudP?.status === 'SOLVED'
+
+    let bestCode = ''
+    let language = 'python'
+    let attempts = 1
+    let solvedAt: string | undefined = undefined
+
+    if (localP && cloudP) {
+      bestCode = cloudP.bestCode || localP.bestCode || ''
+      language = cloudP.language || localP.language || 'python'
+      attempts = Math.max(cloudP.attempts || 1, localP.attempts || 1)
+      solvedAt = cloudP.solvedAt || localP.solvedAt
+    } else if (cloudP) {
+      bestCode = cloudP.bestCode || ''
+      language = cloudP.language || 'python'
+      attempts = cloudP.attempts || 1
+      solvedAt = cloudP.solvedAt
+    } else if (localP) {
+      bestCode = localP.bestCode || ''
+      language = localP.language || 'python'
+      attempts = localP.attempts || 1
+      solvedAt = localP.solvedAt
+    }
+
+    mergedProgress[slug] = {
+      problemId: slug,
+      problemSlug: slug,
+      status: isSolved ? 'SOLVED' : 'ATTEMPTED',
+      language,
+      bestCode,
+      solvedAt,
+      attempts,
+    }
+  }
+
+  // Merge submissions uniquely
+  const seenIds = new Set<string>()
+  const mergedSubmissions: SubmissionRecord[] = []
+
+  for (const sub of [...(localState.submissions || []), ...(cloudState.submissions || [])]) {
+    if (!sub || !sub.id || seenIds.has(sub.id)) continue
+    seenIds.add(sub.id)
+    mergedSubmissions.push(sub)
+  }
+
+  mergedSubmissions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+  const mergedState: UserState = {
+    xp: Math.max(cloudState.xp || 0, localState.xp || 0, allSolved.length * 50),
+    streak: Math.max(cloudState.streak || 1, localState.streak || 1, allSolved.length > 0 ? 1 : 1),
+    solvedSlugs: allSolved,
+    progress: mergedProgress,
+    submissions: mergedSubmissions.slice(0, MAX_STORED_SUBMISSIONS),
+  }
+
+  saveUserState(mergedState)
+}
+
 export function recordProblemSuccess(
   problemSlug: string,
   problemTitle: string,
@@ -162,6 +269,13 @@ export function recordProblemSuccess(
   })
 
   saveUserState(state)
+
+  // Background Cloud Sync
+  const activeUserId = getActiveUserId()
+  if (activeUserId) {
+    saveSuccessToCloud(activeUserId, problemSlug, language, code, executionTimeMs).catch(() => {})
+  }
+
   return { isFirstSolve, newXp: state.xp }
 }
 
@@ -205,4 +319,10 @@ export function recordProblemAttempt(
   })
 
   saveUserState(state)
+
+  // Background Cloud Sync
+  const activeUserId = getActiveUserId()
+  if (activeUserId) {
+    saveAttemptToCloud(activeUserId, problemSlug, language, code, passedTests, totalTests, executionTimeMs).catch(() => {})
+  }
 }
