@@ -6433,8 +6433,8 @@ function executeJavaScript(code, input) {
   const inputLines = normalizedInput.split("\n");
   const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
   const customConsole = {
-    log: (...args) => outputs.push(args.map((a) => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ")),
-    info: (...args) => outputs.push(args.map((a) => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ")),
+    log: (...args) => outputs.push(args.map((a) => typeof a === "object" && a !== null ? JSON.stringify(a) : String(a)).join(" ")),
+    info: (...args) => outputs.push(args.map((a) => typeof a === "object" && a !== null ? JSON.stringify(a) : String(a)).join(" ")),
     error: (...args) => outputs.push(args.map((a) => String(a)).join(" ")),
     warn: () => {
     }
@@ -6489,7 +6489,8 @@ function executeJavaScript(code, input) {
     wrapped(customConsole, mockRequire, mockProcess);
     return { output: outputs.join("\n").trim() };
   } catch (err) {
-    return { output: outputs.join("\n").trim(), error: err.message || "JavaScript Runtime Error" };
+    const errMsg = err instanceof Error ? err.message : "JavaScript Runtime Error";
+    return { output: outputs.join("\n").trim(), error: errMsg };
   }
 }
 function runSingleTestCase(code, language, input) {
@@ -6514,7 +6515,8 @@ function checkCompilation(code, language) {
     try {
       new Function("console", "require", "process", code);
     } catch (err) {
-      return { ok: false, error: `SyntaxError: ${err.message}` };
+      const errMsg = err instanceof Error ? err.message : String(err);
+      return { ok: false, error: `SyntaxError: ${errMsg}` };
     }
   } else if (lang === "cpp" || lang === "c++") {
     const dryRun = executeCpp(code, "");
@@ -6554,13 +6556,14 @@ async function executeQuestion(req) {
       testCases: []
     };
   }
-  let problem = serverTestCases_default[questionSlug];
+  const problemMap = serverTestCases_default;
+  let problem = problemMap[questionSlug];
   if (!problem) {
-    const foundKey = Object.keys(serverTestCases_default).find(
+    const foundKey = Object.keys(problemMap).find(
       (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
     );
     if (foundKey) {
-      problem = serverTestCases_default[foundKey];
+      problem = problemMap[foundKey];
     }
   }
   if (!problem) {
@@ -6695,7 +6698,8 @@ async function handler(req, res) {
       });
     }
   }
-  const { questionSlug, language, code, isSubmit = true } = body || {};
+  const parsedBody = body || {};
+  const { questionSlug, language, code, isSubmit = true } = parsedBody;
   if (!questionSlug || !language || !code) {
     return sendJson(400, {
       success: false,
@@ -6719,10 +6723,11 @@ async function handler(req, res) {
     }
     return sendJson(200, result);
   } catch (err) {
+    const msg = err instanceof Error ? err.message : "Internal Server Error";
     return sendJson(500, {
       success: false,
       error: "Execution Error",
-      message: err.message || "Internal Server Error",
+      message: msg,
       total: isSubmit ? 10 : 3,
       passed: 0,
       testCases: []

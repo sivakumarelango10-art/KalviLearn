@@ -22,7 +22,7 @@ export const LanguagePracticePage: React.FC = () => {
 
   // Validate language param - if it's a legacy problem slug, redirect cleanly
   if (!isValidLanguage(lang)) {
-    const preferredLang = (localStorage.getItem('kalvi_preferred_language') as any) || 'python'
+    const preferredLang = normalizeLanguageSlug(localStorage.getItem('kalvi_preferred_language'))
     if (lang && (lang.includes('belt') || lang.includes('-'))) {
       return <Navigate to={`/practice/${preferredLang}/${lang}`} replace />
     }

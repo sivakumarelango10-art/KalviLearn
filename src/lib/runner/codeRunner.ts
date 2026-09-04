@@ -23,6 +23,17 @@ export interface RunResult {
   compilationError?: string
 }
 
+interface ApiTestCasePayload {
+  testIndex: number
+  status: 'passed' | 'failed' | 'time_limit_exceeded' | 'runtime_error'
+  visible: boolean
+  executionTimeMs?: number
+  input?: string
+  expectedOutput?: string
+  actualOutput?: string
+  error?: string
+}
+
 function normalizeOutput(str: string): string {
   if (!str) return ''
   return str
@@ -77,7 +88,7 @@ export async function executeCode(
         const data = await response.json()
 
         if (Array.isArray(data.testCases)) {
-          const mappedResults: TestCaseExecution[] = data.testCases.map((tc: any) => ({
+          const mappedResults: TestCaseExecution[] = data.testCases.map((tc: ApiTestCasePayload) => ({
             testIndex: tc.testIndex,
             status: tc.status,
             passed: tc.status === 'passed',
@@ -147,9 +158,10 @@ export async function executeCode(
       } else {
         apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearTimeout(timeoutId)
-      if (err?.name === 'AbortError') {
+      const isAbort = err instanceof Error && err.name === 'AbortError'
+      if (isAbort) {
         apiErrorMessage = 'Execution request timed out (15-second limit exceeded). Please optimize your solution or try again.'
       } else {
         apiErrorMessage = 'Unable to connect to the execution server. Please check your network connection.'

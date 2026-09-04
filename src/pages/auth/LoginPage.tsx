@@ -16,7 +16,7 @@ import { useAuth } from '@/contexts/AuthContext'
 export const LoginPage: React.FC = () => {
   const { user, accessDenied, deniedEmail, clearAccessDenied } = useAuth()
   const location = useLocation()
-  const from = (location.state as any)?.from?.pathname || '/dashboard'
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/dashboard'
 
   useEffect(() => {
     document.title = 'KalviLearn — Login'

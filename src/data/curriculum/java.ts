@@ -48,7 +48,7 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
     description: p.description,
     inputFormat: p.inputFormat,
     outputFormat: p.outputFormat,
-    explanation: (p as any).explanation,
+    explanation: (p as { explanation?: string }).explanation,
     difficulty: p.difficulty as 'Easy' | 'Medium' | 'Hard',
     xp: 50,
     starterCode:

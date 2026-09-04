@@ -103,7 +103,17 @@ export const ProblemArenaPage: React.FC = () => {
   const [submissionFailed, setSubmissionFailed] = useState<{ passed: number; total: number } | null>(null)
   const [recentSubmissions, setRecentSubmissions] = useState<SubmissionRecord[]>([])
 
-  const editorRef = useRef<any>(null)
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
+  const antiCheatTimerRef = useRef<NodeJS.Timeout | number | null>(null)
+
+  // Clean up anti-cheat warning timer on unmount
+  useEffect(() => {
+    return () => {
+      if (antiCheatTimerRef.current) {
+        clearTimeout(antiCheatTimerRef.current)
+      }
+    }
+  }, [])
 
   // Initialize code on problem or language change
   useEffect(() => {
@@ -134,7 +144,10 @@ export const ProblemArenaPage: React.FC = () => {
   // Anti-Cheat: Intercept Cut, Copy, Paste & Right Click
   const triggerAntiCheatWarning = () => {
     setAntiCheatWarning('⚠️ Manual Coding Enforced: Copy, Paste, and Cut are disabled in Practice Arena.')
-    setTimeout(() => setAntiCheatWarning(null), 3000)
+    if (antiCheatTimerRef.current) {
+      clearTimeout(antiCheatTimerRef.current)
+    }
+    antiCheatTimerRef.current = setTimeout(() => setAntiCheatWarning(null), 3000)
   }
 
   const handleEditorMount: OnMount = (editor) => {
@@ -183,7 +196,7 @@ export const ProblemArenaPage: React.FC = () => {
     setSubmissionFailed(null)
     setCompilationError(null)
 
-    const visibleCases = (currentProblem.testCases || []).slice(0, 3).map((tc: any, idx: number) => ({
+    const visibleCases = (currentProblem.testCases || []).slice(0, 3).map((tc, idx) => ({
       testIndex: tc.testIndex || idx + 1,
       input: tc.input || '',
       expectedOutput: tc.expectedOutput || '',
@@ -244,8 +257,9 @@ export const ProblemArenaPage: React.FC = () => {
           )
         }
       }
-    } catch (err: any) {
-      setCompilationError(err?.message || 'An unexpected execution error occurred.')
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'An unexpected execution error occurred.'
+      setCompilationError(errMsg)
       setTestResults(null)
       setSubmissionFailed(isSubmit ? { passed: 0, total: 10 } : null)
     } finally {
@@ -448,7 +462,7 @@ export const ProblemArenaPage: React.FC = () => {
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
                     Examples
                   </h3>
-                  {currentProblem.testCases.slice(0, 3).map((ex: any, idx: number) => (
+                  {currentProblem.testCases.slice(0, 3).map((ex, idx) => (
                     <div
                       key={idx}
                       className="p-3.5 bg-neutral-950/80 rounded-lg border border-neutral-800 space-y-2 text-xs"
@@ -484,7 +498,7 @@ export const ProblemArenaPage: React.FC = () => {
                     No {curriculum.name} submissions yet for this problem.
                   </p>
                 ) : (
-                  recentSubmissions.map((sub: any) => (
+                  recentSubmissions.map((sub) => (
                     <div
                       key={sub.id}
                       className="p-3 bg-neutral-950 rounded-lg border border-neutral-800 flex items-center justify-between text-xs"

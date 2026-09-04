@@ -29,6 +29,8 @@ export const LoginCard: FC<LoginCardProps> = ({
   const errorMessage = controlledError ?? internalError
 
   const handleLoginClick = async () => {
+    if (isLoading) return
+
     if (onGoogleLogin) {
       onGoogleLogin()
       return

@@ -74,7 +74,7 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
 
     if (Array.isArray(progressRows)) {
       for (const row of progressRows) {
-        const pObj = row.Problem as any
+        const pObj = row.Problem as { slug?: string; title?: string } | null
         const slug = pObj?.slug
         if (!slug) continue
 
@@ -99,7 +99,7 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
     const submissions: SubmissionRecord[] = []
     if (Array.isArray(submissionRows)) {
       for (const row of submissionRows) {
-        const pObj = row.Problem as any
+        const pObj = row.Problem as { slug?: string; title?: string } | null
         const slug = pObj?.slug || row.problemId
         const title = pObj?.title || slug
 
@@ -125,8 +125,9 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
       progress: progressMap,
       submissions,
     }
-  } catch (err: any) {
-    console.warn('Error syncing user progress from cloud:', err?.message)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.warn('Error syncing user progress from cloud:', msg)
     return null
   }
 }
@@ -178,8 +179,9 @@ export async function saveSuccessToCloud(
     }
 
     await supabase.from('Submission').insert(subRecord)
-  } catch (err: any) {
-    console.warn('Failed to save problem success to cloud database:', err?.message)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.warn('Failed to save problem success to cloud database:', msg)
   }
 }
 
@@ -216,8 +218,9 @@ export async function saveAttemptToCloud(
     }
 
     await supabase.from('Submission').insert(subRecord)
-  } catch (err: any) {
-    console.warn('Failed to save attempt to cloud database:', err?.message)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.warn('Failed to save attempt to cloud database:', msg)
   }
 }
 
@@ -249,7 +252,8 @@ export async function uploadLocalProgressToCloud(userId: string, localState: Use
         .from('UserProgress')
         .upsert(progressRecord, { onConflict: 'userId,problemId' })
     }
-  } catch (err: any) {
-    console.warn('Failed to upload local progress to cloud:', err?.message)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.warn('Failed to upload local progress to cloud:', msg)
   }
 }

@@ -65,32 +65,32 @@ function executeJavaScript(code: string, input: string): { output: string; error
   const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean)
 
   const customConsole = {
-    log: (...args: any[]) => outputs.push(args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ')),
-    info: (...args: any[]) => outputs.push(args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ')),
-    error: (...args: any[]) => outputs.push(args.map((a) => String(a)).join(' ')),
+    log: (...args: unknown[]) => outputs.push(args.map((a) => (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a))).join(' ')),
+    info: (...args: unknown[]) => outputs.push(args.map((a) => (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a))).join(' ')),
+    error: (...args: unknown[]) => outputs.push(args.map((a) => String(a)).join(' ')),
     warn: () => {},
   }
 
   const mockFs = {
-    readFileSync: (_fd: any, _enc?: string) => normalizedInput,
+    readFileSync: (_fd: unknown, _enc?: string) => normalizedInput,
     readSync: () => normalizedInput,
   }
 
   const mockProcess = {
     stdin: {
       read: () => normalizedInput,
-      on: (event: string, cb: any) => {
+      on: (event: string, cb: (data?: unknown) => void) => {
         if (event === 'data') cb(normalizedInput)
         if (event === 'end') cb()
       },
     },
-    stdout: { write: (data: any) => outputs.push(String(data)) },
+    stdout: { write: (data: unknown) => outputs.push(String(data)) },
     exit: () => {},
   }
 
   const mockReadline = {
     createInterface: () => ({
-      on: (event: string, cb: any) => {
+      on: (event: string, cb: (line?: string) => void) => {
         if (event === 'line') {
           for (const l of inputLines) cb(l)
         }
@@ -123,8 +123,9 @@ function executeJavaScript(code: string, input: string): { output: string; error
     `)
     wrapped(customConsole, mockRequire, mockProcess)
     return { output: outputs.join('\n').trim() }
-  } catch (err: any) {
-    return { output: outputs.join('\n').trim(), error: err.message || 'JavaScript Runtime Error' }
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : 'JavaScript Runtime Error'
+    return { output: outputs.join('\n').trim(), error: errMsg }
   }
 }
 
@@ -154,8 +155,9 @@ function checkCompilation(code: string, language: string): { ok: boolean; error?
   } else if (lang === 'javascript' || lang === 'js') {
     try {
       new Function('console', 'require', 'process', code)
-    } catch (err: any) {
-      return { ok: false, error: `SyntaxError: ${err.message}` }
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err)
+      return { ok: false, error: `SyntaxError: ${errMsg}` }
     }
   } else if (lang === 'cpp' || lang === 'c++') {
     const dryRun = executeCpp(code, '')
@@ -205,13 +207,18 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     }
   }
 
-  let problem = (serverTestCases as Record<string, any>)[questionSlug]
+  interface ServerProblemItem {
+    testCases: Array<{ testIndex?: number; input: string; expectedOutput: string }>
+  }
+  const problemMap = serverTestCases as unknown as Record<string, ServerProblemItem>
+
+  let problem = problemMap[questionSlug]
   if (!problem) {
-    const foundKey = Object.keys(serverTestCases).find(
+    const foundKey = Object.keys(problemMap).find(
       (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
     )
     if (foundKey) {
-      problem = (serverTestCases as Record<string, any>)[foundKey]
+      problem = problemMap[foundKey]
     }
   }
 

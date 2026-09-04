@@ -2,10 +2,10 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { executeQuestion } from './executeService'
 
 export default async function handler(
-  req: IncomingMessage & { body?: any; query?: any },
-  res: ServerResponse & { status?: (code: number) => any; json?: (data: any) => any }
+  req: IncomingMessage & { body?: unknown; query?: unknown },
+  res: ServerResponse & { status?: (code: number) => { json: (data: unknown) => void }; json?: (data: unknown) => void }
 ) {
-  const sendJson = (statusCode: number, data: any) => {
+  const sendJson = (statusCode: number, data: unknown) => {
     if (typeof res.status === 'function' && typeof res.json === 'function') {
       return res.status(statusCode).json(data)
     }
@@ -57,7 +57,14 @@ export default async function handler(
     }
   }
 
-  const { questionSlug, language, code, isSubmit = true } = body || {}
+  interface ExecuteRequestBody {
+    questionSlug?: string
+    language?: string
+    code?: string
+    isSubmit?: boolean
+  }
+  const parsedBody = (body as ExecuteRequestBody) || {}
+  const { questionSlug, language, code, isSubmit = true } = parsedBody
 
   if (!questionSlug || !language || !code) {
     return sendJson(400, {
@@ -82,11 +89,12 @@ export default async function handler(
       return sendJson(500, result)
     }
     return sendJson(200, result)
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Internal Server Error'
     return sendJson(500, {
       success: false,
       error: 'Execution Error',
-      message: err.message || 'Internal Server Error',
+      message: msg,
       total: isSubmit ? 10 : 3,
       passed: 0,
       testCases: [],

@@ -84,8 +84,8 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
   }
 
   // 2. Query Supabase with exponential backoff (up to 3 attempts)
-  let lastError: any = null
-  let data: any = null
+  let lastError: unknown = null
+  let data: Partial<DbUser> | null = null
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {

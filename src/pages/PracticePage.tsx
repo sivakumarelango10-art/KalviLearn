@@ -1,8 +1,9 @@
 import React from 'react'
 import { LanguageCards } from '@/components/practice/LanguageCards'
+import { normalizeLanguageSlug } from '@/data/curriculum/index'
 
 export const PracticePage: React.FC = () => {
-  const preferredLanguage = (localStorage.getItem('kalvi_preferred_language') as any) || 'python'
+  const preferredLanguage = normalizeLanguageSlug(localStorage.getItem('kalvi_preferred_language'))
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-white flex flex-col justify-center py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
