@@ -19,7 +19,6 @@ export const ProfilePage: React.FC = () => {
     progress: {},
     submissions: [],
   })
-  const [preferredLang, setPreferredLang] = useState<string>('python')
 
   useEffect(() => {
     const updateStats = () => {
@@ -280,45 +279,15 @@ export const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Platform Security & Preferences */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-neutral-900 text-white rounded-2xl p-6 border border-neutral-800 space-y-3">
-          <div className="flex items-center gap-2.5">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            <h3 className="font-bold text-sm">Anti-Cheat & Evaluation Engine</h3>
-          </div>
-          <p className="text-xs text-neutral-400 leading-relaxed">
-            The Kalvi Practice Arena enforces honest learning. Keyboard shortcuts for cut, copy, and paste (<code className="text-neutral-200">Ctrl+C / Ctrl+V / Ctrl+X</code>) as well as right-click are permanently disabled in the Monaco editor.
-          </p>
+      {/* Platform Security */}
+      <div className="bg-neutral-900 text-white rounded-2xl p-6 border border-neutral-800 space-y-3">
+        <div className="flex items-center gap-2.5">
+          <ShieldCheck className="w-5 h-5 text-emerald-400" />
+          <h3 className="font-bold text-sm">Anti-Cheat & Evaluation Engine</h3>
         </div>
-
-        <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-3">
-          <h3 className="font-bold text-sm text-neutral-900">Preferred Language Starter</h3>
-          <p className="text-xs text-neutral-500">
-            Choose your default starter language when entering new problems in the Practice Arena.
-          </p>
-          <div className="flex flex-wrap gap-2 pt-1">
-            {[
-              { id: 'python', label: 'Python 3' },
-              { id: 'javascript', label: 'JavaScript' },
-              { id: 'cpp', label: 'C++ (g++)' },
-              { id: 'java', label: 'Java (OpenJDK)' },
-            ].map((lang) => (
-              <button
-                key={lang.id}
-                onClick={() => setPreferredLang(lang.id)}
-                className={cn(
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
-                  preferredLang === lang.id
-                    ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
-                    : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
-                )}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <p className="text-xs text-neutral-400 leading-relaxed">
+          The Kalvi Practice Arena enforces honest learning. Keyboard shortcuts for cut, copy, and paste (<code className="text-neutral-200">Ctrl+C / Ctrl+V / Ctrl+X</code>) as well as right-click are permanently disabled in the Monaco editor.
+        </p>
       </div>
     </div>
   )
