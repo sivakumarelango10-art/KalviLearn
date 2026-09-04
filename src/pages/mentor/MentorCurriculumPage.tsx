@@ -1,47 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   BookOpen,
   ChevronDown,
   ChevronUp,
   AlertTriangle,
+  Loader2,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
+import {
+  BeltMetric,
+  fetchMentorCurriculumMetrics,
+  subscribeToMentorUpdates,
+} from '@/lib/mentorService'
 
 export const MentorCurriculumPage: React.FC = () => {
   const [expandedBelt, setExpandedBelt] = useState<number | null>(1)
+  const [beltMetrics, setBeltMetrics] = useState<BeltMetric[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const beltMetrics = [
-    {
-      order: 1,
-      name: 'Belt 1',
-      title: 'Programming Foundations',
-      color: '#3B82F6',
-      totalProblems: 20,
-      cohortCompleted: 2,
-      avgPassRate: 100,
-      bottleneck: 'Basic Syntax & Loop Bounds',
-    },
-    {
-      order: 2,
-      name: 'Belt 2',
-      title: 'Intermediate Data Structures & Logic',
-      color: '#10B981',
-      totalProblems: 30,
-      cohortCompleted: 2,
-      avgPassRate: 94.2,
-      bottleneck: 'Two-Pointer & Sliding Window Bounds',
-    },
-    {
-      order: 3,
-      name: 'Belt 3',
-      title: 'Advanced Algorithmic Patterns',
-      color: '#EF4444',
-      totalProblems: 35,
-      cohortCompleted: 1,
-      avgPassRate: 88.5,
-      bottleneck: 'Dynamic Programming & State Transitions',
-    },
-  ]
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadMetrics() {
+      try {
+        const metrics = await fetchMentorCurriculumMetrics()
+        if (isMounted) {
+          setBeltMetrics(metrics)
+          setIsLoading(false)
+        }
+      } catch (err) {
+        console.error('Error fetching curriculum metrics:', err)
+        if (isMounted) setIsLoading(false)
+      }
+    }
+
+    loadMetrics()
+
+    const unsubscribe = subscribeToMentorUpdates(() => {
+      loadMetrics()
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-page-enter">
@@ -69,53 +72,62 @@ export const MentorCurriculumPage: React.FC = () => {
       </div>
 
       {/* Belt Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {beltMetrics.map((belt) => (
-          <div
-            key={belt.order}
-            className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card"
-          >
-            <div className="flex items-center justify-between">
-              <span
-                className="px-3 py-1 rounded-lg text-xs font-bold text-white shadow-2xs"
-                style={{ backgroundColor: belt.color }}
-              >
-                {belt.name}
-              </span>
-              <span className="text-xs font-bold text-neutral-500">
-                {belt.totalProblems} Problems
-              </span>
-            </div>
-
-            <div>
-              <h3 className="text-base font-bold text-neutral-900">{belt.title}</h3>
-              <p className="text-xs text-neutral-500 mt-1">
-                {belt.cohortCompleted} / 2 Registered Scholars cleared this milestone
-              </p>
-            </div>
-
-            <div className="space-y-1 pt-2 border-t border-neutral-100">
-              <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
-                <span>Pass Rate</span>
-                <span className="font-bold text-neutral-900">{belt.avgPassRate}%</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${belt.avgPassRate}%`, backgroundColor: belt.color }}
-                />
-              </div>
-            </div>
-
-            <div className="pt-2 text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <span>
-                <strong>Key Bottleneck:</strong> {belt.bottleneck}
-              </span>
-            </div>
+      {isLoading ? (
+        <div className="py-12 text-center text-neutral-500 bg-white rounded-3xl border border-neutral-200">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <Loader2 className="w-6 h-6 animate-spin text-[#ED2A2B]" />
+            <span className="text-xs font-medium">Loading belt metrics...</span>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {beltMetrics.map((belt) => (
+            <div
+              key={belt.order}
+              className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card"
+            >
+              <div className="flex items-center justify-between">
+                <span
+                  className="px-3 py-1 rounded-lg text-xs font-bold text-white shadow-2xs"
+                  style={{ backgroundColor: belt.color }}
+                >
+                  {belt.name}
+                </span>
+                <span className="text-xs font-bold text-neutral-500">
+                  {belt.totalProblems} Problems
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">{belt.title}</h3>
+                <p className="text-xs text-neutral-500 mt-1">
+                  {belt.cohortCompleted} / 2 Registered Scholars active in this milestone
+                </p>
+              </div>
+
+              <div className="space-y-1 pt-2 border-t border-neutral-100">
+                <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
+                  <span>Pass Rate</span>
+                  <span className="font-bold text-neutral-900">{belt.avgPassRate}%</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${belt.avgPassRate}%`, backgroundColor: belt.color }}
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <span>
+                  <strong>Key Bottleneck:</strong> {belt.bottleneck}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Problem Breakdown Accordion */}
       <div className="bg-white rounded-3xl border border-neutral-200/80 shadow-xs overflow-hidden divide-y divide-neutral-100">

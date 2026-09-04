@@ -15,10 +15,25 @@ export interface VerificationResult {
 }
 
 // Fallback authorized roster in sync with PostgreSQL database
-const AUTHORIZED_FALLBACK_USERS: Record<string, { role: string; name: string; status: string }> = {
-  'kavya.ramesh.s.121@kalvium.community': { role: 'STUDENT', name: 'Kavya Ramesh', status: 'ACTIVE' },
-  'prajith.p.s.121@kalvium.community': { role: 'STUDENT', name: 'Prajith P S', status: 'ACTIVE' },
-  'sivakumarelango10@gmail.com': { role: 'MENTOR', name: 'Sivakumar Elango', status: 'ACTIVE' },
+const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name: string; status: string }> = {
+  'kavya.ramesh.s.121@kalvium.community': {
+    id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
+    role: 'STUDENT',
+    name: 'Kavya Ramesh',
+    status: 'ACTIVE',
+  },
+  'prajith.p.s.121@kalvium.community': {
+    id: '7193765a-4dc6-4f61-813e-3e5dce95b6c7',
+    role: 'STUDENT',
+    name: 'Prajith P S',
+    status: 'ACTIVE',
+  },
+  'sivakumarelango10@gmail.com': {
+    id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',
+    role: 'MENTOR',
+    name: 'Sivakumar Elango',
+    status: 'ACTIVE',
+  },
 }
 
 const AUTH_CACHE_KEY = 'kalvi_verified_user_cache_v1'
@@ -89,7 +104,7 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
       return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
     }
     const authorizedUser: DbUser = {
-      id: 'local_' + normalizedEmail.replace(/[^a-zA-Z0-9]/g, '_'),
+      id: fallback.id,
       email: normalizedEmail,
       role: fallback.role,
       status: fallback.status,

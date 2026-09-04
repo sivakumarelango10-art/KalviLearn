@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Editor from '@monaco-editor/react'
 import {
   Send,
@@ -7,217 +7,53 @@ import {
   Code2,
   Search,
   X,
+  Loader2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-interface MentorSubmissionItem {
-  id: string
-  studentName: string
-  studentEmail: string
-  problemTitle: string
-  problemSlug: string
-  beltName: string
-  language: 'python' | 'java' | 'nodejs' | 'cpp'
-  languageLabel: string
-  status: 'PASSED' | 'FAILED' | 'ERROR'
-  passedTests: number
-  totalTests: number
-  executionTimeMs: number
-  createdAt: string
-  code: string
-}
-
-const SAMPLE_SUBMISSIONS: MentorSubmissionItem[] = [
-  {
-    id: 'sub-1',
-    studentName: 'Prajith P S',
-    studentEmail: 'prajith.p.s.121@kalvium.community',
-    problemTitle: 'Kadane Max Subarray Sum',
-    problemSlug: 'belt-3-kadane-max-subarray',
-    beltName: 'Belt 3',
-    language: 'python',
-    languageLabel: 'Python',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 42,
-    createdAt: '2 mins ago',
-    code: `import sys
-
-def solve():
-    input_data = sys.stdin.read().split()
-    if not input_data:
-        return
-    n = int(input_data[0])
-    arr = [int(x) for x in input_data[1:n+1]]
-    
-    max_so_far = arr[0]
-    curr_max = arr[0]
-    for x in arr[1:]:
-        curr_max = max(x, curr_max + x)
-        max_so_far = max(max_so_far, curr_max)
-    print(max_so_far)
-
-if __name__ == '__main__':
-    solve()`,
-  },
-  {
-    id: 'sub-2',
-    studentName: 'Kavya Ramesh',
-    studentEmail: 'kavya.ramesh.s.121@kalvium.community',
-    problemTitle: 'Two Sum Target Index',
-    problemSlug: 'belt-2-two-sum',
-    beltName: 'Belt 2',
-    language: 'python',
-    languageLabel: 'Python',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 38,
-    createdAt: '15 mins ago',
-    code: `import sys
-
-def solve():
-    tokens = sys.stdin.read().split()
-    if not tokens:
-        return
-    n = int(tokens[0])
-    target = int(tokens[1])
-    arr = [int(x) for x in tokens[2:n+2]]
-    
-    seen = {}
-    for i, num in enumerate(arr):
-        comp = target - num
-        if comp in seen:
-            print(f"{seen[comp]} {i}")
-            return
-        seen[num] = i
-
-if __name__ == '__main__':
-    solve()`,
-  },
-  {
-    id: 'sub-3',
-    studentName: 'Prajith P S',
-    studentEmail: 'prajith.p.s.121@kalvium.community',
-    problemTitle: 'Reverse Words in a String',
-    problemSlug: 'belt-2-reverse-words',
-    beltName: 'Belt 2',
-    language: 'java',
-    languageLabel: 'Java',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 118,
-    createdAt: '30 mins ago',
-    code: `import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        if (sc.hasNextLine()) {
-            String line = sc.nextLine().trim();
-            String[] words = line.split("\\\\s+");
-            StringBuilder sb = new StringBuilder();
-            for (int i = words.length - 1; i >= 0; i--) {
-                sb.append(words[i]).append(i > 0 ? " " : "");
-            }
-            System.out.println(sb.toString());
-        }
-    }
-}`,
-  },
-  {
-    id: 'sub-4',
-    studentName: 'Kavya Ramesh',
-    studentEmail: 'kavya.ramesh.s.121@kalvium.community',
-    problemTitle: 'Check Even or Odd',
-    problemSlug: 'belt-1-even-or-odd',
-    beltName: 'Belt 1',
-    language: 'cpp',
-    languageLabel: 'C++',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 18,
-    createdAt: '1 hour ago',
-    code: `#include <iostream>
-using namespace std;
-
-int main() {
-    long long n;
-    if (cin >> n) {
-        if (n % 2 == 0) {
-            cout << "Even" << endl;
-        } else {
-            cout << "Odd" << endl;
-        }
-    }
-    return 0;
-}`,
-  },
-  {
-    id: 'sub-5',
-    studentName: 'Prajith P S',
-    studentEmail: 'prajith.p.s.121@kalvium.community',
-    problemTitle: 'Valid Palindrome String',
-    problemSlug: 'belt-2-valid-palindrome',
-    beltName: 'Belt 2',
-    language: 'python',
-    languageLabel: 'Python',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 32,
-    createdAt: '2 hours ago',
-    code: `import sys
-
-def solve():
-    s = sys.stdin.read().strip()
-    cleaned = ''.join(c.lower() for c in s if c.isalnum())
-    if cleaned == cleaned[::-1]:
-        print("true")
-    else:
-        print("false")
-
-if __name__ == '__main__':
-    solve()`,
-  },
-  {
-    id: 'sub-6',
-    studentName: 'Kavya Ramesh',
-    studentEmail: 'kavya.ramesh.s.121@kalvium.community',
-    problemTitle: 'Sum of Two Numbers',
-    problemSlug: 'belt-1-sum-of-two-numbers',
-    beltName: 'Belt 1',
-    language: 'nodejs',
-    languageLabel: 'Node.js',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 45,
-    createdAt: '3 hours ago',
-    code: `const fs = require('fs');
-
-function solve() {
-    const input = fs.readFileSync(0, 'utf-8').trim();
-    if (!input) return;
-    const [a, b] = input.split(/\\s+/).map(Number);
-    console.log(a + b);
-}
-
-solve();`,
-  },
-]
+import {
+  MentorSubmission,
+  fetchMentorSubmissions,
+  subscribeToMentorUpdates,
+} from '@/lib/mentorService'
 
 export const MentorSubmissionsPage: React.FC = () => {
+  const [submissions, setSubmissions] = useState<MentorSubmission[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'PASSED' | 'FAILED'>('all')
   const [langFilter, setLangFilter] = useState<'all' | 'python' | 'java' | 'nodejs' | 'cpp'>('all')
-  const [inspectingSub, setInspectingSub] = useState<MentorSubmissionItem | null>(null)
+  const [inspectingSub, setInspectingSub] = useState<MentorSubmission | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadData() {
+      try {
+        const data = await fetchMentorSubmissions(60)
+        if (isMounted) {
+          setSubmissions(data)
+          setIsLoading(false)
+        }
+      } catch (err) {
+        console.error('Error fetching mentor submissions:', err)
+        if (isMounted) setIsLoading(false)
+      }
+    }
+
+    loadData()
+
+    const unsubscribe = subscribeToMentorUpdates(() => {
+      loadData()
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
 
   const filtered = useMemo(() => {
-    return SAMPLE_SUBMISSIONS.filter((sub) => {
+    return submissions.filter((sub) => {
       const matchSearch =
         sub.studentName.toLowerCase().includes(search.toLowerCase()) ||
         sub.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
@@ -228,7 +64,7 @@ export const MentorSubmissionsPage: React.FC = () => {
       if (langFilter !== 'all' && sub.language !== langFilter) return false
       return true
     })
-  }, [search, statusFilter, langFilter])
+  }, [submissions, search, statusFilter, langFilter])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-page-enter">
@@ -251,7 +87,7 @@ export const MentorSubmissionsPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Live WebSocket Sync
+            Live Database Sync
           </span>
         </div>
       </div>
@@ -283,7 +119,11 @@ export const MentorSubmissionsPage: React.FC = () => {
                     : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                 )}
               >
-                {st === 'all' ? 'All Results' : st === 'PASSED' ? 'Passed (10/10)' : 'Failed'}
+                {st === 'all'
+                  ? `All (${submissions.length})`
+                  : st === 'PASSED'
+                  ? `Passed (${submissions.filter((s) => s.status === 'PASSED').length})`
+                  : `Failed (${submissions.filter((s) => s.status === 'FAILED').length})`}
               </button>
             ))}
           </div>
@@ -292,7 +132,7 @@ export const MentorSubmissionsPage: React.FC = () => {
           <div className="flex items-center gap-1 pl-2 border-l border-neutral-200">
             <select
               value={langFilter}
-              onChange={(e) => setLangFilter(e.target.value as any)}
+              onChange={(e) => setLangFilter(e.target.value as 'all' | 'python' | 'java' | 'nodejs' | 'cpp')}
               className="text-xs font-semibold bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1 focus:outline-none"
             >
               <option value="all">All Languages</option>
@@ -321,75 +161,92 @@ export const MentorSubmissionsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100 font-medium">
-              {filtered.map((sub) => {
-                const isAllPassed = sub.passedTests === 10
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-neutral-500">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Loader2 className="w-6 h-6 animate-spin text-[#ED2A2B]" />
+                      <span className="text-xs font-medium">Loading live evaluation feed...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-neutral-400">
+                    No submissions found matching your filters.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((sub) => {
+                  const isAllPassed = sub.status === 'PASSED' && sub.passedTests === 10
 
-                return (
-                  <tr key={sub.id} className="hover:bg-neutral-50/70 transition-colors">
-                    {/* Scholar */}
-                    <td className="py-3 px-4">
-                      <div>
-                        <div className="font-bold text-neutral-900">{sub.studentName}</div>
-                        <div className="text-[11px] text-neutral-400 font-mono">
-                          {sub.studentEmail}
+                  return (
+                    <tr key={sub.id} className="hover:bg-neutral-50/70 transition-colors">
+                      {/* Scholar */}
+                      <td className="py-3 px-4">
+                        <div>
+                          <div className="font-bold text-neutral-900">{sub.studentName}</div>
+                          <div className="text-[11px] text-neutral-400 font-mono">
+                            {sub.studentEmail}
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Problem */}
-                    <td className="py-3 px-4">
-                      <div className="font-bold text-neutral-800">{sub.problemTitle}</div>
-                      <span className="text-[10px] text-neutral-400 font-mono">
-                        {sub.beltName}
-                      </span>
-                    </td>
+                      {/* Problem */}
+                      <td className="py-3 px-4">
+                        <div className="font-bold text-neutral-800">{sub.problemTitle}</div>
+                        <span className="text-[10px] text-neutral-400 font-mono">
+                          {sub.beltName}
+                        </span>
+                      </td>
 
-                    {/* Language */}
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-700 font-mono text-[11px] font-semibold">
-                        {sub.languageLabel}
-                      </span>
-                    </td>
+                      {/* Language */}
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-700 font-mono text-[11px] font-semibold">
+                          {sub.languageLabel}
+                        </span>
+                      </td>
 
-                    {/* Test Result */}
-                    <td className="py-3 px-4">
-                      {isAllPassed ? (
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                          <span>10 / 10 PASS</span>
-                        </div>
-                      ) : (
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
-                          <XCircle className="w-3.5 h-3.5 text-red-500" />
-                          <span>{sub.passedTests} / 10 FAILED</span>
-                        </div>
-                      )}
-                    </td>
+                      {/* Test Result */}
+                      <td className="py-3 px-4">
+                        {isAllPassed ? (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>10 / 10 PASS</span>
+                          </div>
+                        ) : (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
+                            <XCircle className="w-3.5 h-3.5 text-red-500" />
+                            <span>{sub.passedTests} / 10 FAILED</span>
+                          </div>
+                        )}
+                      </td>
 
-                    {/* Exec Time */}
-                    <td className="py-3 px-4 font-mono text-neutral-500">
-                      {sub.executionTimeMs}ms
-                    </td>
+                      {/* Exec Time */}
+                      <td className="py-3 px-4 font-mono text-neutral-500">
+                        {sub.executionTimeMs}ms
+                      </td>
 
-                    {/* Timestamp */}
-                    <td className="py-3 px-4 text-neutral-400 text-[11px]">
-                      {sub.createdAt}
-                    </td>
+                      {/* Timestamp */}
+                      <td className="py-3 px-4 text-neutral-400 text-[11px]">
+                        {sub.createdAt}
+                      </td>
 
-                    {/* Action */}
-                    <td className="py-3 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => setInspectingSub(sub)}
-                        className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs transition-colors interactive-btn shadow-2xs"
-                      >
-                        <Code2 className="w-3.5 h-3.5" />
-                        <span>Inspect Code</span>
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
+                      {/* Action */}
+                      <td className="py-3 px-4 text-right">
+                        <button
+                          type="button"
+                          onClick={() => setInspectingSub(sub)}
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs transition-colors interactive-btn shadow-2xs"
+                        >
+                          <Code2 className="w-3.5 h-3.5" />
+                          <span>Inspect Code</span>
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </div>
