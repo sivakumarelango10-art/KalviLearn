@@ -161,14 +161,13 @@ interface LanguageCardsProps {
 }
 
 export const LanguageCards: React.FC<LanguageCardsProps> = ({
-  selectedLanguage,
+  selectedLanguage: _selectedLanguage,
   onSelectLanguage,
   targetProblemSlug,
 }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 max-w-5xl mx-auto w-full">
       {LANGUAGE_OPTIONS.map((lang) => {
-        const isSelected = selectedLanguage === lang.param || selectedLanguage === lang.id
         const targetUrl = targetProblemSlug
           ? `/practice/${lang.id}/${targetProblemSlug}`
           : `/practice/${lang.id}`
@@ -183,11 +182,7 @@ export const LanguageCards: React.FC<LanguageCardsProps> = ({
               }
               localStorage.setItem('kalvi_preferred_language', lang.id)
             }}
-            className={cn(
-              'bg-white rounded-2xl p-6 sm:p-8 border transition-all duration-200 flex flex-col items-center text-center group cursor-pointer relative',
-              'border-neutral-200/90 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-neutral-300',
-              isSelected && 'ring-2 ring-neutral-900 border-neutral-900 shadow-md'
-            )}
+            className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/90 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-neutral-300 transition-all duration-200 flex flex-col items-center text-center group cursor-pointer relative"
           >
             {/* Circular Logo Container */}
             <div
