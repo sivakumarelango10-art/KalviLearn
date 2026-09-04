@@ -13,7 +13,7 @@ interface AuthContextType {
   isMentor: boolean
   isStudent: boolean
   clearAccessDenied: () => void
-  loginWithGoogle: () => Promise<void>
+  loginWithGoogle: () => Promise<any>
   logout: () => Promise<void>
 }
 
@@ -47,7 +47,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null
     }
   })
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  // Zero-delay initial state: Only true if currently handling an OAuth redirect callback
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(LOCAL_USER_KEY)
+      if (saved) return false
+
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash
+        const search = window.location.search
+        if (hash.includes('access_token=') || hash.includes('error=') || search.includes('code=')) {
+          return true
+        }
+      }
+      return false
+    } catch {
+      return false
+    }
+  })
   const [accessDenied, setAccessDenied] = useState<boolean>(false)
   const [deniedEmail, setDeniedEmail] = useState<string | null>(null)
   const [deniedReason, setDeniedReason] = useState<'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null>(null)
@@ -162,7 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginWithGoogle = async () => {
     clearAccessDenied()
-    await signInWithGoogle()
+    return await signInWithGoogle()
   }
 
   const logout = async () => {

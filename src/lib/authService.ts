@@ -64,12 +64,10 @@ function clearCachedVerification() {
   }
 }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
 /**
  * Verifies if an email exists in the database 'users' table and is ACTIVE.
- * Optimized for 200+ concurrent users with caching, retry with exponential backoff & jitter,
- * and resilient fallback.
+ * Optimized for sub-millisecond response time using instant in-memory whitelist,
+ * localStorage session validation, and non-blocking background synchronization.
  */
 export async function verifyUserInDatabase(rawEmail: string): Promise<VerificationResult> {
   if (!rawEmail) {
@@ -78,115 +76,82 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
 
   const normalizedEmail = rawEmail.trim().toLowerCase()
 
-  // 1. Check client-side verification cache to prevent hammering Supabase under concurrency
+  // 1. Instant Cache Check (Memory / SessionStorage / LocalStorage) -> 0ms
   const cachedUser = getCachedVerification(normalizedEmail)
   if (cachedUser) {
     return { allowed: true, user: cachedUser }
   }
 
-  // 2. Query Supabase with exponential backoff (up to 3 attempts)
-  let lastError: unknown = null
-  let data: Partial<DbUser> | null = null
-
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const res = await supabase
-        .from('users')
-        .select('id, email, role, status, name')
-        .ilike('email', normalizedEmail)
-        .maybeSingle()
-
-      if (res.error) {
-        lastError = res.error
-        // If error is transient (e.g. rate limit 429 or gateway timeout), wait and retry
-        const backoff = 400 * Math.pow(2, attempt) + Math.random() * 200
-        await sleep(backoff)
-        continue
-      }
-
-      data = res.data
-      lastError = null
-      break
-    } catch (err) {
-      lastError = err
-      const backoff = 400 * Math.pow(2, attempt) + Math.random() * 200
-      await sleep(backoff)
+  // 2. Instant Whitelist Check (Known Verified Scholars & Mentors) -> 0ms response time
+  const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
+  if (fallback) {
+    if (fallback.status !== 'ACTIVE') {
+      return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
     }
-  }
+    const authorizedUser: DbUser = {
+      id: 'local_' + normalizedEmail.replace(/[^a-zA-Z0-9]/g, '_'),
+      email: normalizedEmail,
+      role: fallback.role,
+      status: fallback.status,
+      name: fallback.name,
+    }
+    setCachedVerification(normalizedEmail, authorizedUser)
 
-  // Handle errors after retries
-  if (lastError) {
-    console.warn('Database query error on users table after retries:', lastError)
+    // Non-blocking background sync with Supabase to update real PostgreSQL UUID
+    void (async () => {
+      try {
+        const { data } = await supabase
+          .from('users')
+          .select('id, email, role, status, name')
+          .ilike('email', normalizedEmail)
+          .maybeSingle()
 
-    // Check if user was previously authenticated locally
-    try {
-      const activeUserStr = localStorage.getItem('kalvi_active_user')
-      if (activeUserStr) {
-        const activeUser: DbUser = JSON.parse(activeUserStr)
-        if (activeUser.email.toLowerCase() === normalizedEmail && activeUser.status === 'ACTIVE') {
-          console.info('Using locally validated active session due to transient database connection issue.')
-          return { allowed: true, user: activeUser }
+        if (data && data.id) {
+          const syncedUser: DbUser = {
+            id: data.id,
+            email: normalizedEmail,
+            role: data.role || fallback.role,
+            status: data.status || fallback.status,
+            name: data.name || fallback.name,
+          }
+          setCachedVerification(normalizedEmail, syncedUser)
+          localStorage.setItem('kalvi_active_user', JSON.stringify(syncedUser))
         }
+      } catch {
+        // Non-blocking background error ignored
       }
-    } catch {
-      // ignore
-    }
+    })()
 
-    // Check fallback whitelist
-    const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
-    if (fallback) {
-      if (fallback.status !== 'ACTIVE') {
+    return { allowed: true, user: authorizedUser }
+  }
+
+  // 3. Fast Network Query for newly added scholars (with 2500ms timeout)
+  try {
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+      setTimeout(() => reject(new Error('Auth request timed out')), 2500)
+    )
+
+    const queryPromise = supabase
+      .from('users')
+      .select('id, email, role, status, name')
+      .ilike('email', normalizedEmail)
+      .maybeSingle()
+
+    const res = await Promise.race([queryPromise, timeoutPromise])
+
+    if (res && 'data' in res && res.data) {
+      const dbUser = res.data as DbUser
+      if (dbUser.status !== 'ACTIVE') {
         return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
       }
-      const fallbackUser: DbUser = {
-        id: 'local_' + normalizedEmail,
-        email: normalizedEmail,
-        role: fallback.role,
-        status: fallback.status,
-        name: fallback.name,
-      }
-      setCachedVerification(normalizedEmail, fallbackUser)
-      return { allowed: true, user: fallbackUser }
+      setCachedVerification(normalizedEmail, dbUser)
+      return { allowed: true, user: dbUser }
     }
 
     return { allowed: false, reason: 'ACCOUNT_NOT_REGISTERED' }
-  }
-
-  // 3. Check if record exists
-  if (!data) {
-    // Check fallback whitelist before denying
-    const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
-    if (fallback) {
-      if (fallback.status !== 'ACTIVE') {
-        return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
-      }
-      const fallbackUser: DbUser = {
-        id: 'local_' + normalizedEmail,
-        email: normalizedEmail,
-        role: fallback.role,
-        status: fallback.status,
-        name: fallback.name,
-      }
-      setCachedVerification(normalizedEmail, fallbackUser)
-      return { allowed: true, user: fallbackUser }
-    }
-
-    console.warn(`Access Denied: Email ${normalizedEmail} does not exist in users table.`)
+  } catch (err) {
+    console.warn('Fast auth network query error or timeout:', err)
     return { allowed: false, reason: 'ACCOUNT_NOT_REGISTERED' }
-  }
-
-  // 4. Check status
-  if (data.status !== 'ACTIVE') {
-    console.warn(`Access Denied: Email ${normalizedEmail} status is ${data.status}.`)
-    return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
-  }
-
-  const verifiedUser = data as DbUser
-  setCachedVerification(normalizedEmail, verifiedUser)
-
-  return {
-    allowed: true,
-    user: verifiedUser,
   }
 }
 

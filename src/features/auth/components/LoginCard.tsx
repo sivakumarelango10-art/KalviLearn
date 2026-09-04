@@ -40,7 +40,15 @@ export const LoginCard: FC<LoginCardProps> = ({
     setInternalError(null)
 
     try {
-      await loginWithGoogle()
+      const res = await loginWithGoogle()
+      if (res && 'error' in res && res.error) {
+        setInternalError(res.error.message || 'Unable to connect to Google authentication.')
+        setInternalLoading(false)
+        return
+      }
+      if (res && 'data' in res && res.data?.url) {
+        window.location.assign(res.data.url)
+      }
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Unable to connect to Google authentication.'
