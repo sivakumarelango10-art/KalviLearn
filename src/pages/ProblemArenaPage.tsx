@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import Editor, { OnMount } from '@monaco-editor/react'
 import confetti from 'canvas-confetti'
 import {
@@ -28,6 +28,8 @@ import { QuestionCompletionModal } from '@/components/arena/QuestionCompletionMo
 export const ProblemArenaPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const langParam = searchParams.get('lang')
 
   // Find problem across all belts
   let currentBelt = problemsData[0]
@@ -55,9 +57,28 @@ export const ProblemArenaPage: React.FC = () => {
     nextProblemSlug = problemsData[currentBeltIndex + 1].problems[0].slug
   }
 
+  const resolveLanguage = (raw: string | null): 'python' | 'javascript' | 'cpp' | 'java' => {
+    if (!raw) return 'python'
+    const l = raw.toLowerCase()
+    if (l === 'javascript' || l === 'node' || l === 'nodejs' || l === 'js') return 'javascript'
+    if (l === 'java') return 'java'
+    if (l === 'cpp' || l === 'c++') return 'cpp'
+    if (l === 'python') return 'python'
+    return 'python'
+  }
+
   // State
   const [activeTab, setActiveTab] = useState<'description' | 'submissions' | 'help'>('description')
-  const [language, setLanguage] = useState<'python' | 'javascript' | 'cpp' | 'java'>('python')
+  const [language, setLanguage] = useState<'python' | 'javascript' | 'cpp' | 'java'>(() => {
+    return resolveLanguage(langParam || localStorage.getItem('kalvi_preferred_language'))
+  })
+
+  useEffect(() => {
+    if (langParam) {
+      setLanguage(resolveLanguage(langParam))
+    }
+  }, [langParam])
+
   const [code, setCode] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)

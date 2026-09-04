@@ -5,13 +5,13 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-  Sparkles,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
 import { getUserState, subscribeProgress } from '@/lib/progress'
 import { cn } from '@/lib/utils'
+import { LanguageCards } from '@/components/practice/LanguageCards'
 
 export const PracticePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -22,6 +22,9 @@ export const PracticePage: React.FC = () => {
 
   const [solvedSlugs, setSolvedSlugs] = useState<string[]>([])
   const [attemptedSlugs, setAttemptedSlugs] = useState<string[]>([])
+  const [selectedLanguage, setSelectedLanguage] = useState<'python' | 'java' | 'javascript' | 'cpp'>(() => {
+    return (localStorage.getItem('kalvi_preferred_language') as any) || 'python'
+  })
 
   useEffect(() => {
     const updateProgress = () => {
@@ -58,6 +61,18 @@ export const PracticePage: React.FC = () => {
   const totalProblemsCount = 85
   const totalSolvedCount = solvedSlugs.length
   const totalPercentage = Math.round((totalSolvedCount / totalProblemsCount) * 100)
+
+  // Find the first unsolved problem slug, or fallback to the first problem
+  const firstUnsolvedSlug = useMemo(() => {
+    for (const belt of problemsData) {
+      for (const p of belt.problems) {
+        if (!solvedSlugs.includes(p.slug)) {
+          return p.slug
+        }
+      }
+    }
+    return problemsData[0]?.problems[0]?.slug || 'belt1-01-welcome-to-kalvi'
+  }, [solvedSlugs])
 
   const toggleBeltCollapse = (order: number) => {
     setCollapsedBelts((prev) => ({ ...prev, [order]: !prev[order] }))
@@ -99,58 +114,75 @@ export const PracticePage: React.FC = () => {
   }, [searchQuery, selectedBelt, selectedDifficulty, selectedStatus, solvedSlugs])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 text-white rounded-2xl p-6 sm:p-8 shadow-sm border border-neutral-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>85 Belt Mastery Problems</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Practice Arena</h1>
-            <p className="text-sm sm:text-base text-neutral-300">
-              Solve progressively challenging problems across three mastery belts. Each problem includes 10 test cases (3 visible + 7 hidden), multi-language starter code, and strict anti-cheat verification.
-            </p>
-          </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 bg-white">
+      {/* Page Header matching reference */}
+      <div className="text-center space-y-3 max-w-2xl mx-auto pt-2">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1527] tracking-tight">
+          Practice Arena
+        </h1>
+        <div className="text-neutral-500 text-sm sm:text-base font-normal space-y-1 leading-relaxed">
+          <p>Solve progressively challenging problems across languages.</p>
+          <p>Choose your language to get started.</p>
+        </div>
+      </div>
 
-          {/* Overall Progress Gauge */}
-          <div className="bg-neutral-800/80 backdrop-blur border border-neutral-700/60 rounded-xl p-4 sm:p-5 flex items-center gap-5 flex-shrink-0">
-            <div className="relative w-16 h-16 flex items-center justify-center">
-              <svg className="w-16 h-16 transform -rotate-90">
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="26"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                  className="text-neutral-700"
-                  fill="transparent"
-                />
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="26"
-                  stroke="#ED2A2B"
-                  strokeWidth="6"
-                  strokeDasharray={163.36}
-                  strokeDashoffset={163.36 - (163.36 * totalPercentage) / 100}
-                  strokeLinecap="round"
-                  fill="transparent"
-                  className="transition-all duration-700 ease-out"
-                />
-              </svg>
-              <span className="absolute text-xs font-bold">{totalPercentage}%</span>
-            </div>
-            <div>
-              <div className="text-xs text-neutral-400 font-medium">Total Solved</div>
-              <div className="text-xl font-bold text-white">
-                {totalSolvedCount} <span className="text-sm font-normal text-neutral-400">/ {totalProblemsCount}</span>
-              </div>
-              <div className="text-[11px] text-emerald-400 font-medium mt-0.5">
-                {totalProblemsCount - totalSolvedCount} remaining
-              </div>
+      {/* Select Language Section */}
+      <div className="space-y-6">
+        <h2 className="text-lg sm:text-xl font-bold text-[#0D1527] text-center tracking-tight">
+          Select Language
+        </h2>
+
+        <LanguageCards
+          selectedLanguage={selectedLanguage}
+          onSelectLanguage={(lang) => {
+            setSelectedLanguage(lang)
+            localStorage.setItem('kalvi_preferred_language', lang)
+          }}
+          targetProblemSlug={firstUnsolvedSlug}
+        />
+      </div>
+
+      {/* Belt Curriculum & Problem Directory Header */}
+      <div className="pt-8 border-t border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Curriculum & Problems</h2>
+          <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
+            Select an individual problem below or continue mastering problems in {selectedLanguage === 'javascript' ? 'Node.js' : selectedLanguage.toUpperCase()}.
+          </p>
+        </div>
+
+        {/* Overall Progress Meter */}
+        <div className="flex items-center gap-3 bg-neutral-50 border border-neutral-200/80 rounded-xl px-4 py-2 self-start sm:self-auto shadow-sm">
+          <div className="w-9 h-9 relative flex items-center justify-center flex-shrink-0">
+            <svg className="w-9 h-9 transform -rotate-90">
+              <circle
+                cx="18"
+                cy="18"
+                r="14"
+                stroke="currentColor"
+                strokeWidth="3.5"
+                className="text-neutral-200"
+                fill="transparent"
+              />
+              <circle
+                cx="18"
+                cy="18"
+                r="14"
+                stroke="#ED2A2B"
+                strokeWidth="3.5"
+                strokeDasharray={87.96}
+                strokeDashoffset={87.96 - (87.96 * totalPercentage) / 100}
+                strokeLinecap="round"
+                fill="transparent"
+                className="transition-all duration-700 ease-out"
+              />
+            </svg>
+            <span className="absolute text-[10px] font-bold text-neutral-900">{totalPercentage}%</span>
+          </div>
+          <div>
+            <div className="text-[11px] text-neutral-500 font-medium">Curriculum Progress</div>
+            <div className="text-xs font-bold text-neutral-900">
+              {totalSolvedCount} <span className="text-neutral-400 font-normal">/ {totalProblemsCount} Solved</span>
             </div>
           </div>
         </div>
@@ -360,7 +392,7 @@ export const PracticePage: React.FC = () => {
                             <div className="space-y-1 min-w-0">
                               <div className="flex items-center gap-2.5 flex-wrap">
                                 <Link
-                                  to={`/practice/${problem.slug}`}
+                                  to={`/practice/${problem.slug}?lang=${selectedLanguage}`}
                                   className="font-semibold text-neutral-900 hover:text-[#ED2A2B] transition-colors text-sm sm:text-base truncate"
                                 >
                                   {problem.title}
@@ -402,7 +434,7 @@ export const PracticePage: React.FC = () => {
                               10 Test Cases • 50 XP
                             </span>
                             <Link
-                              to={`/practice/${problem.slug}`}
+                              to={`/practice/${problem.slug}?lang=${selectedLanguage}`}
                               className={cn(
                                 'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 interactive-btn',
                                 isSolved
