@@ -1,21 +1,18 @@
 import React, { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import {
   Users,
   Flame,
-  AlertTriangle,
   Search,
   TrendingUp,
-  Award,
   CheckCircle2,
-  ArrowRight,
-  Sun,
-  Moon,
-  Send,
   X,
+  Award,
+  AlertTriangle,
+  Send,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
+import { MentorWelcomeHero } from '@/components/mentor/MentorWelcomeHero'
 
 export interface StudentProgressItem {
   id: string
@@ -67,7 +64,8 @@ const INITIAL_STUDENTS: StudentProgressItem[] = [
 
 export const MentorDashboardPage: React.FC = () => {
   const { user } = useAuth()
-  const mentorName = user?.name || 'Rahul'
+  const mentorDisplayName =
+    user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBeltFilter, setSelectedBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
@@ -75,15 +73,13 @@ export const MentorDashboardPage: React.FC = () => {
   const [mentorNote, setMentorNote] = useState('')
   const [noteSent, setNoteSent] = useState(false)
 
-  // Dynamic Time Greeting
-  const greeting = useMemo(() => {
-    const hour = new Date().getHours()
-    if (hour < 12) return { text: 'Good morning', icon: Sun }
-    if (hour < 18) return { text: 'Good afternoon', icon: Sun }
-    return { text: 'Good evening', icon: Moon }
-  }, [])
-
-  const GreetingIcon = greeting.icon
+  // Real mentor cohort telemetry
+  const totalStudents = INITIAL_STUDENTS.length
+  const activeStudents = INITIAL_STUDENTS.filter((s) => !s.needsAttention).length
+  const attentionCount = INITIAL_STUDENTS.filter((s) => s.needsAttention).length
+  const cohortMasteryPercent = Math.round(
+    INITIAL_STUDENTS.reduce((acc, s) => acc + s.progressPercent, 0) / (INITIAL_STUDENTS.length || 1)
+  )
 
   // Filtered student list
   const filteredStudents = useMemo(() => {
@@ -113,32 +109,14 @@ export const MentorDashboardPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
-      {/* 1. Header Greeting: "Good morning, Rahul" */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-red-50 text-[#ED2A2B] border border-red-100">
-              <GreetingIcon className="w-4 h-4" />
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
-              {greeting.text}, {mentorName}
-            </h1>
-          </div>
-          <p className="text-xs sm:text-sm text-neutral-500">
-            Welcome to your mentor cockpit. Monitor cohort trajectory, unblock struggling scholars, and review code submissions.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            to="/mentor/submissions"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800 transition-all interactive-btn shadow-xs"
-          >
-            <span>Live Submissions</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </div>
+      {/* 1. Mentor Welcome Hero Section (Matching Student Portal visual language) */}
+      <MentorWelcomeHero
+        mentorName={mentorDisplayName}
+        totalStudents={totalStudents}
+        activeStudents={activeStudents}
+        studentsNeedingAttention={attentionCount}
+        cohortMasteryPercent={cohortMasteryPercent}
+      />
 
       {/* 2. Top Metric Stat Cards: 128 Students | 94 Active | 12 Attention */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
