@@ -8,7 +8,6 @@ import {
   Code2,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
   FileText,
 } from 'lucide-react'
 import curriculumData from '@/data/curriculum.json'
@@ -274,8 +273,7 @@ export const LearnPage: React.FC = () => {
           >
             {/* Section 1: Concept & Theory */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
                 <span>Concept & Theory</span>
               </div>
               <div className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap bg-neutral-50/80 p-5 rounded-2xl border border-neutral-200/80 text-neutral-700 font-sans">

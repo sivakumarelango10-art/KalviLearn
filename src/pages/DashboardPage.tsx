@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Code2,
   BookOpen,
-  Sparkles,
   TrendingUp,
   ChevronRight,
   Clock,
@@ -92,8 +91,7 @@ export const DashboardPage: React.FC = () => {
         <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-80 h-80 bg-[#ED2A2B]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/15">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/15">
               <span>Kalvi Learn Student Platform</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">

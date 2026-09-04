@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Sparkles } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { ProgrammingLanguage, LanguageCurriculum } from '@/data/curriculum/index'
 import { PythonLogo, JavaLogo, NodejsLogo, CppLogo } from './LanguageCards'
 
@@ -90,8 +90,7 @@ export const LanguageHeader: React.FC<LanguageHeaderProps> = ({
         {/* Language-Specific Progress Meter & XP */}
         <div className="flex items-center gap-4 self-start lg:self-center flex-wrap">
           {/* Language XP Badge */}
-          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200/80 rounded-xl px-3.5 py-2 text-xs font-bold text-amber-800 shadow-sm">
-            <Sparkles className="w-4 h-4 text-amber-600" />
+          <div className="bg-amber-50 border border-amber-200/80 rounded-xl px-3.5 py-2 text-xs font-bold text-amber-800 shadow-sm">
             <span>{xp} {curriculum.name} XP</span>
           </div>
 

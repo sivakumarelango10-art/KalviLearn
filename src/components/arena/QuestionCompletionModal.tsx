@@ -1,5 +1,5 @@
 import React from 'react'
-import { Sparkles, CheckCircle2, ArrowRight, X } from 'lucide-react'
+import { CheckCircle2, ArrowRight, X } from 'lucide-react'
 
 interface QuestionCompletionModalProps {
   isOpen: boolean
@@ -31,7 +31,7 @@ export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = (
 
         {/* Success Icon */}
         <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center animate-bounce-subtle">
-          <Sparkles className="w-8 h-8" />
+          <CheckCircle2 className="w-8 h-8" />
         </div>
 
         {/* Header and Details */}
