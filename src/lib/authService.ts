@@ -16,6 +16,7 @@ export interface VerificationResult {
 
 // Fallback authorized roster in sync with PostgreSQL database
 const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name: string; status: string }> = {
+  // Registered Scholars
   'kavya.ramesh.s.121@kalvium.community': {
     id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
     role: 'STUDENT',
@@ -28,10 +29,71 @@ const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name
     name: 'Prajith P S',
     status: 'ACTIVE',
   },
+  // Authorized Mentors
   'sivakumarelango10@gmail.com': {
     id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',
     role: 'MENTOR',
     name: 'Sivakumar Elango',
+    status: 'ACTIVE',
+  },
+  'aaditya.rm@kalvium.com': {
+    id: 'a5ff17af-95dc-4ecf-951e-fa7f19365cf6',
+    role: 'MENTOR',
+    name: 'Aaditya R M',
+    status: 'ACTIVE',
+  },
+  'swathi.ks@kalvium.com': {
+    id: '3901e057-64a5-4554-b8b2-4b3ea514510d',
+    role: 'MENTOR',
+    name: 'Swathi K S',
+    status: 'ACTIVE',
+  },
+  'sanchita.dutta@kalvium.com': {
+    id: '93d30972-5a32-408d-8e76-473c02192ab3',
+    role: 'MENTOR',
+    name: 'Sanchita Dutta',
+    status: 'ACTIVE',
+  },
+  'supriya.muvva@kalvium.com': {
+    id: 'ac0652a0-a087-4252-b750-89e080fdce6e',
+    role: 'MENTOR',
+    name: 'Muvva Supriya',
+    status: 'ACTIVE',
+  },
+  'infanta.f@kalvium.com': {
+    id: '3f499c45-3da7-483e-bfdd-2cd1d5153d62',
+    role: 'MENTOR',
+    name: 'Infanta Carolina Freshale',
+    status: 'ACTIVE',
+  },
+  'chaitra.alur@kalvium.com': {
+    id: 'a6b4599a-40f7-4efc-95f9-111343e5eb28',
+    role: 'MENTOR',
+    name: 'Chaitra Alur',
+    status: 'ACTIVE',
+  },
+  'indhu.k@kalvium.com': {
+    id: '7f6fab30-4574-4bbf-93e6-48da4af13dea',
+    role: 'MENTOR',
+    name: 'Indhu K',
+    status: 'ACTIVE',
+  },
+  'tulika.suman@kalvium.com': {
+    id: '8254bdcf-b0d4-473f-8657-18d9614a2a89',
+    role: 'MENTOR',
+    name: 'Tulika Suman',
+    status: 'ACTIVE',
+  },
+  'mandala.thanuja@kalvium.com': {
+    id: '4d6347a9-43ba-42e5-9bb0-45f3d0ec03eb',
+    role: 'MENTOR',
+    name: 'Mandala Thanuja',
+    status: 'ACTIVE',
+  },
+  'bhavana.r@kalvium.com': {
+    id: '9802f70f-8348-4728-8202-ad75cf9ec78b',
+    role: 'MENTOR',
+    name: 'Bhavana R K',
     status: 'ACTIVE',
   },
 }

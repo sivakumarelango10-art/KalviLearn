@@ -222,6 +222,25 @@ export const ProblemArenaPage: React.FC = () => {
 
       if (isSubmit) {
         if (result.passed && result.passedCount === 10) {
+          const totalTime = result.results.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || result.overallTimeMs || 0
+          recordProblemSuccess(
+            currentProblem.slug,
+            currentProblem.title,
+            currentLanguage,
+            code,
+            totalTime
+          )
+
+          // Refresh recent submissions
+          const state = getUserState()
+          setRecentSubmissions(
+            state.submissions.filter(
+              (s) =>
+                s.problemSlug === currentProblem.slug &&
+                (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+            )
+          )
+
           // All 10 passed! Fire celebratory confetti and display completion modal
           confetti({
             particleCount: 100,
@@ -273,15 +292,6 @@ export const ProblemArenaPage: React.FC = () => {
 
   // Handlers for QuestionCompletionModal
   const handleContinue = () => {
-    const totalTime = testResults?.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || 0
-    recordProblemSuccess(
-      currentProblem.slug,
-      currentProblem.title,
-      currentLanguage,
-      code,
-      totalTime
-    )
-
     setShowSuccessModal(false)
 
     if (nextProblemSlug) {
