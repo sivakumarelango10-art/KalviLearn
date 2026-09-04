@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Menu, X, Zap, Flame, Award } from 'lucide-react'
 import { AppSidebar } from '@/components/common/AppSidebar'
+import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { getUserState, subscribeProgress } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -111,6 +112,9 @@ export const AppLayout: React.FC = () => {
             </div>
           </div>
         </header>
+
+        {/* Ambient Offline Detection Banner */}
+        <OfflineBanner />
 
         {/* Dynamic Page Content with ultra-smooth route transitions */}
         <main className="flex-1 overflow-y-auto bg-neutral-50/60">

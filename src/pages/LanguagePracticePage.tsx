@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, Search, RotateCcw } from 'lucide-react'
 import {
   getCurriculum,
   isValidLanguage,
@@ -118,6 +118,18 @@ export const LanguagePracticePage: React.FC = () => {
       })
   }, [curriculum, searchQuery, selectedBelt, selectedDifficulty, selectedStatus, solvedSlugs])
 
+  // Count total matching problems across all belts
+  const totalFilteredProblems = useMemo(() => {
+    return filteredBelts.reduce((sum, b) => sum + b.problems.length, 0)
+  }, [filteredBelts])
+
+  const handleResetFilters = () => {
+    setSearchQuery('')
+    setSelectedBelt('all')
+    setSelectedDifficulty('all')
+    setSelectedStatus('all')
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 bg-white">
       {/* Language Header with brand badge, back button, and progress gauge */}
@@ -165,15 +177,38 @@ export const LanguagePracticePage: React.FC = () => {
 
       {/* Problem Belts Directory */}
       <div className="space-y-6">
-        {filteredBelts.map((belt) => {
-          const isCollapsed = !!collapsedBelts[belt.order]
-          const solvedInBelt = belt.problems.filter((p) => solvedSlugs.includes(p.slug)).length
-
-          return (
-            <div
-              key={belt.order}
-              className="bg-white rounded-2xl border border-neutral-200/80 shadow-sm overflow-hidden"
+        {totalFilteredProblems === 0 ? (
+          <div className="bg-neutral-50 rounded-2xl border border-neutral-200/90 p-10 text-center space-y-4 animate-in fade-in duration-200">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-200/60 flex items-center justify-center mx-auto text-neutral-500">
+              <Search className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-neutral-800">No Problems Found</h3>
+              <p className="text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed">
+                {searchQuery
+                  ? `No problems match "${searchQuery}" under the current filter selections.`
+                  : 'No problems match the selected difficulty and status filters.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-sm transition-all interactive-btn"
             >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset All Filters</span>
+            </button>
+          </div>
+        ) : (
+          filteredBelts.map((belt) => {
+            const isCollapsed = !!collapsedBelts[belt.order]
+            const solvedInBelt = belt.problems.filter((p) => solvedSlugs.includes(p.slug)).length
+
+            return (
+              <div
+                key={belt.order}
+                className="bg-white rounded-2xl border border-neutral-200/80 shadow-sm overflow-hidden"
+              >
               {/* Belt Group Header */}
               <div
                 onClick={() => toggleBeltCollapse(belt.order)}
@@ -235,7 +270,7 @@ export const LanguagePracticePage: React.FC = () => {
               )}
             </div>
           )
-        })}
+        }))}
       </div>
     </div>
   )

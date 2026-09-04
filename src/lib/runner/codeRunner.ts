@@ -46,75 +46,120 @@ export async function executeCode(
   isSubmit: boolean = true
 ): Promise<RunResult> {
   const startTime = performance.now()
+  const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
 
-  try {
-    const response = await fetch('/api/execute', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        questionSlug,
-        language,
-        code,
-        isSubmit,
-      }),
-    })
+  let apiErrorMessage: string | null = null
 
-    if (response.ok) {
-      const data = await response.json()
+  // If user is online, attempt backend /api/execute evaluation
+  if (!isOffline) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
-      if (!data.success && data.error === 'Compilation Error') {
-        return {
-          passed: false,
-          passedCount: 0,
-          totalCount: data.total || (isSubmit ? 10 : 3),
-          results: [],
-          overallTimeMs: Math.round(performance.now() - startTime),
-          compilationError: data.message || 'Compilation failed.',
+    try {
+      const response = await fetch('/api/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          questionSlug,
+          language,
+          code,
+          isSubmit,
+        }),
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      // HTTP 200: Successful execution
+      if (response.status === 200) {
+        const data = await response.json()
+
+        if (Array.isArray(data.testCases)) {
+          const mappedResults: TestCaseExecution[] = data.testCases.map((tc: any) => ({
+            testIndex: tc.testIndex,
+            status: tc.status,
+            passed: tc.status === 'passed',
+            isHidden: !tc.visible,
+            executionTimeMs: tc.executionTimeMs || 0,
+            input: tc.visible ? tc.input : undefined,
+            expectedOutput: tc.visible ? tc.expectedOutput : undefined,
+            actualOutput: tc.visible ? tc.actualOutput : undefined,
+            error: tc.visible ? tc.error : undefined,
+            isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
+          }))
+
+          return {
+            passed: data.passed === (data.total || (isSubmit ? 10 : 3)),
+            passedCount: data.passed,
+            totalCount: data.total || (isSubmit ? 10 : 3),
+            results: mappedResults,
+            overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
+          }
         }
       }
 
-      if (Array.isArray(data.testCases)) {
-        const mappedResults: TestCaseExecution[] = data.testCases.map((tc: any) => ({
-          testIndex: tc.testIndex,
-          status: tc.status,
-          passed: tc.status === 'passed',
-          isHidden: !tc.visible,
-          executionTimeMs: tc.executionTimeMs || 0,
-          input: tc.visible ? tc.input : undefined,
-          expectedOutput: tc.visible ? tc.expectedOutput : undefined,
-          actualOutput: tc.visible ? tc.actualOutput : undefined,
-          error: tc.visible ? tc.error : undefined,
-          isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
-        }))
-
-        return {
-          passed: data.passed === (data.total || (isSubmit ? 10 : 3)),
-          passedCount: data.passed,
-          totalCount: data.total || (isSubmit ? 10 : 3),
-          results: mappedResults,
-          overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
-        }
-      }
-    } else {
-      const errData = await response.json().catch(() => ({}))
-      if (errData.error === 'Compilation Error') {
+      // HTTP 422: Compilation or syntax error
+      if (response.status === 422) {
+        const errData = await response.json().catch(() => ({}))
         return {
           passed: false,
           passedCount: 0,
           totalCount: isSubmit ? 10 : 3,
           results: [],
           overallTimeMs: Math.round(performance.now() - startTime),
-          compilationError: errData.message || 'Compilation failed.',
+          compilationError: errData.message || 'Syntax or compilation error detected in your solution.',
         }
       }
+
+      // HTTP 400: Bad request
+      if (response.status === 400) {
+        const errData = await response.json().catch(() => ({}))
+        apiErrorMessage = errData.message || 'Invalid code execution parameters provided.'
+      }
+
+      // HTTP 404: Question not found
+      else if (response.status === 404) {
+        const errData = await response.json().catch(() => ({}))
+        apiErrorMessage = errData.message || `Problem "${questionSlug}" was not found on the execution server.`
+      }
+
+      // HTTP 405: Method not allowed
+      else if (response.status === 405) {
+        apiErrorMessage = 'Invalid HTTP method. Only POST submissions are permitted.'
+      }
+
+      // HTTP 429: Rate limit
+      else if (response.status === 429) {
+        apiErrorMessage = 'Rate limit reached. Please wait a few seconds before submitting again.'
+      }
+
+      // HTTP 502, 503, 504: Gateway or Service Unavailable
+      else if (response.status === 502 || response.status === 503 || response.status === 504) {
+        apiErrorMessage = 'The code execution service is temporarily unavailable. Please try again in a moment.'
+      }
+
+      // HTTP 500: Server Error
+      else if (response.status >= 500) {
+        const errData = await response.json().catch(() => ({}))
+        apiErrorMessage = errData.message || 'Server encountered an unexpected error while executing your code.'
+      } else {
+        apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
+      }
+    } catch (err: any) {
+      clearTimeout(timeoutId)
+      if (err?.name === 'AbortError') {
+        apiErrorMessage = 'Execution request timed out (15-second limit exceeded). Please optimize your solution or try again.'
+      } else {
+        apiErrorMessage = 'Unable to connect to the execution server. Please check your network connection.'
+      }
     }
-  } catch (apiError) {
-    console.warn('Backend /api/execute unavailable, attempting local evaluation:', apiError)
+  } else {
+    apiErrorMessage = 'You are currently working offline. Please reconnect to the internet to submit code.'
   }
 
-  // If Run Code (not submit), execute visible cases locally via worker for immediate feedback
+  // If Run Code (not submit) and API was unavailable, fall back to client worker for immediate feedback
   if (!isSubmit && clientVisibleCases && clientVisibleCases.length > 0) {
     const results: TestCaseExecution[] = []
     let passedCount = 0
@@ -150,14 +195,14 @@ export async function executeCode(
     }
   }
 
-  // If Submit Code and server is offline, return honest server error rather than fake failed statuses
+  // If Submit Code failed or Run Code with no visible cases, return meaningful user-facing error
   return {
     passed: false,
     passedCount: 0,
-    totalCount: 10,
+    totalCount: isSubmit ? 10 : 3,
     results: [],
     overallTimeMs: Math.round(performance.now() - startTime),
-    compilationError: 'Submission execution service is temporarily unavailable. Please try again.',
+    compilationError: apiErrorMessage || 'Code execution service is currently unavailable. Please try again.',
   }
 }
 

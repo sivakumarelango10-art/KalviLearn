@@ -30,6 +30,7 @@ import {
 } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { QuestionCompletionModal } from '@/components/arena/QuestionCompletionModal'
+import { ProblemNotFoundCard } from '@/components/common/ProblemNotFoundCard'
 
 export const ProblemArenaPage: React.FC = () => {
   const { lang, slug } = useParams<{ lang?: string; slug?: string }>()
@@ -278,6 +279,16 @@ export const ProblemArenaPage: React.FC = () => {
 
   const handleCancel = () => {
     setShowSuccessModal(false)
+  }
+
+  // Check if requested slug is invalid
+  const isProblemNotFound = useMemo(() => {
+    if (!slug) return false
+    return !getProblemByLanguageAndSlug(currentLanguage, slug)
+  }, [currentLanguage, slug])
+
+  if (isProblemNotFound) {
+    return <ProblemNotFoundCard slug={slug} language={currentLanguage} />
   }
 
   return (

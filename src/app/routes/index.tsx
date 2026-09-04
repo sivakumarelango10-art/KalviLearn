@@ -35,6 +35,10 @@ const ProfilePage = lazyWithRetry(
   () => import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
   'ProfilePage'
 )
+const NotFoundPage = lazyWithRetry(
+  () => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
+  'NotFoundPage'
+)
 
 const PageLoader = () => (
   <div className="h-full min-h-[50vh] w-full flex flex-col items-center justify-center bg-transparent py-16 space-y-3 animate-in fade-in duration-150">
@@ -101,12 +105,17 @@ export const router = createBrowserRouter([
             path: 'profile',
             element: withSuspense(<ProfilePage />),
           },
+          {
+            path: '*',
+            element: withSuspense(<NotFoundPage />),
+          },
         ],
       },
     ],
   },
   {
     path: '*',
-    element: <Navigate to="/login" replace />,
+    element: withSuspense(<NotFoundPage />),
+    errorElement: <RouteErrorBoundary />,
   },
 ])

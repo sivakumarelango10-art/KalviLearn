@@ -80,6 +80,18 @@ export const LearnPage: React.FC = () => {
     }
   }
 
+  const totalMatchingUnits = useMemo(() => {
+    if (!searchQuery) return 1
+    return modules.reduce(
+      (sum, m) =>
+        sum +
+        m.learningUnits.filter((u) =>
+          u.title.toLowerCase().includes(searchQuery.toLowerCase())
+        ).length,
+      0
+    )
+  }, [searchQuery])
+
   const toggleModule = (order: number) => {
     setExpandedModules((prev) => ({ ...prev, [order]: !prev[order] }))
   }
@@ -137,18 +149,30 @@ export const LearnPage: React.FC = () => {
 
           {/* Module List Accordion */}
           <div className="flex-1 overflow-y-auto divide-y divide-neutral-100">
-            {modules.map((mod) => {
-              const isModuleActive = mod.order === selectedModuleOrder
-              const isExpanded = !!expandedModules[mod.order]
+            {totalMatchingUnits === 0 ? (
+              <div className="p-8 text-center text-xs text-neutral-400 space-y-2 animate-in fade-in duration-150">
+                <p>No learning units found matching "{searchQuery}".</p>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="text-xs font-semibold text-[#ED2A2B] hover:underline"
+                >
+                  Clear Search
+                </button>
+              </div>
+            ) : (
+              modules.map((mod) => {
+                const isModuleActive = mod.order === selectedModuleOrder
+                const isExpanded = !!expandedModules[mod.order]
 
-              const filteredUnits = mod.learningUnits.filter((u) =>
-                searchQuery ? u.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
-              )
+                const filteredUnits = mod.learningUnits.filter((u) =>
+                  searchQuery ? u.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
+                )
 
-              if (searchQuery && filteredUnits.length === 0) return null
+                if (searchQuery && filteredUnits.length === 0) return null
 
-              return (
-                <div key={mod.order} className="select-none">
+                return (
+                  <div key={mod.order} className="select-none">
                   {/* Module Header */}
                   <div
                     onClick={() => {
@@ -218,7 +242,7 @@ export const LearnPage: React.FC = () => {
                   )}
                 </div>
               )
-            })}
+            }))}
           </div>
         </div>
 

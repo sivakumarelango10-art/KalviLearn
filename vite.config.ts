@@ -4,7 +4,24 @@ import { defineConfig, type Plugin } from 'vite'
 
 function apiPlugin(): Plugin {
   const middleware = (server: any) => async (req: any, res: any, next: any) => {
-    if (req.url === '/api/execute' && req.method === 'POST') {
+    if (req.url === '/api/execute') {
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+      if (req.method === 'OPTIONS') {
+        res.statusCode = 204
+        res.end()
+        return
+      }
+
+      if (req.method !== 'POST') {
+        res.statusCode = 405
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ error: 'Method Not Allowed. Use POST.' }))
+        return
+      }
+
       let rawData = ''
       req.on('data', (chunk: any) => {
         rawData += chunk
@@ -12,9 +29,37 @@ function apiPlugin(): Plugin {
       req.on('end', async () => {
         try {
           const body = JSON.parse(rawData || '{}')
+          const { questionSlug, language, code, isSubmit = true } = body || {}
+
+          if (!questionSlug || !language || !code) {
+            res.statusCode = 400
+            res.setHeader('Content-Type', 'application/json')
+            res.end(
+              JSON.stringify({
+                success: false,
+                error: 'Missing Parameters',
+                message: 'questionSlug, language, and code are required.',
+                total: isSubmit ? 10 : 3,
+                passed: 0,
+                testCases: [],
+              })
+            )
+            return
+          }
+
           const { executeQuestion } = await server.ssrLoadModule('/src/server/executeService.ts')
           const result = await executeQuestion(body)
-          res.statusCode = 200
+
+          if (result.error === 'Question Not Found') {
+            res.statusCode = 404
+          } else if (result.error === 'Compilation Error') {
+            res.statusCode = 422
+          } else if (!result.success && result.error) {
+            res.statusCode = 500
+          } else {
+            res.statusCode = 200
+          }
+
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify(result))
         } catch (err: any) {

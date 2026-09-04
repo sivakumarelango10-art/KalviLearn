@@ -6677,21 +6677,23 @@ async function handler(req, res) {
       body = {};
     }
   } else if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
-    body = await new Promise((resolve) => {
-      let data = "";
-      req.on("data", (chunk) => {
-        data += chunk;
+    if (typeof req.on === "function") {
+      body = await new Promise((resolve) => {
+        let data = "";
+        req.on("data", (chunk) => {
+          data += chunk;
+        });
+        req.on("end", () => {
+          try {
+            resolve(JSON.parse(data || "{}"));
+          } catch {
+            resolve({});
+          }
+        });
+        req.on("error", () => resolve({}));
+        setTimeout(() => resolve(body || {}), 200);
       });
-      req.on("end", () => {
-        try {
-          resolve(JSON.parse(data || "{}"));
-        } catch {
-          resolve({});
-        }
-      });
-      req.on("error", () => resolve({}));
-      setTimeout(() => resolve(body || {}), 200);
-    });
+    }
   }
   const { questionSlug, language, code, isSubmit = true } = body || {};
   if (!questionSlug || !language || !code) {
@@ -6706,6 +6708,15 @@ async function handler(req, res) {
   }
   try {
     const result = await executeQuestion({ questionSlug, language, code, isSubmit });
+    if (result.error === "Question Not Found") {
+      return sendJson(404, result);
+    }
+    if (result.error === "Compilation Error") {
+      return sendJson(422, result);
+    }
+    if (!result.success && result.error) {
+      return sendJson(500, result);
+    }
     return sendJson(200, result);
   } catch (err) {
     return sendJson(500, {
