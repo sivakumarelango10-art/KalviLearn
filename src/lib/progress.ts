@@ -21,12 +21,30 @@ export interface SubmissionRecord {
   createdAt: string
 }
 
+export interface LanguageProgressSummary {
+  solvedSlugs: string[]
+  xp: number
+}
+
 export interface UserState {
   xp: number
   streak: number
   solvedSlugs: string[]
   progress: Record<string, UserProgressRecord>
   submissions: SubmissionRecord[]
+  languageProgress?: Record<string, LanguageProgressSummary>
+}
+
+export function normalizeProgressLanguage(
+  raw: string | null | undefined
+): 'python' | 'java' | 'nodejs' | 'cpp' {
+  if (!raw) return 'python'
+  const l = raw.toLowerCase()
+  if (l === 'javascript' || l === 'node' || l === 'nodejs' || l === 'js') return 'nodejs'
+  if (l === 'java') return 'java'
+  if (l === 'cpp' || l === 'c++') return 'cpp'
+  if (l === 'python') return 'python'
+  return 'python'
 }
 
 const STORAGE_KEY = 'kalvi_learn_user_state_v1'
@@ -38,6 +56,12 @@ const defaultState: UserState = {
   solvedSlugs: [],
   progress: {},
   submissions: [],
+  languageProgress: {
+    python: { solvedSlugs: [], xp: 0 },
+    java: { solvedSlugs: [], xp: 0 },
+    nodejs: { solvedSlugs: [], xp: 0 },
+    cpp: { solvedSlugs: [], xp: 0 },
+  },
 }
 
 export function resetUserState() {
@@ -47,6 +71,12 @@ export function resetUserState() {
     solvedSlugs: [],
     progress: {},
     submissions: [],
+    languageProgress: {
+      python: { solvedSlugs: [], xp: 0 },
+      java: { solvedSlugs: [], xp: 0 },
+      nodejs: { solvedSlugs: [], xp: 0 },
+      cpp: { solvedSlugs: [], xp: 0 },
+    },
   })
 }
 
@@ -59,6 +89,37 @@ export function getUserState(): UserState {
     if (!Array.isArray(parsed.submissions)) {
       parsed.submissions = []
     }
+
+    // Ensure languageProgress exists and has all 4 languages
+    if (!parsed.languageProgress) {
+      parsed.languageProgress = {
+        python: { solvedSlugs: [], xp: 0 },
+        java: { solvedSlugs: [], xp: 0 },
+        nodejs: { solvedSlugs: [], xp: 0 },
+        cpp: { solvedSlugs: [], xp: 0 },
+      }
+
+      // Populate from existing progress records
+      if (parsed.progress) {
+        for (const [key, record] of Object.entries(parsed.progress as Record<string, UserProgressRecord>)) {
+          if (record && record.status === 'SOLVED') {
+            const lang = normalizeProgressLanguage(record.language)
+            const slug = record.problemSlug || key.replace(/^(python|java|nodejs|cpp|javascript):/, '')
+            if (!parsed.languageProgress[lang].solvedSlugs.includes(slug)) {
+              parsed.languageProgress[lang].solvedSlugs.push(slug)
+              parsed.languageProgress[lang].xp += 50
+            }
+          }
+        }
+      }
+    } else {
+      for (const l of ['python', 'java', 'nodejs', 'cpp']) {
+        if (!parsed.languageProgress[l]) {
+          parsed.languageProgress[l] = { solvedSlugs: [], xp: 0 }
+        }
+      }
+    }
+
     return parsed
   } catch {
     return defaultState
@@ -212,12 +273,32 @@ export function hydrateStateFromCloud(cloudState: UserState) {
 
   mergedSubmissions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
+  // Merge languageProgress
+  const languageProgress: Record<string, LanguageProgressSummary> = {
+    python: { solvedSlugs: [], xp: 0 },
+    java: { solvedSlugs: [], xp: 0 },
+    nodejs: { solvedSlugs: [], xp: 0 },
+    cpp: { solvedSlugs: [], xp: 0 },
+  }
+
+  // Build from localState and cloudState
+  for (const l of ['python', 'java', 'nodejs', 'cpp']) {
+    const localSlugs = localState.languageProgress?.[l]?.solvedSlugs || []
+    const cloudSlugs = cloudState.languageProgress?.[l]?.solvedSlugs || []
+    const union = Array.from(new Set([...localSlugs, ...cloudSlugs]))
+    languageProgress[l] = {
+      solvedSlugs: union,
+      xp: union.length * 50,
+    }
+  }
+
   const mergedState: UserState = {
     xp: Math.max(cloudState.xp || 0, localState.xp || 0, allSolved.length * 50),
     streak: Math.max(cloudState.streak || 1, localState.streak || 1, allSolved.length > 0 ? 1 : 1),
     solvedSlugs: allSolved,
     progress: mergedProgress,
     submissions: mergedSubmissions.slice(0, MAX_STORED_SUBMISSIONS),
+    languageProgress,
   }
 
   saveUserState(mergedState)
@@ -226,40 +307,80 @@ export function hydrateStateFromCloud(cloudState: UserState) {
 export function recordProblemSuccess(
   problemSlug: string,
   problemTitle: string,
-  language: string,
+  rawLanguage: string,
   code: string,
   executionTimeMs: number
 ): { isFirstSolve: boolean; newXp: number } {
   const state = getUserState()
-  const isFirstSolve = !state.solvedSlugs.includes(problemSlug)
+  const lang = normalizeProgressLanguage(rawLanguage)
 
-  if (isFirstSolve) {
+  if (!state.languageProgress) {
+    state.languageProgress = {
+      python: { solvedSlugs: [], xp: 0 },
+      java: { solvedSlugs: [], xp: 0 },
+      nodejs: { solvedSlugs: [], xp: 0 },
+      cpp: { solvedSlugs: [], xp: 0 },
+    }
+  }
+  if (!state.languageProgress[lang]) {
+    state.languageProgress[lang] = { solvedSlugs: [], xp: 0 }
+  }
+
+  const isLangFirstSolve = !state.languageProgress[lang].solvedSlugs.includes(problemSlug)
+  if (isLangFirstSolve) {
+    state.languageProgress[lang].solvedSlugs.push(problemSlug)
+    state.languageProgress[lang].xp += 50
+  }
+
+  // Overall unique solved tracking
+  const isGlobalFirstSolve = !state.solvedSlugs.includes(problemSlug)
+  if (isGlobalFirstSolve) {
     state.solvedSlugs.push(problemSlug)
+  }
+  if (isLangFirstSolve) {
     state.xp += 50
   }
 
-  const existingProg = state.progress[problemSlug] || {
+  // Key by lang:problemSlug for independent per-language solved state & best code
+  const langKey = `${lang}:${problemSlug}`
+  const existingLangProg = state.progress[langKey] || {
     problemId: problemSlug,
     problemSlug,
     status: 'SOLVED',
-    language,
+    language: lang,
     bestCode: code,
     attempts: 0,
   }
 
-  existingProg.status = 'SOLVED'
-  existingProg.language = language
-  existingProg.bestCode = code
-  existingProg.solvedAt = new Date().toISOString()
-  existingProg.attempts += 1
-  state.progress[problemSlug] = existingProg
+  existingLangProg.status = 'SOLVED'
+  existingLangProg.language = lang
+  existingLangProg.bestCode = code
+  existingLangProg.solvedAt = new Date().toISOString()
+  existingLangProg.attempts += 1
+  state.progress[langKey] = existingLangProg
+
+  // Also maintain un-prefixed key for backward compatibility
+  const globalProg = state.progress[problemSlug] || {
+    problemId: problemSlug,
+    problemSlug,
+    status: 'SOLVED',
+    language: lang,
+    bestCode: code,
+    attempts: 0,
+  }
+  globalProg.status = 'SOLVED'
+  globalProg.language = lang
+  globalProg.bestCode = code
+  globalProg.solvedAt = new Date().toISOString()
+  globalProg.attempts += 1
+  state.progress[problemSlug] = globalProg
 
   // Add to submission history
   state.submissions.unshift({
     id: 'sub_' + Date.now(),
     problemSlug,
     problemTitle,
-    language,
+    language: lang,
     code,
     status: 'PASSED',
     passedTests: 10,
@@ -273,28 +394,30 @@ export function recordProblemSuccess(
   // Background Cloud Sync
   const activeUserId = getActiveUserId()
   if (activeUserId) {
-    saveSuccessToCloud(activeUserId, problemSlug, language, code, executionTimeMs).catch(() => {})
+    saveSuccessToCloud(activeUserId, problemSlug, lang, code, executionTimeMs).catch(() => {})
   }
 
-  return { isFirstSolve, newXp: state.xp }
+  return { isFirstSolve: isLangFirstSolve, newXp: state.languageProgress[lang].xp }
 }
 
 export function recordProblemAttempt(
   problemSlug: string,
   problemTitle: string,
-  language: string,
+  rawLanguage: string,
   code: string,
   passedTests: number,
   totalTests: number,
   executionTimeMs: number
 ) {
   const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  const langKey = `${lang}:${problemSlug}`
 
-  const existingProg = state.progress[problemSlug] || {
+  const existingProg = state.progress[langKey] || {
     problemId: problemSlug,
     problemSlug,
     status: 'ATTEMPTED',
-    language,
+    language: lang,
     bestCode: code,
     attempts: 0,
   }
@@ -303,13 +426,30 @@ export function recordProblemAttempt(
     existingProg.status = 'ATTEMPTED'
   }
   existingProg.attempts += 1
-  state.progress[problemSlug] = existingProg
+  existingProg.language = lang
+  existingProg.bestCode = code
+  state.progress[langKey] = existingProg
+
+  // Also update backward-compatible global progress
+  const globalProg = state.progress[problemSlug] || {
+    problemId: problemSlug,
+    problemSlug,
+    status: 'ATTEMPTED',
+    language: lang,
+    bestCode: code,
+    attempts: 0,
+  }
+  if (globalProg.status !== 'SOLVED') {
+    globalProg.status = 'ATTEMPTED'
+  }
+  globalProg.attempts += 1
+  state.progress[problemSlug] = globalProg
 
   state.submissions.unshift({
     id: 'sub_' + Date.now(),
     problemSlug,
     problemTitle,
-    language,
+    language: lang,
     code,
     status: passedTests === totalTests ? 'PASSED' : 'FAILED',
     passedTests,
@@ -323,6 +463,83 @@ export function recordProblemAttempt(
   // Background Cloud Sync
   const activeUserId = getActiveUserId()
   if (activeUserId) {
-    saveAttemptToCloud(activeUserId, problemSlug, language, code, passedTests, totalTests, executionTimeMs).catch(() => {})
+    saveAttemptToCloud(activeUserId, problemSlug, lang, code, passedTests, totalTests, executionTimeMs).catch(() => {})
   }
+}
+
+/**
+ * Returns all solved problem slugs for a specific programming language.
+ */
+export function getLanguageSolvedSlugs(rawLanguage: string): string[] {
+  const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  return state.languageProgress?.[lang]?.solvedSlugs || []
+}
+
+/**
+ * Calculates language-specific completion stats and XP.
+ */
+export function getLanguageProgress(rawLanguage: string, totalProblems: number = 85): {
+  solvedSlugs: string[]
+  solvedCount: number
+  totalCount: number
+  percentage: number
+  xp: number
+} {
+  const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  const solvedSlugs = state.languageProgress?.[lang]?.solvedSlugs || []
+  const xp = state.languageProgress?.[lang]?.xp || (solvedSlugs.length * 50)
+  const solvedCount = solvedSlugs.length
+  const percentage = totalProblems > 0 ? Math.round((solvedCount / totalProblems) * 100) : 0
+
+  return {
+    solvedSlugs,
+    solvedCount,
+    totalCount: totalProblems,
+    percentage,
+    xp,
+  }
+}
+
+/**
+ * Checks if a specific problem has been solved in the designated language.
+ */
+export function isProblemSolvedInLanguage(problemSlug: string, rawLanguage: string): boolean {
+  const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  const langKey = `${lang}:${problemSlug}`
+  if (state.progress[langKey]?.status === 'SOLVED') return true
+  const langSolved = state.languageProgress?.[lang]?.solvedSlugs || []
+  return langSolved.includes(problemSlug)
+}
+
+/**
+ * Checks if a problem has been attempted in the designated language.
+ */
+export function isProblemAttemptedInLanguage(problemSlug: string, rawLanguage: string): boolean {
+  const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  const langKey = `${lang}:${problemSlug}`
+  return (
+    state.progress[langKey]?.status === 'ATTEMPTED' &&
+    !isProblemSolvedInLanguage(problemSlug, rawLanguage)
+  )
+}
+
+/**
+ * Returns saved best code for a problem in a designated language.
+ */
+export function getLanguageSavedCode(problemSlug: string, rawLanguage: string): string | null {
+  const state = getUserState()
+  const lang = normalizeProgressLanguage(rawLanguage)
+  const langKey = `${lang}:${problemSlug}`
+  if (state.progress[langKey]?.bestCode) {
+    return state.progress[langKey].bestCode
+  }
+  // Fallback to un-prefixed if language matches
+  if (state.progress[problemSlug]?.language === lang && state.progress[problemSlug]?.bestCode) {
+    return state.progress[problemSlug].bestCode
+  }
+  return null
 }

@@ -63,6 +63,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (!session?.user?.email) {
           if (isMounted) {
+            const saved = localStorage.getItem(LOCAL_USER_KEY)
+            if (saved) {
+              try {
+                setUser(JSON.parse(saved))
+                setIsLoading(false)
+                return
+              } catch {
+                // Ignore parse error
+              }
+            }
             setUser(null)
             setIsLoading(false)
           }

@@ -14,10 +14,18 @@ import {
   BookOpen,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { getUserState, subscribeProgress, UserProgressRecord, SubmissionRecord } from '@/lib/progress'
+import {
+  getUserState,
+  subscribeProgress,
+  UserProgressRecord,
+  SubmissionRecord,
+  LanguageProgressSummary,
+  normalizeProgressLanguage,
+} from '@/lib/progress'
 import { cn } from '@/lib/utils'
 
 interface SolvedProblemItem {
+  id: string
   slug: string
   title: string
   order: number
@@ -29,17 +37,35 @@ interface SolvedProblemItem {
   beltName: string
   beltColor: string
   bestCode: string
-  language: string
+  language: 'python' | 'java' | 'nodejs' | 'cpp'
+  languageName: string
   attempts: number
   solvedAt: string
 }
 
+const LANGUAGE_LABELS: Record<'python' | 'java' | 'nodejs' | 'cpp', string> = {
+  python: 'Python',
+  java: 'Java',
+  nodejs: 'Node.js',
+  cpp: 'C++',
+}
+
+const LANGUAGE_BADGE_STYLES: Record<'python' | 'java' | 'nodejs' | 'cpp', string> = {
+  python: 'bg-[#EEF5FF] text-[#2B6CB0] border-[#C2DBFE]',
+  java: 'bg-[#FFF0ED] text-[#C05621] border-[#FED7D7]',
+  nodejs: 'bg-[#EDF8EE] text-[#2F855A] border-[#C6F6D5]',
+  cpp: 'bg-[#EEF5FC] text-[#2B6CB0] border-[#BEE3F8]',
+}
+
 export const RevisePage: React.FC = () => {
   const navigate = useNavigate()
-  const [solvedSlugs, setSolvedSlugs] = useState<string[]>([])
   const [progressMap, setProgressMap] = useState<Record<string, UserProgressRecord>>({})
+  const [languageProgress, setLanguageProgress] = useState<Record<string, LanguageProgressSummary>>({})
   const [submissions, setSubmissions] = useState<SubmissionRecord[]>([])
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [selectedLanguageFilter, setSelectedLanguageFilter] = useState<
+    'all' | 'python' | 'java' | 'nodejs' | 'cpp'
+  >('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'code' | 'description' | 'history'>('code')
@@ -48,67 +74,111 @@ export const RevisePage: React.FC = () => {
   useEffect(() => {
     const loadData = () => {
       const state = getUserState()
-      setSolvedSlugs(state.solvedSlugs || [])
       setProgressMap(state.progress || {})
+      setLanguageProgress(state.languageProgress || {})
       setSubmissions(state.submissions || [])
-
-      if (!selectedSlug && state.solvedSlugs.length > 0) {
-        setSelectedSlug(state.solvedSlugs[0])
-      }
     }
 
     loadData()
     return subscribeProgress(loadData)
   }, [])
 
-  // Build list of solved problems with problem metadata
+  // Build list of solved problems separated by language
   const solvedProblems = useMemo(() => {
     const list: SolvedProblemItem[] = []
-    for (const belt of problemsData) {
-      for (const p of belt.problems) {
-        if (solvedSlugs.includes(p.slug)) {
-          const prog = progressMap[p.slug]
-          list.push({
-            slug: p.slug,
-            title: p.title,
-            order: p.order,
-            difficulty: p.difficulty,
-            description: p.description,
-            inputFormat: p.inputFormat,
-            outputFormat: p.outputFormat,
-            explanation: (p as { explanation?: string }).explanation,
-            beltName: belt.name,
-            beltColor: belt.color,
-            bestCode: prog?.bestCode || '',
-            language: prog?.language || 'python',
-            attempts: prog?.attempts || 1,
-            solvedAt: prog?.solvedAt || '',
-          })
+    const languages: Array<'python' | 'java' | 'nodejs' | 'cpp'> = ['python', 'java', 'nodejs', 'cpp']
+
+    for (const lang of languages) {
+      const solvedSlugsInLang = languageProgress[lang]?.solvedSlugs || []
+
+      for (const belt of problemsData) {
+        for (const p of belt.problems) {
+          const langKey = `${lang}:${p.slug}`
+          const prog = progressMap[langKey] || progressMap[p.slug]
+
+          const isSolvedInLang =
+            solvedSlugsInLang.includes(p.slug) ||
+            (progressMap[langKey]?.status === 'SOLVED') ||
+            (prog?.status === 'SOLVED' && normalizeProgressLanguage(prog.language) === lang)
+
+          if (isSolvedInLang) {
+            list.push({
+              id: `${lang}_${p.slug}`,
+              slug: p.slug,
+              title: p.title,
+              order: p.order,
+              difficulty: p.difficulty,
+              description: p.description,
+              inputFormat: p.inputFormat,
+              outputFormat: p.outputFormat,
+              explanation: (p as { explanation?: string }).explanation,
+              beltName: belt.name,
+              beltColor: belt.color,
+              bestCode: progressMap[langKey]?.bestCode || prog?.bestCode || '',
+              language: lang,
+              languageName: LANGUAGE_LABELS[lang],
+              attempts: progressMap[langKey]?.attempts || prog?.attempts || 1,
+              solvedAt: progressMap[langKey]?.solvedAt || prog?.solvedAt || '',
+            })
+          }
         }
       }
     }
-    return list
-  }, [solvedSlugs, progressMap])
 
-  // Filtered list based on search
+    return list
+  }, [languageProgress, progressMap])
+
+  // Count per language for badges
+  const counts = useMemo(() => {
+    return {
+      all: solvedProblems.length,
+      python: solvedProblems.filter((p) => p.language === 'python').length,
+      java: solvedProblems.filter((p) => p.language === 'java').length,
+      nodejs: solvedProblems.filter((p) => p.language === 'nodejs').length,
+      cpp: solvedProblems.filter((p) => p.language === 'cpp').length,
+    }
+  }, [solvedProblems])
+
+  // Filtered list based on language filter & search
   const filteredSolved = useMemo(() => {
-    if (!searchQuery) return solvedProblems
-    return solvedProblems.filter(
-      (p) =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.beltName.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [solvedProblems, searchQuery])
+    return solvedProblems.filter((p) => {
+      if (selectedLanguageFilter !== 'all' && p.language !== selectedLanguageFilter) {
+        return false
+      }
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase()
+        return (
+          p.title.toLowerCase().includes(q) ||
+          p.beltName.toLowerCase().includes(q) ||
+          p.languageName.toLowerCase().includes(q)
+        )
+      }
+      return true
+    })
+  }, [solvedProblems, selectedLanguageFilter, searchQuery])
+
+  // Set default selected item
+  useEffect(() => {
+    if (!selectedItemId && filteredSolved.length > 0) {
+      setSelectedItemId(filteredSolved[0].id)
+    } else if (selectedItemId && !filteredSolved.some((p) => p.id === selectedItemId)) {
+      setSelectedItemId(filteredSolved[0]?.id || null)
+    }
+  }, [filteredSolved, selectedItemId])
 
   // Active problem
   const currentProblem = useMemo(() => {
-    return solvedProblems.find((p) => p.slug === selectedSlug) || solvedProblems[0] || null
-  }, [solvedProblems, selectedSlug])
+    return filteredSolved.find((p) => p.id === selectedItemId) || filteredSolved[0] || null
+  }, [filteredSolved, selectedItemId])
 
   // Problem-specific submissions
   const problemSubmissions = useMemo(() => {
     if (!currentProblem) return []
-    return submissions.filter((s) => s.problemSlug === currentProblem.slug)
+    return submissions.filter(
+      (s) =>
+        s.problemSlug === currentProblem.slug &&
+        (normalizeProgressLanguage(s.language) === currentProblem.language)
+    )
   }, [submissions, currentProblem])
 
   const handleCopyCode = () => {
@@ -129,7 +199,7 @@ export const RevisePage: React.FC = () => {
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-neutral-900">Revise & Review Solutions</h1>
           <p className="text-sm text-neutral-500 max-w-md mx-auto">
-            You haven't solved any problems yet! Once you successfully pass all 10 test cases in the Practice Arena, your accepted solutions will be cataloged here for revision and re-attempts.
+            You haven't solved any problems yet! Once you successfully pass all 10 test cases in a language's Practice Arena, your accepted solutions will be cataloged here for revision and re-attempts.
           </p>
         </div>
         <div>
@@ -153,11 +223,11 @@ export const RevisePage: React.FC = () => {
           <div className="flex items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">Revise & Solution Vault</h1>
             <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              {solvedProblems.length} Solved
+              {solvedProblems.length} Solved Solutions
             </span>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Review your accepted code solutions, inspect problem specifications, and re-attempt challenges to build speed.
+            Review your accepted code solutions across Python, Java, Node.js, and C++, inspect problem specifications, and re-attempt challenges.
           </p>
         </div>
 
@@ -168,6 +238,65 @@ export const RevisePage: React.FC = () => {
           <span>Continue Practice</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
+      </div>
+
+      {/* Language Filter Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <button
+          onClick={() => setSelectedLanguageFilter('all')}
+          className={cn(
+            'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 interactive-tab flex-shrink-0',
+            selectedLanguageFilter === 'all'
+              ? 'bg-neutral-900 text-white shadow-sm'
+              : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-50'
+          )}
+        >
+          All Languages ({counts.all})
+        </button>
+        <button
+          onClick={() => setSelectedLanguageFilter('python')}
+          className={cn(
+            'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 interactive-tab flex-shrink-0',
+            selectedLanguageFilter === 'python'
+              ? 'bg-[#387EB8] text-white shadow-sm'
+              : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-[#EEF5FF]'
+          )}
+        >
+          Python ({counts.python})
+        </button>
+        <button
+          onClick={() => setSelectedLanguageFilter('java')}
+          className={cn(
+            'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 interactive-tab flex-shrink-0',
+            selectedLanguageFilter === 'java'
+              ? 'bg-[#EA2D2E] text-white shadow-sm'
+              : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-[#FFF0ED]'
+          )}
+        >
+          Java ({counts.java})
+        </button>
+        <button
+          onClick={() => setSelectedLanguageFilter('nodejs')}
+          className={cn(
+            'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 interactive-tab flex-shrink-0',
+            selectedLanguageFilter === 'nodejs'
+              ? 'bg-[#539E43] text-white shadow-sm'
+              : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-[#EDF8EE]'
+          )}
+        >
+          Node.js ({counts.nodejs})
+        </button>
+        <button
+          onClick={() => setSelectedLanguageFilter('cpp')}
+          className={cn(
+            'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 interactive-tab flex-shrink-0',
+            selectedLanguageFilter === 'cpp'
+              ? 'bg-[#00599C] text-white shadow-sm'
+              : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-[#EEF5FC]'
+          )}
+        >
+          C++ ({counts.cpp})
+        </button>
       </div>
 
       {/* Main Dual-Column Workspace */}
@@ -192,16 +321,16 @@ export const RevisePage: React.FC = () => {
           <div className="flex-1 overflow-y-auto divide-y divide-neutral-100">
             {filteredSolved.length === 0 ? (
               <div className="p-6 text-center text-xs text-neutral-400">
-                No solved problems match your search.
+                No solved problems match your selected language or search filter.
               </div>
             ) : (
               filteredSolved.map((p) => {
-                const isSelected = p.slug === currentProblem?.slug
+                const isSelected = p.id === currentProblem?.id
                 return (
                   <div
-                    key={p.slug}
+                    key={p.id}
                     onClick={() => {
-                      setSelectedSlug(p.slug)
+                      setSelectedItemId(p.id)
                       setActiveTab('code')
                     }}
                     className={cn(
@@ -222,13 +351,16 @@ export const RevisePage: React.FC = () => {
                       >
                         {p.beltName} • #{p.order}
                       </span>
+                      {/* Language Badge */}
                       <span
                         className={cn(
-                          'text-[10px] font-medium uppercase',
-                          isSelected ? 'text-neutral-400' : 'text-neutral-400'
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                          isSelected
+                            ? 'bg-neutral-800 text-white border-neutral-700'
+                            : LANGUAGE_BADGE_STYLES[p.language]
                         )}
                       >
-                        {p.language}
+                        {p.languageName}
                       </span>
                     </div>
 
@@ -267,6 +399,14 @@ export const RevisePage: React.FC = () => {
                   </span>
                   <span className="text-neutral-300">•</span>
                   <h2 className="text-base font-bold text-neutral-900">{currentProblem.title}</h2>
+                  <span
+                    className={cn(
+                      'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                      LANGUAGE_BADGE_STYLES[currentProblem.language]
+                    )}
+                  >
+                    {currentProblem.languageName}
+                  </span>
                   <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-700">
                     {currentProblem.difficulty}
                   </span>
@@ -293,11 +433,13 @@ export const RevisePage: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate(`/practice/${currentProblem.slug}`)}
+                  onClick={() =>
+                    navigate(`/practice/${currentProblem.language}/${currentProblem.slug}`)
+                  }
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold shadow-sm transition-all duration-200 interactive-btn shadow-red-600/20"
                 >
                   <RotateCcw className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-45" />
-                  <span>Re-attempt</span>
+                  <span>Re-attempt in {currentProblem.languageName}</span>
                 </button>
               </div>
             </div>
@@ -314,7 +456,7 @@ export const RevisePage: React.FC = () => {
                 )}
               >
                 <FileCode className="w-3.5 h-3.5" />
-                <span>Accepted Solution ({currentProblem.language})</span>
+                <span>Accepted Solution ({currentProblem.languageName})</span>
               </button>
 
               <button
@@ -354,7 +496,7 @@ export const RevisePage: React.FC = () => {
                     language={
                       currentProblem.language === 'cpp'
                         ? 'cpp'
-                        : currentProblem.language === 'javascript'
+                        : currentProblem.language === 'nodejs'
                         ? 'javascript'
                         : currentProblem.language === 'java'
                         ? 'java'
@@ -418,7 +560,7 @@ export const RevisePage: React.FC = () => {
                 <div className="p-4 overflow-y-auto h-full">
                   {problemSubmissions.length === 0 ? (
                     <div className="text-center py-12 text-neutral-400 text-xs">
-                      No submission log found for this session.
+                      No submission log found for this {currentProblem.languageName} problem.
                     </div>
                   ) : (
                     <div className="border border-neutral-200 rounded-xl overflow-hidden divide-y divide-neutral-100 text-xs">

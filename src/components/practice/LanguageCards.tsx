@@ -111,7 +111,7 @@ export const CppLogo: React.FC<{ className?: string }> = ({ className = 'w-12 h-
 )
 
 export interface LanguageOption {
-  id: string
+  id: 'python' | 'java' | 'nodejs' | 'cpp'
   name: string
   description: string
   param: 'python' | 'java' | 'javascript' | 'cpp'
@@ -155,9 +155,9 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = [
 ]
 
 interface LanguageCardsProps {
-  selectedLanguage: 'python' | 'java' | 'javascript' | 'cpp'
-  onSelectLanguage: (lang: 'python' | 'java' | 'javascript' | 'cpp') => void
-  targetProblemSlug: string
+  selectedLanguage?: 'python' | 'java' | 'javascript' | 'cpp' | 'nodejs'
+  onSelectLanguage?: (lang: 'python' | 'java' | 'javascript' | 'cpp') => void
+  targetProblemSlug?: string
 }
 
 export const LanguageCards: React.FC<LanguageCardsProps> = ({
@@ -168,12 +168,21 @@ export const LanguageCards: React.FC<LanguageCardsProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 max-w-5xl mx-auto w-full">
       {LANGUAGE_OPTIONS.map((lang) => {
-        const isSelected = selectedLanguage === lang.param
+        const isSelected = selectedLanguage === lang.param || selectedLanguage === lang.id
+        const targetUrl = targetProblemSlug
+          ? `/practice/${lang.id}/${targetProblemSlug}`
+          : `/practice/${lang.id}`
+
         return (
           <Link
             key={lang.id}
-            to={`/practice/${targetProblemSlug}?lang=${lang.param}`}
-            onClick={() => onSelectLanguage(lang.param)}
+            to={targetUrl}
+            onClick={() => {
+              if (onSelectLanguage) {
+                onSelectLanguage(lang.param)
+              }
+              localStorage.setItem('kalvi_preferred_language', lang.id)
+            }}
             className={cn(
               'bg-white rounded-2xl p-6 sm:p-8 border transition-all duration-200 flex flex-col items-center text-center group cursor-pointer relative',
               'border-neutral-200/90 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-neutral-300',

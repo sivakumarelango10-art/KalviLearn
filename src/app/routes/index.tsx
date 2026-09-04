@@ -14,6 +14,9 @@ const LearnPage = lazy(() =>
 const PracticePage = lazy(() =>
   import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage }))
 )
+const LanguagePracticePage = lazy(() =>
+  import('@/pages/LanguagePracticePage').then((m) => ({ default: m.LanguagePracticePage }))
+)
 const ProblemArenaPage = lazy(() =>
   import('@/pages/ProblemArenaPage').then((m) => ({ default: m.ProblemArenaPage }))
 )
@@ -66,6 +69,14 @@ export const router = createBrowserRouter([
           {
             path: 'practice',
             element: withSuspense(<PracticePage />),
+          },
+          {
+            path: 'practice/:lang',
+            element: withSuspense(<LanguagePracticePage />),
+          },
+          {
+            path: 'practice/:lang/:slug',
+            element: withSuspense(<ProblemArenaPage />),
           },
           {
             path: 'practice/:slug',

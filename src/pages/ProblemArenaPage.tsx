@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import Editor, { OnMount } from '@monaco-editor/react'
 import confetti from 'canvas-confetti'
@@ -14,71 +14,83 @@ import {
   ShieldAlert,
   AlertTriangle,
 } from 'lucide-react'
-import problemsData from '@/data/problems.json'
+import {
+  getCurriculum,
+  getProblemByLanguageAndSlug,
+  normalizeLanguageSlug,
+  ProgrammingLanguage,
+} from '@/data/curriculum/index'
 import { executeCode, TestCaseExecution } from '@/lib/runner/codeRunner'
 import {
   getUserState,
   recordProblemSuccess,
   recordProblemAttempt,
+  getLanguageSavedCode,
   SubmissionRecord,
 } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { QuestionCompletionModal } from '@/components/arena/QuestionCompletionModal'
 
 export const ProblemArenaPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>()
+  const { lang, slug } = useParams<{ lang?: string; slug?: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const langParam = searchParams.get('lang')
 
-  // Find problem across all belts
-  let currentBelt = problemsData[0]
-  let currentProblem = currentBelt.problems[0]
-  let currentBeltIndex = 0
-  let currentProblemIndex = 0
+  // Resolve active language: locked to route param :lang if provided
+  const currentLanguage: ProgrammingLanguage = useMemo(() => {
+    return normalizeLanguageSlug(lang || langParam || localStorage.getItem('kalvi_preferred_language'))
+  }, [lang, langParam])
 
-  for (let bIdx = 0; bIdx < problemsData.length; bIdx++) {
-    const b = problemsData[bIdx]
-    const pIdx = b.problems.findIndex((p: { slug: string }) => p.slug === slug)
-    if (pIdx !== -1) {
-      currentBelt = b
-      currentProblem = b.problems[pIdx]
-      currentBeltIndex = bIdx
-      currentProblemIndex = pIdx
-      break
+  const curriculum = useMemo(() => getCurriculum(currentLanguage), [currentLanguage])
+
+  // Find problem within this language's curriculum
+  const currentProblemData = useMemo(() => {
+    let targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
+    let targetBelt = curriculum.belts[0]
+    let targetBeltIndex = 0
+    let targetProblemIndex = 0
+
+    if (!targetProblem) {
+      // Fallback to first problem in first belt
+      targetBelt = curriculum.belts[0]
+      targetProblem = targetBelt.problems[0]
+      targetBeltIndex = 0
+      targetProblemIndex = 0
+    } else {
+      for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
+        const b = curriculum.belts[bIdx]
+        const pIdx = b.problems.findIndex((p) => p.slug === targetProblem?.slug)
+        if (pIdx !== -1) {
+          targetBelt = b
+          targetBeltIndex = bIdx
+          targetProblemIndex = pIdx
+          break
+        }
+      }
     }
-  }
 
-  // Next problem resolution
-  let nextProblemSlug: string | null = null
-  if (currentProblemIndex + 1 < currentBelt.problems.length) {
-    nextProblemSlug = currentBelt.problems[currentProblemIndex + 1].slug
-  } else if (currentBeltIndex + 1 < problemsData.length) {
-    nextProblemSlug = problemsData[currentBeltIndex + 1].problems[0].slug
-  }
+    // Next problem resolution in the same language track
+    let nextSlug: string | null = null
+    if (targetProblemIndex + 1 < targetBelt.problems.length) {
+      nextSlug = targetBelt.problems[targetProblemIndex + 1].slug
+    } else if (targetBeltIndex + 1 < curriculum.belts.length) {
+      nextSlug = curriculum.belts[targetBeltIndex + 1].problems[0].slug
+    }
 
-  const resolveLanguage = (raw: string | null): 'python' | 'javascript' | 'cpp' | 'java' => {
-    if (!raw) return 'python'
-    const l = raw.toLowerCase()
-    if (l === 'javascript' || l === 'node' || l === 'nodejs' || l === 'js') return 'javascript'
-    if (l === 'java') return 'java'
-    if (l === 'cpp' || l === 'c++') return 'cpp'
-    if (l === 'python') return 'python'
-    return 'python'
-  }
+    return {
+      belt: targetBelt,
+      problem: targetProblem!,
+      nextSlug,
+    }
+  }, [curriculum, currentLanguage, slug])
+
+  const currentBelt = currentProblemData.belt
+  const currentProblem = currentProblemData.problem
+  const nextProblemSlug = currentProblemData.nextSlug
 
   // State
   const [activeTab, setActiveTab] = useState<'description' | 'submissions' | 'help'>('description')
-  const [language, setLanguage] = useState<'python' | 'javascript' | 'cpp' | 'java'>(() => {
-    return resolveLanguage(langParam || localStorage.getItem('kalvi_preferred_language'))
-  })
-
-  useEffect(() => {
-    if (langParam) {
-      setLanguage(resolveLanguage(langParam))
-    }
-  }, [langParam])
-
   const [code, setCode] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -94,16 +106,12 @@ export const ProblemArenaPage: React.FC = () => {
 
   // Initialize code on problem or language change
   useEffect(() => {
-    const userState = getUserState()
-    const saved = userState.progress[currentProblem.slug]
+    const savedCode = getLanguageSavedCode(currentProblem.slug, currentLanguage)
 
-    if (saved && saved.bestCode && saved.language === language) {
-      setCode(saved.bestCode)
+    if (savedCode) {
+      setCode(savedCode)
     } else {
-      const defaultStarter =
-        (currentProblem.starterCodes as any)[language] ||
-        `// Write your ${language} solution here`
-      setCode(defaultStarter)
+      setCode(currentProblem.starterCode)
     }
 
     setTestResults(null)
@@ -112,10 +120,15 @@ export const ProblemArenaPage: React.FC = () => {
     setSubmissionFailed(null)
     setActiveCaseTab(1)
 
-    // Load submission history for this problem
-    const subs = userState.submissions.filter(s => s.problemSlug === currentProblem.slug)
+    // Load submission history for this problem and language
+    const userState = getUserState()
+    const subs = userState.submissions.filter(
+      (s) =>
+        s.problemSlug === currentProblem.slug &&
+        (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+    )
     setRecentSubmissions(subs)
-  }, [currentProblem.slug, language])
+  }, [currentProblem.slug, currentLanguage, currentProblem.starterCode, curriculum.runnerLanguage])
 
   // Anti-Cheat: Intercept Cut, Copy, Paste & Right Click
   const triggerAntiCheatWarning = () => {
@@ -128,7 +141,6 @@ export const ProblemArenaPage: React.FC = () => {
 
     // Intercept keyboard shortcuts
     editor.onKeyDown((e) => {
-      // Ctrl+C, Ctrl+V, Ctrl+X, Cmd+C, Cmd+V, Cmd+X
       const isModifier = e.ctrlKey || e.metaKey
       if (isModifier && (e.code === 'KeyC' || e.code === 'KeyV' || e.code === 'KeyX')) {
         e.preventDefault()
@@ -137,7 +149,6 @@ export const ProblemArenaPage: React.FC = () => {
       }
     })
 
-    // Disable editor context menu and configure for high-performance low-spec laptops
     editor.updateOptions({
       contextmenu: false,
       minimap: { enabled: false },
@@ -178,7 +189,12 @@ export const ProblemArenaPage: React.FC = () => {
     }))
 
     try {
-      const result = await executeCode(currentProblem.slug, language, code, visibleCases)
+      const result = await executeCode(
+        currentProblem.slug,
+        curriculum.runnerLanguage,
+        code,
+        visibleCases
+      )
 
       if (result.compilationError) {
         setCompilationError(result.compilationError)
@@ -202,7 +218,7 @@ export const ProblemArenaPage: React.FC = () => {
         recordProblemAttempt(
           currentProblem.slug,
           currentProblem.title,
-          language,
+          currentLanguage,
           code,
           result.passedCount,
           10,
@@ -216,7 +232,13 @@ export const ProblemArenaPage: React.FC = () => {
 
         // Refresh recent submissions
         const state = getUserState()
-        setRecentSubmissions(state.submissions.filter(s => s.problemSlug === currentProblem.slug))
+        setRecentSubmissions(
+          state.submissions.filter(
+            (s) =>
+              s.problemSlug === currentProblem.slug &&
+              (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+          )
+        )
       }
     } catch (err: any) {
       setCompilationError(err?.message || 'An unexpected execution error occurred.')
@@ -237,7 +259,7 @@ export const ProblemArenaPage: React.FC = () => {
     recordProblemSuccess(
       currentProblem.slug,
       currentProblem.title,
-      language,
+      currentLanguage,
       code,
       totalTime
     )
@@ -245,14 +267,13 @@ export const ProblemArenaPage: React.FC = () => {
     setShowSuccessModal(false)
 
     if (nextProblemSlug) {
-      navigate(`/practice/${nextProblemSlug}`)
+      navigate(`/practice/${currentLanguage}/${nextProblemSlug}`)
     } else {
-      navigate('/practice')
+      navigate(`/practice/${currentLanguage}`)
     }
   }
 
   const handleCancel = () => {
-    // Keep user on the current problem, retain code editor state and test results intact
     setShowSuccessModal(false)
   }
 
@@ -266,16 +287,22 @@ export const ProblemArenaPage: React.FC = () => {
         </div>
       )}
 
-      {/* Arena Top Toolbar */}
+      {/* Arena Top Toolbar with Clean Breadcrumb */}
       <div className="h-12 bg-neutral-950 border-b border-neutral-800 px-4 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
           <Link
             to="/practice"
-            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors"
+            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
           >
             Practice <ChevronRight className="w-3.5 h-3.5" />
           </Link>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-300">
+          <Link
+            to={`/practice/${currentLanguage}`}
+            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
+          >
+            {curriculum.name} Practice <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 flex-shrink-0">
             {currentBelt.name}
           </span>
           <h1 className="text-sm font-semibold text-white truncate max-w-xs sm:max-w-md">
@@ -283,18 +310,16 @@ export const ProblemArenaPage: React.FC = () => {
           </h1>
         </div>
 
-        {/* Language Selection & Action Buttons */}
-        <div className="flex items-center gap-2.5">
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as any)}
-            className="bg-neutral-800 text-neutral-200 text-xs font-medium px-3 py-1.5 rounded-md border border-neutral-700 focus:outline-none focus:ring-1 focus:ring-[#ED2A2B]"
-          >
-            <option value="python">Python 3</option>
-            <option value="javascript">JavaScript (Node.js)</option>
-            <option value="cpp">C++ (g++)</option>
-            <option value="java">Java (OpenJDK)</option>
-          </select>
+        {/* Locked Language Indicator (no cross-language switching inside a problem) & Action Buttons */}
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          {/* Language Locked Badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-neutral-800 border border-neutral-700 text-neutral-200 text-xs font-semibold shadow-sm">
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: currentBelt.color }}
+            />
+            <span>{curriculum.badgeName}</span>
+          </div>
 
           <button
             onClick={handleRun}
@@ -373,7 +398,7 @@ export const ProblemArenaPage: React.FC = () => {
                       {currentProblem.difficulty}
                     </span>
                     <span className="text-xs text-neutral-500 font-mono">
-                      +50 XP
+                      +{currentProblem.xp} XP
                     </span>
                   </div>
                   <h2 className="text-lg font-bold text-white">
@@ -438,10 +463,12 @@ export const ProblemArenaPage: React.FC = () => {
             {activeTab === 'submissions' && (
               <div className="space-y-3">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                  Past Submissions
+                  Past Submissions ({curriculum.name})
                 </h3>
                 {recentSubmissions.length === 0 ? (
-                  <p className="text-neutral-500 text-xs py-4">No submissions yet for this problem.</p>
+                  <p className="text-neutral-500 text-xs py-4">
+                    No {curriculum.name} submissions yet for this problem.
+                  </p>
                 ) : (
                   recentSubmissions.map((sub: any) => (
                     <div
@@ -480,7 +507,7 @@ export const ProblemArenaPage: React.FC = () => {
                 <div className="p-3.5 bg-neutral-950 rounded-lg border border-neutral-800 space-y-2 text-xs">
                   <div className="font-semibold text-amber-400">Key Tip</div>
                   <p className="text-neutral-300">
-                    Read the input format carefully. Ensure your solution parses all inputs from standard input and prints only the exact required output without extraneous labels.
+                    Read the input format carefully. Ensure your {curriculum.name} solution parses all inputs from standard input and prints only the exact required output without extraneous labels.
                   </p>
                 </div>
                 <div className="p-3.5 bg-neutral-950 rounded-lg border border-neutral-800 space-y-2 text-xs">
@@ -521,14 +548,14 @@ export const ProblemArenaPage: React.FC = () => {
             <Editor
               height="100%"
               theme="vs-dark"
-              language={language === 'python' ? 'python' : language === 'javascript' ? 'javascript' : language === 'cpp' ? 'cpp' : 'java'}
+              language={curriculum.monacoLanguage}
               value={code}
               onChange={(value) => setCode(value || '')}
               onMount={handleEditorMount}
             />
           </div>
 
-          {/* Failure Alert Banner with exact required specification */}
+          {/* Failure Alert Banner */}
           {submissionFailed && (
             <div className="px-4 py-3 bg-red-950/80 border-t border-red-900/80 flex items-center justify-between text-xs animate-banner-drop">
               <div className="flex items-center gap-2 text-red-300">
@@ -546,7 +573,7 @@ export const ProblemArenaPage: React.FC = () => {
             </div>
           )}
 
-          {/* Test Cases Bottom Drawer (Strictly 10 Test Cases: 3 Visible, 7 Hidden) */}
+          {/* Test Cases Bottom Drawer (10 Test Cases: 3 Visible, 7 Hidden) */}
           <div className="h-64 border-t border-neutral-800 bg-neutral-900 flex flex-col overflow-hidden">
             {/* Drawer Tabs */}
             <div className="h-10 bg-neutral-950 px-3 flex items-center justify-between border-b border-neutral-800 flex-shrink-0">
@@ -570,7 +597,7 @@ export const ProblemArenaPage: React.FC = () => {
                           : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
                       )}
                     >
-                      {(isRunning || isSubmitting) ? (
+                      {isRunning || isSubmitting ? (
                         <span className="text-amber-400 text-[10px] animate-pulse">⏳</span>
                       ) : isPassed === true ? (
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
@@ -585,7 +612,7 @@ export const ProblemArenaPage: React.FC = () => {
 
               {/* Status Header */}
               <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
-                {(isRunning || isSubmitting) ? (
+                {isRunning || isSubmitting ? (
                   <span className="text-amber-400 flex items-center gap-1.5">
                     <span className="animate-spin text-xs">⏳</span> Evaluating 10 Test Cases...
                   </span>
@@ -595,12 +622,12 @@ export const ProblemArenaPage: React.FC = () => {
                   <span
                     className={cn(
                       'font-semibold',
-                      testResults.filter(t => t.passed).length === 10
+                      testResults.filter((t) => t.passed).length === 10
                         ? 'text-emerald-400'
                         : 'text-amber-400'
                     )}
                   >
-                    Passed {testResults.filter(t => t.passed).length} / 10
+                    Passed {testResults.filter((t) => t.passed).length} / 10
                   </span>
                 ) : (
                   <span className="text-neutral-500">Passed 0 / 10</span>
@@ -707,7 +734,6 @@ export const ProblemArenaPage: React.FC = () => {
 
                 return (
                   <div className="space-y-3">
-                    {/* Visible Input */}
                     <div>
                       <div className="text-[11px] font-sans text-neutral-400 mb-1 flex items-center justify-between">
                         <span>Input:</span>
@@ -718,7 +744,6 @@ export const ProblemArenaPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Visible Expected Output */}
                     <div>
                       <div className="text-[11px] font-sans text-neutral-400 mb-1">
                         Expected Output:
@@ -728,7 +753,6 @@ export const ProblemArenaPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Actual Output (if executed) */}
                     {tcResult && (
                       <div>
                         <div className="text-[11px] font-sans text-neutral-400 mb-1 flex items-center justify-between">
