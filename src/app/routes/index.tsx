@@ -1,30 +1,39 @@
-import { lazy, Suspense, type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
+import { lazyWithRetry } from '@/lib/lazyWithRetry'
+import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
 
-// Code-split dynamic route imports for optimal bundle size
-const LoginPage = lazy(() => import('@/pages/auth/LoginPage'))
-const DashboardPage = lazy(() =>
-  import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage }))
+// Safe code-split dynamic route imports with automatic deployment recovery
+const LoginPage = lazyWithRetry(() => import('@/pages/auth/LoginPage'), 'LoginPage')
+const DashboardPage = lazyWithRetry(
+  () => import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+  'DashboardPage'
 )
-const LearnPage = lazy(() =>
-  import('@/pages/LearnPage').then((m) => ({ default: m.LearnPage }))
+const LearnPage = lazyWithRetry(
+  () => import('@/pages/LearnPage').then((m) => ({ default: m.LearnPage })),
+  'LearnPage'
 )
-const PracticePage = lazy(() =>
-  import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage }))
+const PracticePage = lazyWithRetry(
+  () => import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage })),
+  'PracticePage'
 )
-const LanguagePracticePage = lazy(() =>
-  import('@/pages/LanguagePracticePage').then((m) => ({ default: m.LanguagePracticePage }))
+const LanguagePracticePage = lazyWithRetry(
+  () => import('@/pages/LanguagePracticePage').then((m) => ({ default: m.LanguagePracticePage })),
+  'LanguagePracticePage'
 )
-const ProblemArenaPage = lazy(() =>
-  import('@/pages/ProblemArenaPage').then((m) => ({ default: m.ProblemArenaPage }))
+const ProblemArenaPage = lazyWithRetry(
+  () => import('@/pages/ProblemArenaPage').then((m) => ({ default: m.ProblemArenaPage })),
+  'ProblemArenaPage'
 )
-const RevisePage = lazy(() =>
-  import('@/pages/RevisePage').then((m) => ({ default: m.RevisePage }))
+const RevisePage = lazyWithRetry(
+  () => import('@/pages/RevisePage').then((m) => ({ default: m.RevisePage })),
+  'RevisePage'
 )
-const ProfilePage = lazy(() =>
-  import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
+const ProfilePage = lazyWithRetry(
+  () => import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+  'ProfilePage'
 )
 
 const PageLoader = () => (
@@ -39,16 +48,18 @@ const withSuspense = (Component: ReactNode) => (
 )
 
 /**
- * Kalvi Learn Application Route Definitions with Code Splitting & Whitelist Guard
+ * Kalvi Learn Application Route Definitions with Code Splitting & Chunk Recovery
  */
 export const router = createBrowserRouter([
   {
     path: '/login',
     element: withSuspense(<LoginPage />),
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/',
     element: <ProtectedRoute />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         path: '',
