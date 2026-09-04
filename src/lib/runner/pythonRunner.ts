@@ -235,7 +235,18 @@ export function executePython(code: string, input: string): { output: string; er
     },
     chr: (code: number) => String.fromCharCode(code),
     ord: (char: string) => (char ? char.charCodeAt(0) : 0),
-    intDiv: (a: number, b: number) => Math.floor(a / b),
+    intDiv: (a: number, b: number) => {
+      if (b === 0) throw new Error('ZeroDivisionError: integer division or modulo by zero')
+      return Math.floor(a / b)
+    },
+    div: (a: number, b: number) => {
+      if (b === 0) throw new Error('ZeroDivisionError: division by zero')
+      return a / b
+    },
+    mod: (a: number, b: number) => {
+      if (b === 0) throw new Error('ZeroDivisionError: integer division or modulo by zero')
+      return ((a % b) + b) % b
+    },
     map: (fn: any, iterable: any) => {
       if (!iterable) return []
       const arr = Array.isArray(iterable) ? iterable : Array.from(iterable)
@@ -319,16 +330,20 @@ export function executePython(code: string, input: string): { output: string; er
         hasMainExecution = true
       }
 
-      // Replace Python integer division // with Math.floor(...)
+      // Replace Python integer division // with intDiv(...)
       let divPrev: string
       do {
         divPrev = line
         line = line
-          .replace(/\(([^()]+)\)\s*\/\/\s*\(([^()]+)\)/g, 'Math.floor(($1) / ($2))')
-          .replace(/\(([^()]+)\)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'Math.floor(($1) / $2)')
-          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*\(([^()]+)\)/g, 'Math.floor($1 / ($2))')
-          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'Math.floor($1 / $2)')
+          .replace(/\(([^()]+)\)\s*\/\/\s*\(([^()]+)\)/g, 'intDiv(($1), ($2))')
+          .replace(/\(([^()]+)\)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'intDiv(($1), $2)')
+          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*\(([^()]+)\)/g, 'intDiv($1, ($2))')
+          .replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, 'intDiv($1, $2)')
       } while (line !== divPrev)
+
+      // Replace Python ternary: expr1 if cond else expr2 -> ((cond) ? (expr1) : (expr2))
+      const ternaryRegex = /((?:'[^']*'|"[^"]*"|[^,\(\)\s]+))\s+if\s+([^:]+?)\s+else\s+((?:'[^']*'|"[^"]*"|[^,\(\)\s]+))/g
+      line = line.replace(ternaryRegex, '($2 ? $1 : $3)')
 
       // Replace simple list comprehensions: [expr for x in iterable]
       line = line.replace(

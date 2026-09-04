@@ -1,12 +1,13 @@
 import { executePython } from '../lib/runner/pythonRunner'
 import { executeCpp } from '../lib/runner/cppRunner'
 import { executeJava } from '../lib/runner/javaRunner'
-import serverTestCases from './data/serverTestCases.json'
+import serverTestCases from './data/serverTestCases'
 
 export interface ExecuteRequest {
   questionSlug: string
   language: string
   code: string
+  isSubmit?: boolean
 }
 
 export interface ClientTestCaseResult {
@@ -40,6 +41,21 @@ function normalizeOutput(str: string): string {
     .map((line) => line.trimEnd())
     .join('\n')
     .trim()
+}
+
+function compareOutput(actual: string, expected: string): boolean {
+  const normActual = normalizeOutput(actual)
+  const normExpected = normalizeOutput(expected)
+  if (normActual === normExpected) return true
+
+  // Tolerance check for decimal/floating point outputs
+  const numActual = Number(normActual)
+  const numExpected = Number(normExpected)
+  if (!isNaN(numActual) && !isNaN(numExpected) && normActual !== '' && normExpected !== '') {
+    return Math.abs(numActual - numExpected) < 1e-5
+  }
+
+  return false
 }
 
 function executeJavaScript(code: string, input: string): { output: string; error?: string } {
@@ -161,12 +177,12 @@ function checkCompilation(code: string, language: string): { ok: boolean; error?
  * Hidden test case inputs, expected outputs, and actual outputs are NEVER returned to the client.
  */
 export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteResponse> {
-  const { questionSlug, language, code } = req
+  const { questionSlug, language, code, isSubmit = true } = req
 
   if (!code || !code.trim()) {
     return {
       success: false,
-      total: 10,
+      total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
       error: 'Compilation Error',
@@ -180,7 +196,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   if (!compCheck.ok) {
     return {
       success: false,
-      total: 10,
+      total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
       error: 'Compilation Error',
@@ -202,7 +218,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   if (!problem) {
     return {
       success: false,
-      total: 10,
+      total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
       error: 'Question Not Found',
@@ -216,7 +232,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   if (!testCases || testCases.length !== 10) {
     return {
       success: false,
-      total: 10,
+      total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
       error: 'Invalid Question Configuration',
@@ -225,12 +241,15 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     }
   }
 
+  const casesToExecute = isSubmit ? testCases : testCases.slice(0, 3)
+  const totalCount = isSubmit ? 10 : 3
+
   const startTime = performance.now()
   const sanitizedResults: ClientTestCaseResult[] = []
   let passedCount = 0
 
-  for (let i = 0; i < testCases.length; i++) {
-    const tc = testCases[i]
+  for (let i = 0; i < casesToExecute.length; i++) {
+    const tc = casesToExecute[i]
     const tcStart = performance.now()
     const exec = runSingleTestCase(code, language, tc.input)
     const tcTime = Math.round(performance.now() - tcStart)
@@ -243,7 +262,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     )) {
       return {
         success: false,
-        total: 10,
+        total: totalCount,
         passed: 0,
         overallTimeMs: tcTime,
         error: 'Compilation Error',
@@ -252,9 +271,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
       }
     }
 
-    const normActual = normalizeOutput(exec.output)
-    const normExpected = normalizeOutput(tc.expectedOutput)
-    const passed = !exec.error && normActual === normExpected
+    const passed = !exec.error && compareOutput(exec.output, tc.expectedOutput)
 
     if (passed) passedCount++
 
@@ -296,7 +313,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
 
   return {
     success: true,
-    total: 10,
+    total: totalCount,
     passed: passedCount,
     overallTimeMs,
     testCases: sanitizedResults,

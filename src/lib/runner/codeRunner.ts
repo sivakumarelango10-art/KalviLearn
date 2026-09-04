@@ -42,7 +42,8 @@ export async function executeCode(
   questionSlug: string,
   language: string,
   code: string,
-  clientVisibleCases?: Array<{ testIndex: number; input: string; expectedOutput: string }>
+  clientVisibleCases?: Array<{ testIndex: number; input: string; expectedOutput: string }>,
+  isSubmit: boolean = true
 ): Promise<RunResult> {
   const startTime = performance.now()
 
@@ -56,6 +57,7 @@ export async function executeCode(
         questionSlug,
         language,
         code,
+        isSubmit,
       }),
     })
 
@@ -66,14 +68,14 @@ export async function executeCode(
         return {
           passed: false,
           passedCount: 0,
-          totalCount: 10,
+          totalCount: data.total || (isSubmit ? 10 : 3),
           results: [],
           overallTimeMs: Math.round(performance.now() - startTime),
           compilationError: data.message || 'Compilation failed.',
         }
       }
 
-      if (Array.isArray(data.testCases) && data.testCases.length === 10) {
+      if (Array.isArray(data.testCases)) {
         const mappedResults: TestCaseExecution[] = data.testCases.map((tc: any) => ({
           testIndex: tc.testIndex,
           status: tc.status,
@@ -88,67 +90,74 @@ export async function executeCode(
         }))
 
         return {
-          passed: data.passed === 10,
+          passed: data.passed === (data.total || (isSubmit ? 10 : 3)),
           passedCount: data.passed,
-          totalCount: 10,
+          totalCount: data.total || (isSubmit ? 10 : 3),
           results: mappedResults,
           overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
         }
       }
-    }
-  } catch (apiError) {
-    console.warn('Backend /api/execute unavailable, attempting local fallback evaluation:', apiError)
-  }
-
-  // Fallback if network/API is offline:
-  // Execute visible cases client-side if available, and mock hidden status strictly without leaking data
-  const results: TestCaseExecution[] = []
-  let passedCount = 0
-
-  if (clientVisibleCases && clientVisibleCases.length > 0) {
-    for (let i = 0; i < 10; i++) {
-      const isVisible = i < 3
-      const num = i + 1
-
-      if (isVisible && clientVisibleCases[i]) {
-        const tc = clientVisibleCases[i]
-        const execResult: ExecutionResult = await executeInWorker(code, language, tc.input, 3000)
-        const normActual = normalizeOutput(execResult.output)
-        const normExpected = normalizeOutput(tc.expectedOutput)
-        const passed = !execResult.error && normActual === normExpected
-        if (passed) passedCount++
-
-        results.push({
-          testIndex: num,
-          status: passed ? 'passed' : 'failed',
-          passed,
-          isHidden: false,
-          executionTimeMs: execResult.executionTimeMs,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          actualOutput: execResult.output || (execResult.error ? `Error: ${execResult.error}` : '(no output)'),
-          error: execResult.error,
-          isTimeLimitExceeded: !!execResult.isTimeLimitExceeded,
-        })
-      } else {
-        // Hidden case in offline fallback: never guess or leak
-        results.push({
-          testIndex: num,
-          status: 'failed',
+    } else {
+      const errData = await response.json().catch(() => ({}))
+      if (errData.error === 'Compilation Error') {
+        return {
           passed: false,
-          isHidden: true,
-          executionTimeMs: 0,
-        })
+          passedCount: 0,
+          totalCount: isSubmit ? 10 : 3,
+          results: [],
+          overallTimeMs: Math.round(performance.now() - startTime),
+          compilationError: errData.message || 'Compilation failed.',
+        }
       }
     }
+  } catch (apiError) {
+    console.warn('Backend /api/execute unavailable, attempting local evaluation:', apiError)
   }
 
+  // If Run Code (not submit), execute visible cases locally via worker for immediate feedback
+  if (!isSubmit && clientVisibleCases && clientVisibleCases.length > 0) {
+    const results: TestCaseExecution[] = []
+    let passedCount = 0
+
+    for (let i = 0; i < clientVisibleCases.length; i++) {
+      const tc = clientVisibleCases[i]
+      const execResult: ExecutionResult = await executeInWorker(code, language, tc.input, 3000)
+      const normActual = normalizeOutput(execResult.output)
+      const normExpected = normalizeOutput(tc.expectedOutput)
+      const passed = !execResult.error && normActual === normExpected
+      if (passed) passedCount++
+
+      results.push({
+        testIndex: tc.testIndex || i + 1,
+        status: passed ? 'passed' : 'failed',
+        passed,
+        isHidden: false,
+        executionTimeMs: execResult.executionTimeMs,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        actualOutput: execResult.output || (execResult.error ? `Error: ${execResult.error}` : '(no output)'),
+        error: execResult.error,
+        isTimeLimitExceeded: !!execResult.isTimeLimitExceeded,
+      })
+    }
+
+    return {
+      passed: passedCount === clientVisibleCases.length,
+      passedCount,
+      totalCount: clientVisibleCases.length,
+      results,
+      overallTimeMs: Math.round(performance.now() - startTime),
+    }
+  }
+
+  // If Submit Code and server is offline, return honest server error rather than fake failed statuses
   return {
-    passed: passedCount === 10,
-    passedCount,
+    passed: false,
+    passedCount: 0,
     totalCount: 10,
-    results,
+    results: [],
     overallTimeMs: Math.round(performance.now() - startTime),
+    compilationError: 'Submission execution service is temporarily unavailable. Please try again.',
   }
 }
 

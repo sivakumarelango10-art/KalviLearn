@@ -3,42 +3,47 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 
 function apiPlugin(): Plugin {
+  const middleware = (server: any) => async (req: any, res: any, next: any) => {
+    if (req.url === '/api/execute' && req.method === 'POST') {
+      let rawData = ''
+      req.on('data', (chunk: any) => {
+        rawData += chunk
+      })
+      req.on('end', async () => {
+        try {
+          const body = JSON.parse(rawData || '{}')
+          const { executeQuestion } = await server.ssrLoadModule('/src/server/executeService.ts')
+          const result = await executeQuestion(body)
+          res.statusCode = 200
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(result))
+        } catch (err: any) {
+          res.statusCode = 500
+          res.setHeader('Content-Type', 'application/json')
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Execution Error',
+              message: err.message || 'Internal Server Error',
+              total: 10,
+              passed: 0,
+              testCases: [],
+            })
+          )
+        }
+      })
+      return
+    }
+    next()
+  }
+
   return {
     name: 'api-server-middleware',
     configureServer(server) {
-      server.middlewares.use(async (req, res, next) => {
-        if (req.url === '/api/execute' && req.method === 'POST') {
-          let rawData = ''
-          req.on('data', (chunk) => {
-            rawData += chunk
-          })
-          req.on('end', async () => {
-            try {
-              const body = JSON.parse(rawData || '{}')
-              const { executeQuestion } = await server.ssrLoadModule('/src/server/executeService.ts')
-              const result = await executeQuestion(body)
-              res.statusCode = 200
-              res.setHeader('Content-Type', 'application/json')
-              res.end(JSON.stringify(result))
-            } catch (err: any) {
-              res.statusCode = 500
-              res.setHeader('Content-Type', 'application/json')
-              res.end(
-                JSON.stringify({
-                  success: false,
-                  error: 'Execution Error',
-                  message: err.message || 'Internal Server Error',
-                  total: 10,
-                  passed: 0,
-                  testCases: [],
-                })
-              )
-            }
-          })
-          return
-        }
-        next()
-      })
+      server.middlewares.use(middleware(server))
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware(server))
     },
   }
 }

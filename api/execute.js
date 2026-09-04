@@ -1,4 +1,803 @@
-{
+// src/lib/runner/pythonRunner.ts
+if (typeof String !== "undefined") {
+  const sp = String.prototype;
+  if (!sp.strip) sp.strip = function() {
+    return this.trim();
+  };
+  if (!sp.rstrip) sp.rstrip = function() {
+    return this.trimEnd();
+  };
+  if (!sp.lstrip) sp.lstrip = function() {
+    return this.trimStart();
+  };
+  if (!sp.join) {
+    sp.join = function(arr) {
+      if (!arr) return "";
+      const list = Array.isArray(arr) ? arr : Array.from(arr);
+      return list.join(this.toString());
+    };
+  }
+  if (!sp.startswith) sp.startswith = function(p) {
+    return this.startsWith(p);
+  };
+  if (!sp.endswith) sp.endswith = function(s) {
+    return this.endsWith(s);
+  };
+  if (!sp.isdigit) sp.isdigit = function() {
+    return /^\d+$/.test(this);
+  };
+  if (!sp.isalpha) sp.isalpha = function() {
+    return /^[a-zA-Z]+$/.test(this);
+  };
+  if (!sp.isalnum) sp.isalnum = function() {
+    return /^[a-zA-Z0-9]+$/.test(this);
+  };
+  if (!sp.isupper) sp.isupper = function() {
+    return this === this.toUpperCase() && this !== this.toLowerCase();
+  };
+  if (!sp.islower) sp.islower = function() {
+    return this === this.toLowerCase() && this !== this.toUpperCase();
+  };
+  if (!sp.count) {
+    sp.count = function(sub) {
+      if (!sub) return 0;
+      let count = 0;
+      let pos = 0;
+      while ((pos = this.indexOf(sub, pos)) !== -1) {
+        count++;
+        pos += sub.length;
+      }
+      return count;
+    };
+  }
+  if (!sp.find) sp.find = function(sub, start) {
+    return this.indexOf(sub, start);
+  };
+  if (!sp.index) {
+    sp.index = function(sub, start) {
+      const idx = this.indexOf(sub, start);
+      if (idx === -1) throw new Error(`ValueError: substring not found: ${sub}`);
+      return idx;
+    };
+  }
+}
+if (typeof Array !== "undefined") {
+  const ap = Array.prototype;
+  if (!ap.count) {
+    ap.count = function(val) {
+      let c = 0;
+      for (let i = 0; i < this.length; i++) {
+        if (this[i] === val) c++;
+      }
+      return c;
+    };
+  }
+  if (!ap.index) {
+    ap.index = function(val) {
+      const idx = this.indexOf(val);
+      if (idx === -1) throw new Error(`ValueError: ${val} is not in list`);
+      return idx;
+    };
+  }
+  if (!ap.remove) {
+    ap.remove = function(val) {
+      const idx = this.indexOf(val);
+      if (idx === -1) throw new Error(`ValueError: list.remove(x): x not in list`);
+      this.splice(idx, 1);
+    };
+  }
+  if (!ap.extend) {
+    ap.extend = function(iterable) {
+      if (iterable) {
+        for (const item of iterable) {
+          this.push(item);
+        }
+      }
+    };
+  }
+  const originalSort = Array.prototype.sort;
+  Array.prototype.sort = function(compareFn) {
+    if (typeof compareFn === "function") {
+      return originalSort.call(this, compareFn);
+    }
+    const allNumeric = this.length > 0 && this.every((x) => typeof x === "number" && !isNaN(x));
+    if (allNumeric) {
+      return originalSort.call(this, (a, b) => a - b);
+    }
+    return originalSort.call(this);
+  };
+}
+function executePython(code, input) {
+  const outputs = [];
+  const normalizedInput = input.replace(/\r\n/g, "\n");
+  const inputLines = normalizedInput.split("\n");
+  let lineIndex = 0;
+  const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
+  let tokenIndex = 0;
+  const sys = {
+    stdin: {
+      read: () => normalizedInput,
+      readline: () => {
+        if (lineIndex < inputLines.length) {
+          return inputLines[lineIndex++];
+        }
+        return "";
+      }
+    },
+    stdout: {
+      write: (val) => outputs.push(String(val))
+    }
+  };
+  const math = {
+    sqrt: Math.sqrt,
+    floor: Math.floor,
+    ceil: Math.ceil,
+    pow: Math.pow,
+    abs: Math.abs,
+    pi: Math.PI,
+    e: Math.E,
+    inf: Infinity,
+    gcd: (a, b) => {
+      let x = Math.abs(Math.round(a));
+      let y = Math.abs(Math.round(b));
+      while (y) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    },
+    lcm: (a, b) => {
+      if (a === 0 || b === 0) return 0;
+      let x = Math.abs(Math.round(a));
+      let y = Math.abs(Math.round(b));
+      const prod = x * y;
+      while (y) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return Math.round(prod / x);
+    },
+    factorial: (n) => {
+      let r = 1;
+      for (let i = 2; i <= n; i++) r *= i;
+      return r;
+    },
+    log: Math.log,
+    log2: Math.log2,
+    log10: Math.log10
+  };
+  const env = {
+    sys,
+    math,
+    int: (val) => {
+      if (val === void 0 || val === null || val === "") return 0;
+      const parsed = parseInt(String(val).trim(), 10);
+      return isNaN(parsed) ? 0 : parsed;
+    },
+    float: (val) => {
+      if (val === void 0 || val === null || val === "") return 0;
+      const parsed = parseFloat(String(val).trim());
+      return isNaN(parsed) ? 0 : parsed;
+    },
+    str: (val) => String(val),
+    len: (val) => val ? val.length !== void 0 ? val.length : Object.keys(val).length : 0,
+    max: (...args) => {
+      const flat = Array.isArray(args[0]) ? args[0] : args;
+      return Math.max(...flat);
+    },
+    min: (...args) => {
+      const flat = Array.isArray(args[0]) ? args[0] : args;
+      return Math.min(...flat);
+    },
+    sum: (arr) => {
+      if (!Array.isArray(arr)) return 0;
+      return arr.reduce((a, b) => a + Number(b), 0);
+    },
+    abs: (n) => Math.abs(n),
+    round: (n, decimals = 0) => decimals === 0 ? Math.round(n) : Number(n.toFixed(decimals)),
+    pow: (base, exp, mod) => {
+      if (mod) {
+        return Number(BigInt(Math.floor(base)) ** BigInt(Math.floor(exp)) % BigInt(Math.floor(mod)));
+      }
+      return Math.pow(base, exp);
+    },
+    sorted: (arr) => {
+      if (!Array.isArray(arr)) return [];
+      return [...arr].sort((a, b) => a > b ? 1 : a < b ? -1 : 0);
+    },
+    list: (iterable) => {
+      if (Array.isArray(iterable)) return [...iterable];
+      if (iterable && typeof iterable[Symbol.iterator] === "function") {
+        return Array.from(iterable);
+      }
+      return [];
+    },
+    dict: () => ({}),
+    set: (iterable) => new Set(iterable ? Array.isArray(iterable) ? iterable : Array.from(iterable) : []),
+    enumerate: (iterable, start = 0) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || []);
+      return arr.map((item, idx) => [idx + start, item]);
+    },
+    zip: (...iters) => {
+      const arrays = iters.map((it) => Array.isArray(it) ? it : Array.from(it || []));
+      const minLen = Math.min(...arrays.map((a) => a.length));
+      const result = [];
+      for (let i = 0; i < minLen; i++) {
+        result.push(arrays.map((a) => a[i]));
+      }
+      return result;
+    },
+    reversed: (iterable) => {
+      const arr = Array.isArray(iterable) ? [...iterable] : Array.from(iterable || []);
+      return arr.reverse();
+    },
+    all: (iterable) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || []);
+      return arr.every(Boolean);
+    },
+    any: (iterable) => {
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable || []);
+      return arr.some(Boolean);
+    },
+    chr: (code2) => String.fromCharCode(code2),
+    ord: (char) => char ? char.charCodeAt(0) : 0,
+    intDiv: (a, b) => {
+      if (b === 0) throw new Error("ZeroDivisionError: integer division or modulo by zero");
+      return Math.floor(a / b);
+    },
+    div: (a, b) => {
+      if (b === 0) throw new Error("ZeroDivisionError: division by zero");
+      return a / b;
+    },
+    mod: (a, b) => {
+      if (b === 0) throw new Error("ZeroDivisionError: integer division or modulo by zero");
+      return (a % b + b) % b;
+    },
+    map: (fn, iterable) => {
+      if (!iterable) return [];
+      const arr = Array.isArray(iterable) ? iterable : Array.from(iterable);
+      return arr.map(fn);
+    },
+    range: (start, stop, step = 1) => {
+      if (stop === void 0) {
+        stop = start;
+        start = 0;
+      }
+      const res = [];
+      if (step > 0) {
+        for (let i = start; i < stop; i += step) res.push(i);
+      } else {
+        for (let i = start; i > stop; i += step) res.push(i);
+      }
+      return res;
+    },
+    print: (...args) => {
+      const line = args.map((a) => {
+        if (a === null) return "None";
+        if (a === true) return "True";
+        if (a === false) return "False";
+        if (typeof a === "object") return JSON.stringify(a);
+        return String(a);
+      }).join(" ");
+      outputs.push(line);
+    },
+    input: () => {
+      if (lineIndex < inputLines.length) {
+        return inputLines[lineIndex++];
+      }
+      if (tokenIndex < inputTokens.length) {
+        return inputTokens[tokenIndex++];
+      }
+      return "";
+    },
+    True: true,
+    False: false,
+    None: null
+  };
+  try {
+    const rawLines = code.split(/\r?\n/);
+    const transformedLines = [];
+    let hasMainExecution = false;
+    for (const raw of rawLines) {
+      let line = raw.replace(/#.*$/, "");
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      if (trimmed.startsWith("import ") || trimmed.startsWith("from ") || trimmed === "import") {
+        line = line.replace(/^(.*)(import|from)(.*)$/, "// $1$2$3");
+      }
+      if (trimmed === "pass") {
+        line = line.replace(/\bpass\b/, "// pass");
+      }
+      if (trimmed.includes("__name__ == '__main__'") || trimmed.includes('__name__ == "__main__"')) {
+        hasMainExecution = true;
+        line = line.replace(/if\s+__name__\s*==\s*['"]__main__['"]\s*:/, "if (true) {");
+      }
+      if (trimmed === "solve()" || trimmed === "main()") {
+        hasMainExecution = true;
+      }
+      let divPrev;
+      do {
+        divPrev = line;
+        line = line.replace(/\(([^()]+)\)\s*\/\/\s*\(([^()]+)\)/g, "intDiv(($1), ($2))").replace(/\(([^()]+)\)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, "intDiv(($1), $2)").replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*\(([^()]+)\)/g, "intDiv($1, ($2))").replace(/([a-zA-Z0-9_.]+)\s*\/\/\s*([a-zA-Z0-9_.]+)/g, "intDiv($1, $2)");
+      } while (line !== divPrev);
+      const ternaryRegex = /((?:'[^']*'|"[^"]*"|[^,\(\)\s]+))\s+if\s+([^:]+?)\s+else\s+((?:'[^']*'|"[^"]*"|[^,\(\)\s]+))/g;
+      line = line.replace(ternaryRegex, "($2 ? $1 : $3)");
+      line = line.replace(
+        /\[\s*([a-zA-Z0-9_().+*\/ -]+)\s+for\s+([a-zA-Z0-9_]+)\s+in\s+([^\]]+)\]/g,
+        "($3).map(($2) => $1)"
+      );
+      line = line.replace(
+        /if\s+([a-zA-Z0-9_'"\(\)]+)\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
+        "if (($2).includes ? ($2).includes($1) : ($1 in $2)) {"
+      );
+      line = line.replace(
+        /if\s+([a-zA-Z0-9_'"\(\)]+)\s+not\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
+        "if (!(($2).includes ? ($2).includes($1) : ($1 in $2))) {"
+      );
+      line = line.replace(/\band\s+/g, "&& ").replace(/\bor\s+/g, "|| ").replace(/\bnot\s+/g, "!").replace(/\bTrue\b/g, "true").replace(/\bFalse\b/g, "false").replace(/\bNone\b/g, "null").replace(/\.strip\(\)/g, ".trim()").replace(/\.rstrip\(\)/g, ".trimEnd()").replace(/\.lstrip\(\)/g, ".trimStart()").replace(/\.split\(\)/g, ".split(/\\s+/).filter(Boolean)").replace(/\.append\((.*?)\)/g, ".push($1)").replace(/\.lower\(\)/g, ".toLowerCase()").replace(/\.upper\(\)/g, ".toUpperCase()").replace(/\belif\s+(.*?):/g, "else if ($1) {").replace(/\bdef\s+([a-zA-Z0-9_]+)\s*\((.*?)\):/g, "function $1($2) {").replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+range\((.*?)\):/g, "for (let $1 of range($2)) {").replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+(.*?):/g, "for (let $1 of $2) {").replace(/\bwhile\s+(.*?):/g, "while ($1) {").replace(/\bif\s+(.*?):/g, "if ($1) {").replace(/\belse\s*:/g, "else {");
+      if (/^[a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+\s*=/.test(trimmed)) {
+        line = line.replace(
+          /^(\s*)([a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+)\s*=\s*(.*)$/,
+          "$1let [$2] = $4"
+        );
+      }
+      transformedLines.push(line);
+    }
+    let formattedJs = "";
+    const indentStack = [0];
+    for (let i = 0; i < transformedLines.length; i++) {
+      const line = transformedLines[i];
+      const trimmed = line.trim();
+      const indent = line.search(/\S/);
+      while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) {
+        indentStack.pop();
+        formattedJs += "}\n";
+      }
+      formattedJs += trimmed + "\n";
+      if (trimmed.endsWith("{")) {
+        indentStack.push(indent + 4);
+      }
+    }
+    while (indentStack.length > 1) {
+      indentStack.pop();
+      formattedJs += "}\n";
+    }
+    if (!hasMainExecution) {
+      formattedJs += `
+if (typeof solve === 'function') {
+  solve();
+} else if (typeof main === 'function') {
+  main();
+}
+`;
+    }
+    const keys = Object.keys(env);
+    const values = Object.values(env);
+    const runner = new Function(...keys, formattedJs);
+    runner(...values);
+    return { output: outputs.join("\n").trim() };
+  } catch (err) {
+    return {
+      output: outputs.join("\n").trim(),
+      error: err.message || "Execution error"
+    };
+  }
+}
+
+// src/lib/runner/cppRunner.ts
+function executeCpp(code, input) {
+  const outputs = [];
+  const normalizedInput = input.replace(/\r\n/g, "\n");
+  const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
+  let tokenIdx = 0;
+  const inputLines = normalizedInput.split("\n");
+  let lineIdx = 0;
+  let lastReadOk = true;
+  const __cin = {
+    next: () => {
+      if (tokenIdx < tokens.length) {
+        lastReadOk = true;
+        const val = tokens[tokenIdx++];
+        const num = Number(val);
+        return isNaN(num) ? val : num;
+      }
+      lastReadOk = false;
+      return 0;
+    },
+    nextString: () => {
+      if (tokenIdx < tokens.length) {
+        lastReadOk = true;
+        return tokens[tokenIdx++];
+      }
+      lastReadOk = false;
+      return "";
+    },
+    nextLine: () => {
+      if (lineIdx < inputLines.length) {
+        lastReadOk = true;
+        return inputLines[lineIdx++];
+      }
+      lastReadOk = false;
+      return "";
+    },
+    hasNext: () => tokenIdx < tokens.length,
+    ok: () => lastReadOk
+  };
+  let currentLineBuffer = "";
+  const __cout = {
+    write: (val) => {
+      if (val === void 0 || val === null) return;
+      const s = String(val);
+      if (s.includes("\n")) {
+        const parts = s.split("\n");
+        currentLineBuffer += parts[0];
+        outputs.push(currentLineBuffer);
+        for (let i = 1; i < parts.length - 1; i++) {
+          outputs.push(parts[i]);
+        }
+        currentLineBuffer = parts[parts.length - 1];
+      } else {
+        currentLineBuffer += s;
+      }
+    },
+    endl: () => {
+      outputs.push(currentLineBuffer);
+      currentLineBuffer = "";
+    },
+    flush: () => {
+      if (currentLineBuffer.length > 0) {
+        outputs.push(currentLineBuffer);
+        currentLineBuffer = "";
+      }
+    }
+  };
+  const env = {
+    __cin,
+    __cout,
+    endl: "\n",
+    INT_MAX: 2147483647,
+    INT_MIN: -2147483648,
+    LLONG_MAX: Number.MAX_SAFE_INTEGER,
+    LLONG_MIN: Number.MIN_SAFE_INTEGER,
+    min: (...args) => Math.min(...args),
+    max: (...args) => Math.max(...args),
+    abs: (x) => Math.abs(x),
+    sqrt: (x) => Math.sqrt(x),
+    pow: (b, e) => Math.pow(b, e),
+    __gcd: (a, b) => {
+      let x = Math.abs(Math.round(a));
+      let y = Math.abs(Math.round(b));
+      while (y) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    },
+    gcd: (a, b) => {
+      let x = Math.abs(Math.round(a));
+      let y = Math.abs(Math.round(b));
+      while (y) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    },
+    to_string: (x) => String(x),
+    stoi: (s) => parseInt(String(s), 10) || 0,
+    stoll: (s) => parseInt(String(s), 10) || 0,
+    stod: (s) => parseFloat(String(s)) || 0,
+    printf: (...args) => {
+      if (args.length > 0) {
+        __cout.write(args.join(" "));
+      }
+    }
+  };
+  try {
+    let cleanCode = code;
+    cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
+    cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#include\s*<.*?>/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#include\s*".*?"/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#define\s+.*$/gm, "");
+    cleanCode = cleanCode.replace(/^\s*using\s+namespace\s+std\s*;/gm, "");
+    cleanCode = cleanCode.replace(/std::/g, "");
+    cleanCode = cleanCode.replace(/ios_base::sync_with_stdio\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cin\.tie\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cout\.tie\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cout\s*<<\s*([^\n;]+);/g, (_match, exprList) => {
+      const parts = exprList.split("<<").map((p) => p.trim()).filter(Boolean);
+      const statements = parts.map((p) => {
+        if (p === "endl" || p === "'\\n'" || p === '"\\n"') {
+          return "__cout.endl()";
+        }
+        return `__cout.write(${p})`;
+      });
+      return "{ " + statements.join("; ") + "; }";
+    });
+    cleanCode = cleanCode.replace(/\b(if|while)\s*\(\s*cin\s*>>\s*([^\)]+)\)/g, (_match, kw, varList) => {
+      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
+      const assignments = vars.map((v) => `${v} = __cin.next()`).join(", ");
+      return `${kw} ((${assignments}), __cin.ok())`;
+    });
+    cleanCode = cleanCode.replace(/cin\s*>>\s*([^\n;]+);/g, (_match, varList) => {
+      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
+      const statements = vars.map((v) => {
+        return `${v} = __cin.next()`;
+      });
+      return "{ " + statements.join("; ") + "; }";
+    });
+    cleanCode = cleanCode.replace(/getline\s*\(\s*cin\s*,\s*([a-zA-Z0-9_]+)\s*\)/g, "$1 = __cin.nextLine()");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^,]+)\s*,\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill($3);");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill(0);");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*;/g, "let $1 = [];");
+    cleanCode = cleanCode.replace(/\b(?:int|long\s+long|double|float|char|bool)\s+([a-zA-Z0-9_]+)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
+    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*,\s*greater\s*<[^>]+>\s*\(\s*\)\s*\)/g, "$1.sort((a, b) => b - a)");
+    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, "$1.sort((a, b) => a - b)");
+    cleanCode = cleanCode.replace(/reverse\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, "$1.reverse()");
+    cleanCode = cleanCode.replace(/\.push_back\s*\(/g, ".push(");
+    cleanCode = cleanCode.replace(/\.pop_back\s*\(\s*\)/g, ".pop()");
+    cleanCode = cleanCode.replace(/\.size\s*\(\s*\)/g, ".length");
+    const typeRegex = /\b(?:int|long\s+long|long|double|float|bool|string|char|auto)\s+([a-zA-Z0-9_,\s=+\-*/%()]+);/g;
+    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
+      const decls = declBody.split(",").map((d) => {
+        const item = d.trim();
+        if (item.includes("=")) {
+          return item;
+        }
+        return `${item} = 0`;
+      });
+      return `let ${decls.join(", ")};`;
+    });
+    cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long\s+long|long|size_t|auto)\s+/g, "for (let ");
+    cleanCode = cleanCode.replace(/\b(?:int|void|long\s+long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
+      const cleanParams = params.split(",").map((p) => {
+        const parts = p.trim().split(/\s+/);
+        return parts[parts.length - 1].replace(/[&*]/g, "");
+      }).filter(Boolean).join(", ");
+      return `function ${fnName}(${cleanParams}) {`;
+    });
+    cleanCode += `
+__cout.flush();
+if (typeof main === 'function') {
+  main();
+} else if (typeof solve === 'function') {
+  solve();
+}
+__cout.flush();
+`;
+    const keys = Object.keys(env);
+    const values = Object.values(env);
+    const runner = new Function(...keys, cleanCode);
+    runner(...values);
+    __cout.flush();
+    return { output: outputs.join("\n").trim() };
+  } catch (err) {
+    return {
+      output: outputs.join("\n").trim(),
+      error: err.message || "C++ execution error"
+    };
+  }
+}
+
+// src/lib/runner/javaRunner.ts
+function executeJava(code, input) {
+  const outputs = [];
+  const normalizedInput = input.replace(/\r\n/g, "\n");
+  const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
+  const inputLines = normalizedInput.split("\n");
+  let currentLineBuffer = "";
+  const System = {
+    in: {},
+    out: {
+      println: (...args) => {
+        if (args.length === 0) {
+          outputs.push(currentLineBuffer);
+          currentLineBuffer = "";
+          return;
+        }
+        currentLineBuffer += args.map((a) => String(a)).join(" ");
+        outputs.push(currentLineBuffer);
+        currentLineBuffer = "";
+      },
+      print: (...args) => {
+        currentLineBuffer += args.map((a) => String(a)).join(" ");
+        if (currentLineBuffer.includes("\n")) {
+          const parts = currentLineBuffer.split("\n");
+          for (let i = 0; i < parts.length - 1; i++) {
+            outputs.push(parts[i]);
+          }
+          currentLineBuffer = parts[parts.length - 1];
+        }
+      },
+      printf: (format, ...args) => {
+        let formatted = format;
+        for (const arg of args) {
+          formatted = formatted.replace(/%[dsf]/, String(arg));
+        }
+        System.out.print(formatted);
+      },
+      flush: () => {
+        if (currentLineBuffer.length > 0) {
+          outputs.push(currentLineBuffer);
+          currentLineBuffer = "";
+        }
+      }
+    }
+  };
+  class Scanner {
+    tokenIdx = 0;
+    lineIdx = 0;
+    constructor(_source) {
+      this.tokenIdx = 0;
+      this.lineIdx = 0;
+    }
+    nextInt() {
+      if (this.tokenIdx < tokens.length) {
+        return parseInt(tokens[this.tokenIdx++], 10) || 0;
+      }
+      return 0;
+    }
+    nextLong() {
+      if (this.tokenIdx < tokens.length) {
+        return parseInt(tokens[this.tokenIdx++], 10) || 0;
+      }
+      return 0;
+    }
+    nextDouble() {
+      if (this.tokenIdx < tokens.length) {
+        return parseFloat(tokens[this.tokenIdx++]) || 0;
+      }
+      return 0;
+    }
+    nextFloat() {
+      return this.nextDouble();
+    }
+    next() {
+      if (this.tokenIdx < tokens.length) {
+        return tokens[this.tokenIdx++];
+      }
+      return "";
+    }
+    nextLine() {
+      if (this.lineIdx < inputLines.length) {
+        return inputLines[this.lineIdx++];
+      }
+      return "";
+    }
+    hasNext() {
+      return this.tokenIdx < tokens.length;
+    }
+    hasNextInt() {
+      return this.hasNext() && !isNaN(Number(tokens[this.tokenIdx]));
+    }
+    hasNextLong() {
+      return this.hasNext() && !isNaN(Number(tokens[this.tokenIdx]));
+    }
+    hasNextDouble() {
+      return this.hasNext() && !isNaN(Number(tokens[this.tokenIdx]));
+    }
+    hasNextLine() {
+      return this.lineIdx < inputLines.length;
+    }
+    close() {
+    }
+  }
+  const Arrays = {
+    sort: (arr, ...args) => {
+      if (Array.isArray(arr)) {
+        if (args.length === 0) {
+          arr.sort((a, b) => typeof a === "number" && typeof b === "number" ? a - b : String(a).localeCompare(String(b)));
+        }
+      }
+    },
+    fill: (arr, val) => {
+      if (Array.isArray(arr)) arr.fill(val);
+    },
+    toString: (arr) => JSON.stringify(arr)
+  };
+  const Collections = {
+    sort: (list) => {
+      if (Array.isArray(list)) {
+        list.sort((a, b) => a - b);
+      }
+    },
+    reverse: (list) => {
+      if (Array.isArray(list)) list.reverse();
+    }
+  };
+  const env = {
+    System,
+    Scanner,
+    Arrays,
+    Collections,
+    Integer: {
+      parseInt: (s) => parseInt(String(s), 10) || 0,
+      MAX_VALUE: 2147483647,
+      MIN_VALUE: -2147483648
+    },
+    Long: {
+      parseLong: (s) => parseInt(String(s), 10) || 0,
+      MAX_VALUE: Number.MAX_SAFE_INTEGER,
+      MIN_VALUE: Number.MIN_SAFE_INTEGER
+    },
+    Double: {
+      parseDouble: (s) => parseFloat(String(s)) || 0
+    },
+    Math: {
+      max: Math.max,
+      min: Math.min,
+      abs: Math.abs,
+      sqrt: Math.sqrt,
+      pow: Math.pow,
+      floor: Math.floor,
+      ceil: Math.ceil,
+      round: Math.round,
+      PI: Math.PI
+    }
+  };
+  try {
+    let cleanCode = code;
+    cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
+    cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
+    cleanCode = cleanCode.replace(/^\s*package\s+.*?;/gm, "");
+    cleanCode = cleanCode.replace(/^\s*import\s+.*?;/gm, "");
+    cleanCode = cleanCode.replace(/(?:public\s+)?class\s+([a-zA-Z0-9_]+)\s*\{/, "");
+    const lastBrace = cleanCode.lastIndexOf("}");
+    if (lastBrace !== -1) {
+      cleanCode = cleanCode.substring(0, lastBrace) + cleanCode.substring(lastBrace + 1);
+    }
+    cleanCode = cleanCode.replace(/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*[a-zA-Z0-9_]*\s*\)/g, "function main()");
+    cleanCode = cleanCode.replace(/public\s+static\s+(?:void|int|long|double|boolean|String)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/g, (_m, fnName, params) => {
+      const cleanParams = params.split(",").map((p) => {
+        const parts = p.trim().split(/\s+/);
+        return parts[parts.length - 1];
+      }).filter(Boolean).join(", ");
+      return `function ${fnName}(${cleanParams})`;
+    });
+    cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*new\s+(?:int|long|double|float|boolean|String)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
+    cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|StringTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, "let $1 = new ");
+    cleanCode = cleanCode.replace(/(?:ArrayList|List)\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*new\s+(?:ArrayList|List)\s*<[^>]*>\s*\(\s*\)\s*;/g, "let $1 = [];");
+    const typeRegex = /\b(?:int|long|double|float|boolean|char|String)\s+([a-zA-Z0-9_,\s=+\-*/%().]+);/g;
+    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
+      const decls = declBody.split(",").map((d) => {
+        const item = d.trim();
+        if (item.includes("=")) {
+          return item;
+        }
+        return `${item} = 0`;
+      });
+      return `let ${decls.join(", ")};`;
+    });
+    cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double)\s+/g, "for (let ");
+    cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double|String|char)\s+([a-zA-Z0-9_]+)\s*:\s*([a-zA-Z0-9_]+)\s*\)/g, "for (let $1 of $2)");
+    cleanCode = cleanCode.replace(/\.charAt\s*\(\s*([^)]+)\s*\)/g, "[$1]");
+    cleanCode = cleanCode.replace(/\.length\s*\(\s*\)/g, ".length");
+    cleanCode += `
+if (typeof main === 'function') {
+  main();
+}
+System.out.flush();
+`;
+    const keys = Object.keys(env);
+    const values = Object.values(env);
+    const runner = new Function(...keys, cleanCode);
+    runner(...values);
+    System.out.flush();
+    return { output: outputs.join("\n").trim() };
+  } catch (err) {
+    return {
+      output: outputs.join("\n").trim(),
+      error: err.message || "Java execution error"
+    };
+  }
+}
+
+// src/server/data/serverTestCases.ts
+var serverTestCases = {
   "belt-1-q1-sum-of-two-numbers": {
     "title": "Sum of Two Numbers",
     "slug": "belt-1-q1-sum-of-two-numbers",
@@ -5609,4 +6408,316 @@
       }
     ]
   }
+};
+var serverTestCases_default = serverTestCases;
+
+// src/server/executeService.ts
+function normalizeOutput(str) {
+  if (!str) return "";
+  return str.replace(/\r\n/g, "\n").split("\n").map((line) => line.trimEnd()).join("\n").trim();
 }
+function compareOutput(actual, expected) {
+  const normActual = normalizeOutput(actual);
+  const normExpected = normalizeOutput(expected);
+  if (normActual === normExpected) return true;
+  const numActual = Number(normActual);
+  const numExpected = Number(normExpected);
+  if (!isNaN(numActual) && !isNaN(numExpected) && normActual !== "" && normExpected !== "") {
+    return Math.abs(numActual - numExpected) < 1e-5;
+  }
+  return false;
+}
+function executeJavaScript(code, input) {
+  const outputs = [];
+  const normalizedInput = input.replace(/\r\n/g, "\n");
+  const inputLines = normalizedInput.split("\n");
+  const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
+  const customConsole = {
+    log: (...args) => outputs.push(args.map((a) => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ")),
+    info: (...args) => outputs.push(args.map((a) => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ")),
+    error: (...args) => outputs.push(args.map((a) => String(a)).join(" ")),
+    warn: () => {
+    }
+  };
+  const mockFs = {
+    readFileSync: (_fd, _enc) => normalizedInput,
+    readSync: () => normalizedInput
+  };
+  const mockProcess = {
+    stdin: {
+      read: () => normalizedInput,
+      on: (event, cb) => {
+        if (event === "data") cb(normalizedInput);
+        if (event === "end") cb();
+      }
+    },
+    stdout: { write: (data) => outputs.push(String(data)) },
+    exit: () => {
+    }
+  };
+  const mockReadline = {
+    createInterface: () => ({
+      on: (event, cb) => {
+        if (event === "line") {
+          for (const l of inputLines) cb(l);
+        }
+        if (event === "close") cb();
+      },
+      close: () => {
+      }
+    })
+  };
+  const mockRequire = (mod) => {
+    if (mod === "fs") return mockFs;
+    if (mod === "readline") return mockReadline;
+    if (mod === "process") return mockProcess;
+    return {};
+  };
+  const prelude = `
+    const print = console.log;
+    let __lIdx = 0, __tIdx = 0;
+    const __lines = ${JSON.stringify(inputLines)};
+    const __tokens = ${JSON.stringify(inputTokens)};
+    const readline = () => __lIdx < __lines.length ? __lines[__lIdx++] : '';
+    const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
+  `;
+  try {
+    const wrapped = new Function("console", "require", "process", `
+      ${prelude}
+      ${code}
+    `);
+    wrapped(customConsole, mockRequire, mockProcess);
+    return { output: outputs.join("\n").trim() };
+  } catch (err) {
+    return { output: outputs.join("\n").trim(), error: err.message || "JavaScript Runtime Error" };
+  }
+}
+function runSingleTestCase(code, language, input) {
+  const lang = (language || "").toLowerCase();
+  if (lang === "python") {
+    return executePython(code, input);
+  } else if (lang === "cpp" || lang === "c++") {
+    return executeCpp(code, input);
+  } else if (lang === "java") {
+    return executeJava(code, input);
+  }
+  return executeJavaScript(code, input);
+}
+function checkCompilation(code, language) {
+  const lang = (language || "").toLowerCase();
+  if (lang === "python") {
+    const dryRun = executePython(code, "");
+    if (dryRun.error && (dryRun.error.includes("SyntaxError") || dryRun.error.includes("Unexpected") || dryRun.error.toLowerCase().includes("syntax error"))) {
+      return { ok: false, error: dryRun.error };
+    }
+  } else if (lang === "javascript" || lang === "js") {
+    try {
+      new Function("console", "require", "process", code);
+    } catch (err) {
+      return { ok: false, error: `SyntaxError: ${err.message}` };
+    }
+  } else if (lang === "cpp" || lang === "c++") {
+    const dryRun = executeCpp(code, "");
+    if (dryRun.error && (dryRun.error.toLowerCase().includes("compil") || dryRun.error.toLowerCase().includes("syntax"))) {
+      return { ok: false, error: dryRun.error };
+    }
+  } else if (lang === "java") {
+    const dryRun = executeJava(code, "");
+    if (dryRun.error && (dryRun.error.toLowerCase().includes("compil") || dryRun.error.toLowerCase().includes("syntax"))) {
+      return { ok: false, error: dryRun.error };
+    }
+  }
+  return { ok: true };
+}
+async function executeQuestion(req) {
+  const { questionSlug, language, code, isSubmit = true } = req;
+  if (!code || !code.trim()) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      error: "Compilation Error",
+      message: "Source code cannot be empty.",
+      testCases: []
+    };
+  }
+  const compCheck = checkCompilation(code, language);
+  if (!compCheck.ok) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      error: "Compilation Error",
+      message: compCheck.error || "Syntax / Compilation error detected in your code.",
+      testCases: []
+    };
+  }
+  let problem = serverTestCases_default[questionSlug];
+  if (!problem) {
+    const foundKey = Object.keys(serverTestCases_default).find(
+      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+    );
+    if (foundKey) {
+      problem = serverTestCases_default[foundKey];
+    }
+  }
+  if (!problem) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      error: "Question Not Found",
+      message: `Question with slug "${questionSlug}" was not found in the test repository.`,
+      testCases: []
+    };
+  }
+  const testCases = problem.testCases;
+  if (!testCases || testCases.length !== 10) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      error: "Invalid Question Configuration",
+      message: `Question must have exactly 10 test cases (found ${testCases?.length || 0}).`,
+      testCases: []
+    };
+  }
+  const casesToExecute = isSubmit ? testCases : testCases.slice(0, 3);
+  const totalCount = isSubmit ? 10 : 3;
+  const startTime = performance.now();
+  const sanitizedResults = [];
+  let passedCount = 0;
+  for (let i = 0; i < casesToExecute.length; i++) {
+    const tc = casesToExecute[i];
+    const tcStart = performance.now();
+    const exec = runSingleTestCase(code, language, tc.input);
+    const tcTime = Math.round(performance.now() - tcStart);
+    if (exec.error && (exec.error.includes("SyntaxError") || exec.error.toLowerCase().includes("syntax error") || exec.error.toLowerCase().includes("compilation error"))) {
+      return {
+        success: false,
+        total: totalCount,
+        passed: 0,
+        overallTimeMs: tcTime,
+        error: "Compilation Error",
+        message: exec.error,
+        testCases: []
+      };
+    }
+    const passed = !exec.error && compareOutput(exec.output, tc.expectedOutput);
+    if (passed) passedCount++;
+    const isVisible = i < 3;
+    let status = passed ? "passed" : "failed";
+    if (exec.error) {
+      if (exec.error.includes("Time Limit Exceeded") || tcTime >= 3e3) {
+        status = "time_limit_exceeded";
+      } else {
+        status = "runtime_error";
+      }
+    }
+    if (isVisible) {
+      sanitizedResults.push({
+        testIndex: tc.testIndex || i + 1,
+        status,
+        visible: true,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        actualOutput: exec.output || (exec.error ? `Error: ${exec.error}` : "(no output)"),
+        error: exec.error,
+        executionTimeMs: tcTime
+      });
+    } else {
+      sanitizedResults.push({
+        testIndex: tc.testIndex || i + 1,
+        status,
+        visible: false,
+        executionTimeMs: tcTime
+      });
+    }
+  }
+  const overallTimeMs = Math.round(performance.now() - startTime);
+  return {
+    success: true,
+    total: totalCount,
+    passed: passedCount,
+    overallTimeMs,
+    testCases: sanitizedResults
+  };
+}
+
+// src/server/apiHandler.ts
+async function handler(req, res) {
+  const sendJson = (statusCode, data) => {
+    if (typeof res.status === "function" && typeof res.json === "function") {
+      return res.status(statusCode).json(data);
+    }
+    res.statusCode = statusCode;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(data));
+  };
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+  if (req.method !== "POST") {
+    return sendJson(405, { error: "Method Not Allowed. Use POST." });
+  }
+  let body = req.body;
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  } else if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
+    body = await new Promise((resolve) => {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on("end", () => {
+        try {
+          resolve(JSON.parse(data || "{}"));
+        } catch {
+          resolve({});
+        }
+      });
+      req.on("error", () => resolve({}));
+      setTimeout(() => resolve(body || {}), 200);
+    });
+  }
+  const { questionSlug, language, code, isSubmit = true } = body || {};
+  if (!questionSlug || !language || !code) {
+    return sendJson(400, {
+      success: false,
+      error: "Missing Parameters",
+      message: "questionSlug, language, and code are required.",
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      testCases: []
+    });
+  }
+  try {
+    const result = await executeQuestion({ questionSlug, language, code, isSubmit });
+    return sendJson(200, result);
+  } catch (err) {
+    return sendJson(500, {
+      success: false,
+      error: "Execution Error",
+      message: err.message || "Internal Server Error",
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      testCases: []
+    });
+  }
+}
+export {
+  handler as default
+};

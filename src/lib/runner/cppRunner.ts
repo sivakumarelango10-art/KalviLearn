@@ -151,7 +151,7 @@ export function executeCpp(code: string, input: string): { output: string; error
         }
         return `__cout.write(${p})`
       })
-      return statements.join('; ') + ';'
+      return '{ ' + statements.join('; ') + '; }'
     })
 
     // 5. Transform if/while conditions with cin >>: if (cin >> a >> b)
@@ -167,7 +167,7 @@ export function executeCpp(code: string, input: string): { output: string; error
       const statements = vars.map((v: string) => {
         return `${v} = __cin.next()`
       })
-      return statements.join('; ') + ';'
+      return '{ ' + statements.join('; ') + '; }'
     })
 
     // 7. Transform getline(cin, str)

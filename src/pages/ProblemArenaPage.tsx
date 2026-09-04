@@ -193,57 +193,60 @@ export const ProblemArenaPage: React.FC = () => {
         currentProblem.slug,
         curriculum.runnerLanguage,
         code,
-        visibleCases
+        visibleCases,
+        isSubmit
       )
 
       if (result.compilationError) {
         setCompilationError(result.compilationError)
         setTestResults(null)
-        setSubmissionFailed({ passed: 0, total: 10 })
+        setSubmissionFailed(isSubmit ? { passed: 0, total: 10 } : null)
         return
       }
 
       setTestResults(result.results)
 
-      if (result.passed && result.passedCount === 10) {
-        // All 10 passed! Fire celebratory confetti and display completion modal
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        })
-        setShowSuccessModal(true)
-      } else {
-        // Record attempt
-        recordProblemAttempt(
-          currentProblem.slug,
-          currentProblem.title,
-          currentLanguage,
-          code,
-          result.passedCount,
-          10,
-          result.overallTimeMs
-        )
-
-        setSubmissionFailed({
-          passed: result.passedCount,
-          total: 10,
-        })
-
-        // Refresh recent submissions
-        const state = getUserState()
-        setRecentSubmissions(
-          state.submissions.filter(
-            (s) =>
-              s.problemSlug === currentProblem.slug &&
-              (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+      if (isSubmit) {
+        if (result.passed && result.passedCount === 10) {
+          // All 10 passed! Fire celebratory confetti and display completion modal
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          })
+          setShowSuccessModal(true)
+        } else {
+          // Record attempt
+          recordProblemAttempt(
+            currentProblem.slug,
+            currentProblem.title,
+            currentLanguage,
+            code,
+            result.passedCount,
+            10,
+            result.overallTimeMs
           )
-        )
+
+          setSubmissionFailed({
+            passed: result.passedCount,
+            total: 10,
+          })
+
+          // Refresh recent submissions
+          const state = getUserState()
+          setRecentSubmissions(
+            state.submissions.filter(
+              (s) =>
+                s.problemSlug === currentProblem.slug &&
+                (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+            )
+          )
+        }
       }
     } catch (err: any) {
       setCompilationError(err?.message || 'An unexpected execution error occurred.')
       setTestResults(null)
-      setSubmissionFailed({ passed: 0, total: 10 })
+      setSubmissionFailed(isSubmit ? { passed: 0, total: 10 } : null)
     } finally {
       setIsRunning(false)
       setIsSubmitting(false)
@@ -622,12 +625,12 @@ export const ProblemArenaPage: React.FC = () => {
                   <span
                     className={cn(
                       'font-semibold',
-                      testResults.filter((t) => t.passed).length === 10
+                      testResults.filter((t) => t.passed).length === testResults.length
                         ? 'text-emerald-400'
                         : 'text-amber-400'
                     )}
                   >
-                    Passed {testResults.filter((t) => t.passed).length} / 10
+                    Passed {testResults.filter((t) => t.passed).length} / {testResults.length}
                   </span>
                 ) : (
                   <span className="text-neutral-500">Passed 0 / 10</span>
