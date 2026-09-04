@@ -109,3 +109,15 @@ model Submission {
 
   @@index([userId, problemId])
 }
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      String   @default("STUDENT") // "STUDENT" | "MENTOR" | "ADMIN"
+  status    String   @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}

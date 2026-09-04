@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface AppSidebarProps {
   className?: string
@@ -18,6 +19,7 @@ interface AppSidebarProps {
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile }) => {
   const location = useLocation()
+  const { user, logout } = useAuth()
 
   const navItems = [
     {
@@ -53,6 +55,15 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
     }
     return location.pathname === path
   }
+
+  const initials = user?.name
+    ? user.name
+        .split(' ')
+        .map((p) => p[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'KS'
 
   return (
     <aside
@@ -96,24 +107,28 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
         })}
       </div>
 
-      {/* Footer Info */}
+      {/* Footer User Info & Sign Out */}
       <div className="p-4 border-t border-neutral-100 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-red-50 text-[#ED2A2B] font-semibold text-xs flex items-center justify-center border border-red-100">
-            KL
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-full bg-red-50 text-[#ED2A2B] font-bold text-xs flex items-center justify-center border border-red-100 flex-shrink-0">
+            {initials}
           </div>
-          <div>
-            <div className="text-xs font-semibold text-neutral-800">Kalvi Scholar</div>
-            <div className="text-[10px] text-neutral-400">Student Portal</div>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-neutral-800 truncate">
+              {user?.name || user?.email?.split('@')[0] || 'Kalvi Scholar'}
+            </div>
+            <div className="text-[10px] text-neutral-400 truncate">
+              {user?.email || 'Student Portal'}
+            </div>
           </div>
         </div>
-        <Link
-          to="/login"
+        <button
+          onClick={() => logout()}
           title="Sign Out"
-          className="text-neutral-400 hover:text-neutral-700 p-1.5 rounded-md hover:bg-neutral-100 transition-colors"
+          className="text-neutral-400 hover:text-neutral-700 p-1.5 rounded-md hover:bg-neutral-100 transition-colors flex-shrink-0"
         >
           <LogOut className="w-4 h-4" />
-        </Link>
+        </button>
       </div>
     </aside>
   )

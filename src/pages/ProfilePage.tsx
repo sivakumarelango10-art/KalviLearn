@@ -8,9 +8,11 @@ import {
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
 import { getUserState, saveUserState, UserState } from '@/lib/progress'
+import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
 export const ProfilePage: React.FC = () => {
+  const { user } = useAuth()
   const [userState, setUserState] = useState<UserState>({
     xp: 0,
     streak: 1,
@@ -78,25 +80,36 @@ export const ProfilePage: React.FC = () => {
 
   const solvedCount = userState.solvedSlugs.length
 
+  const initials = user?.name
+    ? user.name
+        .split(' ')
+        .map((p) => p[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'KS'
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Profile Header Card */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="flex items-center gap-5">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-neutral-900 to-neutral-700 text-white font-bold text-2xl flex items-center justify-center shadow-sm relative">
-            <span>KS</span>
+            <span>{initials}</span>
             <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#ED2A2B] rounded-full border-2 border-white" />
           </div>
 
           <div className="space-y-1">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">Kalvi Scholar</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">
+                {user?.name || user?.email?.split('@')[0] || 'Kalvi Scholar'}
+              </h1>
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-red-50 text-[#ED2A2B] border border-red-200">
-                Student Account
+                {user?.role || 'STUDENT'} Account
               </span>
             </div>
             <p className="text-xs sm:text-sm text-neutral-500">
-              Enrolled in Kalvi Learn Mastery Program • Joined 2026
+              {user?.email || 'Enrolled in Kalvi Learn Mastery Program'} • Joined 2026
             </p>
           </div>
         </div>

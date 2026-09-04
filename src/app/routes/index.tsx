@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { LoginPage } from '@/pages/auth/LoginPage'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LearnPage } from '@/pages/LearnPage'
@@ -9,12 +10,11 @@ import { RevisePage } from '@/pages/RevisePage'
 import { ProfilePage } from '@/pages/ProfilePage'
 
 /**
- * Kalvi Learn Application Route Definitions
+ * Kalvi Learn Application Route Definitions with Database Whitelist Guard
  *
- * Connected Routes:
+ * Authorization Flow:
  * - /login -> Dedicated Authentication Entry
- * - / -> Redirects to /dashboard
- * - Platform Navigation under AppLayout:
+ * - / (Protected):
  *   - /dashboard       -> Student Dashboard & Gamification
  *   - /learn           -> 10-Module & 89-Unit Curriculum
  *   - /practice        -> Practice Arena directory (85 problems across 3 Belts)
@@ -29,40 +29,46 @@ export const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <AppLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <Navigate to="/dashboard" replace />,
-      },
-      {
-        path: 'dashboard',
-        element: <DashboardPage />,
-      },
-      {
-        path: 'learn',
-        element: <LearnPage />,
-      },
-      {
-        path: 'practice',
-        element: <PracticePage />,
-      },
-      {
-        path: 'practice/:slug',
-        element: <ProblemArenaPage />,
-      },
-      {
-        path: 'revise',
-        element: <RevisePage />,
-      },
-      {
-        path: 'profile',
-        element: <ProfilePage />,
+        path: '',
+        element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
+            element: <DashboardPage />,
+          },
+          {
+            path: 'learn',
+            element: <LearnPage />,
+          },
+          {
+            path: 'practice',
+            element: <PracticePage />,
+          },
+          {
+            path: 'practice/:slug',
+            element: <ProblemArenaPage />,
+          },
+          {
+            path: 'revise',
+            element: <RevisePage />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
+          },
+        ],
       },
     ],
   },
   {
     path: '*',
-    element: <Navigate to="/dashboard" replace />,
+    element: <Navigate to="/login" replace />,
   },
 ])
