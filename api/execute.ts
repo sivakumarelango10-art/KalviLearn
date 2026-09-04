@@ -1,17 +1,32 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { executeQuestion } from '../src/server/executeService'
 
-export default async function handler(req: IncomingMessage & { body?: any }, res: ServerResponse & { status?: any; json?: any }) {
-  if (req.method !== 'POST') {
-    res.statusCode = 405
+export default async function handler(
+  req: IncomingMessage & { body?: any; query?: any },
+  res: ServerResponse & { status?: (code: number) => any; json?: (data: any) => any }
+) {
+  const sendJson = (statusCode: number, data: any) => {
+    if (typeof res.status === 'function' && typeof res.json === 'function') {
+      return res.status(statusCode).json(data)
+    }
+    res.statusCode = statusCode
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ error: 'Method Not Allowed. Use POST.' }))
-    return
+    res.end(JSON.stringify(data))
   }
 
-  // Parse body if not parsed
+  if (req.method !== 'POST') {
+    return sendJson(405, { error: 'Method Not Allowed. Use POST.' })
+  }
+
+  // Parse body if not already parsed by Vercel
   let body = req.body
-  if (!body) {
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body)
+    } catch {
+      body = {}
+    }
+  } else if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
     body = await new Promise((resolve) => {
       let data = ''
       req.on('data', (chunk) => {
@@ -19,49 +34,40 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
       })
       req.on('end', () => {
         try {
-          resolve(JSON.parse(data))
+          resolve(JSON.parse(data || '{}'))
         } catch {
           resolve({})
         }
       })
+      req.on('error', () => resolve({}))
+      setTimeout(() => resolve(body || {}), 200)
     })
   }
 
   const { questionSlug, language, code } = body || {}
 
   if (!questionSlug || !language || !code) {
-    res.statusCode = 400
-    res.setHeader('Content-Type', 'application/json')
-    res.end(
-      JSON.stringify({
-        success: false,
-        error: 'Missing Parameters',
-        message: 'questionSlug, language, and code are required.',
-        total: 10,
-        passed: 0,
-        testCases: [],
-      })
-    )
-    return
+    return sendJson(400, {
+      success: false,
+      error: 'Missing Parameters',
+      message: 'questionSlug, language, and code are required.',
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
   }
 
   try {
     const result = await executeQuestion({ questionSlug, language, code })
-    res.statusCode = 200
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(result))
+    return sendJson(200, result)
   } catch (err: any) {
-    res.statusCode = 500
-    res.setHeader('Content-Type', 'application/json')
-    res.end(
-      JSON.stringify({
-        success: false,
-        error: 'Execution Error',
-        message: err.message || 'Internal Server Error',
-        total: 10,
-        passed: 0,
-        testCases: [],
-      })
-    )
+    return sendJson(500, {
+      success: false,
+      error: 'Execution Error',
+      message: err.message || 'Internal Server Error',
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
   }
 }
