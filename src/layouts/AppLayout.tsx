@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Menu, X, Zap, Flame, Award } from 'lucide-react'
 import { AppSidebar } from '@/components/common/AppSidebar'
-import { getUserState } from '@/lib/progress'
+import { getUserState, subscribeProgress } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 
 export const AppLayout: React.FC = () => {
@@ -21,13 +21,7 @@ export const AppLayout: React.FC = () => {
     }
 
     updateStats()
-    window.addEventListener('storage', updateStats)
-    const interval = setInterval(updateStats, 1000)
-
-    return () => {
-      window.removeEventListener('storage', updateStats)
-      clearInterval(interval)
-    }
+    return subscribeProgress(updateStats)
   }, [])
 
   // Calculate current belt based on problems solved

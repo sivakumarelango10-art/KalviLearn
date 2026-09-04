@@ -14,6 +14,31 @@ import {
 import curriculumData from '@/data/curriculum.json'
 import { cn } from '@/lib/utils'
 
+interface LearningExample {
+  input?: string
+  output?: string
+  explanation?: string
+}
+
+interface LearningUnit {
+  order: number
+  title: string
+  content?: string
+  codingQuestion?: string
+  inputFormat?: string
+  outputFormat?: string
+  examples?: LearningExample[]
+  readingTimeMinutes?: number
+}
+
+interface CurriculumModule {
+  order: number
+  title: string
+  learningUnits: LearningUnit[]
+}
+
+const modules = curriculumData as unknown as CurriculumModule[]
+
 export const LearnPage: React.FC = () => {
   const [selectedModuleOrder, setSelectedModuleOrder] = useState<number>(1)
   const [selectedUnitOrder, setSelectedUnitOrder] = useState<number>(1)
@@ -23,22 +48,22 @@ export const LearnPage: React.FC = () => {
   // Active module
   const currentModule = useMemo(() => {
     return (
-      curriculumData.find((m: any) => m.order === selectedModuleOrder) ||
-      curriculumData[0]
+      modules.find((m) => m.order === selectedModuleOrder) ||
+      modules[0]
     )
   }, [selectedModuleOrder])
 
   // Active learning unit
   const currentUnit = useMemo(() => {
     return (
-      currentModule.learningUnits.find((u: any) => u.order === selectedUnitOrder) ||
+      currentModule.learningUnits.find((u) => u.order === selectedUnitOrder) ||
       currentModule.learningUnits[0]
     )
   }, [currentModule, selectedUnitOrder])
 
   // Navigation: previous and next unit
   const currentUnitIndex = currentModule.learningUnits.findIndex(
-    (u: any) => u.order === currentUnit.order
+    (u) => u.order === currentUnit.order
   )
 
   const hasPrev = currentUnitIndex > 0
@@ -113,11 +138,11 @@ export const LearnPage: React.FC = () => {
 
           {/* Module List Accordion */}
           <div className="flex-1 overflow-y-auto divide-y divide-neutral-100">
-            {curriculumData.map((mod: any) => {
+            {modules.map((mod) => {
               const isModuleActive = mod.order === selectedModuleOrder
               const isExpanded = !!expandedModules[mod.order]
 
-              const filteredUnits = mod.learningUnits.filter((u: any) =>
+              const filteredUnits = mod.learningUnits.filter((u) =>
                 searchQuery ? u.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
               )
 

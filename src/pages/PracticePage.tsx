@@ -10,7 +10,7 @@ import {
   ChevronUp,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { getUserState } from '@/lib/progress'
+import { getUserState, subscribeProgress } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 
 export const PracticePage: React.FC = () => {
@@ -34,19 +34,14 @@ export const PracticePage: React.FC = () => {
     }
 
     updateProgress()
-    window.addEventListener('storage', updateProgress)
-    const interval = setInterval(updateProgress, 1000)
-    return () => {
-      window.removeEventListener('storage', updateProgress)
-      clearInterval(interval)
-    }
+    return subscribeProgress(updateProgress)
   }, [])
 
   // Calculate belt completion statistics
   const beltStats = useMemo(() => {
     return problemsData.map((belt) => {
       const total = belt.problems.length
-      const solved = belt.problems.filter((p: any) => solvedSlugs.includes(p.slug)).length
+      const solved = belt.problems.filter((p: { slug: string }) => solvedSlugs.includes(p.slug)).length
       const percentage = total > 0 ? Math.round((solved / total) * 100) : 0
       return {
         order: belt.order,
@@ -73,7 +68,7 @@ export const PracticePage: React.FC = () => {
     return problemsData
       .filter((belt) => selectedBelt === 'all' || belt.order === selectedBelt)
       .map((belt) => {
-        const filteredProblems = belt.problems.filter((problem: any) => {
+        const filteredProblems = belt.problems.filter((problem: { title: string; description: string; difficulty: string; slug: string }) => {
           // Search query
           if (
             searchQuery &&

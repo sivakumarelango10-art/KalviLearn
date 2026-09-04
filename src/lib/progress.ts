@@ -49,11 +49,34 @@ export function getUserState(): UserState {
   }
 }
 
+const PROGRESS_EVENT = 'kalvi_progress_updated'
+
 export function saveUserState(state: UserState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(PROGRESS_EVENT))
+    }
   } catch (err) {
     console.error('Failed to save state to localStorage', err)
+  }
+}
+
+/**
+ * Reactive subscription listener for progress updates
+ * Listens to both in-tab custom events and cross-tab storage events with zero polling.
+ */
+export function subscribeProgress(callback: () => void): () => void {
+  if (typeof window === 'undefined') return () => {}
+
+  const handleUpdate = () => callback()
+
+  window.addEventListener(PROGRESS_EVENT, handleUpdate)
+  window.addEventListener('storage', handleUpdate)
+
+  return () => {
+    window.removeEventListener(PROGRESS_EVENT, handleUpdate)
+    window.removeEventListener('storage', handleUpdate)
   }
 }
 

@@ -14,8 +14,25 @@ import {
   BookOpen,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { getUserState, UserProgressRecord, SubmissionRecord } from '@/lib/progress'
+import { getUserState, subscribeProgress, UserProgressRecord, SubmissionRecord } from '@/lib/progress'
 import { cn } from '@/lib/utils'
+
+interface SolvedProblemItem {
+  slug: string
+  title: string
+  order: number
+  difficulty: string
+  description: string
+  inputFormat: string
+  outputFormat: string
+  explanation?: string
+  beltName: string
+  beltColor: string
+  bestCode: string
+  language: string
+  attempts: number
+  solvedAt: string
+}
 
 export const RevisePage: React.FC = () => {
   const navigate = useNavigate()
@@ -41,19 +58,25 @@ export const RevisePage: React.FC = () => {
     }
 
     loadData()
-    window.addEventListener('storage', loadData)
-    return () => window.removeEventListener('storage', loadData)
+    return subscribeProgress(loadData)
   }, [])
 
   // Build list of solved problems with problem metadata
   const solvedProblems = useMemo(() => {
-    const list: any[] = []
+    const list: SolvedProblemItem[] = []
     for (const belt of problemsData) {
       for (const p of belt.problems) {
         if (solvedSlugs.includes(p.slug)) {
           const prog = progressMap[p.slug]
           list.push({
-            ...p,
+            slug: p.slug,
+            title: p.title,
+            order: p.order,
+            difficulty: p.difficulty,
+            description: p.description,
+            inputFormat: p.inputFormat,
+            outputFormat: p.outputFormat,
+            explanation: (p as { explanation?: string }).explanation,
             beltName: belt.name,
             beltColor: belt.color,
             bestCode: prog?.bestCode || '',

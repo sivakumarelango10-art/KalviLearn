@@ -22,6 +22,7 @@ import {
   getUserState,
   recordProblemSuccess,
   recordProblemAttempt,
+  SubmissionRecord,
 } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 
@@ -37,7 +38,7 @@ export const ProblemArenaPage: React.FC = () => {
 
   for (let bIdx = 0; bIdx < problemsData.length; bIdx++) {
     const b = problemsData[bIdx]
-    const pIdx = b.problems.findIndex((p: any) => p.slug === slug)
+    const pIdx = b.problems.findIndex((p: { slug: string }) => p.slug === slug)
     if (pIdx !== -1) {
       currentBelt = b
       currentProblem = b.problems[pIdx]
@@ -66,7 +67,7 @@ export const ProblemArenaPage: React.FC = () => {
   const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [submissionFailed, setSubmissionFailed] = useState<{ passed: number; total: number } | null>(null)
-  const [recentSubmissions, setRecentSubmissions] = useState<any[]>([])
+  const [recentSubmissions, setRecentSubmissions] = useState<SubmissionRecord[]>([])
 
   const editorRef = useRef<any>(null)
 

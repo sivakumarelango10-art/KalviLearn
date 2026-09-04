@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
 import curriculumData from '@/data/curriculum.json'
-import { getUserState, UserState } from '@/lib/progress'
+import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 
 export const DashboardPage: React.FC = () => {
@@ -35,19 +35,14 @@ export const DashboardPage: React.FC = () => {
       setUserState(getUserState())
     }
     updateStats()
-    window.addEventListener('storage', updateStats)
-    const interval = setInterval(updateStats, 1000)
-    return () => {
-      window.removeEventListener('storage', updateStats)
-      clearInterval(interval)
-    }
+    return subscribeProgress(updateStats)
   }, [])
 
   // Calculate belt details
   const beltSummaries = useMemo(() => {
     return problemsData.map((belt) => {
       const total = belt.problems.length
-      const solved = belt.problems.filter((p: any) =>
+      const solved = belt.problems.filter((p: { slug: string }) =>
         userState.solvedSlugs.includes(p.slug)
       ).length
       const percent = total > 0 ? Math.round((solved / total) * 100) : 0
@@ -320,7 +315,7 @@ export const DashboardPage: React.FC = () => {
           </p>
 
           <div className="space-y-2.5 divide-y divide-neutral-100">
-            {curriculumData.slice(0, 4).map((mod: any) => (
+            {curriculumData.slice(0, 4).map((mod: { order: number; title: string; learningUnits: unknown[] }) => (
               <div key={mod.order} className="pt-2.5 first:pt-0 flex items-center justify-between">
                 <div>
                   <div className="text-xs font-bold text-neutral-800">

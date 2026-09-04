@@ -1,31 +1,47 @@
+import { lazy, Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { LoginPage } from '@/pages/auth/LoginPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
-import { DashboardPage } from '@/pages/DashboardPage'
-import { LearnPage } from '@/pages/LearnPage'
-import { PracticePage } from '@/pages/PracticePage'
-import { ProblemArenaPage } from '@/pages/ProblemArenaPage'
-import { RevisePage } from '@/pages/RevisePage'
-import { ProfilePage } from '@/pages/ProfilePage'
+
+// Code-split dynamic route imports for optimal bundle size
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'))
+const DashboardPage = lazy(() =>
+  import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage }))
+)
+const LearnPage = lazy(() =>
+  import('@/pages/LearnPage').then((m) => ({ default: m.LearnPage }))
+)
+const PracticePage = lazy(() =>
+  import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage }))
+)
+const ProblemArenaPage = lazy(() =>
+  import('@/pages/ProblemArenaPage').then((m) => ({ default: m.ProblemArenaPage }))
+)
+const RevisePage = lazy(() =>
+  import('@/pages/RevisePage').then((m) => ({ default: m.RevisePage }))
+)
+const ProfilePage = lazy(() =>
+  import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
+)
+
+const PageLoader = () => (
+  <div className="h-full min-h-[50vh] w-full flex flex-col items-center justify-center bg-transparent py-16 space-y-3 animate-in fade-in duration-150">
+    <div className="w-5 h-5 border-2 border-[#ED2A2B] border-t-transparent rounded-full animate-spin" />
+    <span className="text-xs font-semibold text-neutral-400">Loading module...</span>
+  </div>
+)
+
+const withSuspense = (Component: ReactNode) => (
+  <Suspense fallback={<PageLoader />}>{Component}</Suspense>
+)
 
 /**
- * Kalvi Learn Application Route Definitions with Database Whitelist Guard
- *
- * Authorization Flow:
- * - /login -> Dedicated Authentication Entry
- * - / (Protected):
- *   - /dashboard       -> Student Dashboard & Gamification
- *   - /learn           -> 10-Module & 89-Unit Curriculum
- *   - /practice        -> Practice Arena directory (85 problems across 3 Belts)
- *   - /practice/:slug  -> Monaco Coding Arena (Anti-Cheat, 10 Test Cases, Multi-language)
- *   - /revise          -> Solved Problem Vault, Read-only Solution Viewer, Re-attempt
- *   - /profile         -> Student stats, belt mastery badges, settings
+ * Kalvi Learn Application Route Definitions with Code Splitting & Whitelist Guard
  */
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: <LoginPage />,
+    element: withSuspense(<LoginPage />),
   },
   {
     path: '/',
@@ -41,27 +57,27 @@ export const router = createBrowserRouter([
           },
           {
             path: 'dashboard',
-            element: <DashboardPage />,
+            element: withSuspense(<DashboardPage />),
           },
           {
             path: 'learn',
-            element: <LearnPage />,
+            element: withSuspense(<LearnPage />),
           },
           {
             path: 'practice',
-            element: <PracticePage />,
+            element: withSuspense(<PracticePage />),
           },
           {
             path: 'practice/:slug',
-            element: <ProblemArenaPage />,
+            element: withSuspense(<ProblemArenaPage />),
           },
           {
             path: 'revise',
-            element: <RevisePage />,
+            element: withSuspense(<RevisePage />),
           },
           {
             path: 'profile',
-            element: <ProfilePage />,
+            element: withSuspense(<ProfilePage />),
           },
         ],
       },

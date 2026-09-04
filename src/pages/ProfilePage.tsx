@@ -7,7 +7,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
-import { getUserState, saveUserState, UserState } from '@/lib/progress'
+import { getUserState, saveUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
@@ -28,8 +28,7 @@ export const ProfilePage: React.FC = () => {
       setUserState(getUserState())
     }
     updateStats()
-    window.addEventListener('storage', updateStats)
-    return () => window.removeEventListener('storage', updateStats)
+    return subscribeProgress(updateStats)
   }, [])
 
   // Calculate difficulty breakdown
