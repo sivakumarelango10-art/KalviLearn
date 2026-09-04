@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Belt {
+  id          String    @id @default(uuid())
+  order       Int       @unique
+  name        String    // e.g. "Belt 1", "Belt 2", "Belt 3"
+  title       String    // e.g. "Programming Foundations"
+  description String
+  color       String
+  problems    Problem[]
+  createdAt   DateTime  @default(now())
+}
+
+model Problem {
+  id              String         @id @default(uuid())
+  beltId          String
+  belt            Belt           @relation(fields: [beltId], references: [id], onDelete: Cascade)
+  order           Int
+  title           String
+  slug            String         @unique
+  difficulty      String         // "Easy" | "Medium" | "Hard"
+  description     String         @db.Text
+  inputFormat     String         @db.Text
+  outputFormat    String         @db.Text
+  explanation     String?        @db.Text
+  starterCodes    Json           // { "python": "...", "javascript": "...", "cpp": "...", "java": "..." }
+  testCases       TestCase[]
+  submissions     Submission[]
+  userProgress    UserProgress[]
+  createdAt       DateTime       @default(now())
+
+  @@index([beltId])
+}
+
+model TestCase {
+  id              String    @id @default(uuid())
+  problemId       String
+  problem         Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testIndex       Int       // 1 through 10
+  input           String    @db.Text
+  expectedOutput  String    @db.Text
+  explanation     String?   @db.Text
+  isHidden        Boolean   @default(false) // 1-3 false (visible), 4-10 true (hidden)
+
+  @@unique([problemId, testIndex])
+}
+
+model Module {
+  id            String         @id @default(uuid())
+  order         Int            @unique
+  title         String
+  description   String?
+  learningUnits LearningUnit[]
+  createdAt     DateTime       @default(now())
+}
+
+model LearningUnit {
+  id              String   @id @default(uuid())
+  moduleId        String
+  module          Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order           Int
+  title           String
+  content         String   @db.Text
+  codingQuestion  String   @db.Text
+  inputFormat     String   @db.Text
+  outputFormat    String   @db.Text
+  examples        Json     // Array of examples
+  createdAt       DateTime @default(now())
+
+  @@index([moduleId])
+}
+
+model UserProgress {
+  id          String    @id @default(uuid())
+  userId      String    @default("guest")
+  problemId   String
+  problem     Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  status      String    // "SOLVED" | "ATTEMPTED"
+  language    String
+  bestCode    String    @db.Text
+  solvedAt    DateTime?
+  attempts    Int       @default(1)
+  xpEarned    Int       @default(0)
+
+  @@unique([userId, problemId])
+}
+
+model Submission {
+  id              String   @id @default(uuid())
+  userId      String    @default("guest")
+  problemId       String
+  problem         Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  language        String
+  code            String   @db.Text
+  status          String   // "PASSED" | "FAILED" | "ERROR"
+  passedTests     Int
+  totalTests      Int      @default(10)
+  testResults     Json     // Details for each test case execution
+  executionTimeMs Int
+  createdAt       DateTime @default(now())
+
+  @@index([userId, problemId])
+}
