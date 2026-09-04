@@ -50,8 +50,8 @@ export const LoginCard: FC<LoginCardProps> = ({
     <Card
       className={cn(
         'w-full max-w-[420px] mx-auto p-8 sm:p-10',
-        'bg-white border border-neutral-200/90 shadow-card',
-        'flex flex-col items-center space-y-8',
+        'bg-white border border-neutral-200/90 shadow-2xl rounded-3xl',
+        'flex flex-col items-center space-y-8 animate-modal-pop',
         className
       )}
     >

@@ -200,17 +200,17 @@ export const LearnPage: React.FC = () => {
                               setSelectedUnitOrder(unit.order)
                             }}
                             className={cn(
-                              'py-2 px-3 text-xs cursor-pointer transition-colors flex items-center justify-between',
+                              'py-2 px-3 text-xs cursor-pointer transition-all duration-200 flex items-center justify-between interactive-tab',
                               isUnitActive
-                                ? 'bg-neutral-900 text-white font-medium rounded-l-lg'
-                                : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/60'
+                                ? 'bg-neutral-900 text-white font-medium rounded-l-lg scale-[1.01] shadow-sm'
+                                : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/80 hover:translate-x-1'
                             )}
                           >
                             <span className="truncate">
                               {unit.order}. {unit.title}
                             </span>
                             {isUnitActive && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#ED2A2B] ml-2 flex-shrink-0" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#ED2A2B] ml-2 flex-shrink-0 animate-pulse-subtle" />
                             )}
                           </div>
                         )
@@ -241,9 +241,9 @@ export const LearnPage: React.FC = () => {
                 onClick={handlePrev}
                 disabled={!hasPrev}
                 className={cn(
-                  'p-2 rounded-lg border text-xs font-medium flex items-center gap-1 transition-colors',
+                  'p-2 rounded-lg border text-xs font-medium flex items-center gap-1 transition-all duration-200 interactive-btn',
                   hasPrev
-                    ? 'border-neutral-200 bg-white hover:bg-neutral-100 text-neutral-700'
+                    ? 'border-neutral-200 bg-white hover:bg-neutral-100 text-neutral-700 shadow-sm'
                     : 'border-neutral-100 bg-neutral-50 text-neutral-300 cursor-not-allowed'
                 )}
               >
@@ -255,9 +255,9 @@ export const LearnPage: React.FC = () => {
                 onClick={handleNext}
                 disabled={!hasNext}
                 className={cn(
-                  'p-2 rounded-lg border text-xs font-medium flex items-center gap-1 transition-colors',
+                  'p-2 rounded-lg border text-xs font-medium flex items-center gap-1 transition-all duration-200 interactive-btn',
                   hasNext
-                    ? 'border-neutral-200 bg-white hover:bg-neutral-100 text-neutral-700'
+                    ? 'border-neutral-200 bg-white hover:bg-neutral-100 text-neutral-700 shadow-sm'
                     : 'border-neutral-100 bg-neutral-50 text-neutral-300 cursor-not-allowed'
                 )}
               >
@@ -267,8 +267,11 @@ export const LearnPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Scrollable Content Body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 text-neutral-800">
+          {/* Scrollable Content Body with smooth fade & slide */}
+          <div
+            key={`${currentModule.order}-${currentUnit.order}`}
+            className="flex-1 overflow-y-auto p-6 space-y-8 text-neutral-800 animate-page-enter"
+          >
             {/* Section 1: Concept & Theory */}
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 uppercase tracking-wider">

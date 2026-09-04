@@ -37,11 +37,11 @@ export const GoogleLoginButton: FC<GoogleLoginButtonProps> = ({
       aria-busy={isLoading}
       aria-label={isLoading ? loadingLabel : label}
       className={cn(
-        'group relative w-full h-11 sm:h-12 px-4 rounded-lg',
+        'group relative w-full h-11 sm:h-12 px-4 rounded-xl',
         'inline-flex items-center justify-center gap-3',
         'bg-white text-neutral-800 font-medium text-sm sm:text-base',
         'border border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50/80',
-        'active:bg-neutral-100 shadow-btn transition-all duration-150',
+        'active:bg-neutral-100 shadow-btn transition-all duration-200 interactive-btn hover:shadow-md',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-900',
         'disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-neutral-300',
         className

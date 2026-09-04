@@ -91,11 +91,11 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Profile Header Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 interactive-card">
         <div className="flex items-center gap-5">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-neutral-900 to-neutral-700 text-white font-bold text-2xl flex items-center justify-center shadow-sm relative">
             <span>{initials}</span>
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#ED2A2B] rounded-full border-2 border-white" />
+            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#ED2A2B] rounded-full border-2 border-white animate-pulse-subtle" />
           </div>
 
           <div className="space-y-1">
@@ -115,7 +115,7 @@ export const ProfilePage: React.FC = () => {
 
         {/* Quick Stats Badges */}
         <div className="flex items-center gap-3">
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl px-4 py-2.5 text-center">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl px-4 py-2.5 text-center transition-transform hover:scale-105">
             <div className="text-xs text-neutral-500 font-medium">Kalvi XP</div>
             <div className="text-lg font-bold text-neutral-900 flex items-center justify-center gap-1">
               <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -123,7 +123,7 @@ export const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl px-4 py-2.5 text-center">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl px-4 py-2.5 text-center transition-transform hover:scale-105">
             <div className="text-xs text-neutral-500 font-medium">Streak</div>
             <div className="text-lg font-bold text-neutral-900 flex items-center justify-center gap-1">
               <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
@@ -140,14 +140,14 @@ export const ProfilePage: React.FC = () => {
           {/* Belt 1 */}
           <div
             className={cn(
-              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden',
+              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden interactive-card',
               solvedCount >= 20
                 ? 'bg-blue-50/50 border-blue-200'
                 : 'bg-white border-neutral-200/80'
             )}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-sm transition-transform group-hover:scale-105">
                 B1
               </div>
               {solvedCount >= 20 ? (
@@ -172,7 +172,7 @@ export const ProfilePage: React.FC = () => {
           {/* Belt 2 */}
           <div
             className={cn(
-              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden',
+              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden interactive-card',
               solvedCount >= 50
                 ? 'bg-emerald-50/50 border-emerald-200'
                 : 'bg-white border-neutral-200/80'
@@ -204,7 +204,7 @@ export const ProfilePage: React.FC = () => {
           {/* Belt 3 */}
           <div
             className={cn(
-              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden',
+              'rounded-2xl p-6 border transition-all space-y-4 relative overflow-hidden interactive-card',
               solvedCount >= 85
                 ? 'bg-red-50/50 border-red-200'
                 : 'bg-white border-neutral-200/80'

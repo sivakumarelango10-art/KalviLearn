@@ -197,9 +197,9 @@ export const ProblemArenaPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-neutral-900 text-neutral-100">
-      {/* Anti-Cheat Warning Toast */}
+      {/* Anti-Cheat Warning Toast with smooth slide */}
       {antiCheatWarning && (
-        <div className="fixed top-20 right-6 z-50 bg-amber-500 text-neutral-950 font-medium px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2 text-xs sm:text-sm animate-bounce">
+        <div className="fixed top-16 right-6 z-50 bg-amber-500 text-neutral-950 font-medium px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs sm:text-sm animate-toast-slide border border-amber-300">
           <ShieldAlert className="w-4 h-4 flex-shrink-0" />
           <span>{antiCheatWarning}</span>
         </div>
@@ -238,8 +238,9 @@ export const ProblemArenaPage: React.FC = () => {
           <button
             onClick={handleRun}
             disabled={isRunning || isSubmitting}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-medium border border-neutral-700 transition-colors disabled:opacity-50"
+            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-medium border border-neutral-700 transition-all interactive-btn disabled:opacity-50"
           >
+            {isRunning && <span className="absolute inset-0 animate-shimmer pointer-events-none" />}
             <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
             <span>{isRunning ? 'Running...' : 'Run'}</span>
           </button>
@@ -247,8 +248,9 @@ export const ProblemArenaPage: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold shadow-sm transition-colors disabled:opacity-50"
+            className="relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold shadow-sm transition-all interactive-btn disabled:opacity-50 shadow-red-950/20"
           >
+            {isSubmitting && <span className="absolute inset-0 animate-shimmer pointer-events-none" />}
             <Send className="w-3.5 h-3.5" />
             <span>{isSubmitting ? 'Testing All 10...' : 'Submit'}</span>
           </button>
@@ -465,18 +467,18 @@ export const ProblemArenaPage: React.FC = () => {
             />
           </div>
 
-          {/* Failure Alert Banner (if submit fails) */}
+          {/* Failure Alert Banner with smooth slide-down drop */}
           {submissionFailed && (
-            <div className="px-4 py-3 bg-red-950/80 border-t border-red-900/80 flex items-center justify-between text-xs">
+            <div className="px-4 py-3 bg-red-950/80 border-t border-red-900/80 flex items-center justify-between text-xs animate-banner-drop">
               <div className="flex items-center gap-2 text-red-300">
-                <XCircle className="w-4 h-4 text-red-400" />
+                <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 animate-pulse-subtle" />
                 <span>
                   Some test cases failed. Passed: <strong>{submissionFailed.passed} / {submissionFailed.total}</strong>
                 </span>
               </div>
               <button
                 onClick={() => setSubmissionFailed(null)}
-                className="px-3 py-1 bg-red-900/60 hover:bg-red-800 text-red-200 font-medium rounded transition-colors"
+                className="px-3 py-1 bg-red-900/60 hover:bg-red-800 text-red-200 font-medium rounded transition-all interactive-btn"
               >
                 Try Again
               </button>
@@ -503,14 +505,14 @@ export const ProblemArenaPage: React.FC = () => {
                       key={num}
                       onClick={() => setActiveCaseTab(num)}
                       className={cn(
-                        'px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition-colors',
+                        'px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition-all duration-200 interactive-tab',
                         activeCaseTab === num
-                          ? 'bg-neutral-800 text-white'
-                          : 'text-neutral-400 hover:text-neutral-200'
+                          ? 'bg-neutral-800 text-white shadow-sm scale-105'
+                          : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
                       )}
                     >
-                      {isPassed === true && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
-                      {isPassed === false && <XCircle className="w-3 h-3 text-red-400" />}
+                      {isPassed === true && <CheckCircle2 className="w-3 h-3 text-emerald-400 animate-in zoom-in-75 duration-200" />}
+                      {isPassed === false && <XCircle className="w-3 h-3 text-red-400 animate-in zoom-in-75 duration-200" />}
                       <span>Case {num} {!isVisible && '🔒'}</span>
                     </button>
                   )
@@ -524,8 +526,8 @@ export const ProblemArenaPage: React.FC = () => {
               )}
             </div>
 
-            {/* Active Test Case Details */}
-            <div className="flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3">
+            {/* Active Test Case Details with smooth fade */}
+            <div key={activeCaseTab} className="flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3 animate-page-enter">
               {(() => {
                 const targetCase =
                   testResults?.[activeCaseTab - 1] ||
@@ -629,16 +631,16 @@ export const ProblemArenaPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Completion Modal: 🎉 Problem Completed! */}
+      {/* Completion Modal: 🎉 Problem Completed! with Spring Animation */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 text-neutral-900 shadow-2xl border border-neutral-100 flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 animate-in fade-in">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 text-neutral-900 shadow-2xl border border-neutral-100 flex flex-col items-center text-center space-y-4 animate-modal-pop">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center animate-pulse-subtle">
               <Sparkles className="w-8 h-8" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-neutral-900">
+              <h3 className="text-2xl font-bold text-neutral-900 tracking-tight">
                 🎉 Problem Completed!
               </h3>
               <p className="text-sm text-neutral-500">
@@ -646,7 +648,7 @@ export const ProblemArenaPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-semibold text-sm">
+            <div className="px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-semibold text-sm shadow-sm">
               +50 XP Earned
             </div>
 
@@ -661,7 +663,7 @@ export const ProblemArenaPage: React.FC = () => {
                     setShowSuccessModal(false)
                     navigate(`/practice/${nextProblemSlug}`)
                   }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold transition-all interactive-btn shadow-md shadow-red-600/20"
                 >
                   <span>Next Problem</span>
                   <ArrowRight className="w-4 h-4" />
@@ -672,7 +674,7 @@ export const ProblemArenaPage: React.FC = () => {
                     setShowSuccessModal(false)
                     navigate('/revise')
                   }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-black text-white text-sm font-semibold transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-black text-white text-sm font-semibold transition-all interactive-btn"
                 >
                   <span>Revise Solved</span>
                   <RotateCcw className="w-4 h-4" />
@@ -681,7 +683,7 @@ export const ProblemArenaPage: React.FC = () => {
 
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="px-4 py-2.5 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-sm font-medium transition-colors"
+                className="px-4 py-2.5 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-sm font-medium transition-all interactive-btn"
               >
                 Stay Here
               </button>

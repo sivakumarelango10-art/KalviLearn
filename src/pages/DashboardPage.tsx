@@ -107,7 +107,7 @@ export const DashboardPage: React.FC = () => {
               {nextProblem ? (
                 <Link
                   to={`/practice/${nextProblem.slug}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold shadow-sm transition-all interactive-btn hover:shadow-lg hover:shadow-red-600/25"
                 >
                   <span>Resume: {nextProblem.title}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -115,7 +115,7 @@ export const DashboardPage: React.FC = () => {
               ) : (
                 <Link
                   to="/practice"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold shadow-sm transition-all interactive-btn hover:shadow-lg hover:shadow-red-600/25"
                 >
                   <span>Open Practice Arena</span>
                   <ArrowRight className="w-4 h-4" />
@@ -124,7 +124,7 @@ export const DashboardPage: React.FC = () => {
 
               <Link
                 to="/learn"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-sm font-medium transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-sm font-medium transition-all interactive-btn"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Curriculum</span>
@@ -133,7 +133,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Gamification Ring Banner */}
-          <div className="flex-shrink-0 bg-neutral-800/60 backdrop-blur border border-neutral-700/60 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6">
+          <div className="flex-shrink-0 bg-neutral-800/60 backdrop-blur border border-neutral-700/60 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 interactive-card hover:border-neutral-600">
             <div className="relative w-24 h-24 flex items-center justify-center">
               <svg className="w-24 h-24 transform -rotate-90">
                 <circle
@@ -155,7 +155,7 @@ export const DashboardPage: React.FC = () => {
                   strokeDashoffset={238.76 - (238.76 * overallPercent) / 100}
                   strokeLinecap="round"
                   fill="transparent"
-                  className="transition-all duration-700 ease-out"
+                  className="transition-all duration-1000 ease-out"
                 />
               </svg>
               <div className="absolute text-center">
@@ -168,7 +168,7 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <div className="text-xs text-neutral-400 font-medium">Current Status</div>
                 <div className="text-lg font-bold flex items-center gap-1.5 justify-center sm:justify-start">
-                  <Award className="w-4 h-4 text-amber-400" />
+                  <Award className="w-4 h-4 text-amber-400 animate-pulse-subtle" />
                   <span>{currentBelt.name}</span>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export const DashboardPage: React.FC = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2">
+        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2 interactive-card">
           <div className="flex items-center justify-between text-neutral-500">
             <span className="text-xs font-semibold">Total Solved</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
@@ -202,7 +202,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2">
+        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2 interactive-card">
           <div className="flex items-center justify-between text-neutral-500">
             <span className="text-xs font-semibold">Kalvi XP</span>
             <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -211,7 +211,7 @@ export const DashboardPage: React.FC = () => {
           <div className="text-[11px] text-neutral-500">+50 XP per passed problem</div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2">
+        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2 interactive-card">
           <div className="flex items-center justify-between text-neutral-500">
             <span className="text-xs font-semibold">Learning Streak</span>
             <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
@@ -220,7 +220,7 @@ export const DashboardPage: React.FC = () => {
           <div className="text-[11px] text-neutral-500">Consistent daily practice</div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2">
+        <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2 interactive-card">
           <div className="flex items-center justify-between text-neutral-500">
             <span className="text-xs font-semibold">Submissions</span>
             <TrendingUp className="w-4 h-4 text-blue-500" />

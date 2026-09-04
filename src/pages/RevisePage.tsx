@@ -205,10 +205,10 @@ export const RevisePage: React.FC = () => {
                       setActiveTab('code')
                     }}
                     className={cn(
-                      'p-3.5 cursor-pointer transition-colors text-left space-y-1.5',
+                      'p-3.5 cursor-pointer transition-all duration-200 text-left space-y-1.5 interactive-tab',
                       isSelected
-                        ? 'bg-neutral-900 text-white'
-                        : 'hover:bg-neutral-50 text-neutral-900'
+                        ? 'bg-neutral-900 text-white shadow-sm scale-[1.01]'
+                        : 'hover:bg-neutral-50 hover:translate-x-1 text-neutral-900'
                     )}
                   >
                     <div className="flex items-center justify-between">
@@ -277,12 +277,12 @@ export const RevisePage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopyCode}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-neutral-700 text-xs font-medium hover:bg-neutral-50 shadow-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-neutral-700 text-xs font-medium hover:bg-neutral-50 shadow-sm transition-all duration-200 interactive-btn"
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">Copied!</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-600 animate-in zoom-in-75 duration-150" />
+                      <span className="text-emerald-700 font-semibold">Copied!</span>
                     </>
                   ) : (
                     <>
@@ -294,9 +294,9 @@ export const RevisePage: React.FC = () => {
 
                 <button
                   onClick={() => navigate(`/practice/${currentProblem.slug}`)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold shadow-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold shadow-sm transition-all duration-200 interactive-btn shadow-red-600/20"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-45" />
                   <span>Re-attempt</span>
                 </button>
               </div>

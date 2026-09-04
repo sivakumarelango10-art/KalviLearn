@@ -217,13 +217,13 @@ export const PracticePage: React.FC = () => {
 
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          {/* Belt selector */}
-          <div className="flex items-center bg-neutral-100 p-1 rounded-lg text-xs font-medium">
+          {/* Belt pills */}
+          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl text-xs font-semibold text-neutral-600">
             <button
               onClick={() => setSelectedBelt('all')}
               className={cn(
-                'px-2.5 py-1 rounded-md transition-all',
-                selectedBelt === 'all' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
+                'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
+                selectedBelt === 'all' ? 'bg-white text-neutral-900 shadow-sm scale-105' : 'text-neutral-600 hover:text-neutral-900'
               )}
             >
               All Belts
@@ -231,8 +231,8 @@ export const PracticePage: React.FC = () => {
             <button
               onClick={() => setSelectedBelt(1)}
               className={cn(
-                'px-2.5 py-1 rounded-md transition-all',
-                selectedBelt === 1 ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
+                'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
+                selectedBelt === 1 ? 'bg-white text-neutral-900 shadow-sm scale-105' : 'text-neutral-600 hover:text-neutral-900'
               )}
             >
               Belt 1
@@ -240,8 +240,8 @@ export const PracticePage: React.FC = () => {
             <button
               onClick={() => setSelectedBelt(2)}
               className={cn(
-                'px-2.5 py-1 rounded-md transition-all',
-                selectedBelt === 2 ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
+                'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
+                selectedBelt === 2 ? 'bg-white text-neutral-900 shadow-sm scale-105' : 'text-neutral-600 hover:text-neutral-900'
               )}
             >
               Belt 2
@@ -249,8 +249,8 @@ export const PracticePage: React.FC = () => {
             <button
               onClick={() => setSelectedBelt(3)}
               className={cn(
-                'px-2.5 py-1 rounded-md transition-all',
-                selectedBelt === 3 ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
+                'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
+                selectedBelt === 3 ? 'bg-white text-neutral-900 shadow-sm scale-105' : 'text-neutral-600 hover:text-neutral-900'
               )}
             >
               Belt 3
@@ -349,11 +349,11 @@ export const PracticePage: React.FC = () => {
                       return (
                         <div
                           key={problem.slug}
-                          className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-neutral-50/70 transition-colors group"
+                          className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-neutral-50/90 transition-all duration-200 group hover:translate-x-1"
                         >
                           <div className="flex items-start sm:items-center gap-3.5 min-w-0">
                             {/* Problem Index & Status Indicator */}
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold bg-neutral-100 text-neutral-600">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold bg-neutral-100 text-neutral-600 transition-transform duration-200 group-hover:scale-105">
                               {problem.order}
                             </div>
 
@@ -368,7 +368,7 @@ export const PracticePage: React.FC = () => {
 
                                 <span
                                   className={cn(
-                                    'text-[11px] font-medium px-2 py-0.5 rounded-full border',
+                                    'text-[11px] font-medium px-2 py-0.5 rounded-full border transition-all duration-200',
                                     difficultyBadge
                                   )}
                                 >
@@ -376,14 +376,14 @@ export const PracticePage: React.FC = () => {
                                 </span>
 
                                 {isSolved && (
-                                  <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 animate-in zoom-in-75 duration-200">
                                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                     Solved
                                   </span>
                                 )}
 
                                 {!isSolved && isAttempted && (
-                                  <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 animate-in zoom-in-75 duration-200">
                                     <Clock className="w-3 h-3 text-amber-600" />
                                     Attempted
                                   </span>
@@ -404,14 +404,14 @@ export const PracticePage: React.FC = () => {
                             <Link
                               to={`/practice/${problem.slug}`}
                               className={cn(
-                                'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150',
+                                'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 interactive-btn',
                                 isSolved
                                   ? 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200'
-                                  : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-sm'
+                                  : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-sm hover:shadow-md'
                               )}
                             >
                               <span>{isSolved ? 'Solve Again' : 'Solve'}</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
+                              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                             </Link>
                           </div>
                         </div>

@@ -91,16 +91,16 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
               to={item.path}
               onClick={onCloseMobile}
               className={cn(
-                'flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                'flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 interactive-tab',
                 active
-                  ? 'bg-neutral-900 text-white shadow-sm'
-                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/80'
+                  ? 'bg-neutral-900 text-white shadow-sm scale-[1.01]'
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/80 hover:translate-x-1'
               )}
             >
-              <Icon className={cn('w-4 h-4', active ? 'text-white' : 'text-neutral-500')} />
+              <Icon className={cn('w-4 h-4 transition-transform duration-200', active ? 'text-white scale-110' : 'text-neutral-500')} />
               <span>{item.label}</span>
               {active && (
-                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ED2A2B]" />
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ED2A2B] shadow-sm animate-pulse-subtle" />
               )}
             </Link>
           )
