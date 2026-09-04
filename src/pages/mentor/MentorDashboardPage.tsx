@@ -33,52 +33,10 @@ export interface StudentProgressItem {
   attentionReason?: string
 }
 
-// Initial cohort data matching the prompt requirements
+// Initial cohort data containing only verified students
 const INITIAL_STUDENTS: StudentProgressItem[] = [
   {
-    id: 's-1',
-    name: 'Arun',
-    email: 'arun.k@kalvium.community',
-    belt: 'Belt 3',
-    beltColor: '#EF4444',
-    progressPercent: 72,
-    solvedCount: 61,
-    totalProblems: 85,
-    streak: 8,
-    language: 'python',
-    lastActive: '2 hours ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-2',
-    name: 'Priya',
-    email: 'priya.s@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 51,
-    solvedCount: 43,
-    totalProblems: 85,
-    streak: 5,
-    language: 'java',
-    lastActive: '5 hours ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-3',
-    name: 'Karthik',
-    email: 'karthik.m@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 24,
-    solvedCount: 20,
-    totalProblems: 85,
-    streak: 2,
-    language: 'cpp',
-    lastActive: '1 day ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-4',
+    id: 's-kavya',
     name: 'Kavya Ramesh',
     email: 'kavya.ramesh.s.121@kalvium.community',
     belt: 'Belt 2',
@@ -92,7 +50,7 @@ const INITIAL_STUDENTS: StudentProgressItem[] = [
     needsAttention: false,
   },
   {
-    id: 's-5',
+    id: 's-prajith',
     name: 'Prajith P S',
     email: 'prajith.p.s.121@kalvium.community',
     belt: 'Belt 3',
@@ -103,78 +61,6 @@ const INITIAL_STUDENTS: StudentProgressItem[] = [
     streak: 15,
     language: 'python',
     lastActive: '30 mins ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-6',
-    name: 'Ananya Sharma',
-    email: 'ananya.s@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 18,
-    solvedCount: 15,
-    totalProblems: 85,
-    streak: 0,
-    language: 'nodejs',
-    lastActive: '4 days ago',
-    needsAttention: true,
-    attentionReason: 'Inactive for 4 days; stuck on Belt 1 Loops',
-  },
-  {
-    id: 's-7',
-    name: 'Rohan Verma',
-    email: 'rohan.v@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 44,
-    solvedCount: 37,
-    totalProblems: 85,
-    streak: 3,
-    language: 'python',
-    lastActive: '1 day ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-8',
-    name: 'Sneha Patel',
-    email: 'sneha.p@kalvium.community',
-    belt: 'Belt 3',
-    beltColor: '#EF4444',
-    progressPercent: 91,
-    solvedCount: 77,
-    totalProblems: 85,
-    streak: 19,
-    language: 'java',
-    lastActive: '1 hour ago',
-    needsAttention: false,
-  },
-  {
-    id: 's-9',
-    name: 'Vikas Reddy',
-    email: 'vikas.r@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 12,
-    solvedCount: 10,
-    totalProblems: 85,
-    streak: 0,
-    language: 'cpp',
-    lastActive: '5 days ago',
-    needsAttention: true,
-    attentionReason: 'Frequent hidden test failures on boundary cases',
-  },
-  {
-    id: 's-10',
-    name: 'Meera Nair',
-    email: 'meera.n@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 58,
-    solvedCount: 49,
-    totalProblems: 85,
-    streak: 6,
-    language: 'python',
-    lastActive: '3 hours ago',
     needsAttention: false,
   },
 ]
@@ -256,7 +142,7 @@ export const MentorDashboardPage: React.FC = () => {
 
       {/* 2. Top Metric Stat Cards: 128 Students | 94 Active | 12 Attention */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* Card 1: 128 Students */}
+        {/* Card 1: Registered Students */}
         <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
@@ -268,10 +154,10 @@ export const MentorDashboardPage: React.FC = () => {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
-              128
+              {INITIAL_STUDENTS.length}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Students Enrolled
+              Registered Scholars
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
@@ -282,7 +168,7 @@ export const MentorDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 2: 94 Active */}
+        {/* Card 2: Active Engagement */}
         <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
@@ -294,44 +180,39 @@ export const MentorDashboardPage: React.FC = () => {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight">
-              94
+              {INITIAL_STUDENTS.filter((s) => !s.needsAttention).length}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Active This Week (73.4%)
+              Active This Week (100%)
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
             <span>Maintained coding streaks</span>
-            <span className="text-emerald-600 font-semibold">+6 vs last week</span>
+            <span className="text-emerald-600 font-semibold">Active daily</span>
           </div>
         </div>
 
-        {/* Card 3: 12 Attention */}
-        <div className="bg-white p-6 rounded-3xl border border-amber-200 shadow-xs space-y-4 interactive-card">
+        {/* Card 3: Needs Intervention */}
+        <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
-              Needs Intervention
+            <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+              Intervention Status
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
-              <AlertTriangle className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-amber-600 tracking-tight">
-              12
+            <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
+              {INITIAL_STUDENTS.filter((s) => s.needsAttention).length}
             </div>
-            <div className="text-xs font-semibold text-amber-800/80 mt-1">
+            <div className="text-xs font-semibold text-neutral-500 mt-1">
               Attention Required
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-            <span className="text-amber-700 font-medium">Stuck on hidden test cases</span>
-            <button
-              onClick={() => setSelectedBeltFilter('attention')}
-              className="text-[#ED2A2B] font-bold hover:underline"
-            >
-              Filter Scholars →
-            </button>
+            <span className="text-emerald-600 font-medium">All registered scholars on track</span>
+            <span className="text-emerald-600 font-semibold">100% Healthy</span>
           </div>
         </div>
       </div>

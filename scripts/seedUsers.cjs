@@ -31,16 +31,10 @@ async function main() {
       name: 'Prajith P S',
     },
     {
-      email: 'rahul@kalvium.community',
-      role: 'MENTOR',
-      status: 'ACTIVE',
-      name: 'Rahul',
-    },
-    {
       email: 'sivakumarelango10@gmail.com',
       role: 'MENTOR',
       status: 'ACTIVE',
-      name: 'Rahul',
+      name: 'Sivakumar Elango',
     },
   ];
 

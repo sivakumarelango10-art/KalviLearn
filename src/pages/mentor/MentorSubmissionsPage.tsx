@@ -30,8 +30,8 @@ interface MentorSubmissionItem {
 const SAMPLE_SUBMISSIONS: MentorSubmissionItem[] = [
   {
     id: 'sub-1',
-    studentName: 'Arun',
-    studentEmail: 'arun.k@kalvium.community',
+    studentName: 'Prajith P S',
+    studentEmail: 'prajith.p.s.121@kalvium.community',
     problemTitle: 'Kadane Max Subarray Sum',
     problemSlug: 'belt-3-kadane-max-subarray',
     beltName: 'Belt 3',
@@ -63,88 +63,6 @@ if __name__ == '__main__':
   },
   {
     id: 'sub-2',
-    studentName: 'Priya',
-    studentEmail: 'priya.s@kalvium.community',
-    problemTitle: 'Reverse Words in a String',
-    problemSlug: 'belt-2-reverse-words',
-    beltName: 'Belt 2',
-    language: 'java',
-    languageLabel: 'Java',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 118,
-    createdAt: '15 mins ago',
-    code: `import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        if (sc.hasNextLine()) {
-            String line = sc.nextLine().trim();
-            String[] words = line.split("\\\\s+");
-            StringBuilder sb = new StringBuilder();
-            for (int i = words.length - 1; i >= 0; i--) {
-                sb.append(words[i]).append(i > 0 ? " " : "");
-            }
-            System.out.println(sb.toString());
-        }
-    }
-}`,
-  },
-  {
-    id: 'sub-3',
-    studentName: 'Karthik',
-    studentEmail: 'karthik.m@kalvium.community',
-    problemTitle: 'Check Even or Odd',
-    problemSlug: 'belt-1-even-or-odd',
-    beltName: 'Belt 1',
-    language: 'cpp',
-    languageLabel: 'C++',
-    status: 'PASSED',
-    passedTests: 10,
-    totalTests: 10,
-    executionTimeMs: 18,
-    createdAt: '28 mins ago',
-    code: `#include <iostream>
-using namespace std;
-
-int main() {
-    long long n;
-    if (cin >> n) {
-        if (n % 2 == 0) {
-            cout << "Even" << endl;
-        } else {
-            cout << "Odd" << endl;
-        }
-    }
-    return 0;
-}`,
-  },
-  {
-    id: 'sub-4',
-    studentName: 'Ananya Sharma',
-    studentEmail: 'ananya.s@kalvium.community',
-    problemTitle: 'Sum of Two Numbers',
-    problemSlug: 'belt-1-sum-of-two-numbers',
-    beltName: 'Belt 1',
-    language: 'nodejs',
-    languageLabel: 'Node.js',
-    status: 'FAILED',
-    passedTests: 3,
-    totalTests: 10,
-    executionTimeMs: 55,
-    createdAt: '1 hour ago',
-    code: `const fs = require('fs');
-const input = fs.readFileSync(0, 'utf-8').trim();
-// Failed: Only handled visible cases
-if (input === '15 27') console.log(42);
-else if (input === '100 250') console.log(350);
-else if (input === '8 12') console.log(20);
-else console.log(0);`,
-  },
-  {
-    id: 'sub-5',
     studentName: 'Kavya Ramesh',
     studentEmail: 'kavya.ramesh.s.121@kalvium.community',
     problemTitle: 'Two Sum Target Index',
@@ -156,7 +74,7 @@ else console.log(0);`,
     passedTests: 10,
     totalTests: 10,
     executionTimeMs: 38,
-    createdAt: '2 hours ago',
+    createdAt: '15 mins ago',
     code: `import sys
 
 def solve():
@@ -179,35 +97,116 @@ if __name__ == '__main__':
     solve()`,
   },
   {
-    id: 'sub-6',
-    studentName: 'Vikas Reddy',
-    studentEmail: 'vikas.r@kalvium.community',
-    problemTitle: 'Find Prime Factors',
-    problemSlug: 'belt-1-prime-factors',
+    id: 'sub-3',
+    studentName: 'Prajith P S',
+    studentEmail: 'prajith.p.s.121@kalvium.community',
+    problemTitle: 'Reverse Words in a String',
+    problemSlug: 'belt-2-reverse-words',
+    beltName: 'Belt 2',
+    language: 'java',
+    languageLabel: 'Java',
+    status: 'PASSED',
+    passedTests: 10,
+    totalTests: 10,
+    executionTimeMs: 118,
+    createdAt: '30 mins ago',
+    code: `import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextLine()) {
+            String line = sc.nextLine().trim();
+            String[] words = line.split("\\\\s+");
+            StringBuilder sb = new StringBuilder();
+            for (int i = words.length - 1; i >= 0; i--) {
+                sb.append(words[i]).append(i > 0 ? " " : "");
+            }
+            System.out.println(sb.toString());
+        }
+    }
+}`,
+  },
+  {
+    id: 'sub-4',
+    studentName: 'Kavya Ramesh',
+    studentEmail: 'kavya.ramesh.s.121@kalvium.community',
+    problemTitle: 'Check Even or Odd',
+    problemSlug: 'belt-1-even-or-odd',
     beltName: 'Belt 1',
     language: 'cpp',
     languageLabel: 'C++',
-    status: 'FAILED',
-    passedTests: 4,
+    status: 'PASSED',
+    passedTests: 10,
     totalTests: 10,
-    executionTimeMs: 92,
-    createdAt: '3 hours ago',
+    executionTimeMs: 18,
+    createdAt: '1 hour ago',
     code: `#include <iostream>
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    // Missing handling for large composite squares
-    for (int i = 2; i <= n; i++) {
-        while (n % i == 0) {
-            cout << i << " ";
-            n /= i;
+    long long n;
+    if (cin >> n) {
+        if (n % 2 == 0) {
+            cout << "Even" << endl;
+        } else {
+            cout << "Odd" << endl;
         }
     }
-    cout << endl;
     return 0;
 }`,
+  },
+  {
+    id: 'sub-5',
+    studentName: 'Prajith P S',
+    studentEmail: 'prajith.p.s.121@kalvium.community',
+    problemTitle: 'Valid Palindrome String',
+    problemSlug: 'belt-2-valid-palindrome',
+    beltName: 'Belt 2',
+    language: 'python',
+    languageLabel: 'Python',
+    status: 'PASSED',
+    passedTests: 10,
+    totalTests: 10,
+    executionTimeMs: 32,
+    createdAt: '2 hours ago',
+    code: `import sys
+
+def solve():
+    s = sys.stdin.read().strip()
+    cleaned = ''.join(c.lower() for c in s if c.isalnum())
+    if cleaned == cleaned[::-1]:
+        print("true")
+    else:
+        print("false")
+
+if __name__ == '__main__':
+    solve()`,
+  },
+  {
+    id: 'sub-6',
+    studentName: 'Kavya Ramesh',
+    studentEmail: 'kavya.ramesh.s.121@kalvium.community',
+    problemTitle: 'Sum of Two Numbers',
+    problemSlug: 'belt-1-sum-of-two-numbers',
+    beltName: 'Belt 1',
+    language: 'nodejs',
+    languageLabel: 'Node.js',
+    status: 'PASSED',
+    passedTests: 10,
+    totalTests: 10,
+    executionTimeMs: 45,
+    createdAt: '3 hours ago',
+    code: `const fs = require('fs');
+
+function solve() {
+    const input = fs.readFileSync(0, 'utf-8').trim();
+    if (!input) return;
+    const [a, b] = input.split(/\\s+/).map(Number);
+    console.log(a + b);
+}
+
+solve();`,
   },
 ]
 

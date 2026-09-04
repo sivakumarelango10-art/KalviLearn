@@ -28,30 +28,30 @@ const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
     author: 'Rahul (Mentor)',
     date: 'Today at 10:15 AM',
     priority: 'high',
-    readCount: 112,
-    totalScholars: 128,
+    readCount: 2,
+    totalScholars: 2,
   },
   {
     id: 'ann-2',
     title: 'Hidden Test Cases Notice: Input Parsing Hygiene',
     content:
-      'Several scholars in Python and Java are failing hidden test cases due to trailing whitespace or extraneous prompt messages in standard input. Ensure your code prints ONLY the required numbers/tokens.',
-    author: 'Rahul (Mentor)',
+      'Ensure input reading in Python and Java accounts for trailing whitespace or multi-token lines without hardcoded edge case returns.',
+    author: 'Mentor Team',
     date: 'Yesterday at 4:30 PM',
     priority: 'urgent',
-    readCount: 124,
-    totalScholars: 128,
+    readCount: 2,
+    totalScholars: 2,
   },
   {
     id: 'ann-3',
     title: 'New Problem Sets Released in Belt 3 Dynamic Programming',
     content:
-      'We have added 5 new multi-state DP challenges to the Belt 3 catalog. Scholars with Belt 2 completion are encouraged to begin exploring bottom-up tabulation.',
-    author: 'Rahul (Mentor)',
+      'We have added new multi-state DP challenges to the Belt 3 catalog. Scholars are encouraged to explore bottom-up tabulation.',
+    author: 'Mentor Team',
     date: 'Sep 2, 2026',
     priority: 'normal',
-    readCount: 98,
-    totalScholars: 128,
+    readCount: 1,
+    totalScholars: 2,
   },
 ]
 
@@ -74,7 +74,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
       date: 'Just now',
       priority: newPriority,
       readCount: 0,
-      totalScholars: 128,
+      totalScholars: 2,
     }
 
     setAnnouncements([item, ...announcements])
@@ -97,7 +97,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Broadcast updates, contest notices, and mentoring guidelines to your 128 assigned scholars.
+            Broadcast updates, contest notices, and mentoring guidelines to your registered scholars.
           </p>
         </div>
 

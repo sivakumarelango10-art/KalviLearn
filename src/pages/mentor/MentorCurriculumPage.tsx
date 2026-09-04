@@ -17,9 +17,9 @@ export const MentorCurriculumPage: React.FC = () => {
       title: 'Programming Foundations',
       color: '#3B82F6',
       totalProblems: 20,
-      cohortCompleted: 108,
-      avgPassRate: 92.4,
-      bottleneck: 'Nested Loop Patterns (Hidden edge cases)',
+      cohortCompleted: 2,
+      avgPassRate: 100,
+      bottleneck: 'Basic Syntax & Loop Bounds',
     },
     {
       order: 2,
@@ -27,8 +27,8 @@ export const MentorCurriculumPage: React.FC = () => {
       title: 'Intermediate Data Structures & Logic',
       color: '#10B981',
       totalProblems: 30,
-      cohortCompleted: 62,
-      avgPassRate: 78.1,
+      cohortCompleted: 2,
+      avgPassRate: 94.2,
       bottleneck: 'Two-Pointer & Sliding Window Bounds',
     },
     {
@@ -37,8 +37,8 @@ export const MentorCurriculumPage: React.FC = () => {
       title: 'Advanced Algorithmic Patterns',
       color: '#EF4444',
       totalProblems: 35,
-      cohortCompleted: 24,
-      avgPassRate: 64.8,
+      cohortCompleted: 1,
+      avgPassRate: 88.5,
       bottleneck: 'Dynamic Programming & State Transitions',
     },
   ]
@@ -90,7 +90,7 @@ export const MentorCurriculumPage: React.FC = () => {
             <div>
               <h3 className="text-base font-bold text-neutral-900">{belt.title}</h3>
               <p className="text-xs text-neutral-500 mt-1">
-                {belt.cohortCompleted} / 128 Scholars cleared this milestone
+                {belt.cohortCompleted} / 2 Registered Scholars cleared this milestone
               </p>
             </div>
 

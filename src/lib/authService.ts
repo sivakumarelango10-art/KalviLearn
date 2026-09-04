@@ -18,9 +18,7 @@ export interface VerificationResult {
 const AUTHORIZED_FALLBACK_USERS: Record<string, { role: string; name: string; status: string }> = {
   'kavya.ramesh.s.121@kalvium.community': { role: 'STUDENT', name: 'Kavya Ramesh', status: 'ACTIVE' },
   'prajith.p.s.121@kalvium.community': { role: 'STUDENT', name: 'Prajith P S', status: 'ACTIVE' },
-  'rahul@kalvium.community': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
-  'rahul.mentor@kalvium.community': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
-  'sivakumarelango10@gmail.com': { role: 'MENTOR', name: 'Rahul', status: 'ACTIVE' },
+  'sivakumarelango10@gmail.com': { role: 'MENTOR', name: 'Sivakumar Elango', status: 'ACTIVE' },
 }
 
 const AUTH_CACHE_KEY = 'kalvi_verified_user_cache_v1'

@@ -22,49 +22,7 @@ interface StudentRecord {
 
 const SCHOLAR_DIRECTORY: StudentRecord[] = [
   {
-    id: 's-1',
-    name: 'Arun',
-    email: 'arun.k@kalvium.community',
-    belt: 'Belt 3',
-    beltColor: '#EF4444',
-    progressPercent: 72,
-    solvedCount: 61,
-    streak: 8,
-    language: 'Python',
-    lastActive: '2 hours ago',
-    status: 'ACTIVE',
-    joinedDate: 'Jan 2026',
-  },
-  {
-    id: 's-2',
-    name: 'Priya',
-    email: 'priya.s@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 51,
-    solvedCount: 43,
-    streak: 5,
-    language: 'Java',
-    lastActive: '5 hours ago',
-    status: 'ACTIVE',
-    joinedDate: 'Jan 2026',
-  },
-  {
-    id: 's-3',
-    name: 'Karthik',
-    email: 'karthik.m@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 24,
-    solvedCount: 20,
-    streak: 2,
-    language: 'C++',
-    lastActive: '1 day ago',
-    status: 'ACTIVE',
-    joinedDate: 'Feb 2026',
-  },
-  {
-    id: 's-4',
+    id: 's-kavya',
     name: 'Kavya Ramesh',
     email: 'kavya.ramesh.s.121@kalvium.community',
     belt: 'Belt 2',
@@ -78,7 +36,7 @@ const SCHOLAR_DIRECTORY: StudentRecord[] = [
     joinedDate: 'Jan 2026',
   },
   {
-    id: 's-5',
+    id: 's-prajith',
     name: 'Prajith P S',
     email: 'prajith.p.s.121@kalvium.community',
     belt: 'Belt 3',
@@ -88,76 +46,6 @@ const SCHOLAR_DIRECTORY: StudentRecord[] = [
     streak: 15,
     language: 'Python',
     lastActive: '30 mins ago',
-    status: 'ACTIVE',
-    joinedDate: 'Jan 2026',
-  },
-  {
-    id: 's-6',
-    name: 'Ananya Sharma',
-    email: 'ananya.s@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 18,
-    solvedCount: 15,
-    streak: 0,
-    language: 'Node.js',
-    lastActive: '4 days ago',
-    status: 'ATTENTION',
-    joinedDate: 'Feb 2026',
-  },
-  {
-    id: 's-7',
-    name: 'Rohan Verma',
-    email: 'rohan.v@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 44,
-    solvedCount: 37,
-    streak: 3,
-    language: 'Python',
-    lastActive: '1 day ago',
-    status: 'ACTIVE',
-    joinedDate: 'Jan 2026',
-  },
-  {
-    id: 's-8',
-    name: 'Sneha Patel',
-    email: 'sneha.p@kalvium.community',
-    belt: 'Belt 3',
-    beltColor: '#EF4444',
-    progressPercent: 91,
-    solvedCount: 77,
-    streak: 19,
-    language: 'Java',
-    lastActive: '1 hour ago',
-    status: 'ACTIVE',
-    joinedDate: 'Jan 2026',
-  },
-  {
-    id: 's-9',
-    name: 'Vikas Reddy',
-    email: 'vikas.r@kalvium.community',
-    belt: 'Belt 1',
-    beltColor: '#3B82F6',
-    progressPercent: 12,
-    solvedCount: 10,
-    streak: 0,
-    language: 'C++',
-    lastActive: '5 days ago',
-    status: 'ATTENTION',
-    joinedDate: 'Feb 2026',
-  },
-  {
-    id: 's-10',
-    name: 'Meera Nair',
-    email: 'meera.n@kalvium.community',
-    belt: 'Belt 2',
-    beltColor: '#10B981',
-    progressPercent: 58,
-    solvedCount: 49,
-    streak: 6,
-    language: 'Python',
-    lastActive: '3 hours ago',
     status: 'ACTIVE',
     joinedDate: 'Jan 2026',
   },
@@ -200,13 +88,13 @@ export const MentorStudentsPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Manage your assigned 128 scholars, track individual belt mastery, and pinpoint students needing guidance.
+            Manage your registered scholars, track individual belt mastery, and pinpoint students needing guidance.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-700">
-            Cohort 2026 • 128 Assigned
+            Cohort 2026 • {SCHOLAR_DIRECTORY.length} Assigned
           </span>
         </div>
       </div>
@@ -241,7 +129,7 @@ export const MentorStudentsPage: React.FC = () => {
                 {filter === 'all'
                   ? 'All'
                   : filter === 'attention'
-                  ? 'Attention (12)'
+                  ? `Attention (${SCHOLAR_DIRECTORY.filter((s) => s.status === 'ATTENTION').length})`
                   : filter}
               </button>
             ))}
