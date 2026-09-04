@@ -110,7 +110,6 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
     children: [
       {
-        path: '',
         element: <AppLayout />,
         children: [
           {
@@ -163,7 +162,6 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
     children: [
       {
-        path: '',
         element: <MentorLayout />,
         children: [
           {

@@ -444,8 +444,9 @@ export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
  */
 export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
   try {
+    const channelName = `mentor-live-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const channel = supabase
-      .channel('mentor-live-feed')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'Submission' },

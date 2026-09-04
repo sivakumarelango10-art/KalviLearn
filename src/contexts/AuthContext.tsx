@@ -14,6 +14,7 @@ interface AuthContextType {
   isStudent: boolean
   clearAccessDenied: () => void
   loginWithGoogle: () => Promise<any>
+  loginWithEmail: (email: string) => Promise<{ success: boolean; user?: DbUser; error?: string }>
   logout: () => Promise<void>
 }
 
@@ -84,6 +85,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: { session } } = await supabase.auth.getSession()
 
         if (!session?.user?.email) {
+          // If Supabase session is absent, check if there is an active verified user in localStorage
+          const savedStr = localStorage.getItem(LOCAL_USER_KEY)
+          if (savedStr) {
+            try {
+              const savedUser: DbUser = JSON.parse(savedStr)
+              if (savedUser?.email) {
+                // Verify against database to ensure account remains active
+                const dbResult = await verifyUserInDatabase(savedUser.email)
+                if (dbResult.allowed && dbResult.user) {
+                  if (isMounted) {
+                    setUser(dbResult.user)
+                    localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(dbResult.user))
+                    setIsLoading(false)
+                  }
+                  return
+                }
+              }
+            } catch {
+              // Ignore parse error and proceed to cleanup
+            }
+          }
+
           if (isMounted) {
             localStorage.removeItem(LOCAL_USER_KEY)
             setUser(null)
@@ -173,6 +196,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await signInWithGoogle()
   }
 
+  const loginWithEmail = async (email: string) => {
+    setIsLoading(true)
+    clearAccessDenied()
+    try {
+      const result = await verifyUserInDatabase(email)
+      if (result.allowed && result.user) {
+        setUser(result.user)
+        localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
+        syncUserData(result.user.id).catch(console.warn)
+        return { success: true, user: result.user }
+      } else {
+        setAccessDenied(true)
+        setDeniedEmail(email)
+        setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
+        return { success: false, error: result.reason || 'Account not registered' }
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const logout = async () => {
     await signOutUser()
     setUser(null)
@@ -192,6 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isStudent: user?.role === 'STUDENT',
         clearAccessDenied,
         loginWithGoogle,
+        loginWithEmail,
         logout,
       }}
     >

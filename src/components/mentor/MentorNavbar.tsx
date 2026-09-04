@@ -24,14 +24,16 @@ export const MentorNavbar: React.FC<MentorNavbarProps> = ({ onToggleMobileSideba
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const mentorName = user?.name || 'Rahul'
-  const mentorEmail = user?.email || 'rahul@kalvium.community'
+  const mentorName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
+  const mentorEmail = user?.email || 'mentor@kalvium.community'
   const initials = mentorName
-    .split(' ')
-    .map((w) => w[0])
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0] || '')
     .join('')
     .slice(0, 2)
-    .toUpperCase() || 'R'
+    .toUpperCase() || 'M'
 
   // Close dropdown on click outside
   useEffect(() => {

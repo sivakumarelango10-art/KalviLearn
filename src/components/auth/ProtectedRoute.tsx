@@ -24,5 +24,10 @@ export const ProtectedRoute: React.FC = () => {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
+  // If authorized mentor visits root URL, redirect directly to Mentor Workspace
+  if (user.role === 'MENTOR' && (location.pathname === '/' || location.pathname === '')) {
+    return <Navigate to="/mentor" replace />
+  }
+
   return <Outlet />
 }

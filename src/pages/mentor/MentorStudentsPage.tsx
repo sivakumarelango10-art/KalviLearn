@@ -278,12 +278,15 @@ export const MentorStudentsPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((student) => {
-            const initials = student.name
-              .split(' ')
-              .map((w) => w[0])
+            const studentName = student.name || student.email || 'Scholar'
+            const initials = studentName
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean)
+              .map((w) => w[0] || '')
               .join('')
               .slice(0, 2)
-              .toUpperCase()
+              .toUpperCase() || 'S'
 
             return (
               <div

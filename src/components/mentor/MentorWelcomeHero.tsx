@@ -41,8 +41,8 @@ export const MentorWelcomeHero: React.FC<MentorWelcomeHeroProps> = ({
 }) => {
   // SVG Ring Calculations (circumference for radius 38 is ~238.76)
   const ringCircumference = 238.76
-  const strokeDashoffset =
-    ringCircumference - (ringCircumference * Math.min(100, Math.max(0, cohortMasteryPercent))) / 100
+  const safeMastery = isNaN(Number(cohortMasteryPercent)) ? 0 : Math.min(100, Math.max(0, Number(cohortMasteryPercent)))
+  const strokeDashoffset = ringCircumference - (ringCircumference * safeMastery) / 100
 
   return (
     <section

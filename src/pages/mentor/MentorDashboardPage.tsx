@@ -279,12 +279,15 @@ export const MentorDashboardPage: React.FC = () => {
                 </tr>
               ) : (
                 filteredStudents.map((student) => {
-                  const initials = student.name
-                    .split(' ')
-                    .map((w) => w[0])
+                  const studentName = student.name || student.email || 'Scholar'
+                  const initials = studentName
+                    .trim()
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .map((w) => w[0] || '')
                     .join('')
                     .slice(0, 2)
-                    .toUpperCase()
+                    .toUpperCase() || 'S'
 
                   return (
                     <tr
@@ -408,11 +411,11 @@ export const MentorDashboardPage: React.FC = () => {
             {/* Scholar Summary Header */}
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white font-extrabold text-lg flex items-center justify-center shadow-xs">
-                {selectedStudent.name.slice(0, 2).toUpperCase()}
+                {(selectedStudent.name || selectedStudent.email || 'SC').slice(0, 2).toUpperCase()}
               </div>
               <div>
                 <h3 className="text-xl font-bold text-neutral-900">
-                  {selectedStudent.name}
+                  {selectedStudent.name || 'Kalvi Scholar'}
                 </h3>
                 <p className="text-xs text-neutral-500 font-mono">
                   {selectedStudent.email}
@@ -420,12 +423,12 @@ export const MentorDashboardPage: React.FC = () => {
                 <div className="flex items-center gap-2 mt-1">
                   <span
                     className="px-2 py-0.5 rounded text-[11px] font-bold text-white"
-                    style={{ backgroundColor: selectedStudent.beltColor }}
+                    style={{ backgroundColor: selectedStudent.beltColor || '#3B82F6' }}
                   >
-                    {selectedStudent.belt}
+                    {selectedStudent.belt || 'Belt 1'}
                   </span>
                   <span className="text-[11px] text-neutral-400">
-                    Primary: {selectedStudent.language.toUpperCase()}
+                    Primary: {(selectedStudent.language || 'python').toUpperCase()}
                   </span>
                 </div>
               </div>
