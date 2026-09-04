@@ -1,4 +1,5 @@
 import { type FC, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { BrandLogo } from '@/components/common/BrandLogo'
 import { Card } from '@/components/ui/Card'
 import { GoogleLoginButton } from './GoogleLoginButton'
@@ -80,8 +81,27 @@ export const LoginCard: FC<LoginCardProps> = ({
           onClick={handleLoginClick}
         />
 
+        {/* Legal Agreement */}
+        <p className="text-xs text-neutral-500 text-center leading-relaxed pt-1">
+          By continuing, you agree to our{' '}
+          <Link
+            to="/terms-and-conditions"
+            className="font-medium text-neutral-900 underline underline-offset-2 hover:text-[#ED2A2B] transition-colors focus:outline-none focus:ring-1 focus:ring-neutral-900 rounded"
+          >
+            Terms &amp; Conditions
+          </Link>{' '}
+          and{' '}
+          <Link
+            to="/privacy-policy"
+            className="font-medium text-neutral-900 underline underline-offset-2 hover:text-[#ED2A2B] transition-colors focus:outline-none focus:ring-1 focus:ring-neutral-900 rounded"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
+
         {/* Subtle academic reassurance */}
-        <p className="text-[11px] text-neutral-400 text-center select-none pt-1">
+        <p className="text-[11px] text-neutral-400 text-center select-none pt-0.5">
           Authorized academic access for Kalvium community
         </p>
       </div>

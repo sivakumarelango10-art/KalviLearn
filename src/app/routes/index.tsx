@@ -39,6 +39,14 @@ const NotFoundPage = lazyWithRetry(
   () => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
   'NotFoundPage'
 )
+const PrivacyPolicyPage = lazyWithRetry(
+  () => import('@/pages/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })),
+  'PrivacyPolicyPage'
+)
+const TermsAndConditionsPage = lazyWithRetry(
+  () => import('@/pages/TermsAndConditionsPage').then((m) => ({ default: m.TermsAndConditionsPage })),
+  'TermsAndConditionsPage'
+)
 
 const PageLoader = () => (
   <div className="h-full min-h-[50vh] w-full flex flex-col items-center justify-center bg-transparent py-16 space-y-3 animate-in fade-in duration-150">
@@ -58,6 +66,16 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: withSuspense(<LoginPage />),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: '/privacy-policy',
+    element: withSuspense(<PrivacyPolicyPage />),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: '/terms-and-conditions',
+    element: withSuspense(<TermsAndConditionsPage />),
     errorElement: <RouteErrorBoundary />,
   },
   {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { LoginCard } from '@/features/auth/components/LoginCard'
@@ -17,6 +17,10 @@ export const LoginPage: React.FC = () => {
   const { user, accessDenied, deniedEmail, clearAccessDenied } = useAuth()
   const location = useLocation()
   const from = (location.state as any)?.from?.pathname || '/dashboard'
+
+  useEffect(() => {
+    document.title = 'KalviCode — Login'
+  }, [])
 
   // If already authorized, proceed to preserved destination or dashboard
   if (user && !accessDenied) {
