@@ -11,6 +11,10 @@ import {
   Trash2,
   Mail,
   User,
+  Code2,
+  ChevronRight,
+  ExternalLink,
+  Filter,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -22,13 +26,29 @@ import {
 } from '@/lib/mentorService'
 import { useAuth } from '@/contexts/AuthContext'
 
+const LANGUAGES = [
+  { id: 'all', label: 'All Languages', shortLabel: 'All', icon: '🌐' },
+  { id: 'cpp', label: 'C++', shortLabel: 'C++', icon: '⚡' },
+  { id: 'python', label: 'Python', shortLabel: 'Python', icon: '🐍' },
+  { id: 'java', label: 'Java', shortLabel: 'Java', icon: '☕' },
+  { id: 'nodejs', label: 'Node.Js', shortLabel: 'Node.Js', icon: '🟢' },
+] as const
+
+type LanguageKey = (typeof LANGUAGES)[number]['id']
+
 export const MentorStudentsPage: React.FC = () => {
   const { user } = useAuth()
   const [students, setStudents] = useState<MentorStudent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [beltFilter, setBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
+  const [langFilter, setLangFilter] = useState<LanguageKey>('all')
+  const [onlyWithSolved, setOnlyWithSolved] = useState(false)
   const [sortBy, setSortBy] = useState<'progress' | 'streak' | 'name'>('progress')
+
+  // Inspection modal for realtime solved problems
+  const [inspectingSolvedStudent, setInspectingSolvedStudent] = useState<MentorStudent | null>(null)
+  const [modalLangFilter, setModalLangFilter] = useState<LanguageKey>('all')
 
   // Add Scholar Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -44,12 +64,13 @@ export const MentorStudentsPage: React.FC = () => {
 
   // Keyboard shortcut (Escape) to close modals and body scroll lock
   useEffect(() => {
-    const isAnyModalOpen = isAddModalOpen || !!studentToDelete
+    const isAnyModalOpen = isAddModalOpen || !!studentToDelete || !!inspectingSolvedStudent
     if (!isAnyModalOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsAddModalOpen(false)
         setStudentToDelete(null)
+        setInspectingSolvedStudent(null)
       }
     }
     window.addEventListener('keydown', handleKeyDown)
@@ -58,7 +79,7 @@ export const MentorStudentsPage: React.FC = () => {
       window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
-  }, [isAddModalOpen, studentToDelete])
+  }, [isAddModalOpen, studentToDelete, inspectingSolvedStudent])
 
   const loadData = useCallback(async () => {
     try {
@@ -85,29 +106,65 @@ export const MentorStudentsPage: React.FC = () => {
 
   const attentionCount = students.filter((s) => s.needsAttention).length
 
+  // Cohort total solved count per language
+  const cohortLangCounts = useMemo(() => {
+    const counts = { all: 0, cpp: 0, python: 0, java: 0, nodejs: 0 }
+    for (const s of students) {
+      counts.all += s.solvedProblems?.length || 0
+      counts.cpp += s.languageSolvedCounts?.cpp || 0
+      counts.python += s.languageSolvedCounts?.python || 0
+      counts.java += s.languageSolvedCounts?.java || 0
+      counts.nodejs += s.languageSolvedCounts?.nodejs || 0
+    }
+    return counts
+  }, [students])
+
   const filtered = useMemo(() => {
-    return students.filter((s) => {
-      const sName = (s.name || '').toLowerCase()
-      const sEmail = (s.email || '').toLowerCase()
-      const sLang = (s.language || '').toLowerCase()
-      const q = (search || '').toLowerCase()
+    return students
+      .filter((s) => {
+        const sName = (s.name || '').toLowerCase()
+        const sEmail = (s.email || '').toLowerCase()
+        const sCode = (s.studentCode || '').toLowerCase()
+        const q = (search || '').toLowerCase()
 
-      const matchesSearch =
-        sName.includes(q) ||
-        sEmail.includes(q) ||
-        sLang.includes(q)
+        const matchesSearch =
+          sName.includes(q) ||
+          sEmail.includes(q) ||
+          sCode.includes(q) ||
+          (s.solvedProblems || []).some(
+            (p) => p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q)
+          )
 
-      if (!matchesSearch) return false
+        if (!matchesSearch) return false
 
-      if (beltFilter === 'all') return true
-      if (beltFilter === 'attention') return s.needsAttention
-      return s.belt === beltFilter
-    }).sort((a, b) => {
-      if (sortBy === 'progress') return b.progressPercent - a.progressPercent
-      if (sortBy === 'streak') return b.streak - a.streak
-      return (a.name || '').localeCompare(b.name || '')
-    })
-  }, [students, search, beltFilter, sortBy])
+        if (beltFilter === 'attention') {
+          if (!s.needsAttention) return false
+        } else if (beltFilter !== 'all') {
+          if (s.belt !== beltFilter) return false
+        }
+
+        if (langFilter !== 'all') {
+          const solvedInLang = s.languageSolvedCounts?.[langFilter] || 0
+          if (onlyWithSolved && solvedInLang === 0) {
+            return false
+          }
+        }
+
+        return true
+      })
+      .sort((a, b) => {
+        if (langFilter !== 'all') {
+          const aSolved = a.languageSolvedCounts?.[langFilter] || 0
+          const bSolved = b.languageSolvedCounts?.[langFilter] || 0
+          if (bSolved !== aSolved) {
+            return bSolved - aSolved
+          }
+        }
+        if (sortBy === 'progress') return b.progressPercent - a.progressPercent
+        if (sortBy === 'streak') return b.streak - a.streak
+        return (a.name || '').localeCompare(b.name || '')
+      })
+  }, [students, search, beltFilter, langFilter, onlyWithSolved, sortBy])
 
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -182,7 +239,10 @@ export const MentorStudentsPage: React.FC = () => {
             <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{successToast}</span>
           </div>
-          <button onClick={() => setSuccessToast(null)} className="text-emerald-600 hover:text-emerald-900">
+          <button
+            onClick={() => setSuccessToast(null)}
+            className="text-emerald-600 hover:text-emerald-900"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -200,7 +260,7 @@ export const MentorStudentsPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Manage your registered students, track individual belt mastery, and enroll new students.
+            Manage your registered students, track individual belt mastery, and view real-time solved problems by programming language.
           </p>
         </div>
 
@@ -222,13 +282,81 @@ export const MentorStudentsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Language Selector Bar (C++, Python, Java, Node.Js) */}
+      <div className="bg-white p-4 rounded-3xl border border-neutral-200/80 shadow-xs space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-neutral-100 text-neutral-700">
+              <Code2 className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-neutral-800">Filter by Language:</span>
+            <span className="text-[11px] text-neutral-500 hidden sm:inline">
+              Click a language to view real-time solved problems for each student
+            </span>
+          </div>
+
+          {langFilter !== 'all' && (
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-1.5 text-xs text-neutral-600 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={onlyWithSolved}
+                  onChange={(e) => setOnlyWithSolved(e.target.checked)}
+                  className="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                />
+                <span>Only show students with solved {LANGUAGES.find((l) => l.id === langFilter)?.label} problems</span>
+              </label>
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live Real-Time Sync
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* 4 Language Buttons + All Languages */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {LANGUAGES.map((lang) => {
+            const isSelected = langFilter === lang.id
+            const count = cohortLangCounts[lang.id]
+
+            return (
+              <button
+                key={lang.id}
+                type="button"
+                onClick={() => setLangFilter(lang.id)}
+                className={cn(
+                  'px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border flex-shrink-0 cursor-pointer shadow-2xs',
+                  isSelected
+                    ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                    : 'bg-neutral-50 text-neutral-600 hover:bg-neutral-100 border-neutral-200/80 hover:text-neutral-900'
+                )}
+              >
+                <span>{lang.icon}</span>
+                <span>{lang.label}</span>
+                <span
+                  className={cn(
+                    'text-[10px] px-2 py-0.5 rounded-full font-mono font-bold',
+                    isSelected
+                      ? 'bg-neutral-800 text-white'
+                      : 'bg-neutral-200/80 text-neutral-700'
+                  )}
+                >
+                  {count} solved
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* Filter and Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-neutral-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search student by name, email, or language..."
+            placeholder="Search student by name, email, student code, or problem..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
@@ -294,110 +422,324 @@ export const MentorStudentsPage: React.FC = () => {
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-neutral-400 bg-white rounded-2xl border border-neutral-200 space-y-3">
           <p>No students found matching the selected criteria.</p>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800 transition-colors"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>Add New Student</span>
-          </button>
+          {langFilter !== 'all' && onlyWithSolved && (
+            <button
+              onClick={() => setOnlyWithSolved(false)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-800 text-xs font-semibold hover:bg-neutral-200 transition-colors"
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span>Show all students for {LANGUAGES.find((l) => l.id === langFilter)?.label}</span>
+            </button>
+          )}
+          <div>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800 transition-colors"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Add New Student</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((student) => {
             const studentName = student.name || student.email || 'Student'
-            const initials = studentName
-              .trim()
-              .split(/\s+/)
-              .filter(Boolean)
-              .map((w) => w[0] || '')
-              .join('')
-              .slice(0, 2)
-              .toUpperCase() || 'S'
+            const initials =
+              studentName
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean)
+                .map((w) => w[0] || '')
+                .join('')
+                .slice(0, 2)
+                .toUpperCase() || 'S'
+
+            const solvedInActive =
+              langFilter === 'all'
+                ? student.solvedProblems || []
+                : (student.solvedProblems || []).filter((p) => p.language === langFilter)
 
             return (
               <div
                 key={student.id}
-                className="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-xs space-y-4 hover:border-neutral-300 transition-all interactive-card relative group"
+                className="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-xs space-y-4 hover:border-neutral-300 transition-all interactive-card relative group flex flex-col justify-between"
               >
-                {/* Header */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white text-xs font-bold flex items-center justify-center shadow-xs">
-                      {initials}
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white text-xs font-bold flex items-center justify-center shadow-xs flex-shrink-0">
+                        {initials}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-neutral-900 text-sm truncate">{student.name}</h3>
+                        <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[180px]">
+                          {student.email}
+                        </p>
+                        {student.studentCode && (
+                          <p className="text-[10px] text-neutral-500 font-mono font-medium mt-0.5">
+                            Code: {student.studentCode}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <span
+                        className="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-2xs"
+                        style={{ backgroundColor: student.beltColor }}
+                      >
+                        {student.belt}
+                      </span>
+                      <button
+                        onClick={() => setStudentToDelete(student)}
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                        title="Remove Student"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
+                      <span>Overall Progress</span>
+                      <span className="font-bold text-neutral-900">{student.progressPercent}%</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${student.progressPercent}%`,
+                          backgroundColor: student.beltColor,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Meta Stats Row */}
+                  <div className="pt-2 border-t border-neutral-100 grid grid-cols-3 text-center text-xs">
+                    <div>
+                      <span className="block font-bold text-neutral-900">{student.solvedCount}</span>
+                      <span className="text-[10px] text-neutral-400">Total Solved</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-neutral-900 text-sm">{student.name}</h3>
-                      <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[180px]">
-                        {student.email}
-                      </p>
-                      {student.studentCode && (
-                        <p className="text-[10px] text-neutral-500 font-mono font-medium mt-0.5">
-                          Student Code: {student.studentCode}
-                        </p>
-                      )}
+                      <span className="block font-bold text-amber-500">{student.streak}d</span>
+                      <span className="text-[10px] text-neutral-400">Streak</span>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-neutral-700 uppercase">{student.language}</span>
+                      <span className="text-[10px] text-neutral-400">Primary Lang</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-2xs"
-                      style={{ backgroundColor: student.beltColor }}
-                    >
-                      {student.belt}
-                    </span>
-                    <button
-                      onClick={() => setStudentToDelete(student)}
-                      className="opacity-0 group-hover:opacity-100 p-1 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-all"
-                      title="Remove Student"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                  {/* Realtime Solved Problems Section */}
+                  <div className="pt-3 border-t border-neutral-100 space-y-2">
+                    {langFilter !== 'all' ? (
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[11px] font-bold text-neutral-800">
+                              Solved in {LANGUAGES.find((l) => l.id === langFilter)?.label}:
+                            </span>
+                            <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700">
+                              {student.languageSolvedCounts?.[langFilter] || 0}
+                            </span>
+                          </div>
+                          {(student.languageSolvedCounts?.[langFilter] || 0) > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInspectingSolvedStudent(student)
+                                setModalLangFilter(langFilter)
+                              }}
+                              className="text-[10px] font-bold text-[#ED2A2B] hover:underline flex items-center gap-0.5"
+                            >
+                              <span>View All ({student.languageSolvedCounts?.[langFilter]})</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+
+                        {solvedInActive.length === 0 ? (
+                          <div className="py-2.5 px-3 rounded-xl bg-neutral-50/80 border border-dashed border-neutral-200 text-center">
+                            <p className="text-[11px] text-neutral-400 font-medium">
+                              No problems solved in {LANGUAGES.find((l) => l.id === langFilter)?.label} yet
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-1.5">
+                            {solvedInActive.slice(0, 2).map((prob) => (
+                              <div
+                                key={prob.problemId}
+                                onClick={() => {
+                                  setInspectingSolvedStudent(student)
+                                  setModalLangFilter(langFilter)
+                                }}
+                                className="p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2 group/item"
+                              >
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                    <span className="text-xs font-bold text-neutral-900 truncate group-hover/item:text-neutral-950">
+                                      {prob.title}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-1 ml-5">
+                                    <span
+                                      className="text-[9px] font-extrabold px-1.5 py-0.2 rounded text-white shadow-2xs"
+                                      style={{ backgroundColor: prob.beltColor }}
+                                    >
+                                      {prob.beltName}
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        'text-[9px] font-bold px-1.5 py-0.2 rounded',
+                                        prob.difficulty.toLowerCase() === 'easy'
+                                          ? 'bg-emerald-100 text-emerald-800'
+                                          : prob.difficulty.toLowerCase() === 'medium'
+                                          ? 'bg-amber-100 text-amber-800'
+                                          : 'bg-red-100 text-red-800'
+                                      )}
+                                    >
+                                      {prob.difficulty}
+                                    </span>
+                                    <span className="text-[10px] text-neutral-400">
+                                      {prob.solvedAtFormatted}
+                                    </span>
+                                  </div>
+                                </div>
+                                <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover/item:text-neutral-700 flex-shrink-0" />
+                              </div>
+                            ))}
+                            {solvedInActive.length > 2 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setInspectingSolvedStudent(student)
+                                  setModalLangFilter(langFilter)
+                                }}
+                                className="w-full text-center text-[10px] text-neutral-500 font-semibold hover:text-neutral-800 py-1"
+                              >
+                                + {solvedInActive.length - 2} more solved in {LANGUAGES.find((l) => l.id === langFilter)?.label}
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[11px] font-bold text-neutral-700">Solved by Language:</span>
+                          {student.solvedProblems.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInspectingSolvedStudent(student)
+                                setModalLangFilter('all')
+                              }}
+                              className="text-[10px] font-bold text-[#ED2A2B] hover:underline flex items-center gap-0.5"
+                            >
+                              <span>All Solved ({student.solvedProblems.length})</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* 4 Interactive Language Badges */}
+                        <div className="grid grid-cols-4 gap-1.5 text-center">
+                          <button
+                            type="button"
+                            onClick={() => setLangFilter('cpp')}
+                            className="p-1.5 rounded-xl bg-blue-50/80 border border-blue-100/80 hover:bg-blue-100/80 transition-all text-left cursor-pointer group/pill"
+                          >
+                            <span className="block text-[11px] font-bold text-blue-900 group-hover/pill:text-blue-950">
+                              {student.languageSolvedCounts?.cpp || 0}
+                            </span>
+                            <span className="text-[9px] font-semibold text-blue-600 block">C++</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setLangFilter('python')}
+                            className="p-1.5 rounded-xl bg-emerald-50/80 border border-emerald-100/80 hover:bg-emerald-100/80 transition-all text-left cursor-pointer group/pill"
+                          >
+                            <span className="block text-[11px] font-bold text-emerald-900 group-hover/pill:text-emerald-950">
+                              {student.languageSolvedCounts?.python || 0}
+                            </span>
+                            <span className="text-[9px] font-semibold text-emerald-600 block">Python</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setLangFilter('java')}
+                            className="p-1.5 rounded-xl bg-amber-50/80 border border-amber-100/80 hover:bg-amber-100/80 transition-all text-left cursor-pointer group/pill"
+                          >
+                            <span className="block text-[11px] font-bold text-amber-900 group-hover/pill:text-amber-950">
+                              {student.languageSolvedCounts?.java || 0}
+                            </span>
+                            <span className="text-[9px] font-semibold text-amber-600 block">Java</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setLangFilter('nodejs')}
+                            className="p-1.5 rounded-xl bg-teal-50/80 border border-teal-100/80 hover:bg-teal-100/80 transition-all text-left cursor-pointer group/pill"
+                          >
+                            <span className="block text-[11px] font-bold text-teal-900 group-hover/pill:text-teal-950">
+                              {student.languageSolvedCounts?.nodejs || 0}
+                            </span>
+                            <span className="text-[9px] font-semibold text-teal-600 block">Node.Js</span>
+                          </button>
+                        </div>
+
+                        {/* Most recently solved problem if any */}
+                        {student.solvedProblems.length > 0 && (
+                          <div
+                            onClick={() => {
+                              setInspectingSolvedStudent(student)
+                              setModalLangFilter('all')
+                            }}
+                            className="mt-2 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2"
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                              <span className="text-xs text-neutral-800 truncate font-semibold">
+                                <span className="text-neutral-500 font-normal">Latest: </span>
+                                {student.solvedProblems[0]?.title}
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-800 uppercase flex-shrink-0">
+                              {student.solvedProblems[0]?.languageLabel}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Progress */}
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
-                    <span>Progress</span>
-                    <span className="font-bold text-neutral-900">{student.progressPercent}%</span>
-                  </div>
-                  <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${student.progressPercent}%`,
-                        backgroundColor: student.beltColor,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Meta Details */}
-                <div className="pt-2 border-t border-neutral-100 grid grid-cols-3 text-center text-xs">
-                  <div>
-                    <span className="block font-bold text-neutral-900">{student.solvedCount}</span>
-                    <span className="text-[10px] text-neutral-400">Solved</span>
-                  </div>
-                  <div>
-                    <span className="block font-bold text-amber-500">{student.streak}d</span>
-                    <span className="text-[10px] text-neutral-400">Streak</span>
-                  </div>
-                  <div>
-                    <span className="block font-bold text-neutral-700 uppercase">{student.language}</span>
-                    <span className="text-[10px] text-neutral-400">Language</span>
-                  </div>
-                </div>
-
-                {/* Status Badge */}
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-[11px] text-neutral-400">
-                    Active: {student.lastActive}
-                  </span>
-                  {student.needsAttention && (
+                {/* Footer Active Status */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100 text-[11px] text-neutral-400">
+                  <span>Active: {student.lastActive}</span>
+                  {student.needsAttention ? (
                     <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
                       Attention
                     </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInspectingSolvedStudent(student)
+                        setModalLangFilter(langFilter)
+                      }}
+                      className="text-[10px] font-bold text-neutral-600 hover:text-neutral-900 hover:underline"
+                    >
+                      Inspect Problems →
+                    </button>
                   )}
                 </div>
               </div>
@@ -405,6 +747,211 @@ export const MentorStudentsPage: React.FC = () => {
           })}
         </div>
       )}
+
+      {/* Solved Problems Inspection Modal (Portaled directly to document.body) */}
+      {inspectingSolvedStudent &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setInspectingSolvedStudent(null)}
+          >
+            <div
+              className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-neutral-200 space-y-5 relative max-h-[90vh] flex flex-col animate-modal-pop"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setInspectingSolvedStudent(null)}
+                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Modal Header */}
+              <div className="flex items-start gap-3.5 pr-8">
+                <div className="w-12 h-12 rounded-2xl bg-neutral-900 text-white text-sm font-bold flex items-center justify-center shadow-xs flex-shrink-0">
+                  {inspectingSolvedStudent.name
+                    .trim()
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .map((w) => w[0] || '')
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase() || 'S'}
+                </div>
+                <div className="space-y-0.5 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-lg font-bold text-neutral-900 truncate">
+                      {inspectingSolvedStudent.name}
+                    </h3>
+                    <span
+                      className="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-2xs"
+                      style={{ backgroundColor: inspectingSolvedStudent.beltColor }}
+                    >
+                      {inspectingSolvedStudent.belt}
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-500 font-mono truncate">
+                    {inspectingSolvedStudent.email}
+                    {inspectingSolvedStudent.studentCode && ` • ${inspectingSolvedStudent.studentCode}`}
+                  </p>
+                  <div className="flex items-center gap-3 pt-1 text-xs flex-wrap">
+                    <span className="font-semibold text-neutral-700">
+                      Total Solved: <strong className="text-neutral-900 font-bold">{inspectingSolvedStudent.solvedProblems.length}</strong>
+                    </span>
+                    <span className="text-neutral-300">•</span>
+                    <span className="font-semibold text-neutral-700">
+                      Progress: <strong className="text-neutral-900 font-bold">{inspectingSolvedStudent.progressPercent}%</strong>
+                    </span>
+                    <span className="text-neutral-300">•</span>
+                    <span className="font-semibold text-neutral-700">
+                      Streak: <strong className="text-amber-600 font-bold">{inspectingSolvedStudent.streak}d</strong>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Language Filter Tabs */}
+              <div className="flex items-center gap-1.5 border-b border-neutral-100 pb-3 overflow-x-auto">
+                {LANGUAGES.map((lang) => {
+                  const isSelected = modalLangFilter === lang.id
+                  const count =
+                    lang.id === 'all'
+                      ? inspectingSolvedStudent.solvedProblems.length
+                      : inspectingSolvedStudent.languageSolvedCounts?.[lang.id] || 0
+
+                  return (
+                    <button
+                      key={lang.id}
+                      type="button"
+                      onClick={() => setModalLangFilter(lang.id)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer',
+                        isSelected
+                          ? 'bg-neutral-900 text-white shadow-xs'
+                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                      )}
+                    >
+                      <span>{lang.shortLabel}</span>
+                      <span
+                        className={cn(
+                          'text-[10px] px-1.5 py-0.2 rounded-md font-mono',
+                          isSelected ? 'bg-neutral-800 text-white' : 'bg-neutral-200/80 text-neutral-700'
+                        )}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Solved Problems List */}
+              <div className="flex-1 overflow-y-auto pr-1 space-y-2 min-h-[200px] max-h-[380px]">
+                {(() => {
+                  const list =
+                    modalLangFilter === 'all'
+                      ? inspectingSolvedStudent.solvedProblems
+                      : inspectingSolvedStudent.solvedProblems.filter((p) => p.language === modalLangFilter)
+
+                  if (list.length === 0) {
+                    return (
+                      <div className="py-12 text-center text-neutral-400 space-y-2">
+                        <div className="w-10 h-10 rounded-2xl bg-neutral-100 text-neutral-400 flex items-center justify-center mx-auto">
+                          <Code2 className="w-5 h-5" />
+                        </div>
+                        <p className="text-xs font-medium">
+                          No problems solved in {LANGUAGES.find((l) => l.id === modalLangFilter)?.label} yet.
+                        </p>
+                      </div>
+                    )
+                  }
+
+                  return list.map((prob) => {
+                    const langBadge =
+                      prob.language === 'cpp'
+                        ? 'bg-blue-100 text-blue-800 border-blue-200'
+                        : prob.language === 'python'
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                        : prob.language === 'java'
+                        ? 'bg-amber-100 text-amber-800 border-amber-200'
+                        : 'bg-teal-100 text-teal-800 border-teal-200'
+
+                    return (
+                      <div
+                        key={prob.problemId}
+                        className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/80 flex items-center justify-between gap-3 hover:border-neutral-300 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-bold text-neutral-900 truncate">
+                              {prob.title}
+                            </h4>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <span
+                                className="text-[9px] font-extrabold px-1.5 py-0.5 rounded text-white shadow-2xs"
+                                style={{ backgroundColor: prob.beltColor }}
+                              >
+                                {prob.beltName}
+                              </span>
+                              <span
+                                className={cn(
+                                  'text-[9px] font-bold px-1.5 py-0.5 rounded',
+                                  prob.difficulty.toLowerCase() === 'easy'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : prob.difficulty.toLowerCase() === 'medium'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-red-100 text-red-800'
+                                )}
+                              >
+                                {prob.difficulty}
+                              </span>
+                              <span className={cn('text-[9px] font-extrabold px-2 py-0.5 rounded border', langBadge)}>
+                                {prob.languageLabel}
+                              </span>
+                              <span className="text-[10px] text-neutral-400">
+                                {prob.solvedAtFormatted}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <a
+                          href={`/problem/${prob.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-xl text-neutral-400 hover:text-neutral-800 hover:bg-neutral-200/60 transition-colors flex-shrink-0"
+                          title="Open Problem in Arena"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </div>
+                    )
+                  })
+                })()}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400">
+                <span>Real-time live progress sync enabled</span>
+                <button
+                  type="button"
+                  onClick={() => setInspectingSolvedStudent(null)}
+                  className="px-4 py-2 rounded-xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* Add Student Modal (Portaled directly to document.body) */}
       {isAddModalOpen &&

@@ -1,5 +1,18 @@
 import { supabase } from './supabase'
 
+export interface SolvedProblemItem {
+  problemId: string
+  title: string
+  slug: string
+  difficulty: string
+  beltName: string
+  beltColor: string
+  language: 'python' | 'java' | 'nodejs' | 'cpp'
+  languageLabel: string
+  solvedAt: string
+  solvedAtFormatted: string
+}
+
 export interface MentorStudent {
   id: string
   name: string
@@ -29,6 +42,13 @@ export interface MentorStudent {
   attentionReason?: string
   joinedDate?: string
   solvedSlugs?: string[]
+  solvedProblems: SolvedProblemItem[]
+  languageSolvedCounts: {
+    python: number
+    java: number
+    cpp: number
+    nodejs: number
+  }
 }
 
 export interface MentorSubmission {
@@ -271,8 +291,8 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
     const studentUserIds = studentUsers.map((s) => s.userId)
 
     const [progressRes, submissionsRes] = await Promise.all([
-      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, Problem(slug, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED'),
-      supabase.from('Submission').select('id, userId, status, language, createdAt').in('userId', studentUserIds).order('createdAt', { ascending: false }),
+      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED'),
+      supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests, executionTimeMs, Problem(slug, title, difficulty, Belt(order, name, color))').in('userId', studentUserIds).order('createdAt', { ascending: false }),
     ])
 
     const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; Problem?: unknown }>>()
@@ -281,25 +301,75 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
       list.push(p)
       progressByUser.set(p.userId, list)
     }
-    const submissionsByUser = new Map<string, Array<{ status: string; language?: string; createdAt: string }>>()
+    const submissionsByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number; Problem?: unknown }>>()
     for (const s of submissionsRes.data || []) {
       const list = submissionsByUser.get(s.userId) || []
-      if (list.length < 20) list.push(s)
+      if (list.length < 50) list.push(s as any)
       submissionsByUser.set(s.userId, list)
     }
 
     const students: MentorStudent[] = studentUsers.map((su) => {
       const solvedList = progressByUser.get(su.userId) || []
       const recentSubs = submissionsByUser.get(su.userId) || []
-      const solvedCount = solvedList.length
+
+      const solvedProblems: SolvedProblemItem[] = []
+      const languageSolvedCounts = {
+        python: 0,
+        java: 0,
+        cpp: 0,
+        nodejs: 0,
+      }
+      const seenProblemIds = new Set<string>()
+
+      for (const p of solvedList) {
+        const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
+        const pLang = normalizeLanguage(p.language)
+        languageSolvedCounts[pLang] = (languageSolvedCounts[pLang] || 0) + 1
+        seenProblemIds.add(p.problemId)
+        solvedProblems.push({
+          problemId: p.problemId,
+          title: prob?.title || 'Practice Challenge',
+          slug: prob?.slug || 'challenge',
+          difficulty: prob?.difficulty || 'Easy',
+          beltName: prob?.Belt?.name || 'Belt 1',
+          beltColor: prob?.Belt?.color || '#3B82F6',
+          language: pLang,
+          languageLabel: getLanguageLabel(pLang),
+          solvedAt: p.solvedAt || new Date().toISOString(),
+          solvedAtFormatted: formatRelativeTime(p.solvedAt),
+        })
+      }
+
+      // Also include any 10/10 passed submissions not already present in UserProgress
+      for (const s of recentSubs) {
+        if (s.status === 'PASSED' && s.passedTests === 10 && !seenProblemIds.has(s.problemId)) {
+          seenProblemIds.add(s.problemId)
+          const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
+          const sLang = normalizeLanguage(s.language)
+          languageSolvedCounts[sLang] = (languageSolvedCounts[sLang] || 0) + 1
+          solvedProblems.push({
+            problemId: s.problemId,
+            title: prob?.title || 'Practice Challenge',
+            slug: prob?.slug || 'challenge',
+            difficulty: prob?.difficulty || 'Easy',
+            beltName: prob?.Belt?.name || 'Belt 1',
+            beltColor: prob?.Belt?.color || '#3B82F6',
+            language: sLang,
+            languageLabel: getLanguageLabel(sLang),
+            solvedAt: s.createdAt || new Date().toISOString(),
+            solvedAtFormatted: formatRelativeTime(s.createdAt),
+          })
+        }
+      }
+
+      const solvedCount = solvedProblems.length
       const progressPercent = Math.min(100, Math.round((solvedCount / 85) * 100))
 
       let highestBeltOrder = 1
       const solvedSlugs: string[] = []
-      for (const p of solvedList) {
-        const prob = p.Problem as { slug?: string; Belt?: { order?: number } } | null
-        if (prob?.slug) solvedSlugs.push(prob.slug)
-        const bOrder = prob?.Belt?.order || 1
+      for (const p of solvedProblems) {
+        if (p.slug) solvedSlugs.push(p.slug)
+        const bOrder = p.beltName === 'Belt 3' ? 3 : p.beltName === 'Belt 2' ? 2 : 1
         if (bOrder > highestBeltOrder) highestBeltOrder = bOrder
       }
 
@@ -309,12 +379,12 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
       else if (highestBeltOrder >= 2 || solvedCount >= 15) { belt = 'Belt 2'; beltColor = '#10B981' }
 
       const latestSub = recentSubs[0]
-      const latestProg = [...solvedList].sort((a, b) => new Date(b.solvedAt || 0).getTime() - new Date(a.solvedAt || 0).getTime())[0]
+      const latestProg = [...solvedProblems].sort((a, b) => new Date(b.solvedAt || 0).getTime() - new Date(a.solvedAt || 0).getTime())[0]
       const subTime = latestSub?.createdAt ? new Date(latestSub.createdAt).getTime() : 0
       const progTime = latestProg?.solvedAt ? new Date(latestProg.solvedAt).getTime() : 0
       const lastActiveRaw = Math.max(subTime, progTime) > 0 ? new Date(Math.max(subTime, progTime)).toISOString() : su.createdAt
       const language = normalizeLanguage(latestSub?.language || latestProg?.language)
-      const activityTimestamps = [...recentSubs.map((s) => s.createdAt), ...solvedList.map((p) => p.solvedAt)].filter(Boolean) as string[]
+      const activityTimestamps = [...recentSubs.map((s) => s.createdAt), ...solvedProblems.map((p) => p.solvedAt)].filter(Boolean) as string[]
       const streak = calculateStreak(activityTimestamps)
       const recentFailedCount = recentSubs.slice(0, 5).filter((s) => s.status === 'FAILED').length
       const needsAttention = recentFailedCount >= 4
@@ -344,6 +414,8 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
         attentionReason: needsAttention ? `${recentFailedCount} failed test executions in recent problems` : undefined,
         joinedDate: su.createdAt ? new Date(su.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Jan 2026',
         solvedSlugs,
+        solvedProblems,
+        languageSolvedCounts,
       }
     })
 
@@ -568,6 +640,8 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
         id: userRow.id, name: userRow.name || name, email: userRow.email,
         belt: 'Belt 1', beltColor: '#3B82F6', progressPercent: 0, solvedCount: 0, totalProblems: 85,
         streak: 0, language: 'python', lastActive: 'Just mapped', status: 'ACTIVE', needsAttention: false, joinedDate: 'Just now',
+        solvedProblems: [],
+        languageSolvedCounts: { python: 0, java: 0, cpp: 0, nodejs: 0 },
       },
     }
   } catch (err: unknown) {
