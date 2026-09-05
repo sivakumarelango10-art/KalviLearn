@@ -25,16 +25,60 @@ import {
   removeStudent,
 } from '@/lib/mentorService'
 import { useAuth } from '@/contexts/AuthContext'
+import { PythonLogo, JavaLogo, CppLogo } from '@/components/practice/LanguageCards'
+
+export const NodejsOfficialLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,6 88,28 88,72 50,94 12,72 12,28" fill="#539E43" />
+    <path
+      d="M42 35 V61 C42 65.5 38.5 69 34 69 C30.5 69 27.5 67 25.5 64"
+      stroke="#FFFFFF"
+      strokeWidth="6.5"
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path
+      d="M73 42.5 C70.5 37.5 64.5 34.5 58.5 34.5 C52 34.5 48.5 38.5 48.5 44 C48.5 53.5 73 49 73 59.5 C73 65.5 67.5 69.5 59.5 69.5 C53.5 69.5 48.5 66 46.5 61.5"
+      stroke="#FFFFFF"
+      strokeWidth="6.5"
+      strokeLinecap="round"
+      fill="none"
+    />
+  </svg>
+)
+
+export const AllLanguagesLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" className="stroke-sky-500" />
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" className="stroke-sky-500" />
+    <path d="M2 12h20" className="stroke-sky-500" />
+  </svg>
+)
 
 const LANGUAGES = [
-  { id: 'all', label: 'All Languages', shortLabel: 'All', icon: '🌐' },
-  { id: 'cpp', label: 'C++', shortLabel: 'C++', icon: '⚡' },
-  { id: 'python', label: 'Python', shortLabel: 'Python', icon: '🐍' },
-  { id: 'java', label: 'Java', shortLabel: 'Java', icon: '☕' },
-  { id: 'nodejs', label: 'Node.Js', shortLabel: 'Node.Js', icon: '🟢' },
+  { id: 'all', label: 'All Languages', shortLabel: 'All' },
+  { id: 'cpp', label: 'C++', shortLabel: 'C++' },
+  { id: 'python', label: 'Python', shortLabel: 'Python' },
+  { id: 'java', label: 'Java', shortLabel: 'Java' },
+  { id: 'nodejs', label: 'Node.Js', shortLabel: 'Node.Js' },
 ] as const
 
 type LanguageKey = (typeof LANGUAGES)[number]['id']
+
+const renderLangLogo = (id: LanguageKey | string, className: string = 'w-4 h-4') => {
+  switch (id) {
+    case 'cpp':
+      return <CppLogo className={className} />
+    case 'python':
+      return <PythonLogo className={className} />
+    case 'java':
+      return <JavaLogo className={className} />
+    case 'nodejs':
+      return <NodejsOfficialLogo className={className} />
+    default:
+      return <AllLanguagesLogo className={className} />
+  }
+}
 
 export const MentorStudentsPage: React.FC = () => {
   const { user } = useAuth()
@@ -332,7 +376,9 @@ export const MentorStudentsPage: React.FC = () => {
                     : 'bg-neutral-50 text-neutral-600 hover:bg-neutral-100 border-neutral-200/80 hover:text-neutral-900'
                 )}
               >
-                <span>{lang.icon}</span>
+                <span className="flex-shrink-0 flex items-center justify-center">
+                  {renderLangLogo(lang.id, 'w-4 h-4')}
+                </span>
                 <span>{lang.label}</span>
                 <span
                   className={cn(
@@ -540,8 +586,10 @@ export const MentorStudentsPage: React.FC = () => {
                     {langFilter !== 'all' ? (
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <div className="flex items-center gap-2">
+                            <span className="flex-shrink-0 flex items-center justify-center">
+                              {renderLangLogo(langFilter, 'w-4 h-4')}
+                            </span>
                             <span className="text-[11px] font-bold text-neutral-800">
                               Solved in {LANGUAGES.find((l) => l.id === langFilter)?.label}:
                             </span>
@@ -649,17 +697,20 @@ export const MentorStudentsPage: React.FC = () => {
                           )}
                         </div>
 
-                        {/* 4 Interactive Language Badges */}
+                        {/* 4 Interactive Language Badges with Real Logos */}
                         <div className="grid grid-cols-4 gap-1.5 text-center">
                           <button
                             type="button"
                             onClick={() => setLangFilter('cpp')}
                             className="p-1.5 rounded-xl bg-blue-50/80 border border-blue-100/80 hover:bg-blue-100/80 transition-all text-left cursor-pointer group/pill"
                           >
-                            <span className="block text-[11px] font-bold text-blue-900 group-hover/pill:text-blue-950">
-                              {student.languageSolvedCounts?.cpp || 0}
-                            </span>
-                            <span className="text-[9px] font-semibold text-blue-600 block">C++</span>
+                            <div className="flex items-center justify-between">
+                              <span className="block text-[11px] font-bold text-blue-900 group-hover/pill:text-blue-950">
+                                {student.languageSolvedCounts?.cpp || 0}
+                              </span>
+                              <CppLogo className="w-3.5 h-3.5 flex-shrink-0" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-blue-600 block mt-0.5">C++</span>
                           </button>
 
                           <button
@@ -667,10 +718,13 @@ export const MentorStudentsPage: React.FC = () => {
                             onClick={() => setLangFilter('python')}
                             className="p-1.5 rounded-xl bg-emerald-50/80 border border-emerald-100/80 hover:bg-emerald-100/80 transition-all text-left cursor-pointer group/pill"
                           >
-                            <span className="block text-[11px] font-bold text-emerald-900 group-hover/pill:text-emerald-950">
-                              {student.languageSolvedCounts?.python || 0}
-                            </span>
-                            <span className="text-[9px] font-semibold text-emerald-600 block">Python</span>
+                            <div className="flex items-center justify-between">
+                              <span className="block text-[11px] font-bold text-emerald-900 group-hover/pill:text-emerald-950">
+                                {student.languageSolvedCounts?.python || 0}
+                              </span>
+                              <PythonLogo className="w-3.5 h-3.5 flex-shrink-0" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-emerald-600 block mt-0.5">Python</span>
                           </button>
 
                           <button
@@ -678,10 +732,13 @@ export const MentorStudentsPage: React.FC = () => {
                             onClick={() => setLangFilter('java')}
                             className="p-1.5 rounded-xl bg-amber-50/80 border border-amber-100/80 hover:bg-amber-100/80 transition-all text-left cursor-pointer group/pill"
                           >
-                            <span className="block text-[11px] font-bold text-amber-900 group-hover/pill:text-amber-950">
-                              {student.languageSolvedCounts?.java || 0}
-                            </span>
-                            <span className="text-[9px] font-semibold text-amber-600 block">Java</span>
+                            <div className="flex items-center justify-between">
+                              <span className="block text-[11px] font-bold text-amber-900 group-hover/pill:text-amber-950">
+                                {student.languageSolvedCounts?.java || 0}
+                              </span>
+                              <JavaLogo className="w-3.5 h-3.5 flex-shrink-0" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-amber-600 block mt-0.5">Java</span>
                           </button>
 
                           <button
@@ -689,10 +746,13 @@ export const MentorStudentsPage: React.FC = () => {
                             onClick={() => setLangFilter('nodejs')}
                             className="p-1.5 rounded-xl bg-teal-50/80 border border-teal-100/80 hover:bg-teal-100/80 transition-all text-left cursor-pointer group/pill"
                           >
-                            <span className="block text-[11px] font-bold text-teal-900 group-hover/pill:text-teal-950">
-                              {student.languageSolvedCounts?.nodejs || 0}
-                            </span>
-                            <span className="text-[9px] font-semibold text-teal-600 block">Node.Js</span>
+                            <div className="flex items-center justify-between">
+                              <span className="block text-[11px] font-bold text-teal-900 group-hover/pill:text-teal-950">
+                                {student.languageSolvedCounts?.nodejs || 0}
+                              </span>
+                              <NodejsOfficialLogo className="w-3.5 h-3.5 flex-shrink-0" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-teal-600 block mt-0.5">Node.Js</span>
                           </button>
                         </div>
 
@@ -712,8 +772,9 @@ export const MentorStudentsPage: React.FC = () => {
                                 {student.solvedProblems[0]?.title}
                               </span>
                             </div>
-                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-800 uppercase flex-shrink-0">
-                              {student.solvedProblems[0]?.languageLabel}
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 uppercase flex-shrink-0 inline-flex items-center gap-1.5">
+                              {renderLangLogo(student.solvedProblems[0]?.language, 'w-3 h-3')}
+                              <span>{student.solvedProblems[0]?.languageLabel}</span>
                             </span>
                           </div>
                         )}
@@ -829,12 +890,15 @@ export const MentorStudentsPage: React.FC = () => {
                       type="button"
                       onClick={() => setModalLangFilter(lang.id)}
                       className={cn(
-                        'px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer',
+                        'px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer',
                         isSelected
                           ? 'bg-neutral-900 text-white shadow-xs'
                           : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                       )}
                     >
+                      <span className="flex-shrink-0 flex items-center justify-center">
+                        {renderLangLogo(lang.id, 'w-3.5 h-3.5')}
+                      </span>
                       <span>{lang.shortLabel}</span>
                       <span
                         className={cn(
@@ -912,8 +976,9 @@ export const MentorStudentsPage: React.FC = () => {
                               >
                                 {prob.difficulty}
                               </span>
-                              <span className={cn('text-[9px] font-extrabold px-2 py-0.5 rounded border', langBadge)}>
-                                {prob.languageLabel}
+                              <span className={cn('text-[9px] font-extrabold px-2 py-0.5 rounded border inline-flex items-center gap-1.5', langBadge)}>
+                                {renderLangLogo(prob.language, 'w-3 h-3')}
+                                <span>{prob.languageLabel}</span>
                               </span>
                               <span className="text-[10px] text-neutral-400">
                                 {prob.solvedAtFormatted}
