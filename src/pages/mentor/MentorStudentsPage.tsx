@@ -282,9 +282,9 @@ export const MentorStudentsPage: React.FC = () => {
 
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
+        <div className="space-y-1 min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-red-50 text-[#ED2A2B] border border-red-100">
+            <span className="p-1.5 rounded-lg bg-red-50 text-[#ED2A2B] border border-red-100 flex-shrink-0">
               <Users className="w-4 h-4" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">
@@ -296,8 +296,8 @@ export const MentorStudentsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold px-3 py-2 rounded-xl bg-neutral-100 text-neutral-700">
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <span className="text-xs font-semibold px-3 py-2 rounded-xl bg-neutral-100 text-neutral-700 whitespace-nowrap flex-shrink-0">
             Cohort 2026 • {isLoading ? '...' : `${students.length} Assigned`}
           </span>
 
@@ -306,9 +306,9 @@ export const MentorStudentsPage: React.FC = () => {
               setIsAddModalOpen(true)
               setFormError(null)
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-bold transition-all interactive-btn shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-bold transition-all interactive-btn shadow-xs whitespace-nowrap flex-shrink-0"
           >
-            <UserPlus className="w-4 h-4" />
+            <UserPlus className="w-4 h-4 flex-shrink-0" />
             <span>Add Student</span>
           </button>
         </div>
