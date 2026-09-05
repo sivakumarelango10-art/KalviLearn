@@ -10,12 +10,14 @@ import problemsData from '@/data/problems.json'
 import {
   BeltMetric,
   fetchMentorCurriculumMetrics,
+  fetchMentorRoster,
   subscribeToMentorUpdates,
 } from '@/lib/mentorService'
 
 export const MentorCurriculumPage: React.FC = () => {
   const [expandedBelt, setExpandedBelt] = useState<number | null>(1)
   const [beltMetrics, setBeltMetrics] = useState<BeltMetric[]>([])
+  const [totalScholars, setTotalScholars] = useState<number>(2)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -23,9 +25,15 @@ export const MentorCurriculumPage: React.FC = () => {
 
     async function loadMetrics() {
       try {
-        const metrics = await fetchMentorCurriculumMetrics()
+        const [metrics, students] = await Promise.all([
+          fetchMentorCurriculumMetrics(),
+          fetchMentorRoster(),
+        ])
         if (isMounted) {
           setBeltMetrics(metrics)
+          if (students.length > 0) {
+            setTotalScholars(students.length)
+          }
           setIsLoading(false)
         }
       } catch (err) {
@@ -101,7 +109,7 @@ export const MentorCurriculumPage: React.FC = () => {
               <div>
                 <h3 className="text-base font-bold text-neutral-900">{belt.title}</h3>
                 <p className="text-xs text-neutral-500 mt-1">
-                  {belt.cohortCompleted} / 2 Registered Scholars active in this milestone
+                  {belt.cohortCompleted} / {totalScholars} Registered Scholars active in this milestone
                 </p>
               </div>
 

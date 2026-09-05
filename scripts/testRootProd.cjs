@@ -17,7 +17,7 @@ async function main() {
     ws.send(JSON.stringify({ id: 1, method: 'Console.enable' }));
     ws.send(JSON.stringify({ id: 2, method: 'Runtime.enable' }));
     ws.send(JSON.stringify({ id: 3, method: 'Page.enable' }));
-    ws.send(JSON.stringify({ id: 4, method: 'Page.navigate', params: { url: 'https://kalvicode.vercel.app' } }));
+    ws.send(JSON.stringify({ id: 4, method: 'Page.navigate', params: { url: 'http://localhost:4173/login' } }));
   };
 
   ws.onmessage = (e) => {

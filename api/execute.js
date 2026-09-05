@@ -6539,6 +6539,7 @@ async function executeQuestion(req) {
       total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
+      status: "COMPILATION_ERROR",
       error: "Compilation Error",
       message: "Source code cannot be empty.",
       testCases: []
@@ -6551,6 +6552,7 @@ async function executeQuestion(req) {
       total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
+      status: "COMPILATION_ERROR",
       error: "Compilation Error",
       message: compCheck.error || "Syntax / Compilation error detected in your code.",
       testCases: []
@@ -6572,6 +6574,7 @@ async function executeQuestion(req) {
       total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
+      status: "SYSTEM_ERROR",
       error: "Question Not Found",
       message: `Question with slug "${questionSlug}" was not found in the test repository.`,
       testCases: []
@@ -6584,6 +6587,7 @@ async function executeQuestion(req) {
       total: isSubmit ? 10 : 3,
       passed: 0,
       overallTimeMs: 0,
+      status: "SYSTEM_ERROR",
       error: "Invalid Question Configuration",
       message: `Question must have exactly 10 test cases (found ${testCases?.length || 0}).`,
       testCases: []
@@ -6605,6 +6609,7 @@ async function executeQuestion(req) {
         total: totalCount,
         passed: 0,
         overallTimeMs: tcTime,
+        status: "COMPILATION_ERROR",
         error: "Compilation Error",
         message: exec.error,
         testCases: []
@@ -6642,11 +6647,26 @@ async function executeQuestion(req) {
     }
   }
   const overallTimeMs = Math.round(performance.now() - startTime);
+  const isAccepted = passedCount === totalCount;
+  let executionStatus = "ACCEPTED";
+  if (!isAccepted) {
+    const hasTle = sanitizedResults.some((t) => t.status === "time_limit_exceeded");
+    const hasRuntime = sanitizedResults.some((t) => t.status === "runtime_error");
+    if (hasTle) {
+      executionStatus = "TIME_LIMIT_EXCEEDED";
+    } else if (hasRuntime) {
+      executionStatus = "RUNTIME_ERROR";
+    } else {
+      executionStatus = "WRONG_ANSWER";
+    }
+  }
   return {
-    success: true,
+    success: isAccepted,
     total: totalCount,
     passed: passedCount,
     overallTimeMs,
+    status: executionStatus,
+    message: isAccepted ? "All test cases passed successfully." : `${passedCount} of ${totalCount} test cases passed.`,
     testCases: sanitizedResults
   };
 }

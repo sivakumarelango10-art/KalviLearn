@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   ShieldCheck,
   GraduationCap,
@@ -6,11 +6,26 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { fetchMentorRoster } from '@/lib/mentorService'
 
 export const MentorProfilePage: React.FC = () => {
   const { user } = useAuth()
-  const mentorName = user?.name || 'Rahul'
-  const mentorEmail = user?.email || 'rahul@kalvium.community'
+  const [scholarCount, setScholarCount] = useState<number>(0)
+
+  useEffect(() => {
+    let isMounted = true
+    fetchMentorRoster().then((students) => {
+      if (isMounted) setScholarCount(students.length)
+    }).catch(console.warn)
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const mentorName =
+    user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
+  const mentorEmail = user?.email || 'mentor@kalvium.com'
+  const initial = (mentorName[0] || 'M').toUpperCase()
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
@@ -18,7 +33,7 @@ export const MentorProfilePage: React.FC = () => {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6 interactive-card">
         <div className="flex items-center gap-5">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-neutral-900 to-neutral-700 text-white font-bold text-2xl flex items-center justify-center shadow-xs relative">
-            <span>R</span>
+            <span>{initial}</span>
             <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white animate-pulse-subtle" />
           </div>
 
@@ -57,11 +72,13 @@ export const MentorProfilePage: React.FC = () => {
             Kalvi Institute of AI & Software Architecture
           </h3>
           <p className="text-xs text-neutral-500 leading-relaxed">
-            Lead Mentor for Cohort 2026 (Batch A & B). Responsible for curriculum mastery across Belt 1, Belt 2, and Belt 3 algorithms.
+            Lead Mentor for Cohort 2026. Responsible for curriculum mastery across Belt 1, Belt 2, and Belt 3 algorithms.
           </p>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
             <span>Cohort Size:</span>
-            <span className="font-bold text-neutral-900">128 Scholars</span>
+            <span className="font-bold text-neutral-900">
+              {scholarCount > 0 ? `${scholarCount} Assigned Scholars` : 'Assigned Scholars Active'}
+            </span>
           </div>
         </div>
 

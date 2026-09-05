@@ -171,6 +171,7 @@ function calculateStreak(dates: (string | Date)[]): number {
 /**
  * Fetches the real student roster from public.users with their live solved problems,
  * real completion percent out of 85, live belt, and activity telemetry.
+ * OPTIMIZED: Eliminates N+1 queries by batching UserProgress and Submission queries.
  */
 export async function fetchMentorRoster(): Promise<MentorStudent[]> {
   try {
@@ -183,33 +184,67 @@ export async function fetchMentorRoster(): Promise<MentorStudent[]> {
 
     if (uError) {
       console.warn('Error fetching students from database:', uError.message)
-      return getFallbackRoster()
+      return []
     }
 
     if (!dbUsers || dbUsers.length === 0) {
-      return getFallbackRoster()
+      return []
+    }
+
+    const studentIds = dbUsers.map((u) => u.id)
+
+    // 2. Batch query: Fetch all solved UserProgress and recent Submissions in 2 parallel requests
+    const [progressRes, submissionsRes] = await Promise.all([
+      supabase
+        .from('UserProgress')
+        .select('id, userId, problemId, status, language, solvedAt, Problem(slug, beltId, Belt(order, name, color))')
+        .in('userId', studentIds)
+        .eq('status', 'SOLVED'),
+      supabase
+        .from('Submission')
+        .select('id, userId, status, language, createdAt')
+        .in('userId', studentIds)
+        .order('createdAt', { ascending: false }),
+    ])
+
+    // Group progress and submissions by userId in memory
+    const progressByUser = new Map<string, Array<{
+      id: string
+      problemId: string
+      status: string
+      language?: string
+      solvedAt?: string
+      Problem?: unknown
+    }>>()
+
+    for (const p of progressRes.data || []) {
+      const list = progressByUser.get(p.userId) || []
+      list.push(p)
+      progressByUser.set(p.userId, list)
+    }
+
+    const submissionsByUser = new Map<string, Array<{
+      id: string
+      userId: string
+      status: string
+      language?: string
+      createdAt: string
+    }>>()
+
+    for (const s of submissionsRes.data || []) {
+      const list = submissionsByUser.get(s.userId) || []
+      if (list.length < 20) {
+        list.push(s)
+      }
+      submissionsByUser.set(s.userId, list)
     }
 
     const students: MentorStudent[] = []
 
-    // 2. For each student, query their real UserProgress and latest Submissions
+    // 3. Process students in-memory with zero extra database queries
     for (const u of dbUsers) {
-      const [progressRes, submissionsRes] = await Promise.all([
-        supabase
-          .from('UserProgress')
-          .select('id, problemId, status, language, solvedAt, Problem(slug, beltId, Belt(order, name, color))')
-          .eq('userId', u.id)
-          .eq('status', 'SOLVED'),
-        supabase
-          .from('Submission')
-          .select('id, status, language, createdAt')
-          .eq('userId', u.id)
-          .order('createdAt', { ascending: false })
-          .limit(20),
-      ])
-
-      const solvedList = progressRes.data || []
-      const recentSubs = submissionsRes.data || []
+      const solvedList = progressByUser.get(u.id) || []
+      const recentSubs = submissionsByUser.get(u.id) || []
 
       const solvedCount = solvedList.length
       const totalProblems = 85
@@ -240,7 +275,7 @@ export async function fetchMentorRoster(): Promise<MentorStudent[]> {
 
       // Determine primary language and last active timestamp
       const latestSub = recentSubs[0]
-      const latestProg = solvedList.sort(
+      const latestProg = solvedList.slice().sort(
         (a, b) => new Date(b.solvedAt || 0).getTime() - new Date(a.solvedAt || 0).getTime()
       )[0]
 
@@ -260,7 +295,7 @@ export async function fetchMentorRoster(): Promise<MentorStudent[]> {
       ].filter(Boolean) as string[]
       const streak = calculateStreak(activityTimestamps)
 
-      // Attention calculation: flag if student has 3+ consecutive recent failed submissions or no activity
+      // Attention calculation: flag if student has 4+ failed submissions in recent attempts
       const recentFailedCount = recentSubs.slice(0, 5).filter((s) => s.status === 'FAILED').length
       const needsAttention = recentFailedCount >= 4
       const attentionReason = needsAttention
@@ -293,12 +328,13 @@ export async function fetchMentorRoster(): Promise<MentorStudent[]> {
     return students
   } catch (err) {
     console.error('Error in fetchMentorRoster:', err)
-    return getFallbackRoster()
+    return []
   }
 }
 
 /**
- * Fetches real submissions from Supabase Submission table joined with Problem and Belt
+ * Fetches real submissions from Supabase Submission table joined with Problem and Belt.
+ * OPTIMIZED: Fetches user details only for students present in the returned submissions.
  */
 export async function fetchMentorSubmissions(limit = 50): Promise<MentorSubmission[]> {
   try {
@@ -318,15 +354,23 @@ export async function fetchMentorSubmissions(limit = 50): Promise<MentorSubmissi
       return []
     }
 
-    // 2. Fetch users to map userId -> { name, email }
-    const { data: users } = await supabase.from('users').select('id, name, email')
+    // 2. Targeted fetch of only users who made these submissions
+    const distinctUserIds = Array.from(new Set(subs.map((s) => s.userId).filter(Boolean)))
     const userMap = new Map<string, { name: string; email: string }>()
-    if (users) {
-      for (const u of users) {
-        userMap.set(u.id, {
-          name: u.name || u.email.split('@')[0].replace(/\./g, ' '),
-          email: u.email,
-        })
+
+    if (distinctUserIds.length > 0) {
+      const { data: users } = await supabase
+        .from('users')
+        .select('id, name, email')
+        .in('id', distinctUserIds)
+
+      if (users) {
+        for (const u of users) {
+          userMap.set(u.id, {
+            name: u.name || u.email.split('@')[0].replace(/\./g, ' '),
+            email: u.email,
+          })
+        }
       }
     }
 
@@ -433,17 +477,27 @@ export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
     console.error('Error in fetchMentorCurriculumMetrics:', err)
     return BELT_DEFINITIONS.map((b) => ({
       ...b,
-      cohortCompleted: 2,
-      avgPassRate: 95,
+      cohortCompleted: 0,
+      avgPassRate: 0,
     }))
   }
 }
 
 /**
- * Sets up a Supabase Realtime channel to listen for live submission and progress updates
+ * Sets up a Supabase Realtime channel to listen for live submission and progress updates.
+ * Features a 300ms debounce to prevent duplicate network calls when rapid submissions occur.
  */
 export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
   try {
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+    const debouncedUpdate = () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {
+        onUpdate()
+      }, 300)
+    }
+
     const channelName = `mentor-live-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const channel = supabase
       .channel(channelName)
@@ -451,62 +505,26 @@ export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'Submission' },
         () => {
-          onUpdate()
+          debouncedUpdate()
         }
       )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'UserProgress' },
         () => {
-          onUpdate()
+          debouncedUpdate()
         }
       )
       .subscribe()
 
     return () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
       supabase.removeChannel(channel).catch(console.warn)
     }
   } catch (err) {
     console.warn('Realtime subscription error:', err)
     return () => {}
   }
-}
-
-function getFallbackRoster(): MentorStudent[] {
-  return [
-    {
-      id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
-      name: 'Kavya Ramesh',
-      email: 'kavya.ramesh.s.121@kalvium.community',
-      belt: 'Belt 1',
-      beltColor: '#3B82F6',
-      progressPercent: 12,
-      solvedCount: 10,
-      totalProblems: 85,
-      streak: 1,
-      language: 'python',
-      lastActive: 'Just now',
-      status: 'ACTIVE',
-      needsAttention: false,
-      joinedDate: 'Jan 2026',
-    },
-    {
-      id: '7193765a-4dc6-4f61-813e-3e5dce95b6c7',
-      name: 'Prajith P S',
-      email: 'prajith.p.s.121@kalvium.community',
-      belt: 'Belt 1',
-      beltColor: '#3B82F6',
-      progressPercent: 12,
-      solvedCount: 10,
-      totalProblems: 85,
-      streak: 1,
-      language: 'python',
-      lastActive: 'Just now',
-      status: 'ACTIVE',
-      needsAttention: false,
-      joinedDate: 'Jan 2026',
-    },
-  ]
 }
 
 export interface AddStudentParams {

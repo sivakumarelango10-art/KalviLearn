@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Megaphone,
   Plus,
@@ -7,6 +7,8 @@ import {
   Send,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
+import { fetchMentorRoster } from '@/lib/mentorService'
 
 interface AnnouncementItem {
   id: string
@@ -25,7 +27,7 @@ const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
     title: 'Weekend Algorithmic Sprint — Belt 2 Mastery',
     content:
       'Scholars targeting Belt 2 promotion must complete the Two-Pointer and Prefix Sum practice sets before Sunday 11:59 PM. Mentor office hours will be held on Saturday from 2:00 PM to 4:00 PM.',
-    author: 'Rahul (Mentor)',
+    author: 'Faculty Mentor',
     date: 'Today at 10:15 AM',
     priority: 'high',
     readCount: 2,
@@ -56,11 +58,30 @@ const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
 ]
 
 export const MentorAnnouncementsPage: React.FC = () => {
+  const { user } = useAuth()
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>(INITIAL_ANNOUNCEMENTS)
+  const [totalScholars, setTotalScholars] = useState<number>(2)
   const [showModal, setShowModal] = useState(false)
   const [newTitle, setNewTitle] = useState('')
   const [newContent, setNewContent] = useState('')
   const [newPriority, setNewPriority] = useState<'normal' | 'high' | 'urgent'>('normal')
+
+  useEffect(() => {
+    let isMounted = true
+    fetchMentorRoster().then((students) => {
+      if (isMounted && students.length > 0) {
+        setTotalScholars(students.length)
+        setAnnouncements((prev) =>
+          prev.map((a) => ({ ...a, totalScholars: students.length }))
+        )
+      }
+    }).catch(console.warn)
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const authorName = user?.name ? `${user.name} (Mentor)` : 'Faculty Mentor'
 
   const handleCreateAnnouncement = (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,11 +91,11 @@ export const MentorAnnouncementsPage: React.FC = () => {
       id: `ann-${Date.now()}`,
       title: newTitle.trim(),
       content: newContent.trim(),
-      author: 'Rahul (Mentor)',
+      author: authorName,
       date: 'Just now',
       priority: newPriority,
       readCount: 0,
-      totalScholars: 2,
+      totalScholars,
     }
 
     setAnnouncements([item, ...announcements])

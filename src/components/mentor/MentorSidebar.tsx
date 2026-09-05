@@ -29,7 +29,7 @@ export const MentorSidebar: React.FC<MentorSidebarProps> = ({ className, onClose
       label: 'Students',
       path: '/mentor/students',
       icon: Users,
-      badge: '2',
+      badge: undefined,
     },
     {
       label: 'Submissions',
