@@ -125,7 +125,7 @@ export const MentorDashboardPage: React.FC = () => {
               {isLoading ? '...' : totalStudents}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Registered Scholars
+              Registered Students
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
@@ -151,7 +151,7 @@ export const MentorDashboardPage: React.FC = () => {
               {isLoading ? '...' : activeStudents}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Active Scholars ({totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 100}%)
+              Active Students ({totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 100}%)
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
@@ -180,7 +180,7 @@ export const MentorDashboardPage: React.FC = () => {
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
             <span className={cn('font-medium', attentionCount > 0 ? 'text-amber-600' : 'text-emerald-600')}>
-              {attentionCount > 0 ? `${attentionCount} scholars flagged` : 'All registered scholars on track'}
+              {attentionCount > 0 ? `${attentionCount} students flagged` : 'All registered students on track'}
             </span>
             <span className="text-emerald-600 font-semibold">
               {attentionCount === 0 ? '100% Healthy' : 'Action suggested'}
@@ -198,7 +198,7 @@ export const MentorDashboardPage: React.FC = () => {
               Student Progress
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Live progression metrics, belt badges, and completion milestones across assigned scholars.
+              Live progression metrics, belt badges, and completion milestones across assigned students.
             </p>
           </div>
 
@@ -253,7 +253,7 @@ export const MentorDashboardPage: React.FC = () => {
           <table className="w-full text-left text-xs text-neutral-700">
             <thead className="bg-neutral-50/80 text-neutral-500 font-bold uppercase text-[10px] tracking-wider border-y border-neutral-200/80">
               <tr>
-                <th className="py-3 px-4">Scholar</th>
+                <th className="py-3 px-4">Student</th>
                 <th className="py-3 px-4">Current Belt</th>
                 <th className="py-3 px-4">Completion</th>
                 <th className="py-3 px-4">Problems Solved</th>
@@ -275,12 +275,12 @@ export const MentorDashboardPage: React.FC = () => {
               ) : filteredStudents.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-neutral-400">
-                    No scholars found matching the selected filter criteria.
+                    No students found matching the selected filter criteria.
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => {
-                  const studentName = student.name || student.email || 'Scholar'
+                  const studentName = student.name || student.email || 'Student'
                   const initials = studentName
                     .trim()
                     .split(/\s+/)
@@ -409,14 +409,14 @@ export const MentorDashboardPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Scholar Summary Header */}
+            {/* Student Summary Header */}
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white font-extrabold text-lg flex items-center justify-center shadow-xs">
-                {(selectedStudent.name || selectedStudent.email || 'SC').slice(0, 2).toUpperCase()}
+                {(selectedStudent.name || selectedStudent.email || 'ST').slice(0, 2).toUpperCase()}
               </div>
               <div>
                 <h3 className="text-xl font-bold text-neutral-900">
-                  {selectedStudent.name || 'Kalvi Scholar'}
+                  {selectedStudent.name || 'Student'}
                 </h3>
                 <p className="text-xs text-neutral-500 font-mono">
                   {selectedStudent.email}
@@ -483,7 +483,7 @@ export const MentorDashboardPage: React.FC = () => {
 
               <div className="flex items-center justify-between pt-2">
                 <span className="text-[11px] text-neutral-400">
-                  Delivered to scholar's notification center
+                  Delivered to student's notification center
                 </span>
                 <button
                   type="submit"

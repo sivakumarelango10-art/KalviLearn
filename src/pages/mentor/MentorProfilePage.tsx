@@ -77,7 +77,7 @@ export const MentorProfilePage: React.FC = () => {
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
             <span>Cohort Size:</span>
             <span className="font-bold text-neutral-900">
-              {scholarCount > 0 ? `${scholarCount} Assigned Scholars` : 'Assigned Scholars Active'}
+              {scholarCount > 0 ? `${scholarCount} Assigned Students` : 'Assigned Students Active'}
             </span>
           </div>
         </div>
@@ -91,7 +91,7 @@ export const MentorProfilePage: React.FC = () => {
             Mon — Fri • 3:00 PM — 6:00 PM
           </h3>
           <p className="text-xs text-neutral-500 leading-relaxed">
-            Available for code review walkthroughs, edge case debugging, and 1-on-1 unblocking sessions for scholars with attention flags.
+            Available for code review walkthroughs, edge case debugging, and 1-on-1 unblocking sessions for students with attention flags.
           </p>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
             <span>Status:</span>
@@ -108,7 +108,7 @@ export const MentorProfilePage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-            <span className="text-neutral-700 font-medium">Inspect all scholar code submissions</span>
+            <span className="text-neutral-700 font-medium">Inspect all student code submissions</span>
           </div>
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />

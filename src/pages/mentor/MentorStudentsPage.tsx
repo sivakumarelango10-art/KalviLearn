@@ -119,7 +119,7 @@ export const MentorStudentsPage: React.FC = () => {
       }
 
       // Success
-      setSuccessToast(`Scholar ${newName} added successfully!`)
+      setSuccessToast(`Student ${newName} added successfully!`)
       setTimeout(() => setSuccessToast(null), 4000)
 
       setNewName('')
@@ -140,12 +140,12 @@ export const MentorStudentsPage: React.FC = () => {
     try {
       const res = await removeStudent(studentToDelete.id)
       if (res.success) {
-        setSuccessToast(`Scholar ${studentToDelete.name} removed from cohort.`)
+        setSuccessToast(`Student ${studentToDelete.name} removed from cohort.`)
         setTimeout(() => setSuccessToast(null), 4000)
         setStudentToDelete(null)
         await loadData()
       } else {
-        alert(res.error || 'Failed to remove scholar.')
+        alert(res.error || 'Failed to remove student.')
       }
     } catch (err) {
       console.error('Error deleting student:', err)
@@ -177,11 +177,11 @@ export const MentorStudentsPage: React.FC = () => {
               <Users className="w-4 h-4" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">
-              Scholar Directory
+              Student Directory
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Manage your registered scholars, track individual belt mastery, and enroll new students.
+            Manage your registered students, track individual belt mastery, and enroll new students.
           </p>
         </div>
 
@@ -198,7 +198,7 @@ export const MentorStudentsPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-bold transition-all interactive-btn shadow-xs"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Add Scholar</span>
+            <span>Add Student</span>
           </button>
         </div>
       </div>
@@ -269,24 +269,24 @@ export const MentorStudentsPage: React.FC = () => {
         <div className="py-16 text-center text-neutral-500">
           <div className="flex flex-col items-center justify-center gap-2">
             <Loader2 className="w-6 h-6 animate-spin text-[#ED2A2B]" />
-            <span className="text-xs font-medium">Loading registered scholars...</span>
+            <span className="text-xs font-medium">Loading registered students...</span>
           </div>
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-neutral-400 bg-white rounded-2xl border border-neutral-200 space-y-3">
-          <p>No scholars found matching the selected criteria.</p>
+          <p>No students found matching the selected criteria.</p>
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800 transition-colors"
           >
             <UserPlus className="w-3.5 h-3.5" />
-            <span>Add New Scholar</span>
+            <span>Add New Student</span>
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((student) => {
-            const studentName = student.name || student.email || 'Scholar'
+            const studentName = student.name || student.email || 'Student'
             const initials = studentName
               .trim()
               .split(/\s+/)
@@ -325,7 +325,7 @@ export const MentorStudentsPage: React.FC = () => {
                     <button
                       onClick={() => setStudentToDelete(student)}
                       className="opacity-0 group-hover:opacity-100 p-1 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-all"
-                      title="Remove Scholar"
+                      title="Remove Student"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -382,7 +382,7 @@ export const MentorStudentsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Add Scholar Modal */}
+      {/* Add Student Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
           <div className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop">
@@ -400,10 +400,10 @@ export const MentorStudentsPage: React.FC = () => {
                 <UserPlus className="w-5 h-5" />
               </div>
               <h3 className="text-xl font-bold text-neutral-900">
-                Enroll New Scholar
+                Add Student
               </h3>
               <p className="text-xs text-neutral-500">
-                Register a student into the Kalvi cohort. They will immediately gain access to login via Google and begin practicing.
+                Register or map a student to your mentor cohort. They will immediately gain access to practice under your guidance.
               </p>
             </div>
 
@@ -419,7 +419,7 @@ export const MentorStudentsPage: React.FC = () => {
             <form onSubmit={handleCreateStudent} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-neutral-700 block">
-                  Scholar Full Name <span className="text-[#ED2A2B]">*</span>
+                  Student Full Name <span className="text-[#ED2A2B]">*</span>
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -450,7 +450,7 @@ export const MentorStudentsPage: React.FC = () => {
                   />
                 </div>
                 <p className="text-[11px] text-neutral-400">
-                  Must match the Google account the scholar uses to log in.
+                  Must match the Google account the student uses to log in.
                 </p>
               </div>
 
@@ -482,12 +482,12 @@ export const MentorStudentsPage: React.FC = () => {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Enrolling...</span>
+                      <span>Adding...</span>
                     </>
                   ) : (
                     <>
                       <UserPlus className="w-3.5 h-3.5" />
-                      <span>Enroll Scholar</span>
+                      <span>Add Student</span>
                     </>
                   )}
                 </button>

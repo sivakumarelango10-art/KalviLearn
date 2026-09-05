@@ -589,13 +589,20 @@ export async function assignStudentMentor(
 }
 
 /**
- * Registers a new student into the PostgreSQL database.
- * The newly added student can immediately login with Google.
- * Enforces that if a mentor enrolls them, they are assigned to that mentor.
+ * Registers or maps a student to the current mentor in the PostgreSQL database.
+ *
+ * Rules enforced:
+ * 1. Verify student email address against database.
+ * 2. If student is already mapped to another mentor: "This student is already mapped to another mentor."
+ * 3. If student is already mapped to current mentor: "This student is already mapped to you."
+ * 4. If student exists and has no mentor assigned: map student to current mentor.
+ * 5. If student does not exist: create student and map to current mentor.
+ * 6. Enforces strictly 1 mentor per student on backend & database trigger level.
  */
 export async function addStudent(params: AddStudentParams): Promise<AddStudentResult> {
   const name = params.name.trim()
   const email = params.email.trim().toLowerCase()
+  const currentMentorId = params.mentorId
 
   if (!name) {
     return { success: false, error: 'Student full name is required.' }
@@ -606,18 +613,68 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
   }
 
   try {
-    // 1. Check if email is already registered
-    const { data: existing } = await supabase
+    // 1. Verify student email against database
+    const { data: existing, error: findError } = await supabase
       .from('users')
-      .select('id, email, role')
+      .select('id, email, name, role, status, mentorId')
       .ilike('email', email)
       .maybeSingle()
 
-    if (existing) {
-      return { success: false, error: `A user with email "${email}" is already registered.` }
+    if (findError) {
+      return { success: false, error: findError.message }
     }
 
-    // 2. Insert new student into public.users with assigned mentorId (strictly 1 mentor)
+    // 2. If student already exists in database
+    if (existing) {
+      if (existing.role === 'MENTOR' || existing.role === 'ADMIN') {
+        return { success: false, error: 'This email is registered as a mentor account.' }
+      }
+
+      // Check whether that student is already mapped to another mentor
+      if (existing.mentorId) {
+        if (currentMentorId && existing.mentorId === currentMentorId) {
+          return { success: false, error: 'This student is already mapped to you.' }
+        }
+        return { success: false, error: 'This student is already mapped to another mentor.' }
+      }
+
+      // If student is not mapped to any mentor: allow current mentor to map the student
+      const { data: updated, error: updateError } = await supabase
+        .from('users')
+        .update({
+          mentorId: currentMentorId || null,
+          name: name || existing.name,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq('id', existing.id)
+        .select('id, email, name, role, status, mentorId, createdAt')
+        .single()
+
+      if (updateError) {
+        return { success: false, error: updateError.message }
+      }
+
+      const mappedStudent: MentorStudent = {
+        id: updated.id,
+        name: updated.name || name,
+        email: updated.email,
+        belt: 'Belt 1',
+        beltColor: '#3B82F6',
+        progressPercent: 0,
+        solvedCount: 0,
+        totalProblems: 85,
+        streak: 0,
+        language: 'python',
+        lastActive: 'Just mapped',
+        status: 'ACTIVE',
+        needsAttention: false,
+        joinedDate: 'Just now',
+      }
+
+      return { success: true, student: mappedStudent }
+    }
+
+    // 3. Student does not exist in database: create and map to current mentor
     const { data, error } = await supabase
       .from('users')
       .insert({
@@ -625,7 +682,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
         email,
         role: 'STUDENT',
         status: 'ACTIVE',
-        mentorId: params.mentorId || null,
+        mentorId: currentMentorId || null,
       })
       .select('id, email, name, role, status, mentorId, createdAt')
       .single()

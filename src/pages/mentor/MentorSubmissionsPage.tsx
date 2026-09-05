@@ -103,7 +103,7 @@ export const MentorSubmissionsPage: React.FC = () => {
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by scholar, problem, or email..."
+            placeholder="Search by student, problem, or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
@@ -156,7 +156,7 @@ export const MentorSubmissionsPage: React.FC = () => {
           <table className="w-full text-left text-xs text-neutral-700">
             <thead className="bg-neutral-50 text-neutral-500 font-bold uppercase text-[10px] tracking-wider border-b border-neutral-200/80">
               <tr>
-                <th className="py-3 px-4">Scholar</th>
+                <th className="py-3 px-4">Student</th>
                 <th className="py-3 px-4">Problem</th>
                 <th className="py-3 px-4">Language</th>
                 <th className="py-3 px-4">Result (All 10 Cases)</th>
@@ -187,7 +187,7 @@ export const MentorSubmissionsPage: React.FC = () => {
 
                   return (
                     <tr key={sub.id} className="hover:bg-neutral-50/70 transition-colors">
-                      {/* Scholar */}
+                      {/* Student */}
                       <td className="py-3 px-4">
                         <div>
                           <div className="font-bold text-neutral-900">{sub.studentName}</div>
