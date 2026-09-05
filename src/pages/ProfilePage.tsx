@@ -9,6 +9,7 @@ import problemsData from '@/data/problems.json'
 import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
+import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth()
@@ -115,6 +116,9 @@ export const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Growth Mentor Section */}
+      <GrowthMentorCard />
 
       {/* Belt Mastery Milestones */}
       <div className="space-y-4">

@@ -16,6 +16,7 @@ import problemsData from '@/data/problems.json'
 import curriculumData from '@/data/curriculum.json'
 import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
+import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth()
@@ -184,6 +185,9 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Growth Mentor Section */}
+      <GrowthMentorCard />
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
