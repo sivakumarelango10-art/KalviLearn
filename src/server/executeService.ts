@@ -1,3 +1,4 @@
+import * as vm from 'node:vm'
 import { executePython } from '../lib/runner/pythonRunner'
 import { executeCpp } from '../lib/runner/cppRunner'
 import { executeJava } from '../lib/runner/javaRunner'
@@ -126,11 +127,17 @@ function executeJavaScript(code: string, input: string): { output: string; error
   `
 
   try {
-    const wrapped = new Function('console', 'require', 'process', `
-      ${prelude}
-      ${code}
-    `)
-    wrapped(customConsole, mockRequire, mockProcess)
+    const sandbox = {
+      console: customConsole,
+      require: mockRequire,
+      process: mockProcess,
+      setTimeout: undefined,
+      setInterval: undefined,
+      setImmediate: undefined,
+    }
+    const script = new vm.Script(`${prelude}\n${code}`)
+    const context = vm.createContext(sandbox)
+    script.runInContext(context, { timeout: 2000 })
     return { output: outputs.join('\n').trim() }
   } catch (err: unknown) {
     const errMsg = err instanceof Error ? err.message : 'JavaScript Runtime Error'
@@ -199,6 +206,19 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
       status: 'COMPILATION_ERROR',
       error: 'Compilation Error',
       message: 'Source code cannot be empty.',
+      testCases: [],
+    }
+  }
+
+  if (code.length > 65536) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      status: 'COMPILATION_ERROR',
+      error: 'Payload Too Large',
+      message: 'Submitted code exceeds the maximum allowed limit of 64KB.',
       testCases: [],
     }
   }

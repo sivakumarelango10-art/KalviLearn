@@ -87,28 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
 
         if (!session?.user?.email) {
-          // If Supabase session is absent, check if there is an active verified user in localStorage
-          const savedStr = localStorage.getItem(LOCAL_USER_KEY)
-          if (savedStr) {
-            try {
-              const savedUser: DbUser = JSON.parse(savedStr)
-              if (savedUser?.email) {
-                // Verify against database to ensure account remains active
-                const dbResult = await verifyUserInDatabase(savedUser.email)
-                if (dbResult.allowed && dbResult.user) {
-                  if (isMounted) {
-                    setUser(dbResult.user)
-                    localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(dbResult.user))
-                    setIsLoading(false)
-                  }
-                  return
-                }
-              }
-            } catch {
-              // Ignore parse error and proceed to cleanup
-            }
-          }
-
+          // If Supabase session is absent, purge any stored cached active user to prevent unauthenticated bypass
           if (isMounted) {
             localStorage.removeItem(LOCAL_USER_KEY)
             setUser(null)

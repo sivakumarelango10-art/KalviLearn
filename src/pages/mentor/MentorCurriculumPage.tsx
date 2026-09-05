@@ -19,7 +19,7 @@ export const MentorCurriculumPage: React.FC = () => {
   const { user } = useAuth()
   const [expandedBelt, setExpandedBelt] = useState<number | null>(1)
   const [beltMetrics, setBeltMetrics] = useState<BeltMetric[]>([])
-  const [totalStudents, setTotalStudents] = useState<number>(2)
+  const [totalStudents, setTotalStudents] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

@@ -1,3 +1,6 @@
+// src/server/executeService.ts
+import * as vm from "node:vm";
+
 // src/lib/runner/pythonRunner.ts
 if (typeof String !== "undefined") {
   const sp = String.prototype;
@@ -6482,11 +6485,18 @@ function executeJavaScript(code, input) {
     const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
   `;
   try {
-    const wrapped = new Function("console", "require", "process", `
-      ${prelude}
-      ${code}
-    `);
-    wrapped(customConsole, mockRequire, mockProcess);
+    const sandbox = {
+      console: customConsole,
+      require: mockRequire,
+      process: mockProcess,
+      setTimeout: void 0,
+      setInterval: void 0,
+      setImmediate: void 0
+    };
+    const script = new vm.Script(`${prelude}
+${code}`);
+    const context = vm.createContext(sandbox);
+    script.runInContext(context, { timeout: 2e3 });
     return { output: outputs.join("\n").trim() };
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : "JavaScript Runtime Error";
@@ -6542,6 +6552,18 @@ async function executeQuestion(req) {
       status: "COMPILATION_ERROR",
       error: "Compilation Error",
       message: "Source code cannot be empty.",
+      testCases: []
+    };
+  }
+  if (code.length > 65536) {
+    return {
+      success: false,
+      total: isSubmit ? 10 : 3,
+      passed: 0,
+      overallTimeMs: 0,
+      status: "COMPILATION_ERROR",
+      error: "Payload Too Large",
+      message: "Submitted code exceeds the maximum allowed limit of 64KB.",
       testCases: []
     };
   }

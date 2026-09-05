@@ -150,18 +150,6 @@ export const MentorStudentsPage: React.FC = () => {
 
   const attentionCount = students.filter((s) => s.needsAttention).length
 
-  // Cohort total solved count per language
-  const cohortLangCounts = useMemo(() => {
-    const counts = { all: 0, cpp: 0, python: 0, java: 0, nodejs: 0 }
-    for (const s of students) {
-      counts.all += s.solvedProblems?.length || 0
-      counts.cpp += s.languageSolvedCounts?.cpp || 0
-      counts.python += s.languageSolvedCounts?.python || 0
-      counts.java += s.languageSolvedCounts?.java || 0
-      counts.nodejs += s.languageSolvedCounts?.nodejs || 0
-    }
-    return counts
-  }, [students])
 
   const filtered = useMemo(() => {
     return students
@@ -358,17 +346,16 @@ export const MentorStudentsPage: React.FC = () => {
           )}
         </div>
 
-        {/* 4 Language Buttons + All Languages */}
+        {/* 4 Language Buttons */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          {LANGUAGES.map((lang) => {
+          {LANGUAGES.filter((lang) => lang.id !== 'all').map((lang) => {
             const isSelected = langFilter === lang.id
-            const count = cohortLangCounts[lang.id]
 
             return (
               <button
                 key={lang.id}
                 type="button"
-                onClick={() => setLangFilter(lang.id)}
+                onClick={() => setLangFilter(isSelected ? 'all' : lang.id)}
                 className={cn(
                   'px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border flex-shrink-0 cursor-pointer shadow-2xs',
                   isSelected
@@ -380,16 +367,6 @@ export const MentorStudentsPage: React.FC = () => {
                   {renderLangLogo(lang.id, 'w-4 h-4')}
                 </span>
                 <span>{lang.label}</span>
-                <span
-                  className={cn(
-                    'text-[10px] px-2 py-0.5 rounded-full font-mono font-bold',
-                    isSelected
-                      ? 'bg-neutral-800 text-white'
-                      : 'bg-neutral-200/80 text-neutral-700'
-                  )}
-                >
-                  {count} solved
-                </span>
               </button>
             )
           })}

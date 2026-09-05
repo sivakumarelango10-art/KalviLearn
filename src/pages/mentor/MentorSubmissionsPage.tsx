@@ -83,7 +83,7 @@ export const MentorSubmissionsPage: React.FC = () => {
       isMounted = false
       unsubscribe()
     }
-  }, [])
+  }, [user?.id])
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {
