@@ -85,7 +85,7 @@ export const ProfilePage: React.FC = () => {
           <div className="space-y-1">
             <div className="flex items-center gap-2.5 flex-wrap">
               <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">
-                {user?.name || user?.email?.split('@')[0] || 'Kalvi Scholar'}
+                {user?.name || user?.email?.split('@')[0] || 'Student'}
               </h1>
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-red-50 text-[#ED2A2B] border border-red-200">
                 {user?.role || 'STUDENT'} Account

@@ -226,34 +226,65 @@ export async function saveAttemptToCloud(
 
 /**
  * Uploads any offline or guest progress stored locally into the student's cloud account.
+ * DEPRECATED: Cloud is authoritative; this is a no-op to prevent obsolete local data resurrecting in cloud.
  */
-export async function uploadLocalProgressToCloud(userId: string, localState: UserState): Promise<void> {
-  if (!userId || !localState || !localState.solvedSlugs || localState.solvedSlugs.length === 0) return
+export async function uploadLocalProgressToCloud(_userId: string, _localState: UserState): Promise<void> {
+  // Cloud database is authoritative; prevent obsolete local caches from overwriting cloud clean state
+  return
+}
+
+/**
+ * Sets up a real-time subscription on UserProgress and Submission for a specific student.
+ * Enables live synchronization across multiple tabs, devices, and portals.
+ */
+export function subscribeToStudentCloudProgress(userId: string, onUpdate: () => void): () => void {
+  if (!userId) return () => {}
 
   try {
-    for (const slug of localState.solvedSlugs) {
-      const problemId = await getProblemIdBySlug(slug)
-      if (!problemId) continue
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
-      const prog = localState.progress[slug]
-      const progressRecord = {
-        id: generateUuid(),
-        userId,
-        problemId,
-        status: 'SOLVED',
-        language: prog?.language || 'python',
-        bestCode: prog?.bestCode || '',
-        solvedAt: prog?.solvedAt || new Date().toISOString(),
-        attempts: prog?.attempts || 1,
-        xpEarned: 50,
-      }
-
-      await supabase
-        .from('UserProgress')
-        .upsert(progressRecord, { onConflict: 'userId,problemId' })
+    const debouncedUpdate = () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {
+        onUpdate()
+      }, 300)
     }
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.warn('Failed to upload local progress to cloud:', msg)
+
+    const channelName = `student-progress-${userId}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'UserProgress',
+          filter: `userId=eq.${userId}`,
+        },
+        () => {
+          debouncedUpdate()
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'Submission',
+          filter: `userId=eq.${userId}`,
+        },
+        () => {
+          debouncedUpdate()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      supabase.removeChannel(channel).catch(console.warn)
+    }
+  } catch (err) {
+    console.warn('Realtime student progress subscription error:', err)
+    return () => {}
   }
 }

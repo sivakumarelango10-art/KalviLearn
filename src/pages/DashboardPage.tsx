@@ -28,7 +28,7 @@ export const DashboardPage: React.FC = () => {
     submissions: [],
   })
 
-  const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Kalvi Scholar')
+  const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Student')
 
   useEffect(() => {
     const updateStats = () => {

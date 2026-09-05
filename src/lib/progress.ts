@@ -47,8 +47,12 @@ export function normalizeProgressLanguage(
   return 'python'
 }
 
-const STORAGE_KEY = 'kalvi_learn_user_state_v2'
-const LEGACY_STORAGE_KEY = 'kalvi_learn_user_state_v1'
+const STORAGE_KEY = 'kalvi_learn_user_state_v3'
+const LEGACY_STORAGE_KEYS = [
+  'kalvi_learn_user_state_v1',
+  'kalvi_learn_user_state_v2',
+  'kalvi_learn_user_state',
+]
 const MAX_STORED_SUBMISSIONS = 50
 
 const defaultState: UserState = {
@@ -65,10 +69,18 @@ const defaultState: UserState = {
   },
 }
 
-export function resetUserState() {
+function purgeLegacyStorage() {
   try {
-    localStorage.removeItem(LEGACY_STORAGE_KEY)
+    for (const key of LEGACY_STORAGE_KEYS) {
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key)
+      }
+    }
   } catch {}
+}
+
+export function resetUserState() {
+  purgeLegacyStorage()
   saveUserState({
     xp: 0,
     streak: 1,
@@ -86,10 +98,7 @@ export function resetUserState() {
 
 export function getUserState(): UserState {
   try {
-    // Purge legacy storage if present to guarantee 100% fresh start
-    if (localStorage.getItem(LEGACY_STORAGE_KEY)) {
-      localStorage.removeItem(LEGACY_STORAGE_KEY)
-    }
+    purgeLegacyStorage()
 
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState
@@ -218,13 +227,12 @@ export function hydrateStateFromCloud(cloudState: UserState) {
   if (!cloudState) return
   const localState = getUserState()
 
-  // Union of solved slugs
-  const allSolved = Array.from(new Set([...(cloudState.solvedSlugs || []), ...(localState.solvedSlugs || [])]))
+  // Cloud is authoritative for solved slugs
+  const allSolved = Array.from(new Set(cloudState.solvedSlugs || []))
 
-  // Merge progress maps intelligently: ensure best code is never wiped out
+  // Build merged progress: cloud is authoritative, local drafts preserved for code
   const allSlugs = Array.from(
     new Set([
-      ...Object.keys(localState.progress || {}),
       ...Object.keys(cloudState.progress || {}),
       ...allSolved,
     ])
@@ -235,20 +243,15 @@ export function hydrateStateFromCloud(cloudState: UserState) {
   for (const slug of allSlugs) {
     const localP = localState.progress?.[slug]
     const cloudP = cloudState.progress?.[slug]
-    const isSolved = allSolved.includes(slug) || localP?.status === 'SOLVED' || cloudP?.status === 'SOLVED'
+    const isSolved = allSolved.includes(slug)
 
     let bestCode = ''
     let language = 'python'
     let attempts = 1
     let solvedAt: string | undefined = undefined
 
-    if (localP && cloudP) {
-      bestCode = cloudP.bestCode || localP.bestCode || ''
-      language = cloudP.language || localP.language || 'python'
-      attempts = Math.max(cloudP.attempts || 1, localP.attempts || 1)
-      solvedAt = cloudP.solvedAt || localP.solvedAt
-    } else if (cloudP) {
-      bestCode = cloudP.bestCode || ''
+    if (cloudP) {
+      bestCode = cloudP.bestCode || localP?.bestCode || ''
       language = cloudP.language || 'python'
       attempts = cloudP.attempts || 1
       solvedAt = cloudP.solvedAt
@@ -270,19 +273,11 @@ export function hydrateStateFromCloud(cloudState: UserState) {
     }
   }
 
-  // Merge submissions uniquely
-  const seenIds = new Set<string>()
-  const mergedSubmissions: SubmissionRecord[] = []
-
-  for (const sub of [...(localState.submissions || []), ...(cloudState.submissions || [])]) {
-    if (!sub || !sub.id || seenIds.has(sub.id)) continue
-    seenIds.add(sub.id)
-    mergedSubmissions.push(sub)
-  }
-
+  // Cloud submissions are authoritative
+  const mergedSubmissions: SubmissionRecord[] = [...(cloudState.submissions || [])]
   mergedSubmissions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-  // Merge languageProgress
+  // LanguageProgress derived directly from cloud solved slugs
   const languageProgress: Record<string, LanguageProgressSummary> = {
     python: { solvedSlugs: [], xp: 0 },
     java: { solvedSlugs: [], xp: 0 },
@@ -290,20 +285,18 @@ export function hydrateStateFromCloud(cloudState: UserState) {
     cpp: { solvedSlugs: [], xp: 0 },
   }
 
-  // Build from localState and cloudState
-  for (const l of ['python', 'java', 'nodejs', 'cpp']) {
-    const localSlugs = localState.languageProgress?.[l]?.solvedSlugs || []
-    const cloudSlugs = cloudState.languageProgress?.[l]?.solvedSlugs || []
-    const union = Array.from(new Set([...localSlugs, ...cloudSlugs]))
-    languageProgress[l] = {
-      solvedSlugs: union,
-      xp: union.length * 50,
+  for (const slug of allSolved) {
+    const prog = mergedProgress[slug]
+    const lang = normalizeProgressLanguage(prog?.language)
+    if (languageProgress[lang] && !languageProgress[lang].solvedSlugs.includes(slug)) {
+      languageProgress[lang].solvedSlugs.push(slug)
+      languageProgress[lang].xp += 50
     }
   }
 
   const mergedState: UserState = {
-    xp: Math.max(cloudState.xp || 0, localState.xp || 0, allSolved.length * 50),
-    streak: Math.max(cloudState.streak || 1, localState.streak || 1, allSolved.length > 0 ? 1 : 1),
+    xp: allSolved.length * 50,
+    streak: allSolved.length > 0 ? (cloudState.streak || 1) : 1,
     solvedSlugs: allSolved,
     progress: mergedProgress,
     submissions: mergedSubmissions.slice(0, MAX_STORED_SUBMISSIONS),

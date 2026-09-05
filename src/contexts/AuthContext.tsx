@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase, signInWithGoogle } from '@/lib/supabase'
 import { verifyUserInDatabase, signOutUser, DbUser } from '@/lib/authService'
-import { fetchUserProgressFromCloud } from '@/lib/cloudSync'
+import { fetchUserProgressFromCloud, subscribeToStudentCloudProgress } from '@/lib/cloudSync'
 import { hydrateStateFromCloud, resetUserState } from '@/lib/progress'
 
 interface AuthContextType {
@@ -194,6 +194,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subscription.unsubscribe()
     }
   }, [])
+
+  // Real-time synchronization for student progress and submissions across devices
+  useEffect(() => {
+    if (!user?.id || user.role !== 'STUDENT') return
+
+    const unsubscribe = subscribeToStudentCloudProgress(user.id, () => {
+      syncUserData(user.id).catch(console.warn)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [user?.id, user?.role])
 
   const loginWithGoogle = async () => {
     clearAccessDenied()
