@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Users,
   Search,
@@ -40,6 +41,24 @@ export const MentorStudentsPage: React.FC = () => {
   // Remove confirmation state
   const [studentToDelete, setStudentToDelete] = useState<MentorStudent | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  // Keyboard shortcut (Escape) to close modals and body scroll lock
+  useEffect(() => {
+    const isAnyModalOpen = isAddModalOpen || !!studentToDelete
+    if (!isAnyModalOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsAddModalOpen(false)
+        setStudentToDelete(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [isAddModalOpen, studentToDelete])
 
   const loadData = useCallback(async () => {
     try {
@@ -387,157 +406,176 @@ export const MentorStudentsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Add Student Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop">
-            <button
-              onClick={() => setIsAddModalOpen(false)}
-              className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
-              aria-label="Close dialog"
+      {/* Add Student Modal (Portaled directly to document.body) */}
+      {isAddModalOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setIsAddModalOpen(false)}
+          >
+            <div
+              className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(false)}
+                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            {/* Modal Header */}
-            <div className="space-y-1">
-              <div className="w-10 h-10 rounded-2xl bg-red-50 text-[#ED2A2B] border border-red-100 flex items-center justify-center mb-3">
-                <UserPlus className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-neutral-900">
-                Add Student
-              </h3>
-              <p className="text-xs text-neutral-500">
-                Register or map a student to your mentor cohort. They will immediately gain access to practice under your guidance.
-              </p>
-            </div>
-
-            {/* Error Message */}
-            {formError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-2.5 text-xs text-red-700">
-                <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                <span>{formError}</span>
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleCreateStudent} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-neutral-700 block">
-                  Student Full Name <span className="text-[#ED2A2B]">*</span>
-                </label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    required
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
-                  />
+              {/* Modal Header */}
+              <div className="space-y-1">
+                <div className="w-10 h-10 rounded-2xl bg-red-50 text-[#ED2A2B] border border-red-100 flex items-center justify-center mb-3">
+                  <UserPlus className="w-5 h-5" />
                 </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-neutral-700 block">
-                  Email Address <span className="text-[#ED2A2B]">*</span>
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    placeholder="e.g. rahul.s.121@kalvium.community"
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
-                  />
-                </div>
-                <p className="text-[11px] text-neutral-400">
-                  Must match the Google account the student uses to log in.
+                <h3 className="text-xl font-bold text-neutral-900">
+                  Add Student
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  Register or map a student to your mentor cohort. They will immediately gain access to practice under your guidance.
                 </p>
               </div>
 
-              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-600 space-y-1">
-                <div className="flex justify-between">
-                  <span className="font-medium text-neutral-500">Initial Milestone:</span>
-                  <span className="font-bold text-neutral-900">Belt 1 (Foundations)</span>
+              {/* Error Message */}
+              {formError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-2.5 text-xs text-red-700">
+                  <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                  <span>{formError}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-neutral-500">Total Benchmark:</span>
-                  <span className="font-bold text-neutral-900">85 Problems</span>
-                </div>
-              </div>
+              )}
 
-              <div className="flex items-center justify-end gap-3 pt-2">
+              {/* Form */}
+              <form onSubmit={handleCreateStudent} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-neutral-700 block">
+                    Student Full Name <span className="text-[#ED2A2B]">*</span>
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      required
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      placeholder="e.g. Rahul Sharma"
+                      className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-neutral-700 block">
+                    Email Address <span className="text-[#ED2A2B]">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      required
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      placeholder="e.g. rahul.s.121@kalvium.community"
+                      className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
+                    />
+                  </div>
+                  <p className="text-[11px] text-neutral-400">
+                    Must match the Google account the student uses to log in.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-600 space-y-1">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-neutral-500">Initial Milestone:</span>
+                    <span className="font-bold text-neutral-900">Belt 1 (Foundations)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-neutral-500">Total Benchmark:</span>
+                    <span className="font-bold text-neutral-900">85 Problems</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-bold transition-all interactive-btn disabled:opacity-50 shadow-xs"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Adding...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="w-3.5 h-3.5" />
+                        <span>Add Student</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
+
+      {/* Delete Confirmation Modal (Portaled directly to document.body) */}
+      {studentToDelete &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setStudentToDelete(null)}
+          >
+            <div
+              className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-neutral-200 space-y-4 animate-modal-pop"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-neutral-900">
+                  Remove {studentToDelete.name}?
+                </h4>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Are you sure you want to remove <strong className="text-neutral-700">{studentToDelete.email}</strong> from this mentor cohort? Their login authorization will be revoked.
+                </p>
+              </div>
+              <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100 transition-colors"
+                  onClick={() => setStudentToDelete(null)}
+                  disabled={isDeleting}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
                 >
                   Cancel
                 </button>
                 <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-bold transition-all interactive-btn disabled:opacity-50 shadow-xs"
+                  type="button"
+                  onClick={handleDeleteStudent}
+                  disabled={isDeleting}
+                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Adding...</span>
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="w-3.5 h-3.5" />
-                      <span>Add Student</span>
-                    </>
-                  )}
+                  {isDeleting ? 'Removing...' : 'Yes, Remove'}
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {studentToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-neutral-200 space-y-4 animate-modal-pop">
-            <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
-              <Trash2 className="w-5 h-5" />
             </div>
-            <div>
-              <h4 className="text-base font-bold text-neutral-900">
-                Remove {studentToDelete.name}?
-              </h4>
-              <p className="text-xs text-neutral-500 mt-1">
-                Are you sure you want to remove <strong className="text-neutral-700">{studentToDelete.email}</strong> from this mentor cohort? Their login authorization will be revoked.
-              </p>
-            </div>
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setStudentToDelete(null)}
-                disabled={isDeleting}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteStudent}
-                disabled={isDeleting}
-                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors disabled:opacity-50"
-              >
-                {isDeleting ? 'Removing...' : 'Yes, Remove'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   )
 }

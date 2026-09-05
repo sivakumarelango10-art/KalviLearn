@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Megaphone,
   Plus,
@@ -76,10 +77,25 @@ export const MentorAnnouncementsPage: React.FC = () => {
         )
       }
     }).catch(console.warn)
+
     return () => {
       isMounted = false
     }
   }, [user?.id])
+
+  // Keyboard shortcut (Escape) to close modal and body scroll lock
+  useEffect(() => {
+    if (!showModal) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowModal(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [showModal])
 
   const authorName = user?.name ? `${user.name} (Mentor)` : 'Faculty Mentor'
 
@@ -181,91 +197,101 @@ export const MentorAnnouncementsPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Modal: New Broadcast */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
-              aria-label="Close modal"
+      {/* Modal: New Broadcast (Portaled directly to document.body) */}
+      {showModal &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setShowModal(false)}
+          >
+            <div
+              className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            <div>
-              <h3 className="text-lg font-bold text-neutral-900">
-                Broadcast New Announcement
-              </h3>
-              <p className="text-xs text-neutral-500 mt-0.5">
-                This notice will be pinned to your students' dashboards and notification feeds.
-              </p>
+              <div>
+                <h3 className="text-lg font-bold text-neutral-900">
+                  Broadcast New Announcement
+                </h3>
+                <p className="text-xs text-neutral-500 mt-0.5">
+                  This notice will be pinned to your students' dashboards and notification feeds.
+                </p>
+              </div>
+
+              <form onSubmit={handleCreateAnnouncement} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-neutral-700 block">
+                    Announcement Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Weekend Algorithmic Sprint"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full p-3 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-neutral-700 block">
+                    Priority Level
+                  </label>
+                  <select
+                    value={newPriority}
+                    onChange={(e) => setNewPriority(e.target.value as any)}
+                    className="w-full p-2.5 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none"
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="high">High Priority</option>
+                    <option value="urgent">Urgent Action Required</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-neutral-700 block">
+                    Message Content
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="Type announcement instructions, deadlines, or tips..."
+                    value={newContent}
+                    onChange={(e) => setNewContent(e.target.value)}
+                    className="w-full p-3 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 font-semibold text-xs transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs shadow-xs transition-all interactive-btn"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Publish Broadcast</span>
+                  </button>
+                </div>
+              </form>
             </div>
-
-            <form onSubmit={handleCreateAnnouncement} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-700 block">
-                  Announcement Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Weekend Algorithmic Sprint"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full p-3 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-700 block">
-                  Priority Level
-                </label>
-                <select
-                  value={newPriority}
-                  onChange={(e) => setNewPriority(e.target.value as any)}
-                  className="w-full p-2.5 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none"
-                >
-                  <option value="normal">Normal</option>
-                  <option value="high">High Priority</option>
-                  <option value="urgent">Urgent Action Required</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-700 block">
-                  Message Content
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Type announcement instructions, deadlines, or tips..."
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  className="w-full p-3 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 font-semibold text-xs transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs shadow-xs transition-all interactive-btn"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Publish Broadcast</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
