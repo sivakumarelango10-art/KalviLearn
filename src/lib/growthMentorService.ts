@@ -62,27 +62,19 @@ export async function fetchStudentGrowthMentorDetails(studentUserId: string): Pr
 
     if (aErr || !assignment) return null
 
-    // 3. Get mentor record from mentors table
+    // 3. Get mentor record from mentors table (directly exposes name, email, mentor_code)
     const { data: mentorRow, error: mErr } = await supabase
       .from('mentors')
-      .select('user_id, mentor_code, status')
+      .select('id, user_id, name, email, mentor_code, status')
       .eq('id', assignment.mentor_id)
       .eq('status', 'ACTIVE')
       .maybeSingle()
 
     if (mErr || !mentorRow) return null
 
-    // 4. Source of truth for mentor's name and email: users table
-    const { data: mentorUser, error: uErr } = await supabase
-      .from('users')
-      .select('name, email')
-      .eq('id', mentorRow.user_id)
-      .maybeSingle()
-
-    if (uErr || !mentorUser) return null
     return {
-      mentorName: mentorUser.name || null,
-      mentorEmail: mentorUser.email || null,
+      mentorName: mentorRow.name || null,
+      mentorEmail: mentorRow.email || null,
       mentorCode: mentorRow.mentor_code || null,
     }
   } catch (err) {

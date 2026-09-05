@@ -71,16 +71,17 @@ export interface BeltMetric {
 
 export interface MentorProfile {
   id: string
+  userId?: string
   mentorCode: string
   maxStudents: number
   status: string
+  name: string
+  email: string
   user: {
     id: string
     name: string
     email: string
   }
-  name?: string
-  email?: string
 }
 
 export interface AddStudentParams {
@@ -162,41 +163,36 @@ function calculateStreak(dates: (string | Date)[]): number {
 // Core Helpers
 
 /**
- * Resolves the mentor profile record (mentors table) from their mentors.id or users.id.
- * Queries the users table for name and email (single source of truth).
+ * Resolves the mentor profile record directly from the mentors table.
+ * Directly exposes name, email, mentor_code, and user object.
  */
 export async function getMentorProfile(mentorIdOrUserId: string): Promise<MentorProfile | null> {
   if (!mentorIdOrUserId) return null
   const { data: mentor, error } = await supabase
     .from('mentors')
-    .select('id, user_id, mentor_code, max_students, status')
+    .select('id, user_id, name, email, mentor_code, max_students, status')
     .or(`id.eq.${mentorIdOrUserId},user_id.eq.${mentorIdOrUserId}`)
     .eq('status', 'ACTIVE')
     .maybeSingle()
 
   if (error || !mentor) return null
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id, name, email')
-    .eq('id', mentor.user_id)
-    .maybeSingle()
-
-  const userName = user?.name || ''
-  const userEmail = user?.email || ''
+  const userName = mentor.name || ''
+  const userEmail = mentor.email || ''
 
   return {
     id: mentor.id,
+    userId: mentor.user_id,
     mentorCode: mentor.mentor_code,
     maxStudents: mentor.max_students,
     status: mentor.status,
+    name: userName,
+    email: userEmail,
     user: {
-      id: user?.id || mentor.user_id,
+      id: mentor.user_id,
       name: userName,
       email: userEmail,
     },
-    name: userName || undefined,
-    email: userEmail || undefined,
   }
 }
 
@@ -211,44 +207,32 @@ interface StudentUserRow {
 }
 
 /**
- * Returns all student user records actively assigned to the given mentors.id.
- * Follows mentor_students -> students -> users (single source of truth).
+ * Returns all student records actively assigned to the given mentors.id.
+ * Directly reads name, email, student_code, status from students table.
  */
 async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]> {
   const { data: assignments, error: aErr } = await supabase
     .from('mentor_students')
-    .select('student_id, students(id, user_id, student_code, status, created_at)')
+    .select('student_id, students(id, user_id, name, email, student_code, status, created_at)')
     .eq('mentor_id', mentorId)
     .eq('status', 'ACTIVE')
 
   if (aErr || !assignments || assignments.length === 0) return []
 
   const studentRows = assignments
-    .map((a) => (a.students as unknown) as { id: string; user_id: string; student_code: string; status: string; created_at: string } | null)
-    .filter(Boolean) as Array<{ id: string; user_id: string; student_code: string; status: string; created_at: string }>
-
-  const userIds = studentRows.map((s) => s.user_id)
-  if (userIds.length === 0) return []
-
-  const { data: users, error: uErr } = await supabase
-    .from('users').select('id, name, email, createdAt').in('id', userIds)
-
-  if (uErr || !users) return []
-  const userMap = new Map(users.map((u) => [u.id, u]))
+    .map((a) => (a.students as unknown) as { id: string; user_id: string; name?: string; email?: string; student_code: string; status: string; created_at: string } | null)
+    .filter(Boolean) as Array<{ id: string; user_id: string; name?: string; email?: string; student_code: string; status: string; created_at: string }>
 
   return studentRows
-    .map((s) => {
-      const u = userMap.get(s.user_id)
-      return {
-        userId: s.user_id,
-        studentId: s.id,
-        studentCode: s.student_code,
-        status: s.status || 'ACTIVE',
-        name: u?.name || '',
-        email: u?.email || '',
-        createdAt: u?.createdAt || s.created_at,
-      }
-    })
+    .map((s) => ({
+      userId: s.user_id,
+      studentId: s.id,
+      studentCode: s.student_code,
+      status: s.status || 'ACTIVE',
+      name: s.name || '',
+      email: s.email || '',
+      createdAt: s.created_at,
+    }))
     .filter((s) => s.email)
 }
 
@@ -268,24 +252,18 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
       studentUsers = await getMentorStudentUsers(mentorProfile.id)
     } else {
       const { data: allStudents } = await supabase
-        .from('students').select('id, user_id, student_code, status, created_at').eq('status', 'ACTIVE')
+        .from('students').select('id, user_id, name, email, student_code, status, created_at').eq('status', 'ACTIVE')
       if (!allStudents || allStudents.length === 0) return []
-      const userIds = allStudents.map((s) => s.user_id)
-      const { data: users } = await supabase.from('users').select('id, name, email, createdAt').in('id', userIds)
-      const userMap = new Map((users || []).map((u) => [u.id, u]))
       studentUsers = allStudents
-        .map((s) => {
-          const u = userMap.get(s.user_id)
-          return {
-            userId: s.user_id,
-            studentId: s.id,
-            studentCode: s.student_code,
-            status: s.status || 'ACTIVE',
-            name: u?.name || '',
-            email: u?.email || '',
-            createdAt: u?.createdAt || s.created_at,
-          }
-        })
+        .map((s) => ({
+          userId: s.user_id,
+          studentId: s.id,
+          studentCode: s.student_code,
+          status: s.status || 'ACTIVE',
+          name: s.name || '',
+          email: s.email || '',
+          createdAt: s.created_at,
+        }))
         .filter((s) => s.email)
     }
 
@@ -528,11 +506,21 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
     let studentId: string
     if (existingStudent?.id) {
       studentId = existingStudent.id
+      await supabase
+        .from('students')
+        .update({
+          name: userRow.name || name,
+          email: userRow.email,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', studentId)
     } else {
       const { data: newStudent, error: createErr } = await supabase
         .from('students')
         .insert({
           user_id: userRow.id,
+          name: userRow.name || name,
+          email: userRow.email,
           student_code: `STU-${Date.now()}`,
           status: 'ACTIVE',
         })
@@ -662,3 +650,5 @@ export async function removeStudent(
     return { success: false, error: err instanceof Error ? err.message : String(err) }
   }
 }
+
+export { syncUserProfile } from './studentService'
