@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabase'
+import { supabase } from './supabase'
 
 export interface StudentProfile {
   id: string           // students.id
@@ -31,7 +31,7 @@ export async function getStudentProfile(userUserId: string): Promise<StudentProf
   try {
     const { data: student, error: sErr } = await supabase
       .from('students')
-      .select('id, user_id, student_code, status, created_at')
+      .select('id, user_id, student_code, status, created_at, name')
       .eq('user_id', userUserId)
       .maybeSingle()
 
@@ -48,7 +48,7 @@ export async function getStudentProfile(userUserId: string): Promise<StudentProf
       userId: student.user_id,
       studentCode: student.student_code,
       status: student.status,
-      name: user?.name || '',
+      name: student.name || user?.name || '',
       email: user?.email || '',
       createdAt: user?.createdAt || student.created_at,
     }
@@ -75,7 +75,7 @@ export async function getStudentMentorInfo(studentProfileId: string): Promise<St
 
     const { data: mentor } = await supabase
       .from('mentors')
-      .select('id, user_id, mentor_code, status')
+      .select('id, user_id, mentor_code, status, name')
       .eq('id', assignment.mentor_id)
       .eq('status', 'ACTIVE')
       .maybeSingle()
@@ -88,13 +88,11 @@ export async function getStudentMentorInfo(studentProfileId: string): Promise<St
       .eq('id', mentor.user_id)
       .maybeSingle()
 
-    if (!mentorUser) return null
-
     return {
       mentorUserId: mentor.user_id,
-      mentorName: mentorUser.name || '',
+      mentorName: mentor.name || mentorUser?.name || '',
       mentorCode: mentor.mentor_code,
-      mentorEmail: mentorUser.email || '',
+      mentorEmail: mentorUser?.email || '',
     }
   } catch (err) {
     console.error('Error in getStudentMentorInfo:', err)

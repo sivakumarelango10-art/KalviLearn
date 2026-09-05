@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabase'
+import { supabase } from './supabase'
 
 export interface GrowthMentorInfo {
   mentorName: string | null
@@ -52,17 +52,18 @@ export async function fetchStudentGrowthMentor(studentUserId: string): Promise<s
 
     if (aErr || !assignment) return null
 
-    // 3. Get mentor user_id from mentors table
+    // 3. Get mentor record from mentors table
     const { data: mentorRow, error: mErr } = await supabase
       .from('mentors')
-      .select('user_id, status')
+      .select('user_id, status, name')
       .eq('id', assignment.mentor_id)
       .eq('status', 'ACTIVE')
       .maybeSingle()
 
     if (mErr || !mentorRow) return null
+    if (mentorRow.name) return mentorRow.name
 
-    // 4. Get mentor name from users table
+    // 4. Fallback: Get mentor name from users table
     const { data: userRow, error: uErr } = await supabase
       .from('users')
       .select('name')

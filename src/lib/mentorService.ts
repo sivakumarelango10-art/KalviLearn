@@ -64,6 +64,7 @@ export interface MentorProfile {
   mentorCode: string
   maxStudents: number
   status: string
+  name?: string
 }
 
 export interface AddStudentParams {
@@ -150,12 +151,18 @@ function calculateStreak(dates: (string | Date)[]): number {
 export async function getMentorProfile(mentorUserId: string): Promise<MentorProfile | null> {
   const { data, error } = await supabase
     .from('mentors')
-    .select('id, mentor_code, max_students, status')
+    .select('id, mentor_code, max_students, status, name')
     .eq('user_id', mentorUserId)
     .eq('status', 'ACTIVE')
     .maybeSingle()
   if (error || !data) return null
-  return { id: data.id, mentorCode: data.mentor_code, maxStudents: data.max_students, status: data.status }
+  return {
+    id: data.id,
+    mentorCode: data.mentor_code,
+    maxStudents: data.max_students,
+    status: data.status,
+    name: data.name || undefined,
+  }
 }
 
 interface StudentUserRow {
@@ -173,15 +180,15 @@ interface StudentUserRow {
 async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]> {
   const { data: assignments, error: aErr } = await supabase
     .from('mentor_students')
-    .select('student_id, students(id, user_id, student_code, created_at)')
+    .select('student_id, students(id, user_id, student_code, created_at, name)')
     .eq('mentor_id', mentorId)
     .eq('status', 'ACTIVE')
 
   if (aErr || !assignments || assignments.length === 0) return []
 
   const studentRows = assignments
-    .map((a) => (a.students as unknown) as { id: string; user_id: string; student_code: string; created_at: string } | null)
-    .filter(Boolean) as Array<{ id: string; user_id: string; student_code: string; created_at: string }>
+    .map((a) => (a.students as unknown) as { id: string; user_id: string; student_code: string; created_at: string; name?: string } | null)
+    .filter(Boolean) as Array<{ id: string; user_id: string; student_code: string; created_at: string; name?: string }>
 
   const userIds = studentRows.map((s) => s.user_id)
   if (userIds.length === 0) return []
@@ -199,7 +206,7 @@ async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]
         userId: s.user_id,
         studentId: s.id,
         studentCode: s.student_code,
-        name: u?.name || 'Student',
+        name: u?.name || s.name || 'Student',
         email: u?.email || '',
         createdAt: u?.createdAt || s.created_at,
       }
@@ -468,7 +475,12 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
     } else {
       const { data: newStudent, error: createErr } = await supabase
         .from('students')
-        .insert({ user_id: userRow.id, student_code: `STU-${Date.now()}`, status: 'ACTIVE' })
+        .insert({
+          user_id: userRow.id,
+          student_code: `STU-${Date.now()}`,
+          status: 'ACTIVE',
+          name: userRow.name || name,
+        })
         .select('id').single()
       if (createErr || !newStudent) return { success: false, error: 'Failed to create student profile.' }
       studentId = newStudent.id
