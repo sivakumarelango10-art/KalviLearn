@@ -54,10 +54,15 @@ export const MentorSubmissionsPage: React.FC = () => {
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {
+      const sName = (sub.studentName || '').toLowerCase()
+      const pTitle = (sub.problemTitle || '').toLowerCase()
+      const sEmail = (sub.studentEmail || '').toLowerCase()
+      const q = (search || '').toLowerCase()
+
       const matchSearch =
-        sub.studentName.toLowerCase().includes(search.toLowerCase()) ||
-        sub.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
-        sub.studentEmail.toLowerCase().includes(search.toLowerCase())
+        sName.includes(q) ||
+        pTitle.includes(q) ||
+        sEmail.includes(q)
 
       if (!matchSearch) return false
       if (statusFilter !== 'all' && sub.status !== statusFilter) return false

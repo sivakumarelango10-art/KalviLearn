@@ -6,9 +6,9 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
+import LoginPage from '@/pages/auth/LoginPage'
 
 // Safe code-split dynamic route imports with automatic deployment recovery
-const LoginPage = lazyWithRetry(() => import('@/pages/auth/LoginPage'), 'LoginPage')
 const DashboardPage = lazyWithRetry(
   () => import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
   'DashboardPage'
@@ -91,7 +91,7 @@ const withSuspense = (Component: ReactNode) => (
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: withSuspense(<LoginPage />),
+    element: <LoginPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {

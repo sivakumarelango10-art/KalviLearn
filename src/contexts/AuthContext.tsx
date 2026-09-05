@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null
     }
   })
-  // Zero-delay initial state: Only true if currently handling an OAuth redirect callback
+  // Zero-delay initial state: false if user is cached locally, true if verifying session
   const [isLoading, setIsLoading] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_USER_KEY)
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return true
         }
       }
-      return false
+      return true
     } catch {
       return false
     }
@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen to OAuth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'SIGNED_OUT' || !session?.user?.email) {
+        if (event === 'SIGNED_OUT') {
           setUser(null)
           localStorage.removeItem(LOCAL_USER_KEY)
           resetUserState()
@@ -158,9 +158,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return
         }
 
-        if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || (event === 'INITIAL_SESSION' && session?.user?.email)) {
+          const email = session?.user?.email
+          if (!email) return
+
           setIsLoading(true)
-          const email = session.user.email
           const result = await verifyUserInDatabase(email)
 
           if (result.allowed && result.user) {

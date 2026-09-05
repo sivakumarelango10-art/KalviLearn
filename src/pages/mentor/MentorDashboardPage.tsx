@@ -73,9 +73,10 @@ export const MentorDashboardPage: React.FC = () => {
   // Filtered student list
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
-      const matchesSearch =
-        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.email.toLowerCase().includes(searchQuery.toLowerCase())
+      const sName = (student.name || '').toLowerCase()
+      const sEmail = (student.email || '').toLowerCase()
+      const q = (searchQuery || '').toLowerCase()
+      const matchesSearch = sName.includes(q) || sEmail.includes(q)
 
       if (!matchesSearch) return false
 

@@ -14,9 +14,48 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Global Crash Guardian: Recovers from stale chunk errors, network failures, or cached bundle collisions -->
+    <script>
+      (function() {
+        window.addEventListener('error', function(event) {
+          var root = document.getElementById('root');
+          var isScriptError = event && (event.filename || (event.message && /loading|script|mime|chunk/i.test(event.message)));
+          if (root && (!root.firstElementChild || root.querySelector('.kalvi-preloader'))) {
+            var loader = document.getElementById('initial-loader');
+            if (loader) {
+              loader.innerHTML = 
+                '<div style="max-width:380px;background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:32px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.06);text-align:center;">' +
+                  '<div style="width:48px;height:48px;border-radius:14px;background:#fef2f2;border:1px solid #fee2e2;color:#ED2A2B;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;font-weight:bold;">!</div>' +
+                  '<h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px 0;letter-spacing:-0.3px;">Update Detected</h2>' +
+                  '<p style="font-size:13px;color:#6b7280;line-height:1.5;margin:0 0 20px 0;">A new deployment of Kalvi Learn is available. Click below to load the latest resources.</p>' +
+                  '<button type="button" onclick="sessionStorage.clear();try{for(var k in localStorage){if(k.indexOf(\'kalvi_chunk\')===0)localStorage.removeItem(k);}}catch(e){}location.reload(true);" style="background:#111827;color:#ffffff;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:background 0.2s;">Reload Application</button>' +
+                '</div>';
+            }
+          }
+        });
+      })();
+    </script>
   </head>
   <body class="bg-white text-neutral-900 antialiased selection:bg-red-50 selection:text-red-700">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Instantaneous Brand Splash Loader (Replaced automatically when React mounts) -->
+      <div id="initial-loader" class="kalvi-preloader" style="min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;font-family:'Inter',system-ui,sans-serif;padding:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="#ED2A2B" />
+            <path d="M12 10H17V30H12V10Z" fill="white" />
+            <path d="M28 10L19 20L28 30H22L15 22.5V17.5L22 10H28Z" fill="white" />
+          </svg>
+          <span style="font-size:22px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Kalvi<span style="color:#ED2A2B;">Learn</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:12px;font-weight:500;">
+          <div style="width:16px;height:16px;border:2px solid #ED2A2B;border-top-color:transparent;border-radius:50%;animation:kalviSpin 0.7s linear infinite;"></div>
+          <span>Loading learning workspace...</span>
+        </div>
+        <style>@keyframes kalviSpin{to{transform:rotate(360deg)}}</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

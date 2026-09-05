@@ -66,10 +66,15 @@ export const MentorStudentsPage: React.FC = () => {
 
   const filtered = useMemo(() => {
     return students.filter((s) => {
+      const sName = (s.name || '').toLowerCase()
+      const sEmail = (s.email || '').toLowerCase()
+      const sLang = (s.language || '').toLowerCase()
+      const q = (search || '').toLowerCase()
+
       const matchesSearch =
-        s.name.toLowerCase().includes(search.toLowerCase()) ||
-        s.email.toLowerCase().includes(search.toLowerCase()) ||
-        s.language.toLowerCase().includes(search.toLowerCase())
+        sName.includes(q) ||
+        sEmail.includes(q) ||
+        sLang.includes(q)
 
       if (!matchesSearch) return false
 
@@ -79,7 +84,7 @@ export const MentorStudentsPage: React.FC = () => {
     }).sort((a, b) => {
       if (sortBy === 'progress') return b.progressPercent - a.progressPercent
       if (sortBy === 'streak') return b.streak - a.streak
-      return a.name.localeCompare(b.name)
+      return (a.name || '').localeCompare(b.name || '')
     })
   }, [students, search, beltFilter, sortBy])
 

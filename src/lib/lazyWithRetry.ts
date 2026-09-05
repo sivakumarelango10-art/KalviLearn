@@ -45,35 +45,41 @@ export function lazyWithRetry<T extends ComponentType<any>>(
   return lazy(async () => {
     try {
       return await componentImport()
-    } catch (error: unknown) {
-      if (isChunkLoadError(error)) {
-        const storageKey = `${RELOAD_KEY_PREFIX}${chunkKey}`
-        const lastReload = sessionStorage.getItem(storageKey)
-        const now = Date.now()
+    } catch (firstError: unknown) {
+      // 1. Immediate soft retry after 250ms for temporary network hiccups
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 250))
+        return await componentImport()
+      } catch (error: unknown) {
+        if (isChunkLoadError(error)) {
+          const storageKey = `${RELOAD_KEY_PREFIX}${chunkKey}`
+          const lastReload = sessionStorage.getItem(storageKey)
+          const now = Date.now()
 
-        // Check if we already attempted a reload recently for this chunk
-        const hasRecentlyReloaded = lastReload && now - parseInt(lastReload, 10) < RELOAD_COOLDOWN_MS
+          // Check if we already attempted a reload recently for this chunk
+          const hasRecentlyReloaded = lastReload && now - parseInt(lastReload, 10) < RELOAD_COOLDOWN_MS
 
-        if (!hasRecentlyReloaded) {
-          sessionStorage.setItem(storageKey, String(now))
-          console.warn(
-            `[ChunkRecovery] Stale chunk detected for module "${chunkKey}". Reloading page to fetch latest deployment...`
+          if (!hasRecentlyReloaded) {
+            sessionStorage.setItem(storageKey, String(now))
+            console.warn(
+              `[ChunkRecovery] Stale chunk detected for module "${chunkKey}". Reloading page to fetch latest deployment...`
+            )
+            window.location.reload()
+
+            // Wait 1.5s for browser navigation to take over; if not, throw to trigger RouteErrorBoundary
+            await new Promise((resolve) => setTimeout(resolve, 1500))
+          }
+
+          // Already reloaded and still failed (e.g. true offline or broken build)
+          console.error(
+            `[ChunkRecovery] Module "${chunkKey}" failed to load after page reload attempt.`,
+            error
           )
-          window.location.reload()
-
-          // Keep promise pending while browser reloads to avoid rendering an error state
-          return new Promise<{ default: T }>(() => {})
         }
 
-        // Already reloaded and still failed (e.g. true offline or broken build)
-        console.error(
-          `[ChunkRecovery] Module "${chunkKey}" failed to load after page reload attempt.`,
-          error
-        )
+        // Re-throw to be captured by RouteErrorBoundary
+        throw error
       }
-
-      // Re-throw to be captured by RouteErrorBoundary
-      throw error
     }
   })
 }
