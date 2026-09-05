@@ -7,6 +7,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   BeltMetric,
   fetchMentorCurriculumMetrics,
@@ -15,9 +16,10 @@ import {
 } from '@/lib/mentorService'
 
 export const MentorCurriculumPage: React.FC = () => {
+  const { user } = useAuth()
   const [expandedBelt, setExpandedBelt] = useState<number | null>(1)
   const [beltMetrics, setBeltMetrics] = useState<BeltMetric[]>([])
-  const [totalScholars, setTotalScholars] = useState<number>(2)
+  const [totalStudents, setTotalStudents] = useState<number>(2)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -27,12 +29,12 @@ export const MentorCurriculumPage: React.FC = () => {
       try {
         const [metrics, students] = await Promise.all([
           fetchMentorCurriculumMetrics(),
-          fetchMentorRoster(),
+          fetchMentorRoster(user?.id),
         ])
         if (isMounted) {
           setBeltMetrics(metrics)
           if (students.length > 0) {
-            setTotalScholars(students.length)
+            setTotalStudents(students.length)
           }
           setIsLoading(false)
         }
@@ -52,7 +54,7 @@ export const MentorCurriculumPage: React.FC = () => {
       isMounted = false
       unsubscribe()
     }
-  }, [])
+  }, [user?.id])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-page-enter">
@@ -109,7 +111,7 @@ export const MentorCurriculumPage: React.FC = () => {
               <div>
                 <h3 className="text-base font-bold text-neutral-900">{belt.title}</h3>
                 <p className="text-xs text-neutral-500 mt-1">
-                  {belt.cohortCompleted} / {totalScholars} Registered Scholars active in this milestone
+                  {belt.cohortCompleted} / {totalStudents} Registered Students active in this milestone
                 </p>
               </div>
 

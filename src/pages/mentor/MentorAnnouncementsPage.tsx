@@ -68,7 +68,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true
-    fetchMentorRoster().then((students) => {
+    fetchMentorRoster(user?.id).then((students) => {
       if (isMounted && students.length > 0) {
         setTotalScholars(students.length)
         setAnnouncements((prev) =>
@@ -79,7 +79,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [user?.id])
 
   const authorName = user?.name ? `${user.name} (Mentor)` : 'Faculty Mentor'
 
@@ -118,7 +118,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Broadcast updates, contest notices, and mentoring guidelines to your registered scholars.
+            Broadcast updates, contest notices, and mentoring guidelines to your registered students.
           </p>
         </div>
 
@@ -198,7 +198,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
                 Broadcast New Announcement
               </h3>
               <p className="text-xs text-neutral-500 mt-0.5">
-                This notice will be pinned to your scholars' dashboards and notification feeds.
+                This notice will be pinned to your students' dashboards and notification feeds.
               </p>
             </div>
 

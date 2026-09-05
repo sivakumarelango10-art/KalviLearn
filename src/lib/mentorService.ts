@@ -390,8 +390,8 @@ export async function fetchMentorSubmissions(limit = 50): Promise<MentorSubmissi
       } | null
 
       const uInfo = userMap.get(s.userId) || {
-        name: 'Kalvi Scholar',
-        email: 'scholar@kalvium.community',
+        name: 'Student',
+        email: 'student@kalvium.community',
       }
 
       const lang = normalizeLanguage(s.language)
@@ -547,8 +547,10 @@ export interface AddStudentResult {
 
 /**
  * Assigns or reassigns a student to a mentor.
- * Enforces the strict invariant: One student is assigned to strictly ONE mentor.
- * Validates that the target mentor exists and holds role === 'MENTOR'.
+ * Enforces strict invariants:
+ * - A student already mapped to another mentor can NEVER be reassigned.
+ * - Only users with role = STUDENT can be assigned a mentor.
+ * - Target mentor must be active with role = MENTOR.
  */
 export async function assignStudentMentor(
   studentId: string,
@@ -570,15 +572,44 @@ export async function assignStudentMentor(
       return { success: false, error: 'Target user is not an active mentor.' }
     }
 
-    // 2. Update the student's mentorId (scalar update strictly guarantees exactly 1 mentor per student)
-    const { error: sErr } = await supabase
+    // 2. Fetch the target student to verify role and mapping state
+    const { data: student, error: sFindErr } = await supabase
+      .from('users')
+      .select('id, role, mentorId')
+      .eq('id', studentId)
+      .maybeSingle()
+
+    if (sFindErr || !student) {
+      return { success: false, error: 'Student not found.' }
+    }
+
+    if (student.role !== 'STUDENT') {
+      return { success: false, error: 'Only users with role STUDENT can be assigned a mentor.' }
+    }
+
+    if (student.mentorId) {
+      if (student.mentorId === mentorId) {
+        return { success: true } // Already assigned to this mentor
+      }
+      return { success: false, error: 'This student is already mapped to another mentor.' }
+    }
+
+    // 3. Atomically update the student's mentorId if still unmapped
+    const { data: updated, error: sErr } = await supabase
       .from('users')
       .update({ mentorId, updatedAt: new Date().toISOString() })
       .eq('id', studentId)
       .eq('role', 'STUDENT')
+      .is('mentorId', null)
+      .select('id, mentorId')
+      .maybeSingle()
 
     if (sErr) {
       return { success: false, error: sErr.message }
+    }
+
+    if (!updated) {
+      return { success: false, error: 'This student is already mapped to another mentor.' }
     }
 
     return { success: true }
@@ -589,15 +620,16 @@ export async function assignStudentMentor(
 }
 
 /**
- * Registers or maps a student to the current mentor in the PostgreSQL database.
+ * Registers or maps a student to the current mentor in PostgreSQL.
  *
  * Rules enforced:
- * 1. Verify student email address against database.
- * 2. If student is already mapped to another mentor: "This student is already mapped to another mentor."
- * 3. If student is already mapped to current mentor: "This student is already mapped to you."
- * 4. If student exists and has no mentor assigned: map student to current mentor.
- * 5. If student does not exist: create student and map to current mentor.
- * 6. Enforces strictly 1 mentor per student on backend & database trigger level.
+ * 1. Safe, parameterized case-insensitive student lookup (escapes LIKE wildcards).
+ * 2. Strict role verification: Only users with role = STUDENT can be assigned.
+ * 3. Mentor verification: Assigning mentor must have role = MENTOR and status = ACTIVE.
+ * 4. Already mapped to another mentor -> "This student is already mapped to another mentor."
+ * 5. Already mapped to current mentor -> "This student is already mapped to you."
+ * 6. Concurrency / Race-Condition Safe: Atomic conditional update prevents simultaneous double assignments.
+ * 7. Enforced strictly at the database level via PostgreSQL trigger and foreign key.
  */
 export async function addStudent(params: AddStudentParams): Promise<AddStudentResult> {
   const name = params.name.trim()
@@ -613,24 +645,39 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
   }
 
   try {
-    // 1. Verify student email against database
+    // 1. Validate that the current mentor is active with role MENTOR
+    if (currentMentorId) {
+      const { data: mentor, error: mErr } = await supabase
+        .from('users')
+        .select('id, role, status')
+        .eq('id', currentMentorId)
+        .maybeSingle()
+
+      if (mErr || !mentor || mentor.role !== 'MENTOR' || mentor.status !== 'ACTIVE') {
+        return { success: false, error: 'Target mentor account is invalid or inactive.' }
+      }
+    }
+
+    // 2. Safe, parameterized case-insensitive lookup (escaping LIKE wildcards)
+    const safeEmail = email.replace(/[%_\\]/g, '\\$&')
     const { data: existing, error: findError } = await supabase
       .from('users')
       .select('id, email, name, role, status, mentorId')
-      .ilike('email', email)
+      .ilike('email', safeEmail)
       .maybeSingle()
 
     if (findError) {
       return { success: false, error: findError.message }
     }
 
-    // 2. If student already exists in database
+    // 3. If user already exists in database
     if (existing) {
-      if (existing.role === 'MENTOR' || existing.role === 'ADMIN') {
-        return { success: false, error: 'This email is registered as a mentor account.' }
+      // Only users with role = STUDENT can be assigned a mentor
+      if (existing.role !== 'STUDENT') {
+        return { success: false, error: 'Only users with role STUDENT can be assigned a mentor.' }
       }
 
-      // Check whether that student is already mapped to another mentor
+      // Check whether student is already mapped
       if (existing.mentorId) {
         if (currentMentorId && existing.mentorId === currentMentorId) {
           return { success: false, error: 'This student is already mapped to you.' }
@@ -638,7 +685,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
         return { success: false, error: 'This student is already mapped to another mentor.' }
       }
 
-      // If student is not mapped to any mentor: allow current mentor to map the student
+      // Concurrency-safe atomic conditional update: only update if mentorId IS NULL
       const { data: updated, error: updateError } = await supabase
         .from('users')
         .update({
@@ -647,11 +694,26 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
           updatedAt: new Date().toISOString(),
         })
         .eq('id', existing.id)
+        .is('mentorId', null) // Atomic check prevents race conditions
         .select('id, email, name, role, status, mentorId, createdAt')
-        .single()
+        .maybeSingle()
 
       if (updateError) {
         return { success: false, error: updateError.message }
+      }
+
+      // If another concurrent transaction mapped the student first, updated will be null
+      if (!updated) {
+        const { data: recheck } = await supabase
+          .from('users')
+          .select('mentorId')
+          .eq('id', existing.id)
+          .maybeSingle()
+
+        if (recheck?.mentorId && currentMentorId && recheck.mentorId === currentMentorId) {
+          return { success: false, error: 'This student is already mapped to you.' }
+        }
+        return { success: false, error: 'This student is already mapped to another mentor.' }
       }
 
       const mappedStudent: MentorStudent = {
@@ -674,7 +736,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
       return { success: true, student: mappedStudent }
     }
 
-    // 3. Student does not exist in database: create and map to current mentor
+    // 4. Student does not exist in database: create and map to current mentor
     const { data, error } = await supabase
       .from('users')
       .insert({
@@ -688,6 +750,19 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
       .single()
 
     if (error) {
+      // If unique constraint violation occurred concurrently
+      if (error.code === '23505' || error.message.includes('unique') || error.message.includes('users_email_key')) {
+        const { data: concurrentUser } = await supabase
+          .from('users')
+          .select('id, mentorId')
+          .eq('email', email)
+          .maybeSingle()
+
+        if (concurrentUser?.mentorId && currentMentorId && concurrentUser.mentorId === currentMentorId) {
+          return { success: false, error: 'This student is already mapped to you.' }
+        }
+        return { success: false, error: 'This student is already mapped to another mentor.' }
+      }
       return { success: false, error: error.message }
     }
 
@@ -716,12 +791,39 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
 }
 
 /**
- * Removes a student from the database.
+ * Removes a student from a mentor's cohort or database.
+ * IDOR Protected: Scoped strictly to users with role = STUDENT,
+ * and if mentorId is supplied, strictly validates that the student belongs to the requesting mentor.
  */
-export async function removeStudent(studentId: string): Promise<{ success: boolean; error?: string }> {
+export async function removeStudent(
+  studentId: string,
+  mentorId?: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!studentId) {
+    return { success: false, error: 'Student ID is required.' }
+  }
+
   try {
-    const { error } = await supabase.from('users').delete().eq('id', studentId)
-    if (error) return { success: false, error: error.message }
+    let query = supabase
+      .from('users')
+      .delete()
+      .eq('id', studentId)
+      .eq('role', 'STUDENT')
+
+    // IDOR Protection: authenticated mentor can only remove their own mapped students
+    if (mentorId) {
+      query = query.eq('mentorId', mentorId)
+    }
+
+    const { data, error } = await query.select('id')
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    if (!data || data.length === 0) {
+      return { success: false, error: 'Student not found or unauthorized to remove.' }
+    }
+
     return { success: true }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)

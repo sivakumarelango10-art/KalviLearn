@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import {
   Users,
   Search,
@@ -41,16 +41,16 @@ export const MentorStudentsPage: React.FC = () => {
   const [studentToDelete, setStudentToDelete] = useState<MentorStudent | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
-      const data = await fetchMentorRoster()
+      const data = await fetchMentorRoster(user?.id)
       setStudents(data)
       setIsLoading(false)
     } catch (err) {
       console.error('Error loading students:', err)
       setIsLoading(false)
     }
-  }
+  }, [user?.id])
 
   useEffect(() => {
     loadData()
@@ -62,7 +62,7 @@ export const MentorStudentsPage: React.FC = () => {
     return () => {
       unsubscribe()
     }
-  }, [])
+  }, [loadData])
 
   const attentionCount = students.filter((s) => s.needsAttention).length
 
@@ -138,7 +138,7 @@ export const MentorStudentsPage: React.FC = () => {
     if (!studentToDelete) return
     setIsDeleting(true)
     try {
-      const res = await removeStudent(studentToDelete.id)
+      const res = await removeStudent(studentToDelete.id, user?.id)
       if (res.success) {
         setSuccessToast(`Student ${studentToDelete.name} removed from cohort.`)
         setTimeout(() => setSuccessToast(null), 4000)

@@ -10,17 +10,17 @@ import { fetchMentorRoster } from '@/lib/mentorService'
 
 export const MentorProfilePage: React.FC = () => {
   const { user } = useAuth()
-  const [scholarCount, setScholarCount] = useState<number>(0)
+  const [studentCount, setStudentCount] = useState<number>(0)
 
   useEffect(() => {
     let isMounted = true
-    fetchMentorRoster().then((students) => {
-      if (isMounted) setScholarCount(students.length)
+    fetchMentorRoster(user?.id).then((students) => {
+      if (isMounted) setStudentCount(students.length)
     }).catch(console.warn)
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [user?.id])
 
   const mentorName =
     user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
@@ -77,7 +77,7 @@ export const MentorProfilePage: React.FC = () => {
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
             <span>Cohort Size:</span>
             <span className="font-bold text-neutral-900">
-              {scholarCount > 0 ? `${scholarCount} Assigned Students` : 'Assigned Students Active'}
+              {studentCount > 0 ? `${studentCount} Assigned Students` : 'Assigned Students Active'}
             </span>
           </div>
         </div>

@@ -38,7 +38,7 @@ export const MentorDashboardPage: React.FC = () => {
 
     async function loadData() {
       try {
-        const data = await fetchMentorRoster()
+        const data = await fetchMentorRoster(user?.id)
         if (isMounted) {
           setStudents(data)
           setIsLoading(false)
@@ -60,7 +60,7 @@ export const MentorDashboardPage: React.FC = () => {
       isMounted = false
       unsubscribe()
     }
-  }, [])
+  }, [user?.id])
 
   // Real mentor cohort telemetry computed directly from real database state
   const totalStudents = students.length
