@@ -217,7 +217,14 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
     const res = await Promise.race([queryPromise, timeoutPromise])
 
     if (res && 'data' in res && res.data) {
-      const dbUser = res.data as DbUser
+      const rawUser = res.data as DbUser
+      const dbUser: DbUser = {
+        id: rawUser.id,
+        email: normalizedEmail,
+        role: (rawUser.role || 'STUDENT').toUpperCase(),
+        status: (rawUser.status || 'ACTIVE').toUpperCase(),
+        name: rawUser.name,
+      }
       if (dbUser.status !== 'ACTIVE') {
         return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
       }
