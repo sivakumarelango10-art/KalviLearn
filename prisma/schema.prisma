@@ -139,6 +139,7 @@ model Student {
   userId      String          @unique @map("user_id")
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   studentCode String          @unique @map("student_code") @db.VarChar(20)
+  name        String?         // Denormalized from users.name for easy table viewing
   status      String          @default("ACTIVE") @db.VarChar(20)
   createdAt   DateTime        @default(now()) @map("created_at")
   updatedAt   DateTime        @updatedAt @map("updated_at")
@@ -154,6 +155,7 @@ model Mentor {
   userId       String          @unique @map("user_id")
   user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   mentorCode   String          @unique @map("mentor_code") @db.VarChar(20)
+  name         String?         // Denormalized from users.name for easy table viewing
   maxStudents  Int             @default(30) @map("max_students")
   status       String          @default("ACTIVE") @db.VarChar(20)
   createdAt    DateTime        @default(now()) @map("created_at")
