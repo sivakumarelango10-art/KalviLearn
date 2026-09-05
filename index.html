@@ -18,22 +18,42 @@
     <!-- Global Crash Guardian: Recovers from stale chunk errors, network failures, or cached bundle collisions -->
     <script>
       (function() {
+        function renderUpdate() {
+          var loader = document.getElementById('initial-loader');
+          if (loader) {
+            loader.innerHTML = 
+              '<div style="max-width:380px;background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:32px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.06);text-align:center;">' +
+                '<div style="width:48px;height:48px;border-radius:14px;background:#fef2f2;border:1px solid #fee2e2;color:#ED2A2B;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;font-weight:bold;">!</div>' +
+                '<h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px 0;letter-spacing:-0.3px;">Update Detected</h2>' +
+                '<p style="font-size:13px;color:#6b7280;line-height:1.5;margin:0 0 20px 0;">A new deployment of Kalvi Learn is available. Click below to load the latest resources.</p>' +
+                '<button type="button" onclick="sessionStorage.clear();try{for(var k in localStorage){if(k.indexOf(\'kalvi_\')===0)localStorage.removeItem(k);}}catch(e){}location.reload(true);" style="background:#111827;color:#ffffff;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:background 0.2s;">Reload Application</button>' +
+              '</div>';
+          }
+        }
+
         window.addEventListener('error', function(event) {
           var root = document.getElementById('root');
           var isScriptError = event && (event.filename || (event.message && /loading|script|mime|chunk/i.test(event.message)));
           if (root && (!root.firstElementChild || root.querySelector('.kalvi-preloader'))) {
-            var loader = document.getElementById('initial-loader');
-            if (loader) {
-              loader.innerHTML = 
-                '<div style="max-width:380px;background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:32px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.06);text-align:center;">' +
-                  '<div style="width:48px;height:48px;border-radius:14px;background:#fef2f2;border:1px solid #fee2e2;color:#ED2A2B;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;font-weight:bold;">!</div>' +
-                  '<h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px 0;letter-spacing:-0.3px;">Update Detected</h2>' +
-                  '<p style="font-size:13px;color:#6b7280;line-height:1.5;margin:0 0 20px 0;">A new deployment of Kalvi Learn is available. Click below to load the latest resources.</p>' +
-                  '<button type="button" onclick="sessionStorage.clear();try{for(var k in localStorage){if(k.indexOf(\'kalvi_chunk\')===0)localStorage.removeItem(k);}}catch(e){}location.reload(true);" style="background:#111827;color:#ffffff;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:background 0.2s;">Reload Application</button>' +
-                '</div>';
-            }
+            renderUpdate();
           }
         });
+
+        // Watchdog: If initial loader is still present after 3 seconds, offer direct recovery
+        setTimeout(function() {
+          var root = document.getElementById('root');
+          if (root && root.querySelector('.kalvi-preloader')) {
+            var loader = document.getElementById('initial-loader');
+            if (loader && !document.getElementById('kalvi-direct-btn')) {
+              var p = document.createElement('p');
+              p.id = 'kalvi-direct-btn';
+              p.style.marginTop = '18px';
+              p.style.textAlign = 'center';
+              p.innerHTML = '<a href="/login" style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;padding:8px 18px;border-radius:12px;font-size:12px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background 0.2s;">Go to Login &rarr;</a>';
+              loader.appendChild(p);
+            }
+          }
+        }, 3000);
       })();
     </script>
   </head>

@@ -82,7 +82,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     async function checkCurrentSession() {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise<{ data: { session: null } }>((resolve) =>
+          setTimeout(() => resolve({ data: { session: null } }), 1500)
+        )
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
 
         if (!session?.user?.email) {
           // If Supabase session is absent, check if there is an active verified user in localStorage
