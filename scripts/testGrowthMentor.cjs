@@ -13,13 +13,13 @@ async function runTests() {
       studentName: 'Kavya Ramesh',
       studentEmail: 'kavya.ramesh.s.121@kalvium.community',
       studentId: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
-      expectedMentorName: 'Aaditya R M',
+      expectedMentorName: 'Elango Sivakumar',
     },
     {
       studentName: 'Prajith P S',
       studentEmail: 'prajith.p.s.121@kalvium.community',
       studentId: '7193765a-4dc6-4f61-813e-3e5dce95b6c7',
-      expectedMentorName: 'Swathi K S',
+      expectedMentorName: 'Elango Sivakumar',
     },
     {
       studentName: 'Unassigned Scholar',

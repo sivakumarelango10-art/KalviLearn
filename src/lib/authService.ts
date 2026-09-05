@@ -33,7 +33,7 @@ const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name
   'sivakumarelango10@gmail.com': {
     id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',
     role: 'MENTOR',
-    name: 'Sivakumar Elango',
+    name: 'Elango Sivakumar',
     status: 'ACTIVE',
   },
   'aaditya.rm@kalvium.com': {
