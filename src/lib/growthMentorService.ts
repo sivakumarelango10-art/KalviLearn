@@ -37,11 +37,13 @@ export async function fetchStudentGrowthMentor(studentId: string): Promise<strin
       return null
     }
 
-    // 2. Fetch the assigned mentor's name
+    // 2. Fetch the assigned mentor's name, strictly verifying the user is an active MENTOR
     const { data: mentor, error: mentorError } = await supabase
       .from('users')
       .select('id, name')
       .eq('id', student.mentorId)
+      .eq('role', 'MENTOR')
+      .eq('status', 'ACTIVE')
       .maybeSingle()
 
     if (mentorError) {

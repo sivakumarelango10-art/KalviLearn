@@ -19,8 +19,10 @@ import {
   addStudent,
   removeStudent,
 } from '@/lib/mentorService'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const MentorStudentsPage: React.FC = () => {
+  const { user } = useAuth()
   const [students, setStudents] = useState<MentorStudent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -107,6 +109,7 @@ export const MentorStudentsPage: React.FC = () => {
       const result = await addStudent({
         name: newName,
         email: newEmail,
+        mentorId: user?.id,
       })
 
       if (!result.success) {

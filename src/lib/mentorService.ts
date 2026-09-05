@@ -173,14 +173,20 @@ function calculateStreak(dates: (string | Date)[]): number {
  * real completion percent out of 85, live belt, and activity telemetry.
  * OPTIMIZED: Eliminates N+1 queries by batching UserProgress and Submission queries.
  */
-export async function fetchMentorRoster(): Promise<MentorStudent[]> {
+export async function fetchMentorRoster(mentorId?: string): Promise<MentorStudent[]> {
   try {
-    // 1. Fetch all registered students
-    const { data: dbUsers, error: uError } = await supabase
+    // 1. Fetch registered students (optionally filtered by assigned mentor)
+    let query = supabase
       .from('users')
-      .select('id, email, name, role, status, createdAt')
+      .select('id, email, name, role, status, mentorId, createdAt')
       .eq('role', 'STUDENT')
       .order('name', { ascending: true })
+
+    if (mentorId) {
+      query = query.eq('mentorId', mentorId)
+    }
+
+    const { data: dbUsers, error: uError } = await query
 
     if (uError) {
       console.warn('Error fetching students from database:', uError.message)
@@ -530,6 +536,7 @@ export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
 export interface AddStudentParams {
   name: string
   email: string
+  mentorId?: string
 }
 
 export interface AddStudentResult {
@@ -539,8 +546,52 @@ export interface AddStudentResult {
 }
 
 /**
+ * Assigns or reassigns a student to a mentor.
+ * Enforces the strict invariant: One student is assigned to strictly ONE mentor.
+ * Validates that the target mentor exists and holds role === 'MENTOR'.
+ */
+export async function assignStudentMentor(
+  studentId: string,
+  mentorId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // 1. Validate that target mentor exists, is active, and holds MENTOR role
+    const { data: mentor, error: mErr } = await supabase
+      .from('users')
+      .select('id, role, status')
+      .eq('id', mentorId)
+      .maybeSingle()
+
+    if (mErr || !mentor) {
+      return { success: false, error: 'Target mentor not found.' }
+    }
+
+    if (mentor.role !== 'MENTOR' || mentor.status !== 'ACTIVE') {
+      return { success: false, error: 'Target user is not an active mentor.' }
+    }
+
+    // 2. Update the student's mentorId (scalar update strictly guarantees exactly 1 mentor per student)
+    const { error: sErr } = await supabase
+      .from('users')
+      .update({ mentorId, updatedAt: new Date().toISOString() })
+      .eq('id', studentId)
+      .eq('role', 'STUDENT')
+
+    if (sErr) {
+      return { success: false, error: sErr.message }
+    }
+
+    return { success: true }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return { success: false, error: msg }
+  }
+}
+
+/**
  * Registers a new student into the PostgreSQL database.
  * The newly added student can immediately login with Google.
+ * Enforces that if a mentor enrolls them, they are assigned to that mentor.
  */
 export async function addStudent(params: AddStudentParams): Promise<AddStudentResult> {
   const name = params.name.trim()
@@ -566,7 +617,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
       return { success: false, error: `A user with email "${email}" is already registered.` }
     }
 
-    // 2. Insert new student into public.users
+    // 2. Insert new student into public.users with assigned mentorId (strictly 1 mentor)
     const { data, error } = await supabase
       .from('users')
       .insert({
@@ -574,8 +625,9 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
         email,
         role: 'STUDENT',
         status: 'ACTIVE',
+        mentorId: params.mentorId || null,
       })
-      .select('id, email, name, role, status, createdAt')
+      .select('id, email, name, role, status, mentorId, createdAt')
       .single()
 
     if (error) {
