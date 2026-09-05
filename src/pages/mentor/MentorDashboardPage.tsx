@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Users,
   Flame,
@@ -8,7 +9,6 @@ import {
   X,
   Award,
   AlertTriangle,
-  Send,
   Loader2,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -30,8 +30,20 @@ export const MentorDashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBeltFilter, setSelectedBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
   const [selectedStudent, setSelectedStudent] = useState<MentorStudent | null>(null)
-  const [mentorNote, setMentorNote] = useState('')
-  const [noteSent, setNoteSent] = useState(false)
+
+  // Keyboard shortcut (Escape) to close modal and body scroll lock
+  useEffect(() => {
+    if (!selectedStudent) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedStudent(null)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [selectedStudent])
 
   useEffect(() => {
     let isMounted = true
@@ -86,16 +98,6 @@ export const MentorDashboardPage: React.FC = () => {
     })
   }, [students, searchQuery, selectedBeltFilter])
 
-  const handleSendNote = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!mentorNote.trim()) return
-    setNoteSent(true)
-    setTimeout(() => {
-      setNoteSent(false)
-      setMentorNote('')
-      setSelectedStudent(null)
-    }, 1500)
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
@@ -397,107 +399,100 @@ export const MentorDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Student Detail Inspection & Mentor Note Modal */}
-      {selectedStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop">
-            <button
-              onClick={() => setSelectedStudent(null)}
-              className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
-              aria-label="Close dialog"
+      {/* 4. Student Detail Inspection Modal (Portaled directly to document.body) */}
+      {selectedStudent &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setSelectedStudent(null)}
+          >
+            <div
+              className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                type="button"
+                onClick={() => setSelectedStudent(null)}
+                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            {/* Student Summary Header */}
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white font-extrabold text-lg flex items-center justify-center shadow-xs">
-                {(selectedStudent.name || selectedStudent.email || 'ST').slice(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-neutral-900">
-                  {selectedStudent.name || 'Student'}
-                </h3>
-                <p className="text-xs text-neutral-500 font-mono">
-                  {selectedStudent.email}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span
-                    className="px-2 py-0.5 rounded text-[11px] font-bold text-white"
-                    style={{ backgroundColor: selectedStudent.beltColor || '#3B82F6' }}
-                  >
-                    {selectedStudent.belt || 'Belt 1'}
-                  </span>
-                  <span className="text-[11px] text-neutral-400">
-                    Primary: {(selectedStudent.language || 'python').toUpperCase()}
-                  </span>
+              {/* Student Summary Header */}
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white font-extrabold text-lg flex items-center justify-center shadow-xs">
+                  {(selectedStudent.name || selectedStudent.email || 'ST').slice(0, 2).toUpperCase()}
                 </div>
-              </div>
-            </div>
-
-            {/* Metrics Breakdown */}
-            <div className="grid grid-cols-3 gap-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200 text-center">
-              <div>
-                <div className="text-xl font-extrabold text-neutral-900">
-                  {selectedStudent.progressPercent}%
-                </div>
-                <div className="text-[11px] text-neutral-500">Progress</div>
-              </div>
-              <div>
-                <div className="text-xl font-extrabold text-neutral-900">
-                  {selectedStudent.solvedCount} / {selectedStudent.totalProblems}
-                </div>
-                <div className="text-[11px] text-neutral-500">Solved</div>
-              </div>
-              <div>
-                <div className="text-xl font-extrabold text-amber-500">
-                  {selectedStudent.streak} days
-                </div>
-                <div className="text-[11px] text-neutral-500">Streak</div>
-              </div>
-            </div>
-
-            {/* Attention Notice if present */}
-            {selectedStudent.needsAttention && selectedStudent.attentionReason && (
-              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2.5 text-xs text-amber-800">
-                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold">Intervention Recommended:</span>{' '}
-                  {selectedStudent.attentionReason}
+                  <h3 className="text-xl font-bold text-neutral-900">
+                    {selectedStudent.name || 'Student'}
+                  </h3>
+                  <p className="text-xs text-neutral-500 font-mono">
+                    {selectedStudent.email}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span
+                      className="px-2 py-0.5 rounded text-[11px] font-bold text-white"
+                      style={{ backgroundColor: selectedStudent.beltColor || '#3B82F6' }}
+                    >
+                      {selectedStudent.belt || 'Belt 1'}
+                    </span>
+                    <span className="text-[11px] text-neutral-400">
+                      Primary: {(selectedStudent.language || 'python').toUpperCase()}
+                    </span>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {/* Mentor Action: Send Guidance Note */}
-            <form onSubmit={handleSendNote} className="space-y-3">
-              <label className="text-xs font-bold text-neutral-700 block">
-                Send Mentor Advice or Unblocking Hint:
-              </label>
-              <textarea
-                rows={3}
-                value={mentorNote}
-                onChange={(e) => setMentorNote(e.target.value)}
-                placeholder={`Write personalized guidance for ${selectedStudent.name}...`}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-800 focus:outline-none focus:ring-1 focus:ring-neutral-900"
-              />
+              {/* Metrics Breakdown */}
+              <div className="grid grid-cols-3 gap-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200 text-center">
+                <div>
+                  <div className="text-xl font-extrabold text-neutral-900">
+                    {selectedStudent.progressPercent}%
+                  </div>
+                  <div className="text-[11px] text-neutral-500">Progress</div>
+                </div>
+                <div>
+                  <div className="text-xl font-extrabold text-neutral-900">
+                    {selectedStudent.solvedCount} / {selectedStudent.totalProblems}
+                  </div>
+                  <div className="text-[11px] text-neutral-500">Solved</div>
+                </div>
+                <div>
+                  <div className="text-xl font-extrabold text-amber-500">
+                    {selectedStudent.streak} days
+                  </div>
+                  <div className="text-[11px] text-neutral-500">Streak</div>
+                </div>
+              </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-[11px] text-neutral-400">
-                  Delivered to student's notification center
-                </span>
+              {/* Attention Notice if present */}
+              {selectedStudent.needsAttention && selectedStudent.attentionReason && (
+                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2.5 text-xs text-amber-800">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Intervention Recommended:</span>{' '}
+                    {selectedStudent.attentionReason}
+                  </div>
+                </div>
+              )}
+
+              {/* Modal Footer */}
+              <div className="flex items-center justify-end pt-2 border-t border-neutral-100">
                 <button
-                  type="submit"
-                  disabled={!mentorNote.trim() || noteSent}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs font-semibold transition-all interactive-btn disabled:opacity-50"
+                  type="button"
+                  onClick={() => setSelectedStudent(null)}
+                  className="px-5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold transition-all interactive-btn"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{noteSent ? 'Delivered!' : 'Send Advice'}</span>
+                  Close
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
