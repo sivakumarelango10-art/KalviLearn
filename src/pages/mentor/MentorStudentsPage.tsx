@@ -309,9 +309,14 @@ export const MentorStudentsPage: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-bold text-neutral-900 text-sm">{student.name}</h3>
-                      <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[150px]">
+                      <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[180px]">
                         {student.email}
                       </p>
+                      {student.studentCode && (
+                        <p className="text-[10px] text-neutral-500 font-mono font-medium mt-0.5">
+                          Student Code: {student.studentCode}
+                        </p>
+                      )}
                     </div>
                   </div>
 

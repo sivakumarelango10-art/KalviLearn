@@ -29,8 +29,8 @@ export const MentorProfilePage: React.FC = () => {
   }, [user?.id])
 
   const mentorName =
-    user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
-  const mentorEmail = user?.email || 'mentor@kalvium.com'
+    mentorProfile?.user?.name || user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
+  const mentorEmail = mentorProfile?.user?.email || user?.email || 'mentor@kalvium.com'
   const initial = (mentorName[0] || 'M').toUpperCase()
 
   return (

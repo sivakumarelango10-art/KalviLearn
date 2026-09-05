@@ -5,6 +5,16 @@ export interface MentorStudent {
   name: string
   email: string
   studentCode?: string
+  student?: {
+    id: string
+    studentCode: string
+    status: string
+  }
+  user?: {
+    id: string
+    name: string
+    email: string
+  }
   belt: 'Belt 1' | 'Belt 2' | 'Belt 3'
   beltColor: string
   progressPercent: number
@@ -64,7 +74,13 @@ export interface MentorProfile {
   mentorCode: string
   maxStudents: number
   status: string
+  user: {
+    id: string
+    name: string
+    email: string
+  }
   name?: string
+  email?: string
 }
 
 export interface AddStudentParams {
@@ -146,22 +162,41 @@ function calculateStreak(dates: (string | Date)[]): number {
 // Core Helpers
 
 /**
- * Resolves the mentor profile record (mentors table) from their users.id.
+ * Resolves the mentor profile record (mentors table) from their mentors.id or users.id.
+ * Queries the users table for name and email (single source of truth).
  */
-export async function getMentorProfile(mentorUserId: string): Promise<MentorProfile | null> {
-  const { data, error } = await supabase
+export async function getMentorProfile(mentorIdOrUserId: string): Promise<MentorProfile | null> {
+  if (!mentorIdOrUserId) return null
+  const { data: mentor, error } = await supabase
     .from('mentors')
-    .select('id, mentor_code, max_students, status, name')
-    .eq('user_id', mentorUserId)
+    .select('id, user_id, mentor_code, max_students, status')
+    .or(`id.eq.${mentorIdOrUserId},user_id.eq.${mentorIdOrUserId}`)
     .eq('status', 'ACTIVE')
     .maybeSingle()
-  if (error || !data) return null
+
+  if (error || !mentor) return null
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('id, name, email')
+    .eq('id', mentor.user_id)
+    .maybeSingle()
+
+  const userName = user?.name || ''
+  const userEmail = user?.email || ''
+
   return {
-    id: data.id,
-    mentorCode: data.mentor_code,
-    maxStudents: data.max_students,
-    status: data.status,
-    name: data.name || undefined,
+    id: mentor.id,
+    mentorCode: mentor.mentor_code,
+    maxStudents: mentor.max_students,
+    status: mentor.status,
+    user: {
+      id: user?.id || mentor.user_id,
+      name: userName,
+      email: userEmail,
+    },
+    name: userName || undefined,
+    email: userEmail || undefined,
   }
 }
 
@@ -169,6 +204,7 @@ interface StudentUserRow {
   userId: string
   studentId: string
   studentCode: string
+  status: string
   name: string
   email: string
   createdAt: string
@@ -176,19 +212,20 @@ interface StudentUserRow {
 
 /**
  * Returns all student user records actively assigned to the given mentors.id.
+ * Follows mentor_students -> students -> users (single source of truth).
  */
 async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]> {
   const { data: assignments, error: aErr } = await supabase
     .from('mentor_students')
-    .select('student_id, students(id, user_id, student_code, created_at, name)')
+    .select('student_id, students(id, user_id, student_code, status, created_at)')
     .eq('mentor_id', mentorId)
     .eq('status', 'ACTIVE')
 
   if (aErr || !assignments || assignments.length === 0) return []
 
   const studentRows = assignments
-    .map((a) => (a.students as unknown) as { id: string; user_id: string; student_code: string; created_at: string; name?: string } | null)
-    .filter(Boolean) as Array<{ id: string; user_id: string; student_code: string; created_at: string; name?: string }>
+    .map((a) => (a.students as unknown) as { id: string; user_id: string; student_code: string; status: string; created_at: string } | null)
+    .filter(Boolean) as Array<{ id: string; user_id: string; student_code: string; status: string; created_at: string }>
 
   const userIds = studentRows.map((s) => s.user_id)
   if (userIds.length === 0) return []
@@ -206,7 +243,8 @@ async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]
         userId: s.user_id,
         studentId: s.id,
         studentCode: s.student_code,
-        name: u?.name || s.name || 'Student',
+        status: s.status || 'ACTIVE',
+        name: u?.name || '',
         email: u?.email || '',
         createdAt: u?.createdAt || s.created_at,
       }
@@ -230,7 +268,7 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
       studentUsers = await getMentorStudentUsers(mentorProfile.id)
     } else {
       const { data: allStudents } = await supabase
-        .from('students').select('id, user_id, student_code, created_at').eq('status', 'ACTIVE')
+        .from('students').select('id, user_id, student_code, status, created_at').eq('status', 'ACTIVE')
       if (!allStudents || allStudents.length === 0) return []
       const userIds = allStudents.map((s) => s.user_id)
       const { data: users } = await supabase.from('users').select('id, name, email, createdAt').in('id', userIds)
@@ -238,7 +276,15 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
       studentUsers = allStudents
         .map((s) => {
           const u = userMap.get(s.user_id)
-          return { userId: s.user_id, studentId: s.id, studentCode: s.student_code, name: u?.name || 'Student', email: u?.email || '', createdAt: u?.createdAt || s.created_at }
+          return {
+            userId: s.user_id,
+            studentId: s.id,
+            studentCode: s.student_code,
+            status: s.status || 'ACTIVE',
+            name: u?.name || '',
+            email: u?.email || '',
+            createdAt: u?.createdAt || s.created_at,
+          }
         })
         .filter((s) => s.email)
     }
@@ -300,6 +346,16 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
         name: su.name || su.email.split('@')[0].replace(/\./g, ' '),
         email: su.email,
         studentCode: su.studentCode,
+        student: {
+          id: su.studentId,
+          studentCode: su.studentCode,
+          status: su.status,
+        },
+        user: {
+          id: su.userId,
+          name: su.name,
+          email: su.email,
+        },
         belt, beltColor,
         progressPercent, solvedCount, totalProblems: 85,
         streak, language,
@@ -479,7 +535,6 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
           user_id: userRow.id,
           student_code: `STU-${Date.now()}`,
           status: 'ACTIVE',
-          name: userRow.name || name,
         })
         .select('id').single()
       if (createErr || !newStudent) return { success: false, error: 'Failed to create student profile.' }

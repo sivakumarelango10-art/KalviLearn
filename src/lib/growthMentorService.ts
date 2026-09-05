@@ -1,7 +1,9 @@
 import { supabase } from './supabase'
 
-export interface GrowthMentorInfo {
+export interface GrowthMentorDetails {
   mentorName: string | null
+  mentorEmail: string | null
+  mentorCode: string | null
 }
 
 /**
@@ -10,14 +12,22 @@ export interface GrowthMentorInfo {
  * Data flow:
  * studentUserId -> students (get students.id)
  *   -> mentor_students (ACTIVE, get mentor_id)
- *   -> mentors (get user_id)
- *   -> users (get name)
+ *   -> mentors (get user_id, mentor_code)
+ *   -> users (get name from single source of truth)
  */
 export async function fetchStudentGrowthMentor(studentUserId: string): Promise<string | null> {
+  const details = await fetchStudentGrowthMentorDetails(studentUserId)
+  return details?.mentorName || null
+}
+
+/**
+ * Fetches full Growth Mentor details (name, email, code) for a given student (users.id).
+ */
+export async function fetchStudentGrowthMentorDetails(studentUserId: string): Promise<GrowthMentorDetails | null> {
   if (!studentUserId) return null
 
   try {
-    // 1. Get student profile record
+    // 1. Get student profile record from students table
     const { data: studentRow, error: sErr } = await supabase
       .from('students')
       .select('id')
@@ -34,12 +44,12 @@ export async function fetchStudentGrowthMentor(studentUserId: string): Promise<s
       if (!userRow?.mentorId) return null
       const { data: mentor } = await supabase
         .from('users')
-        .select('name')
+        .select('name, email')
         .eq('id', userRow.mentorId)
         .eq('role', 'MENTOR')
         .eq('status', 'ACTIVE')
         .maybeSingle()
-      return mentor?.name || null
+      return mentor ? { mentorName: mentor.name || null, mentorEmail: mentor.email || null, mentorCode: null } : null
     }
 
     // 2. Find the ACTIVE mentor_students assignment
@@ -55,25 +65,28 @@ export async function fetchStudentGrowthMentor(studentUserId: string): Promise<s
     // 3. Get mentor record from mentors table
     const { data: mentorRow, error: mErr } = await supabase
       .from('mentors')
-      .select('user_id, status, name')
+      .select('user_id, mentor_code, status')
       .eq('id', assignment.mentor_id)
       .eq('status', 'ACTIVE')
       .maybeSingle()
 
     if (mErr || !mentorRow) return null
-    if (mentorRow.name) return mentorRow.name
 
-    // 4. Fallback: Get mentor name from users table
-    const { data: userRow, error: uErr } = await supabase
+    // 4. Source of truth for mentor's name and email: users table
+    const { data: mentorUser, error: uErr } = await supabase
       .from('users')
-      .select('name')
+      .select('name, email')
       .eq('id', mentorRow.user_id)
       .maybeSingle()
 
-    if (uErr || !userRow) return null
-    return userRow.name || null
+    if (uErr || !mentorUser) return null
+    return {
+      mentorName: mentorUser.name || null,
+      mentorEmail: mentorUser.email || null,
+      mentorCode: mentorRow.mentor_code || null,
+    }
   } catch (err) {
-    console.error('Unexpected error in fetchStudentGrowthMentor:', err)
+    console.error('Unexpected error in fetchStudentGrowthMentorDetails:', err)
     return null
   }
 }

@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
-  fetchStudentGrowthMentor,
+  fetchStudentGrowthMentorDetails,
   subscribeToStudentMentorUpdates,
 } from '@/lib/growthMentorService'
 
 export interface UseGrowthMentorResult {
   mentorName: string | null
+  mentorEmail: string | null
+  mentorCode: string | null
   isLoading: boolean
   error: string | null
   refetch: () => Promise<void>
@@ -16,12 +18,16 @@ export interface UseGrowthMentorResult {
  */
 export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResult {
   const [mentorName, setMentorName] = useState<string | null>(null)
+  const [mentorEmail, setMentorEmail] = useState<string | null>(null)
+  const [mentorCode, setMentorCode] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   const loadMentor = useCallback(async () => {
     if (!studentId) {
       setMentorName(null)
+      setMentorEmail(null)
+      setMentorCode(null)
       setIsLoading(false)
       return
     }
@@ -29,8 +35,10 @@ export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResul
     try {
       setIsLoading(true)
       setError(null)
-      const name = await fetchStudentGrowthMentor(studentId)
-      setMentorName(name)
+      const details = await fetchStudentGrowthMentorDetails(studentId)
+      setMentorName(details?.mentorName || null)
+      setMentorEmail(details?.mentorEmail || null)
+      setMentorCode(details?.mentorCode || null)
     } catch (err) {
       console.error('Failed to load Growth Mentor:', err)
       setError('Unable to retrieve Growth Mentor')
@@ -46,6 +54,8 @@ export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResul
       if (!studentId) {
         if (isMounted) {
           setMentorName(null)
+          setMentorEmail(null)
+          setMentorCode(null)
           setIsLoading(false)
         }
         return
@@ -56,13 +66,15 @@ export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResul
           setIsLoading(true)
           setError(null)
         }
-        const name = await fetchStudentGrowthMentor(studentId)
+        const details = await fetchStudentGrowthMentorDetails(studentId)
         if (isMounted) {
-          setMentorName(name)
+          setMentorName(details?.mentorName || null)
+          setMentorEmail(details?.mentorEmail || null)
+          setMentorCode(details?.mentorCode || null)
         }
       } catch (err) {
         if (isMounted) {
-          console.error('Failed to load Growth Mentor:', err)
+          console.error('Failed to load Growth Mentor on mount/change:', err)
           setError('Unable to retrieve Growth Mentor')
         }
       } finally {
@@ -90,6 +102,8 @@ export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResul
 
   return {
     mentorName,
+    mentorEmail,
+    mentorCode,
     isLoading,
     error,
     refetch: loadMentor,
