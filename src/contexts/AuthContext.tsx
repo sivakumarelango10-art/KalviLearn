@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase, signInWithGoogle } from '@/lib/supabase'
 import { verifyUserInDatabase, signOutUser, DbUser } from '@/lib/authService'
-import { fetchUserProgressFromCloud, uploadLocalProgressToCloud } from '@/lib/cloudSync'
-import { getUserState, hydrateStateFromCloud, resetUserState } from '@/lib/progress'
+import { fetchUserProgressFromCloud } from '@/lib/cloudSync'
+import { hydrateStateFromCloud, resetUserState } from '@/lib/progress'
 
 interface AuthContextType {
   user: DbUser | null
@@ -24,15 +24,13 @@ const LOCAL_USER_KEY = 'kalvi_active_user'
 
 async function syncUserData(userId: string) {
   try {
-    const localState = getUserState()
-    // 1. If student solved any problems offline/as guest, upload them to Supabase
-    if (localState.solvedSlugs && localState.solvedSlugs.length > 0) {
-      await uploadLocalProgressToCloud(userId, localState)
-    }
-    // 2. Fetch full progress, solved problems, best code, and submissions from Supabase
+    // Fetch full progress, solved problems, best code, and submissions from Supabase
     const cloudState = await fetchUserProgressFromCloud(userId)
-    if (cloudState) {
+    if (cloudState && (cloudState.solvedSlugs.length > 0 || Object.keys(cloudState.progress).length > 0)) {
       hydrateStateFromCloud(cloudState)
+    } else {
+      // Zero progress in database: reset local state so student starts 100% fresh
+      resetUserState()
     }
   } catch (err) {
     console.warn('Cross-device cloud synchronization error:', err)

@@ -47,7 +47,8 @@ export function normalizeProgressLanguage(
   return 'python'
 }
 
-const STORAGE_KEY = 'kalvi_learn_user_state_v1'
+const STORAGE_KEY = 'kalvi_learn_user_state_v2'
+const LEGACY_STORAGE_KEY = 'kalvi_learn_user_state_v1'
 const MAX_STORED_SUBMISSIONS = 50
 
 const defaultState: UserState = {
@@ -65,6 +66,9 @@ const defaultState: UserState = {
 }
 
 export function resetUserState() {
+  try {
+    localStorage.removeItem(LEGACY_STORAGE_KEY)
+  } catch {}
   saveUserState({
     xp: 0,
     streak: 1,
@@ -82,6 +86,11 @@ export function resetUserState() {
 
 export function getUserState(): UserState {
   try {
+    // Purge legacy storage if present to guarantee 100% fresh start
+    if (localStorage.getItem(LEGACY_STORAGE_KEY)) {
+      localStorage.removeItem(LEGACY_STORAGE_KEY)
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState
     const parsed = JSON.parse(raw)
