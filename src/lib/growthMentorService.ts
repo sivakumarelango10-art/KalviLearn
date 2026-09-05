@@ -1,57 +1,76 @@
-import { supabase } from './supabase'
+﻿import { supabase } from './supabase'
 
-/**
- * Result of fetching a student's assigned Growth Mentor
- */
 export interface GrowthMentorInfo {
   mentorName: string | null
 }
 
 /**
- * Fetches the assigned Growth Mentor for a given student directly from PostgreSQL.
+ * Fetches the assigned Growth Mentor name for a given student (users.id).
  *
  * Data flow:
- * studentId -> users (retrieve mentorId) -> users (retrieve mentor's name) -> return name
- *
- * Security:
- * Only the mentor for the requested studentId is queried; other students' assignments
- * are never fetched or exposed.
+ * studentUserId -> students (get students.id)
+ *   -> mentor_students (ACTIVE, get mentor_id)
+ *   -> mentors (get user_id)
+ *   -> users (get name)
  */
-export async function fetchStudentGrowthMentor(studentId: string): Promise<string | null> {
-  if (!studentId) return null
+export async function fetchStudentGrowthMentor(studentUserId: string): Promise<string | null> {
+  if (!studentUserId) return null
 
   try {
-    // 1. Fetch student's own record to find mentorId
-    const { data: student, error: studentError } = await supabase
-      .from('users')
-      .select('id, mentorId')
-      .eq('id', studentId)
+    // 1. Get student profile record
+    const { data: studentRow, error: sErr } = await supabase
+      .from('students')
+      .select('id')
+      .eq('user_id', studentUserId)
       .maybeSingle()
 
-    if (studentError) {
-      console.warn('Error fetching student mentorId:', studentError.message)
-      return null
+    if (sErr || !studentRow) {
+      // Fallback: try legacy users.mentorId path
+      const { data: userRow } = await supabase
+        .from('users')
+        .select('mentorId')
+        .eq('id', studentUserId)
+        .maybeSingle()
+      if (!userRow?.mentorId) return null
+      const { data: mentor } = await supabase
+        .from('users')
+        .select('name')
+        .eq('id', userRow.mentorId)
+        .eq('role', 'MENTOR')
+        .eq('status', 'ACTIVE')
+        .maybeSingle()
+      return mentor?.name || null
     }
 
-    if (!student || !student.mentorId) {
-      return null
-    }
-
-    // 2. Fetch the assigned mentor's name, strictly verifying the user is an active MENTOR
-    const { data: mentor, error: mentorError } = await supabase
-      .from('users')
-      .select('id, name')
-      .eq('id', student.mentorId)
-      .eq('role', 'MENTOR')
+    // 2. Find the ACTIVE mentor_students assignment
+    const { data: assignment, error: aErr } = await supabase
+      .from('mentor_students')
+      .select('mentor_id')
+      .eq('student_id', studentRow.id)
       .eq('status', 'ACTIVE')
       .maybeSingle()
 
-    if (mentorError) {
-      console.warn('Error fetching mentor name:', mentorError.message)
-      return null
-    }
+    if (aErr || !assignment) return null
 
-    return mentor?.name || null
+    // 3. Get mentor user_id from mentors table
+    const { data: mentorRow, error: mErr } = await supabase
+      .from('mentors')
+      .select('user_id, status')
+      .eq('id', assignment.mentor_id)
+      .eq('status', 'ACTIVE')
+      .maybeSingle()
+
+    if (mErr || !mentorRow) return null
+
+    // 4. Get mentor name from users table
+    const { data: userRow, error: uErr } = await supabase
+      .from('users')
+      .select('name')
+      .eq('id', mentorRow.user_id)
+      .maybeSingle()
+
+    if (uErr || !userRow) return null
+    return userRow.name || null
   } catch (err) {
     console.error('Unexpected error in fetchStudentGrowthMentor:', err)
     return null
@@ -59,37 +78,24 @@ export async function fetchStudentGrowthMentor(studentId: string): Promise<strin
 }
 
 /**
- * Sets up a real-time subscription on the users table filtered to the student's own record.
- * If an admin or mentor reassigns the student's mentor, this triggers onUpdate() automatically.
+ * Sets up a real-time subscription on the mentor_students table.
+ * Triggers onUpdate() if the student's assignment changes.
  */
-export function subscribeToStudentMentorUpdates(studentId: string, onUpdate: () => void): () => void {
-  if (!studentId) return () => {}
+export function subscribeToStudentMentorUpdates(studentUserId: string, onUpdate: () => void): () => void {
+  if (!studentUserId) return () => {}
 
   try {
     let debounceTimer: ReturnType<typeof setTimeout> | null = null
-
     const debouncedUpdate = () => {
       if (debounceTimer) clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => {
-        onUpdate()
-      }, 300)
+      debounceTimer = setTimeout(onUpdate, 300)
     }
 
-    const channelName = `student-mentor-${studentId}-${Date.now()}`
+    // Subscribe to mentor_students changes (any change to the table refreshes the student's view)
+    const channelName = `student-mentor-ms-${studentUserId}-${Date.now()}`
     const channel = supabase
       .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'users',
-          filter: `id=eq.${studentId}`,
-        },
-        () => {
-          debouncedUpdate()
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'mentor_students' }, debouncedUpdate)
       .subscribe()
 
     return () => {

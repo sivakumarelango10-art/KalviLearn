@@ -4,22 +4,28 @@ import {
   GraduationCap,
   Clock,
   CheckCircle2,
+  Users,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { fetchMentorRoster } from '@/lib/mentorService'
+import { fetchMentorRoster, getMentorProfile, MentorProfile } from '@/lib/mentorService'
 
 export const MentorProfilePage: React.FC = () => {
   const { user } = useAuth()
   const [studentCount, setStudentCount] = useState<number>(0)
+  const [mentorProfile, setMentorProfile] = useState<MentorProfile | null>(null)
 
   useEffect(() => {
     let isMounted = true
-    fetchMentorRoster(user?.id).then((students) => {
-      if (isMounted) setStudentCount(students.length)
+    Promise.all([
+      fetchMentorRoster(user?.id),
+      user?.id ? getMentorProfile(user.id) : Promise.resolve(null),
+    ]).then(([students, profile]) => {
+      if (isMounted) {
+        setStudentCount(students.length)
+        setMentorProfile(profile)
+      }
     }).catch(console.warn)
-    return () => {
-      isMounted = false
-    }
+    return () => { isMounted = false }
   }, [user?.id])
 
   const mentorName =
@@ -53,11 +59,16 @@ export const MentorProfilePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Active Mentor Record
           </span>
+          {mentorProfile && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-50 text-neutral-600 border border-neutral-200 text-xs font-mono font-semibold">
+              {mentorProfile.mentorCode}
+            </span>
+          )}
         </div>
       </div>
 
@@ -75,9 +86,15 @@ export const MentorProfilePage: React.FC = () => {
             Lead Mentor for Cohort 2026. Responsible for curriculum mastery across Belt 1, Belt 2, and Belt 3 algorithms.
           </p>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
-            <span>Cohort Size:</span>
+            <span className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5" />
+              Cohort Size:
+            </span>
             <span className="font-bold text-neutral-900">
-              {studentCount > 0 ? `${studentCount} Assigned Students` : 'Assigned Students Active'}
+              {mentorProfile
+                ? `${studentCount} / ${mentorProfile.maxStudents} Students`
+                : studentCount > 0 ? `${studentCount} Assigned Students` : '—'
+              }
             </span>
           </div>
         </div>

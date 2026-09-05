@@ -15,8 +15,10 @@ import {
   fetchMentorSubmissions,
   subscribeToMentorUpdates,
 } from '@/lib/mentorService'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const MentorSubmissionsPage: React.FC = () => {
+  const { user } = useAuth()
   const [submissions, setSubmissions] = useState<MentorSubmission[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -29,7 +31,7 @@ export const MentorSubmissionsPage: React.FC = () => {
 
     async function loadData() {
       try {
-        const data = await fetchMentorSubmissions(60)
+        const data = await fetchMentorSubmissions(user?.id, 60)
         if (isMounted) {
           setSubmissions(data)
           setIsLoading(false)

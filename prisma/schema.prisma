@@ -31,7 +31,7 @@ model Problem {
   inputFormat     String         @db.Text
   outputFormat    String         @db.Text
   explanation     String?        @db.Text
-  starterCodes    Json           // { "python": "...", "javascript": "...", "cpp": "...", "java": "..." }
+  starterCodes    Json
   testCases       TestCase[]
   submissions     Submission[]
   userProgress    UserProgress[]
@@ -41,14 +41,14 @@ model Problem {
 }
 
 model TestCase {
-  id              String    @id @default(uuid())
-  problemId       String
-  problem         Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  testIndex       Int       // 1 through 10
-  input           String    @db.Text
-  expectedOutput  String    @db.Text
-  explanation     String?   @db.Text
-  isHidden        Boolean   @default(false) // 1-3 false (visible), 4-10 true (hidden)
+  id             String  @id @default(uuid())
+  problemId      String
+  problem        Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testIndex      Int
+  input          String  @db.Text
+  expectedOutput String  @db.Text
+  explanation    String? @db.Text
+  isHidden       Boolean @default(false)
 
   @@unique([problemId, testIndex])
 }
@@ -63,39 +63,39 @@ model Module {
 }
 
 model LearningUnit {
-  id              String   @id @default(uuid())
-  moduleId        String
-  module          Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  order           Int
-  title           String
-  content         String   @db.Text
-  codingQuestion  String   @db.Text
-  inputFormat     String   @db.Text
-  outputFormat    String   @db.Text
-  examples        Json     // Array of examples
-  createdAt       DateTime @default(now())
+  id             String   @id @default(uuid())
+  moduleId       String
+  module         Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order          Int
+  title          String
+  content        String   @db.Text
+  codingQuestion String   @db.Text
+  inputFormat    String   @db.Text
+  outputFormat   String   @db.Text
+  examples       Json
+  createdAt      DateTime @default(now())
 
   @@index([moduleId])
 }
 
 model UserProgress {
-  id          String    @id @default(uuid())
-  userId      String    @default("guest")
-  problemId   String
-  problem     Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  status      String    // "SOLVED" | "ATTEMPTED"
-  language    String
-  bestCode    String    @db.Text
-  solvedAt    DateTime?
-  attempts    Int       @default(1)
-  xpEarned    Int       @default(0)
+  id        String    @id @default(uuid())
+  userId    String    @default("guest")
+  problemId String
+  problem   Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  status    String    // "SOLVED" | "ATTEMPTED"
+  language  String
+  bestCode  String    @db.Text
+  solvedAt  DateTime?
+  attempts  Int       @default(1)
+  xpEarned  Int       @default(0)
 
   @@unique([userId, problemId])
 }
 
 model Submission {
   id              String   @id @default(uuid())
-  userId      String    @default("guest")
+  userId          String   @default("guest")
   problemId       String
   problem         Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
   language        String
@@ -103,26 +103,86 @@ model Submission {
   status          String   // "PASSED" | "FAILED" | "ERROR"
   passedTests     Int
   totalTests      Int      @default(10)
-  testResults     Json     // Details for each test case execution
+  testResults     Json
   executionTimeMs Int
   createdAt       DateTime @default(now())
 
   @@index([userId, problemId])
 }
 
+// ─── Auth / Identity ──────────────────────────────────────────────────────────
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  role      String   @default("STUDENT") // "STUDENT" | "MENTOR" | "ADMIN"
-  status    String   @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
-  name      String?
-  mentorId  String?
-  mentor    User?    @relation("StudentMentor", fields: [mentorId], references: [id], onDelete: SetNull)
-  students  User[]   @relation("StudentMentor")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid())
+  email          String   @unique
+  role           String   @default("STUDENT") // "STUDENT" | "MENTOR" | "ADMIN"
+  status         String   @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
+  name           String?
+  // Legacy self-join kept for backward compatibility; new code uses mentor_students table
+  mentorId       String?
+  mentor         User?    @relation("StudentMentor", fields: [mentorId], references: [id], onDelete: SetNull)
+  students       User[]   @relation("StudentMentor")
+  // Dedicated profile relations
+  studentProfile Student?
+  mentorProfile  Mentor?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([mentorId])
   @@map("users")
+}
+
+// ─── Dedicated Profile Tables ─────────────────────────────────────────────────
+
+model Student {
+  id          String          @id @default(uuid())
+  userId      String          @unique @map("user_id")
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentCode String          @unique @map("student_code") @db.VarChar(20)
+  status      String          @default("ACTIVE") @db.VarChar(20)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  mentorLinks MentorStudent[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("students")
+}
+
+model Mentor {
+  id           String          @id @default(uuid())
+  userId       String          @unique @map("user_id")
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentorCode   String          @unique @map("mentor_code") @db.VarChar(20)
+  maxStudents  Int             @default(30) @map("max_students")
+  status       String          @default("ACTIVE") @db.VarChar(20)
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  studentLinks MentorStudent[]
+
+  @@index([userId])
+  @@map("mentors")
+}
+
+// ─── Mentor ↔ Student Relationship ───────────────────────────────────────────
+
+model MentorStudent {
+  id           String    @id @default(uuid())
+  mentorId     String    @map("mentor_id")
+  mentor       Mentor    @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  studentId    String    @map("student_id")
+  student      Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  // ACTIVE = current assignment; INACTIVE = historical (unassigned)
+  status       String    @default("ACTIVE") @db.VarChar(20)
+  assignedAt   DateTime  @default(now()) @map("assigned_at")
+  unassignedAt DateTime? @map("unassigned_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@unique([mentorId, studentId], name: "uq_mentor_student")
+  @@index([mentorId])
+  @@index([studentId])
+  @@index([status])
+  @@map("mentor_students")
 }
 
