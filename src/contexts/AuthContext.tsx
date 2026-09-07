@@ -103,12 +103,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!isMounted) return
 
         if (result.allowed && result.user) {
-          setUser(result.user)
+          const googleName = session.user.user_metadata?.full_name || session.user.user_metadata?.name
+          const resolvedUser: DbUser = {
+            ...result.user,
+            name: result.user.name || googleName || undefined,
+          }
+          setUser(resolvedUser)
           setAccessDenied(false)
           setDeniedEmail(null)
           setDeniedReason(null)
-          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
-          syncUserData(result.user.id).catch(console.warn)
+          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(resolvedUser))
+          syncUserData(resolvedUser.id).catch(console.warn)
         } else {
           // Access Denied: User not registered or inactive in database
           console.warn(`User ${email} rejected: ${result.reason || 'Account not registered'}`)
@@ -148,12 +153,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const result = await verifyUserInDatabase(email)
 
           if (result.allowed && result.user) {
-            setUser(result.user)
+            const googleName = session?.user?.user_metadata?.full_name || session?.user?.user_metadata?.name
+            const resolvedUser: DbUser = {
+              ...result.user,
+              name: result.user.name || googleName || undefined,
+            }
+            setUser(resolvedUser)
             setAccessDenied(false)
             setDeniedEmail(null)
             setDeniedReason(null)
-            localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
-            syncUserData(result.user.id).catch(console.warn)
+            localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(resolvedUser))
+            syncUserData(resolvedUser.id).catch(console.warn)
           } else {
             console.warn(`User ${email} access denied: ${result.reason || 'whitelist check'}`)
             await signOutUser()

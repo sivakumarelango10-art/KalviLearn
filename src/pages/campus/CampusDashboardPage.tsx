@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   Building2,
   Users,
@@ -31,6 +32,9 @@ import {
 } from '@/lib/campusManagerService'
 
 export const CampusDashboardPage: React.FC = () => {
+  const { user, isLoading: authLoading } = useAuth()
+  const navigate = useNavigate()
+
   const [metrics, setMetrics] = useState<CampusOverviewMetrics | null>(null)
   const [mentors, setMentors] = useState<CampusMentorStat[]>([])
   const [students, setStudents] = useState<CampusStudentStat[]>([])
@@ -38,7 +42,28 @@ export const CampusDashboardPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
+  // Enforce role safety: only CAMPUS_MANAGER users
+  useEffect(() => {
+    if (!authLoading && user && user.role !== 'CAMPUS_MANAGER') {
+      navigate(user.role === 'MENTOR' ? '/mentor' : '/dashboard', { replace: true })
+    }
+  }, [authLoading, user, navigate])
+
+  // Derive manager display name strictly from authenticated account data
+  const managerName =
+    user?.name?.trim() ||
+    (user?.email
+      ? user.email
+          .split('@')[0]
+          .split(/[._-]/)
+          .filter(Boolean)
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      : '')
+
   const loadData = async (showRefresh = false) => {
+    if (user && user.role !== 'CAMPUS_MANAGER') return
+
     if (showRefresh) setRefreshing(true)
     else setIsLoading(true)
     try {
@@ -65,7 +90,7 @@ export const CampusDashboardPage: React.FC = () => {
       loadData(false)
     })
     return () => unsubscribe()
-  }, [])
+  }, [user?.role])
 
   // Derived statistics
   const belt1Count = students.filter((s) => s.belt === 'Belt 1').length
@@ -125,9 +150,22 @@ export const CampusDashboardPage: React.FC = () => {
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               <span>Kalvi Learn Campus Management</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Campus Overview
-            </h1>
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white break-words">
+                {authLoading ? (
+                  <span className="inline-flex items-center gap-1 text-neutral-300">
+                    Welcome back<span className="animate-pulse">...</span>
+                  </span>
+                ) : managerName ? (
+                  `Welcome back, ${managerName}`
+                ) : (
+                  'Welcome back'
+                )}
+              </h1>
+              <p className="text-xs sm:text-sm font-medium text-neutral-400">
+                Campus Management Dashboard
+              </p>
+            </div>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
               Real-time telemetry across faculty guidance, student problem solving, authoritative 10-test-case evaluations, and curriculum velocity.
             </p>
