@@ -14,6 +14,7 @@ import {
   fetchCampusMentors,
   addCampusStudent,
   assignStudentMentor,
+  subscribeToCampusUpdates,
   type CampusStudentStat,
   type CampusMentorStat,
 } from '@/lib/campusManagerService'
@@ -59,6 +60,10 @@ export const CampusStudentsPage: React.FC = () => {
   useEffect(() => {
     document.title = 'Scholars Directory — Campus Manager'
     loadData()
+    const unsubscribe = subscribeToCampusUpdates(() => {
+      loadData()
+    })
+    return () => unsubscribe()
   }, [])
 
   // Filtered students

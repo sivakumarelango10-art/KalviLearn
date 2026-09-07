@@ -72,7 +72,7 @@ export const MentorSubmissionsPage: React.FC = () => {
 
     async function loadData() {
       try {
-        const data = await fetchMentorSubmissions(user?.id, 50, 0)
+        const data = await fetchMentorSubmissions(user?.id || user?.email, 50, 0)
         if (isMounted) {
           setSubmissions(data.submissions)
           setIsLoading(false)
@@ -93,7 +93,7 @@ export const MentorSubmissionsPage: React.FC = () => {
       isMounted = false
       unsubscribe()
     }
-  }, [user?.id])
+  }, [user?.id, user?.email])
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {

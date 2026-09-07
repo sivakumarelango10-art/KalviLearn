@@ -23,6 +23,7 @@ import {
   fetchCampusMentors,
   fetchCampusStudents,
   fetchRecentCampusSubmissions,
+  subscribeToCampusUpdates,
   type CampusOverviewMetrics,
   type CampusMentorStat,
   type CampusStudentStat,
@@ -60,6 +61,10 @@ export const CampusDashboardPage: React.FC = () => {
   useEffect(() => {
     document.title = 'Campus Dashboard — KalviLearn'
     loadData()
+    const unsubscribe = subscribeToCampusUpdates(() => {
+      loadData(false)
+    })
+    return () => unsubscribe()
   }, [])
 
   // Derived statistics

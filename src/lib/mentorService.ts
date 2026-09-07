@@ -188,12 +188,15 @@ function calculateStreak(dates: (string | Date)[]): number {
  */
 export async function getMentorProfile(mentorIdOrUserId: string): Promise<MentorProfile | null> {
   if (!mentorIdOrUserId) return null
-  const { data: mentor, error } = await supabase
+  const isEmail = mentorIdOrUserId.includes('@')
+  const query = supabase
     .from('mentors')
     .select('id, user_id, name, email, mentor_code, max_students, status')
-    .or(`id.eq.${mentorIdOrUserId},user_id.eq.${mentorIdOrUserId}`)
     .eq('status', 'ACTIVE')
-    .maybeSingle()
+
+  const { data: mentor, error } = isEmail
+    ? await query.ilike('email', mentorIdOrUserId.trim().toLowerCase()).maybeSingle()
+    : await query.or(`id.eq.${mentorIdOrUserId},user_id.eq.${mentorIdOrUserId},email.eq.${mentorIdOrUserId}`).maybeSingle()
 
   if (error || !mentor) return null
 

@@ -136,14 +136,14 @@ export const MentorStudentsPage: React.FC = () => {
 
   const loadData = useCallback(async () => {
     try {
-      const data = await fetchMentorRoster(user?.id)
+      const data = await fetchMentorRoster(user?.id || user?.email)
       setStudents(data)
       setIsLoading(false)
     } catch (err) {
       console.error('Error loading students:', err)
       setIsLoading(false)
     }
-  }, [user?.id])
+  }, [user?.id, user?.email])
 
   useEffect(() => {
     loadData()
