@@ -7,7 +7,6 @@ import {
   Loader2,
   AlertCircle,
   ChevronRight,
-  GraduationCap,
 } from 'lucide-react'
 import {
   fetchCampusMentors,
@@ -285,20 +284,40 @@ export const CampusMentorsPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Middle metrics: Student Count */}
-            <div className="pt-3 border-t border-neutral-100">
-              <div className="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100/80 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-red-50 text-[#ED2A2B] flex items-center justify-center border border-red-100 flex-shrink-0">
-                    <GraduationCap className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-semibold text-neutral-600">
-                    Total Students
+            {/* Middle metrics: Capacity & Performance */}
+            <div className="space-y-3 pt-3 border-t border-neutral-100">
+              {/* Capacity Bar */}
+              <div>
+                <div className="flex items-center justify-between text-xs font-semibold mb-1">
+                  <span className="text-neutral-600">Students Guidance</span>
+                  <span className="text-neutral-900 font-bold">
+                    {mentor.totalStudents} / {mentor.maxStudents} ({mentor.capacityPercent}%)
                   </span>
                 </div>
-                <span className="text-base font-extrabold text-neutral-900">
-                  {mentor.totalStudents} <span className="text-xs font-medium text-neutral-500">{mentor.totalStudents === 1 ? 'student' : 'students'}</span>
-                </span>
+                <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+                  <div
+                    style={{ width: `${mentor.capacityPercent}%` }}
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      mentor.capacityPercent >= 90
+                        ? 'bg-red-500'
+                        : mentor.capacityPercent >= 70
+                        ? 'bg-amber-500'
+                        : 'bg-neutral-900'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Performance Scores */}
+              <div className="grid grid-cols-2 gap-2 pt-1 text-center">
+                <div className="p-2.5 bg-neutral-50 rounded-xl">
+                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Pass Rate</span>
+                  <p className="text-sm font-extrabold text-emerald-600 mt-0.5">{mentor.avgPassRate}%</p>
+                </div>
+                <div className="p-2.5 bg-neutral-50 rounded-xl">
+                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Avg Solved</span>
+                  <p className="text-sm font-extrabold text-neutral-900 mt-0.5">{mentor.avgCohortSolved}</p>
+                </div>
               </div>
             </div>
 
@@ -348,24 +367,25 @@ export const CampusMentorsPage: React.FC = () => {
 
             {/* Drawer Body */}
             <div className="p-6 space-y-6 flex-1">
-              {/* 1. Mentor Information: Total Students */}
-              <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-red-50 text-[#ED2A2B] flex items-center justify-center border border-red-100 flex-shrink-0">
-                    <GraduationCap className="w-5 h-5" />
+              {/* 1. Mentor Information & Capacity */}
+              <div className="p-5 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-4">
+                <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
+                  Guidance Capacity & Performance
+                </h3>
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="p-3 bg-white rounded-xl shadow-2xs">
+                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Total Scholars</span>
+                    <p className="text-lg font-extrabold text-neutral-900 mt-0.5">{selectedMentor.totalStudents}</p>
                   </div>
-                  <div>
-                    <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                      Assigned Cohort
-                    </h3>
-                    <p className="text-sm font-bold text-neutral-800">
-                      Total Students
-                    </p>
+                  <div className="p-3 bg-white rounded-xl shadow-2xs">
+                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Capacity</span>
+                    <p className="text-lg font-extrabold text-purple-700 mt-0.5">{selectedMentor.capacityPercent}%</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl shadow-2xs">
+                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Pass Rate</span>
+                    <p className="text-lg font-extrabold text-emerald-600 mt-0.5">{selectedMentor.avgPassRate}%</p>
                   </div>
                 </div>
-                <span className="text-2xl font-extrabold text-neutral-900">
-                  {selectedMentor.totalStudents} <span className="text-xs font-medium text-neutral-500">{selectedMentor.totalStudents === 1 ? 'student' : 'students'}</span>
-                </span>
               </div>
 
               {/* 2. Students Under Guidance */}
