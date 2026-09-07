@@ -56,6 +56,44 @@ export const CampusMentorsPage: React.FC = () => {
     return () => unsubscribe()
   }, [])
 
+  // Lock background scrolling when drawer or modal is open
+  useEffect(() => {
+    if (!selectedMentor && !isAddModalOpen) return
+
+    const originalBodyOverflow = document.body.style.overflow
+    const originalBodyPaddingRight = document.body.style.paddingRight
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    document.body.style.overflow = 'hidden'
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    const mainEl = document.querySelector('main')
+    const originalMainOverflow = mainEl?.style.overflow ?? ''
+    if (mainEl) {
+      mainEl.style.overflow = 'hidden'
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (selectedMentor) setSelectedMentor(null)
+        else if (isAddModalOpen) setIsAddModalOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow
+      document.body.style.paddingRight = originalBodyPaddingRight
+      if (mainEl) {
+        mainEl.style.overflow = originalMainOverflow
+      }
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedMentor, isAddModalOpen])
+
   // Filter mentors
   const filteredMentors = useMemo(() => {
     return mentors.filter((m) => {
@@ -309,38 +347,60 @@ export const CampusMentorsPage: React.FC = () => {
 
       {/* ── Mentor Details Drawer ────────────────────────────────────────── */}
       {selectedMentor && (
-        <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200">
+        <div
+          className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200"
+          style={{ overscrollBehavior: 'contain' }}
+        >
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setSelectedMentor(null)}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
+            aria-hidden="true"
           />
 
-          {/* Drawer Content */}
-          <div className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-full flex flex-col overflow-y-auto animate-in slide-in-from-right duration-250">
-            {/* Drawer Header */}
-            <div className="p-6 border-b border-neutral-200 flex items-center justify-between sticky top-0 bg-white z-10">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-white font-bold flex items-center justify-center text-sm shadow-xs">
+          {/* Drawer Panel: Viewport height, flex column, overflow-hidden */}
+          <div
+            className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-full flex flex-col overflow-hidden animate-in slide-in-from-right duration-250"
+            style={{ overscrollBehavior: 'contain' }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mentor-drawer-title"
+          >
+            {/* 1. Fixed Header */}
+            <div
+              className="flex-shrink-0 p-6 border-b border-neutral-200 flex items-center justify-between bg-white z-10"
+              onTouchMove={(e) => e.preventDefault()}
+            >
+              <div className="flex items-center gap-3 min-w-0 pr-3">
+                <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-white font-bold flex items-center justify-center text-sm shadow-xs flex-shrink-0">
                   {selectedMentor.name.charAt(0)}
                 </div>
-                <div>
-                  <h2 className="text-lg font-extrabold text-neutral-900">{selectedMentor.name}</h2>
-                  <span className="text-xs text-neutral-500 font-mono">{selectedMentor.mentorCode} • {selectedMentor.email}</span>
+                <div className="min-w-0">
+                  <h2 id="mentor-drawer-title" className="text-lg font-extrabold text-neutral-900 truncate">
+                    {selectedMentor.name}
+                  </h2>
+                  <span className="text-xs text-neutral-500 font-mono block truncate">
+                    {selectedMentor.mentorCode} • {selectedMentor.email}
+                  </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedMentor(null)}
-                className="p-2 text-neutral-400 hover:text-neutral-800 rounded-xl hover:bg-neutral-100"
+                className="p-2 text-neutral-400 hover:text-neutral-800 rounded-xl hover:bg-neutral-100 flex-shrink-0 transition-colors"
+                aria-label="Close mentor details"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Drawer Body */}
-            <div className="p-6 space-y-6 flex-1">
-              {/* 1. Mentor Information: Assigned Cohort */}
+            {/* 2. Fixed Assigned Cohort Summary */}
+            <div
+              className="flex-shrink-0 px-6 pt-6 bg-white"
+              onTouchMove={(e) => e.preventDefault()}
+            >
               <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
@@ -351,64 +411,81 @@ export const CampusMentorsPage: React.FC = () => {
                   </p>
                 </div>
                 <span className="text-2xl font-extrabold text-neutral-900 font-mono">
-                  {selectedMentor.totalStudents} <span className="text-xs font-medium text-neutral-500">{selectedMentor.totalStudents === 1 ? 'student' : 'students'}</span>
+                  {selectedMentor.totalStudents}{' '}
+                  <span className="text-xs font-medium text-neutral-500">
+                    {selectedMentor.totalStudents === 1 ? 'student' : 'students'}
+                  </span>
                 </span>
               </div>
+            </div>
 
-              {/* 2. Students Under Guidance */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                    Students Under Guidance ({selectedMentor.students?.length || selectedMentor.totalStudents})
-                  </h3>
-                  <span className="text-[11px] text-neutral-500 font-mono">Real-time status</span>
-                </div>
-
-                {isLoadingDetails ? (
-                  <div className="p-8 text-center text-xs text-neutral-400 flex items-center justify-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Loading student roster...</span>
-                  </div>
-                ) : (
-                  <div className="divide-y divide-neutral-100 border border-neutral-200 rounded-2xl overflow-hidden">
-                    {(selectedMentor.students && selectedMentor.students.length > 0
-                      ? selectedMentor.students
-                      : [
-                          { id: '1', name: 'Prajith P S', belt: 'Belt 3', questionsSolved: 42, lastActive: '12 mins ago', status: 'ACTIVE' as const },
-                          { id: '2', name: 'Kavya Ramesh', belt: 'Belt 3', questionsSolved: 38, lastActive: '45 mins ago', status: 'ACTIVE' as const },
-                          { id: '3', name: 'Arjun Menon', belt: 'Belt 2', questionsSolved: 26, lastActive: '2 hours ago', status: 'ACTIVE' as const },
-                        ]
-                    ).map((studentItem) => (
-                      <div key={studentItem.id} className="p-3.5 bg-white hover:bg-neutral-50 flex items-center justify-between text-xs">
-                        <div className="space-y-0.5">
-                          <p className="font-bold text-neutral-900">{studentItem.name}</p>
-                          <span className="text-[11px] text-neutral-500 font-mono">
-                            Last Active: {studentItem.lastActive}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-700">
-                            {studentItem.belt}
-                          </span>
-                          <span className="font-bold text-neutral-900 font-mono">
-                            {studentItem.questionsSolved} solved
-                          </span>
-                          <span
-                            className={`w-2 h-2 rounded-full ${
-                              studentItem.status === 'ACTIVE'
-                                ? 'bg-emerald-500'
-                                : studentItem.status === 'STRUGGLING'
-                                ? 'bg-amber-500'
-                                : 'bg-neutral-300'
-                            }`}
-                            title={studentItem.status}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            {/* 3. Scrollable Student Section (Flex-1 column occupying remaining height) */}
+            <div className="flex-1 flex flex-col min-h-0 px-6 pt-5 pb-6">
+              {/* Section Header (Fixed) */}
+              <div
+                className="flex-shrink-0 flex items-center justify-between pb-3"
+                onTouchMove={(e) => e.preventDefault()}
+              >
+                <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                  Students Under Guidance ({selectedMentor.students?.length || selectedMentor.totalStudents})
+                </h3>
+                <span className="text-[11px] text-neutral-500 font-mono">Real-time status</span>
               </div>
+
+              {/* Student List Container (ONLY THIS AREA SCROLLS) */}
+              {isLoadingDetails ? (
+                <div className="flex-1 min-h-0 flex items-center justify-center p-8 text-center text-xs text-neutral-400 border border-neutral-200 rounded-2xl bg-neutral-50/50">
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  <span>Loading student roster...</span>
+                </div>
+              ) : (
+                <div
+                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs"
+                  style={{
+                    overscrollBehavior: 'contain',
+                    WebkitOverflowScrolling: 'touch',
+                  }}
+                >
+                  {(selectedMentor.students && selectedMentor.students.length > 0
+                    ? selectedMentor.students
+                    : [
+                        { id: '1', name: 'Prajith P S', belt: 'Belt 3', questionsSolved: 42, lastActive: '12 mins ago', status: 'ACTIVE' as const },
+                        { id: '2', name: 'Kavya Ramesh', belt: 'Belt 3', questionsSolved: 38, lastActive: '45 mins ago', status: 'ACTIVE' as const },
+                        { id: '3', name: 'Arjun Menon', belt: 'Belt 2', questionsSolved: 26, lastActive: '2 hours ago', status: 'ACTIVE' as const },
+                      ]
+                  ).map((studentItem) => (
+                    <div
+                      key={studentItem.id}
+                      className="p-3.5 bg-white hover:bg-neutral-50 flex items-center justify-between text-xs transition-colors"
+                    >
+                      <div className="space-y-0.5 min-w-0 pr-3">
+                        <p className="font-bold text-neutral-900 truncate">{studentItem.name}</p>
+                        <span className="text-[11px] text-neutral-500 font-mono block truncate">
+                          Last Active: {studentItem.lastActive}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5 flex-shrink-0">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-700 whitespace-nowrap">
+                          {studentItem.belt}
+                        </span>
+                        <span className="font-bold text-neutral-900 font-mono whitespace-nowrap">
+                          {studentItem.questionsSolved} solved
+                        </span>
+                        <span
+                          className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                            studentItem.status === 'ACTIVE'
+                              ? 'bg-emerald-500'
+                              : studentItem.status === 'STRUGGLING'
+                              ? 'bg-amber-500'
+                              : 'bg-neutral-300'
+                          }`}
+                          title={studentItem.status}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
