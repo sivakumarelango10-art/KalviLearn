@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Search,
   UserPlus,
@@ -36,6 +37,21 @@ export const CampusMentorsPage: React.FC = () => {
   // Mentor Details Drawer state
   const [selectedMentor, setSelectedMentor] = useState<CampusMentorStat | null>(null)
   const [isLoadingDetails, setIsLoadingDetails] = useState(false)
+  const studentListRef = useRef<HTMLDivElement>(null)
+
+  // Reset student roster scroll position when changing mentor
+  useEffect(() => {
+    if (studentListRef.current) {
+      studentListRef.current.scrollTop = 0
+    }
+  }, [selectedMentor?.id])
+
+  // Forward wheel scrolling from header/cohort card to the student roster container
+  const handleDrawerWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (studentListRef.current && !studentListRef.current.contains(e.target as Node)) {
+      studentListRef.current.scrollTop += e.deltaY
+    }
+  }
 
   const loadData = async () => {
     setIsLoading(true)
@@ -346,7 +362,7 @@ export const CampusMentorsPage: React.FC = () => {
       </div>
 
       {/* ── Mentor Details Drawer ────────────────────────────────────────── */}
-      {selectedMentor && (
+      {selectedMentor && createPortal(
         <div
           className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200"
           style={{ overscrollBehavior: 'contain' }}
@@ -355,24 +371,20 @@ export const CampusMentorsPage: React.FC = () => {
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setSelectedMentor(null)}
-            onWheel={(e) => e.preventDefault()}
-            onTouchMove={(e) => e.preventDefault()}
             aria-hidden="true"
           />
 
           {/* Drawer Panel: Viewport height, flex column, overflow-hidden */}
           <div
-            className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-full flex flex-col overflow-hidden animate-in slide-in-from-right duration-250"
+            className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-full max-h-screen flex flex-col overflow-hidden animate-in slide-in-from-right duration-250"
             style={{ overscrollBehavior: 'contain' }}
             role="dialog"
             aria-modal="true"
             aria-labelledby="mentor-drawer-title"
+            onWheel={handleDrawerWheel}
           >
             {/* 1. Fixed Header */}
-            <div
-              className="flex-shrink-0 p-6 border-b border-neutral-200 flex items-center justify-between bg-white z-10"
-              onTouchMove={(e) => e.preventDefault()}
-            >
+            <div className="flex-shrink-0 p-6 border-b border-neutral-200 flex items-center justify-between bg-white z-10">
               <div className="flex items-center gap-3 min-w-0 pr-3">
                 <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-white font-bold flex items-center justify-center text-sm shadow-xs flex-shrink-0">
                   {selectedMentor.name.charAt(0)}
@@ -389,7 +401,7 @@ export const CampusMentorsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedMentor(null)}
-                className="p-2 text-neutral-400 hover:text-neutral-800 rounded-xl hover:bg-neutral-100 flex-shrink-0 transition-colors"
+                className="p-2 text-neutral-400 hover:text-neutral-800 rounded-xl hover:bg-neutral-100 flex-shrink-0 transition-colors cursor-pointer"
                 aria-label="Close mentor details"
               >
                 <X className="w-5 h-5" />
@@ -397,10 +409,7 @@ export const CampusMentorsPage: React.FC = () => {
             </div>
 
             {/* 2. Fixed Assigned Cohort Summary */}
-            <div
-              className="flex-shrink-0 px-6 pt-6 bg-white"
-              onTouchMove={(e) => e.preventDefault()}
-            >
+            <div className="flex-shrink-0 px-6 pt-5 bg-white">
               <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
@@ -420,12 +429,9 @@ export const CampusMentorsPage: React.FC = () => {
             </div>
 
             {/* 3. Scrollable Student Section (Flex-1 column occupying remaining height) */}
-            <div className="flex-1 flex flex-col min-h-0 px-6 pt-5 pb-6">
+            <div className="flex-1 flex flex-col min-h-0 px-6 pt-4 pb-6">
               {/* Section Header (Fixed) */}
-              <div
-                className="flex-shrink-0 flex items-center justify-between pb-3"
-                onTouchMove={(e) => e.preventDefault()}
-              >
+              <div className="flex-shrink-0 flex items-center justify-between pb-3">
                 <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
                   Students Under Guidance ({selectedMentor.students?.length || selectedMentor.totalStudents})
                 </h3>
@@ -440,7 +446,8 @@ export const CampusMentorsPage: React.FC = () => {
                 </div>
               ) : (
                 <div
-                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs"
+                  ref={studentListRef}
+                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs custom-drawer-scrollbar"
                   style={{
                     overscrollBehavior: 'contain',
                     WebkitOverflowScrolling: 'touch',
@@ -488,11 +495,12 @@ export const CampusMentorsPage: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Add Mentor Modal ────────────────────────────────────────────── */}
-      {isAddModalOpen && (
+      {isAddModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6 animate-modal-pop">
             <div className="flex items-center justify-between">
@@ -586,7 +594,8 @@ export const CampusMentorsPage: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

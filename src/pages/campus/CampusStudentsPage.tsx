@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Search,
   UserPlus,
@@ -377,14 +378,14 @@ export const CampusStudentsPage: React.FC = () => {
       </div>
 
       {/* ── Student Details Drawer ────────────────────────────────────────── */}
-      {selectedStudent && (
+      {selectedStudent && createPortal(
         <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200">
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs"
             onClick={() => setSelectedStudent(null)}
           />
 
-          <div className="relative w-full max-w-lg bg-white shadow-2xl z-50 h-full flex flex-col overflow-y-auto animate-in slide-in-from-right duration-250">
+          <div className="relative w-full max-w-lg bg-white shadow-2xl z-50 h-full flex flex-col overflow-y-auto animate-in slide-in-from-right duration-250 custom-drawer-scrollbar">
             {/* Header */}
             <div className="p-6 border-b border-neutral-200 flex items-center justify-between sticky top-0 bg-white z-10">
               <div className="flex items-center gap-3">
@@ -496,11 +497,12 @@ export const CampusStudentsPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Add Student Modal with Mentor Selection ─────────────────────── */}
-      {isAddModalOpen && (
+      {isAddModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6 animate-modal-pop">
             <div className="flex items-center justify-between">
@@ -603,7 +605,8 @@ export const CampusStudentsPage: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

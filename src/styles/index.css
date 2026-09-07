@@ -178,6 +178,25 @@
   .interactive-tab {
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  /* Visible smooth scrollbars for drawer panels and lists */
+  .custom-drawer-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  .custom-drawer-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-drawer-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-drawer-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+  .custom-drawer-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
 }
 
 /* WCAG 2.1 Standard: Respect prefers-reduced-motion across the entire platform */
