@@ -18,7 +18,7 @@ interface GrowthMentorCardProps {
  */
 export const GrowthMentorCard: React.FC<GrowthMentorCardProps> = ({ className }) => {
   const { user } = useAuth()
-  const { mentorName, mentorCode, isLoading, error } = useGrowthMentor(user?.id)
+  const { mentorName, isLoading, error } = useGrowthMentor(user?.id)
 
   return (
     <div
@@ -44,11 +44,6 @@ export const GrowthMentorCard: React.FC<GrowthMentorCardProps> = ({ className })
           <div className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight">
             {mentorName}
           </div>
-          {mentorCode && (
-            <div className="text-xs font-mono font-medium text-neutral-500">
-              Mentor Code: {mentorCode}
-            </div>
-          )}
         </div>
       ) : (
         <div className="text-sm font-medium text-neutral-500">
