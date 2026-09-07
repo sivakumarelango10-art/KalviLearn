@@ -459,8 +459,8 @@ export const CampusDashboardPage: React.FC = () => {
                         {m.totalStudents} {m.totalStudents === 1 ? 'student' : 'students'}
                       </p>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap border border-emerald-100">
-                      {m.avgPassRate}% pass
+                    <span className="text-[10px] font-bold text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-full whitespace-nowrap">
+                      Active
                     </span>
                   </div>
                 ))}

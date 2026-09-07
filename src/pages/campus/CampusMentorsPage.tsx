@@ -284,25 +284,13 @@ export const CampusMentorsPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Middle metrics: Students Guidance & Performance */}
-            <div className="space-y-3 pt-3 border-t border-neutral-100">
-              <div className="flex items-center justify-between text-xs font-semibold p-2.5 bg-neutral-50 rounded-xl border border-neutral-100/80">
-                <span className="text-neutral-600">Students Guidance</span>
-                <span className="text-neutral-900 font-bold font-mono">
-                  {mentor.totalStudents} {mentor.totalStudents === 1 ? 'student' : 'students'}
+            {/* Middle metrics: Students Guidance */}
+            <div className="pt-3 border-t border-neutral-100">
+              <div className="flex items-center justify-between text-xs font-semibold p-3 bg-neutral-50 rounded-2xl border border-neutral-100/80">
+                <span className="text-neutral-600 font-medium">Students Guidance</span>
+                <span className="text-sm font-extrabold text-neutral-900 font-mono">
+                  {mentor.totalStudents} <span className="text-xs font-medium text-neutral-500">{mentor.totalStudents === 1 ? 'student' : 'students'}</span>
                 </span>
-              </div>
-
-              {/* Performance Scores */}
-              <div className="grid grid-cols-2 gap-2 pt-1 text-center">
-                <div className="p-2.5 bg-neutral-50 rounded-xl">
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Pass Rate</span>
-                  <p className="text-sm font-extrabold text-emerald-600 mt-0.5">{mentor.avgPassRate}%</p>
-                </div>
-                <div className="p-2.5 bg-neutral-50 rounded-xl">
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Avg Solved</span>
-                  <p className="text-sm font-extrabold text-neutral-900 mt-0.5">{mentor.avgCohortSolved}</p>
-                </div>
               </div>
             </div>
 
@@ -352,23 +340,19 @@ export const CampusMentorsPage: React.FC = () => {
 
             {/* Drawer Body */}
             <div className="p-6 space-y-6 flex-1">
-              {/* 1. Mentor Information: Cohort & Performance */}
-              <div className="p-5 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-4">
-                <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                  Guidance Cohort & Performance
-                </h3>
-                <div className="grid grid-cols-2 gap-3 text-center">
-                  <div className="p-3 bg-white rounded-xl shadow-2xs">
-                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Total Scholars</span>
-                    <p className="text-lg font-extrabold text-neutral-900 mt-0.5">
-                      {selectedMentor.totalStudents} {selectedMentor.totalStudents === 1 ? 'Student' : 'Students'}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl shadow-2xs">
-                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Pass Rate</span>
-                    <p className="text-lg font-extrabold text-emerald-600 mt-0.5">{selectedMentor.avgPassRate}%</p>
-                  </div>
+              {/* 1. Mentor Information: Assigned Cohort */}
+              <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
+                    Assigned Cohort
+                  </h3>
+                  <p className="text-sm font-bold text-neutral-800 mt-0.5">
+                    Total Students
+                  </p>
                 </div>
+                <span className="text-2xl font-extrabold text-neutral-900 font-mono">
+                  {selectedMentor.totalStudents} <span className="text-xs font-medium text-neutral-500">{selectedMentor.totalStudents === 1 ? 'student' : 'students'}</span>
+                </span>
               </div>
 
               {/* 2. Students Under Guidance */}

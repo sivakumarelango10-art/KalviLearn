@@ -132,10 +132,6 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
                 <span className="text-neutral-500 text-[10px] uppercase font-bold">Cohort XP</span>
                 <p className="font-extrabold text-amber-600">{leaderboard[0].cohortTotalXp.toLocaleString()}</p>
               </div>
-              <div>
-                <span className="text-neutral-500 text-[10px] uppercase font-bold">Pass Rate</span>
-                <p className="font-extrabold text-emerald-600">{leaderboard[0].passRate}%</p>
-              </div>
             </div>
           </div>
 
@@ -174,9 +170,7 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
                 <th className="py-3.5 px-6">Rank</th>
                 <th className="py-3.5 px-6">Mentor</th>
                 <th className="py-3.5 px-6">Assigned Students</th>
-                <th className="py-3.5 px-6">Avg Problems Solved</th>
                 <th className="py-3.5 px-6">Cohort Total XP</th>
-                <th className="py-3.5 px-6">Pass Rate</th>
                 <th className="py-3.5 px-6 text-right">Rating</th>
               </tr>
             </thead>
@@ -200,14 +194,8 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
                   <td className="py-4 px-6 font-semibold text-neutral-800">
                     {entry.assignedStudents} scholars
                   </td>
-                  <td className="py-4 px-6 font-semibold text-neutral-800 font-mono">
-                    {entry.avgCohortSolved} / student
-                  </td>
                   <td className="py-4 px-6 font-mono font-bold text-amber-600">
                     {entry.cohortTotalXp.toLocaleString()} XP
-                  </td>
-                  <td className="py-4 px-6 font-mono font-bold text-emerald-600">
-                    {entry.passRate}%
                   </td>
                   <td className="py-4 px-6 text-right">
                     <span
