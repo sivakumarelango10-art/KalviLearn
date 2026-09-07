@@ -36,6 +36,9 @@ export interface ExecuteResponse {
   success: boolean
   total: number
   passed: number
+  executed?: number
+  visibleCount?: number
+  hiddenCount?: number
   overallTimeMs: number
   status: ExecutionStatus
   error?: string
@@ -190,56 +193,16 @@ function checkCompilation(code: string, language: string): { ok: boolean; error?
 }
 
 /**
- * Executes a question's code against exactly 10 test cases.
+ * Executes a question's code against all configured test cases (exactly 10: 3 visible + 7 hidden).
+ * Both Run and Submit execute the full evaluation suite.
  * CRITICAL SECURITY GUARANTEE:
  * Hidden test case inputs, expected outputs, and actual outputs are NEVER returned to the client.
  */
 export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteResponse> {
-  const { questionSlug, language, code, isSubmit = true } = req
-
-  if (!code || !code.trim()) {
-    return {
-      success: false,
-      total: isSubmit ? 10 : 3,
-      passed: 0,
-      overallTimeMs: 0,
-      status: 'COMPILATION_ERROR',
-      error: 'Compilation Error',
-      message: 'Source code cannot be empty.',
-      testCases: [],
-    }
-  }
-
-  if (code.length > 65536) {
-    return {
-      success: false,
-      total: isSubmit ? 10 : 3,
-      passed: 0,
-      overallTimeMs: 0,
-      status: 'COMPILATION_ERROR',
-      error: 'Payload Too Large',
-      message: 'Submitted code exceeds the maximum allowed limit of 64KB.',
-      testCases: [],
-    }
-  }
-
-  // Pre-check for compilation/syntax errors
-  const compCheck = checkCompilation(code, language)
-  if (!compCheck.ok) {
-    return {
-      success: false,
-      total: isSubmit ? 10 : 3,
-      passed: 0,
-      overallTimeMs: 0,
-      status: 'COMPILATION_ERROR',
-      error: 'Compilation Error',
-      message: compCheck.error || 'Syntax / Compilation error detected in your code.',
-      testCases: [],
-    }
-  }
+  const { questionSlug, language, code, isSubmit: _isSubmit = true } = req
 
   interface ServerProblemItem {
-    testCases: Array<{ testIndex?: number; input: string; expectedOutput: string }>
+    testCases: Array<{ testIndex?: number; input: string; expectedOutput: string; isHidden?: boolean }>
   }
   const problemMap = serverTestCases as unknown as Record<string, ServerProblemItem>
 
@@ -253,11 +216,58 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     }
   }
 
+  const authoritativeTotal = problem?.testCases?.length || 10
+
+  if (!code || !code.trim()) {
+    return {
+      success: false,
+      total: authoritativeTotal,
+      passed: 0,
+      executed: 0,
+      overallTimeMs: 0,
+      status: 'COMPILATION_ERROR',
+      error: 'Compilation Error',
+      message: 'Source code cannot be empty.',
+      testCases: [],
+    }
+  }
+
+  if (code.length > 65536) {
+    return {
+      success: false,
+      total: authoritativeTotal,
+      passed: 0,
+      executed: 0,
+      overallTimeMs: 0,
+      status: 'COMPILATION_ERROR',
+      error: 'Payload Too Large',
+      message: 'Submitted code exceeds the maximum allowed limit of 64KB.',
+      testCases: [],
+    }
+  }
+
+  // Pre-check for compilation/syntax errors
+  const compCheck = checkCompilation(code, language)
+  if (!compCheck.ok) {
+    return {
+      success: false,
+      total: authoritativeTotal,
+      passed: 0,
+      executed: 0,
+      overallTimeMs: 0,
+      status: 'COMPILATION_ERROR',
+      error: 'Compilation Error',
+      message: compCheck.error || 'Syntax / Compilation error detected in your code.',
+      testCases: [],
+    }
+  }
+
   if (!problem) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: authoritativeTotal,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: 'SYSTEM_ERROR',
       error: 'Question Not Found',
@@ -271,8 +281,9 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   if (!testCases || testCases.length !== 10) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: testCases?.length || 10,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: 'SYSTEM_ERROR',
       error: 'Invalid Question Configuration',
@@ -281,8 +292,11 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     }
   }
 
-  const casesToExecute = isSubmit ? testCases : testCases.slice(0, 3)
-  const totalCount = isSubmit ? 10 : 3
+  // Both Run and Submit execute all authoritative test cases (all 10)
+  const casesToExecute = testCases
+  const totalCount = testCases.length
+  const visibleCount = 3
+  const hiddenCount = 7
 
   const startTime = performance.now()
   const sanitizedResults: ClientTestCaseResult[] = []
@@ -304,6 +318,9 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
         success: false,
         total: totalCount,
         passed: 0,
+        executed: i,
+        visibleCount,
+        hiddenCount,
         overallTimeMs: tcTime,
         status: 'COMPILATION_ERROR',
         error: 'Compilation Error',
@@ -370,6 +387,9 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     success: isAccepted,
     total: totalCount,
     passed: passedCount,
+    executed: casesToExecute.length,
+    visibleCount,
+    hiddenCount,
     overallTimeMs,
     status: executionStatus,
     message: isAccepted

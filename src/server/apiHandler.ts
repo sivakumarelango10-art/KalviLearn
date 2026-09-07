@@ -71,7 +71,7 @@ export default async function handler(
       success: false,
       error: 'Missing Parameters',
       message: 'questionSlug, language, and code are required.',
-      total: isSubmit ? 10 : 3,
+      total: 10,
       passed: 0,
       testCases: [],
     })
@@ -95,7 +95,7 @@ export default async function handler(
       success: false,
       error: 'Execution Error',
       message: msg,
-      total: isSubmit ? 10 : 3,
+      total: 10,
       passed: 0,
       testCases: [],
     })

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:api",
     "build:api": "esbuild src/server/apiHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/execute.js",
+    "test": "npx tsx scripts/test-evaluation-pipeline.ts",
     "preview": "vite preview"
   },
   "dependencies": {

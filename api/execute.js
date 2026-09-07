@@ -6542,12 +6542,24 @@ function checkCompilation(code, language) {
   return { ok: true };
 }
 async function executeQuestion(req) {
-  const { questionSlug, language, code, isSubmit = true } = req;
+  const { questionSlug, language, code, isSubmit: _isSubmit = true } = req;
+  const problemMap = serverTestCases_default;
+  let problem = problemMap[questionSlug];
+  if (!problem) {
+    const foundKey = Object.keys(problemMap).find(
+      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+    );
+    if (foundKey) {
+      problem = problemMap[foundKey];
+    }
+  }
+  const authoritativeTotal = problem?.testCases?.length || 10;
   if (!code || !code.trim()) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: authoritativeTotal,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: "COMPILATION_ERROR",
       error: "Compilation Error",
@@ -6558,8 +6570,9 @@ async function executeQuestion(req) {
   if (code.length > 65536) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: authoritativeTotal,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: "COMPILATION_ERROR",
       error: "Payload Too Large",
@@ -6571,8 +6584,9 @@ async function executeQuestion(req) {
   if (!compCheck.ok) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: authoritativeTotal,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: "COMPILATION_ERROR",
       error: "Compilation Error",
@@ -6580,21 +6594,12 @@ async function executeQuestion(req) {
       testCases: []
     };
   }
-  const problemMap = serverTestCases_default;
-  let problem = problemMap[questionSlug];
-  if (!problem) {
-    const foundKey = Object.keys(problemMap).find(
-      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
-    );
-    if (foundKey) {
-      problem = problemMap[foundKey];
-    }
-  }
   if (!problem) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: authoritativeTotal,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: "SYSTEM_ERROR",
       error: "Question Not Found",
@@ -6606,8 +6611,9 @@ async function executeQuestion(req) {
   if (!testCases || testCases.length !== 10) {
     return {
       success: false,
-      total: isSubmit ? 10 : 3,
+      total: testCases?.length || 10,
       passed: 0,
+      executed: 0,
       overallTimeMs: 0,
       status: "SYSTEM_ERROR",
       error: "Invalid Question Configuration",
@@ -6615,8 +6621,10 @@ async function executeQuestion(req) {
       testCases: []
     };
   }
-  const casesToExecute = isSubmit ? testCases : testCases.slice(0, 3);
-  const totalCount = isSubmit ? 10 : 3;
+  const casesToExecute = testCases;
+  const totalCount = testCases.length;
+  const visibleCount = 3;
+  const hiddenCount = 7;
   const startTime = performance.now();
   const sanitizedResults = [];
   let passedCount = 0;
@@ -6630,6 +6638,9 @@ async function executeQuestion(req) {
         success: false,
         total: totalCount,
         passed: 0,
+        executed: i,
+        visibleCount,
+        hiddenCount,
         overallTimeMs: tcTime,
         status: "COMPILATION_ERROR",
         error: "Compilation Error",
@@ -6686,6 +6697,9 @@ async function executeQuestion(req) {
     success: isAccepted,
     total: totalCount,
     passed: passedCount,
+    executed: casesToExecute.length,
+    visibleCount,
+    hiddenCount,
     overallTimeMs,
     status: executionStatus,
     message: isAccepted ? "All test cases passed successfully." : `${passedCount} of ${totalCount} test cases passed.`,
@@ -6747,7 +6761,7 @@ async function handler(req, res) {
       success: false,
       error: "Missing Parameters",
       message: "questionSlug, language, and code are required.",
-      total: isSubmit ? 10 : 3,
+      total: 10,
       passed: 0,
       testCases: []
     });
@@ -6770,7 +6784,7 @@ async function handler(req, res) {
       success: false,
       error: "Execution Error",
       message: msg,
-      total: isSubmit ? 10 : 3,
+      total: 10,
       passed: 0,
       testCases: []
     });

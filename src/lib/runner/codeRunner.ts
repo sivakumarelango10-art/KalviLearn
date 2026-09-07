@@ -101,10 +101,12 @@ export async function executeCode(
             isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
           }))
 
+          const authoritativeTotal = data.total || 10
+
           return {
-            passed: data.passed === (data.total || (isSubmit ? 10 : 3)),
+            passed: data.passed === authoritativeTotal,
             passedCount: data.passed,
-            totalCount: data.total || (isSubmit ? 10 : 3),
+            totalCount: authoritativeTotal,
             results: mappedResults,
             overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
           }
@@ -117,7 +119,7 @@ export async function executeCode(
         return {
           passed: false,
           passedCount: 0,
-          totalCount: isSubmit ? 10 : 3,
+          totalCount: 10,
           results: [],
           overallTimeMs: Math.round(performance.now() - startTime),
           compilationError: errData.message || 'Syntax or compilation error detected in your solution.',
@@ -171,7 +173,7 @@ export async function executeCode(
     apiErrorMessage = 'You are currently working offline. Please reconnect to the internet to submit code.'
   }
 
-  // If Run Code (not submit) and API was unavailable, fall back to client worker for immediate feedback
+  // If Run Code (not submit) and API was unavailable, fall back to client worker for immediate feedback on visible cases
   if (!isSubmit && clientVisibleCases && clientVisibleCases.length > 0) {
     const results: TestCaseExecution[] = []
     let passedCount = 0
@@ -198,10 +200,22 @@ export async function executeCode(
       })
     }
 
+    // Append placeholders for unexecuted hidden cases 4-10 (cannot be evaluated locally)
+    for (let hIdx = 4; hIdx <= 10; hIdx++) {
+      results.push({
+        testIndex: hIdx,
+        status: 'failed',
+        passed: false,
+        isHidden: true,
+        executionTimeMs: 0,
+        error: 'Hidden test case requires server connection to evaluate',
+      })
+    }
+
     return {
-      passed: passedCount === clientVisibleCases.length,
+      passed: false, // Cannot be fully passed without server evaluation of hidden cases
       passedCount,
-      totalCount: clientVisibleCases.length,
+      totalCount: 10,
       results,
       overallTimeMs: Math.round(performance.now() - startTime),
     }
@@ -211,7 +225,7 @@ export async function executeCode(
   return {
     passed: false,
     passedCount: 0,
-    totalCount: isSubmit ? 10 : 3,
+    totalCount: 10,
     results: [],
     overallTimeMs: Math.round(performance.now() - startTime),
     compilationError: apiErrorMessage || 'Code execution service is currently unavailable. Please try again.',

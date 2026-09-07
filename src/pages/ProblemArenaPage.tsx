@@ -89,6 +89,7 @@ export const ProblemArenaPage: React.FC = () => {
   const currentBelt = currentProblemData.belt
   const currentProblem = currentProblemData.problem
   const nextProblemSlug = currentProblemData.nextSlug
+  const authoritativeTotalCount = currentProblem.testCases?.length || 10
 
   // State
   const [activeTab, setActiveTab] = useState<'description' | 'submissions' | 'help'>('description')
@@ -96,6 +97,7 @@ export const ProblemArenaPage: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [testResults, setTestResults] = useState<TestCaseExecution[] | null>(null)
+  const [executionSummary, setExecutionSummary] = useState<{ passed: number; total: number; isSubmit: boolean } | null>(null)
   const [compilationError, setCompilationError] = useState<string | null>(null)
   const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
   const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
@@ -126,6 +128,7 @@ export const ProblemArenaPage: React.FC = () => {
     }
 
     setTestResults(null)
+    setExecutionSummary(null)
     setCompilationError(null)
     setShowSuccessModal(false)
     setSubmissionFailed(null)
@@ -214,14 +217,20 @@ export const ProblemArenaPage: React.FC = () => {
       if (result.compilationError) {
         setCompilationError(result.compilationError)
         setTestResults(null)
-        setSubmissionFailed(isSubmit ? { passed: 0, total: 10 } : null)
+        setExecutionSummary({ passed: 0, total: authoritativeTotalCount, isSubmit })
+        setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
         return
       }
 
       setTestResults(result.results)
+      setExecutionSummary({
+        passed: result.passedCount,
+        total: result.totalCount || authoritativeTotalCount,
+        isSubmit,
+      })
 
       if (isSubmit) {
-        if (result.passed && result.passedCount === 10) {
+        if (result.passed && result.passedCount === authoritativeTotalCount) {
           const totalTime = result.results.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || result.overallTimeMs || 0
           recordProblemSuccess(
             currentProblem.slug,
@@ -256,13 +265,13 @@ export const ProblemArenaPage: React.FC = () => {
             currentLanguage,
             code,
             result.passedCount,
-            10,
+            authoritativeTotalCount,
             result.overallTimeMs
           )
 
           setSubmissionFailed({
             passed: result.passedCount,
-            total: 10,
+            total: authoritativeTotalCount,
           })
 
           // Refresh recent submissions
@@ -280,7 +289,8 @@ export const ProblemArenaPage: React.FC = () => {
       const errMsg = err instanceof Error ? err.message : 'An unexpected execution error occurred.'
       setCompilationError(errMsg)
       setTestResults(null)
-      setSubmissionFailed(isSubmit ? { passed: 0, total: 10 } : null)
+      setExecutionSummary({ passed: 0, total: authoritativeTotalCount, isSubmit })
+      setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
     } finally {
       setIsRunning(false)
       setIsSubmitting(false)
@@ -611,7 +621,7 @@ export const ProblemArenaPage: React.FC = () => {
             </div>
           )}
 
-          {/* Test Cases Bottom Drawer (10 Test Cases: 3 Visible, 7 Hidden) */}
+          {/* Test Cases Bottom Drawer ({authoritativeTotalCount} Test Cases: 3 Visible, {authoritativeTotalCount - 3} Hidden) */}
           <div className="h-64 border-t border-neutral-800 bg-neutral-900 flex flex-col overflow-hidden">
             {/* Drawer Tabs */}
             <div className="h-10 bg-neutral-950 px-3 flex items-center justify-between border-b border-neutral-800 flex-shrink-0">
@@ -619,7 +629,7 @@ export const ProblemArenaPage: React.FC = () => {
                 <span className="text-xs font-semibold text-neutral-400 mr-1.5 flex-shrink-0">
                   Test Cases:
                 </span>
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((caseNum) => {
+                {Array.from({ length: authoritativeTotalCount }, (_, i) => i + 1).map((caseNum) => {
                   const isVisible = caseNum <= 3
                   const tcResult = testResults ? testResults[caseNum - 1] : null
                   const isPassed = tcResult ? tcResult.passed : null
@@ -652,23 +662,34 @@ export const ProblemArenaPage: React.FC = () => {
               <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
                 {isRunning || isSubmitting ? (
                   <span className="text-amber-400 flex items-center gap-1.5">
-                    <span className="animate-spin text-xs">⏳</span> Evaluating 10 Test Cases...
+                    <span className="animate-spin text-xs">⏳</span> Evaluating {authoritativeTotalCount} Test Cases...
                   </span>
                 ) : compilationError ? (
-                  <span className="text-red-400 font-semibold">Passed 0 / 10</span>
-                ) : testResults ? (
+                  <span className="text-red-400 font-semibold">Passed 0 / {authoritativeTotalCount}</span>
+                ) : executionSummary ? (
                   <span
                     className={cn(
                       'font-semibold',
-                      testResults.filter((t) => t.passed).length === testResults.length
+                      executionSummary.passed === executionSummary.total
                         ? 'text-emerald-400'
                         : 'text-amber-400'
                     )}
                   >
-                    Passed {testResults.filter((t) => t.passed).length} / {testResults.length}
+                    Passed {executionSummary.passed} / {executionSummary.total}
+                  </span>
+                ) : testResults ? (
+                  <span
+                    className={cn(
+                      'font-semibold',
+                      testResults.filter((t) => t.passed).length === authoritativeTotalCount
+                        ? 'text-emerald-400'
+                        : 'text-amber-400'
+                    )}
+                  >
+                    Passed {testResults.filter((t) => t.passed).length} / {authoritativeTotalCount}
                   </span>
                 ) : (
-                  <span className="text-neutral-500">Passed 0 / 10</span>
+                  <span className="text-neutral-500">Passed 0 / {authoritativeTotalCount}</span>
                 )}
               </div>
             </div>
