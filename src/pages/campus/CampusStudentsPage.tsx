@@ -58,7 +58,7 @@ export const CampusStudentsPage: React.FC = () => {
   }
 
   useEffect(() => {
-    document.title = 'Scholars Directory — Campus Manager'
+    document.title = 'Students Directory — Campus Manager'
     loadData()
     const unsubscribe = subscribeToCampusUpdates(() => {
       loadData()
@@ -66,25 +66,27 @@ export const CampusStudentsPage: React.FC = () => {
     return () => unsubscribe()
   }, [])
 
-  // Filtered students
+  // Filtered students (sorted alphabetically)
   const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
-      const normalizedSearch = search.toLowerCase()
-      const matchesSearch =
-        s.name.toLowerCase().includes(normalizedSearch) ||
-        s.email.toLowerCase().includes(normalizedSearch) ||
-        s.mentorName.toLowerCase().includes(normalizedSearch)
+    return students
+      .filter((s) => {
+        const normalizedSearch = search.toLowerCase()
+        const matchesSearch =
+          s.name.toLowerCase().includes(normalizedSearch) ||
+          s.email.toLowerCase().includes(normalizedSearch) ||
+          s.mentorName.toLowerCase().includes(normalizedSearch)
 
-      if (!matchesSearch) return false
-      if (beltFilter !== 'ALL' && s.belt !== beltFilter) return false
-      if (mentorFilter !== 'ALL') {
-        if (mentorFilter === 'UNASSIGNED' && s.mentorId) return false
-        if (mentorFilter !== 'UNASSIGNED' && s.mentorId !== mentorFilter) return false
-      }
-      if (statusFilter !== 'ALL' && s.status !== statusFilter) return false
+        if (!matchesSearch) return false
+        if (beltFilter !== 'ALL' && s.belt !== beltFilter) return false
+        if (mentorFilter !== 'ALL') {
+          if (mentorFilter === 'UNASSIGNED' && s.mentorId) return false
+          if (mentorFilter !== 'UNASSIGNED' && s.mentorId !== mentorFilter) return false
+        }
+        if (statusFilter !== 'ALL' && s.status !== statusFilter) return false
 
-      return true
-    })
+        return true
+      })
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
   }, [students, search, beltFilter, mentorFilter, statusFilter])
 
   // Handle Add Student submit
@@ -136,7 +138,7 @@ export const CampusStudentsPage: React.FC = () => {
       const res = await assignStudentMentor(selectedStudent.id, mentorId)
       if (res.success) {
         const assignedName = mentors.find((m) => m.id === mentorId)?.name || 'Unassigned'
-        setSuccessToast(`Scholar mentor updated to: ${assignedName}`)
+        setSuccessToast(`Student mentor updated to: ${assignedName}`)
         setTimeout(() => setSuccessToast(null), 4000)
         setSelectedStudent({
           ...selectedStudent,
@@ -156,7 +158,7 @@ export const CampusStudentsPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[450px] gap-3">
         <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-        <span className="text-sm font-semibold text-neutral-500">Loading enrolled scholars...</span>
+        <span className="text-sm font-semibold text-neutral-500">Loading enrolled students...</span>
       </div>
     )
   }
@@ -176,9 +178,9 @@ export const CampusStudentsPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ED2A2B]/10 text-[#ED2A2B] uppercase tracking-wider">
-              Scholars Directory
+              Students Directory
             </span>
-            <span className="text-xs text-neutral-400 font-medium">• {students.length} Total Scholars</span>
+            <span className="text-xs text-neutral-400 font-medium">• {students.length} Total Students</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight mt-1.5">
             Students Directory
@@ -211,7 +213,7 @@ export const CampusStudentsPage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by student name, email, code, or mentor..."
+              placeholder="Search by student name, email, or mentor..."
               className="w-full pl-10 pr-4 py-2 bg-neutral-50 border border-neutral-200/80 rounded-xl text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
             />
           </div>
@@ -266,7 +268,7 @@ export const CampusStudentsPage: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-neutral-50 border-b border-neutral-200/80 text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
               <tr>
-                <th className="py-3.5 px-6">Scholar</th>
+                <th className="py-3.5 px-6">Student's</th>
                 <th className="py-3.5 px-6">Assigned Mentor</th>
                 <th className="py-3.5 px-6">Belt Level</th>
                 <th className="py-3.5 px-6">Solved / XP</th>
@@ -508,7 +510,7 @@ export const CampusStudentsPage: React.FC = () => {
                 <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                   <UserPlus className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-neutral-900">Enroll New Scholar</h3>
+                <h3 className="text-lg font-bold text-neutral-900">Enroll New Student</h3>
               </div>
               <button
                 type="button"
@@ -528,7 +530,7 @@ export const CampusStudentsPage: React.FC = () => {
 
             <form onSubmit={handleAddStudentSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-bold text-neutral-700 mb-1">Scholar Full Name *</label>
+                <label className="block font-bold text-neutral-700 mb-1">Student Full Name *</label>
                 <input
                   type="text"
                   required
@@ -540,7 +542,7 @@ export const CampusStudentsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold text-neutral-700 mb-1">Scholar Email *</label>
+                <label className="block font-bold text-neutral-700 mb-1">Student Email *</label>
                 <input
                   type="email"
                   required

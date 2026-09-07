@@ -8,7 +8,7 @@ export const CampusStudentLeaderboardPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    document.title = 'Scholar Leaderboard — Campus Manager'
+    document.title = 'Student Leaderboard — Campus Manager'
     const load = async () => {
       setIsLoading(true)
       try {
@@ -37,7 +37,7 @@ export const CampusStudentLeaderboardPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ED2A2B]/10 text-[#ED2A2B] uppercase tracking-wider">
-              Scholar Recognition
+              Student Recognition
             </span>
             <span className="text-xs text-neutral-400 font-medium">• Campus Rankings</span>
           </div>
@@ -81,7 +81,7 @@ export const CampusStudentLeaderboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Top 3 Scholars Podium */}
+      {/* Top 3 Students Podium */}
       {leaderboard.length >= 3 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Rank 2 */}

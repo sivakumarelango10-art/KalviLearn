@@ -258,7 +258,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
 export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
   try {
     const [studentsRes, linksRes, progressRes, subsRes] = await Promise.all([
-      supabase.from('students').select('id, user_id, name, email, student_code, status, created_at'),
+      supabase.from('students').select('id, user_id, name, email, student_code, status, created_at').order('name', { ascending: true }),
       supabase.from('mentor_students').select('student_id, mentor_id, mentors(id, name)').eq('status', 'ACTIVE'),
       supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned'),
       supabase.from('Submission').select('id, userId, status, language, createdAt, passedTests, totalTests').order('createdAt', { ascending: false }),
@@ -374,7 +374,7 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
 
       return {
         id: s.id,
-        name: s.name || s.email?.split('@')[0].replace(/\./g, ' ') || 'Scholar',
+        name: s.name || s.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
         email: s.email || '',
         studentCode: s.student_code || `STU-${s.id.slice(0, 6)}`,
         belt,
@@ -389,7 +389,7 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
         mentorName: assignedMentor?.name || 'Unassigned',
         languageSolvedCounts,
       }
-    })
+    }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
   } catch (err) {
     console.error('Error in fetchCampusStudents:', err)
     return []
