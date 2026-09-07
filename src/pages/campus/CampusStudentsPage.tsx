@@ -33,7 +33,6 @@ export const CampusStudentsPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newName, setNewName] = useState('')
   const [newEmail, setNewEmail] = useState('')
-  const [newCode, setNewCode] = useState('')
   const [selectedMentorId, setSelectedMentorId] = useState<string>('NONE')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -74,7 +73,6 @@ export const CampusStudentsPage: React.FC = () => {
       const matchesSearch =
         s.name.toLowerCase().includes(normalizedSearch) ||
         s.email.toLowerCase().includes(normalizedSearch) ||
-        s.studentCode.toLowerCase().includes(normalizedSearch) ||
         s.mentorName.toLowerCase().includes(normalizedSearch)
 
       if (!matchesSearch) return false
@@ -92,7 +90,7 @@ export const CampusStudentsPage: React.FC = () => {
   // Handle Add Student submit
   const handleAddStudentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newName.trim() || !newEmail.trim() || !newCode.trim()) {
+    if (!newName.trim() || !newEmail.trim()) {
       setFormError('Please fill in all required fields.')
       return
     }
@@ -101,11 +99,12 @@ export const CampusStudentsPage: React.FC = () => {
     setFormError(null)
 
     try {
+      const autoCode = 'STU-' + Date.now().toString(36).toUpperCase()
       const mentorIdToAssign = selectedMentorId === 'NONE' ? null : selectedMentorId
       const res = await addCampusStudent({
         name: newName,
         email: newEmail,
-        studentCode: newCode,
+        studentCode: autoCode,
         mentorId: mentorIdToAssign,
       })
 
@@ -119,7 +118,6 @@ export const CampusStudentsPage: React.FC = () => {
       setIsAddModalOpen(false)
       setNewName('')
       setNewEmail('')
-      setNewCode('')
       setSelectedMentorId('NONE')
       await loadData()
     } catch (err: unknown) {
@@ -297,7 +295,7 @@ export const CampusStudentsPage: React.FC = () => {
                           {student.name}
                         </p>
                         <span className="text-[11px] text-neutral-400 font-mono">
-                          {student.studentCode} • {student.email}
+                          {student.email}
                         </span>
                       </div>
                     </div>
@@ -394,7 +392,7 @@ export const CampusStudentsPage: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-extrabold text-neutral-900">{selectedStudent.name}</h2>
-                  <span className="text-xs text-neutral-500 font-mono">{selectedStudent.studentCode} • {selectedStudent.email}</span>
+                  <span className="text-xs text-neutral-500 font-mono">{selectedStudent.email}</span>
                 </div>
               </div>
               <button
@@ -553,17 +551,6 @@ export const CampusStudentsPage: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block font-bold text-neutral-700 mb-1">Student Registration Code *</label>
-                <input
-                  type="text"
-                  required
-                  value={newCode}
-                  onChange={(e) => setNewCode(e.target.value)}
-                  placeholder="KLV-2026-009"
-                  className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl uppercase font-mono focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
-                />
-              </div>
 
               {/* Assign Mentor Dropdown */}
               <div>

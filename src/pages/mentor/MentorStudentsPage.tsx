@@ -164,13 +164,11 @@ export const MentorStudentsPage: React.FC = () => {
       .filter((student) => {
         const studentName = (student.name || '').toLowerCase()
         const studentEmail = (student.email || '').toLowerCase()
-        const studentCode = (student.studentCode || '').toLowerCase()
         const normalizedSearch = (search || '').toLowerCase()
 
         const matchesSearch =
           studentName.includes(normalizedSearch) ||
           studentEmail.includes(normalizedSearch) ||
-          studentCode.includes(normalizedSearch) ||
           (student.solvedProblems || []).some(
             (problem) => problem.title.toLowerCase().includes(normalizedSearch) || problem.slug.toLowerCase().includes(normalizedSearch)
           )
@@ -389,7 +387,7 @@ export const MentorStudentsPage: React.FC = () => {
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search student by name, email, student code, or problem..."
+            placeholder="Search student by name, email, or problem..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-900"
@@ -510,11 +508,6 @@ export const MentorStudentsPage: React.FC = () => {
                         <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[180px]">
                           {student.email}
                         </p>
-                        {student.studentCode && (
-                          <p className="text-[10px] text-neutral-500 font-mono font-medium mt-0.5">
-                            Code: {student.studentCode}
-                          </p>
-                        )}
                       </div>
                     </div>
 
@@ -844,7 +837,6 @@ export const MentorStudentsPage: React.FC = () => {
                   </div>
                   <p className="text-xs text-neutral-500 font-mono truncate">
                     {inspectingSolvedStudent.email}
-                    {inspectingSolvedStudent.studentCode && ` • ${inspectingSolvedStudent.studentCode}`}
                   </p>
                   <div className="flex items-center gap-3 pt-1 text-xs flex-wrap">
                     <span className="font-semibold text-neutral-700">
