@@ -46,13 +46,6 @@ export const CampusMentorsPage: React.FC = () => {
     }
   }, [selectedMentor?.id])
 
-  // Forward wheel scrolling from header/cohort card to the student roster container
-  const handleDrawerWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (studentListRef.current && !studentListRef.current.contains(e.target as Node)) {
-      studentListRef.current.scrollTop += e.deltaY
-    }
-  }
-
   const loadData = async () => {
     setIsLoading(true)
     try {
@@ -73,20 +66,25 @@ export const CampusMentorsPage: React.FC = () => {
   }, [])
 
   // Lock background scrolling when drawer or modal is open
+  const isDrawerOpen = Boolean(selectedMentor)
   useEffect(() => {
-    if (!selectedMentor && !isAddModalOpen) return
+    if (!isDrawerOpen && !isAddModalOpen) return
 
     const originalBodyOverflow = document.body.style.overflow
     const originalBodyPaddingRight = document.body.style.paddingRight
+    const originalHtmlOverflow = document.documentElement.style.overflow
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
 
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`
     }
 
     const mainEl = document.querySelector('main')
     const originalMainOverflow = mainEl?.style.overflow ?? ''
+    const savedMainScrollTop = mainEl?.scrollTop ?? 0
+
     if (mainEl) {
       mainEl.style.overflow = 'hidden'
     }
@@ -103,12 +101,14 @@ export const CampusMentorsPage: React.FC = () => {
     return () => {
       document.body.style.overflow = originalBodyOverflow
       document.body.style.paddingRight = originalBodyPaddingRight
+      document.documentElement.style.overflow = originalHtmlOverflow
       if (mainEl) {
         mainEl.style.overflow = originalMainOverflow
+        mainEl.scrollTop = savedMainScrollTop
       }
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedMentor, isAddModalOpen])
+  }, [isDrawerOpen, isAddModalOpen])
 
   // Filter mentors
   const filteredMentors = useMemo(() => {
@@ -366,11 +366,20 @@ export const CampusMentorsPage: React.FC = () => {
         <div
           className="fixed inset-0 z-50 flex justify-end h-screen h-[100dvh] w-screen overflow-hidden animate-in fade-in duration-200"
           style={{ overscrollBehavior: 'contain' }}
+          onWheel={(e) => e.stopPropagation()}
         >
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setSelectedMentor(null)}
+            onWheel={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+            }}
+            onTouchMove={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+            }}
             aria-hidden="true"
           />
 
@@ -381,9 +390,9 @@ export const CampusMentorsPage: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="mentor-drawer-title"
-            onWheel={handleDrawerWheel}
+            onWheel={(e) => e.stopPropagation()}
           >
-            {/* 1. Fixed Header */}
+            {/* 1. Drawer Header (FIXED) */}
             <div className="flex-shrink-0 p-6 border-b border-neutral-200 flex items-center justify-between bg-white z-10">
               <div className="flex items-center gap-3 min-w-0 pr-3">
                 <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-white font-bold flex items-center justify-center text-sm shadow-xs flex-shrink-0">
@@ -408,7 +417,7 @@ export const CampusMentorsPage: React.FC = () => {
               </button>
             </div>
 
-            {/* 2. Fixed Assigned Cohort Summary */}
+            {/* 2. Assigned Cohort (FIXED) */}
             <div className="flex-shrink-0 px-6 pt-5 bg-white">
               <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
                 <div>
@@ -428,17 +437,16 @@ export const CampusMentorsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. Scrollable Student Section (Flex-1 column occupying remaining height) */}
-            <div className="flex-1 flex flex-col min-h-0 px-6 pt-4 pb-6">
-              {/* Section Header (Fixed) */}
-              <div className="flex-shrink-0 flex items-center justify-between pb-3">
-                <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                  Students Under Guidance ({selectedMentor.students?.length || selectedMentor.totalStudents})
-                </h3>
-                <span className="text-[11px] text-neutral-500 font-mono">Real-time status</span>
-              </div>
+            {/* 3. Students Heading (FIXED) */}
+            <div className="flex-shrink-0 px-6 pt-4 pb-3 flex items-center justify-between bg-white">
+              <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                Students Under Guidance ({selectedMentor.students?.length || selectedMentor.totalStudents})
+              </h3>
+              <span className="text-[11px] text-neutral-500 font-mono">Real-time status</span>
+            </div>
 
-              {/* Student List Container (ONLY THIS AREA SCROLLS) */}
+            {/* 4. Student List (ONLY SCROLLABLE AREA) */}
+            <div className="flex-1 min-h-0 px-6 pb-6 flex flex-col">
               {isLoadingDetails ? (
                 <div className="flex-1 min-h-0 flex items-center justify-center p-8 text-center text-xs text-neutral-400 border border-neutral-200 rounded-2xl bg-neutral-50/50">
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -447,7 +455,7 @@ export const CampusMentorsPage: React.FC = () => {
               ) : (
                 <div
                   ref={studentListRef}
-                  className="flex-1 min-h-0 max-h-[calc(100dvh-260px)] overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs custom-drawer-scrollbar"
+                  className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs custom-drawer-scrollbar"
                   style={{
                     overscrollBehavior: 'contain',
                     WebkitOverflowScrolling: 'touch',
