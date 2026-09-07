@@ -10,9 +10,12 @@ import {
   fetchCampusOverviewMetrics,
   fetchCampusMentors,
   fetchCampusStudents,
+  fetchCampusDetailedAnalytics,
+  subscribeToCampusUpdates,
   type CampusOverviewMetrics,
   type CampusMentorStat,
   type CampusStudentStat,
+  type CampusDetailedAnalytics,
 } from '@/lib/campusManagerService'
 
 type AnalyticsTab = 'student' | 'mentor' | 'learning' | 'activity'
@@ -22,26 +25,45 @@ export const CampusAnalyticsPage: React.FC = () => {
   const [metrics, setMetrics] = useState<CampusOverviewMetrics | null>(null)
   const [mentors, setMentors] = useState<CampusMentorStat[]>([])
   const [students, setStudents] = useState<CampusStudentStat[]>([])
+  const [detailed, setDetailed] = useState<CampusDetailedAnalytics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     document.title = 'Campus Analytics — KalviLearn'
+    let isMounted = true
+
     const load = async () => {
-      setIsLoading(true)
       try {
-        const [m, mentorsData, studentsData] = await Promise.all([
+        const [m, mentorsData, studentsData, detailedData] = await Promise.all([
           fetchCampusOverviewMetrics(),
           fetchCampusMentors(),
           fetchCampusStudents(),
+          fetchCampusDetailedAnalytics(),
         ])
-        setMetrics(m)
-        setMentors(mentorsData)
-        setStudents(studentsData)
-      } finally {
-        setIsLoading(false)
+        if (isMounted) {
+          setMetrics(m)
+          setMentors(mentorsData)
+          setStudents(studentsData)
+          setDetailed(detailedData)
+          setIsLoading(false)
+        }
+      } catch (err) {
+        console.error('Error loading analytics:', err)
+        if (isMounted) setIsLoading(false)
       }
     }
+
     load()
+
+    // 100% Live real-time database update subscription
+    const unsubscribe = subscribeToCampusUpdates(() => {
+      load()
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
   }, [])
 
   if (isLoading) {
@@ -53,6 +75,10 @@ export const CampusAnalyticsPage: React.FC = () => {
     )
   }
 
+  const activeStudentsCount = students.filter((s) => s.status === 'ACTIVE').length
+  const strugglingStudentsCount = students.filter((s) => s.status === 'STRUGGLING').length
+  const avgXpPerStudent = Math.round((metrics?.totalXpDistributed ?? 0) / Math.max(1, students.length))
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
       {/* Header */}
@@ -61,7 +87,7 @@ export const CampusAnalyticsPage: React.FC = () => {
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ED2A2B]/10 text-[#ED2A2B] uppercase tracking-wider">
             Campus Intelligence
           </span>
-          <span className="text-xs text-neutral-400 font-medium">• Aggregated Data</span>
+          <span className="text-xs text-neutral-400 font-medium">• Live Telemetry</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
           Campus Analytics Hub
@@ -131,17 +157,17 @@ export const CampusAnalyticsPage: React.FC = () => {
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-2">
-              <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">Active Scholars</span>
+              <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">Active Students</span>
               <p className="text-3xl font-extrabold text-neutral-900">
-                {students.filter((s) => s.status === 'ACTIVE').length} / {students.length}
+                {activeStudentsCount} / {students.length}
               </p>
-              <span className="text-xs text-emerald-600 font-semibold">86% Daily Active Ratio</span>
+              <span className="text-xs text-emerald-600 font-semibold">{detailed?.dailyActiveRatio ?? 0}% Daily Active Ratio</span>
             </div>
 
             <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-2">
               <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">Avg XP per Student</span>
               <p className="text-3xl font-extrabold text-amber-600">
-                {Math.round((metrics?.totalXpDistributed || 52400) / Math.max(1, students.length))} XP
+                {avgXpPerStudent} XP
               </p>
               <span className="text-xs text-neutral-500 font-medium">Over 50 XP awarded per passed question</span>
             </div>
@@ -149,7 +175,7 @@ export const CampusAnalyticsPage: React.FC = () => {
             <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-2">
               <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">Need Guidance</span>
               <p className="text-3xl font-extrabold text-red-600">
-                {students.filter((s) => s.status === 'STRUGGLING').length}
+                {strugglingStudentsCount}
               </p>
               <span className="text-xs text-neutral-500 font-medium">Flagged for mentor review</span>
             </div>
@@ -161,31 +187,31 @@ export const CampusAnalyticsPage: React.FC = () => {
             <div className="space-y-5">
               <div>
                 <div className="flex justify-between text-xs font-bold text-neutral-800 mb-1.5">
-                  <span>Belt 1: Foundations (25 Problems)</span>
-                  <span>96% Scholars Enrolled / Completed</span>
+                  <span>Belt 1: Foundations</span>
+                  <span>{detailed?.beltProgression.belt1Percent ?? 0}% Students Enrolled / Solved ({detailed?.beltProgression.belt1Enrolled ?? 0} students)</span>
                 </div>
                 <div className="w-full h-3 bg-neutral-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 rounded-full" style={{ width: '96%' }} />
+                  <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${detailed?.beltProgression.belt1Percent ?? 0}%` }} />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs font-bold text-neutral-800 mb-1.5">
-                  <span>Belt 2: Core Data Structures (30 Problems)</span>
-                  <span>72% Scholars Enrolled / Completed</span>
+                  <span>Belt 2: Core Data Structures</span>
+                  <span>{detailed?.beltProgression.belt2Percent ?? 0}% Students Enrolled / Solved ({detailed?.beltProgression.belt2Enrolled ?? 0} students)</span>
                 </div>
                 <div className="w-full h-3 bg-neutral-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500 rounded-full" style={{ width: '72%' }} />
+                  <div className="h-full bg-amber-500 rounded-full transition-all duration-500" style={{ width: `${detailed?.beltProgression.belt2Percent ?? 0}%` }} />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs font-bold text-neutral-800 mb-1.5">
-                  <span>Belt 3: Advanced Algorithms (30 Problems)</span>
-                  <span>41% Scholars Enrolled / Completed</span>
+                  <span>Belt 3: Advanced Algorithms</span>
+                  <span>{detailed?.beltProgression.belt3Percent ?? 0}% Students Enrolled / Solved ({detailed?.beltProgression.belt3Enrolled ?? 0} students)</span>
                 </div>
                 <div className="w-full h-3 bg-neutral-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 rounded-full" style={{ width: '41%' }} />
+                  <div className="h-full bg-red-500 rounded-full transition-all duration-500" style={{ width: `${detailed?.beltProgression.belt3Percent ?? 0}%` }} />
                 </div>
               </div>
             </div>
@@ -243,53 +269,39 @@ export const CampusAnalyticsPage: React.FC = () => {
       {activeTab === 'learning' && (
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/80 text-center space-y-1">
-              <span className="text-[11px] font-bold text-blue-600 uppercase">Python</span>
-              <p className="text-2xl font-extrabold text-neutral-900">62%</p>
-              <span className="text-[10px] text-neutral-400">Primary Track</span>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/80 text-center space-y-1">
-              <span className="text-[11px] font-bold text-amber-600 uppercase">Java</span>
-              <p className="text-2xl font-extrabold text-neutral-900">18%</p>
-              <span className="text-[10px] text-neutral-400">OOP & Systems</span>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/80 text-center space-y-1">
-              <span className="text-[11px] font-bold text-purple-600 uppercase">C++</span>
-              <p className="text-2xl font-extrabold text-neutral-900">12%</p>
-              <span className="text-[10px] text-neutral-400">DSA Speed</span>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/80 text-center space-y-1">
-              <span className="text-[11px] font-bold text-emerald-600 uppercase">Node.js</span>
-              <p className="text-2xl font-extrabold text-neutral-900">8%</p>
-              <span className="text-[10px] text-neutral-400">Full-Stack Track</span>
-            </div>
+            {(detailed?.languages || []).map((lang) => (
+              <div key={lang.language} className="bg-white p-5 rounded-2xl border border-neutral-200/80 text-center space-y-1">
+                <span className={`text-[11px] font-bold ${lang.color} uppercase`}>{lang.label}</span>
+                <p className="text-2xl font-extrabold text-neutral-900">{lang.percentage}%</p>
+                <span className="text-[10px] text-neutral-400 block">{lang.count} submissions • {lang.trackLabel}</span>
+              </div>
+            ))}
           </div>
 
           <div className="bg-white p-7 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h3 className="text-base font-bold text-neutral-900">Top Problem Bottlenecks (Lowest Pass Rates)</h3>
-            <div className="divide-y divide-neutral-100 text-xs">
-              <div className="py-3 flex items-center justify-between">
-                <div>
-                  <p className="font-bold text-neutral-900">LRU Cache Implementation</p>
-                  <span className="text-[11px] text-neutral-400">Belt 3 • Advanced Algorithms</span>
-                </div>
-                <span className="font-bold text-red-600 font-mono">68.4% Pass Rate</span>
-              </div>
-              <div className="py-3 flex items-center justify-between">
-                <div>
-                  <p className="font-bold text-neutral-900">Longest Palindromic Substring</p>
-                  <span className="text-[11px] text-neutral-400">Belt 2 • Core Data Structures</span>
-                </div>
-                <span className="font-bold text-amber-600 font-mono">74.2% Pass Rate</span>
-              </div>
-              <div className="py-3 flex items-center justify-between">
-                <div>
-                  <p className="font-bold text-neutral-900">Merge K Sorted Lists</p>
-                  <span className="text-[11px] text-neutral-400">Belt 3 • Advanced Algorithms</span>
-                </div>
-                <span className="font-bold text-amber-600 font-mono">77.5% Pass Rate</span>
-              </div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-neutral-900">Top Problem Bottlenecks (Lowest Pass Rates)</h3>
+              <span className="text-xs text-neutral-400 font-mono">Live Submissions</span>
             </div>
+            {(!detailed?.bottlenecks || detailed.bottlenecks.length === 0) ? (
+              <div className="p-6 text-center text-xs text-neutral-500 bg-neutral-50 rounded-2xl border border-neutral-100">
+                No problem bottlenecks recorded yet. As students submit code, pass rates will automatically rank here in real-time.
+              </div>
+            ) : (
+              <div className="divide-y divide-neutral-100 text-xs">
+                {detailed.bottlenecks.map((item) => (
+                  <div key={item.id} className="py-3 flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-neutral-900">{item.title}</p>
+                      <span className="text-[11px] text-neutral-400">{item.belt} • {item.totalSubmissions} attempts</span>
+                    </div>
+                    <span className={`font-bold font-mono ${item.passRate < 70 ? 'text-red-600' : item.passRate < 85 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                      {item.passRate}% Pass Rate
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -298,24 +310,27 @@ export const CampusAnalyticsPage: React.FC = () => {
       {activeTab === 'activity' && (
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="bg-white p-7 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h3 className="text-base font-bold text-neutral-900">Peak Campus Coding Hours</h3>
-            <p className="text-xs text-neutral-500">Hourly volume of code executions across the campus</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">Peak Campus Coding Hours</h3>
+                <p className="text-xs text-neutral-500">Hourly volume of code executions across the campus</p>
+              </div>
+              <span className="text-xs text-neutral-400 font-mono">Live Telemetry</span>
+            </div>
             <div className="grid grid-cols-6 sm:grid-cols-12 gap-2 pt-2">
-              {['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM'].map((hour, i) => {
-                const heights = [20, 45, 80, 95, 60, 50, 75, 90, 100, 85, 70, 40]
-                return (
-                  <div key={hour} className="flex flex-col items-center gap-2">
-                    <div className="w-full bg-neutral-100 rounded-lg h-32 flex items-end p-1">
-                      <div
-                        style={{ height: `${heights[i]}%` }}
-                        className="w-full bg-[#ED2A2B] rounded-md transition-all duration-500"
-                        title={`${hour}: ${heights[i]}% activity`}
-                      />
-                    </div>
-                    <span className="text-[10px] font-mono text-neutral-500">{hour}</span>
+              {(detailed?.hourlyActivity || []).map((h) => (
+                <div key={h.hourLabel} className="flex flex-col items-center gap-2">
+                  <div className="w-full bg-neutral-100 rounded-lg h-32 flex items-end p-1">
+                    <div
+                      style={{ height: `${h.percentage}%` }}
+                      className="w-full bg-[#ED2A2B] rounded-md transition-all duration-500 hover:opacity-80"
+                      title={`${h.hourLabel}: ${h.volume} submission${h.volume === 1 ? '' : 's'}`}
+                    />
                   </div>
-                )
-              })}
+                  <span className="text-[10px] font-mono text-neutral-500">{h.hourLabel}</span>
+                  <span className="text-[9px] font-mono font-bold text-neutral-400">{h.volume}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

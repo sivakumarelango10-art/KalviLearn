@@ -211,7 +211,7 @@ export const CampusMentorsPage: React.FC = () => {
             Mentors Directory
           </h1>
           <p className="text-sm text-neutral-500 max-w-2xl mt-1">
-            Oversee assigned student cohorts, guidance capacity, and scholar progression across all campus mentors.
+            Oversee assigned student cohorts, guidance capacity, and student progression across all campus mentors.
           </p>
         </div>
 

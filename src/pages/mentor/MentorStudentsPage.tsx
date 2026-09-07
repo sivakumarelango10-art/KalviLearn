@@ -94,7 +94,7 @@ export const MentorStudentsPage: React.FC = () => {
   const [inspectingSolvedStudent, setInspectingSolvedStudent] = useState<MentorStudent | null>(null)
   const [modalLangFilter, setModalLangFilter] = useState<LanguageKey>('all')
 
-  // Add Scholar Modal State
+  // Add Student Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newName, setNewName] = useState('')
   const [newEmail, setNewEmail] = useState('')

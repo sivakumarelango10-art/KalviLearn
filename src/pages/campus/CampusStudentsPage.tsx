@@ -271,7 +271,7 @@ export const CampusStudentsPage: React.FC = () => {
                     setReassignMentorId(student.mentorId || 'NONE')
                   }}
                 >
-                  {/* Scholar info */}
+                  {/* Student info */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
@@ -369,7 +369,7 @@ export const CampusStudentsPage: React.FC = () => {
 
             {/* Content */}
             <div className="p-6 space-y-6 flex-1 text-xs">
-              {/* 1. Scholar Snapshot */}
+              {/* 1. Student Snapshot */}
               <div className="p-5 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-4">
                 <h3 className="font-bold text-neutral-400 uppercase tracking-wider text-[11px]">
                   Learning Performance

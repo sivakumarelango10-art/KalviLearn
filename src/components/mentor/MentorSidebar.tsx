@@ -140,7 +140,7 @@ export const MentorSidebar: React.FC<MentorSidebarProps> = ({ className, onClose
           </p>
           <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
             <UserCheck className="w-3 h-3 flex-shrink-0" />
-            <span>All 2 scholars on track</span>
+            <span>All students on track</span>
           </div>
         </div>
       </div>

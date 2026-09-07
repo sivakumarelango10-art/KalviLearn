@@ -84,7 +84,7 @@ export const CampusProfilePage: React.FC = () => {
             Kalvi Learn — Campus Administration
           </h3>
           <p className="text-xs text-neutral-500 leading-relaxed">
-            Executive oversight across enrolled scholars, faculty mentors, and real-time curriculum progress.
+            Executive oversight across enrolled students, faculty mentors, and real-time curriculum progress.
           </p>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
             <span className="flex items-center gap-1">
@@ -92,7 +92,7 @@ export const CampusProfilePage: React.FC = () => {
               Campus Cohort:
             </span>
             <span className="font-bold text-neutral-900">
-              {metrics.totalStudents} Scholars • {metrics.totalMentors} Mentors
+              {metrics.totalStudents} Students • {metrics.totalMentors} Mentors
             </span>
           </div>
         </div>
@@ -126,7 +126,7 @@ export const CampusProfilePage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-            <span className="text-neutral-700 font-medium">Real-time oversight of all enrolled scholars</span>
+            <span className="text-neutral-700 font-medium">Real-time oversight of all enrolled students</span>
           </div>
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />

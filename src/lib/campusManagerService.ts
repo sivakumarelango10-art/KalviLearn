@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { normalizeProgressLanguage } from './progress'
+import problemsData from '@/data/problems.json'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -91,6 +92,47 @@ export interface StudentLeaderboardEntry {
   questionsSolved: number
   totalXp: number
   streak: number
+}
+
+export interface LanguageStat {
+  language: string
+  label: string
+  count: number
+  percentage: number
+  color: string
+  trackLabel: string
+}
+
+export interface ProblemBottleneck {
+  id: string
+  title: string
+  belt: string
+  passRate: number
+  totalSubmissions: number
+  passedSubmissions: number
+}
+
+export interface HourlyActivity {
+  hourLabel: string
+  volume: number
+  percentage: number
+}
+
+export interface BeltProgressionStats {
+  belt1Enrolled: number
+  belt1Percent: number
+  belt2Enrolled: number
+  belt2Percent: number
+  belt3Enrolled: number
+  belt3Percent: number
+}
+
+export interface CampusDetailedAnalytics {
+  languages: LanguageStat[]
+  bottlenecks: ProblemBottleneck[]
+  hourlyActivity: HourlyActivity[]
+  beltProgression: BeltProgressionStats
+  dailyActiveRatio: number
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -694,8 +736,8 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
 
       for (const u of users || []) {
         userMap.set(u.id, {
-          name: u.name || u.email?.split('@')[0].replace(/\./g, ' ') || 'Scholar',
-          email: u.email || 'scholar@kalvium.community',
+          name: u.name || u.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
+          email: u.email || 'student@kalvium.community',
         })
       }
     }
@@ -706,8 +748,8 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
 
       return {
         id: item.id,
-        studentName: uInfo?.name || 'Scholar',
-        studentEmail: uInfo?.email || 'scholar@kalvium.community',
+        studentName: uInfo?.name || 'Student',
+        studentEmail: uInfo?.email || 'student@kalvium.community',
         problemTitle: probInfo?.title || 'Competitive Challenge',
         language: normalizeProgressLanguage(item.language),
         status: item.status as 'PASSED' | 'FAILED' | 'ERROR',
@@ -781,4 +823,197 @@ export async function fetchStudentLeaderboard(
     }))
     .sort((a, b) => b.totalXp - a.totalXp)
     .map((entry, index) => ({ ...entry, rank: index + 1 }))
+}
+
+/**
+ * Aggregates 100% live analytics directly from database tables:
+ * - Real language adoption breakdown (Python, Java, C++, Node.js)
+ * - Real problem bottlenecks with lowest pass rates
+ * - Real peak campus coding hours by submission volume
+ * - Real curriculum belt progression velocity
+ */
+export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnalytics> {
+  try {
+    const [studentsData, subsRes, progRes] = await Promise.all([
+      fetchCampusStudents(),
+      supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests'),
+      supabase.from('UserProgress').select('id, problemId, language, status, solvedAt'),
+    ])
+
+    const subs = subsRes.data || []
+    const prog = progRes.data || []
+    const totalStudents = Math.max(studentsData.length, 1)
+
+    // 1. Live Language Breakdown
+    const langCounts: Record<string, number> = {
+      python: 0,
+      java: 0,
+      cpp: 0,
+      nodejs: 0,
+    }
+
+    for (const s of subs) {
+      const norm = normalizeLanguage(s.language)
+      if (langCounts[norm] !== undefined) {
+        langCounts[norm]++
+      }
+    }
+    for (const p of prog) {
+      const norm = normalizeLanguage(p.language)
+      if (langCounts[norm] !== undefined) {
+        langCounts[norm]++
+      }
+    }
+
+    const totalLangActivity = Object.values(langCounts).reduce((a, b) => a + b, 0)
+    const languages: LanguageStat[] = [
+      {
+        language: 'python',
+        label: 'Python',
+        count: langCounts.python,
+        percentage: totalLangActivity > 0 ? Math.round((langCounts.python / totalLangActivity) * 100) : 0,
+        color: 'text-blue-600',
+        trackLabel: 'Primary Track',
+      },
+      {
+        language: 'java',
+        label: 'Java',
+        count: langCounts.java,
+        percentage: totalLangActivity > 0 ? Math.round((langCounts.java / totalLangActivity) * 100) : 0,
+        color: 'text-amber-600',
+        trackLabel: 'OOP & Systems',
+      },
+      {
+        language: 'cpp',
+        label: 'C++',
+        count: langCounts.cpp,
+        percentage: totalLangActivity > 0 ? Math.round((langCounts.cpp / totalLangActivity) * 100) : 0,
+        color: 'text-purple-600',
+        trackLabel: 'DSA Speed',
+      },
+      {
+        language: 'nodejs',
+        label: 'Node.js',
+        count: langCounts.nodejs,
+        percentage: totalLangActivity > 0 ? Math.round((langCounts.nodejs / totalLangActivity) * 100) : 0,
+        color: 'text-emerald-600',
+        trackLabel: 'Full-Stack Track',
+      },
+    ]
+
+    // 2. Live Problem Bottlenecks (Lowest Pass Rates)
+    const problemMap = new Map<string, { title: string; belt: string }>()
+    for (const belt of problemsData) {
+      for (const p of belt.problems) {
+        problemMap.set(p.slug, { title: p.title, belt: `${belt.name} • ${belt.title}` })
+      }
+    }
+
+    const problemSubMap = new Map<string, { total: number; passed: number }>()
+    for (const s of subs) {
+      if (!s.problemId) continue
+      const curr = problemSubMap.get(s.problemId) || { total: 0, passed: 0 }
+      curr.total++
+      if (s.status === 'PASSED') curr.passed++
+      problemSubMap.set(s.problemId, curr)
+    }
+
+    let bottlenecks: ProblemBottleneck[] = []
+    if (problemSubMap.size > 0) {
+      for (const [probId, stats] of problemSubMap.entries()) {
+        const info = problemMap.get(probId)
+        const passRate = Math.round((stats.passed / stats.total) * 1000) / 10
+        bottlenecks.push({
+          id: probId,
+          title: info?.title || probId,
+          belt: info?.belt || 'Curriculum Challenge',
+          passRate,
+          totalSubmissions: stats.total,
+          passedSubmissions: stats.passed,
+        })
+      }
+      bottlenecks.sort((a, b) => a.passRate - b.passRate)
+      bottlenecks = bottlenecks.slice(0, 5)
+    }
+
+    // 3. Live Peak Coding Hours (8 AM to 7 PM)
+    const hourLabels = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM']
+    const hourMap: Record<number, number> = {}
+    for (let h = 8; h <= 19; h++) {
+      hourMap[h] = 0
+    }
+
+    for (const s of subs) {
+      if (s.createdAt) {
+        const date = new Date(s.createdAt)
+        const hour = date.getHours()
+        if (hourMap[hour] !== undefined) {
+          hourMap[hour]++
+        }
+      }
+    }
+
+    const maxHourVolume = Math.max(...Object.values(hourMap), 1)
+    const hourlyActivity: HourlyActivity[] = hourLabels.map((hourLabel, i) => {
+      const hourNum = i + 8
+      const volume = hourMap[hourNum] || 0
+      const percentage = Math.round((volume / maxHourVolume) * 100)
+      return {
+        hourLabel,
+        volume,
+        percentage: volume > 0 ? Math.max(percentage, 8) : 4,
+      }
+    })
+
+    // 4. Live Belt Progression Funnel
+    const belt1Count = studentsData.filter((s) => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length
+    const belt2Count = studentsData.filter((s) => s.belt === 'Belt 2' || s.belt === 'Belt 3').length
+    const belt3Count = studentsData.filter((s) => s.belt === 'Belt 3').length
+
+    const beltProgression: BeltProgressionStats = {
+      belt1Enrolled: belt1Count,
+      belt1Percent: Math.round((belt1Count / totalStudents) * 100),
+      belt2Enrolled: belt2Count,
+      belt2Percent: Math.round((belt2Count / totalStudents) * 100),
+      belt3Enrolled: belt3Count,
+      belt3Percent: Math.round((belt3Count / totalStudents) * 100),
+    }
+
+    // 5. Live Daily Active Ratio
+    const activeCount = studentsData.filter((s) => s.status === 'ACTIVE').length
+    const dailyActiveRatio = Math.round((activeCount / totalStudents) * 100)
+
+    return {
+      languages,
+      bottlenecks,
+      hourlyActivity,
+      beltProgression,
+      dailyActiveRatio,
+    }
+  } catch (err) {
+    console.error('Error fetching campus detailed analytics:', err)
+    return {
+      languages: [
+        { language: 'python', label: 'Python', count: 0, percentage: 0, color: 'text-blue-600', trackLabel: 'Primary Track' },
+        { language: 'java', label: 'Java', count: 0, percentage: 0, color: 'text-amber-600', trackLabel: 'OOP & Systems' },
+        { language: 'cpp', label: 'C++', count: 0, percentage: 0, color: 'text-purple-600', trackLabel: 'DSA Speed' },
+        { language: 'nodejs', label: 'Node.js', count: 0, percentage: 0, color: 'text-emerald-600', trackLabel: 'Full-Stack Track' },
+      ],
+      bottlenecks: [],
+      hourlyActivity: ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM'].map((h) => ({
+        hourLabel: h,
+        volume: 0,
+        percentage: 4,
+      })),
+      beltProgression: {
+        belt1Enrolled: 0,
+        belt1Percent: 0,
+        belt2Enrolled: 0,
+        belt2Percent: 0,
+        belt3Enrolled: 0,
+        belt3Percent: 0,
+      },
+      dailyActiveRatio: 0,
+    }
+  }
 }

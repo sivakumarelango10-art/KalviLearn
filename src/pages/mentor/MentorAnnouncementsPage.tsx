@@ -19,7 +19,7 @@ interface AnnouncementItem {
   date: string
   priority: 'normal' | 'high' | 'urgent'
   readCount: number
-  totalScholars: number
+  totalStudents: number
 }
 
 const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
@@ -27,12 +27,12 @@ const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
     id: 'ann-1',
     title: 'Weekend Algorithmic Sprint — Belt 2 Mastery',
     content:
-      'Scholars targeting Belt 2 promotion must complete the Two-Pointer and Prefix Sum practice sets before Sunday 11:59 PM. Mentor office hours will be held on Saturday from 2:00 PM to 4:00 PM.',
+      'Students targeting Belt 2 promotion must complete the Two-Pointer and Prefix Sum practice sets before Sunday 11:59 PM. Mentor office hours will be held on Saturday from 2:00 PM to 4:00 PM.',
     author: 'Faculty Mentor',
     date: 'Today at 10:15 AM',
     priority: 'high',
     readCount: 2,
-    totalScholars: 2,
+    totalStudents: 2,
   },
   {
     id: 'ann-2',
@@ -43,25 +43,25 @@ const INITIAL_ANNOUNCEMENTS: AnnouncementItem[] = [
     date: 'Yesterday at 4:30 PM',
     priority: 'urgent',
     readCount: 2,
-    totalScholars: 2,
+    totalStudents: 2,
   },
   {
     id: 'ann-3',
     title: 'New Problem Sets Released in Belt 3 Dynamic Programming',
     content:
-      'We have added new multi-state DP challenges to the Belt 3 catalog. Scholars are encouraged to explore bottom-up tabulation.',
+      'We have added new multi-state DP challenges to the Belt 3 catalog. Students are encouraged to explore bottom-up tabulation.',
     author: 'Mentor Team',
     date: 'Sep 2, 2026',
     priority: 'normal',
     readCount: 1,
-    totalScholars: 2,
+    totalStudents: 2,
   },
 ]
 
 export const MentorAnnouncementsPage: React.FC = () => {
   const { user } = useAuth()
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>(INITIAL_ANNOUNCEMENTS)
-  const [totalScholars, setTotalScholars] = useState<number>(2)
+  const [totalStudents, setTotalStudents] = useState<number>(2)
   const [showModal, setShowModal] = useState(false)
   const [newTitle, setNewTitle] = useState('')
   const [newContent, setNewContent] = useState('')
@@ -71,9 +71,9 @@ export const MentorAnnouncementsPage: React.FC = () => {
     let isMounted = true
     fetchMentorRoster(user?.id).then((students) => {
       if (isMounted && students.length > 0) {
-        setTotalScholars(students.length)
+        setTotalStudents(students.length)
         setAnnouncements((prev) =>
-          prev.map((a) => ({ ...a, totalScholars: students.length }))
+          prev.map((a) => ({ ...a, totalStudents: students.length }))
         )
       }
     }).catch(console.warn)
@@ -111,7 +111,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
       date: 'Just now',
       priority: newPriority,
       readCount: 0,
-      totalScholars,
+      totalStudents,
     }
 
     setAnnouncements([item, ...announcements])
@@ -178,7 +178,7 @@ export const MentorAnnouncementsPage: React.FC = () => {
 
               <div className="text-right text-xs text-neutral-400">
                 <span className="font-bold text-neutral-800">{ann.readCount}</span> /{' '}
-                {ann.totalScholars} read
+                {ann.totalStudents} read
               </div>
             </div>
 

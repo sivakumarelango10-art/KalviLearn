@@ -142,7 +142,7 @@ export const MentorWelcomeHero: React.FC<MentorWelcomeHeroProps> = ({
               <div className="text-xs text-neutral-400 font-medium">Cohort Status</div>
               <div className="text-lg font-bold flex items-center gap-1.5 justify-center sm:justify-start text-white">
                 <GraduationCap className="w-4 h-4 text-emerald-400" />
-                <span>{activeStudents} Active Scholars</span>
+                <span>{activeStudents} Active Students</span>
               </div>
             </div>
 

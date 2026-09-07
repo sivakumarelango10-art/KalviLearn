@@ -100,10 +100,10 @@ export const CampusDashboardPage: React.FC = () => {
     )
   }
 
-  const totalScholars = metrics?.totalStudents || students.length
-  const passRate = metrics?.campusPassRate || 91.2
-  const totalXp = metrics?.totalXpDistributed || 52400
-  const avgSolved = metrics?.avgProblemsSolved || 19.5
+  const totalStudents = metrics?.totalStudents ?? students.length
+  const passRate = metrics?.campusPassRate ?? 0
+  const totalXp = metrics?.totalXpDistributed ?? 0
+  const avgSolved = metrics?.avgProblemsSolved ?? 0
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
@@ -129,7 +129,7 @@ export const CampusDashboardPage: React.FC = () => {
               Campus Overview
             </h1>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
-              Real-time telemetry across faculty guidance, scholar problem solving, authoritative 10-test-case evaluations, and curriculum velocity.
+              Real-time telemetry across faculty guidance, student problem solving, authoritative 10-test-case evaluations, and curriculum velocity.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -195,7 +195,7 @@ export const CampusDashboardPage: React.FC = () => {
               <div className="flex items-center gap-4 text-xs text-neutral-300">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4 text-blue-400" />
-                  <span className="font-semibold">{totalScholars} Scholars</span>
+                  <span className="font-semibold">{totalStudents} Students</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4 text-purple-400" />
@@ -210,11 +210,11 @@ export const CampusDashboardPage: React.FC = () => {
       {/* ── KPI METRIC CARDS (Clean White Style) ─────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
-        {/* Card 1: Total Scholars */}
+        {/* Card 1: Total Students */}
         <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
-              Total Scholars
+              Total Students
             </span>
             <div className="w-10 h-10 rounded-2xl bg-neutral-100 text-neutral-800 flex items-center justify-center">
               <GraduationCap className="w-5 h-5" />
@@ -222,7 +222,7 @@ export const CampusDashboardPage: React.FC = () => {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
-              {totalScholars}
+              {totalStudents}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
               Enrolled across {mentors.length} faculty cohorts
@@ -303,7 +303,7 @@ export const CampusDashboardPage: React.FC = () => {
               {totalXp.toLocaleString()}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Avg {avgSolved} problems / scholar
+              Avg {avgSolved} problems / student
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
@@ -326,7 +326,7 @@ export const CampusDashboardPage: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-neutral-900">Student Statistics</h2>
-                  <p className="text-[11px] text-neutral-500">{students.length} total scholars enrolled</p>
+                  <p className="text-[11px] text-neutral-500">{students.length} total students enrolled</p>
                 </div>
               </div>
               <Link
@@ -433,10 +433,10 @@ export const CampusDashboardPage: React.FC = () => {
           </div>
 
           <div className="p-6 space-y-6">
-            {/* Assigned Scholars Cohort */}
+            {/* Assigned Students Cohort */}
             <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-neutral-800 block">Total Guided Scholars</span>
+                <span className="text-xs font-bold text-neutral-800 block">Total Guided Students</span>
                 <p className="text-[11px] text-neutral-500 mt-0.5">Assigned across {mentors.length} active mentors</p>
               </div>
               <span className="text-xl font-extrabold text-neutral-900 font-mono">
@@ -482,7 +482,7 @@ export const CampusDashboardPage: React.FC = () => {
               </div>
               <div>
                 <h2 className="text-sm font-bold text-neutral-900">Live Learning Activity</h2>
-                <p className="text-[11px] text-neutral-500">Real-time code submissions from scholars</p>
+                <p className="text-[11px] text-neutral-500">Real-time code submissions from students</p>
               </div>
             </div>
             <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full">
@@ -608,7 +608,7 @@ export const CampusDashboardPage: React.FC = () => {
                   <div className="w-7 h-7 rounded-xl bg-neutral-100 flex items-center justify-center">
                     <GraduationCap className="w-3.5 h-3.5 text-neutral-700" />
                   </div>
-                  <span className="text-xs font-semibold text-neutral-700 group-hover:text-neutral-900">Scholar Leaderboard</span>
+                  <span className="text-xs font-semibold text-neutral-700 group-hover:text-neutral-900">Student Leaderboard</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-700 transition-colors" />
               </Link>

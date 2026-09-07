@@ -298,7 +298,7 @@ export const MentorDashboardPage: React.FC = () => {
                       className="hover:bg-neutral-50/70 transition-colors group cursor-pointer"
                       onClick={() => setSelectedStudent(student)}
                     >
-                      {/* Scholar Info */}
+                      {/* Student Info */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-xl bg-neutral-900 text-white text-xs font-bold flex items-center justify-center shadow-xs">

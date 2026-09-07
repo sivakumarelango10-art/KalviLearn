@@ -45,7 +45,7 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
             Mentor Leaderboard
           </h1>
           <p className="text-sm text-neutral-500 max-w-2xl mt-1">
-            Celebrating faculty mentors guiding scholars toward highest curriculum mastery, problem velocity, and solve consistency.
+            Celebrating faculty mentors guiding students toward highest curriculum mastery, problem velocity, and solve consistency.
           </p>
         </div>
 
@@ -192,7 +192,7 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="py-4 px-6 font-semibold text-neutral-800">
-                    {entry.assignedStudents} scholars
+                    {entry.assignedStudents} students
                   </td>
                   <td className="py-4 px-6 font-mono font-bold text-amber-600">
                     {entry.cohortTotalXp.toLocaleString()} XP
