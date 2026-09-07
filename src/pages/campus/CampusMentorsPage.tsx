@@ -145,8 +145,8 @@ export const CampusMentorsPage: React.FC = () => {
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-neutral-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 uppercase tracking-wider">
-              Faculty Management
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ED2A2B]/10 text-[#ED2A2B] uppercase tracking-wider">
+              Faculty Roster
             </span>
             <span className="text-xs text-neutral-400 font-medium">• {mentors.length} Total Mentors</span>
           </div>
@@ -297,7 +297,7 @@ export const CampusMentorsPage: React.FC = () => {
                         ? 'bg-red-500'
                         : mentor.capacityPercent >= 70
                         ? 'bg-amber-500'
-                        : 'bg-purple-600'
+                        : 'bg-neutral-900'
                     }`}
                   />
                 </div>

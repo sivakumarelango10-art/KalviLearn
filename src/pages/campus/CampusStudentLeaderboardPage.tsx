@@ -36,7 +36,7 @@ export const CampusStudentLeaderboardPage: React.FC = () => {
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-neutral-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ED2A2B]/10 text-[#ED2A2B] uppercase tracking-wider">
               Scholar Recognition
             </span>
             <span className="text-xs text-neutral-400 font-medium">• Campus Rankings</span>

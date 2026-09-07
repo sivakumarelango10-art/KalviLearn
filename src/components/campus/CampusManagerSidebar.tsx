@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Users,
@@ -8,12 +8,14 @@ import {
   Trophy,
   Award,
   UserCheck,
-  Building,
-  Sparkles,
+  LogOut,
 } from 'lucide-react'
+import { BrandLogo } from '@/components/common/BrandLogo'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface CampusManagerSidebarProps {
+  className?: string
   onCloseMobile?: () => void
 }
 
@@ -63,88 +65,103 @@ const NAV_ITEMS = [
 ]
 
 export const CampusManagerSidebar: React.FC<CampusManagerSidebarProps> = ({
+  className,
   onCloseMobile,
 }) => {
-  return (
-    <aside className="w-64 bg-white border-r border-neutral-200/90 flex flex-col justify-between h-full select-none">
-      {/* Navigation Section */}
-      <div className="p-4 space-y-6">
-        <div>
-          <p className="px-3 text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-2">
-            Campus Operations
-          </p>
-          <nav className="space-y-1">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  onClick={onCloseMobile}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group',
-                      isActive
-                        ? 'bg-neutral-900 text-white shadow-xs'
-                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/80'
-                    )
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <Icon
-                          className={cn(
-                            'w-4 h-4 transition-colors',
-                            isActive ? 'text-[#ED2A2B]' : 'text-neutral-500 group-hover:text-neutral-900'
-                          )}
-                        />
-                        <span>{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <span
-                          className={cn(
-                            'text-[10px] font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider',
-                            isActive
-                              ? 'bg-white/20 text-white'
-                              : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200 group-hover:text-neutral-700'
-                          )}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              )
-            })}
-          </nav>
-        </div>
+  const location = useLocation()
+  const { user, logout } = useAuth()
 
-        {/* Campus Overview Quick Card */}
-        <div className="p-3.5 bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-2xl text-white space-y-2.5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-bold text-neutral-200">
-              <Building className="w-4 h-4 text-[#ED2A2B]" />
-              <span>Campus Health</span>
-            </div>
-            <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full">
-              98% Active
-            </span>
-          </div>
-          <p className="text-[11px] text-neutral-300 leading-relaxed">
-            All 6 mentor cohorts operating within target guidance capacity.
-          </p>
-        </div>
+  const isActive = (path: string) => {
+    if (path === '/campus/dashboard') {
+      return location.pathname === '/campus/dashboard' || location.pathname === '/campus'
+    }
+    return location.pathname.startsWith(path)
+  }
+
+  const initials = user?.name
+    ? user.name
+        .split(' ')
+        .filter(Boolean)
+        .map((p) => p[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'CM'
+
+  return (
+    <aside
+      className={cn(
+        'w-64 bg-white border-r border-neutral-200 flex flex-col h-full select-none z-30',
+        className
+      )}
+    >
+      {/* Brand Header */}
+      <div className="h-16 px-6 flex items-center border-b border-neutral-100">
+        <Link to="/campus/dashboard" className="flex items-center gap-2.5">
+          <BrandLogo size="sm" orientation="horizontal" />
+        </Link>
       </div>
 
-      {/* Footer Info */}
-      <div className="p-4 border-t border-neutral-200/80">
-        <div className="flex items-center gap-2 text-[11px] text-neutral-500">
-          <Sparkles className="w-3.5 h-3.5 text-[#ED2A2B]" />
-          <span className="font-semibold text-neutral-700">Kalvi Campus HQ</span>
-          <span>• v2.0</span>
+      {/* Navigation Links */}
+      <div className="flex-1 py-6 px-3 space-y-1.5 overflow-y-auto">
+        {NAV_ITEMS.map((item) => {
+          const active = isActive(item.path)
+          const Icon = item.icon
+
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onCloseMobile}
+              className={cn(
+                'flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 interactive-tab',
+                active
+                  ? 'bg-neutral-900 text-white shadow-sm scale-[1.01]'
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/80 hover:translate-x-1'
+              )}
+            >
+              <Icon
+                className={cn(
+                  'w-4 h-4 transition-transform duration-200 flex-shrink-0',
+                  active ? 'text-white scale-110' : 'text-neutral-500'
+                )}
+              />
+              <span className="truncate">{item.label}</span>
+              {active ? (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ED2A2B] shadow-sm animate-pulse-subtle flex-shrink-0" />
+              ) : item.badge ? (
+                <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider bg-neutral-100 text-neutral-500 flex-shrink-0">
+                  {item.badge}
+                </span>
+              ) : null}
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* Footer User Info & Sign Out */}
+      <div className="p-4 border-t border-neutral-100 flex items-center justify-between">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-full bg-red-50 text-[#ED2A2B] font-bold text-xs flex items-center justify-center border border-red-100 flex-shrink-0">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-neutral-800 truncate">
+              {user?.name || (user?.email ? user.email.split('@')[0] : 'Campus Manager')}
+            </div>
+            <div className="text-[10px] text-neutral-400 truncate">
+              {user?.email || 'manager@kalvium.com'}
+            </div>
+          </div>
         </div>
+        <button
+          onClick={() => logout()}
+          title="Sign Out"
+          className="text-neutral-400 hover:text-neutral-700 p-1.5 rounded-md hover:bg-neutral-100 transition-colors flex-shrink-0"
+          type="button"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
       </div>
     </aside>
   )
