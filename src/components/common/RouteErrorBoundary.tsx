@@ -17,7 +17,9 @@ export const RouteErrorBoundary: React.FC = () => {
           sessionStorage.removeItem(key)
         }
       }
-    } catch {}
+    } catch (storageErr) {
+      console.warn('Failed to clear chunk reload keys:', storageErr)
+    }
     window.location.reload()
   }
 

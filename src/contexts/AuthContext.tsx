@@ -12,6 +12,7 @@ interface AuthContextType {
   deniedReason: 'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null
   isMentor: boolean
   isStudent: boolean
+  isCampusManager: boolean
   clearAccessDenied: () => void
   loginWithGoogle: () => Promise<any>
   loginWithEmail: (email: string) => Promise<{ success: boolean; user?: DbUser; error?: string }>
@@ -193,6 +194,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const loginWithEmail = async (email: string) => {
+    // In production, authentication must require cryptographic proof via Google OAuth
+    if (import.meta.env.PROD) {
+      console.warn('Direct passwordless loginWithEmail is disabled in production. Use Google OAuth.')
+      return { success: false, error: 'Passwordless login is disabled in production. Please sign in with Google.' }
+    }
     setIsLoading(true)
     clearAccessDenied()
     try {
@@ -230,6 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         deniedReason,
         isMentor: user?.role === 'MENTOR',
         isStudent: user?.role === 'STUDENT',
+        isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
         clearAccessDenied,
         loginWithGoogle,
         loginWithEmail,

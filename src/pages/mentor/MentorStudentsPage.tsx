@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Users,
@@ -105,6 +105,15 @@ export const MentorStudentsPage: React.FC = () => {
   // Remove confirmation state
   const [studentToDelete, setStudentToDelete] = useState<MentorStudent | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current)
+      }
+    }
+  }, [])
 
   // Keyboard shortcut (Escape) to close modals and body scroll lock
   useEffect(() => {
@@ -148,35 +157,34 @@ export const MentorStudentsPage: React.FC = () => {
     }
   }, [loadData])
 
-  const attentionCount = students.filter((s) => s.needsAttention).length
-
+  const attentionCount = students.filter((student) => student.needsAttention).length
 
   const filtered = useMemo(() => {
     return students
-      .filter((s) => {
-        const sName = (s.name || '').toLowerCase()
-        const sEmail = (s.email || '').toLowerCase()
-        const sCode = (s.studentCode || '').toLowerCase()
-        const q = (search || '').toLowerCase()
+      .filter((student) => {
+        const studentName = (student.name || '').toLowerCase()
+        const studentEmail = (student.email || '').toLowerCase()
+        const studentCode = (student.studentCode || '').toLowerCase()
+        const normalizedSearch = (search || '').toLowerCase()
 
         const matchesSearch =
-          sName.includes(q) ||
-          sEmail.includes(q) ||
-          sCode.includes(q) ||
-          (s.solvedProblems || []).some(
-            (p) => p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q)
+          studentName.includes(normalizedSearch) ||
+          studentEmail.includes(normalizedSearch) ||
+          studentCode.includes(normalizedSearch) ||
+          (student.solvedProblems || []).some(
+            (problem) => problem.title.toLowerCase().includes(normalizedSearch) || problem.slug.toLowerCase().includes(normalizedSearch)
           )
 
         if (!matchesSearch) return false
 
         if (beltFilter === 'attention') {
-          if (!s.needsAttention) return false
+          if (!student.needsAttention) return false
         } else if (beltFilter !== 'all') {
-          if (s.belt !== beltFilter) return false
+          if (student.belt !== beltFilter) return false
         }
 
         if (langFilter !== 'all') {
-          const solvedInLang = s.languageSolvedCounts?.[langFilter] || 0
+          const solvedInLang = student.languageSolvedCounts?.[langFilter] || 0
           if (onlyWithSolved && solvedInLang === 0) {
             return false
           }
@@ -227,8 +235,9 @@ export const MentorStudentsPage: React.FC = () => {
       }
 
       // Success
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
       setSuccessToast(`Student ${newName} added successfully!`)
-      setTimeout(() => setSuccessToast(null), 4000)
+      toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
 
       setNewName('')
       setNewEmail('')
@@ -248,8 +257,9 @@ export const MentorStudentsPage: React.FC = () => {
     try {
       const res = await removeStudent(studentToDelete.id, user?.id)
       if (res.success) {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
         setSuccessToast(`Student ${studentToDelete.name} removed from cohort.`)
-        setTimeout(() => setSuccessToast(null), 4000)
+        toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
         setStudentToDelete(null)
         await loadData()
       } else {
@@ -1004,13 +1014,16 @@ export const MentorStudentsPage: React.FC = () => {
             onClick={() => setIsAddModalOpen(false)}
           >
             <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="add-student-modal-title"
               className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
+                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
                 aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
@@ -1021,7 +1034,7 @@ export const MentorStudentsPage: React.FC = () => {
                 <div className="w-10 h-10 rounded-2xl bg-red-50 text-[#ED2A2B] border border-red-100 flex items-center justify-center mb-3">
                   <UserPlus className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-bold text-neutral-900">
+                <h3 id="add-student-modal-title" className="text-xl font-bold text-neutral-900">
                   Add Student
                 </h3>
                 <p className="text-xs text-neutral-500">
@@ -1040,12 +1053,13 @@ export const MentorStudentsPage: React.FC = () => {
               {/* Form */}
               <form onSubmit={handleCreateStudent} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-neutral-700 block">
+                  <label htmlFor="student-full-name" className="text-xs font-bold text-neutral-700 block">
                     Student Full Name <span className="text-[#ED2A2B]">*</span>
                   </label>
                   <div className="relative">
                     <User className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
+                      id="student-full-name"
                       type="text"
                       required
                       value={newName}
@@ -1057,12 +1071,13 @@ export const MentorStudentsPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-neutral-700 block">
+                  <label htmlFor="student-email" className="text-xs font-bold text-neutral-700 block">
                     Email Address <span className="text-[#ED2A2B]">*</span>
                   </label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
+                      id="student-email"
                       type="email"
                       required
                       value={newEmail}

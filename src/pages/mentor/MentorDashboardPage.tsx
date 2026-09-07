@@ -76,19 +76,19 @@ export const MentorDashboardPage: React.FC = () => {
 
   // Real mentor cohort telemetry computed directly from real database state
   const totalStudents = students.length
-  const activeStudents = students.filter((s) => !s.needsAttention).length
-  const attentionCount = students.filter((s) => s.needsAttention).length
+  const activeStudents = students.filter((student) => !student.needsAttention).length
+  const attentionCount = students.filter((student) => student.needsAttention).length
   const cohortMasteryPercent = totalStudents > 0
-    ? Math.round(students.reduce((acc, s) => acc + s.progressPercent, 0) / totalStudents)
+    ? Math.round(students.reduce((accumulator, student) => accumulator + student.progressPercent, 0) / totalStudents)
     : 0
 
   // Filtered student list
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
-      const sName = (student.name || '').toLowerCase()
-      const sEmail = (student.email || '').toLowerCase()
-      const q = (searchQuery || '').toLowerCase()
-      const matchesSearch = sName.includes(q) || sEmail.includes(q)
+      const studentName = (student.name || '').toLowerCase()
+      const studentEmail = (student.email || '').toLowerCase()
+      const normalizedSearch = (searchQuery || '').toLowerCase()
+      const matchesSearch = studentName.includes(normalizedSearch) || studentEmail.includes(normalizedSearch)
 
       if (!matchesSearch) return false
 

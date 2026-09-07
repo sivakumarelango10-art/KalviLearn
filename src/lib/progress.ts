@@ -39,11 +39,11 @@ export function normalizeProgressLanguage(
   raw: string | null | undefined
 ): 'python' | 'java' | 'nodejs' | 'cpp' {
   if (!raw) return 'python'
-  const l = raw.toLowerCase()
-  if (l === 'javascript' || l === 'node' || l === 'nodejs' || l === 'js') return 'nodejs'
-  if (l === 'java') return 'java'
-  if (l === 'cpp' || l === 'c++') return 'cpp'
-  if (l === 'python') return 'python'
+  const normalizedLang = raw.toLowerCase()
+  if (normalizedLang === 'javascript' || normalizedLang === 'node' || normalizedLang === 'nodejs' || normalizedLang === 'js') return 'nodejs'
+  if (normalizedLang === 'java') return 'java'
+  if (normalizedLang === 'cpp' || normalizedLang === 'c++') return 'cpp'
+  if (normalizedLang === 'python') return 'python'
   return 'python'
 }
 
@@ -76,7 +76,9 @@ function purgeLegacyStorage() {
         localStorage.removeItem(key)
       }
     }
-  } catch {}
+  } catch (storageErr) {
+    console.warn('Failed to purge legacy storage keys:', storageErr)
+  }
 }
 
 export function resetUserState() {

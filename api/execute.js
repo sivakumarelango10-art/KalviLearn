@@ -68,11 +68,11 @@ if (typeof Array !== "undefined") {
   const ap = Array.prototype;
   if (!ap.count) {
     ap.count = function(val) {
-      let c = 0;
+      let matchCount = 0;
       for (let i = 0; i < this.length; i++) {
-        if (this[i] === val) c++;
+        if (this[i] === val) matchCount++;
       }
-      return c;
+      return matchCount;
     };
   }
   if (!ap.index) {
@@ -141,31 +141,31 @@ function executePython(code, input) {
     e: Math.E,
     inf: Infinity,
     gcd: (a, b) => {
-      let x = Math.abs(Math.round(a));
-      let y = Math.abs(Math.round(b));
-      while (y) {
-        const t = y;
-        y = x % y;
-        x = t;
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
       }
-      return x;
+      return numA;
     },
     lcm: (a, b) => {
       if (a === 0 || b === 0) return 0;
-      let x = Math.abs(Math.round(a));
-      let y = Math.abs(Math.round(b));
-      const prod = x * y;
-      while (y) {
-        const t = y;
-        y = x % y;
-        x = t;
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      const product = numA * numB;
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
       }
-      return Math.round(prod / x);
+      return Math.round(product / numA);
     },
-    factorial: (n) => {
-      let r = 1;
-      for (let i = 2; i <= n; i++) r *= i;
-      return r;
+    factorial: (num) => {
+      let result = 1;
+      for (let i = 2; i <= num; i++) result *= i;
+      return result;
     },
     log: Math.log,
     log2: Math.log2,
@@ -339,7 +339,7 @@ function executePython(code, input) {
         /if\s+([a-zA-Z0-9_'"\(\)]+)\s+not\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
         "if (!(($2).includes ? ($2).includes($1) : ($1 in $2))) {"
       );
-      line = line.replace(/\band\s+/g, "&& ").replace(/\bor\s+/g, "|| ").replace(/\bnot\s+/g, "!").replace(/\bTrue\b/g, "true").replace(/\bFalse\b/g, "false").replace(/\bNone\b/g, "null").replace(/\.strip\(\)/g, ".trim()").replace(/\.rstrip\(\)/g, ".trimEnd()").replace(/\.lstrip\(\)/g, ".trimStart()").replace(/\.split\(\)/g, ".split(/\\s+/).filter(Boolean)").replace(/\.append\((.*?)\)/g, ".push($1)").replace(/\.lower\(\)/g, ".toLowerCase()").replace(/\.upper\(\)/g, ".toUpperCase()").replace(/\belif\s+(.*?):/g, "else if ($1) {").replace(/\bdef\s+([a-zA-Z0-9_]+)\s*\((.*?)\):/g, "function $1($2) {").replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+range\((.*?)\):/g, "for (let $1 of range($2)) {").replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+(.*?):/g, "for (let $1 of $2) {").replace(/\bwhile\s+(.*?):/g, "while ($1) {").replace(/\bif\s+(.*?):/g, "if ($1) {").replace(/\belse\s*:/g, "else {");
+      line = line.replace(/\band\s+/g, "&& ").replace(/\bor\s+/g, "|| ").replace(/\bnot\s+/g, "!").replace(/\bTrue\b/g, "true").replace(/\bFalse\b/g, "false").replace(/\bNone\b/g, "null").replace(/\.strip\(\)/g, ".trim()").replace(/\.rstrip\(\)/g, ".trimEnd()").replace(/\.lstrip\(\)/g, ".trimStart()").replace(/\.split\(\)/g, ".split(/\\s+/).filter(Boolean)").replace(/\.append\((.*?)\)/g, ".push($1)").replace(/\.lower\(\)/g, ".toLowerCase()").replace(/\.upper\(\)/g, ".toUpperCase()").replace(/\belif\s+(.*?):/g, "else if ($1) {").replace(/\bdef\s+([a-zA-Z0-9_]+)\s*\((.*?)\):/g, "function $1($2) {").replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+range\((.*?)\):/g, 'for (let $1 of range($2)) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");').replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+(.*?):/g, 'for (let $1 of $2) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");').replace(/\bwhile\s+(.*?):/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");').replace(/\bif\s+(.*?):/g, "if ($1) {").replace(/\belse\s*:/g, "else {");
       if (/^[a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+\s*=/.test(trimmed)) {
         line = line.replace(
           /^(\s*)([a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+)\s*=\s*(.*)$/,
@@ -348,7 +348,7 @@ function executePython(code, input) {
       }
       transformedLines.push(line);
     }
-    let formattedJs = "";
+    let formattedJs = "let __loopGuard = 0;\n";
     const indentStack = [0];
     for (let i = 0; i < transformedLines.length; i++) {
       const line = transformedLines[i];
@@ -359,7 +359,7 @@ function executePython(code, input) {
         formattedJs += "}\n";
       }
       formattedJs += trimmed + "\n";
-      if (trimmed.endsWith("{")) {
+      if (trimmed.includes("{") && (trimmed.startsWith("for ") || trimmed.startsWith("while ") || trimmed.startsWith("if ") || trimmed.startsWith("else") || trimmed.startsWith("function "))) {
         indentStack.push(indent + 4);
       }
     }
@@ -432,9 +432,9 @@ function executeCpp(code, input) {
   const __cout = {
     write: (val) => {
       if (val === void 0 || val === null) return;
-      const s = String(val);
-      if (s.includes("\n")) {
-        const parts = s.split("\n");
+      const strVal = String(val);
+      if (strVal.includes("\n")) {
+        const parts = strVal.split("\n");
         currentLineBuffer += parts[0];
         outputs.push(currentLineBuffer);
         for (let i = 1; i < parts.length - 1; i++) {
@@ -442,7 +442,7 @@ function executeCpp(code, input) {
         }
         currentLineBuffer = parts[parts.length - 1];
       } else {
-        currentLineBuffer += s;
+        currentLineBuffer += strVal;
       }
     },
     endl: () => {
@@ -466,30 +466,30 @@ function executeCpp(code, input) {
     LLONG_MIN: Number.MIN_SAFE_INTEGER,
     min: (...args) => Math.min(...args),
     max: (...args) => Math.max(...args),
-    abs: (x) => Math.abs(x),
-    sqrt: (x) => Math.sqrt(x),
-    pow: (b, e) => Math.pow(b, e),
+    abs: (val) => Math.abs(val),
+    sqrt: (val) => Math.sqrt(val),
+    pow: (base, exponent) => Math.pow(base, exponent),
     __gcd: (a, b) => {
-      let x = Math.abs(Math.round(a));
-      let y = Math.abs(Math.round(b));
-      while (y) {
-        const t = y;
-        y = x % y;
-        x = t;
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
       }
-      return x;
+      return numA;
     },
     gcd: (a, b) => {
-      let x = Math.abs(Math.round(a));
-      let y = Math.abs(Math.round(b));
-      while (y) {
-        const t = y;
-        y = x % y;
-        x = t;
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
       }
-      return x;
+      return numA;
     },
-    to_string: (x) => String(x),
+    to_string: (val) => String(val),
     stoi: (s) => parseInt(String(s), 10) || 0,
     stoll: (s) => parseInt(String(s), 10) || 0,
     stod: (s) => parseFloat(String(s)) || 0,
@@ -500,7 +500,7 @@ function executeCpp(code, input) {
     }
   };
   try {
-    let cleanCode = code;
+    let cleanCode = "let __loopGuard = 0;\n" + code;
     cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
     cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
     cleanCode = cleanCode.replace(/^\s*#include\s*<.*?>/gm, "");
@@ -556,6 +556,8 @@ function executeCpp(code, input) {
       return `let ${decls.join(", ")};`;
     });
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long\s+long|long|size_t|auto)\s+/g, "for (let ");
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
     cleanCode = cleanCode.replace(/\b(?:int|void|long\s+long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
       const cleanParams = params.split(",").map((p) => {
         const parts = p.trim().split(/\s+/);
@@ -602,12 +604,12 @@ function executeJava(code, input) {
           currentLineBuffer = "";
           return;
         }
-        currentLineBuffer += args.map((a) => String(a)).join(" ");
+        currentLineBuffer += args.map((arg) => String(arg)).join(" ");
         outputs.push(currentLineBuffer);
         currentLineBuffer = "";
       },
       print: (...args) => {
-        currentLineBuffer += args.map((a) => String(a)).join(" ");
+        currentLineBuffer += args.map((arg) => String(arg)).join(" ");
         if (currentLineBuffer.includes("\n")) {
           const parts = currentLineBuffer.split("\n");
           for (let i = 0; i < parts.length - 1; i++) {
@@ -743,7 +745,7 @@ function executeJava(code, input) {
     }
   };
   try {
-    let cleanCode = code;
+    let cleanCode = "let __loopGuard = 0;\n" + code;
     cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
     cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
     cleanCode = cleanCode.replace(/^\s*package\s+.*?;/gm, "");
@@ -777,6 +779,8 @@ function executeJava(code, input) {
     });
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double)\s+/g, "for (let ");
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double|String|char)\s+([a-zA-Z0-9_]+)\s*:\s*([a-zA-Z0-9_]+)\s*\)/g, "for (let $1 of $2)");
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
     cleanCode = cleanCode.replace(/\.charAt\s*\(\s*([^)]+)\s*\)/g, "[$1]");
     cleanCode = cleanCode.replace(/\.length\s*\(\s*\)/g, ".length");
     cleanCode += `
@@ -6708,6 +6712,21 @@ async function executeQuestion(req) {
 }
 
 // src/server/apiHandler.ts
+var rateLimitMap = /* @__PURE__ */ new Map();
+function checkRateLimit(ip, maxLimit = 60, windowMs = 6e4) {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return { allowed: true };
+  }
+  if (record.count >= maxLimit) {
+    const retryAfter = Math.ceil((record.resetTime - now) / 1e3);
+    return { allowed: false, retryAfter };
+  }
+  record.count++;
+  return { allowed: true };
+}
 async function handler(req, res) {
   const sendJson = (statusCode, data) => {
     if (typeof res.status === "function" && typeof res.json === "function") {
@@ -6727,6 +6746,16 @@ async function handler(req, res) {
   }
   if (req.method !== "POST") {
     return sendJson(405, { error: "Method Not Allowed. Use POST." });
+  }
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "127.0.0.1";
+  const rate = checkRateLimit(ip, 60, 6e4);
+  if (!rate.allowed) {
+    res.setHeader("Retry-After", String(rate.retryAfter || 60));
+    return sendJson(429, {
+      success: false,
+      error: "Too Many Requests",
+      message: `Execution rate limit exceeded. Please wait ${rate.retryAfter} seconds before trying again.`
+    });
   }
   let body = req.body;
   if (typeof body === "string") {

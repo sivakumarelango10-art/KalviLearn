@@ -25,16 +25,35 @@ export const PracticeFilters: React.FC<PracticeFiltersProps> = ({
   onSelectStatus,
   languageName,
 }) => {
+  const [localSearch, setLocalSearch] = React.useState(searchQuery)
+
+  React.useEffect(() => {
+    setLocalSearch(searchQuery)
+  }, [searchQuery])
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== searchQuery) {
+        onSearchChange(localSearch)
+      }
+    }, 150)
+    return () => clearTimeout(handler)
+  }, [localSearch, searchQuery, onSearchChange])
+
   return (
     <div className="bg-white rounded-xl p-4 border border-neutral-200/80 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
       {/* Search */}
       <div className="relative w-full md:w-80">
+        <label htmlFor="practice-problem-search" className="sr-only">
+          Search problems
+        </label>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
         <input
-          type="text"
+          id="practice-problem-search"
+          type="search"
           placeholder={`Search ${languageName} problems...`}
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={localSearch}
+          onChange={(e) => setLocalSearch(e.target.value)}
           className="w-full pl-9 pr-4 py-2 text-sm bg-neutral-50 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:bg-white transition-all"
         />
       </div>

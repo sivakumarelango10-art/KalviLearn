@@ -24,13 +24,13 @@ function executeJavaScript(code: string, input: string): { output: string; error
 
   const customConsole = {
     log: (...args: any[]) => {
-      outputs.push(args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' '))
+      outputs.push(args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg))).join(' '))
     },
     info: (...args: any[]) => {
-      outputs.push(args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' '))
+      outputs.push(args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg))).join(' '))
     },
     error: (...args: any[]) => {
-      outputs.push(args.map(a => String(a)).join(' '))
+      outputs.push(args.map(arg => String(arg)).join(' '))
     },
     warn: () => {},
   }

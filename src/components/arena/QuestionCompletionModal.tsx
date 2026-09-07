@@ -15,16 +15,30 @@ export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = (
   onContinue,
   onCancel,
 }) => {
+  React.useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onCancel])
+
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="completion-dialog-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-md bg-neutral-900 border border-neutral-700/80 rounded-2xl p-6 sm:p-8 text-neutral-100 shadow-2xl flex flex-col items-center text-center space-y-5 animate-in zoom-in-95 duration-200">
         {/* Close icon button for Cancel */}
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 p-1 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
-          aria-label="Cancel"
+          className="absolute top-4 right-4 p-1 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
         </button>
@@ -40,7 +54,7 @@ export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = (
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>Passed 10 / 10 Test Cases</span>
           </div>
-          <h3 className="text-2xl font-bold text-white tracking-tight">
+          <h3 id="completion-dialog-title" className="text-2xl font-bold text-white tracking-tight">
             Question Completed!
           </h3>
           <p className="text-sm text-neutral-400 max-w-xs mx-auto">

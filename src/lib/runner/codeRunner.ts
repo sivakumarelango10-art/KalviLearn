@@ -61,22 +61,29 @@ export async function executeCode(
 
   let apiErrorMessage: string | null = null
 
-  // If user is online, attempt backend /api/execute evaluation
+  // If user is online, attempt backend evaluation
   if (!isOffline) {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     try {
-      const response = await fetch('/api/execute', {
+      const endpoint = isSubmit ? '/api/submit' : '/api/execute'
+      const activeUserId = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('kalvi_active_user') || '{}')?.id : null
+      const idempotencyKey = isSubmit ? `sub_${questionSlug}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}` : undefined
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
         },
         body: JSON.stringify({
           questionSlug,
           language,
           code,
           isSubmit,
+          userId: activeUserId,
+          idempotencyKey,
         }),
         signal: controller.signal,
       })

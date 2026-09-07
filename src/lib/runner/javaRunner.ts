@@ -25,12 +25,12 @@ export function executeJava(code: string, input: string): { output: string; erro
           currentLineBuffer = ''
           return
         }
-        currentLineBuffer += args.map(a => String(a)).join(' ')
+        currentLineBuffer += args.map(arg => String(arg)).join(' ')
         outputs.push(currentLineBuffer)
         currentLineBuffer = ''
       },
       print: (...args: any[]) => {
-        currentLineBuffer += args.map(a => String(a)).join(' ')
+        currentLineBuffer += args.map(arg => String(arg)).join(' ')
         if (currentLineBuffer.includes('\n')) {
           const parts = currentLineBuffer.split('\n')
           for (let i = 0; i < parts.length - 1; i++) {
@@ -185,7 +185,7 @@ export function executeJava(code: string, input: string): { output: string; erro
   }
 
   try {
-    let cleanCode = code
+    let cleanCode = 'let __loopGuard = 0;\n' + code
 
     // 1. Remove comments
     cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, '')
@@ -245,6 +245,8 @@ export function executeJava(code: string, input: string): { output: string; erro
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double)\s+/g, 'for (let ')
     // Enhanced for loop: for (int x : arr) -> for (let x of arr)
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long|double|String|char)\s+([a-zA-Z0-9_]+)\s*:\s*([a-zA-Z0-9_]+)\s*\)/g, 'for (let $1 of $2)')
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
 
     // 9. Transform String length() to .length, charAt(i) to [i]
     cleanCode = cleanCode.replace(/\.charAt\s*\(\s*([^)]+)\s*\)/g, '[$1]')

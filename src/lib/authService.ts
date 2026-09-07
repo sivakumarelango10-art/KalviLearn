@@ -29,6 +29,25 @@ const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name
     name: 'Prajith P S',
     status: 'ACTIVE',
   },
+  // Authorized Campus Managers
+  'pkumardigital@gmail.com': {
+    id: 'cm-pkumardigital-001',
+    role: 'CAMPUS_MANAGER',
+    name: 'P Kumar',
+    status: 'ACTIVE',
+  },
+  'nithyashri.rs@kalvium.com': {
+    id: 'cm-nithyashri-002',
+    role: 'CAMPUS_MANAGER',
+    name: 'Nithyashri R S',
+    status: 'ACTIVE',
+  },
+  'avishka.s@kalvium.com': {
+    id: 'cm-avishka-003',
+    role: 'CAMPUS_MANAGER',
+    name: 'Avishka S',
+    status: 'ACTIVE',
+  },
   // Authorized Mentors
   'sivakumarelango10@gmail.com': {
     id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',

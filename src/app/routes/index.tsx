@@ -2,8 +2,10 @@ import { Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
+import { CampusManagerProtectedRoute } from '@/components/auth/CampusManagerProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
+import { CampusManagerLayout } from '@/layouts/CampusManagerLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
 import LoginPage from '@/pages/auth/LoginPage'
@@ -72,6 +74,36 @@ const MentorAnnouncementsPage = lazyWithRetry(
 const MentorProfilePage = lazyWithRetry(
   () => import('@/pages/mentor/MentorProfilePage').then((m) => ({ default: m.MentorProfilePage })),
   'MentorProfilePage'
+)
+
+// Campus Manager Portal Pages
+const CampusDashboardPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusDashboardPage').then((m) => ({ default: m.CampusDashboardPage })),
+  'CampusDashboardPage'
+)
+const CampusMentorsPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusMentorsPage').then((m) => ({ default: m.CampusMentorsPage })),
+  'CampusMentorsPage'
+)
+const CampusStudentsPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusStudentsPage').then((m) => ({ default: m.CampusStudentsPage })),
+  'CampusStudentsPage'
+)
+const CampusAnalyticsPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusAnalyticsPage').then((m) => ({ default: m.CampusAnalyticsPage })),
+  'CampusAnalyticsPage'
+)
+const CampusMentorLeaderboardPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusMentorLeaderboardPage').then((m) => ({ default: m.CampusMentorLeaderboardPage })),
+  'CampusMentorLeaderboardPage'
+)
+const CampusStudentLeaderboardPage = lazyWithRetry(
+  () => import('@/pages/campus/CampusStudentLeaderboardPage').then((m) => ({ default: m.CampusStudentLeaderboardPage })),
+  'CampusStudentLeaderboardPage'
+)
+const CampusProfilePage = lazyWithRetry(
+  () => import('@/pages/campus/CampusProfilePage').then((m) => ({ default: m.CampusProfilePage })),
+  'CampusProfilePage'
 )
 
 const PageLoader = () => (
@@ -191,6 +223,54 @@ export const router = createBrowserRouter([
           {
             path: 'profile',
             element: withSuspense(<MentorProfilePage />),
+          },
+          {
+            path: '*',
+            element: withSuspense(<NotFoundPage />),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/campus',
+    element: <CampusManagerProtectedRoute />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        element: <CampusManagerLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/campus/dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
+            element: withSuspense(<CampusDashboardPage />),
+          },
+          {
+            path: 'mentors',
+            element: withSuspense(<CampusMentorsPage />),
+          },
+          {
+            path: 'students',
+            element: withSuspense(<CampusStudentsPage />),
+          },
+          {
+            path: 'analytics',
+            element: withSuspense(<CampusAnalyticsPage />),
+          },
+          {
+            path: 'mentor-leaderboard',
+            element: withSuspense(<CampusMentorLeaderboardPage />),
+          },
+          {
+            path: 'student-leaderboard',
+            element: withSuspense(<CampusStudentLeaderboardPage />),
+          },
+          {
+            path: 'profile',
+            element: withSuspense(<CampusProfilePage />),
           },
           {
             path: '*',

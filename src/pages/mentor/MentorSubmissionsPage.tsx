@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Editor from '@monaco-editor/react'
 import {
@@ -31,6 +31,15 @@ export const MentorSubmissionsPage: React.FC = () => {
   const [langFilter, setLangFilter] = useState<'all' | 'python' | 'java' | 'nodejs' | 'cpp'>('all')
   const [inspectingSub, setInspectingSub] = useState<MentorSubmission | null>(null)
   const [copied, setCopied] = useState(false)
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current)
+      }
+    }
+  }, [])
 
   // Keyboard shortcut (Escape) to close modal and body scroll lock
   useEffect(() => {
@@ -51,7 +60,8 @@ export const MentorSubmissionsPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(inspectingSub.code)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000)
     } catch {
       // clipboard fallback
     }
@@ -62,9 +72,9 @@ export const MentorSubmissionsPage: React.FC = () => {
 
     async function loadData() {
       try {
-        const data = await fetchMentorSubmissions(user?.id, 60)
+        const data = await fetchMentorSubmissions(user?.id, 50, 0)
         if (isMounted) {
-          setSubmissions(data)
+          setSubmissions(data.submissions)
           setIsLoading(false)
         }
       } catch (err) {
@@ -87,15 +97,15 @@ export const MentorSubmissionsPage: React.FC = () => {
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {
-      const sName = (sub.studentName || '').toLowerCase()
-      const pTitle = (sub.problemTitle || '').toLowerCase()
-      const sEmail = (sub.studentEmail || '').toLowerCase()
-      const q = (search || '').toLowerCase()
+      const studentName = (sub.studentName || '').toLowerCase()
+      const problemTitle = (sub.problemTitle || '').toLowerCase()
+      const studentEmail = (sub.studentEmail || '').toLowerCase()
+      const normalizedSearch = (search || '').toLowerCase()
 
       const matchSearch =
-        sName.includes(q) ||
-        pTitle.includes(q) ||
-        sEmail.includes(q)
+        studentName.includes(normalizedSearch) ||
+        problemTitle.includes(normalizedSearch) ||
+        studentEmail.includes(normalizedSearch)
 
       if (!matchSearch) return false
       if (statusFilter !== 'all' && sub.status !== statusFilter) return false

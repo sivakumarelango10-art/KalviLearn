@@ -53,9 +53,9 @@ export function executeCpp(code: string, input: string): { output: string; error
   const __cout = {
     write: (val: any) => {
       if (val === undefined || val === null) return
-      const s = String(val)
-      if (s.includes('\n')) {
-        const parts = s.split('\n')
+      const strVal = String(val)
+      if (strVal.includes('\n')) {
+        const parts = strVal.split('\n')
         currentLineBuffer += parts[0]
         outputs.push(currentLineBuffer)
         for (let i = 1; i < parts.length - 1; i++) {
@@ -63,7 +63,7 @@ export function executeCpp(code: string, input: string): { output: string; error
         }
         currentLineBuffer = parts[parts.length - 1]
       } else {
-        currentLineBuffer += s
+        currentLineBuffer += strVal
       }
     },
     endl: () => {
@@ -89,30 +89,30 @@ export function executeCpp(code: string, input: string): { output: string; error
     LLONG_MIN: Number.MIN_SAFE_INTEGER,
     min: (...args: any[]) => Math.min(...args),
     max: (...args: any[]) => Math.max(...args),
-    abs: (x: number) => Math.abs(x),
-    sqrt: (x: number) => Math.sqrt(x),
-    pow: (b: number, e: number) => Math.pow(b, e),
+    abs: (val: number) => Math.abs(val),
+    sqrt: (val: number) => Math.sqrt(val),
+    pow: (base: number, exponent: number) => Math.pow(base, exponent),
     __gcd: (a: number, b: number) => {
-      let x = Math.abs(Math.round(a))
-      let y = Math.abs(Math.round(b))
-      while (y) {
-        const t = y
-        y = x % y
-        x = t
+      let numA = Math.abs(Math.round(a))
+      let numB = Math.abs(Math.round(b))
+      while (numB) {
+        const temp = numB
+        numB = numA % numB
+        numA = temp
       }
-      return x
+      return numA
     },
     gcd: (a: number, b: number) => {
-      let x = Math.abs(Math.round(a))
-      let y = Math.abs(Math.round(b))
-      while (y) {
-        const t = y
-        y = x % y
-        x = t
+      let numA = Math.abs(Math.round(a))
+      let numB = Math.abs(Math.round(b))
+      while (numB) {
+        const temp = numB
+        numB = numA % numB
+        numA = temp
       }
-      return x
+      return numA
     },
-    to_string: (x: any) => String(x),
+    to_string: (val: any) => String(val),
     stoi: (s: any) => parseInt(String(s), 10) || 0,
     stoll: (s: any) => parseInt(String(s), 10) || 0,
     stod: (s: any) => parseFloat(String(s)) || 0.0,
@@ -124,7 +124,7 @@ export function executeCpp(code: string, input: string): { output: string; error
   }
 
   try {
-    let cleanCode = code
+    let cleanCode = 'let __loopGuard = 0;\n' + code
 
     // 1. Remove single-line and multi-line comments
     cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, '')
@@ -213,6 +213,8 @@ export function executeCpp(code: string, input: string): { output: string; error
 
     // In for loops: for (int i = 0; ...) -> for (let i = 0; ...)
     cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long\s+long|long|size_t|auto)\s+/g, 'for (let ')
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
 
     // 12. Function declarations: int solve(...) -> function solve(...)
     cleanCode = cleanCode.replace(/\b(?:int|void|long\s+long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {

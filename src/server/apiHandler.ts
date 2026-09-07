@@ -1,6 +1,28 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { executeQuestion } from './executeService'
 
+// Sliding window rate limiter: max 40 executions/min per IP with burst limit
+interface RateRecord {
+  count: number
+  resetTime: number
+}
+const rateLimitMap = new Map<string, RateRecord>()
+
+function checkRateLimit(ip: string, maxLimit = 60, windowMs = 60000): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip)
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs })
+    return { allowed: true }
+  }
+  if (record.count >= maxLimit) {
+    const retryAfter = Math.ceil((record.resetTime - now) / 1000)
+    return { allowed: false, retryAfter }
+  }
+  record.count++
+  return { allowed: true }
+}
+
 export default async function handler(
   req: IncomingMessage & { body?: unknown; query?: unknown },
   res: ServerResponse & { status?: (code: number) => { json: (data: unknown) => void }; json?: (data: unknown) => void }
@@ -27,6 +49,18 @@ export default async function handler(
 
   if (req.method !== 'POST') {
     return sendJson(405, { error: 'Method Not Allowed. Use POST.' })
+  }
+
+  // Rate Limiting
+  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1'
+  const rate = checkRateLimit(ip, 60, 60000)
+  if (!rate.allowed) {
+    res.setHeader('Retry-After', String(rate.retryAfter || 60))
+    return sendJson(429, {
+      success: false,
+      error: 'Too Many Requests',
+      message: `Execution rate limit exceeded. Please wait ${rate.retryAfter} seconds before trying again.`,
+    })
   }
 
   // Parse body if not already parsed by Vercel

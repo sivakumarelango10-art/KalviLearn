@@ -60,12 +60,12 @@ export const ProblemArenaPage: React.FC = () => {
       targetProblemIndex = 0
     } else {
       for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
-        const b = curriculum.belts[bIdx]
-        const pIdx = b.problems.findIndex((p) => p.slug === targetProblem?.slug)
-        if (pIdx !== -1) {
-          targetBelt = b
+        const currentBelt = curriculum.belts[bIdx]
+        const problemIdx = currentBelt.problems.findIndex((problemItem) => problemItem.slug === targetProblem?.slug)
+        if (problemIdx !== -1) {
+          targetBelt = currentBelt
           targetBeltIndex = bIdx
-          targetProblemIndex = pIdx
+          targetProblemIndex = problemIdx
           break
         }
       }
@@ -137,9 +137,9 @@ export const ProblemArenaPage: React.FC = () => {
     // Load submission history for this problem and language
     const userState = getUserState()
     const subs = userState.submissions.filter(
-      (s) =>
-        s.problemSlug === currentProblem.slug &&
-        (s.language === currentLanguage || s.language === curriculum.runnerLanguage)
+      (submissionRecord) =>
+        submissionRecord.problemSlug === currentProblem.slug &&
+        (submissionRecord.language === currentLanguage || submissionRecord.language === curriculum.runnerLanguage)
     )
     setRecentSubmissions(subs)
   }, [currentProblem.slug, currentLanguage, currentProblem.starterCode, curriculum.runnerLanguage])

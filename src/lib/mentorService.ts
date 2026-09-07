@@ -427,9 +427,13 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
 }
 
 /**
- * Fetches recent submissions, optionally scoped to a specific mentor's students.
+ * Fetches recent submissions with pagination, optionally scoped to a specific mentor's students.
  */
-export async function fetchMentorSubmissions(mentorUserId?: string, limit = 50): Promise<MentorSubmission[]> {
+export async function fetchMentorSubmissions(
+  mentorUserId?: string,
+  limit = 25,
+  offset = 0
+): Promise<{ submissions: MentorSubmission[]; hasMore: boolean }> {
   try {
     let studentUserIds: string[] | null = null
     if (mentorUserId) {
@@ -437,7 +441,7 @@ export async function fetchMentorSubmissions(mentorUserId?: string, limit = 50):
       if (mp) {
         const sus = await getMentorStudentUsers(mp.id)
         studentUserIds = sus.map((s) => s.userId)
-        if (studentUserIds.length === 0) return []
+        if (studentUserIds.length === 0) return { submissions: [], hasMore: false }
       }
     }
 
@@ -445,11 +449,14 @@ export async function fetchMentorSubmissions(mentorUserId?: string, limit = 50):
       .from('Submission')
       .select('id, userId, language, code, status, passedTests, totalTests, executionTimeMs, createdAt, Problem(id, slug, title, Belt(name, color))')
       .order('createdAt', { ascending: false })
-      .limit(limit)
+      .range(offset, offset + limit)
     if (studentUserIds) query = query.in('userId', studentUserIds)
 
     const { data: subs, error: sError } = await query
-    if (sError || !subs || subs.length === 0) return []
+    if (sError || !subs || subs.length === 0) return { submissions: [], hasMore: false }
+
+    const hasMore = subs.length > limit
+    const pageSubs = subs.slice(0, limit)
 
     const distinctUserIds = Array.from(new Set(subs.map((s) => s.userId).filter(Boolean)))
     const userMap = new Map<string, { name: string; email: string }>()
@@ -460,28 +467,31 @@ export async function fetchMentorSubmissions(mentorUserId?: string, limit = 50):
       }
     }
 
-    return subs.map((s) => {
-      const prob = s.Problem as { slug?: string; title?: string; Belt?: { name?: string; color?: string } } | null
-      const uInfo = userMap.get(s.userId) || { name: 'Student', email: 'student@kalvium.community' }
-      const lang = normalizeLanguage(s.language)
-      return {
-        id: s.id, userId: s.userId,
-        studentName: uInfo.name, studentEmail: uInfo.email,
-        problemTitle: prob?.title || 'Practice Challenge',
-        problemSlug: prob?.slug || 'challenge',
-        beltName: prob?.Belt?.name || 'Belt 1',
-        beltColor: prob?.Belt?.color || '#3B82F6',
-        language: lang, languageLabel: getLanguageLabel(lang),
-        status: (s.status as 'PASSED' | 'FAILED' | 'ERROR') || 'PASSED',
-        passedTests: s.passedTests ?? 10, totalTests: s.totalTests || 10,
-        executionTimeMs: s.executionTimeMs || 25,
-        createdAt: formatRelativeTime(s.createdAt), createdAtRaw: s.createdAt,
-        code: s.code || '',
-      }
-    })
+    return {
+      submissions: pageSubs.map((s) => {
+        const prob = s.Problem as { slug?: string; title?: string; Belt?: { name?: string; color?: string } } | null
+        const uInfo = userMap.get(s.userId) || { name: 'Student', email: 'student@kalvium.community' }
+        const lang = normalizeLanguage(s.language)
+        return {
+          id: s.id, userId: s.userId,
+          studentName: uInfo.name, studentEmail: uInfo.email,
+          problemTitle: prob?.title || 'Practice Challenge',
+          problemSlug: prob?.slug || 'challenge',
+          beltName: prob?.Belt?.name || 'Belt 1',
+          beltColor: prob?.Belt?.color || '#3B82F6',
+          language: lang, languageLabel: getLanguageLabel(lang),
+          status: (s.status as 'PASSED' | 'FAILED' | 'ERROR') || 'PASSED',
+          passedTests: s.passedTests ?? 10, totalTests: s.totalTests || 10,
+          executionTimeMs: s.executionTimeMs || 25,
+          createdAt: formatRelativeTime(s.createdAt), createdAtRaw: s.createdAt,
+          code: s.code || '',
+        }
+      }),
+      hasMore,
+    }
   } catch (err) {
     console.error('Error in fetchMentorSubmissions:', err)
-    return []
+    return { submissions: [], hasMore: false }
   }
 }
 
@@ -499,20 +509,20 @@ export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
     return BELT_DEFINITIONS.map((def) => {
       const solvedInBeltByUser = new Map<string, number>()
       for (const row of progressRows) {
-        const p = row.Problem as { Belt?: { order?: number } } | null
-        if (p?.Belt?.order === def.order) {
+        const problemData = row.Problem as { Belt?: { order?: number } } | null
+        if (problemData?.Belt?.order === def.order) {
           solvedInBeltByUser.set(row.userId, (solvedInBeltByUser.get(row.userId) || 0) + 1)
         }
       }
-      const subsInBelt = submissionRows.filter((s) => (s.Problem as { Belt?: { order?: number } } | null)?.Belt?.order === def.order)
+      const subsInBelt = submissionRows.filter((submissionItem) => (submissionItem.Problem as { Belt?: { order?: number } } | null)?.Belt?.order === def.order)
       const avgPassRate = subsInBelt.length > 0
-        ? Math.round((subsInBelt.filter((s) => s.status === 'PASSED').length / subsInBelt.length) * 1000) / 10
+        ? Math.round((subsInBelt.filter((submissionItem) => submissionItem.status === 'PASSED').length / subsInBelt.length) * 1000) / 10
         : 100
       return { order: def.order, name: def.name, title: def.title, color: def.color, totalProblems: def.totalProblems, cohortCompleted: solvedInBeltByUser.size, avgPassRate, bottleneck: def.bottleneck }
     })
   } catch (err) {
     console.error('Error in fetchMentorCurriculumMetrics:', err)
-    return BELT_DEFINITIONS.map((b) => ({ ...b, cohortCompleted: 0, avgPassRate: 0 }))
+    return BELT_DEFINITIONS.map((beltDef) => ({ ...beltDef, cohortCompleted: 0, avgPassRate: 0 }))
   }
 }
 

@@ -50,11 +50,11 @@ if (typeof Array !== 'undefined') {
   const ap = Array.prototype as any
   if (!ap.count) {
     ap.count = function (val: any) {
-      let c = 0
+      let matchCount = 0
       for (let i = 0; i < this.length; i++) {
-        if (this[i] === val) c++
+        if (this[i] === val) matchCount++
       }
-      return c
+      return matchCount
     }
   }
   if (!ap.index) {
@@ -128,31 +128,31 @@ export function executePython(code: string, input: string): { output: string; er
     e: Math.E,
     inf: Infinity,
     gcd: (a: number, b: number) => {
-      let x = Math.abs(Math.round(a))
-      let y = Math.abs(Math.round(b))
-      while (y) {
-        const t = y
-        y = x % y
-        x = t
+      let numA = Math.abs(Math.round(a))
+      let numB = Math.abs(Math.round(b))
+      while (numB) {
+        const temp = numB
+        numB = numA % numB
+        numA = temp
       }
-      return x
+      return numA
     },
     lcm: (a: number, b: number) => {
       if (a === 0 || b === 0) return 0
-      let x = Math.abs(Math.round(a))
-      let y = Math.abs(Math.round(b))
-      const prod = x * y
-      while (y) {
-        const t = y
-        y = x % y
-        x = t
+      let numA = Math.abs(Math.round(a))
+      let numB = Math.abs(Math.round(b))
+      const product = numA * numB
+      while (numB) {
+        const temp = numB
+        numB = numA % numB
+        numA = temp
       }
-      return Math.round(prod / x)
+      return Math.round(product / numA)
     },
-    factorial: (n: number) => {
-      let r = 1
-      for (let i = 2; i <= n; i++) r *= i
-      return r
+    factorial: (num: number) => {
+      let result = 1
+      for (let i = 2; i <= num; i++) result *= i
+      return result
     },
     log: Math.log,
     log2: Math.log2,
@@ -378,9 +378,9 @@ export function executePython(code: string, input: string): { output: string; er
         .replace(/\.upper\(\)/g, '.toUpperCase()')
         .replace(/\belif\s+(.*?):/g, 'else if ($1) {')
         .replace(/\bdef\s+([a-zA-Z0-9_]+)\s*\((.*?)\):/g, 'function $1($2) {')
-        .replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+range\((.*?)\):/g, 'for (let $1 of range($2)) {')
-        .replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+(.*?):/g, 'for (let $1 of $2) {')
-        .replace(/\bwhile\s+(.*?):/g, 'while ($1) {')
+        .replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+range\((.*?)\):/g, 'for (let $1 of range($2)) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
+        .replace(/\bfor\s+([a-zA-Z0-9_]+)\s+in\s+(.*?):/g, 'for (let $1 of $2) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
+        .replace(/\bwhile\s+(.*?):/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
         .replace(/\bif\s+(.*?):/g, 'if ($1) {')
         .replace(/\belse\s*:/g, 'else {')
 
@@ -396,7 +396,7 @@ export function executePython(code: string, input: string): { output: string; er
     }
 
     // Indentation to braces
-    let formattedJs = ''
+    let formattedJs = 'let __loopGuard = 0;\n'
     const indentStack: number[] = [0]
 
     for (let i = 0; i < transformedLines.length; i++) {
@@ -411,7 +411,7 @@ export function executePython(code: string, input: string): { output: string; er
 
       formattedJs += trimmed + '\n'
 
-      if (trimmed.endsWith('{')) {
+      if (trimmed.includes('{') && (trimmed.startsWith('for ') || trimmed.startsWith('while ') || trimmed.startsWith('if ') || trimmed.startsWith('else') || trimmed.startsWith('function '))) {
         indentStack.push(indent + 4)
       }
     }

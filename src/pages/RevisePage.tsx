@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Editor from '@monaco-editor/react'
 import {
@@ -69,6 +69,16 @@ export const RevisePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'code' | 'description' | 'history'>('code')
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current)
+      }
+    }
+  }, [])
 
   // Load user progress
   useEffect(() => {
@@ -141,16 +151,16 @@ export const RevisePage: React.FC = () => {
 
   // Filtered list based on language filter & search
   const filteredSolved = useMemo(() => {
-    return solvedProblems.filter((p) => {
-      if (selectedLanguageFilter !== 'all' && p.language !== selectedLanguageFilter) {
+    return solvedProblems.filter((problem) => {
+      if (selectedLanguageFilter !== 'all' && problem.language !== selectedLanguageFilter) {
         return false
       }
       if (searchQuery) {
-        const q = searchQuery.toLowerCase()
+        const normalizedQuery = searchQuery.toLowerCase()
         return (
-          p.title.toLowerCase().includes(q) ||
-          p.beltName.toLowerCase().includes(q) ||
-          p.languageName.toLowerCase().includes(q)
+          problem.title.toLowerCase().includes(normalizedQuery) ||
+          problem.beltName.toLowerCase().includes(normalizedQuery) ||
+          problem.languageName.toLowerCase().includes(normalizedQuery)
         )
       }
       return true
@@ -161,23 +171,23 @@ export const RevisePage: React.FC = () => {
   useEffect(() => {
     if (!selectedItemId && filteredSolved.length > 0) {
       setSelectedItemId(filteredSolved[0].id)
-    } else if (selectedItemId && !filteredSolved.some((p) => p.id === selectedItemId)) {
+    } else if (selectedItemId && !filteredSolved.some((problem) => problem.id === selectedItemId)) {
       setSelectedItemId(filteredSolved[0]?.id || null)
     }
   }, [filteredSolved, selectedItemId])
 
   // Active problem
   const currentProblem = useMemo(() => {
-    return filteredSolved.find((p) => p.id === selectedItemId) || filteredSolved[0] || null
+    return filteredSolved.find((problem) => problem.id === selectedItemId) || filteredSolved[0] || null
   }, [filteredSolved, selectedItemId])
 
   // Problem-specific submissions
   const problemSubmissions = useMemo(() => {
     if (!currentProblem) return []
     return submissions.filter(
-      (s) =>
-        s.problemSlug === currentProblem.slug &&
-        (normalizeProgressLanguage(s.language) === currentProblem.language)
+      (submissionItem) =>
+        submissionItem.problemSlug === currentProblem.slug &&
+        (normalizeProgressLanguage(submissionItem.language) === currentProblem.language)
     )
   }, [submissions, currentProblem])
 
@@ -185,7 +195,8 @@ export const RevisePage: React.FC = () => {
     if (currentProblem?.bestCode) {
       navigator.clipboard.writeText(currentProblem.bestCode)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000)
     }
   }
 

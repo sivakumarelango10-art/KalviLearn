@@ -91,6 +91,8 @@ model UserProgress {
   xpEarned  Int       @default(0)
 
   @@unique([userId, problemId])
+  @@index([status])
+  @@index([userId, status])
 }
 
 model Submission {
@@ -108,6 +110,8 @@ model Submission {
   createdAt       DateTime @default(now())
 
   @@index([userId, problemId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
 }
 
 // ─── Auth / Identity ──────────────────────────────────────────────────────────

@@ -16,11 +16,18 @@ import { useAuth } from '@/contexts/AuthContext'
 export const LoginPage: React.FC = () => {
   const { user, accessDenied, deniedEmail, deniedReason, clearAccessDenied } = useAuth()
   const location = useLocation()
-  const defaultDestination = user?.role === 'MENTOR' ? '/mentor' : '/dashboard'
+  const defaultDestination =
+    user?.role === 'CAMPUS_MANAGER'
+      ? '/campus/dashboard'
+      : user?.role === 'MENTOR'
+      ? '/mentor'
+      : '/dashboard'
   const stateFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
   let targetDestination = defaultDestination
   if (stateFrom && stateFrom !== '/' && stateFrom !== '/login') {
-    if (user?.role === 'MENTOR') {
+    if (user?.role === 'CAMPUS_MANAGER') {
+      targetDestination = stateFrom.startsWith('/campus') ? stateFrom : '/campus/dashboard'
+    } else if (user?.role === 'MENTOR') {
       targetDestination = stateFrom.startsWith('/mentor') ? stateFrom : '/mentor'
     } else {
       targetDestination = stateFrom

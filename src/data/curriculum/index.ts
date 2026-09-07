@@ -21,17 +21,17 @@ export const CURRICULA: Record<ProgrammingLanguage, LanguageCurriculum> = {
 
 export function isValidLanguage(lang: string | null | undefined): lang is ProgrammingLanguage {
   if (!lang) return false
-  const l = lang.toLowerCase()
-  return SUPPORTED_LANGUAGES.includes(l as ProgrammingLanguage)
+  const normalizedLang = lang.toLowerCase()
+  return SUPPORTED_LANGUAGES.includes(normalizedLang as ProgrammingLanguage)
 }
 
 export function normalizeLanguageSlug(lang: string | null | undefined): ProgrammingLanguage {
   if (!lang) return 'python'
-  const l = lang.toLowerCase()
-  if (l === 'javascript' || l === 'node' || l === 'nodejs' || l === 'js') return 'nodejs'
-  if (l === 'java') return 'java'
-  if (l === 'cpp' || l === 'c++') return 'cpp'
-  if (l === 'python') return 'python'
+  const normalizedLang = lang.toLowerCase()
+  if (normalizedLang === 'javascript' || normalizedLang === 'node' || normalizedLang === 'nodejs' || normalizedLang === 'js') return 'nodejs'
+  if (normalizedLang === 'java') return 'java'
+  if (normalizedLang === 'cpp' || normalizedLang === 'c++') return 'cpp'
+  if (normalizedLang === 'python') return 'python'
   return 'python'
 }
 
@@ -46,7 +46,7 @@ export function getProblemByLanguageAndSlug(
 ): LanguageProblem | null {
   const curriculum = getCurriculum(lang)
   for (const belt of curriculum.belts) {
-    const found = belt.problems.find((p) => p.slug === slug)
+    const found = belt.problems.find((problem) => problem.slug === slug)
     if (found) return found
   }
   return null
