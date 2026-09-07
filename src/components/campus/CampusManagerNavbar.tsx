@@ -7,8 +7,6 @@ import {
   LogOut,
   User,
   ShieldCheck,
-  GraduationCap,
-  ExternalLink,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { BrandLogo } from '@/components/common/BrandLogo'
@@ -84,30 +82,8 @@ export const CampusManagerNavbar: React.FC<CampusManagerNavbarProps> = ({
         </Link>
       </div>
 
-      {/* Right: Quick Switchers & User Dropdown */}
+      {/* Right: User Dropdown */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Switch to Mentor View */}
-        <Link
-          to="/mentor"
-          className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200"
-          title="Preview Mentor Cockpit"
-        >
-          <ShieldCheck className="w-3.5 h-3.5 text-neutral-500" />
-          <span>Mentor View</span>
-          <ExternalLink className="w-3 h-3 text-neutral-400" />
-        </Link>
-
-        {/* Quick Switch to Student View */}
-        <Link
-          to="/dashboard"
-          className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200"
-          title="Preview Student Learning Platform"
-        >
-          <GraduationCap className="w-3.5 h-3.5 text-neutral-500" />
-          <span>Student View</span>
-          <ExternalLink className="w-3 h-3 text-neutral-400" />
-        </Link>
-
         {/* Manager User Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
