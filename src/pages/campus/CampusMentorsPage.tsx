@@ -364,7 +364,7 @@ export const CampusMentorsPage: React.FC = () => {
       {/* ── Mentor Details Drawer ────────────────────────────────────────── */}
       {selectedMentor && createPortal(
         <div
-          className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex justify-end h-screen h-[100dvh] w-screen overflow-hidden animate-in fade-in duration-200"
           style={{ overscrollBehavior: 'contain' }}
         >
           {/* Backdrop */}
@@ -376,7 +376,7 @@ export const CampusMentorsPage: React.FC = () => {
 
           {/* Drawer Panel: Viewport height, flex column, overflow-hidden */}
           <div
-            className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-full max-h-screen flex flex-col overflow-hidden animate-in slide-in-from-right duration-250"
+            className="relative w-full max-w-xl bg-white shadow-2xl z-50 h-screen h-[100dvh] max-h-screen flex flex-col overflow-hidden animate-in slide-in-from-right duration-250"
             style={{ overscrollBehavior: 'contain' }}
             role="dialog"
             aria-modal="true"
@@ -447,7 +447,7 @@ export const CampusMentorsPage: React.FC = () => {
               ) : (
                 <div
                   ref={studentListRef}
-                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs custom-drawer-scrollbar"
+                  className="flex-1 min-h-0 max-h-[calc(100dvh-260px)] overflow-y-auto overscroll-contain border border-neutral-200 rounded-2xl divide-y divide-neutral-100 bg-white shadow-2xs custom-drawer-scrollbar"
                   style={{
                     overscrollBehavior: 'contain',
                     WebkitOverflowScrolling: 'touch',
