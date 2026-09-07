@@ -28,7 +28,6 @@ export const CampusMentorsPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newName, setNewName] = useState('')
   const [newEmail, setNewEmail] = useState('')
-  const [newCode, setNewCode] = useState('')
   const [newCapacity, setNewCapacity] = useState(30)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -116,8 +115,7 @@ export const CampusMentorsPage: React.FC = () => {
       const normalizedSearch = search.toLowerCase()
       const matchesSearch =
         m.name.toLowerCase().includes(normalizedSearch) ||
-        m.email.toLowerCase().includes(normalizedSearch) ||
-        m.mentorCode.toLowerCase().includes(normalizedSearch)
+        m.email.toLowerCase().includes(normalizedSearch)
 
       if (!matchesSearch) return false
       if (statusFilter !== 'ALL' && m.status !== statusFilter) return false
@@ -145,7 +143,7 @@ export const CampusMentorsPage: React.FC = () => {
   // Handle Add Mentor submit
   const handleAddMentorSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newName.trim() || !newEmail.trim() || !newCode.trim()) {
+    if (!newName.trim() || !newEmail.trim()) {
       setFormError('Please fill in all required fields.')
       return
     }
@@ -154,10 +152,11 @@ export const CampusMentorsPage: React.FC = () => {
     setFormError(null)
 
     try {
+      const autoCode = 'MNT-' + Date.now().toString(36).toUpperCase()
       const res = await addCampusMentor({
         name: newName,
         email: newEmail,
-        mentorCode: newCode,
+        mentorCode: autoCode,
         maxStudents: Number(newCapacity),
       })
 
@@ -171,7 +170,6 @@ export const CampusMentorsPage: React.FC = () => {
       setIsAddModalOpen(false)
       setNewName('')
       setNewEmail('')
-      setNewCode('')
       setNewCapacity(30)
       await loadData()
     } catch (err: unknown) {
@@ -316,9 +314,6 @@ export const CampusMentorsPage: React.FC = () => {
                     <h3 className="text-base font-bold text-neutral-900 group-hover:text-[#ED2A2B] transition-colors">
                       {mentor.name}
                     </h3>
-                    <span className="text-[11px] font-mono text-neutral-400">
-                      {mentor.mentorCode}
-                    </span>
                   </div>
                 </div>
 
@@ -403,7 +398,7 @@ export const CampusMentorsPage: React.FC = () => {
                     {selectedMentor.name}
                   </h2>
                   <span className="text-xs text-neutral-500 font-mono block truncate">
-                    {selectedMentor.mentorCode} • {selectedMentor.email}
+                    {selectedMentor.email}
                   </span>
                 </div>
               </div>
@@ -559,29 +554,16 @@ export const CampusMentorsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-neutral-700 mb-1">Mentor Code *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newCode}
-                    onChange={(e) => setNewCode(e.target.value)}
-                    placeholder="KALVI-MTR-07"
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl uppercase font-mono focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-neutral-700 mb-1">Max Capacity</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={newCapacity}
-                    onChange={(e) => setNewCapacity(Number(e.target.value))}
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
-                  />
-                </div>
+              <div>
+                <label className="block font-bold text-neutral-700 mb-1">Max Capacity</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={newCapacity}
+                  onChange={(e) => setNewCapacity(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
+                />
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-3">

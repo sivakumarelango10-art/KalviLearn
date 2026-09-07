@@ -227,7 +227,6 @@ export const CampusAnalyticsPage: React.FC = () => {
                   <div key={m.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-2xl text-xs hover:bg-neutral-100/70 transition-colors">
                     <div>
                       <p className="font-semibold text-neutral-900">{m.name}</p>
-                      <span className="text-[11px] font-mono text-neutral-400">{m.mentorCode}</span>
                     </div>
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
                       {m.status}
