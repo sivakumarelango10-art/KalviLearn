@@ -198,20 +198,20 @@ export const CampusAnalyticsPage: React.FC = () => {
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-7 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4">
-              <h3 className="text-base font-bold text-neutral-900">Mentor Cohort Loads</h3>
-              <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold text-neutral-900">Mentor Cohort Loads</h3>
+                <span className="text-xs text-neutral-400 font-medium">{mentors.length} Mentors</span>
+              </div>
+              <div className="space-y-2">
                 {mentors.map((m) => (
-                  <div key={m.id} className="space-y-1 text-xs">
-                    <div className="flex justify-between font-semibold">
-                      <span className="text-neutral-800">{m.name}</span>
-                      <span className="text-neutral-500 font-mono">{m.totalStudents} / {m.maxStudents} students</span>
-                    </div>
-                    <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-purple-600 rounded-full"
-                        style={{ width: `${m.capacityPercent}%` }}
-                      />
-                    </div>
+                  <div
+                    key={m.id}
+                    className="flex items-center justify-between p-3 bg-neutral-50 rounded-2xl text-xs hover:bg-neutral-100/70 transition-colors"
+                  >
+                    <span className="font-semibold text-neutral-800">{m.name}</span>
+                    <span className="font-bold text-neutral-900 font-mono bg-white px-3 py-1 rounded-xl border border-neutral-200/70 shadow-2xs">
+                      {m.totalStudents} {m.totalStudents === 1 ? 'student' : 'students'}
+                    </span>
                   </div>
                 ))}
               </div>

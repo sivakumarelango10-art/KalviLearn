@@ -91,10 +91,7 @@ export const MentorProfilePage: React.FC = () => {
               Cohort Size:
             </span>
             <span className="font-bold text-neutral-900">
-              {mentorProfile
-                ? `${studentCount} / ${mentorProfile.maxStudents} Students`
-                : studentCount > 0 ? `${studentCount} Assigned Students` : '—'
-              }
+              {studentCount > 0 ? `${studentCount} Assigned Students` : '0 Assigned Students'}
             </span>
           </div>
         </div>

@@ -433,57 +433,37 @@ export const CampusDashboardPage: React.FC = () => {
           </div>
 
           <div className="p-6 space-y-6">
-            {/* Capacity Progress */}
-            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-neutral-800">Overall Capacity Utilization</span>
-                <span className="text-xs font-extrabold text-neutral-900 font-mono">
-                  {totalAssignedStudents}/{totalMentorCapacity}
-                  <span className="font-normal text-neutral-500 ml-1">({mentorCapacityPercent}%)</span>
-                </span>
+            {/* Assigned Scholars Cohort */}
+            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-neutral-800 block">Total Guided Scholars</span>
+                <p className="text-[11px] text-neutral-500 mt-0.5">Assigned across {mentors.length} active mentors</p>
               </div>
-              <div className="w-full h-2.5 bg-neutral-200/80 rounded-full overflow-hidden">
-                <div
-                  style={{ width: `${mentorCapacityPercent}%` }}
-                  className="bg-neutral-900 h-full rounded-full transition-all duration-700"
-                />
-              </div>
-              <p className="text-[11px] text-neutral-500 font-medium">
-                {totalMentorCapacity - totalAssignedStudents} seats available for new scholars
-              </p>
+              <span className="text-xl font-extrabold text-neutral-900 font-mono">
+                {totalAssignedStudents} <span className="text-xs font-medium text-neutral-500">students</span>
+              </span>
             </div>
 
             {/* Mentor quick list */}
             <div>
               <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2.5">Active Faculty Mentors</p>
               <div className="space-y-1.5">
-                {mentors.slice(0, 4).map((m) => {
-                  const pct = Math.round((m.totalStudents / Math.max(1, m.maxStudents)) * 100)
-                  return (
-                    <div key={m.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-neutral-50 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-neutral-900 text-white font-extrabold text-xs flex items-center justify-center flex-shrink-0">
-                        {m.name.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-neutral-900 truncate">{m.name}</p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <div className="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                            <div
-                              style={{ width: `${pct}%` }}
-                              className="bg-neutral-900 h-full rounded-full"
-                            />
-                          </div>
-                          <span className="text-[10px] font-mono text-neutral-400 whitespace-nowrap">
-                            {m.totalStudents}/{m.maxStudents}
-                          </span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap border border-emerald-100">
-                        {m.avgPassRate}% pass
-                      </span>
+                {mentors.slice(0, 4).map((m) => (
+                  <div key={m.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-neutral-50 transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-neutral-900 text-white font-extrabold text-xs flex items-center justify-center flex-shrink-0">
+                      {m.name.charAt(0)}
                     </div>
-                  )
-                })}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-neutral-900 truncate">{m.name}</p>
+                      <p className="text-[11px] font-semibold text-neutral-500 font-mono mt-0.5">
+                        {m.totalStudents} {m.totalStudents === 1 ? 'student' : 'students'}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap border border-emerald-100">
+                      {m.avgPassRate}% pass
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

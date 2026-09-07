@@ -67,8 +67,8 @@ export const CampusMentorsPage: React.FC = () => {
 
       if (!matchesSearch) return false
       if (statusFilter !== 'ALL' && m.status !== statusFilter) return false
-      if (capacityFilter === 'AVAILABLE' && m.totalStudents >= m.maxStudents) return false
-      if (capacityFilter === 'FULL' && m.totalStudents < m.maxStudents) return false
+      if (capacityFilter === 'AVAILABLE' && m.totalStudents === 0) return false
+      if (capacityFilter === 'FULL' && m.totalStudents > 0) return false
 
       return true
     })
@@ -217,28 +217,28 @@ export const CampusMentorsPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Capacity Filter */}
+          {/* Cohort Filter */}
           <div className="flex items-center bg-neutral-100 p-1 rounded-xl text-xs font-semibold">
             <button
               type="button"
               onClick={() => setCapacityFilter('ALL')}
               className={`px-3 py-1.5 rounded-lg transition-all ${capacityFilter === 'ALL' ? 'bg-white text-neutral-900 shadow-2xs' : 'text-neutral-500 hover:text-neutral-900'}`}
             >
-              All Capacity
+              All Mentors
             </button>
             <button
               type="button"
               onClick={() => setCapacityFilter('AVAILABLE')}
               className={`px-3 py-1.5 rounded-lg transition-all ${capacityFilter === 'AVAILABLE' ? 'bg-white text-neutral-900 shadow-2xs' : 'text-neutral-500 hover:text-neutral-900'}`}
             >
-              Has Seats
+              With Students
             </button>
             <button
               type="button"
               onClick={() => setCapacityFilter('FULL')}
               className={`px-3 py-1.5 rounded-lg transition-all ${capacityFilter === 'FULL' ? 'bg-white text-neutral-900 shadow-2xs' : 'text-neutral-500 hover:text-neutral-900'}`}
             >
-              Full
+              No Students
             </button>
           </div>
         </div>
@@ -284,28 +284,13 @@ export const CampusMentorsPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Middle metrics: Capacity & Performance */}
+            {/* Middle metrics: Students Guidance & Performance */}
             <div className="space-y-3 pt-3 border-t border-neutral-100">
-              {/* Capacity Bar */}
-              <div>
-                <div className="flex items-center justify-between text-xs font-semibold mb-1">
-                  <span className="text-neutral-600">Students Guidance</span>
-                  <span className="text-neutral-900 font-bold">
-                    {mentor.totalStudents} / {mentor.maxStudents} ({mentor.capacityPercent}%)
-                  </span>
-                </div>
-                <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
-                  <div
-                    style={{ width: `${mentor.capacityPercent}%` }}
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      mentor.capacityPercent >= 90
-                        ? 'bg-red-500'
-                        : mentor.capacityPercent >= 70
-                        ? 'bg-amber-500'
-                        : 'bg-neutral-900'
-                    }`}
-                  />
-                </div>
+              <div className="flex items-center justify-between text-xs font-semibold p-2.5 bg-neutral-50 rounded-xl border border-neutral-100/80">
+                <span className="text-neutral-600">Students Guidance</span>
+                <span className="text-neutral-900 font-bold font-mono">
+                  {mentor.totalStudents} {mentor.totalStudents === 1 ? 'student' : 'students'}
+                </span>
               </div>
 
               {/* Performance Scores */}
@@ -367,19 +352,17 @@ export const CampusMentorsPage: React.FC = () => {
 
             {/* Drawer Body */}
             <div className="p-6 space-y-6 flex-1">
-              {/* 1. Mentor Information & Capacity */}
+              {/* 1. Mentor Information: Cohort & Performance */}
               <div className="p-5 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-4">
                 <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                  Guidance Capacity & Performance
+                  Guidance Cohort & Performance
                 </h3>
-                <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="grid grid-cols-2 gap-3 text-center">
                   <div className="p-3 bg-white rounded-xl shadow-2xs">
                     <span className="text-[10px] text-neutral-500 font-semibold uppercase">Total Scholars</span>
-                    <p className="text-lg font-extrabold text-neutral-900 mt-0.5">{selectedMentor.totalStudents}</p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl shadow-2xs">
-                    <span className="text-[10px] text-neutral-500 font-semibold uppercase">Capacity</span>
-                    <p className="text-lg font-extrabold text-purple-700 mt-0.5">{selectedMentor.capacityPercent}%</p>
+                    <p className="text-lg font-extrabold text-neutral-900 mt-0.5">
+                      {selectedMentor.totalStudents} {selectedMentor.totalStudents === 1 ? 'Student' : 'Students'}
+                    </p>
                   </div>
                   <div className="p-3 bg-white rounded-xl shadow-2xs">
                     <span className="text-[10px] text-neutral-500 font-semibold uppercase">Pass Rate</span>

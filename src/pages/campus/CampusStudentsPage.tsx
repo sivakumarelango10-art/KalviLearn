@@ -447,7 +447,7 @@ export const CampusStudentsPage: React.FC = () => {
                     <option value="NONE">No Mentor for now (Unassigned)</option>
                     {mentors.map((m) => (
                       <option key={m.id} value={m.id}>
-                        {m.name} ({m.totalStudents}/{m.maxStudents} seats)
+                        {m.name} ({m.totalStudents} {m.totalStudents === 1 ? 'student' : 'students'})
                       </option>
                     ))}
                   </select>
@@ -576,7 +576,7 @@ export const CampusStudentsPage: React.FC = () => {
                   <option value="NONE">No Mentor for now</option>
                   {mentors.map((m, index) => (
                     <option key={m.id} value={m.id}>
-                      Mentor {index + 1}: {m.name} ({m.totalStudents}/{m.maxStudents} seats)
+                      Mentor {index + 1}: {m.name} ({m.totalStudents} {m.totalStudents === 1 ? 'student' : 'students'})
                     </option>
                   ))}
                 </select>
