@@ -53,14 +53,23 @@ export function lazyWithRetry<T extends ComponentType<any>>(
       } catch (error: unknown) {
         if (isChunkLoadError(error)) {
           const storageKey = `${RELOAD_KEY_PREFIX}${chunkKey}`
-          const lastReload = sessionStorage.getItem(storageKey)
+          let lastReload: string | null = null
+          try {
+            lastReload = sessionStorage.getItem(storageKey)
+          } catch {
+            lastReload = null
+          }
           const now = Date.now()
 
           // Check if we already attempted a reload recently for this chunk
           const hasRecentlyReloaded = lastReload && now - parseInt(lastReload, 10) < RELOAD_COOLDOWN_MS
 
           if (!hasRecentlyReloaded) {
-            sessionStorage.setItem(storageKey, String(now))
+            try {
+              sessionStorage.setItem(storageKey, String(now))
+            } catch {
+              // Ignore storage errors in restricted contexts
+            }
             console.warn(
               `[ChunkRecovery] Stale chunk detected for module "${chunkKey}". Reloading page to fetch latest deployment...`
             )

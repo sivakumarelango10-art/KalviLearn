@@ -9,16 +9,24 @@ export const CampusStudentLeaderboardPage: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Student Leaderboard — Campus Manager'
+    let isMounted = true
     const load = async () => {
       setIsLoading(true)
       try {
         const data = await fetchStudentLeaderboard(timeframe)
-        setLeaderboard(data)
+        if (isMounted) {
+          setLeaderboard(data)
+        }
       } finally {
-        setIsLoading(false)
+        if (isMounted) {
+          setIsLoading(false)
+        }
       }
     }
     load()
+    return () => {
+      isMounted = false
+    }
   }, [timeframe])
 
   if (isLoading) {

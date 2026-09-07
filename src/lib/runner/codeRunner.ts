@@ -1,4 +1,5 @@
 import { executeInWorker, type ExecutionResult } from './workerRunner'
+import { getActiveUserId } from '../progress'
 
 export interface TestCaseExecution {
   testIndex: number
@@ -68,7 +69,7 @@ export async function executeCode(
 
     try {
       const endpoint = isSubmit ? '/api/submit' : '/api/execute'
-      const activeUserId = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('kalvi_active_user') || '{}')?.id : null
+      const activeUserId = getActiveUserId()
       const idempotencyKey = isSubmit ? `sub_${questionSlug}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}` : undefined
 
       const response = await fetch(endpoint, {
@@ -87,8 +88,6 @@ export async function executeCode(
         }),
         signal: controller.signal,
       })
-
-      clearTimeout(timeoutId)
 
       // HTTP 200: Successful execution
       if (response.status === 200) {
@@ -168,13 +167,14 @@ export async function executeCode(
         apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
       }
     } catch (err: unknown) {
-      clearTimeout(timeoutId)
       const isAbort = err instanceof Error && err.name === 'AbortError'
       if (isAbort) {
         apiErrorMessage = 'Execution request timed out (15-second limit exceeded). Please optimize your solution or try again.'
       } else {
         apiErrorMessage = 'Unable to connect to the execution server. Please check your network connection.'
       }
+    } finally {
+      clearTimeout(timeoutId)
     }
   } else {
     apiErrorMessage = 'You are currently working offline. Please reconnect to the internet to submit code.'

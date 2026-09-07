@@ -74,9 +74,9 @@ export const DashboardPage: React.FC = () => {
     return null
   }, [userState.solvedSlugs])
 
-  const totalProblems = 85
+  const totalProblems = useMemo(() => problemsData.reduce((acc, belt) => acc + belt.problems.length, 0), [])
   const totalSolved = userState.solvedSlugs.length
-  const overallPercent = Math.round((totalSolved / totalProblems) * 100)
+  const overallPercent = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0
 
   // Current active Belt
   const currentBelt = useMemo(() => {

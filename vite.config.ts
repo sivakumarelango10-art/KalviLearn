@@ -29,7 +29,7 @@ function apiPlugin(): Plugin {
       req.on('end', async () => {
         try {
           const body = JSON.parse(rawData || '{}')
-          const { questionSlug, language, code, isSubmit = true } = body || {}
+          const { questionSlug, language, code } = body || {}
 
           if (!questionSlug || !language || !code) {
             res.statusCode = 400
@@ -39,7 +39,7 @@ function apiPlugin(): Plugin {
                 success: false,
                 error: 'Missing Parameters',
                 message: 'questionSlug, language, and code are required.',
-                total: isSubmit ? 10 : 3,
+                total: 10,
                 passed: 0,
                 testCases: [],
               })

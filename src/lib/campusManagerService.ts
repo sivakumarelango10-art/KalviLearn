@@ -244,7 +244,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
     const passedSubs = subs.filter((s) => s.status === 'PASSED').length
     const campusPassRate = subs.length > 0
       ? Math.round((passedSubs / subs.length) * 1000) / 10
-      : 100
+      : 0
 
     const totalXpDistributed = prog.reduce((acc, p) => acc + (p.xpEarned || 50), 0)
     const solvedProg = prog.filter((p) => p.status === 'SOLVED')
@@ -836,7 +836,7 @@ export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnal
   try {
     const [studentsData, subsRes, progRes] = await Promise.all([
       fetchCampusStudents(),
-      supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests'),
+      supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests, Problem(title, slug)'),
       supabase.from('UserProgress').select('id, problemId, language, status, solvedAt'),
     ])
 
@@ -909,23 +909,26 @@ export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnal
       }
     }
 
-    const problemSubMap = new Map<string, { total: number; passed: number }>()
+    const problemSubMap = new Map<string, { total: number; passed: number; title?: string; slug?: string }>()
     for (const s of subs) {
       if (!s.problemId) continue
       const curr = problemSubMap.get(s.problemId) || { total: 0, passed: 0 }
       curr.total++
       if (s.status === 'PASSED') curr.passed++
+      const probObj = s.Problem as { title?: string; slug?: string } | null
+      if (probObj?.title) curr.title = probObj.title
+      if (probObj?.slug) curr.slug = probObj.slug
       problemSubMap.set(s.problemId, curr)
     }
 
     let bottlenecks: ProblemBottleneck[] = []
     if (problemSubMap.size > 0) {
       for (const [probId, stats] of problemSubMap.entries()) {
-        const info = problemMap.get(probId)
+        const info = problemMap.get(stats.slug || probId)
         const passRate = Math.round((stats.passed / stats.total) * 1000) / 10
         bottlenecks.push({
           id: probId,
-          title: info?.title || probId,
+          title: stats.title || info?.title || probId,
           belt: info?.belt || 'Curriculum Challenge',
           passRate,
           totalSubmissions: stats.total,

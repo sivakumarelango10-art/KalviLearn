@@ -14,7 +14,25 @@ interface RateRecord {
 }
 const rateLimitMap = new Map<string, RateRecord>()
 
+// In-memory idempotency deduplication cache
+const idempotencyCache = new Map<string, { timestamp: number; response: any }>()
+
+function pruneSubmitCaches() {
+  const now = Date.now()
+  if (rateLimitMap.size > 2000) {
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now > record.resetTime) rateLimitMap.delete(key)
+    }
+  }
+  if (idempotencyCache.size > 2000) {
+    for (const [key, val] of idempotencyCache.entries()) {
+      if (now - val.timestamp > 120000) idempotencyCache.delete(key)
+    }
+  }
+}
+
 function checkRateLimit(key: string, maxLimit = 30, windowMs = 60000): { allowed: boolean; retryAfter?: number } {
+  pruneSubmitCaches()
   const now = Date.now()
   const record = rateLimitMap.get(key)
   if (!record || now > record.resetTime) {
@@ -28,9 +46,6 @@ function checkRateLimit(key: string, maxLimit = 30, windowMs = 60000): { allowed
   record.count++
   return { allowed: true }
 }
-
-// In-memory idempotency deduplication cache
-const idempotencyCache = new Map<string, { timestamp: number; response: any }>()
 
 export default async function handler(
   req: IncomingMessage & { body?: unknown; query?: unknown },

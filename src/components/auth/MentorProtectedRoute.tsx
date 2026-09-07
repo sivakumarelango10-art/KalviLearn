@@ -38,7 +38,7 @@ export const MentorProtectedRoute: React.FC = () => {
 
   // Role check: Only mentors and super-admins can access the Mentor Panel
   if (user.role !== 'MENTOR' && user.role !== 'ADMIN') {
-    // Non-mentor scholars are directed to the student platform
+    // Non-mentor students are directed to the student platform
     return <Navigate to="/dashboard" replace />
   }
 

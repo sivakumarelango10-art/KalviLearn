@@ -6713,7 +6713,16 @@ async function executeQuestion(req) {
 
 // src/server/apiHandler.ts
 var rateLimitMap = /* @__PURE__ */ new Map();
+function pruneRateLimitMap() {
+  if (rateLimitMap.size > 2e3) {
+    const now = Date.now();
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now > record.resetTime) rateLimitMap.delete(key);
+    }
+  }
+}
 function checkRateLimit(ip, maxLimit = 60, windowMs = 6e4) {
+  pruneRateLimitMap();
   const now = Date.now();
   const record = rateLimitMap.get(ip);
   if (!record || now > record.resetTime) {

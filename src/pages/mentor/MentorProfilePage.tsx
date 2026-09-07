@@ -17,7 +17,7 @@ export const MentorProfilePage: React.FC = () => {
   useEffect(() => {
     let isMounted = true
     Promise.all([
-      fetchMentorRoster(user?.id),
+      fetchMentorRoster(user?.id || user?.email),
       user?.id ? getMentorProfile(user.id) : Promise.resolve(null),
     ]).then(([students, profile]) => {
       if (isMounted) {
@@ -26,7 +26,7 @@ export const MentorProfilePage: React.FC = () => {
       }
     }).catch(console.warn)
     return () => { isMounted = false }
-  }, [user?.id])
+  }, [user?.id, user?.email])
 
   const mentorName =
     mentorProfile?.name || mentorProfile?.user?.name || user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')

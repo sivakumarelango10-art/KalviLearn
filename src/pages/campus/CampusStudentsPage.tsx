@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Search,
@@ -36,14 +36,15 @@ export const CampusStudentsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [successToast, setSuccessToast] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Student Details Drawer State
   const [selectedStudent, setSelectedStudent] = useState<CampusStudentStat | null>(null)
   const [reassignMentorId, setReassignMentorId] = useState<string>('')
   const [isReassigning, setIsReassigning] = useState(false)
 
-  const loadData = async () => {
-    setIsLoading(true)
+  const loadData = async (isInitial = false) => {
+    if (isInitial) setIsLoading(true)
     try {
       const [studentsData, mentorsData] = await Promise.all([
         fetchCampusStudents(),
@@ -52,17 +53,20 @@ export const CampusStudentsPage: React.FC = () => {
       setStudents(studentsData)
       setMentors(mentorsData)
     } finally {
-      setIsLoading(false)
+      if (isInitial) setIsLoading(false)
     }
   }
 
   useEffect(() => {
     document.title = 'Students Directory — Campus Manager'
-    loadData()
+    loadData(true)
     const unsubscribe = subscribeToCampusUpdates(() => {
-      loadData()
+      loadData(false)
     })
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    }
   }, [])
 
   // Filtered students (sorted alphabetically)
@@ -114,7 +118,8 @@ export const CampusStudentsPage: React.FC = () => {
       }
 
       setSuccessToast(`Student ${newName} enrolled successfully!`)
-      setTimeout(() => setSuccessToast(null), 4000)
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+      toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
       setIsAddModalOpen(false)
       setNewName('')
       setNewEmail('')
@@ -137,7 +142,8 @@ export const CampusStudentsPage: React.FC = () => {
       if (res.success) {
         const assignedName = mentors.find((m) => m.id === mentorId)?.name || 'Unassigned'
         setSuccessToast(`Student mentor updated to: ${assignedName}`)
-        setTimeout(() => setSuccessToast(null), 4000)
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+        toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
         setSelectedStudent({
           ...selectedStudent,
           mentorId,

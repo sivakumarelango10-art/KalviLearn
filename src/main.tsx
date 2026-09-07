@@ -2,11 +2,20 @@
 if (typeof window !== 'undefined') {
   window.addEventListener('vite:preloadError', (event: Event) => {
     const key = 'kalvi_last_preload_reload'
-    const lastReload = sessionStorage.getItem(key)
+    let lastReload: string | null = null
+    try {
+      lastReload = sessionStorage.getItem(key)
+    } catch {
+      lastReload = null
+    }
     const now = Date.now()
 
     if (!lastReload || now - parseInt(lastReload, 10) > 15000) {
-      sessionStorage.setItem(key, String(now))
+      try {
+        sessionStorage.setItem(key, String(now))
+      } catch {
+        // Ignore storage errors in restricted contexts
+      }
       console.warn('[Vite] Preload error detected. Reloading to obtain latest deployment assets...')
       window.location.reload()
     } else {

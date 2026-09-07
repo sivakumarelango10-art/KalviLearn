@@ -32,6 +32,7 @@ export const CampusMentorsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [successToast, setSuccessToast] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Mentor Details Drawer state
   const [selectedMentor, setSelectedMentor] = useState<CampusMentorStat | null>(null)
@@ -45,23 +46,26 @@ export const CampusMentorsPage: React.FC = () => {
     }
   }, [selectedMentor?.id])
 
-  const loadData = async () => {
-    setIsLoading(true)
+  const loadData = async (isInitial = false) => {
+    if (isInitial) setIsLoading(true)
     try {
       const data = await fetchCampusMentors()
       setMentors(data)
     } finally {
-      setIsLoading(false)
+      if (isInitial) setIsLoading(false)
     }
   }
 
   useEffect(() => {
     document.title = 'Faculty Mentors — Campus Manager'
-    loadData()
+    loadData(true)
     const unsubscribe = subscribeToCampusUpdates(() => {
-      loadData()
+      loadData(false)
     })
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    }
   }, [])
 
   // Lock background scrolling when drawer or modal is open
@@ -166,7 +170,8 @@ export const CampusMentorsPage: React.FC = () => {
       }
 
       setSuccessToast(`Mentor ${newName} registered successfully!`)
-      setTimeout(() => setSuccessToast(null), 4000)
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+      toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
       setIsAddModalOpen(false)
       setNewName('')
       setNewEmail('')

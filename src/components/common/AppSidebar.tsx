@@ -115,7 +115,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-neutral-800 truncate">
-              {user?.name || user?.email?.split('@')[0] || 'Kalvi Scholar'}
+              {user?.name || user?.email?.split('@')[0] || 'Kalvi Student'}
             </div>
             <div className="text-[10px] text-neutral-400 truncate">
               {user?.email || 'Student Portal'}

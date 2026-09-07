@@ -54,29 +54,31 @@ export const LearnPage: React.FC = () => {
 
   // Active learning unit
   const currentUnit = useMemo(() => {
+    const units = currentModule?.learningUnits || []
     return (
-      currentModule.learningUnits.find((u) => u.order === selectedUnitOrder) ||
-      currentModule.learningUnits[0]
+      units.find((u) => u.order === selectedUnitOrder) ||
+      units[0]
     )
   }, [currentModule, selectedUnitOrder])
 
   // Navigation: previous and next unit
-  const currentUnitIndex = currentModule.learningUnits.findIndex(
-    (u) => u.order === currentUnit.order
+  const units = currentModule?.learningUnits || []
+  const currentUnitIndex = units.findIndex(
+    (u) => u.order === currentUnit?.order
   )
 
   const hasPrev = currentUnitIndex > 0
-  const hasNext = currentUnitIndex < currentModule.learningUnits.length - 1
+  const hasNext = currentUnitIndex !== -1 && currentUnitIndex < units.length - 1
 
   const handlePrev = () => {
-    if (hasPrev) {
-      setSelectedUnitOrder(currentModule.learningUnits[currentUnitIndex - 1].order)
+    if (hasPrev && units[currentUnitIndex - 1]) {
+      setSelectedUnitOrder(units[currentUnitIndex - 1].order)
     }
   }
 
   const handleNext = () => {
-    if (hasNext) {
-      setSelectedUnitOrder(currentModule.learningUnits[currentUnitIndex + 1].order)
+    if (hasNext && units[currentUnitIndex + 1]) {
+      setSelectedUnitOrder(units[currentUnitIndex + 1].order)
     }
   }
 

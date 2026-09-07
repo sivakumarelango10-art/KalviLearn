@@ -8,7 +8,17 @@ interface RateRecord {
 }
 const rateLimitMap = new Map<string, RateRecord>()
 
+function pruneRateLimitMap() {
+  if (rateLimitMap.size > 2000) {
+    const now = Date.now()
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now > record.resetTime) rateLimitMap.delete(key)
+    }
+  }
+}
+
 function checkRateLimit(ip: string, maxLimit = 60, windowMs = 60000): { allowed: boolean; retryAfter?: number } {
+  pruneRateLimitMap()
   const now = Date.now()
   const record = rateLimitMap.get(ip)
   if (!record || now > record.resetTime) {

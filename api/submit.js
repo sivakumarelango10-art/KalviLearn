@@ -28444,7 +28444,22 @@ var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "
 var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
 var supabaseServer = createClient(supabaseUrl, supabaseKey);
 var rateLimitMap = /* @__PURE__ */ new Map();
+var idempotencyCache = /* @__PURE__ */ new Map();
+function pruneSubmitCaches() {
+  const now = Date.now();
+  if (rateLimitMap.size > 2e3) {
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now > record.resetTime) rateLimitMap.delete(key);
+    }
+  }
+  if (idempotencyCache.size > 2e3) {
+    for (const [key, val] of idempotencyCache.entries()) {
+      if (now - val.timestamp > 12e4) idempotencyCache.delete(key);
+    }
+  }
+}
 function checkRateLimit(key, maxLimit = 30, windowMs = 6e4) {
+  pruneSubmitCaches();
   const now = Date.now();
   const record = rateLimitMap.get(key);
   if (!record || now > record.resetTime) {
@@ -28458,7 +28473,6 @@ function checkRateLimit(key, maxLimit = 30, windowMs = 6e4) {
   record.count++;
   return { allowed: true };
 }
-var idempotencyCache = /* @__PURE__ */ new Map();
 async function handler(req, res) {
   const sendJson = (statusCode, data) => {
     if (typeof res.status === "function" && typeof res.json === "function") {
