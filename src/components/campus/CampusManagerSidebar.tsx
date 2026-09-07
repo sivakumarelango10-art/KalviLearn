@@ -96,10 +96,13 @@ export const CampusManagerSidebar: React.FC<CampusManagerSidebarProps> = ({
       )}
     >
       {/* Brand Header */}
-      <div className="h-16 px-6 flex items-center border-b border-neutral-100">
+      <div className="h-16 px-5 flex items-center justify-between border-b border-neutral-100">
         <Link to="/campus/dashboard" className="flex items-center gap-2.5">
           <BrandLogo size="sm" orientation="horizontal" />
         </Link>
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#ED2A2B] border border-red-200 uppercase tracking-wider">
+          Manager
+        </span>
       </div>
 
       {/* Navigation Links */}
