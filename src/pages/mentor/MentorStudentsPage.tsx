@@ -150,23 +150,6 @@ export const MentorStudentsPage: React.FC = () => {
 
   const attentionCount = students.filter((s) => s.needsAttention).length
 
-  // Cohort total solved count per language
-  const cohortLangCounts = useMemo(() => {
-    const counts = { all: 0, cpp: 0, python: 0, java: 0, nodejs: 0 }
-    for (const s of students) {
-      counts.all += s.solvedProblems?.length || 0
-      counts.cpp += s.languageSolvedCounts?.cpp || 0
-      counts.python += s.languageSolvedCounts?.python || 0
-      counts.java += s.languageSolvedCounts?.java || 0
-      counts.nodejs += s.languageSolvedCounts?.nodejs || 0
-    }
-    return counts
-  }, [students])
-
-  const studentsWithSolvedInLang = useMemo(() => {
-    if (langFilter === 'all') return students.filter((s) => s.solvedCount > 0).length
-    return students.filter((s) => (s.languageSolvedCounts?.[langFilter] || 0) > 0).length
-  }, [students, langFilter])
 
   const filtered = useMemo(() => {
     return students
@@ -331,7 +314,7 @@ export const MentorStudentsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Language Selector Bar (All, C++, Python, Java, Node.Js) */}
+      {/* Language Selector Bar (C++, Python, Java, Node.Js) */}
       <div className="bg-white p-4 rounded-3xl border border-neutral-200/80 shadow-xs space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
@@ -340,14 +323,12 @@ export const MentorStudentsPage: React.FC = () => {
             </span>
             <span className="text-xs font-bold text-neutral-800">Filter by Language:</span>
             <span className="text-[11px] text-neutral-500 hidden sm:inline">
-              {langFilter === 'all'
-                ? 'Showing total solved problems across all languages'
-                : `Showing real-time solved problems for ${LANGUAGES.find((l) => l.id === langFilter)?.label} only`}
+              Click a language to view real-time solved problems for each student
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {langFilter !== 'all' && (
+          {langFilter !== 'all' && (
+            <div className="flex items-center gap-3">
               <label className="flex items-center gap-1.5 text-xs text-neutral-600 cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -355,29 +336,26 @@ export const MentorStudentsPage: React.FC = () => {
                   onChange={(e) => setOnlyWithSolved(e.target.checked)}
                   className="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
                 />
-                <span>
-                  Only show students with solved {LANGUAGES.find((l) => l.id === langFilter)?.label} problems ({studentsWithSolvedInLang})
-                </span>
+                <span>Only show students with solved {LANGUAGES.find((l) => l.id === langFilter)?.label} problems</span>
               </label>
-            )}
-            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Live Real-Time Sync
-            </span>
-          </div>
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live Real-Time Sync
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* 5 Language Buttons with Live Solved Counts */}
+        {/* 4 Language Buttons */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          {LANGUAGES.map((lang) => {
+          {LANGUAGES.filter((lang) => lang.id !== 'all').map((lang) => {
             const isSelected = langFilter === lang.id
-            const count = cohortLangCounts[lang.id]
 
             return (
               <button
                 key={lang.id}
                 type="button"
-                onClick={() => setLangFilter(lang.id)}
+                onClick={() => setLangFilter(isSelected ? 'all' : lang.id)}
                 className={cn(
                   'px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border flex-shrink-0 cursor-pointer shadow-2xs',
                   isSelected
@@ -389,16 +367,6 @@ export const MentorStudentsPage: React.FC = () => {
                   {renderLangLogo(lang.id, 'w-4 h-4')}
                 </span>
                 <span>{lang.label}</span>
-                <span
-                  className={cn(
-                    'text-[10px] px-2 py-0.5 rounded-full font-mono font-bold',
-                    isSelected
-                      ? 'bg-neutral-800 text-white'
-                      : 'bg-neutral-200/80 text-neutral-700'
-                  )}
-                >
-                  {count}
-                </span>
               </button>
             )
           })}
@@ -515,18 +483,6 @@ export const MentorStudentsPage: React.FC = () => {
                 ? student.solvedProblems || []
                 : (student.solvedProblems || []).filter((p) => p.language === langFilter)
 
-            const activeLangSolvedCount =
-              langFilter === 'all'
-                ? student.solvedCount
-                : student.languageSolvedCounts?.[langFilter] || 0
-
-            const activeLangProgressPercent =
-              langFilter === 'all'
-                ? student.progressPercent
-                : Math.min(100, Math.round((activeLangSolvedCount / 85) * 100))
-
-            const activeLangObj = LANGUAGES.find((l) => l.id === langFilter) || LANGUAGES[0]
-
             return (
               <div
                 key={student.id}
@@ -572,17 +528,14 @@ export const MentorStudentsPage: React.FC = () => {
                   {/* Progress Bar */}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
-                      <span className="flex items-center gap-1.5">
-                        {langFilter !== 'all' && renderLangLogo(langFilter, 'w-3.5 h-3.5')}
-                        <span>{langFilter === 'all' ? 'Overall Progress' : `${activeLangObj.label} Progress`}</span>
-                      </span>
-                      <span className="font-bold text-neutral-900">{activeLangProgressPercent}%</span>
+                      <span>Overall Progress</span>
+                      <span className="font-bold text-neutral-900">{student.progressPercent}%</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-300"
                         style={{
-                          width: `${activeLangProgressPercent}%`,
+                          width: `${student.progressPercent}%`,
                           backgroundColor: student.beltColor,
                         }}
                       />
@@ -592,30 +545,16 @@ export const MentorStudentsPage: React.FC = () => {
                   {/* Meta Stats Row */}
                   <div className="pt-2 border-t border-neutral-100 grid grid-cols-3 text-center text-xs">
                     <div>
-                      <span className="block font-bold text-neutral-900">{activeLangSolvedCount}</span>
-                      <span className="text-[10px] text-neutral-400">
-                        {langFilter === 'all' ? 'Total Solved' : `${activeLangObj.shortLabel} Solved`}
-                      </span>
+                      <span className="block font-bold text-neutral-900">{student.solvedCount}</span>
+                      <span className="text-[10px] text-neutral-400">Total Solved</span>
                     </div>
                     <div>
                       <span className="block font-bold text-amber-500">{student.streak}d</span>
                       <span className="text-[10px] text-neutral-400">Streak</span>
                     </div>
                     <div>
-                      {langFilter === 'all' ? (
-                        <>
-                          <span className="block font-bold text-neutral-700 uppercase">{student.language}</span>
-                          <span className="text-[10px] text-neutral-400">Primary Lang</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center justify-center gap-1">
-                            {renderLangLogo(langFilter, 'w-3 h-3')}
-                            <span className="block font-bold text-neutral-900">{activeLangObj.shortLabel}</span>
-                          </div>
-                          <span className="text-[10px] text-neutral-400">Selected Lang</span>
-                        </>
-                      )}
+                      <span className="block font-bold text-neutral-700 uppercase">{student.language}</span>
+                      <span className="text-[10px] text-neutral-400">Primary Lang</span>
                     </div>
                   </div>
 
@@ -909,18 +848,6 @@ export const MentorStudentsPage: React.FC = () => {
                     <span className="font-semibold text-neutral-700">
                       Streak: <strong className="text-amber-600 font-bold">{inspectingSolvedStudent.streak}d</strong>
                     </span>
-                    {modalLangFilter !== 'all' && (
-                      <>
-                        <span className="text-neutral-300">•</span>
-                        <span className="font-semibold text-neutral-700 flex items-center gap-1">
-                          {renderLangLogo(modalLangFilter, 'w-3.5 h-3.5')}
-                          <span>{LANGUAGES.find((l) => l.id === modalLangFilter)?.label} Solved:</span>
-                          <strong className="text-neutral-900 font-bold">
-                            {inspectingSolvedStudent.languageSolvedCounts?.[modalLangFilter] || 0}
-                          </strong>
-                        </span>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>
