@@ -27,7 +27,6 @@ export const CampusStudentsPage: React.FC = () => {
   const [search, setSearch] = useState('')
   const [beltFilter, setBeltFilter] = useState<'ALL' | 'Belt 1' | 'Belt 2' | 'Belt 3'>('ALL')
   const [mentorFilter, setMentorFilter] = useState<string>('ALL')
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'STRUGGLING' | 'INACTIVE'>('ALL')
 
   // Add Student Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -82,12 +81,11 @@ export const CampusStudentsPage: React.FC = () => {
           if (mentorFilter === 'UNASSIGNED' && s.mentorId) return false
           if (mentorFilter !== 'UNASSIGNED' && s.mentorId !== mentorFilter) return false
         }
-        if (statusFilter !== 'ALL' && s.status !== statusFilter) return false
 
         return true
       })
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
-  }, [students, search, beltFilter, mentorFilter, statusFilter])
+  }, [students, search, beltFilter, mentorFilter])
 
   // Handle Add Student submit
   const handleAddStudentSubmit = async (e: React.FormEvent) => {
@@ -246,18 +244,6 @@ export const CampusStudentsPage: React.FC = () => {
                 </option>
               ))}
             </select>
-
-            {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl font-semibold text-neutral-700 focus:outline-none"
-            >
-              <option value="ALL">All Status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="STRUGGLING">Needs Attention</option>
-              <option value="INACTIVE">Inactive</option>
-            </select>
           </div>
         </div>
       </div>
@@ -272,7 +258,6 @@ export const CampusStudentsPage: React.FC = () => {
                 <th className="py-3.5 px-6">Assigned Mentor</th>
                 <th className="py-3.5 px-6">Belt Level</th>
                 <th className="py-3.5 px-6">Solved / XP</th>
-                <th className="py-3.5 px-6">Status</th>
                 <th className="py-3.5 px-6 text-right">Actions</th>
               </tr>
             </thead>
@@ -329,30 +314,6 @@ export const CampusStudentsPage: React.FC = () => {
                       <span className="font-bold text-neutral-900">{student.questionsSolved} solved</span>
                       <span className="text-neutral-400 ml-1.5">• {student.totalXp} XP</span>
                     </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="py-4 px-6">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                        student.status === 'ACTIVE'
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : student.status === 'STRUGGLING'
-                          ? 'bg-amber-50 text-amber-700'
-                          : 'bg-neutral-100 text-neutral-600'
-                      }`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          student.status === 'ACTIVE'
-                            ? 'bg-emerald-500'
-                            : student.status === 'STRUGGLING'
-                            ? 'bg-amber-500'
-                            : 'bg-neutral-400'
-                        }`}
-                      />
-                      {student.status}
-                    </span>
                   </td>
 
                   {/* Action */}
