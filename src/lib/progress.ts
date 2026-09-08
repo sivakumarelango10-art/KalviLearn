@@ -57,7 +57,7 @@ const MAX_STORED_SUBMISSIONS = 50
 
 const defaultState: UserState = {
   xp: 0,
-  streak: 1,
+  streak: 0,
   solvedSlugs: [],
   progress: {},
   submissions: [],
@@ -85,7 +85,7 @@ export function resetUserState() {
   purgeLegacyStorage()
   saveUserState({
     xp: 0,
-    streak: 1,
+    streak: 0,
     solvedSlugs: [],
     progress: {},
     submissions: [],
@@ -208,6 +208,7 @@ export function subscribeProgress(callback: () => void): () => void {
 }
 
 import { saveSuccessToCloud, saveAttemptToCloud } from './cloudSync'
+import { calculateAuthoritativeStreak } from './streak'
 
 export function getActiveUserId(): string | null {
   try {
@@ -296,9 +297,18 @@ export function hydrateStateFromCloud(cloudState: UserState) {
     }
   }
 
+  const activityTimestamps = [
+    ...mergedSubmissions.map((s) => s.createdAt),
+    ...Object.values(mergedProgress).map((p) => p.solvedAt),
+  ].filter(Boolean) as string[]
+
+  const authoritativeStreak = typeof cloudState.streak === 'number'
+    ? cloudState.streak
+    : calculateAuthoritativeStreak(activityTimestamps).streak
+
   const mergedState: UserState = {
     xp: allSolved.length * 50,
-    streak: allSolved.length > 0 ? (cloudState.streak || 1) : 1,
+    streak: authoritativeStreak,
     solvedSlugs: allSolved,
     progress: mergedProgress,
     submissions: mergedSubmissions.slice(0, MAX_STORED_SUBMISSIONS),
@@ -393,6 +403,13 @@ export function recordProblemSuccess(
     createdAt: new Date().toISOString(),
   })
 
+  // Recalculate streak reactively
+  const activityTimestamps = [
+    ...state.submissions.map((s) => s.createdAt),
+    ...Object.values(state.progress).map((p) => p.solvedAt),
+  ].filter(Boolean) as string[]
+  state.streak = calculateAuthoritativeStreak(activityTimestamps).streak
+
   saveUserState(state)
 
   // Background Cloud Sync
@@ -461,6 +478,13 @@ export function recordProblemAttempt(
     executionTimeMs,
     createdAt: new Date().toISOString(),
   })
+
+  // Recalculate streak reactively
+  const attemptTimestamps = [
+    ...state.submissions.map((s) => s.createdAt),
+    ...Object.values(state.progress).map((p) => p.solvedAt),
+  ].filter(Boolean) as string[]
+  state.streak = calculateAuthoritativeStreak(attemptTimestamps).streak
 
   saveUserState(state)
 

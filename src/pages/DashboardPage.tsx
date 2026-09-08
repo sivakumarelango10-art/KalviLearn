@@ -20,13 +20,7 @@ import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth()
-  const [userState, setUserState] = useState<UserState>({
-    xp: 0,
-    streak: 1,
-    solvedSlugs: [],
-    progress: {},
-    submissions: [],
-  })
+  const [userState, setUserState] = useState<UserState>(() => getUserState())
 
   const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Student')
 

@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import type { UserState, SubmissionRecord, UserProgressRecord } from './progress'
+import { calculateAuthoritativeStreak } from './streak'
 
 // Slug-to-UUID cache to avoid repeated queries for the 85 problems
 let slugToProblemIdMap: Map<string, string> | null = null
@@ -118,9 +119,17 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
       }
     }
 
+    // Calculate authoritative streak from real activity timestamps
+    const activityTimestamps: string[] = [
+      ...submissions.map((s) => s.createdAt),
+      ...Object.values(progressMap).map((p) => p.solvedAt),
+    ].filter(Boolean) as string[]
+
+    const streakResult = calculateAuthoritativeStreak(activityTimestamps)
+
     return {
       xp: totalXp,
-      streak: solvedSlugs.length > 0 ? 1 : 1,
+      streak: streakResult.streak,
       solvedSlugs,
       progress: progressMap,
       submissions,

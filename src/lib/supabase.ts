@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 
+const env = (typeof import.meta !== 'undefined' && (import.meta as any).env) || (typeof process !== 'undefined' && process.env) || {}
+
 const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
+  env.VITE_SUPABASE_URL ||
   'https://iavxnhwbgoarnexmyxpn.supabase.co'
 
 const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  env.VITE_SUPABASE_ANON_KEY ||
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40'
 
 /**

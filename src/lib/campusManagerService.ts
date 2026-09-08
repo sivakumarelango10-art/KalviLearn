@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { normalizeProgressLanguage } from './progress'
-import problemsData from '@/data/problems.json'
+import problemsData from '../data/problems.json'
+import { calculateAuthoritativeStreak } from './streak'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -157,30 +158,7 @@ export function formatRelativeTime(dateString?: string | null): string {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-function calculateStreak(dates: (string | Date)[]): number {
-  if (!dates || dates.length === 0) return 0
-  const dayStrings = new Set<string>()
-  for (const d of dates) {
-    const parsed = new Date(d)
-    if (!isNaN(parsed.getTime())) dayStrings.add(parsed.toISOString().slice(0, 10))
-  }
-  const sortedDays = Array.from(dayStrings).sort().reverse()
-  if (sortedDays.length === 0) return 0
-  const today = new Date().toISOString().slice(0, 10)
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
-  if (sortedDays[0] !== today && sortedDays[0] !== yesterday) return 1
-  let streak = 0
-  let checkDate = new Date(sortedDays[0])
-  for (const day of sortedDays) {
-    if (day === checkDate.toISOString().slice(0, 10)) {
-      streak++
-      checkDate.setDate(checkDate.getDate() - 1)
-    } else {
-      break
-    }
-  }
-  return Math.max(streak, 1)
-}
+
 
 function normalizeLanguage(lang?: string | null): string {
   if (!lang) return 'python'
@@ -306,7 +284,7 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
       supabase.from('students').select('id, user_id, name, email, student_code, status, created_at').order('name', { ascending: true }),
       supabase.from('mentor_students').select('student_id, mentor_id, mentors(id, name)').eq('status', 'ACTIVE'),
       supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned'),
-      supabase.from('Submission').select('id, userId, status, language, createdAt, passedTests, totalTests').order('createdAt', { ascending: false }),
+      supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests').order('createdAt', { ascending: false }),
     ])
 
     const dbStudents = studentsRes.data || []
@@ -333,7 +311,7 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
     }
 
     // Group submissions by user_id
-    const subsByUser = new Map<string, Array<{ status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number }>>()
+    const subsByUser = new Map<string, Array<{ problemId?: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number }>>()
     for (const s of subsRes.data || []) {
       if (!s.userId) continue
       const list = subsByUser.get(s.userId) || []
@@ -366,15 +344,18 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
 
       // Also incorporate any passed submissions that had 10/10 tests
       for (const sub of uSubs) {
-        if (sub.status === 'PASSED' && sub.passedTests === (sub.totalTests || 10)) {
+        if (sub.status === 'PASSED' && sub.passedTests === (sub.totalTests || 10) && sub.problemId) {
           const lang = normalizeLanguage(sub.language)
-          if (!solvedProblems.has(sub.status)) {
+          if (!solvedProblems.has(sub.problemId)) {
+            solvedProblems.add(sub.problemId)
+            totalXp += 50
             languageSolvedCounts[lang] = (languageSolvedCounts[lang] || 0) + 1
           }
         }
       }
 
-      const questionsSolved = Math.max(solvedProblems.size, uSubs.filter((sb) => sb.status === 'PASSED').length)
+      // Solved questions count is distinct problems solved, exactly mirroring Student Dashboard
+      const questionsSolved = solvedProblems.size
       if (totalXp === 0 && questionsSolved > 0) {
         totalXp = questionsSolved * 50
       }
@@ -396,7 +377,8 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
         ...uProgress.map((p) => p.solvedAt),
       ].filter(Boolean) as string[]
 
-      const streak = calculateStreak(activityDates)
+      // Authoritative IST streak
+      const streak = calculateAuthoritativeStreak(activityDates).streak
 
       const latestSubTime = uSubs[0]?.createdAt ? new Date(uSubs[0].createdAt).getTime() : 0
       const latestProgTime = uProgress[0]?.solvedAt ? new Date(uProgress[0].solvedAt).getTime() : 0
@@ -896,7 +878,13 @@ export async function fetchStudentLeaderboard(
             totalXp += p.xpEarned || 50
           }
         }
-        const questionsSolved = Math.max(solvedProblems.size, uSubs.filter((sb) => sb.status === 'PASSED').length)
+        for (const sub of uSubs) {
+          if (sub.status === 'PASSED' && (sub as any).problemId && !solvedProblems.has((sub as any).problemId)) {
+            solvedProblems.add((sub as any).problemId)
+            totalXp += 50
+          }
+        }
+        const questionsSolved = solvedProblems.size
         if (totalXp === 0 && questionsSolved > 0) {
           totalXp = questionsSolved * 50
         }

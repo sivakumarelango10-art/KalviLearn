@@ -10,9 +10,9 @@ export const AppLayout: React.FC = () => {
   const { user } = useAuth()
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [xp, setXp] = useState(0)
-  const [streak, setStreak] = useState(1)
-  const [solvedCount, setSolvedCount] = useState(0)
+  const [xp, setXp] = useState(() => getUserState().xp)
+  const [streak, setStreak] = useState(() => getUserState().streak)
+  const [solvedCount, setSolvedCount] = useState(() => getUserState().solvedSlugs.length)
 
   useEffect(() => {
     const updateStats = () => {

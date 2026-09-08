@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { calculateAuthoritativeStreak } from './streak'
 
 export interface SolvedProblemItem {
   problemId: string
@@ -157,28 +158,7 @@ function getLanguageLabel(lang: string): string {
   }
 }
 
-function calculateStreak(dates: (string | Date)[]): number {
-  if (!dates || dates.length === 0) return 0
-  const dayStrings = new Set<string>()
-  for (const d of dates) {
-    const parsed = new Date(d)
-    if (!isNaN(parsed.getTime())) dayStrings.add(parsed.toISOString().slice(0, 10))
-  }
-  const sortedDays = Array.from(dayStrings).sort().reverse()
-  if (sortedDays.length === 0) return 0
-  const today = new Date().toISOString().slice(0, 10)
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
-  if (sortedDays[0] !== today && sortedDays[0] !== yesterday) return 1
-  let streak = 0
-  let checkDate = new Date(sortedDays[0])
-  for (const day of sortedDays) {
-    if (day === checkDate.toISOString().slice(0, 10)) {
-      streak++
-      checkDate.setDate(checkDate.getDate() - 1)
-    } else { break }
-  }
-  return Math.max(streak, 1)
-}
+
 
 // In-memory High Performance Caching Layer (TTL + SWR)
 interface CacheEntry<T> {
@@ -464,7 +444,7 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       const lastActiveRaw = Math.max(subTime, progTime) > 0 ? new Date(Math.max(subTime, progTime)).toISOString() : su.createdAt
       const language = normalizeLanguage(latestSub?.language || latestProg?.language)
       const activityTimestamps = [...recentSubs.map((s) => s.createdAt), ...solvedProblems.map((p) => p.solvedAt)].filter(Boolean) as string[]
-      const streak = calculateStreak(activityTimestamps)
+      const streak = calculateAuthoritativeStreak(activityTimestamps).streak
       const recentFailedCount = recentSubs.slice(0, 5).filter((s) => s.status === 'FAILED').length
       const needsAttention = recentFailedCount >= 4
 

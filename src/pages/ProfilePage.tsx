@@ -13,13 +13,7 @@ import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth()
-  const [userState, setUserState] = useState<UserState>({
-    xp: 0,
-    streak: 1,
-    solvedSlugs: [],
-    progress: {},
-    submissions: [],
-  })
+  const [userState, setUserState] = useState<UserState>(() => getUserState())
 
   useEffect(() => {
     const updateStats = () => {
