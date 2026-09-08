@@ -7,6 +7,7 @@ import {
   RotateCcw,
   User,
   LogOut,
+  ShieldCheck,
 } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 import { cn } from '@/lib/utils'
@@ -135,9 +136,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
         <div className="px-4 pb-3">
           <Link
             to="/mentor"
-            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 text-[#ED2A2B] border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors shadow-2xs"
+            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 text-[#ED2A2B] border border-red-200 text-xs font-bold hover:bg-[#ED2A2B] hover:text-white transition-all shadow-2xs"
           >
-            <span>Mentor Cockpit →</span>
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Back to Mentor Portal →</span>
           </Link>
         </div>
       )}

@@ -7,6 +7,8 @@ import {
   BookOpen,
   Megaphone,
   UserCheck,
+  GraduationCap,
+  ExternalLink,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -124,6 +126,27 @@ export const MentorSidebar: React.FC<MentorSidebarProps> = ({ className, onClose
             )
           })}
         </nav>
+      </div>
+
+      {/* Student View Platform Switcher */}
+      <div className="p-4 border-t border-neutral-100">
+        <Link
+          to="/dashboard"
+          onClick={onCloseMobile}
+          className="w-full flex items-center justify-between p-3 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 transition-all text-xs font-bold text-neutral-800 hover:text-neutral-950 group shadow-2xs"
+          title="Switch to Student Platform View"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-[#ED2A2B] shadow-2xs group-hover:bg-[#ED2A2B] group-hover:text-white transition-colors">
+              <GraduationCap className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="block leading-tight">Student View</span>
+              <span className="text-[10px] font-normal text-neutral-400">Preview Platform</span>
+            </div>
+          </div>
+          <ExternalLink className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-700" />
+        </Link>
       </div>
     </aside>
   )

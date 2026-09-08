@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, Flame, Award } from 'lucide-react'
+import { Outlet, useLocation, Link } from 'react-router-dom'
+import { Menu, X, Zap, Flame, Award, ArrowRight, GraduationCap } from 'lucide-react'
 import { AppSidebar } from '@/components/common/AppSidebar'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { getUserState, subscribeProgress } from '@/lib/progress'
@@ -64,6 +64,28 @@ export const AppLayout: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Mentor Preview Indicator Banner */}
+        {user?.role === 'MENTOR' && (
+          <div className="bg-neutral-900 text-white px-4 py-2 flex items-center justify-between text-xs font-medium z-30 shadow-xs flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md bg-[#ED2A2B]/20 text-[#ED2A2B] flex items-center justify-center">
+                <GraduationCap className="w-3.5 h-3.5" />
+              </div>
+              <span className="font-bold text-white">Student View Active:</span>
+              <span className="text-neutral-300 hidden sm:inline">
+                Previewing student learning platform as Faculty Mentor ({user.name || user.email})
+              </span>
+            </div>
+            <Link
+              to="/mentor"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#ED2A2B] hover:bg-red-600 text-white font-bold transition-colors shadow-2xs text-xs cursor-pointer"
+            >
+              <span>Back to Mentor Portal</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+
         {/* Top Bar */}
         <header className="h-16 bg-white border-b border-neutral-200/80 px-4 sm:px-6 flex items-center justify-between flex-shrink-0 z-20">
           <div className="flex items-center gap-3">
