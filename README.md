@@ -47,8 +47,8 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/sivakumarelango10-art/KalviCode.git
-cd KalviCode
+git clone https://github.com/sivakumarelango10-art/KalviLearn.git
+cd KalviLearn
 ```
 
 ### 2. Install Dependencies

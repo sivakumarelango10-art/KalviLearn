@@ -14,6 +14,10 @@ const LoginPage = lazyWithRetry(
   () => import('@/pages/auth/LoginPage'),
   'LoginPage'
 )
+const AuthCallbackPage = lazyWithRetry(
+  () => import('@/pages/auth/AuthCallbackPage'),
+  'AuthCallbackPage'
+)
 const DashboardPage = lazyWithRetry(
   () => import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
   'DashboardPage'
@@ -127,6 +131,11 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: withSuspense(<LoginPage />),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: '/auth/callback',
+    element: withSuspense(<AuthCallbackPage />),
     errorElement: <RouteErrorBoundary />,
   },
   {

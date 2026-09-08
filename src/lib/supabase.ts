@@ -26,11 +26,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
  * Helper to initiate Google OAuth sign-in via Supabase
  */
 export async function signInWithGoogle(redirectTo?: string) {
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const origin =
+    typeof window !== 'undefined' && window.location?.origin
+      ? window.location.origin
+      : env.VITE_APP_URL || 'https://kalvilearn.vercel.app'
+
+  const callbackUrl = redirectTo || `${origin}/auth/callback`
+
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: redirectTo || `${origin}/login`,
+      redirectTo: callbackUrl,
     },
   })
 }

@@ -94,7 +94,7 @@ function createMockReqRes(options: {
 
 async function runTestSuite() {
   console.log('========================================================================')
-  console.log('🧪 KALVICODE PHASE 2: REAL BACKEND & DATABASE FEEDBACK AUDIT')
+  console.log('🧪 KALVILEARN PHASE 2: REAL BACKEND & DATABASE FEEDBACK AUDIT')
   console.log('========================================================================\n')
 
   let passed = 0

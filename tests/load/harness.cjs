@@ -1,5 +1,5 @@
 /**
- * Master Load Testing Harness for KalviCode
+ * Master Load Testing Harness for KalviLearn
  * Accurately measures concurrency, latency percentiles (p50, p90, p95, p99),
  * throughput, error classifications, and test-case integrity.
  */

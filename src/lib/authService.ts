@@ -128,7 +128,9 @@ interface CachedAuth {
 
 function getCachedVerification(email: string): DbUser | null {
   try {
-    const raw = sessionStorage.getItem(AUTH_CACHE_KEY) || localStorage.getItem(AUTH_CACHE_KEY)
+    const raw =
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(AUTH_CACHE_KEY) : null) ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem(AUTH_CACHE_KEY) : null)
     if (!raw) return null
     const cached: CachedAuth = JSON.parse(raw)
     if (cached.email === email && Date.now() - cached.timestamp < AUTH_CACHE_TTL_MS) {
@@ -144,8 +146,8 @@ function setCachedVerification(email: string, user: DbUser) {
   try {
     const payload: CachedAuth = { email, user, timestamp: Date.now() }
     const str = JSON.stringify(payload)
-    sessionStorage.setItem(AUTH_CACHE_KEY, str)
-    localStorage.setItem(AUTH_CACHE_KEY, str)
+    if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(AUTH_CACHE_KEY, str)
+    if (typeof localStorage !== 'undefined') localStorage.setItem(AUTH_CACHE_KEY, str)
   } catch (err) {
     console.warn('Failed to cache auth verification:', err)
   }
@@ -153,8 +155,8 @@ function setCachedVerification(email: string, user: DbUser) {
 
 function clearCachedVerification() {
   try {
-    sessionStorage.removeItem(AUTH_CACHE_KEY)
-    localStorage.removeItem(AUTH_CACHE_KEY)
+    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(AUTH_CACHE_KEY)
+    if (typeof localStorage !== 'undefined') localStorage.removeItem(AUTH_CACHE_KEY)
   } catch {
     // ignore
   }
@@ -211,7 +213,9 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
             name: data.name || fallback.name,
           }
           setCachedVerification(normalizedEmail, syncedUser)
-          localStorage.setItem('kalvi_active_user', JSON.stringify(syncedUser))
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('kalvi_active_user', JSON.stringify(syncedUser))
+          }
         }
       } catch {
         // Non-blocking background error ignored
@@ -267,7 +271,9 @@ export async function signOutUser() {
   } catch (err) {
     console.error('Error during signOut:', err)
   } finally {
-    localStorage.removeItem('kalvi_active_user')
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('kalvi_active_user')
+    }
     clearCachedVerification()
   }
 }

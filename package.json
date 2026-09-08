@@ -10,10 +10,11 @@
     "build:submit": "esbuild src/server/submitHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/submit.js",
     "build:feedback": "esbuild src/server/feedbackHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/feedback.js",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",
+    "test:auth": "npx tsx scripts/test-auth-flow.ts",
     "test:streak": "npx tsx scripts/test-streak.ts",
     "test:feedback": "npx tsx scripts/test-frontend-feedback-ui.ts",
     "test:backend-feedback": "npx tsx scripts/test-backend-feedback.ts",
-    "test:all": "npm test && npm run test:streak && npm run test:feedback && npm run test:backend-feedback",
+    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback",
     "preview": "vite preview"
   },
   "dependencies": {

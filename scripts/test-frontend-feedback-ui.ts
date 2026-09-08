@@ -16,7 +16,7 @@ function assert(condition: boolean, name: string, detail?: string) {
 
 async function runFrontendUiAudit() {
   console.log('========================================================================')
-  console.log('🧪 KALVICODE PHASE 1: FRONTEND FEEDBACK UI & COMPONENT AUDIT')
+  console.log('🧪 KALVILEARN PHASE 1: FRONTEND FEEDBACK UI & COMPONENT AUDIT')
   console.log('========================================================================\n')
 
   // ------------------------------------------------------------------------
