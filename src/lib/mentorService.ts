@@ -180,14 +180,58 @@ function calculateStreak(dates: (string | Date)[]): number {
   return Math.max(streak, 1)
 }
 
+// In-memory High Performance Caching Layer (TTL + SWR)
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+  ttl: number
+}
+const mentorProfileCache = new Map<string, CacheEntry<MentorProfile | null>>()
+const mentorStudentUsersCache = new Map<string, CacheEntry<StudentUserRow[]>>()
+const mentorRosterCache = new Map<string, CacheEntry<MentorStudent[]>>()
+const mentorSubmissionsCache = new Map<string, CacheEntry<{ submissions: MentorSubmission[]; hasMore: boolean }>>()
+export const problemLookupCache = new Map<string, { title: string; slug: string; beltName: string; beltColor: string }>()
+
+/**
+ * Invalidates cached mentor telemetry to guarantee real-time data consistency.
+ */
+export function invalidateMentorCache(mentorKey?: string): void {
+  if (!mentorKey) {
+    mentorProfileCache.clear()
+    mentorStudentUsersCache.clear()
+    mentorRosterCache.clear()
+    mentorSubmissionsCache.clear()
+    return
+  }
+  const key = mentorKey.toLowerCase()
+  for (const k of mentorProfileCache.keys()) {
+    if (k.toLowerCase().includes(key)) mentorProfileCache.delete(k)
+  }
+  for (const k of mentorStudentUsersCache.keys()) {
+    if (k.toLowerCase().includes(key)) mentorStudentUsersCache.delete(k)
+  }
+  for (const k of mentorRosterCache.keys()) {
+    if (k.toLowerCase().includes(key)) mentorRosterCache.delete(k)
+  }
+  for (const k of mentorSubmissionsCache.keys()) {
+    if (k.toLowerCase().includes(key)) mentorSubmissionsCache.delete(k)
+  }
+}
+
 // Core Helpers
 
 /**
- * Resolves the mentor profile record directly from the mentors table.
+ * Resolves the mentor profile record directly from the mentors table with in-memory caching.
  * Directly exposes name, email, mentor_code, and user object.
  */
 export async function getMentorProfile(mentorIdOrUserId: string): Promise<MentorProfile | null> {
   if (!mentorIdOrUserId) return null
+  const cacheKey = mentorIdOrUserId.trim().toLowerCase()
+  const cached = mentorProfileCache.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < cached.ttl) {
+    return cached.data
+  }
+
   const isEmail = mentorIdOrUserId.includes('@')
   const query = supabase
     .from('mentors')
@@ -198,12 +242,15 @@ export async function getMentorProfile(mentorIdOrUserId: string): Promise<Mentor
     ? await query.ilike('email', mentorIdOrUserId.trim().toLowerCase()).maybeSingle()
     : await query.or(`id.eq.${mentorIdOrUserId},user_id.eq.${mentorIdOrUserId},email.eq.${mentorIdOrUserId}`).maybeSingle()
 
-  if (error || !mentor) return null
+  if (error || !mentor) {
+    mentorProfileCache.set(cacheKey, { data: null, timestamp: Date.now(), ttl: 10000 })
+    return null
+  }
 
   const userName = mentor.name || ''
   const userEmail = mentor.email || ''
 
-  return {
+  const result: MentorProfile = {
     id: mentor.id,
     userId: mentor.user_id,
     mentorCode: mentor.mentor_code,
@@ -217,6 +264,15 @@ export async function getMentorProfile(mentorIdOrUserId: string): Promise<Mentor
       email: userEmail,
     },
   }
+
+  // Cache for 5 minutes across id, user_id, and email keys
+  const ttl = 300000
+  mentorProfileCache.set(cacheKey, { data: result, timestamp: Date.now(), ttl })
+  if (mentor.id) mentorProfileCache.set(mentor.id.toLowerCase(), { data: result, timestamp: Date.now(), ttl })
+  if (mentor.user_id) mentorProfileCache.set(mentor.user_id.toLowerCase(), { data: result, timestamp: Date.now(), ttl })
+  if (mentor.email) mentorProfileCache.set(mentor.email.toLowerCase(), { data: result, timestamp: Date.now(), ttl })
+
+  return result
 }
 
 interface StudentUserRow {
@@ -230,23 +286,32 @@ interface StudentUserRow {
 }
 
 /**
- * Returns all student records actively assigned to the given mentors.id.
+ * Returns all student records actively assigned to the given mentors.id with in-memory caching.
  * Directly reads name, email, student_code, status from students table.
  */
 async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]> {
+  const cacheKey = `sus_${mentorId}`
+  const cached = mentorStudentUsersCache.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < cached.ttl) {
+    return cached.data
+  }
+
   const { data: assignments, error: aErr } = await supabase
     .from('mentor_students')
     .select('student_id, students(id, user_id, name, email, student_code, status, created_at)')
     .eq('mentor_id', mentorId)
     .eq('status', 'ACTIVE')
 
-  if (aErr || !assignments || assignments.length === 0) return []
+  if (aErr || !assignments || assignments.length === 0) {
+    mentorStudentUsersCache.set(cacheKey, { data: [], timestamp: Date.now(), ttl: 15000 })
+    return []
+  }
 
   const studentRows = assignments
     .map((a) => (a.students as unknown) as { id: string; user_id: string; name?: string; email?: string; student_code: string; status: string; created_at: string } | null)
     .filter(Boolean) as Array<{ id: string; user_id: string; name?: string; email?: string; student_code: string; status: string; created_at: string }>
 
-  return studentRows
+  const result = studentRows
     .map((s) => ({
       userId: s.user_id,
       studentId: s.id,
@@ -257,6 +322,9 @@ async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]
       createdAt: s.created_at,
     }))
     .filter((s) => s.email)
+
+  mentorStudentUsersCache.set(cacheKey, { data: result, timestamp: Date.now(), ttl: 60000 }) // 1 min TTL
+  return result
 }
 
 // Public API
@@ -265,8 +333,16 @@ async function getMentorStudentUsers(mentorId: string): Promise<StudentUserRow[]
  * Fetches the real student roster via mentor_students -> students -> users.
  * OPTIMIZED: Batch queries, no N+1 calls.
  */
-export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorStudent[]> {
+export async function fetchMentorRoster(mentorUserId?: string, skipCache = false): Promise<MentorStudent[]> {
   try {
+    const cacheKey = `roster_${mentorUserId || 'all'}`
+    if (!skipCache) {
+      const cached = mentorRosterCache.get(cacheKey)
+      if (cached && Date.now() - cached.timestamp < cached.ttl) {
+        return cached.data
+      }
+    }
+
     let studentUsers: StudentUserRow[] = []
 
     if (mentorUserId) {
@@ -432,19 +508,41 @@ export async function fetchMentorRoster(mentorUserId?: string): Promise<MentorSt
 /**
  * Fetches recent submissions with pagination, optionally scoped to a specific mentor's students.
  */
+/**
+ * Fetches recent submissions with pagination and high-speed in-memory caching.
+ * Resolves student metadata directly without redundant queries.
+ */
 export async function fetchMentorSubmissions(
   mentorUserId?: string,
   limit = 25,
-  offset = 0
+  offset = 0,
+  skipCache = false
 ): Promise<{ submissions: MentorSubmission[]; hasMore: boolean }> {
   try {
+    const cacheKey = `subs_${mentorUserId || 'all'}_${limit}_${offset}`
+    if (!skipCache) {
+      const cached = mentorSubmissionsCache.get(cacheKey)
+      if (cached && Date.now() - cached.timestamp < cached.ttl) {
+        return cached.data
+      }
+    }
+
     let studentUserIds: string[] | null = null
+    const userMap = new Map<string, { name: string; email: string }>()
+
     if (mentorUserId) {
       const mp = await getMentorProfile(mentorUserId)
       if (mp) {
         const sus = await getMentorStudentUsers(mp.id)
+        for (const s of sus) {
+          userMap.set(s.userId, { name: s.name, email: s.email })
+        }
         studentUserIds = sus.map((s) => s.userId)
-        if (studentUserIds.length === 0) return { submissions: [], hasMore: false }
+        if (studentUserIds.length === 0) {
+          const emptyResult = { submissions: [], hasMore: false }
+          mentorSubmissionsCache.set(cacheKey, { data: emptyResult, timestamp: Date.now(), ttl: 15000 })
+          return emptyResult
+        }
       }
     }
 
@@ -456,23 +554,38 @@ export async function fetchMentorSubmissions(
     if (studentUserIds) query = query.in('userId', studentUserIds)
 
     const { data: subs, error: sError } = await query
-    if (sError || !subs || subs.length === 0) return { submissions: [], hasMore: false }
+    if (sError || !subs || subs.length === 0) {
+      const emptyResult = { submissions: [], hasMore: false }
+      mentorSubmissionsCache.set(cacheKey, { data: emptyResult, timestamp: Date.now(), ttl: 15000 })
+      return emptyResult
+    }
 
     const hasMore = subs.length > limit
     const pageSubs = subs.slice(0, limit)
 
-    const distinctUserIds = Array.from(new Set(subs.map((s) => s.userId).filter(Boolean)))
-    const userMap = new Map<string, { name: string; email: string }>()
-    if (distinctUserIds.length > 0) {
-      const { data: users } = await supabase.from('users').select('id, name, email').in('id', distinctUserIds)
+    // Check if any submission userId is missing from userMap (e.g. if studentUserIds was null)
+    const missingUserIds = Array.from(
+      new Set(pageSubs.map((s) => s.userId).filter((id) => id && !userMap.has(id)))
+    )
+
+    if (missingUserIds.length > 0) {
+      const { data: users } = await supabase.from('users').select('id, name, email').in('id', missingUserIds)
       for (const u of users || []) {
         userMap.set(u.id, { name: u.name || u.email.split('@')[0].replace(/\./g, ' '), email: u.email })
       }
     }
 
-    return {
+    const result = {
       submissions: pageSubs.map((s) => {
-        const prob = s.Problem as { slug?: string; title?: string; Belt?: { name?: string; color?: string } } | null
+        const prob = s.Problem as { id?: string; slug?: string; title?: string; Belt?: { name?: string; color?: string } } | null
+        if (prob?.id) {
+          problemLookupCache.set(prob.id, {
+            title: prob.title || 'Practice Challenge',
+            slug: prob.slug || 'challenge',
+            beltName: prob.Belt?.name || 'Belt 1',
+            beltColor: prob.Belt?.color || '#3B82F6',
+          })
+        }
         const uInfo = userMap.get(s.userId) || { name: 'Student', email: 'student@kalvium.community' }
         const lang = normalizeLanguage(s.language)
         return {
@@ -492,6 +605,9 @@ export async function fetchMentorSubmissions(
       }),
       hasMore,
     }
+
+    mentorSubmissionsCache.set(cacheKey, { data: result, timestamp: Date.now(), ttl: 20000 })
+    return result
   } catch (err) {
     console.error('Error in fetchMentorSubmissions:', err)
     return { submissions: [], hasMore: false }
@@ -532,12 +648,23 @@ export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
 /**
  * Real-time subscription for Submission, UserProgress, and mentor_students table changes.
  */
+/**
+ * Real-time subscription for Submission, UserProgress, and mentor_students table changes.
+ */
 export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
   try {
     let debounceTimer: ReturnType<typeof setTimeout> | null = null
-    const debouncedUpdate = () => {
+    const debouncedUpdate = (payload?: any) => {
+      // Invalidate relevant cache on data change
+      if (payload?.table === 'mentor_students') {
+        mentorStudentUsersCache.clear()
+        mentorRosterCache.clear()
+      }
+      if (payload?.table === 'Submission') {
+        mentorSubmissionsCache.clear()
+      }
       if (debounceTimer) clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(onUpdate, 300)
+      debounceTimer = setTimeout(onUpdate, 200)
     }
     const channel = supabase
       .channel(`mentor-live-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`)
@@ -551,6 +678,106 @@ export function subscribeToMentorUpdates(onUpdate: () => void): () => void {
     }
   } catch (err) {
     console.warn('Realtime subscription error:', err)
+    return () => {}
+  }
+}
+
+/**
+ * Dedicated sub-second real-time stream subscription for live submissions.
+ * Directly pushes incoming Submission inserts to the UI in milliseconds without refetching.
+ */
+export function subscribeToLiveSubmissions(
+  mentorUserId: string | undefined,
+  onNewSubmission: (submission: MentorSubmission) => void,
+  onReconcileNeeded?: () => void
+): () => void {
+  try {
+    const channelId = `live-subs-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+    let debounceReconcile: ReturnType<typeof setTimeout> | null = null
+
+    const channel = supabase
+      .channel(channelId)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'Submission' },
+        async (payload) => {
+          const raw = payload.new as {
+            id: string
+            userId: string
+            problemId?: string
+            language: string
+            code: string
+            status: string
+            passedTests?: number
+            totalTests?: number
+            executionTimeMs?: number
+            createdAt: string
+          }
+
+          if (!raw?.id) return
+
+          // Clear submissions cache so next page/offset fetch is fresh
+          mentorSubmissionsCache.clear()
+
+          let isRelevant = true
+          let studentInfo = { name: 'Student', email: 'student@kalvium.community' }
+
+          if (mentorUserId) {
+            const mp = await getMentorProfile(mentorUserId)
+            if (mp) {
+              const sus = await getMentorStudentUsers(mp.id)
+              const matchedStudent = sus.find((s) => s.userId === raw.userId)
+              if (!matchedStudent && sus.length > 0) {
+                isRelevant = false
+              } else if (matchedStudent) {
+                studentInfo = { name: matchedStudent.name, email: matchedStudent.email }
+              }
+            }
+          }
+
+          if (isRelevant) {
+            const probInfo = raw.problemId ? problemLookupCache.get(raw.problemId) : null
+            const lang = normalizeLanguage(raw.language)
+
+            const liveSubmission: MentorSubmission = {
+              id: raw.id,
+              userId: raw.userId,
+              studentName: studentInfo.name,
+              studentEmail: studentInfo.email,
+              problemTitle: probInfo?.title || 'Practice Challenge',
+              problemSlug: probInfo?.slug || 'challenge',
+              beltName: probInfo?.beltName || 'Belt 1',
+              beltColor: probInfo?.beltColor || '#3B82F6',
+              language: lang,
+              languageLabel: getLanguageLabel(lang),
+              status: (raw.status as 'PASSED' | 'FAILED' | 'ERROR') || 'PASSED',
+              passedTests: raw.passedTests ?? 10,
+              totalTests: raw.totalTests || 10,
+              executionTimeMs: raw.executionTimeMs || 25,
+              createdAt: formatRelativeTime(raw.createdAt),
+              createdAtRaw: raw.createdAt,
+              code: raw.code || '',
+            }
+
+            // Immediately stream new submission to UI in real-time
+            onNewSubmission(liveSubmission)
+          }
+
+          // Trigger reconciliation in background to ensure joined DB relations
+          if (onReconcileNeeded) {
+            if (debounceReconcile) clearTimeout(debounceReconcile)
+            debounceReconcile = setTimeout(onReconcileNeeded, 400)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      if (debounceReconcile) clearTimeout(debounceReconcile)
+      supabase.removeChannel(channel).catch(console.warn)
+    }
+  } catch (err) {
+    console.warn('Live submissions subscription error:', err)
     return () => {}
   }
 }
@@ -647,6 +874,8 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
       await supabase.from('users').update({ mentorId: mentorUserId, updatedAt: new Date().toISOString() }).eq('id', userRow.id)
     }
 
+    invalidateMentorCache(mentorUserId)
+
     return {
       success: true,
       student: {
@@ -695,6 +924,7 @@ export async function assignStudentMentor(
     if (linkErr) return { success: false, error: linkErr.message }
 
     await supabase.from('users').update({ mentorId: mentorUserId, updatedAt: new Date().toISOString() }).eq('id', studentUserId)
+    invalidateMentorCache(mentorUserId)
     return { success: true }
   } catch (err: unknown) {
     return { success: false, error: err instanceof Error ? err.message : String(err) }
@@ -732,6 +962,7 @@ export async function removeStudent(
     if (!data || data.length === 0) return { success: false, error: 'Assignment not found or unauthorized.' }
 
     await supabase.from('users').update({ mentorId: null, updatedAt: new Date().toISOString() }).eq('id', studentUserId)
+    invalidateMentorCache(mentorUserId)
     return { success: true }
   } catch (err: unknown) {
     return { success: false, error: err instanceof Error ? err.message : String(err) }

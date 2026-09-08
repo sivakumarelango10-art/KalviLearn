@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Editor from '@monaco-editor/react'
 import {
@@ -8,24 +8,40 @@ import {
   Code2,
   Search,
   X,
-  Loader2,
   Copy,
   Check,
   Clock,
   Calendar,
+  RefreshCw,
+  Radio,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   MentorSubmission,
   fetchMentorSubmissions,
+  subscribeToLiveSubmissions,
   subscribeToMentorUpdates,
 } from '@/lib/mentorService'
 import { useAuth } from '@/contexts/AuthContext'
 
 export const MentorSubmissionsPage: React.FC = () => {
   const { user } = useAuth()
-  const [submissions, setSubmissions] = useState<MentorSubmission[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const cacheKey = `kalvi_subs_${user?.id || user?.email || 'default'}`
+
+  // Instant SWR cache initialization for 0ms cold-start latency
+  const [submissions, setSubmissions] = useState<MentorSubmission[]>(() => {
+    try {
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        const parsed = JSON.parse(cached)
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      }
+    } catch {}
+    return []
+  })
+  const [isLoading, setIsLoading] = useState(() => submissions.length === 0)
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [newArrivalIds, setNewArrivalIds] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'PASSED' | 'FAILED'>('all')
   const [langFilter, setLangFilter] = useState<'all' | 'python' | 'java' | 'nodejs' | 'cpp'>('all')
@@ -67,33 +83,69 @@ export const MentorSubmissionsPage: React.FC = () => {
     }
   }
 
+  const loadData = useCallback(async (showFullLoader = false) => {
+    if (showFullLoader) setIsLoading(true)
+    setIsSyncing(true)
+    try {
+      const data = await fetchMentorSubmissions(user?.id || user?.email, 50, 0, true)
+      setSubmissions(data.submissions)
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(data.submissions))
+      } catch {}
+    } catch (err) {
+      console.error('Error fetching mentor submissions:', err)
+    } finally {
+      setIsLoading(false)
+      setIsSyncing(false)
+    }
+  }, [user?.id, user?.email, cacheKey])
+
   useEffect(() => {
     let isMounted = true
 
-    async function loadData() {
-      try {
-        const data = await fetchMentorSubmissions(user?.id || user?.email, 50, 0)
-        if (isMounted) {
-          setSubmissions(data.submissions)
-          setIsLoading(false)
-        }
-      } catch (err) {
-        console.error('Error fetching mentor submissions:', err)
-        if (isMounted) setIsLoading(false)
+    // Initial load: if no cache, show full loader; otherwise refresh in background (SWR)
+    loadData(submissions.length === 0)
+
+    // 1. Ultra-fast real-time submission stream (sub-second instant arrival)
+    const unsubLive = subscribeToLiveSubmissions(
+      user?.id || user?.email,
+      (newSub) => {
+        if (!isMounted) return
+        setSubmissions((prev) => {
+          if (prev.some((s) => s.id === newSub.id)) return prev
+          const updated = [newSub, ...prev.slice(0, 49)]
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(updated))
+          } catch {}
+          return updated
+        })
+        setNewArrivalIds((prev) => new Set(prev).add(newSub.id))
+        setTimeout(() => {
+          if (isMounted) {
+            setNewArrivalIds((prev) => {
+              const next = new Set(prev)
+              next.delete(newSub.id)
+              return next
+            })
+          }
+        }, 4000)
+      },
+      () => {
+        if (isMounted) loadData(false)
       }
-    }
+    )
 
-    loadData()
-
-    const unsubscribe = subscribeToMentorUpdates(() => {
-      loadData()
+    // 2. Table-level change listener
+    const unsubUpdates = subscribeToMentorUpdates(() => {
+      if (isMounted) loadData(false)
     })
 
     return () => {
       isMounted = false
-      unsubscribe()
+      unsubLive()
+      unsubUpdates()
     }
-  }, [user?.id, user?.email])
+  }, [user?.id, user?.email, loadData, cacheKey])
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {
@@ -132,10 +184,21 @@ export const MentorSubmissionsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Live Database Sync
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => loadData(false)}
+            disabled={isSyncing}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 text-neutral-600 border border-neutral-200 text-xs font-semibold transition-all"
+            title="Refresh stream"
+          >
+            <RefreshCw className={cn('w-3.5 h-3.5', isSyncing && 'animate-spin text-[#ED2A2B]')} />
+            <span>{isSyncing ? 'Syncing...' : 'Refresh'}</span>
+          </button>
+
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold shadow-2xs">
+            <Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+            <span>Real-time Stream</span>
           </span>
         </div>
       </div>
@@ -209,33 +272,79 @@ export const MentorSubmissionsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100 font-medium">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={7} className="py-12 text-center text-neutral-500">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <Loader2 className="w-6 h-6 animate-spin text-[#ED2A2B]" />
-                      <span className="text-xs font-medium">Loading live evaluation feed...</span>
-                    </div>
-                  </td>
-                </tr>
+              {isLoading && submissions.length === 0 ? (
+                // Shimmering Skeleton Loader for Ultra Smooth Cold Start
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-${idx}`} className="animate-pulse">
+                    <td className="py-3.5 px-4">
+                      <div className="space-y-1.5">
+                        <div className="h-3.5 w-28 bg-neutral-200 rounded-md" />
+                        <div className="h-2.5 w-36 bg-neutral-100 rounded-md" />
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="space-y-1.5">
+                        <div className="h-3.5 w-32 bg-neutral-200 rounded-md" />
+                        <div className="h-2.5 w-16 bg-neutral-100 rounded-md" />
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="h-5 w-14 bg-neutral-150 bg-neutral-200 rounded-md" />
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="h-5 w-24 bg-neutral-200 rounded-full" />
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="h-3.5 w-12 bg-neutral-200 rounded-md" />
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="h-3.5 w-20 bg-neutral-200 rounded-md" />
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="h-6 w-24 bg-neutral-200 rounded-lg ml-auto" />
+                    </td>
+                  </tr>
+                ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-neutral-400">
-                    No submissions found matching your filters.
+                  <td colSpan={7} className="py-12 text-center text-neutral-400">
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <Clock className="w-6 h-6 text-neutral-300" />
+                      <span className="font-semibold text-neutral-600">No submissions found</span>
+                      <span className="text-[11px] text-neutral-400">Submissions from active students will appear here in real time.</span>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 filtered.map((sub) => {
                   const isAllPassed = sub.status === 'PASSED' && sub.passedTests === 10
+                  const isJustArrived = newArrivalIds.has(sub.id)
 
                   return (
-                    <tr key={sub.id} className="hover:bg-neutral-50/70 transition-colors">
+                    <tr
+                      key={sub.id}
+                      className={cn(
+                        'transition-all duration-300',
+                        isJustArrived
+                          ? 'bg-emerald-50/70 border-l-4 border-l-emerald-500 animate-in fade-in slide-in-from-top-2'
+                          : 'hover:bg-neutral-50/70'
+                      )}
+                    >
                       {/* Student */}
                       <td className="py-3 px-4">
-                        <div>
-                          <div className="font-bold text-neutral-900">{sub.studentName}</div>
-                          <div className="text-[11px] text-neutral-400 font-mono">
-                            {sub.studentEmail}
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <div className="font-bold text-neutral-900 flex items-center gap-1.5">
+                              <span>{sub.studentName}</span>
+                              {isJustArrived && (
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-emerald-500 text-white uppercase tracking-wider animate-pulse">
+                                  Live
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-neutral-400 font-mono">
+                              {sub.studentEmail}
+                            </div>
                           </div>
                         </div>
                       </td>

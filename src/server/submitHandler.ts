@@ -17,6 +17,9 @@ const rateLimitMap = new Map<string, RateRecord>()
 // In-memory idempotency deduplication cache
 const idempotencyCache = new Map<string, { timestamp: number; response: any }>()
 
+// In-memory Problem Slug -> UUID cache to eliminate redundant Supabase round-trips
+const problemIdCache = new Map<string, string>()
+
 function pruneSubmitCaches() {
   const now = Date.now()
   if (rateLimitMap.size > 2000) {
@@ -158,15 +161,26 @@ export default async function handler(
     // 2. Server-Authoritative Database Persistence if userId provided
     if (userId) {
       try {
-        // Resolve problem UUID
-        const { data: problemRow } = await supabaseServer
-          .from('Problem')
-          .select('id')
-          .eq('slug', questionSlug)
-          .maybeSingle()
+        // Resolve problem UUID with in-memory caching
+        let problemId: string | undefined
+        if (questionSlug) {
+          const slug: string = questionSlug
+          problemId = problemIdCache.get(slug)
+          if (!problemId) {
+            const { data: problemRow } = await supabaseServer
+              .from('Problem')
+              .select('id')
+              .eq('slug', slug)
+              .maybeSingle()
+            if (problemRow?.id) {
+              const pid = String(problemRow.id)
+              problemId = pid
+              problemIdCache.set(slug, pid)
+            }
+          }
+        }
 
-        if (problemRow?.id) {
-          const problemId = problemRow.id
+        if (problemId) {
           const submissionId = 'sub_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now()
 
           // Insert Submission

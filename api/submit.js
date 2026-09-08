@@ -28445,6 +28445,7 @@ var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_
 var supabaseServer = createClient(supabaseUrl, supabaseKey);
 var rateLimitMap = /* @__PURE__ */ new Map();
 var idempotencyCache = /* @__PURE__ */ new Map();
+var problemIdCache = /* @__PURE__ */ new Map();
 function pruneSubmitCaches() {
   const now = Date.now();
   if (rateLimitMap.size > 2e3) {
@@ -28556,9 +28557,20 @@ async function handler(req, res) {
     let persistenceResult = { submissionId: null, progressUpdated: false, xpEarned: 0 };
     if (userId) {
       try {
-        const { data: problemRow } = await supabaseServer.from("Problem").select("id").eq("slug", questionSlug).maybeSingle();
-        if (problemRow?.id) {
-          const problemId = problemRow.id;
+        let problemId;
+        if (questionSlug) {
+          const slug = questionSlug;
+          problemId = problemIdCache.get(slug);
+          if (!problemId) {
+            const { data: problemRow } = await supabaseServer.from("Problem").select("id").eq("slug", slug).maybeSingle();
+            if (problemRow?.id) {
+              const pid = String(problemRow.id);
+              problemId = pid;
+              problemIdCache.set(slug, pid);
+            }
+          }
+        }
+        if (problemId) {
           const submissionId = "sub_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
           await supabaseServer.from("Submission").insert({
             id: submissionId,
