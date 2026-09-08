@@ -125,25 +125,6 @@ export const MentorSidebar: React.FC<MentorSidebarProps> = ({ className, onClose
           })}
         </nav>
       </div>
-
-      {/* Cohort Insight Widget */}
-      <div className="p-4 border-t border-neutral-100">
-        <div className="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
-              Assigned Cohort
-            </span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          </div>
-          <p className="text-xs font-bold text-neutral-900">
-            Batch 2026 — Track A
-          </p>
-          <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
-            <UserCheck className="w-3 h-3 flex-shrink-0" />
-            <span>All students on track</span>
-          </div>
-        </div>
-      </div>
     </aside>
   )
 }
