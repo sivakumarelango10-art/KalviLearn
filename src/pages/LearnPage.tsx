@@ -38,6 +38,84 @@ interface CurriculumModule {
 
 const modules = curriculumData as unknown as CurriculumModule[]
 
+/**
+ * Robust markdown formatter for inline bold (**text**), inline code (`code`), and italic (*text*).
+ * Eliminates raw markdown asterisks and converts them into semantic HTML elements.
+ */
+function parseRichText(text: string): React.ReactNode {
+  if (!text) return null
+  const tokens = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g)
+  return tokens.map((token, index) => {
+    if (token.startsWith('**') && token.endsWith('**') && token.length >= 4) {
+      return (
+        <strong key={index} className="font-bold text-neutral-950">
+          {token.slice(2, -2)}
+        </strong>
+      )
+    }
+    if (token.startsWith('`') && token.endsWith('`') && token.length >= 2) {
+      return (
+        <code
+          key={index}
+          className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-800 font-mono text-[11px] border border-neutral-200/80"
+        >
+          {token.slice(1, -1)}
+        </code>
+      )
+    }
+    if (token.startsWith('*') && token.endsWith('*') && token.length >= 2) {
+      return (
+        <em key={index} className="italic text-neutral-800">
+          {token.slice(1, -1)}
+        </em>
+      )
+    }
+    return <React.Fragment key={index}>{token}</React.Fragment>
+  })
+}
+
+/**
+ * Defensive cleaner for problem format specifications.
+ * Strips redundant **Input Format:** / **Output Format:** headers and raw ``` text ``` code fences.
+ */
+function cleanSpecificationText(text?: string): string {
+  if (!text) return ''
+  let s = text.trim()
+  s = s.replace(/^\*\*(?:Input|Output)\s+Format:\*\*\s*/i, '')
+  s = s.replace(/```[^\n]*\r?\n([\s\S]*?)```/g, '$1')
+  s = s.replace(/```/g, '')
+  s = s.replace(/\n{3,}/g, '\n\n')
+  return s.trim()
+}
+
+/**
+ * Renders coding question with dedicated bold title and formatted prompt.
+ */
+function renderCodingQuestion(text?: string): React.ReactNode {
+  if (!text) return null
+  const titleMatch = text.match(/^\*\*([^*]+)\*\*(?:\n+([\s\S]*))?$/)
+  if (titleMatch) {
+    const [, title, body] = titleMatch
+    return (
+      <div className="space-y-2">
+        <h4 className="text-base font-bold text-neutral-900 tracking-tight">
+          {title}
+        </h4>
+        {body && (
+          <div className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
+            {parseRichText(body)}
+          </div>
+        )}
+      </div>
+    )
+  }
+  return (
+    <div className="text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap">
+      {parseRichText(text)}
+    </div>
+  )
+}
+
 export const LearnPage: React.FC = () => {
   const [selectedModuleOrder, setSelectedModuleOrder] = useState<number>(1)
   const [selectedUnitOrder, setSelectedUnitOrder] = useState<number>(1)
@@ -303,7 +381,7 @@ export const LearnPage: React.FC = () => {
                 <span>Concept & Theory</span>
               </div>
               <div className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap bg-neutral-50/80 p-5 rounded-2xl border border-neutral-200/80 text-neutral-700 font-sans">
-                {currentUnit.content}
+                {parseRichText(currentUnit.content || '')}
               </div>
             </div>
 
@@ -314,25 +392,29 @@ export const LearnPage: React.FC = () => {
                   <Code2 className="w-3.5 h-3.5 text-blue-500" />
                   <span>Coding Question</span>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-sm space-y-4">
-                  <div className="text-sm font-semibold text-neutral-900 whitespace-pre-wrap">
-                    {currentUnit.codingQuestion}
+                <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-sm space-y-5">
+                  <div>
+                    {renderCodingQuestion(currentUnit.codingQuestion)}
                   </div>
 
                   {currentUnit.inputFormat && (
-                    <div className="space-y-1">
-                      <div className="text-xs font-semibold text-neutral-500">Input Specification:</div>
-                      <div className="bg-neutral-50 p-3 rounded-lg border border-neutral-200 font-mono text-xs whitespace-pre-wrap">
-                        {currentUnit.inputFormat}
+                    <div className="space-y-1.5">
+                      <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                        Input Specification
+                      </div>
+                      <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 font-mono text-xs text-neutral-800 whitespace-pre-wrap leading-relaxed">
+                        {parseRichText(cleanSpecificationText(currentUnit.inputFormat))}
                       </div>
                     </div>
                   )}
 
                   {currentUnit.outputFormat && (
-                    <div className="space-y-1">
-                      <div className="text-xs font-semibold text-neutral-500">Output Specification:</div>
-                      <div className="bg-neutral-50 p-3 rounded-lg border border-neutral-200 font-mono text-xs whitespace-pre-wrap">
-                        {currentUnit.outputFormat}
+                    <div className="space-y-1.5">
+                      <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                        Output Specification
+                      </div>
+                      <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 font-mono text-xs text-neutral-800 whitespace-pre-wrap leading-relaxed">
+                        {parseRichText(cleanSpecificationText(currentUnit.outputFormat))}
                       </div>
                     </div>
                   )}
@@ -351,29 +433,29 @@ export const LearnPage: React.FC = () => {
                   {currentUnit.examples.map((ex: any, idx: number) => (
                     <div
                       key={idx}
-                      className="bg-neutral-50/60 p-4 rounded-xl border border-neutral-200 text-xs space-y-2"
+                      className="bg-neutral-50/60 p-4 rounded-xl border border-neutral-200 text-xs space-y-2.5"
                     >
-                      <div className="font-semibold text-neutral-700">Example {idx + 1}</div>
+                      <div className="font-bold text-neutral-800">Example {idx + 1}</div>
                       {ex.input && (
-                        <div>
-                          <span className="text-neutral-500 font-medium">Input: </span>
-                          <code className="bg-white px-2 py-0.5 rounded border border-neutral-200 font-mono">
+                        <div className="flex items-start gap-2">
+                          <span className="text-neutral-500 font-medium shrink-0">Input:</span>
+                          <code className="bg-white px-2 py-0.5 rounded border border-neutral-200 font-mono text-neutral-800">
                             {ex.input}
                           </code>
                         </div>
                       )}
                       {ex.output && (
-                        <div>
-                          <span className="text-neutral-500 font-medium">Output: </span>
-                          <code className="bg-white px-2 py-0.5 rounded border border-neutral-200 font-mono">
+                        <div className="flex items-start gap-2">
+                          <span className="text-neutral-500 font-medium shrink-0">Output:</span>
+                          <code className="bg-white px-2 py-0.5 rounded border border-neutral-200 font-mono text-neutral-800">
                             {ex.output}
                           </code>
                         </div>
                       )}
                       {ex.explanation && (
-                        <p className="text-neutral-600 italic whitespace-pre-wrap">
-                          {ex.explanation}
-                        </p>
+                        <div className="text-neutral-600 text-xs leading-relaxed whitespace-pre-wrap pt-1 border-t border-neutral-200/60">
+                          {parseRichText(ex.explanation)}
+                        </div>
                       )}
                     </div>
                   ))}
