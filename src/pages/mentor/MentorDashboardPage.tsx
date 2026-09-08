@@ -129,7 +129,7 @@ export const MentorDashboardPage: React.FC = () => {
         <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-4 interactive-card">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
-              Assigned Cohort
+              Assigned Students
             </span>
             <div className="w-10 h-10 rounded-2xl bg-neutral-100 text-neutral-800 flex items-center justify-center">
               <Users className="w-5 h-5" />

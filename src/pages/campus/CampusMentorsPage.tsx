@@ -417,12 +417,12 @@ export const CampusMentorsPage: React.FC = () => {
               </button>
             </div>
 
-            {/* 2. Assigned Cohort (FIXED) */}
+            {/* 2. Assigned Students (FIXED) */}
             <div className="flex-shrink-0 px-6 pt-5 bg-white">
               <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                    Assigned Cohort
+                    Assigned Students
                   </h3>
                   <p className="text-sm font-bold text-neutral-800 mt-0.5">
                     Total Students
