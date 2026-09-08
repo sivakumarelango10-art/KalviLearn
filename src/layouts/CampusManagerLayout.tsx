@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { CampusManagerSidebar } from '@/components/campus/CampusManagerSidebar'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
+import { GlobalFeedbackWidget } from '@/components/feedback/GlobalFeedbackWidget'
 
 export const CampusManagerLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -70,6 +71,9 @@ export const CampusManagerLayout: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Global Feedback & Support Widget */}
+      <GlobalFeedbackWidget portal="CAMPUS_MANAGER" />
     </div>
   )
 }

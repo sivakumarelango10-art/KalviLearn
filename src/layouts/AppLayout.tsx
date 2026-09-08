@@ -5,6 +5,7 @@ import { AppSidebar } from '@/components/common/AppSidebar'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { getUserState, subscribeProgress } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
+import { GlobalFeedbackWidget } from '@/components/feedback/GlobalFeedbackWidget'
 
 export const AppLayout: React.FC = () => {
   const { user } = useAuth()
@@ -145,6 +146,9 @@ export const AppLayout: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Global Feedback & Support Widget */}
+      <GlobalFeedbackWidget portal="STUDENT" />
     </div>
   )
 }

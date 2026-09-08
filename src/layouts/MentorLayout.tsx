@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { MentorNavbar } from '@/components/mentor/MentorNavbar'
 import { MentorSidebar } from '@/components/mentor/MentorSidebar'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
+import { GlobalFeedbackWidget } from '@/components/feedback/GlobalFeedbackWidget'
 
 export const MentorLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -51,6 +52,9 @@ export const MentorLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Global Feedback & Support Widget */}
+      <GlobalFeedbackWidget portal="MENTOR" />
     </div>
   )
 }
