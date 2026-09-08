@@ -305,5 +305,33 @@ model FeedbackAuditLog {
   @@map("feedback_audit_logs")
 }
 
+// ─── TeamSync Outbound Webhook Deliveries (Phase 4B) ──────────────────────────
+
+model TeamSyncWebhookDelivery {
+  id                String    @id @default(uuid())
+  eventId           String    @unique @map("event_id") @db.VarChar(100)
+  eventType         String    @map("event_type") @db.VarChar(50)
+  ticketId          String?   @map("ticket_id") @db.VarChar(100)
+  ticketNumber      String?   @map("ticket_number") @db.VarChar(50)
+  sourceReferenceId String?   @map("source_reference_id") @db.VarChar(50)
+  destination       String    @db.VarChar(500)
+  payload           Json
+  status            String    @default("PENDING") @db.VarChar(30) // "PENDING" | "DELIVERED" | "FAILED" | "RETRYING"
+  attemptCount      Int       @default(0) @map("attempt_count")
+  httpStatus        Int?      @map("http_status")
+  lastAttempt       DateTime? @map("last_attempt")
+  nextRetry         DateTime? @map("next_retry")
+  error             String?   @db.Text
+  createdAt         DateTime  @default(now()) @map("created_at")
+  completedAt       DateTime? @map("completed_at")
+
+  @@index([eventId])
+  @@index([ticketId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("teamsync_webhook_deliveries")
+}
+
+
 
 
