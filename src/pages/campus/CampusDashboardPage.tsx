@@ -10,7 +10,6 @@ import {
   XCircle,
   TrendingUp,
   ArrowRight,
-  Sparkles,
   RefreshCw,
   ShieldCheck,
   Zap,
@@ -287,9 +286,6 @@ export const CampusDashboardPage: React.FC = () => {
           <div>
             <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
               {mentors.length}
-            </div>
-            <div className="text-xs font-semibold text-neutral-500 mt-1">
-              {totalAssignedStudents}/{totalMentorCapacity} seats occupied
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
@@ -616,8 +612,7 @@ export const CampusDashboardPage: React.FC = () => {
             </div>
 
             {/* Benchmark notice */}
-            <div className="rounded-2xl bg-neutral-50 border border-neutral-200/80 p-4 flex items-start gap-3">
-              <Sparkles className="w-4 h-4 text-[#ED2A2B] flex-shrink-0 mt-0.5" />
+            <div className="rounded-2xl bg-neutral-50 border border-neutral-200/80 p-4">
               <p className="text-[11px] text-neutral-700 leading-relaxed font-medium">
                 Campus pass rate exceeds target benchmark by <span className="font-extrabold text-neutral-900">+6.4%</span> this semester.
               </p>
