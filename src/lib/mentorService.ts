@@ -29,11 +29,15 @@ export interface MentorStudent {
     name: string
     email: string
   }
+  mentorName?: string
+  mentorEmail?: string
+  campus?: string
   belt: 'Belt 1' | 'Belt 2' | 'Belt 3'
   beltColor: string
   progressPercent: number
   solvedCount: number
   totalProblems: number
+  totalXp: number
   streak: number
   language: 'python' | 'java' | 'nodejs' | 'cpp'
   lastActive: string
@@ -50,6 +54,21 @@ export interface MentorStudent {
     cpp: number
     nodejs: number
   }
+  recentSubmissions: Array<{
+    id: string
+    problemTitle: string
+    problemSlug: string
+    beltName: string
+    beltColor: string
+    language: 'python' | 'java' | 'nodejs' | 'cpp'
+    languageLabel: string
+    status: 'PASSED' | 'FAILED' | 'ERROR'
+    passedTests: number
+    totalTests: number
+    executionTimeMs: number
+    createdAt: string
+    createdAtRaw: string
+  }>
 }
 
 export interface MentorSubmission {
@@ -324,9 +343,10 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
     }
 
     let studentUsers: StudentUserRow[] = []
+    let mentorProfile: MentorProfile | null = null
 
     if (mentorUserId) {
-      const mentorProfile = await getMentorProfile(mentorUserId)
+      mentorProfile = await getMentorProfile(mentorUserId)
       if (!mentorProfile) return []
       studentUsers = await getMentorStudentUsers(mentorProfile.id)
     } else {
@@ -350,17 +370,17 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
     const studentUserIds = studentUsers.map((s) => s.userId)
 
     const [progressRes, submissionsRes] = await Promise.all([
-      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED'),
+      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED'),
       supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests, executionTimeMs, Problem(slug, title, difficulty, Belt(order, name, color))').in('userId', studentUserIds).order('createdAt', { ascending: false }),
     ])
 
-    const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; Problem?: unknown }>>()
+    const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; xpEarned?: number; Problem?: unknown }>>()
     for (const p of progressRes.data || []) {
       const list = progressByUser.get(p.userId) || []
-      list.push(p)
+      list.push(p as any)
       progressByUser.set(p.userId, list)
     }
-    const submissionsByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number; Problem?: unknown }>>()
+    const submissionsByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number; executionTimeMs?: number; Problem?: unknown }>>()
     for (const s of submissionsRes.data || []) {
       const list = submissionsByUser.get(s.userId) || []
       if (list.length < 50) list.push(s as any)
@@ -424,6 +444,30 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       const solvedCount = solvedProblems.length
       const progressPercent = Math.min(100, Math.round((solvedCount / 85) * 100))
 
+      const baseSolvedXp = solvedList.reduce((acc, p: any) => acc + Number(p.xpEarned != null ? p.xpEarned : 50), 0)
+      const extraPassedCount = recentSubs.filter((s) => s.status === 'PASSED' && s.passedTests === 10 && !seenProblemIds.has(s.problemId)).length
+      const totalXp = baseSolvedXp + (extraPassedCount * 50)
+
+      const recentSubmissions = recentSubs.slice(0, 15).map((s: any) => {
+        const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
+        const sLang = normalizeLanguage(s.language)
+        return {
+          id: s.id,
+          problemTitle: prob?.title || 'Practice Challenge',
+          problemSlug: prob?.slug || 'challenge',
+          beltName: prob?.Belt?.name || 'Belt 1',
+          beltColor: prob?.Belt?.color || '#3B82F6',
+          language: sLang,
+          languageLabel: getLanguageLabel(sLang),
+          status: (s.status as 'PASSED' | 'FAILED' | 'ERROR') || 'PASSED',
+          passedTests: s.passedTests ?? 10,
+          totalTests: s.totalTests || 10,
+          executionTimeMs: s.executionTimeMs || 25,
+          createdAt: formatRelativeTime(s.createdAt),
+          createdAtRaw: s.createdAt,
+        }
+      })
+
       let highestBeltOrder = 1
       const solvedSlugs: string[] = []
       for (const p of solvedProblems) {
@@ -463,8 +507,12 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
           name: su.name,
           email: su.email,
         },
+        mentorName: mentorProfile?.name || mentorProfile?.user?.name || 'Assigned Growth Mentor',
+        mentorEmail: mentorProfile?.email || mentorProfile?.user?.email || '',
+        campus: 'Kalvi National Technology Campus',
         belt, beltColor,
         progressPercent, solvedCount, totalProblems: 85,
+        totalXp,
         streak, language,
         lastActive: formatRelativeTime(lastActiveRaw),
         lastActiveRaw,
@@ -475,6 +523,7 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         solvedSlugs,
         solvedProblems,
         languageSolvedCounts,
+        recentSubmissions,
       }
     })
 
@@ -861,9 +910,14 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
       student: {
         id: userRow.id, name: userRow.name || name, email: userRow.email,
         belt: 'Belt 1', beltColor: '#3B82F6', progressPercent: 0, solvedCount: 0, totalProblems: 85,
+        totalXp: 0,
+        mentorName: mentorProfile.name || 'Assigned Growth Mentor',
+        mentorEmail: mentorProfile.email || '',
+        campus: 'Kalvi National Technology Campus',
         streak: 0, language: 'python', lastActive: 'Just mapped', status: 'ACTIVE', needsAttention: false, joinedDate: 'Just now',
         solvedProblems: [],
         languageSolvedCounts: { python: 0, java: 0, cpp: 0, nodejs: 0 },
+        recentSubmissions: [],
       },
     }
   } catch (err: unknown) {

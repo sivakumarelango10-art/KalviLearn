@@ -4,11 +4,10 @@ import {
   ChevronDown,
   LogOut,
   User,
-  GraduationCap,
+  Users,
   Bell,
   Menu,
   ShieldCheck,
-  ExternalLink,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
 import { useAuth } from '@/contexts/AuthContext'
@@ -85,15 +84,14 @@ export const MentorNavbar: React.FC<MentorNavbarProps> = ({ onToggleMobileSideba
 
       {/* Right: Notifications & Mentor Dropdown */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Switch to Student View */}
+        {/* Quick Link to Assigned Students Roster */}
         <Link
-          to="/dashboard"
+          to="/mentor/students"
           className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200"
-          title="Preview Student Learning Platform"
+          title="View Assigned Students Roster"
         >
-          <GraduationCap className="w-3.5 h-3.5 text-neutral-500" />
-          <span>Student View</span>
-          <ExternalLink className="w-3 h-3 text-neutral-400" />
+          <Users className="w-3.5 h-3.5 text-neutral-500" />
+          <span>Assigned Students</span>
         </Link>
 
         {/* Notifications Icon */}
@@ -161,12 +159,12 @@ export const MentorNavbar: React.FC<MentorNavbarProps> = ({ onToggleMobileSideba
                 </Link>
 
                 <Link
-                  to="/dashboard"
+                  to="/mentor/students"
                   onClick={() => setDropdownOpen(false)}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors font-medium"
                 >
-                  <GraduationCap className="w-4 h-4 text-neutral-400" />
-                  <span>Switch to Student Platform</span>
+                  <Users className="w-4 h-4 text-neutral-400" />
+                  <span>Assigned Students</span>
                 </Link>
               </div>
 

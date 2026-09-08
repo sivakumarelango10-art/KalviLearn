@@ -13,7 +13,6 @@ import {
   User,
   Code2,
   ChevronRight,
-  ExternalLink,
   Filter,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -26,6 +25,7 @@ import {
 } from '@/lib/mentorService'
 import { useAuth } from '@/contexts/AuthContext'
 import { PythonLogo, JavaLogo, CppLogo } from '@/components/practice/LanguageCards'
+import { StudentDetailModal } from '@/components/mentor/StudentDetailModal'
 
 export const NodejsOfficialLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -90,9 +90,8 @@ export const MentorStudentsPage: React.FC = () => {
   const [onlyWithSolved, setOnlyWithSolved] = useState(false)
   const [sortBy, setSortBy] = useState<'progress' | 'streak' | 'name'>('progress')
 
-  // Inspection modal for realtime solved problems
-  const [inspectingSolvedStudent, setInspectingSolvedStudent] = useState<MentorStudent | null>(null)
-  const [modalLangFilter, setModalLangFilter] = useState<LanguageKey>('all')
+  // Selected Student for Authoritative Student View
+  const [selectedStudent, setSelectedStudent] = useState<MentorStudent | null>(null)
 
   // Add Student Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -117,13 +116,12 @@ export const MentorStudentsPage: React.FC = () => {
 
   // Keyboard shortcut (Escape) to close modals and body scroll lock
   useEffect(() => {
-    const isAnyModalOpen = isAddModalOpen || !!studentToDelete || !!inspectingSolvedStudent
+    const isAnyModalOpen = isAddModalOpen || !!studentToDelete
     if (!isAnyModalOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsAddModalOpen(false)
         setStudentToDelete(null)
-        setInspectingSolvedStudent(null)
       }
     }
     window.addEventListener('keydown', handleKeyDown)
@@ -132,7 +130,7 @@ export const MentorStudentsPage: React.FC = () => {
       window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
-  }, [isAddModalOpen, studentToDelete, inspectingSolvedStudent])
+  }, [isAddModalOpen, studentToDelete])
 
   const loadData = useCallback(async () => {
     try {
@@ -499,12 +497,18 @@ export const MentorStudentsPage: React.FC = () => {
                 <div className="space-y-4">
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white text-xs font-bold flex items-center justify-center shadow-xs flex-shrink-0">
+                    <div
+                      className="flex items-center gap-3 cursor-pointer group/header"
+                      onClick={() => setSelectedStudent(student)}
+                      title="Click to view student profile"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white text-xs font-bold flex items-center justify-center shadow-xs flex-shrink-0 group-hover/header:bg-[#ED2A2B] transition-colors">
                         {initials}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-bold text-neutral-900 text-sm truncate">{student.name}</h3>
+                        <h3 className="font-bold text-neutral-900 text-sm truncate group-hover/header:text-[#ED2A2B] transition-colors">
+                          {student.name}
+                        </h3>
                         <p className="text-[11px] text-neutral-400 font-mono truncate max-w-[180px]">
                           {student.email}
                         </p>
@@ -580,10 +584,7 @@ export const MentorStudentsPage: React.FC = () => {
                           {(student.languageSolvedCounts?.[langFilter] || 0) > 0 && (
                             <button
                               type="button"
-                              onClick={() => {
-                                setInspectingSolvedStudent(student)
-                                setModalLangFilter(langFilter)
-                              }}
+                              onClick={() => setSelectedStudent(student)}
                               className="text-[10px] font-bold text-[#ED2A2B] hover:underline flex items-center gap-0.5"
                             >
                               <span>View All ({student.languageSolvedCounts?.[langFilter]})</span>
@@ -603,10 +604,7 @@ export const MentorStudentsPage: React.FC = () => {
                             {solvedInActive.slice(0, 2).map((prob) => (
                               <div
                                 key={prob.problemId}
-                                onClick={() => {
-                                  setInspectingSolvedStudent(student)
-                                  setModalLangFilter(langFilter)
-                                }}
+                                onClick={() => setSelectedStudent(student)}
                                 className="p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2 group/item"
                               >
                                 <div className="min-w-0 flex-1">
@@ -646,10 +644,7 @@ export const MentorStudentsPage: React.FC = () => {
                             {solvedInActive.length > 2 && (
                               <button
                                 type="button"
-                                onClick={() => {
-                                  setInspectingSolvedStudent(student)
-                                  setModalLangFilter(langFilter)
-                                }}
+                                onClick={() => setSelectedStudent(student)}
                                 className="w-full text-center text-[10px] text-neutral-500 font-semibold hover:text-neutral-800 py-1"
                               >
                                 + {solvedInActive.length - 2} more solved in {LANGUAGES.find((l) => l.id === langFilter)?.label}
@@ -665,10 +660,7 @@ export const MentorStudentsPage: React.FC = () => {
                           {student.solvedProblems.length > 0 && (
                             <button
                               type="button"
-                              onClick={() => {
-                                setInspectingSolvedStudent(student)
-                                setModalLangFilter('all')
-                              }}
+                              onClick={() => setSelectedStudent(student)}
                               className="text-[10px] font-bold text-[#ED2A2B] hover:underline flex items-center gap-0.5"
                             >
                               <span>All Solved ({student.solvedProblems.length})</span>
@@ -681,7 +673,7 @@ export const MentorStudentsPage: React.FC = () => {
                         <div className="grid grid-cols-4 gap-1.5 text-center">
                           <button
                             type="button"
-                            onClick={() => setLangFilter('cpp')}
+                            onClick={() => setSelectedStudent(student)}
                             className="p-1.5 rounded-xl bg-blue-50/80 border border-blue-100/80 hover:bg-blue-100/80 transition-all text-left cursor-pointer group/pill"
                           >
                             <div className="flex items-center justify-between">
@@ -695,7 +687,7 @@ export const MentorStudentsPage: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={() => setLangFilter('python')}
+                            onClick={() => setSelectedStudent(student)}
                             className="p-1.5 rounded-xl bg-emerald-50/80 border border-emerald-100/80 hover:bg-emerald-100/80 transition-all text-left cursor-pointer group/pill"
                           >
                             <div className="flex items-center justify-between">
@@ -709,7 +701,7 @@ export const MentorStudentsPage: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={() => setLangFilter('java')}
+                            onClick={() => setSelectedStudent(student)}
                             className="p-1.5 rounded-xl bg-amber-50/80 border border-amber-100/80 hover:bg-amber-100/80 transition-all text-left cursor-pointer group/pill"
                           >
                             <div className="flex items-center justify-between">
@@ -723,7 +715,7 @@ export const MentorStudentsPage: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={() => setLangFilter('nodejs')}
+                            onClick={() => setSelectedStudent(student)}
                             className="p-1.5 rounded-xl bg-teal-50/80 border border-teal-100/80 hover:bg-teal-100/80 transition-all text-left cursor-pointer group/pill"
                           >
                             <div className="flex items-center justify-between">
@@ -739,10 +731,7 @@ export const MentorStudentsPage: React.FC = () => {
                         {/* Most recently solved problem if any */}
                         {student.solvedProblems.length > 0 && (
                           <div
-                            onClick={() => {
-                              setInspectingSolvedStudent(student)
-                              setModalLangFilter('all')
-                            }}
+                            onClick={() => setSelectedStudent(student)}
                             className="mt-2 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2"
                           >
                             <div className="flex items-center gap-1.5 min-w-0">
@@ -763,25 +752,24 @@ export const MentorStudentsPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Footer Active Status */}
+                {/* Footer Active Status & View Action */}
                 <div className="flex items-center justify-between pt-2 border-t border-neutral-100 text-[11px] text-neutral-400">
                   <span>Active: {student.lastActive}</span>
-                  {student.needsAttention ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-                      Attention
-                    </span>
-                  ) : (
+                  <div className="flex items-center gap-2">
+                    {student.needsAttention && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+                        Attention
+                      </span>
+                    )}
                     <button
                       type="button"
-                      onClick={() => {
-                        setInspectingSolvedStudent(student)
-                        setModalLangFilter(langFilter)
-                      }}
-                      className="text-[10px] font-bold text-neutral-600 hover:text-neutral-900 hover:underline"
+                      onClick={() => setSelectedStudent(student)}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-neutral-800 hover:text-white bg-neutral-100 hover:bg-neutral-900 px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-2xs"
                     >
-                      Inspect Problems →
+                      <span>View Student</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             )
@@ -789,213 +777,11 @@ export const MentorStudentsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Solved Problems Inspection Modal (Portaled directly to document.body) */}
-      {inspectingSolvedStudent &&
-        typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
-            onClick={() => setInspectingSolvedStudent(null)}
-          >
-            <div
-              className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-neutral-200 space-y-5 relative max-h-[90vh] flex flex-col animate-modal-pop"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close button */}
-              <button
-                type="button"
-                onClick={() => setInspectingSolvedStudent(null)}
-                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
-                aria-label="Close dialog"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Modal Header */}
-              <div className="flex items-start gap-3.5 pr-8">
-                <div className="w-12 h-12 rounded-2xl bg-neutral-900 text-white text-sm font-bold flex items-center justify-center shadow-xs flex-shrink-0">
-                  {inspectingSolvedStudent.name
-                    .trim()
-                    .split(/\s+/)
-                    .filter(Boolean)
-                    .map((w) => w[0] || '')
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase() || 'S'}
-                </div>
-                <div className="space-y-0.5 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-lg font-bold text-neutral-900 truncate">
-                      {inspectingSolvedStudent.name}
-                    </h3>
-                    <span
-                      className="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-2xs"
-                      style={{ backgroundColor: inspectingSolvedStudent.beltColor }}
-                    >
-                      {inspectingSolvedStudent.belt}
-                    </span>
-                  </div>
-                  <p className="text-xs text-neutral-500 font-mono truncate">
-                    {inspectingSolvedStudent.email}
-                  </p>
-                  <div className="flex items-center gap-3 pt-1 text-xs flex-wrap">
-                    <span className="font-semibold text-neutral-700">
-                      Total Solved: <strong className="text-neutral-900 font-bold">{inspectingSolvedStudent.solvedProblems.length}</strong>
-                    </span>
-                    <span className="text-neutral-300">•</span>
-                    <span className="font-semibold text-neutral-700">
-                      Progress: <strong className="text-neutral-900 font-bold">{inspectingSolvedStudent.progressPercent}%</strong>
-                    </span>
-                    <span className="text-neutral-300">•</span>
-                    <span className="font-semibold text-neutral-700">
-                      Streak: <strong className="text-amber-600 font-bold">{inspectingSolvedStudent.streak}d</strong>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Modal Language Filter Tabs */}
-              <div className="flex items-center gap-1.5 border-b border-neutral-100 pb-3 overflow-x-auto">
-                {LANGUAGES.map((lang) => {
-                  const isSelected = modalLangFilter === lang.id
-                  const count =
-                    lang.id === 'all'
-                      ? inspectingSolvedStudent.solvedProblems.length
-                      : inspectingSolvedStudent.languageSolvedCounts?.[lang.id] || 0
-
-                  return (
-                    <button
-                      key={lang.id}
-                      type="button"
-                      onClick={() => setModalLangFilter(lang.id)}
-                      className={cn(
-                        'px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer',
-                        isSelected
-                          ? 'bg-neutral-900 text-white shadow-xs'
-                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-                      )}
-                    >
-                      <span className="flex-shrink-0 flex items-center justify-center">
-                        {renderLangLogo(lang.id, 'w-3.5 h-3.5')}
-                      </span>
-                      <span>{lang.shortLabel}</span>
-                      <span
-                        className={cn(
-                          'text-[10px] px-1.5 py-0.2 rounded-md font-mono',
-                          isSelected ? 'bg-neutral-800 text-white' : 'bg-neutral-200/80 text-neutral-700'
-                        )}
-                      >
-                        {count}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Solved Problems List */}
-              <div className="flex-1 overflow-y-auto pr-1 space-y-2 min-h-[200px] max-h-[380px]">
-                {(() => {
-                  const list =
-                    modalLangFilter === 'all'
-                      ? inspectingSolvedStudent.solvedProblems
-                      : inspectingSolvedStudent.solvedProblems.filter((p) => p.language === modalLangFilter)
-
-                  if (list.length === 0) {
-                    return (
-                      <div className="py-12 text-center text-neutral-400 space-y-2">
-                        <div className="w-10 h-10 rounded-2xl bg-neutral-100 text-neutral-400 flex items-center justify-center mx-auto">
-                          <Code2 className="w-5 h-5" />
-                        </div>
-                        <p className="text-xs font-medium">
-                          No problems solved in {LANGUAGES.find((l) => l.id === modalLangFilter)?.label} yet.
-                        </p>
-                      </div>
-                    )
-                  }
-
-                  return list.map((prob) => {
-                    const langBadge =
-                      prob.language === 'cpp'
-                        ? 'bg-blue-100 text-blue-800 border-blue-200'
-                        : prob.language === 'python'
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                        : prob.language === 'java'
-                        ? 'bg-amber-100 text-amber-800 border-amber-200'
-                        : 'bg-teal-100 text-teal-800 border-teal-200'
-
-                    return (
-                      <div
-                        key={prob.problemId}
-                        className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/80 flex items-center justify-between gap-3 hover:border-neutral-300 transition-colors"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle2 className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <h4 className="text-xs font-bold text-neutral-900 truncate">
-                              {prob.title}
-                            </h4>
-                            <div className="flex items-center gap-2 mt-1 flex-wrap">
-                              <span
-                                className="text-[9px] font-extrabold px-1.5 py-0.5 rounded text-white shadow-2xs"
-                                style={{ backgroundColor: prob.beltColor }}
-                              >
-                                {prob.beltName}
-                              </span>
-                              <span
-                                className={cn(
-                                  'text-[9px] font-bold px-1.5 py-0.5 rounded',
-                                  prob.difficulty.toLowerCase() === 'easy'
-                                    ? 'bg-emerald-100 text-emerald-800'
-                                    : prob.difficulty.toLowerCase() === 'medium'
-                                    ? 'bg-amber-100 text-amber-800'
-                                    : 'bg-red-100 text-red-800'
-                                )}
-                              >
-                                {prob.difficulty}
-                              </span>
-                              <span className={cn('text-[9px] font-extrabold px-2 py-0.5 rounded border inline-flex items-center gap-1.5', langBadge)}>
-                                {renderLangLogo(prob.language, 'w-3 h-3')}
-                                <span>{prob.languageLabel}</span>
-                              </span>
-                              <span className="text-[10px] text-neutral-400">
-                                {prob.solvedAtFormatted}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <a
-                          href={`/problem/${prob.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-xl text-neutral-400 hover:text-neutral-800 hover:bg-neutral-200/60 transition-colors flex-shrink-0"
-                          title="Open Problem in Arena"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </div>
-                    )
-                  })
-                })()}
-              </div>
-
-              {/* Modal Footer */}
-              <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400">
-                <span>Real-time live progress sync enabled</span>
-                <button
-                  type="button"
-                  onClick={() => setInspectingSolvedStudent(null)}
-                  className="px-4 py-2 rounded-xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+      {/* Student View Modal (Authoritative Real-Time Data) */}
+      <StudentDetailModal
+        student={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+      />
 
       {/* Add Student Modal (Portaled directly to document.body) */}
       {isAddModalOpen &&

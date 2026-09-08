@@ -1,14 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { createPortal } from 'react-dom'
 import {
   Users,
   Flame,
   Search,
   TrendingUp,
   CheckCircle2,
-  X,
-  Award,
   AlertTriangle,
+  Award,
   Loader2,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -19,6 +17,7 @@ import {
   fetchMentorRoster,
   subscribeToMentorUpdates,
 } from '@/lib/mentorService'
+import { StudentDetailModal } from '@/components/mentor/StudentDetailModal'
 
 export const MentorDashboardPage: React.FC = () => {
   const { user } = useAuth()
@@ -30,20 +29,6 @@ export const MentorDashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBeltFilter, setSelectedBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
   const [selectedStudent, setSelectedStudent] = useState<MentorStudent | null>(null)
-
-  // Keyboard shortcut (Escape) to close modal and body scroll lock
-  useEffect(() => {
-    if (!selectedStudent) return
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedStudent(null)
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
-    }
-  }, [selectedStudent])
 
   useEffect(() => {
     let isMounted = true
@@ -399,100 +384,11 @@ export const MentorDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Student Detail Inspection Modal (Portaled directly to document.body) */}
-      {selectedStudent &&
-        typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
-            onClick={() => setSelectedStudent(null)}
-          >
-            <div
-              className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-neutral-200 space-y-6 relative animate-modal-pop"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedStudent(null)}
-                className="absolute top-6 right-6 p-2 rounded-full text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors"
-                aria-label="Close dialog"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Student Summary Header */}
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white font-extrabold text-lg flex items-center justify-center shadow-xs">
-                  {(selectedStudent.name || selectedStudent.email || 'ST').slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-neutral-900">
-                    {selectedStudent.name || 'Student'}
-                  </h3>
-                  <p className="text-xs text-neutral-500 font-mono">
-                    {selectedStudent.email}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span
-                      className="px-2 py-0.5 rounded text-[11px] font-bold text-white"
-                      style={{ backgroundColor: selectedStudent.beltColor || '#3B82F6' }}
-                    >
-                      {selectedStudent.belt || 'Belt 1'}
-                    </span>
-                    <span className="text-[11px] text-neutral-400">
-                      Primary: {(selectedStudent.language || 'python').toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Metrics Breakdown */}
-              <div className="grid grid-cols-3 gap-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200 text-center">
-                <div>
-                  <div className="text-xl font-extrabold text-neutral-900">
-                    {selectedStudent.progressPercent}%
-                  </div>
-                  <div className="text-[11px] text-neutral-500">Progress</div>
-                </div>
-                <div>
-                  <div className="text-xl font-extrabold text-neutral-900">
-                    {selectedStudent.solvedCount} / {selectedStudent.totalProblems}
-                  </div>
-                  <div className="text-[11px] text-neutral-500">Solved</div>
-                </div>
-                <div>
-                  <div className="text-xl font-extrabold text-amber-500">
-                    {selectedStudent.streak} days
-                  </div>
-                  <div className="text-[11px] text-neutral-500">Streak</div>
-                </div>
-              </div>
-
-              {/* Attention Notice if present */}
-              {selectedStudent.needsAttention && selectedStudent.attentionReason && (
-                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2.5 text-xs text-amber-800">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold">Intervention Recommended:</span>{' '}
-                    {selectedStudent.attentionReason}
-                  </div>
-                </div>
-              )}
-
-              {/* Modal Footer */}
-              <div className="flex items-center justify-end pt-2 border-t border-neutral-100">
-                <button
-                  type="button"
-                  onClick={() => setSelectedStudent(null)}
-                  className="px-5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold transition-all interactive-btn"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+      {/* 4. Student Detail Inspection Modal (Authoritative Student View) */}
+      <StudentDetailModal
+        student={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+      />
     </div>
   )
 }
