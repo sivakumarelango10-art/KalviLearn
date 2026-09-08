@@ -25,18 +25,8 @@ export const MentorDashboardPage: React.FC = () => {
   const mentorDisplayName =
     user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
 
-  const cacheKey = `kalvi_roster_${user?.id || user?.email || 'default'}`
-  const [students, setStudents] = useState<MentorStudent[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(cacheKey)
-      if (cached) {
-        const parsed = JSON.parse(cached)
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed
-      }
-    } catch {}
-    return []
-  })
-  const [isLoading, setIsLoading] = useState(() => students.length === 0)
+  const [students, setStudents] = useState<MentorStudent[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBeltFilter, setSelectedBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
   const [selectedStudent, setSelectedStudent] = useState<MentorStudent | null>(null)
@@ -64,9 +54,6 @@ export const MentorDashboardPage: React.FC = () => {
         if (isMounted) {
           setStudents(data)
           setIsLoading(false)
-          try {
-            sessionStorage.setItem(cacheKey, JSON.stringify(data))
-          } catch {}
         }
       } catch (err) {
         console.error('Error loading mentor cohort:', err)

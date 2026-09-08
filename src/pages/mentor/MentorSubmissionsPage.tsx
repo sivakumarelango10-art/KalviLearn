@@ -26,20 +26,8 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export const MentorSubmissionsPage: React.FC = () => {
   const { user } = useAuth()
-  const cacheKey = `kalvi_subs_${user?.id || user?.email || 'default'}`
-
-  // Instant SWR cache initialization for 0ms cold-start latency
-  const [submissions, setSubmissions] = useState<MentorSubmission[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(cacheKey)
-      if (cached) {
-        const parsed = JSON.parse(cached)
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed
-      }
-    } catch {}
-    return []
-  })
-  const [isLoading, setIsLoading] = useState(() => submissions.length === 0)
+  const [submissions, setSubmissions] = useState<MentorSubmission[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [isSyncing, setIsSyncing] = useState(false)
   const [newArrivalIds, setNewArrivalIds] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState('')
@@ -89,22 +77,18 @@ export const MentorSubmissionsPage: React.FC = () => {
     try {
       const data = await fetchMentorSubmissions(user?.id || user?.email, 50, 0, true)
       setSubmissions(data.submissions)
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(data.submissions))
-      } catch {}
     } catch (err) {
       console.error('Error fetching mentor submissions:', err)
     } finally {
       setIsLoading(false)
       setIsSyncing(false)
     }
-  }, [user?.id, user?.email, cacheKey])
+  }, [user?.id, user?.email])
 
   useEffect(() => {
     let isMounted = true
 
-    // Initial load: if no cache, show full loader; otherwise refresh in background (SWR)
-    loadData(submissions.length === 0)
+    loadData(true)
 
     // 1. Ultra-fast real-time submission stream (sub-second instant arrival)
     const unsubLive = subscribeToLiveSubmissions(
@@ -113,11 +97,7 @@ export const MentorSubmissionsPage: React.FC = () => {
         if (!isMounted) return
         setSubmissions((prev) => {
           if (prev.some((s) => s.id === newSub.id)) return prev
-          const updated = [newSub, ...prev.slice(0, 49)]
-          try {
-            sessionStorage.setItem(cacheKey, JSON.stringify(updated))
-          } catch {}
-          return updated
+          return [newSub, ...prev.slice(0, 49)]
         })
         setNewArrivalIds((prev) => new Set(prev).add(newSub.id))
         setTimeout(() => {
@@ -145,7 +125,7 @@ export const MentorSubmissionsPage: React.FC = () => {
       unsubLive()
       unsubUpdates()
     }
-  }, [user?.id, user?.email, loadData, cacheKey])
+  }, [user?.id, user?.email, loadData])
 
   const filtered = useMemo(() => {
     return submissions.filter((sub) => {

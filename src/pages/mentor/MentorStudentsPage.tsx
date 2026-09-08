@@ -82,18 +82,8 @@ const renderLangLogo = (id: LanguageKey | string, className: string = 'w-4 h-4')
 
 export const MentorStudentsPage: React.FC = () => {
   const { user } = useAuth()
-  const cacheKey = `kalvi_roster_${user?.id || user?.email || 'default'}`
-  const [students, setStudents] = useState<MentorStudent[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(cacheKey)
-      if (cached) {
-        const parsed = JSON.parse(cached)
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed
-      }
-    } catch {}
-    return []
-  })
-  const [isLoading, setIsLoading] = useState(() => students.length === 0)
+  const [students, setStudents] = useState<MentorStudent[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [beltFilter, setBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
   const [langFilter, setLangFilter] = useState<LanguageKey>('all')
@@ -149,14 +139,11 @@ export const MentorStudentsPage: React.FC = () => {
       const data = await fetchMentorRoster(user?.id || user?.email)
       setStudents(data)
       setIsLoading(false)
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(data))
-      } catch {}
     } catch (err) {
       console.error('Error loading students:', err)
       setIsLoading(false)
     }
-  }, [user?.id, user?.email, cacheKey])
+  }, [user?.id, user?.email])
 
   useEffect(() => {
     loadData()

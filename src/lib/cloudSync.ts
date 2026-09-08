@@ -82,7 +82,7 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
         const isSolved = row.status === 'SOLVED'
         if (isSolved && !solvedSlugs.includes(slug)) {
           solvedSlugs.push(slug)
-          totalXp += row.xpEarned || 50
+          totalXp += Number(row.xpEarned || 0)
         }
 
         progressMap[slug] = {

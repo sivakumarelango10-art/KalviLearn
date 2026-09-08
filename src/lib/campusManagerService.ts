@@ -351,29 +351,14 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
       for (const p of uProgress) {
         if (p.status === 'SOLVED') {
           solvedProblems.add(p.problemId)
-          totalXp += p.xpEarned || 50
+          totalXp += Number(p.xpEarned || 0)
           const lang = normalizeLanguage(p.language)
           languageSolvedCounts[lang] = (languageSolvedCounts[lang] || 0) + 1
         }
       }
 
-      // Also incorporate any passed submissions that had 10/10 tests
-      for (const sub of uSubs) {
-        if (sub.status === 'PASSED' && sub.passedTests === (sub.totalTests || 10) && sub.problemId) {
-          const lang = normalizeLanguage(sub.language)
-          if (!solvedProblems.has(sub.problemId)) {
-            solvedProblems.add(sub.problemId)
-            totalXp += 50
-            languageSolvedCounts[lang] = (languageSolvedCounts[lang] || 0) + 1
-          }
-        }
-      }
-
       // Solved questions count is distinct problems solved, exactly mirroring Student Dashboard
       const questionsSolved = solvedProblems.size
-      if (totalXp === 0 && questionsSolved > 0) {
-        totalXp = questionsSolved * 50
-      }
 
       // Belt calculation
       let belt = 'Belt 1'
@@ -863,56 +848,32 @@ export async function fetchStudentLeaderboard(
   const cutoffTime = new Date(Date.now() - days * 86400000).toISOString()
 
   try {
-    const [progressRes, subsRes] = await Promise.all([
-      supabase
-        .from('UserProgress')
-        .select('userId, problemId, status, xpEarned, solvedAt')
-        .gte('solvedAt', cutoffTime),
-      supabase
-        .from('Submission')
-        .select('userId, status, createdAt')
-        .gte('createdAt', cutoffTime),
-    ])
+    const { data: progressRows } = await supabase
+      .from('UserProgress')
+      .select('userId, problemId, status, xpEarned, solvedAt')
+      .gte('solvedAt', cutoffTime)
 
     const tfProgressByUser = new Map<string, Array<{ problemId: string; status: string; xpEarned?: number }>>()
-    for (const p of progressRes.data || []) {
+    for (const p of progressRows || []) {
       if (!p.userId) continue
       const list = tfProgressByUser.get(p.userId) || []
       list.push(p)
       tfProgressByUser.set(p.userId, list)
     }
 
-    const tfSubsByUser = new Map<string, Array<{ status: string }>>()
-    for (const s of subsRes.data || []) {
-      if (!s.userId) continue
-      const list = tfSubsByUser.get(s.userId) || []
-      list.push(s)
-      tfSubsByUser.set(s.userId, list)
-    }
-
     return students
       .map((s) => {
         const uProgress = s.userId ? (tfProgressByUser.get(s.userId) || []) : []
-        const uSubs = s.userId ? (tfSubsByUser.get(s.userId) || []) : []
 
         const solvedProblems = new Set<string>()
         let totalXp = 0
         for (const p of uProgress) {
           if (p.status === 'SOLVED') {
             solvedProblems.add(p.problemId)
-            totalXp += p.xpEarned || 50
-          }
-        }
-        for (const sub of uSubs) {
-          if (sub.status === 'PASSED' && (sub as any).problemId && !solvedProblems.has((sub as any).problemId)) {
-            solvedProblems.add((sub as any).problemId)
-            totalXp += 50
+            totalXp += Number(p.xpEarned || 0)
           }
         }
         const questionsSolved = solvedProblems.size
-        if (totalXp === 0 && questionsSolved > 0) {
-          totalXp = questionsSolved * 50
-        }
 
         return {
           rank: 1,
