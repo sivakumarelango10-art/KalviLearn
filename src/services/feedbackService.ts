@@ -6,12 +6,20 @@ export type FeedbackType =
   | 'IMPROVEMENT'
   | 'OTHER'
 
+export interface FeedbackAttachment {
+  fileName: string
+  fileType: string
+  fileSize: number
+  dataUrl: string
+}
+
 export interface SubmitFeedbackPayload {
   type: FeedbackType
   title?: string
   description: string
   rating?: string
   featureArea?: string
+  attachment?: FeedbackAttachment
   portal: string
   route: string
   module?: string

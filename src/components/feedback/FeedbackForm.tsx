@@ -12,8 +12,16 @@ import {
   Sparkles,
   HelpCircle,
   ShieldCheck,
+  Image as ImageIcon,
+  Upload,
+  Trash2,
 } from 'lucide-react'
-import { FeedbackType, feedbackService, FeedbackSubmissionResult } from '@/services/feedbackService'
+import {
+  FeedbackType,
+  FeedbackAttachment,
+  feedbackService,
+  FeedbackSubmissionResult,
+} from '@/services/feedbackService'
 import { useAuth } from '@/contexts/AuthContext'
 import { collectTelemetryContext } from '@/lib/telemetry'
 
@@ -32,6 +40,15 @@ const RATING_OPTIONS = [
   { value: 'EXCELLENT', emoji: '😍', label: 'Great' },
 ]
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB limit
+const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif']
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
 export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   type,
   onBack,
@@ -46,14 +63,18 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [description, setDescription] = useState('')
   const [rating, setRating] = useState<string | undefined>(undefined)
   const [currentProblem, setCurrentProblem] = useState('')
+  const [attachment, setAttachment] = useState<FeedbackAttachment | null>(null)
 
   // UI States
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Auto-focus first input on load
   useEffect(() => {
@@ -66,6 +87,97 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }, 150)
     return () => clearTimeout(timer)
   }, [type])
+
+  // Process selected or pasted image file
+  const processImageFile = (file: File) => {
+    setFileError(null)
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
+      setFileError('Only image files (PNG, JPG, WEBP, GIF) are supported.')
+      return
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError(`Image exceeds 5MB limit (${formatFileSize(file.size)}).`)
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string
+      if (dataUrl) {
+        setAttachment({
+          fileName: file.name || 'screenshot.png',
+          fileType: file.type || 'image/png',
+          fileSize: file.size,
+          dataUrl,
+        })
+      }
+    }
+    reader.onerror = () => {
+      setFileError('Failed to process image file.')
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Handle clipboard paste for screenshots (Ctrl+V / Cmd+V)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          const file = items[i].getAsFile()
+          if (file) {
+            processImageFile(file)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('paste', handlePaste)
+    return () => window.removeEventListener('paste', handlePaste)
+  }, [])
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      processImageFile(file)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    const file = e.dataTransfer.files?.[0]
+    if (file) {
+      processImageFile(file)
+    }
+  }
+
+  const handleRemoveAttachment = () => {
+    setAttachment(null)
+    setFileError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
 
   // Form Meta Configuration based on Feedback Type
   const getFormConfig = () => {
@@ -205,6 +317,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
         description: finalDescription,
         rating: type === 'FEEDBACK' ? rating : undefined,
         featureArea: type === 'IMPROVEMENT' ? trimmedTitle : undefined,
+        attachment: attachment || undefined,
         portal: portal || (user?.role ? user.role.toUpperCase() : 'GENERAL'),
         route: telemetry.route,
         module: telemetry.module,
@@ -399,6 +512,97 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
           {validationError && (
             <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
               <Info className="w-3 h-3 shrink-0" /> {validationError}
+            </p>
+          )}
+        </div>
+
+        {/* Screenshot / Image Attachment Field (Supported across all 6 sections) */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs font-semibold text-[#191c1e] flex items-center gap-1.5">
+              <ImageIcon className="w-3.5 h-3.5 text-neutral-500" />
+              <span>Attach Screenshot / Image</span>
+              <span className="text-[#5d5e64] font-normal text-[11px]">(Optional)</span>
+            </label>
+            {attachment && (
+              <button
+                type="button"
+                onClick={handleRemoveAttachment}
+                disabled={isSubmitting}
+                className="text-[11px] text-red-600 hover:text-red-700 font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3 h-3" />
+                <span>Remove</span>
+              </button>
+            )}
+          </div>
+
+          {attachment ? (
+            /* Thumbnail preview card */
+            <div className="p-2.5 rounded-xl border border-neutral-200 bg-[#f8f9fb] flex items-center gap-3 animate-in fade-in duration-150">
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-neutral-300 bg-neutral-100 flex-shrink-0 shadow-2xs">
+                <img
+                  src={attachment.dataUrl}
+                  alt="Attachment preview"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-neutral-900 truncate">
+                  {attachment.fileName}
+                </p>
+                <p className="text-[10px] text-neutral-500">
+                  {formatFileSize(attachment.fileSize)} • Image ready to upload
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleRemoveAttachment}
+                disabled={isSubmitting}
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-50"
+                aria-label="Remove attached image"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            /* Upload dropzone / click to browse trigger */
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-xl p-3.5 text-center transition-all cursor-pointer ${
+                isDragging
+                  ? 'border-[#ED2A2B] bg-red-50/60'
+                  : 'border-[#e5e7eb] hover:border-neutral-400 bg-[#f8f9fb] hover:bg-white'
+              }`}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                onChange={handleFileChange}
+                className="hidden"
+                disabled={isSubmitting}
+              />
+              <div className="flex flex-col items-center justify-center space-y-1">
+                <div className="w-8 h-8 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 shadow-2xs">
+                  <Upload className="w-4 h-4" />
+                </div>
+                <p className="text-xs font-medium text-neutral-700">
+                  <span className="text-black font-semibold underline underline-offset-2">Click to browse</span> or drag and drop image
+                </p>
+                <p className="text-[10px] text-neutral-400">
+                  PNG, JPG, WEBP, GIF up to 5MB (or paste with Ctrl+V)
+                </p>
+              </div>
+            </div>
+          )}
+
+          {fileError && (
+            <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3 shrink-0" /> {fileError}
             </p>
           )}
         </div>

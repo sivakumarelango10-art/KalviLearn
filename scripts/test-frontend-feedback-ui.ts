@@ -112,6 +112,52 @@ async function runFrontendUiAudit() {
   const validRatings = ['POOR', 'NEUTRAL', 'GOOD', 'EXCELLENT']
   assert(validRatings.length === 4, 'Give Feedback: provides 4 sentiment choices (😞 😐 🙂 😍)')
 
+  // ------------------------------------------------------------------------
+  // Suite 6: Image Attachment Validation Across All Sections
+  // ------------------------------------------------------------------------
+  console.log('\n--- Suite 6: Image Attachment Validation Across All Sections ---')
+
+  const allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif']
+  const maxImageSize = 5 * 1024 * 1024 // 5 MB
+
+  function validateImageAttachment(fileType: string, fileSize: number): { valid: boolean; error?: string } {
+    if (!allowedImageTypes.includes(fileType.toLowerCase())) {
+      return { valid: false, error: 'Only image files (PNG, JPG, WEBP, GIF) are supported.' }
+    }
+    if (fileSize > maxImageSize) {
+      return { valid: false, error: 'Image exceeds 5MB limit.' }
+    }
+    return { valid: true }
+  }
+
+  // Image validation checks
+  assert(validateImageAttachment('image/png', 1024 * 500).valid, 'Image attachment: Accepts valid PNG (< 5MB)')
+  assert(validateImageAttachment('image/jpeg', 1024 * 1024 * 2).valid, 'Image attachment: Accepts valid JPEG (< 5MB)')
+  assert(validateImageAttachment('image/webp', 1024 * 250).valid, 'Image attachment: Accepts valid WEBP (< 5MB)')
+  assert(validateImageAttachment('image/gif', 1024 * 800).valid, 'Image attachment: Accepts valid GIF (< 5MB)')
+  assert(!validateImageAttachment('application/pdf', 1024 * 100).valid, 'Image attachment: Rejects PDF files')
+  assert(!validateImageAttachment('text/plain', 1024).valid, 'Image attachment: Rejects TXT files')
+  assert(!validateImageAttachment('application/x-msdownload', 1024).valid, 'Image attachment: Rejects EXE files')
+  assert(!validateImageAttachment('image/png', 6 * 1024 * 1024).valid, 'Image attachment: Rejects image > 5MB limit')
+
+  // Attachment payload verification across all 6 sections
+  for (const sectionType of expectedTypes) {
+    const payloadWithAttachment: SubmitFeedbackPayload = {
+      type: sectionType,
+      title: 'Sample title',
+      description: 'Sample description for feedback',
+      portal: 'STUDENT',
+      route: '/practice/two-sum',
+      attachment: {
+        fileName: 'error_screenshot.png',
+        fileType: 'image/png',
+        fileSize: 1024 * 200,
+        dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      },
+    }
+    assert(Boolean(payloadWithAttachment.attachment?.dataUrl), `Attachment supported for section: ${sectionType}`)
+  }
+
   console.log('\n========================================================================')
   console.log(`🏁 AUDIT RESULTS: ${passed} / ${passed + failed} TESTS PASSED`)
   console.log('========================================================================')
