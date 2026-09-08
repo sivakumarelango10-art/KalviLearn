@@ -6,6 +6,7 @@ import {
   normalizePriority,
   isValidStatusTransition,
 } from './feedbackLifecycle'
+import { sendTicketToTeamSync } from './teamSyncService'
 
 // In-memory sliding-window rate limiter (e.g. max 15 submissions/10min per IP/user)
 interface RateRecord {
@@ -500,8 +501,72 @@ export default async function handler(
         })
       }
 
+      // 9. Dispatch to TeamSync (Server-to-Server)
+      let teamSyncMetadata: { ticketId?: string | null; ticketNumber?: string | null; status?: string } | null = null
+      try {
+        const teamSyncRes = await sendTicketToTeamSync(
+          {
+            source: 'KALVILEARN',
+            sourceReferenceId: data.public_reference,
+            type: feedbackType,
+            title: title || 'User Report',
+            description,
+            priority,
+            portal: derivedPortal,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            },
+            page: route || pageUrl,
+            metadata: {
+              ...deviceInfo,
+              rating,
+              featureArea,
+              attachmentUrl: attachmentUrl ? 'attachment_included' : null,
+              submittedAt: data.created_at,
+            },
+          },
+          { idempotencyKey: dedupeKey }
+        )
+
+        if (teamSyncRes.success && teamSyncRes.ticketId) {
+          teamSyncMetadata = {
+            ticketId: teamSyncRes.ticketId,
+            ticketNumber: teamSyncRes.ticketNumber || null,
+            status: teamSyncRes.status || 'OPEN',
+          }
+
+          await supabaseServer
+            .from('feedback_reports')
+            .update({
+              teamsync_id: teamSyncRes.ticketId,
+              teamsync_ticket_number: teamSyncRes.ticketNumber || null,
+              teamsync_status: 'SENT',
+              teamsync_attempts: teamSyncRes.retries + 1,
+              teamsync_last_attempt: new Date().toISOString(),
+              teamsync_error: null,
+            })
+            .eq('id', data.id)
+        } else if (teamSyncRes.error) {
+          await supabaseServer
+            .from('feedback_reports')
+            .update({
+              teamsync_status: 'RETRY_REQUIRED',
+              teamsync_attempts: teamSyncRes.retries + 1,
+              teamsync_last_attempt: new Date().toISOString(),
+              teamsync_error: teamSyncRes.error.message,
+            })
+            .eq('id', data.id)
+        }
+      } catch (tsErr) {
+        console.warn('Background TeamSync dispatch notice in /api/feedback:', tsErr)
+      }
+
       const successResponse = {
         success: true,
+        reportId: data.public_reference,
         feedback: {
           id: data.id,
           reference: data.public_reference,
@@ -510,6 +575,7 @@ export default async function handler(
           priority: data.priority,
           createdAt: data.created_at,
         },
+        teamSync: teamSyncMetadata,
       }
 
       // Cache for idempotency & deduplication

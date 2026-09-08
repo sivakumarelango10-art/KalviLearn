@@ -47,12 +47,19 @@ export interface FeedbackSubmissionResult {
   reference?: string
   feedbackId?: string | number
   feedback?: FeedbackRecordSummary
+  teamSync?: {
+    ticketId?: string | null
+    ticketNumber?: string | null
+    status?: string
+    message?: string
+  } | null
 }
 
 export const feedbackService = {
   /**
-   * Dispatches user feedback to the real KalviLearn backend service (/api/feedback).
-   * Authenticates with live Supabase session token, enforces validation, and stores in PostgreSQL.
+   * Dispatches user feedback to the KalviLearn integration service.
+   * Authenticates with live Supabase session token, enforces validation, stores in PostgreSQL,
+   * and synchronizes with TeamSync.
    */
   async submitFeedback(payload: SubmitFeedbackPayload): Promise<FeedbackSubmissionResult> {
     // 1. Retrieve authoritative session access token from Supabase
@@ -87,8 +94,8 @@ export const feedbackService = {
       payload.idempotencyKey ||
       `idem_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 
-    // 2. Submit to backend API
-    const res = await fetch('/api/feedback', {
+    // 2. Submit to backend API (Prefer TeamSync integration endpoint, fallback to /api/feedback)
+    let res = await fetch('/api/integrations/teamsync/tickets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +103,20 @@ export const feedbackService = {
         'X-Idempotency-Key': idempotencyKey,
       },
       body: JSON.stringify(payload),
-    })
+    }).catch(() => null)
+
+    if (!res || res.status === 404) {
+      // Fallback to /api/feedback
+      res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'X-Idempotency-Key': idempotencyKey,
+        },
+        body: JSON.stringify(payload),
+      })
+    }
 
     const json = await res.json().catch(() => ({}))
 
@@ -104,10 +124,11 @@ export const feedbackService = {
       const feedback = json.feedback as FeedbackRecordSummary | undefined
       return {
         success: true,
-        message: 'Feedback submitted successfully.',
-        reference: feedback?.reference,
-        feedbackId: feedback?.reference || feedback?.id,
+        message: json.message || 'Feedback submitted successfully.',
+        reference: feedback?.reference || json.reportId,
+        feedbackId: feedback?.reference || json.reportId || feedback?.id,
         feedback,
+        teamSync: json.teamSync || null,
       }
     }
 

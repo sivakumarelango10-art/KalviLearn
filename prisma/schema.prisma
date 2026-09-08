@@ -221,11 +221,21 @@ model FeedbackReport {
   updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
   resolvedAt        DateTime? @map("resolved_at")
 
+  // TeamSync Integration (Phase 3)
+  teamSyncId           String?   @map("teamsync_id") @db.VarChar(100)
+  teamSyncTicketNumber String?   @map("teamsync_ticket_number") @db.VarChar(50)
+  teamSyncStatus       String?   @default("PENDING") @map("teamsync_status") @db.VarChar(30)
+  teamSyncAttempts     Int       @default(0) @map("teamsync_attempts")
+  teamSyncLastAttempt  DateTime? @map("teamsync_last_attempt")
+  teamSyncError        String?   @map("teamsync_error") @db.Text
+
   @@index([userId])
   @@index([status])
   @@index([type])
   @@index([createdAt(sort: Desc)])
   @@index([publicReference])
+  @@index([teamSyncStatus])
+  @@index([teamSyncId])
   @@map("feedback_reports")
 }
 

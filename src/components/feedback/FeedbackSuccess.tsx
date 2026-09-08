@@ -25,17 +25,27 @@ export const FeedbackSuccess: React.FC<FeedbackSuccessProps> = ({ result, onDone
         </p>
       </div>
 
-      {/* Real Local Reference ID */}
-      {(result?.reference || result?.feedbackId) && (
-        <div className="px-3 py-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] text-[11px] font-mono text-[#5d5e64]">
-          Reference ID:{' '}
-          <strong className="text-black">
-            {String(result?.reference || result?.feedbackId).startsWith('FB-')
-              ? String(result?.reference || result?.feedbackId)
-              : `FB-${result?.feedbackId}`}
-          </strong>
-        </div>
-      )}
+      {/* Real Local Reference ID & TeamSync Ticket Reference */}
+      <div className="flex flex-col items-center gap-1.5 w-full max-w-xs">
+        {(result?.reference || result?.feedbackId) && (
+          <div className="w-full px-3 py-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] text-[11px] font-mono text-[#5d5e64] flex items-center justify-between">
+            <span>Reference ID:</span>
+            <strong className="text-black font-semibold">
+              {String(result?.reference || result?.feedbackId).startsWith('FB-')
+                ? String(result?.reference || result?.feedbackId)
+                : `FB-${result?.feedbackId}`}
+            </strong>
+          </div>
+        )}
+        {(result?.teamSync?.ticketNumber || result?.teamSync?.ticketId) && (
+          <div className="w-full px-3 py-1.5 rounded-lg bg-indigo-50/70 border border-indigo-100 text-[11px] font-mono text-indigo-700 flex items-center justify-between">
+            <span>TeamSync:</span>
+            <strong className="text-indigo-900 font-semibold">
+              {result.teamSync.ticketNumber || result.teamSync.ticketId}
+            </strong>
+          </div>
+        )}
+      </div>
 
       {/* Done Action */}
       <div className="pt-2 w-full max-w-xs">
