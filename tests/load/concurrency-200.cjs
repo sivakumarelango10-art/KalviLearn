@@ -12,7 +12,7 @@ const CONCURRENCY = parseInt(process.env.CONCURRENCY || '200', 10);
 async function main() {
   console.log('========================================================================');
   console.log(`🚀 PRIMARY ACCEPTANCE LOAD TEST: ${CONCURRENCY} CONCURRENT USERS`);
-  console.log(`🎯 Target API: https://kalvicode.vercel.app/api/execute`);
+  console.log(`🎯 Target API: https://kalvilearn.vercel.app/api/execute`);
   console.log('========================================================================\n');
 
   const result = await runConcurrentWorkers({

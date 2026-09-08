@@ -105,7 +105,7 @@ async function runConcurrentWorkers({
 }
 
 async function executeWorker(user) {
-  const TARGET_URL = process.env.TARGET_URL || 'https://kalvicode.vercel.app';
+  const TARGET_URL = process.env.TARGET_URL || 'https://kalvilearn.vercel.app';
   const code = `import sys
 data = sys.stdin.read().split()
 if len(data) >= 2:

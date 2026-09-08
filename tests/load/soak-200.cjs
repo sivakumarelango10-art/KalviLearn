@@ -12,7 +12,7 @@ const DURATION_MS = 60000; // 60 seconds continuous soak
 async function runSoakTest() {
   console.log('========================================================================');
   console.log(`🌊 200-USER SUSTAINED SOAK TEST (60 SECONDS CONTINUOUS WORKLOAD)`);
-  console.log(`🎯 Target API: https://kalvicode.vercel.app/api/execute`);
+  console.log(`🎯 Target API: https://kalvilearn.vercel.app/api/execute`);
   console.log('========================================================================\n');
 
   const result = await runConcurrentWorkers({

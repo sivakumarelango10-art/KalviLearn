@@ -1,6 +1,6 @@
 const { runConcurrentWorkers } = require('./harness.cjs');
 
-const TARGET_URL = process.env.TARGET_URL || 'https://kalvicode.vercel.app';
+const TARGET_URL = process.env.TARGET_URL || 'https://kalvilearn.vercel.app';
 const CONCURRENCY = parseInt(process.env.CONCURRENCY || '200', 10);
 
 async function testWorstCase() {
