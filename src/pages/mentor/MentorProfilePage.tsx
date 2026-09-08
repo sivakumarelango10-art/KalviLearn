@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import {
   ShieldCheck,
-  GraduationCap,
-  Clock,
   CheckCircle2,
-  Users,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { fetchMentorRoster, getMentorProfile, MentorProfile } from '@/lib/mentorService'
+import { getMentorProfile, MentorProfile } from '@/lib/mentorService'
 
 export const MentorProfilePage: React.FC = () => {
   const { user } = useAuth()
-  const [studentCount, setStudentCount] = useState<number>(0)
   const [mentorProfile, setMentorProfile] = useState<MentorProfile | null>(null)
 
   useEffect(() => {
     let isMounted = true
-    Promise.all([
-      fetchMentorRoster(user?.id || user?.email),
-      user?.id ? getMentorProfile(user.id) : Promise.resolve(null),
-    ]).then(([students, profile]) => {
-      if (isMounted) {
-        setStudentCount(students.length)
-        setMentorProfile(profile)
-      }
-    }).catch(console.warn)
+    if (user?.id) {
+      getMentorProfile(user.id)
+        .then((profile) => {
+          if (isMounted) {
+            setMentorProfile(profile)
+          }
+        })
+        .catch(console.warn)
+    }
     return () => { isMounted = false }
-  }, [user?.id, user?.email])
+  }, [user?.id])
 
   const mentorName =
     mentorProfile?.name || mentorProfile?.user?.name || user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
@@ -64,48 +60,6 @@ export const MentorProfilePage: React.FC = () => {
             <CheckCircle2 className="w-3.5 h-3.5" />
             Active Mentor Record
           </span>
-        </div>
-      </div>
-
-      {/* Cohort & Campus Assignments */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">
-            <GraduationCap className="w-4 h-4 text-[#ED2A2B]" />
-            <span>Assigned Campus & Track</span>
-          </div>
-          <h3 className="text-lg font-bold text-neutral-900">
-            Kalvi Institute of AI & Software Architecture
-          </h3>
-          <p className="text-xs text-neutral-500 leading-relaxed">
-            Lead Mentor for Cohort 2026. Responsible for curriculum mastery across Belt 1, Belt 2, and Belt 3 algorithms.
-          </p>
-          <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
-            <span className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" />
-              Cohort Size:
-            </span>
-            <span className="font-bold text-neutral-900">
-              {studentCount > 0 ? `${studentCount} Assigned Students` : '0 Assigned Students'}
-            </span>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">
-            <Clock className="w-4 h-4 text-[#ED2A2B]" />
-            <span>Mentoring Schedule & Office Hours</span>
-          </div>
-          <h3 className="text-lg font-bold text-neutral-900">
-            Mon — Fri • 3:00 PM — 6:00 PM
-          </h3>
-          <p className="text-xs text-neutral-500 leading-relaxed">
-            Available for code review walkthroughs, edge case debugging, and 1-on-1 unblocking sessions for students with attention flags.
-          </p>
-          <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-600">
-            <span>Status:</span>
-            <span className="text-emerald-600 font-bold">Accepting Bookings</span>
-          </div>
         </div>
       </div>
 
