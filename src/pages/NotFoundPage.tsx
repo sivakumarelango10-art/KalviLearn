@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Home, ArrowLeft, Search } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
+import { useAuth } from '@/contexts/AuthContext'
 
 /**
  * Dedicated 404 Page Not Found Screen
@@ -9,6 +10,14 @@ import { BrandLogo } from '@/components/common/BrandLogo'
  */
 export const NotFoundPage: React.FC = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
+
+  const homeUrl =
+    user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN'
+      ? '/campus/dashboard'
+      : user?.role === 'MENTOR'
+      ? '/mentor'
+      : '/dashboard'
 
   return (
     <main
@@ -44,7 +53,7 @@ export const NotFoundPage: React.FC = () => {
         {/* Interactive Navigation Actions */}
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            to="/dashboard"
+            to={homeUrl}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2"
           >
             <Home className="w-4 h-4" />

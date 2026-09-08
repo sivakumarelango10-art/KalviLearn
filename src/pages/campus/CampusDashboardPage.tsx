@@ -99,6 +99,10 @@ export const CampusDashboardPage: React.FC = () => {
   const activeCount = students.filter((s) => s.status === 'ACTIVE').length
   const inactiveCount = students.filter((s) => s.status === 'INACTIVE').length
 
+  const belt1Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length / students.length) * 100) : 0
+  const belt2Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 2' || s.belt === 'Belt 3').length / students.length) * 100) : 0
+  const belt3Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 3').length / students.length) * 100) : 0
+
   const totalAssignedStudents = mentors.reduce((acc, m) => acc + m.totalStudents, 0)
   const totalMentorCapacity = mentors.reduce((acc, m) => acc + m.maxStudents, 0)
   const mentorCapacityPercent = totalMentorCapacity > 0
@@ -590,9 +594,9 @@ export const CampusDashboardPage: React.FC = () => {
             {/* Belt Progress Bars */}
             <div className="space-y-4">
               {[
-                { label: 'Belt 1: Programming Foundations', pct: 96, color: 'bg-blue-500', badge: 'bg-blue-50 text-blue-700 border border-blue-200' },
-                { label: 'Belt 2: Core Data Structures', pct: 74, color: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
-                { label: 'Belt 3: Advanced Algorithms', pct: 42, color: 'bg-[#ED2A2B]', badge: 'bg-red-50 text-red-700 border border-red-200' },
+                { label: 'Belt 1: Programming Foundations', pct: belt1Pct, color: 'bg-blue-500', badge: 'bg-blue-50 text-blue-700 border border-blue-200' },
+                { label: 'Belt 2: Core Data Structures', pct: belt2Pct, color: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
+                { label: 'Belt 3: Advanced Algorithms', pct: belt3Pct, color: 'bg-[#ED2A2B]', badge: 'bg-red-50 text-red-700 border border-red-200' },
               ].map((item) => (
                 <div key={item.label}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -609,13 +613,6 @@ export const CampusDashboardPage: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Benchmark notice */}
-            <div className="rounded-2xl bg-neutral-50 border border-neutral-200/80 p-4">
-              <p className="text-[11px] text-neutral-700 leading-relaxed font-medium">
-                Campus pass rate exceeds target benchmark by <span className="font-extrabold text-neutral-900">+6.4%</span> this semester.
-              </p>
             </div>
 
             {/* Quick Action Links */}

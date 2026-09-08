@@ -284,6 +284,14 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/student',
+    element: <Navigate to="/dashboard" replace />,
+  },
+  {
+    path: '/admin',
+    element: <Navigate to="/campus/dashboard" replace />,
+  },
+  {
     path: '*',
     element: withSuspense(<NotFoundPage />),
     errorElement: <RouteErrorBoundary />,

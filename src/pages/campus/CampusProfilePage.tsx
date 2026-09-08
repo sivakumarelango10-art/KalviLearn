@@ -12,8 +12,8 @@ import { fetchCampusOverviewMetrics } from '@/lib/campusManagerService'
 export const CampusProfilePage: React.FC = () => {
   const { user } = useAuth()
   const [metrics, setMetrics] = useState<{ totalStudents: number; totalMentors: number }>({
-    totalStudents: 126,
-    totalMentors: 11,
+    totalStudents: 0,
+    totalMentors: 0,
   })
 
   useEffect(() => {

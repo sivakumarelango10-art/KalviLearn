@@ -17,6 +17,7 @@ export interface CampusOverviewMetrics {
 
 export interface CampusStudentStat {
   id: string
+  userId?: string
   name: string
   email: string
   studentCode: string
@@ -31,6 +32,8 @@ export interface CampusStudentStat {
   mentorId: string | null
   mentorName: string
   languageSolvedCounts: Record<string, number>
+  totalSubmissions?: number
+  passedSubmissions?: number
 }
 
 export interface CampusMentorStat {
@@ -413,9 +416,12 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
       }
 
       const assignedMentor = mentorMap.get(s.id)
+      const totalSubmissions = uSubs.length
+      const passedSubmissions = uSubs.filter((sb) => sb.status === 'PASSED').length
 
       return {
         id: s.id,
+        userId: s.user_id,
         name: s.name || s.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
         email: s.email || '',
         studentCode: s.student_code || `STU-${s.id.slice(0, 6)}`,
@@ -430,6 +436,8 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
         mentorId: assignedMentor?.id || null,
         mentorName: assignedMentor?.name || 'Unassigned',
         languageSolvedCounts,
+        totalSubmissions,
+        passedSubmissions,
       }
     }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
   } catch (err) {
@@ -474,14 +482,13 @@ export async function fetchCampusMentors(): Promise<CampusMentorStat[]> {
         ? Math.round((totalCohortSolved / totalStudents) * 10) / 10
         : 0
 
-      // Active / healthy cohort ratio
-      const activeCount = assigned.filter((s) => s.status === 'ACTIVE').length
-      const cohortActivePercent = totalStudents > 0
-        ? Math.round((activeCount / totalStudents) * 100)
-        : 100
 
-      // Pass rate: default to high performance if cohort is active
-      const avgPassRate = Math.max(85, Math.min(100, Math.round(88 + (cohortActivePercent * 0.1))))
+      // Pass rate: real cohort pass rate calculated directly from cohort submissions
+      const totalCohortSubs = assigned.reduce((acc, s) => acc + (s.totalSubmissions || 0), 0)
+      const passedCohortSubs = assigned.reduce((acc, s) => acc + (s.passedSubmissions || 0), 0)
+      const avgPassRate = totalCohortSubs > 0
+        ? Math.round((passedCohortSubs / totalCohortSubs) * 100)
+        : (totalStudents > 0 ? 100 : 0)
 
       // Performance score: 0-100 composite based on pass rate & solve velocity
       const performanceScore = Math.min(100, Math.round((avgPassRate * 0.7) + Math.min(avgCohortSolved * 2, 30)))
@@ -493,7 +500,7 @@ export async function fetchCampusMentors(): Promise<CampusMentorStat[]> {
         questionsSolved: s.questionsSolved,
         lastActive: s.lastActive,
         status: s.status,
-      }))
+      })).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
 
       return {
         id: m.id,
@@ -510,7 +517,7 @@ export async function fetchCampusMentors(): Promise<CampusMentorStat[]> {
         avgPassRate,
         students: studentsUnderGuidance,
       }
-    })
+    }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
   } catch (err) {
     console.error('Error in fetchCampusMentors:', err)
     return []
@@ -771,12 +778,32 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
 export async function fetchMentorLeaderboard(
   timeframe: 'weekly' | 'monthly' | 'overall' = 'overall'
 ): Promise<MentorLeaderboardEntry[]> {
-  const mentors = await fetchCampusMentors()
-  const multiplier = timeframe === 'weekly' ? 0.3 : timeframe === 'monthly' ? 0.7 : 1.0
+  const [mentors, studentLeaderboard] = await Promise.all([
+    fetchCampusMentors(),
+    fetchStudentLeaderboard(timeframe),
+  ])
+
+  // Build map of student XP and solved count for this timeframe
+  const studentMetrics = new Map<string, { xp: number; solved: number }>()
+  for (const s of studentLeaderboard) {
+    studentMetrics.set(s.id, { xp: s.totalXp, solved: s.questionsSolved })
+  }
 
   return mentors
-    .map((m, index) => {
-      const totalXp = Math.round(m.totalStudents * m.avgCohortSolved * 50 * multiplier)
+    .map((m) => {
+      const assigned = m.students || []
+      let cohortTotalXp = 0
+      let cohortSolved = 0
+      for (const s of assigned) {
+        const met = studentMetrics.get(s.id)
+        if (met) {
+          cohortTotalXp += met.xp
+          cohortSolved += met.solved
+        }
+      }
+      const avgCohortSolved = m.totalStudents > 0
+        ? Math.round((cohortSolved / m.totalStudents) * 10) / 10
+        : 0
       const passRate = m.avgPassRate
       let rating: 'EXEMPLARY' | 'ADVANCED' | 'PROFICIENT' | 'ON_TRACK' = 'ON_TRACK'
       if (passRate >= 93) rating = 'EXEMPLARY'
@@ -784,13 +811,13 @@ export async function fetchMentorLeaderboard(
       else if (passRate >= 85) rating = 'PROFICIENT'
 
       return {
-        rank: index + 1,
+        rank: 1,
         id: m.id,
         name: m.name,
         email: m.email,
         assignedStudents: m.totalStudents,
-        avgCohortSolved: Math.round(m.avgCohortSolved * multiplier * 10) / 10,
-        cohortTotalXp: totalXp,
+        avgCohortSolved,
+        cohortTotalXp,
         passRate,
         rating,
       }
@@ -806,23 +833,107 @@ export async function fetchStudentLeaderboard(
   timeframe: 'weekly' | 'monthly' | 'overall' = 'overall'
 ): Promise<StudentLeaderboardEntry[]> {
   const students = await fetchCampusStudents()
-  const multiplier = timeframe === 'weekly' ? 0.25 : timeframe === 'monthly' ? 0.65 : 1.0
 
-  return students
-    .map((s, index) => ({
-      rank: index + 1,
-      id: s.id,
-      name: s.name,
-      email: s.email,
-      mentorName: s.mentorName,
-      belt: s.belt,
-      beltColor: s.beltColor,
-      questionsSolved: Math.round(s.questionsSolved * multiplier),
-      totalXp: Math.round(s.totalXp * multiplier),
-      streak: s.streak,
-    }))
-    .sort((a, b) => b.totalXp - a.totalXp)
-    .map((entry, index) => ({ ...entry, rank: index + 1 }))
+  if (timeframe === 'overall') {
+    return students
+      .map((s) => ({
+        rank: 1,
+        id: s.id,
+        name: s.name,
+        email: s.email,
+        mentorName: s.mentorName,
+        belt: s.belt,
+        beltColor: s.beltColor,
+        questionsSolved: s.questionsSolved,
+        totalXp: s.totalXp,
+        streak: s.streak,
+      }))
+      .sort((a, b) => b.totalXp - a.totalXp)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }))
+  }
+
+  const days = timeframe === 'weekly' ? 7 : 30
+  const cutoffTime = new Date(Date.now() - days * 86400000).toISOString()
+
+  try {
+    const [progressRes, subsRes] = await Promise.all([
+      supabase
+        .from('UserProgress')
+        .select('userId, problemId, status, xpEarned, solvedAt')
+        .gte('solvedAt', cutoffTime),
+      supabase
+        .from('Submission')
+        .select('userId, status, createdAt')
+        .gte('createdAt', cutoffTime),
+    ])
+
+    const tfProgressByUser = new Map<string, Array<{ problemId: string; status: string; xpEarned?: number }>>()
+    for (const p of progressRes.data || []) {
+      if (!p.userId) continue
+      const list = tfProgressByUser.get(p.userId) || []
+      list.push(p)
+      tfProgressByUser.set(p.userId, list)
+    }
+
+    const tfSubsByUser = new Map<string, Array<{ status: string }>>()
+    for (const s of subsRes.data || []) {
+      if (!s.userId) continue
+      const list = tfSubsByUser.get(s.userId) || []
+      list.push(s)
+      tfSubsByUser.set(s.userId, list)
+    }
+
+    return students
+      .map((s) => {
+        const uProgress = s.userId ? (tfProgressByUser.get(s.userId) || []) : []
+        const uSubs = s.userId ? (tfSubsByUser.get(s.userId) || []) : []
+
+        const solvedProblems = new Set<string>()
+        let totalXp = 0
+        for (const p of uProgress) {
+          if (p.status === 'SOLVED') {
+            solvedProblems.add(p.problemId)
+            totalXp += p.xpEarned || 50
+          }
+        }
+        const questionsSolved = Math.max(solvedProblems.size, uSubs.filter((sb) => sb.status === 'PASSED').length)
+        if (totalXp === 0 && questionsSolved > 0) {
+          totalXp = questionsSolved * 50
+        }
+
+        return {
+          rank: 1,
+          id: s.id,
+          name: s.name,
+          email: s.email,
+          mentorName: s.mentorName,
+          belt: s.belt,
+          beltColor: s.beltColor,
+          questionsSolved,
+          totalXp,
+          streak: s.streak,
+        }
+      })
+      .sort((a, b) => b.totalXp - a.totalXp)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }))
+  } catch (err) {
+    console.error('Error calculating timeframe student leaderboard:', err)
+    return students
+      .map((s) => ({
+        rank: 1,
+        id: s.id,
+        name: s.name,
+        email: s.email,
+        mentorName: s.mentorName,
+        belt: s.belt,
+        beltColor: s.beltColor,
+        questionsSolved: s.questionsSolved,
+        totalXp: s.totalXp,
+        streak: s.streak,
+      }))
+      .sort((a, b) => b.totalXp - a.totalXp)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }))
+  }
 }
 
 /**

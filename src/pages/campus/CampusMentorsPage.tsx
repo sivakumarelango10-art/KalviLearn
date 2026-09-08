@@ -127,7 +127,7 @@ export const CampusMentorsPage: React.FC = () => {
       if (capacityFilter === 'FULL' && m.totalStudents > 0) return false
 
       return true
-    })
+    }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
   }, [mentors, search, statusFilter, capacityFilter])
 
   // Open mentor details
@@ -461,44 +461,46 @@ export const CampusMentorsPage: React.FC = () => {
                     WebkitOverflowScrolling: 'touch',
                   }}
                 >
-                  {(selectedMentor.students && selectedMentor.students.length > 0
-                    ? selectedMentor.students
-                    : [
-                        { id: '1', name: 'Prajith P S', belt: 'Belt 3', questionsSolved: 42, lastActive: '12 mins ago', status: 'ACTIVE' as const },
-                        { id: '2', name: 'Kavya Ramesh', belt: 'Belt 3', questionsSolved: 38, lastActive: '45 mins ago', status: 'ACTIVE' as const },
-                        { id: '3', name: 'Arjun Menon', belt: 'Belt 2', questionsSolved: 26, lastActive: '2 hours ago', status: 'ACTIVE' as const },
-                      ]
-                  ).map((studentItem) => (
-                    <div
-                      key={studentItem.id}
-                      className="p-3.5 bg-white hover:bg-neutral-50 flex items-center justify-between text-xs transition-colors"
-                    >
-                      <div className="space-y-0.5 min-w-0 pr-3">
-                        <p className="font-bold text-neutral-900 truncate">{studentItem.name}</p>
-                        <span className="text-[11px] text-neutral-500 font-mono block truncate">
-                          Last Active: {studentItem.lastActive}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2.5 flex-shrink-0">
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-700 whitespace-nowrap">
-                          {studentItem.belt}
-                        </span>
-                        <span className="font-bold text-neutral-900 font-mono whitespace-nowrap">
-                          {studentItem.questionsSolved} solved
-                        </span>
-                        <span
-                          className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                            studentItem.status === 'ACTIVE'
-                              ? 'bg-emerald-500'
-                              : studentItem.status === 'STRUGGLING'
-                              ? 'bg-amber-500'
-                              : 'bg-neutral-300'
-                          }`}
-                          title={studentItem.status}
-                        />
-                      </div>
+                  {selectedMentor.students && selectedMentor.students.length > 0 ? (
+                    [...selectedMentor.students]
+                      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+                      .map((studentItem) => (
+                        <div
+                          key={studentItem.id}
+                          className="p-3.5 bg-white hover:bg-neutral-50 flex items-center justify-between text-xs transition-colors"
+                        >
+                          <div className="space-y-0.5 min-w-0 pr-3">
+                            <p className="font-bold text-neutral-900 truncate">{studentItem.name}</p>
+                            <span className="text-[11px] text-neutral-500 font-mono block truncate">
+                              Last Active: {studentItem.lastActive}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2.5 flex-shrink-0">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-700 whitespace-nowrap">
+                              {studentItem.belt}
+                            </span>
+                            <span className="font-bold text-neutral-900 font-mono whitespace-nowrap">
+                              {studentItem.questionsSolved} solved
+                            </span>
+                            <span
+                              className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                studentItem.status === 'ACTIVE'
+                                  ? 'bg-emerald-500'
+                                  : studentItem.status === 'STRUGGLING'
+                                  ? 'bg-amber-500'
+                                  : 'bg-neutral-300'
+                              }`}
+                              title={studentItem.status}
+                            />
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-8 text-center text-xs text-neutral-400 space-y-1.5 h-full">
+                      <p className="font-semibold text-neutral-600">No students assigned</p>
+                      <p className="text-[11px] text-neutral-400 max-w-xs">This faculty mentor currently has no active student cohort assigned.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
             </div>

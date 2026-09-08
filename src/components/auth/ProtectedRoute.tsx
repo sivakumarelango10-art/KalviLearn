@@ -24,9 +24,17 @@ export const ProtectedRoute: React.FC = () => {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // If authorized mentor visits root URL, redirect directly to Mentor Workspace
-  if (user.role === 'MENTOR' && (location.pathname === '/' || location.pathname === '')) {
-    return <Navigate to="/mentor" replace />
+  // Role redirection: Ensure mentors and campus managers/admins are routed to their respective workspaces
+  if (user.role === 'MENTOR') {
+    if (location.pathname === '/' || location.pathname === '' || location.pathname === '/dashboard') {
+      return <Navigate to="/mentor" replace />
+    }
+  }
+
+  if (user.role === 'CAMPUS_MANAGER' || user.role === 'ADMIN') {
+    if (location.pathname === '/' || location.pathname === '' || location.pathname === '/dashboard') {
+      return <Navigate to="/campus/dashboard" replace />
+    }
   }
 
   return <Outlet />
