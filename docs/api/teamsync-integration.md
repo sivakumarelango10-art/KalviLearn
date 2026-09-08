@@ -220,7 +220,111 @@ KalviLearn sends the following payload to `${TEAMSYNC_API_URL}/api/v1/tickets`:
 
 ### Required Server-Side Environment Variables
 ```env
-# TeamSync Server-to-Server API (Server-side only)
+# TeamSync Server-to-Server API (Outbound Phase 3)
 TEAMSYNC_API_URL=https://api.teamsync.internal
 TEAMSYNC_API_KEY=your_server_side_secret_key
+
+# TeamSync Inbound Webhooks (Phase 4)
+TEAMSYNC_WEBHOOK_SECRET=your_server_side_teamsync_webhook_secret
 ```
+
+---
+
+## 7. Phase 4: TeamSync → KalviLearn Inbound Webhooks & Real-Time Sync
+
+### Overview
+In Phase 4, ticket changes occurring inside TeamSync (status changes, triage, assignment, priority escalation, staff comments, resolution, and closure) are streamed back to KalviLearn in real-time via authenticated webhooks.
+
+```
+┌──────────────────────────────┐
+│        TeamSync Core         │
+│  (Status, Assignee, Comment) │
+└──────────────┬───────────────┘
+               │ HTTPS POST + HMAC-SHA256 Signature
+               │ Headers: X-TeamSync-Signature, X-TeamSync-Timestamp, X-TeamSync-Event-ID
+               ▼
+┌──────────────────────────────┐
+│     KalviLearn Webhook       │
+│ (/api/integrations/teamsync/ │
+│          webhooks)           │
+│  - HMAC-SHA256 Verification  │
+│  - Replay Defense (300s)     │
+│  - Idempotency Gate          │
+│  - Lifecycle Transition Gate │
+│  - Sanitization & Audit Log  │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│  KalviLearn PostgreSQL DB    │
+│  - feedback_reports          │
+│  - feedback_comments         │
+│  - feedback_audit_logs       │
+│  - teamsync_webhook_events   │
+└──────────────┬───────────────┘
+               │ Supabase Realtime Channel
+               ▼
+┌──────────────────────────────┐
+│     KalviLearn Frontend      │
+│  (Live Status & Chat Badge)  │
+└──────────────────────────────┘
+```
+
+### Inbound Endpoint
+`POST /api/integrations/teamsync/webhooks`
+
+#### Authentication & Integrity Headers
+| Header | Required | Format | Description |
+| :--- | :--- | :--- | :--- |
+| `X-TeamSync-Signature` | Yes | Hex string or `v1=<hex>` | HMAC-SHA256 signature of `${timestamp}.${rawBody}` using `TEAMSYNC_WEBHOOK_SECRET` |
+| `X-TeamSync-Timestamp` | Yes | Epoch seconds (e.g. `1788832000`) | Request timestamp. Rejected if drift > 300 seconds. |
+| `X-TeamSync-Event-ID` | Yes | UUID / String | Unique event identifier for idempotency deduplication |
+| `Content-Type` | Yes | `application/json` | Request payload format |
+
+#### Supported Event Types
+1. `STATUS_CHANGED` / `RESOLVED` / `CLOSED` / `REOPENED`
+   - Validates transition according to KalviLearn lifecycle rules (`OPEN` -> `TRIAGED` -> `IN_PROGRESS` -> `RESOLVED` -> `CLOSED` -> `OPEN`).
+   - If invalid transition is attempted, responds with HTTP `422 Unprocessable Entity` (`ILLEGAL_STATUS_TRANSITION`) and records failure in `teamsync_webhook_events`.
+2. `PRIORITY_CHANGED`
+   - Maps external priority to `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`.
+3. `ASSIGNED`
+   - Updates `assigned_to` and `assigned_email` on the feedback record.
+4. `COMMENT_CREATED`
+   - Sanitizes comment content against XSS and persists in `feedback_comments` idempotently.
+
+#### Idempotency & Unmapped Tickets
+- If `eventId` has already been processed: Responds with `200 OK` and `{ duplicate: true, code: 'DUPLICATE_EVENT_IGNORED' }`.
+- If ticket does not exist in KalviLearn: Responds with `202 Accepted` and `{ unmapped: true, code: 'UNKNOWN_EXTERNAL_TICKET' }` to prevent remote webhook retry loops while recording event for diagnostics.
+
+#### Example Webhook Event Payload
+```json
+{
+  "eventId": "evt_9b83a218_d901",
+  "eventType": "STATUS_CHANGED",
+  "timestamp": 1788832100,
+  "ticketId": "ts_tkt_482910",
+  "ticketNumber": "TS-48291",
+  "sourceReferenceId": "FB-1052",
+  "previousStatus": "TRIAGED",
+  "newStatus": "IN_PROGRESS",
+  "assignee": {
+    "name": "Sarah Chen",
+    "email": "sarah.chen@teamsync.io"
+  }
+}
+```
+
+#### Example Webhook Verification & Curl Call
+```bash
+TIMESTAMP=$(date +%s)
+PAYLOAD='{"eventId":"evt_1","eventType":"STATUS_CHANGED","sourceReferenceId":"FB-1052","newStatus":"IN_PROGRESS"}'
+SIGNATURE=$(echo -n "${TIMESTAMP}.${PAYLOAD}" | openssl dgst -sha256 -hmac "teamsync_dev_webhook_secret_key" | sed 's/^.* //')
+
+curl -X POST https://kalvilearn.vercel.app/api/integrations/teamsync/webhooks \
+  -H "Content-Type: application/json" \
+  -H "X-TeamSync-Signature: ${SIGNATURE}" \
+  -H "X-TeamSync-Timestamp: ${TIMESTAMP}" \
+  -H "X-TeamSync-Event-ID: evt_1" \
+  -d "${PAYLOAD}"
+```
+

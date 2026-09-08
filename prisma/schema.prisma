@@ -221,13 +221,20 @@ model FeedbackReport {
   updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
   resolvedAt        DateTime? @map("resolved_at")
 
-  // TeamSync Integration (Phase 3)
+  // TeamSync Integration (Phase 3 & 4)
   teamSyncId           String?   @map("teamsync_id") @db.VarChar(100)
   teamSyncTicketNumber String?   @map("teamsync_ticket_number") @db.VarChar(50)
   teamSyncStatus       String?   @default("PENDING") @map("teamsync_status") @db.VarChar(30)
   teamSyncAttempts     Int       @default(0) @map("teamsync_attempts")
   teamSyncLastAttempt  DateTime? @map("teamsync_last_attempt")
   teamSyncError        String?   @map("teamsync_error") @db.Text
+  assignedTo           String?   @map("assigned_to") @db.VarChar(255)
+  assignedEmail        String?   @map("assigned_email") @db.VarChar(255)
+  lastSyncedAt         DateTime? @map("last_synced_at")
+
+  comments             FeedbackComment[]
+  auditLogs            FeedbackAuditLog[]
+  webhookEvents        TeamSyncWebhookEvent[]
 
   @@index([userId])
   @@index([status])
@@ -238,5 +245,65 @@ model FeedbackReport {
   @@index([teamSyncId])
   @@map("feedback_reports")
 }
+
+// ─── TeamSync Webhook & Audit System (Phase 4) ────────────────────────────────
+
+model TeamSyncWebhookEvent {
+  id               String          @id @default(uuid())
+  eventId          String          @unique @map("event_id") @db.VarChar(100)
+  eventType        String          @map("event_type") @db.VarChar(50)
+  ticketId         String?         @map("ticket_id") @db.VarChar(100)
+  ticketNumber     String?         @map("ticket_number") @db.VarChar(50)
+  feedbackReportId String?         @map("feedback_report_id")
+  feedbackReport   FeedbackReport? @relation(fields: [feedbackReportId], references: [id], onDelete: SetNull)
+  payload          Json
+  payloadHash      String?         @map("payload_hash") @db.VarChar(64)
+  status           String          @default("PROCESSED") @db.VarChar(30) // "PROCESSED" | "IGNORED_DUPLICATE" | "FAILED" | "UNMAPPED_TICKET"
+  error            String?         @db.Text
+  receivedAt       DateTime        @default(now()) @map("received_at")
+  processedAt      DateTime?       @map("processed_at")
+
+  @@index([eventId])
+  @@index([ticketId])
+  @@index([feedbackReportId])
+  @@index([status])
+  @@map("teamsync_webhook_events")
+}
+
+model FeedbackComment {
+  id                String         @id @default(uuid())
+  feedbackReportId  String         @map("feedback_report_id")
+  feedbackReport    FeedbackReport @relation(fields: [feedbackReportId], references: [id], onDelete: Cascade)
+  source            String         @default("TEAMSYNC") @db.VarChar(50) // "TEAMSYNC" | "USER" | "STAFF"
+  teamSyncCommentId String?        @unique @map("teamsync_comment_id") @db.VarChar(100)
+  authorName        String         @map("author_name") @db.VarChar(255)
+  authorEmail       String?        @map("author_email") @db.VarChar(255)
+  authorRole        String?        @map("author_role") @db.VarChar(50)
+  content           String         @db.Text
+  createdAt         DateTime       @default(now()) @map("created_at")
+
+  @@index([feedbackReportId])
+  @@index([teamSyncCommentId])
+  @@map("feedback_comments")
+}
+
+model FeedbackAuditLog {
+  id               String          @id @default(uuid())
+  feedbackReportId String          @map("feedback_report_id")
+  feedbackReport   FeedbackReport  @relation(fields: [feedbackReportId], references: [id], onDelete: Cascade)
+  source           String          @default("TEAMSYNC_WEBHOOK") @db.VarChar(50)
+  eventId          String?         @map("event_id") @db.VarChar(100)
+  action           String          @db.VarChar(50) // "STATUS_CHANGED" | "PRIORITY_CHANGED" | "COMMENT_ADDED" | "ASSIGNED" | "RESOLVED" | "REOPENED"
+  previousValue    Json?           @map("previous_value")
+  newValue         Json?           @map("new_value")
+  details          String?         @db.Text
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  @@index([feedbackReportId])
+  @@index([eventId])
+  @@index([action])
+  @@map("feedback_audit_logs")
+}
+
 
 

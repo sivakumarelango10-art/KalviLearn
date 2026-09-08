@@ -5,18 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync",
+    "build": "tsc -b && vite build && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook",
     "build:api": "esbuild src/server/apiHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/execute.js",
     "build:submit": "esbuild src/server/submitHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/submit.js",
     "build:feedback": "esbuild src/server/feedbackHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/feedback.js",
     "build:teamsync": "esbuild src/server/teamSyncHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/tickets.js",
+    "build:teamsync-webhook": "esbuild src/server/teamSyncWebhookHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/webhooks.js",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",
     "test:auth": "npx tsx scripts/test-auth-flow.ts",
     "test:streak": "npx tsx scripts/test-streak.ts",
     "test:feedback": "npx tsx scripts/test-frontend-feedback-ui.ts",
     "test:backend-feedback": "npx tsx scripts/test-backend-feedback.ts",
     "test:teamsync": "npx tsx scripts/test-teamsync-integration.ts",
-    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync",
+    "test:teamsync-webhook": "npx tsx scripts/test-teamsync-webhook.ts",
+    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -155,4 +155,61 @@ export const feedbackService = {
     // 4. Server error (500)
     throw new Error(json.message || 'Server error while processing feedback. Please try again later.')
   },
+
+  /**
+   * Subscribes to real-time status and comment updates for feedback reports via Supabase Realtime.
+   * Returns an unsubscribe cleanup function.
+   */
+  subscribeToFeedbackUpdates(
+    feedbackReportId: string | null,
+    onUpdate: (payload: { type: 'REPORT_UPDATE' | 'COMMENT_ADDED'; data: any }) => void
+  ): () => void {
+    if (!supabase || typeof (supabase as any).channel !== 'function') {
+      return () => {}
+    }
+
+    const channelName = feedbackReportId ? `feedback_${feedbackReportId}` : 'feedback_all'
+    const channel = (supabase as any).channel(channelName)
+
+    // Listen to updates on feedback_reports table
+    const reportFilter = feedbackReportId ? `id=eq.${feedbackReportId}` : undefined
+    channel.on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'feedback_reports',
+        ...(reportFilter ? { filter: reportFilter } : {}),
+      },
+      (payload: any) => {
+        onUpdate({ type: 'REPORT_UPDATE', data: payload.new })
+      }
+    )
+
+    // Listen to new comments on feedback_comments table
+    const commentFilter = feedbackReportId ? `feedback_report_id=eq.${feedbackReportId}` : undefined
+    channel.on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'feedback_comments',
+        ...(commentFilter ? { filter: commentFilter } : {}),
+      },
+      (payload: any) => {
+        onUpdate({ type: 'COMMENT_ADDED', data: payload.new })
+      }
+    )
+
+    channel.subscribe()
+
+    return () => {
+      try {
+        (supabase as any).removeChannel(channel)
+      } catch {
+        // Safe unsubscribe
+      }
+    }
+  },
 }
+
