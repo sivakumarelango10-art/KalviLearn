@@ -4,6 +4,30 @@ import { defineConfig, type Plugin } from 'vite'
 
 function apiPlugin(): Plugin {
   const middleware = (server: any) => async (req: any, res: any, next: any) => {
+    if (req.url?.startsWith('/api/feedback')) {
+      try {
+        const { default: feedbackHandler } = await server.ssrLoadModule('/src/server/feedbackHandler.ts')
+        return await feedbackHandler(req, res)
+      } catch (err: any) {
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ success: false, error: 'Internal Server Error', message: err.message }))
+        return
+      }
+    }
+
+    if (req.url?.startsWith('/api/submit')) {
+      try {
+        const { default: submitHandler } = await server.ssrLoadModule('/src/server/submitHandler.ts')
+        return await submitHandler(req, res)
+      } catch (err: any) {
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ success: false, error: 'Internal Server Error', message: err.message }))
+        return
+      }
+    }
+
     if (req.url === '/api/execute') {
       res.setHeader('Access-Control-Allow-Origin', '*')
       res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')

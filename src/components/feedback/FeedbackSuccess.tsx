@@ -25,10 +25,15 @@ export const FeedbackSuccess: React.FC<FeedbackSuccessProps> = ({ result, onDone
         </p>
       </div>
 
-      {/* Real Local Reference ID (if provided, without fake TeamSync numbers) */}
-      {result?.feedbackId && (
+      {/* Real Local Reference ID */}
+      {(result?.reference || result?.feedbackId) && (
         <div className="px-3 py-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] text-[11px] font-mono text-[#5d5e64]">
-          Reference ID: <strong className="text-black">#FB-{result.feedbackId}</strong>
+          Reference ID:{' '}
+          <strong className="text-black">
+            {String(result?.reference || result?.feedbackId).startsWith('FB-')
+              ? String(result?.reference || result?.feedbackId)
+              : `FB-${result?.feedbackId}`}
+          </strong>
         </div>
       )}
 

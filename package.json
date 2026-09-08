@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build:api && npm run build:submit",
+    "build": "tsc -b && vite build && npm run build:api && npm run build:submit && npm run build:feedback",
     "build:api": "esbuild src/server/apiHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/execute.js",
     "build:submit": "esbuild src/server/submitHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/submit.js",
+    "build:feedback": "esbuild src/server/feedbackHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/feedback.js",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",
     "test:streak": "npx tsx scripts/test-streak.ts",
     "test:feedback": "npx tsx scripts/test-frontend-feedback-ui.ts",
-    "test:all": "npm test && npm run test:streak && npm run test:feedback",
+    "test:backend-feedback": "npx tsx scripts/test-backend-feedback.ts",
+    "test:all": "npm test && npm run test:streak && npm run test:feedback && npm run test:backend-feedback",
     "preview": "vite preview"
   },
   "dependencies": {
