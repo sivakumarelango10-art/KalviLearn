@@ -13,6 +13,7 @@ export interface CampusOverviewMetrics {
   campusPassRate: number
   totalXpDistributed: number
   avgProblemsSolved: number
+  rewardVelocity: number
   campusName: string
 }
 
@@ -227,13 +228,25 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       ? Math.round((passedSubs / subs.length) * 1000) / 10
       : 0
 
-    const totalXpDistributed = prog.reduce((acc, p) => acc + (p.xpEarned || 50), 0)
+    // Authoritative XP: sum xp from solved records or legitimately recorded progress
     const solvedProg = prog.filter((p) => p.status === 'SOLVED')
+    const totalXpDistributed = prog.reduce((acc, p) => {
+      if (p.status === 'SOLVED') {
+        return acc + (p.xpEarned != null ? p.xpEarned : 50)
+      }
+      return acc + (p.xpEarned || 0)
+    }, 0)
+
     const avgProblemsSolved = totalStudents > 0
       ? Math.round((solvedProg.length / totalStudents) * 10) / 10
       : 0
 
-    // Active learners: unique userIds with recent submission or progress in last 14 days
+    // Reward Velocity: Total XP distributed / valid solved problems (division-by-zero protected)
+    const rewardVelocity = solvedProg.length > 0
+      ? Math.round(totalXpDistributed / solvedProg.length)
+      : 50
+
+    // Active learners: distinct userIds with recent submission or progress in last 14 days
     const activeThreshold = Date.now() - 14 * 86400000
     const activeUserIds = new Set<string>()
     for (const s of subs) {
@@ -247,7 +260,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       }
     }
 
-    const activeLearnersCount = Math.max(activeUserIds.size, totalStudents > 0 ? Math.round(totalStudents * 0.85) : 0)
+    const activeLearnersCount = activeUserIds.size
 
     return {
       totalStudents,
@@ -257,6 +270,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       campusPassRate,
       totalXpDistributed,
       avgProblemsSolved,
+      rewardVelocity,
       campusName: 'Kalvium National Technology Campus',
     }
   } catch (err) {
@@ -269,6 +283,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       campusPassRate: 0,
       totalXpDistributed: 0,
       avgProblemsSolved: 0,
+      rewardVelocity: 50,
       campusName: 'Kalvium National Technology Campus',
     }
   }
@@ -804,7 +819,12 @@ export async function fetchMentorLeaderboard(
         rating,
       }
     })
-    .sort((a, b) => b.cohortTotalXp - a.cohortTotalXp)
+    .sort((a, b) => {
+      if (b.cohortTotalXp !== a.cohortTotalXp) return b.cohortTotalXp - a.cohortTotalXp
+      if (b.avgCohortSolved !== a.avgCohortSolved) return b.avgCohortSolved - a.avgCohortSolved
+      if (b.passRate !== a.passRate) return b.passRate - a.passRate
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    })
     .map((entry, index) => ({ ...entry, rank: index + 1 }))
 }
 
@@ -830,7 +850,12 @@ export async function fetchStudentLeaderboard(
         totalXp: s.totalXp,
         streak: s.streak,
       }))
-      .sort((a, b) => b.totalXp - a.totalXp)
+      .sort((a, b) => {
+        if (b.totalXp !== a.totalXp) return b.totalXp - a.totalXp
+        if (b.questionsSolved !== a.questionsSolved) return b.questionsSolved - a.questionsSolved
+        if (b.streak !== a.streak) return b.streak - a.streak
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
   }
 
@@ -902,7 +927,12 @@ export async function fetchStudentLeaderboard(
           streak: s.streak,
         }
       })
-      .sort((a, b) => b.totalXp - a.totalXp)
+      .sort((a, b) => {
+        if (b.totalXp !== a.totalXp) return b.totalXp - a.totalXp
+        if (b.questionsSolved !== a.questionsSolved) return b.questionsSolved - a.questionsSolved
+        if (b.streak !== a.streak) return b.streak - a.streak
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
   } catch (err) {
     console.error('Error calculating timeframe student leaderboard:', err)
@@ -919,7 +949,12 @@ export async function fetchStudentLeaderboard(
         totalXp: s.totalXp,
         streak: s.streak,
       }))
-      .sort((a, b) => b.totalXp - a.totalXp)
+      .sort((a, b) => {
+        if (b.totalXp !== a.totalXp) return b.totalXp - a.totalXp
+        if (b.questionsSolved !== a.questionsSolved) return b.questionsSolved - a.questionsSolved
+        if (b.streak !== a.streak) return b.streak - a.streak
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
   }
 }
@@ -1047,8 +1082,8 @@ export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnal
 
     for (const s of subs) {
       if (s.createdAt) {
-        const date = new Date(s.createdAt)
-        const hour = date.getHours()
+        const istDate = new Date(new Date(s.createdAt).getTime() + 5.5 * 3600 * 1000)
+        const hour = istDate.getUTCHours()
         if (hourMap[hour] !== undefined) {
           hourMap[hour]++
         }

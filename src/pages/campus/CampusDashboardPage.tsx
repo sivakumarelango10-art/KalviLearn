@@ -132,6 +132,7 @@ export const CampusDashboardPage: React.FC = () => {
   const passRate = metrics?.campusPassRate ?? 0
   const totalXp = metrics?.totalXpDistributed ?? 0
   const avgSolved = metrics?.avgProblemsSolved ?? 0
+  const totalSubmissions = metrics?.totalSubmissions ?? 0
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-page-enter">
@@ -319,9 +320,9 @@ export const CampusDashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-            <span>Benchmark Status</span>
+            <span>Evaluations</span>
             <span className="text-emerald-600 font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +3.2% this week
+              <TrendingUp className="w-3 h-3" /> {totalSubmissions} Submissions
             </span>
           </div>
         </div>
@@ -346,7 +347,7 @@ export const CampusDashboardPage: React.FC = () => {
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
             <span>Reward Velocity</span>
-            <span className="text-amber-600 font-semibold">50 XP / solve</span>
+            <span className="text-amber-600 font-semibold">{metrics?.rewardVelocity ?? 50} XP / solve</span>
           </div>
         </div>
       </div>
