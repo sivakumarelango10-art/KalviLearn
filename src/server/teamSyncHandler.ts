@@ -234,8 +234,26 @@ export default async function handler(
   let localReport: { id: string; public_reference: string; type: string; status: string; priority: string; created_at: string }
 
   try {
+    // Check if user.id exists in public.users to satisfy the foreign key constraint.
+    // If not, keep user_id null while preserving authoritative user snapshots.
+    let validDbUserId: string | null = null
+    if (user.id) {
+      try {
+        const { data: userExists } = await supabaseServer
+          .from('users')
+          .select('id')
+          .eq('id', user.id)
+          .maybeSingle()
+        if (userExists) {
+          validDbUserId = userExists.id
+        }
+      } catch {
+        validDbUserId = null
+      }
+    }
+
     const insertPayload = {
-      user_id: user.id,
+      user_id: validDbUserId,
       user_name_snapshot: user.name,
       user_email_snapshot: user.email,
       user_role: user.role,

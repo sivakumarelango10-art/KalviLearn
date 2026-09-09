@@ -50,6 +50,7 @@ const KALVI_WEBHOOK_URL = 'https://kalvilearn.vercel.app/api/integrations/teamsy
 const TEAMSYNC_URL = tsApiUrl || 'https://teamsync-fawn.vercel.app';
 
 const MENTOR_AUTH_DEFAULT = 'Bearer test_auth_mentor_sivakumarelango10@gmail.com';
+const MENTOR_AUTH = MENTOR_AUTH_DEFAULT;
 const MENTOR_AUTH_VALIDATION = 'Bearer test_auth_mentor_val_tester@kalvilearn.edu';
 const MENTOR_AUTH_ATTACHMENT = 'Bearer test_auth_mentor_att_tester@kalvilearn.edu';
 const MENTOR_AUTH_E2E = 'Bearer test_auth_mentor_e2e_tester@kalvilearn.edu';

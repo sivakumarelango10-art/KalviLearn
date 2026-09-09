@@ -22373,8 +22373,19 @@ async function handler(req, res) {
   };
   let localReport;
   try {
+    let validDbUserId = null;
+    if (user.id) {
+      try {
+        const { data: userExists } = await supabaseServer.from("users").select("id").eq("id", user.id).maybeSingle();
+        if (userExists) {
+          validDbUserId = userExists.id;
+        }
+      } catch {
+        validDbUserId = null;
+      }
+    }
     const insertPayload = {
-      user_id: user.id,
+      user_id: validDbUserId,
       user_name_snapshot: user.name,
       user_email_snapshot: user.email,
       user_role: user.role,
