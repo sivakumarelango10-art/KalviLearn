@@ -6045,9 +6045,9 @@ var require_helpers = __commonJS({
           throw new Error("Invalid alg claim");
       }
     }
-    var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    var UUID_REGEX2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     function validateUUID(str) {
-      if (!UUID_REGEX.test(str)) {
+      if (!UUID_REGEX2.test(str)) {
         throw new Error("@supabase/auth-js: Expected parameter to be UUID but is not");
       }
     }
@@ -13713,6 +13713,9 @@ var require_main3 = __commonJS({
     } });
   }
 });
+
+// src/server/feedbackAuth.ts
+import crypto2 from "crypto";
 
 // node_modules/@supabase/supabase-js/dist/index.mjs
 var dist_exports = {};
@@ -21730,6 +21733,14 @@ if (shouldShowDeprecationWarning()) console.warn("\u26A0\uFE0F  Node.js 20 and b
 var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://iavxnhwbgoarnexmyxpn.supabase.co";
 var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
 var supabaseServer = createClient(supabaseUrl, supabaseKey);
+var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function toValidUuid(rawId, seed) {
+  if (rawId && UUID_REGEX.test(rawId)) {
+    return rawId;
+  }
+  const hash = crypto2.createHash("sha256").update(seed).digest("hex");
+  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+}
 var AUTHORIZED_ROSTER = {
   "kavya.ramesh.s.121@kalvium.community": {
     id: "36a74ed3-4a98-4374-a3d1-be0e2050b81c",
@@ -21747,7 +21758,7 @@ var AUTHORIZED_ROSTER = {
     name: "Elango Sivakumar"
   },
   "pkumardigital@gmail.com": {
-    id: "cm-pkumardigital-001",
+    id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
     role: "CAMPUS_MANAGER",
     name: "P Kumar"
   }
@@ -21777,7 +21788,7 @@ async function authenticateFeedbackRequest(authHeader) {
       return {
         authenticated: true,
         user: {
-          id: fallback?.id || `test-user-${testEmail.replace(/[^a-zA-Z0-9]/g, "-")}`,
+          id: toValidUuid(fallback?.id, testEmail),
           email: testEmail,
           name: fallback?.name || testEmail.split("@")[0],
           role: testRole,

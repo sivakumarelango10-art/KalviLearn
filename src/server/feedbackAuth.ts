@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 
 // Server-authoritative Supabase Client
@@ -29,6 +30,16 @@ export interface AuthVerificationResult {
   error?: string
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export function toValidUuid(rawId: string | undefined, seed: string): string {
+  if (rawId && UUID_REGEX.test(rawId)) {
+    return rawId
+  }
+  const hash = crypto.createHash('sha256').update(seed).digest('hex')
+  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`
+}
+
 // Known authorized scholars and mentors in sync with database
 const AUTHORIZED_ROSTER: Record<string, { id: string; role: AuthenticatedUser['role']; name: string }> = {
   'kavya.ramesh.s.121@kalvium.community': {
@@ -47,7 +58,7 @@ const AUTHORIZED_ROSTER: Record<string, { id: string; role: AuthenticatedUser['r
     name: 'Elango Sivakumar',
   },
   'pkumardigital@gmail.com': {
-    id: 'cm-pkumardigital-001',
+    id: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
     role: 'CAMPUS_MANAGER',
     name: 'P Kumar',
   },
@@ -86,7 +97,7 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
       return {
         authenticated: true,
         user: {
-          id: fallback?.id || `test-user-${testEmail.replace(/[^a-zA-Z0-9]/g, '-')}`,
+          id: toValidUuid(fallback?.id, testEmail),
           email: testEmail,
           name: fallback?.name || testEmail.split('@')[0],
           role: testRole,
