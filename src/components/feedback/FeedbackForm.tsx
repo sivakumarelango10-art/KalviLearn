@@ -274,6 +274,12 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
       return
     }
 
+    if (config.titleRequired && trimmedTitle.length < 3) {
+      setValidationError('Title must be at least 3 characters long.')
+      titleInputRef.current?.focus()
+      return
+    }
+
     // Improvement-specific validation
     if (type === 'IMPROVEMENT') {
       if (!currentProblem.trim()) {

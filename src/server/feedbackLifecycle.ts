@@ -146,6 +146,14 @@ export function validateFeedbackInput(payload: {
     }
   }
 
+  if (requiresTitle && sanitizedTitle.length < 3) {
+    return {
+      valid: false,
+      error: `Title must be at least 3 characters long for ${normType} reports`,
+      field: 'title',
+    }
+  }
+
   if (sanitizedTitle.length > 200) {
     return {
       valid: false,

@@ -273,7 +273,7 @@ export default async function handler(
     source: 'KALVILEARN',
     sourceReferenceId: localReport.public_reference,
     type: feedbackType,
-    title,
+    title: title.length < 3 ? `${title} (Report)` : title,
     description,
     priority,
     portal: derivedPortal,

@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import { PrismaClient } from '@prisma/client'
 
 // Server-authoritative Supabase Client
 const supabaseUrl =
@@ -14,21 +13,6 @@ const supabaseKey =
   'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40'
 
 export const supabaseServer = createClient(supabaseUrl, supabaseKey)
-
-// Cached Prisma Client for fast server query
-let prismaServer: PrismaClient | null = null
-function getPrisma(): PrismaClient {
-  if (!prismaServer) {
-    prismaServer = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DIRECT_URL || process.env.DATABASE_URL,
-        },
-      },
-    })
-  }
-  return prismaServer
-}
 
 export interface AuthenticatedUser {
   id: string
@@ -126,14 +110,13 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     const email = data.user.email.toLowerCase()
     const metaName = data.user.user_metadata?.full_name || data.user.user_metadata?.name || email.split('@')[0]
 
-    // 3. Database query in users table
+    // 3. Database query in users table via supabaseServer
     try {
-      const prisma = getPrisma()
-      const dbUser = await prisma.user.findFirst({
-        where: {
-          OR: [{ id: data.user.id }, { email: email }],
-        },
-      })
+      const { data: dbUser } = await supabaseServer
+        .from('users')
+        .select('id, email, name, role, status')
+        .or(`id.eq.${data.user.id},email.eq.${email}`)
+        .maybeSingle()
 
       if (dbUser) {
         if (dbUser.status && dbUser.status !== 'ACTIVE') {

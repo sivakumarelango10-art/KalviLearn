@@ -118,7 +118,11 @@ export const feedbackService = {
       })
     }
 
-    const json = await res.json().catch(() => ({}))
+    const text = await res.text().catch(() => '')
+    let json: Record<string, any> = {}
+    try {
+      json = JSON.parse(text)
+    } catch {}
 
     if (res.status === 201 || res.status === 200) {
       const feedback = json.feedback as FeedbackRecordSummary | undefined
@@ -153,7 +157,7 @@ export const feedbackService = {
     }
 
     // 4. Server error (500)
-    throw new Error(json.message || 'Server error while processing feedback. Please try again later.')
+    throw new Error(json.message || json.error || (text && text.includes('FUNCTION_INVOCATION_FAILED') ? 'Serverless function error. Please try again in a moment.' : 'Server error while processing feedback. Please try again later.'))
   },
 
   /**
