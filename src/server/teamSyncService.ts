@@ -124,8 +124,8 @@ export async function sendTicketToTeamSync(
     idempotencyKey?: string
   } = {}
 ): Promise<TeamSyncSendResult> {
-  const apiUrl = (process.env.TEAMSYNC_API_URL || 'https://api.teamsync.internal').replace(/\/+$/, '')
-  const apiKey = process.env.TEAMSYNC_API_KEY || 'teamsync_test_secret_key'
+  const apiUrl = (process.env.TEAMSYNC_API_URL || 'https://teamsync-fawn.vercel.app').replace(/\/+$/, '')
+  const apiKey = process.env.TEAMSYNC_API_KEY || 'ts_live_kalvilearn_sec_99a8b1c4e2d3f7'
   const endpoint = `${apiUrl}/api/v1/tickets`
 
   const timeoutMs = options.timeoutMs ?? 6000
