@@ -41,6 +41,12 @@ export interface TeamSyncTicketPayload {
   user: TeamSyncUserPayload
   page?: string | null
   metadata?: TeamSyncMetadataPayload
+  attachments?: Array<{
+    fileName: string
+    fileUrl: string
+    fileType?: string
+    fileSize?: number
+  }>
 }
 
 export interface TeamSyncSendResult {

@@ -325,6 +325,14 @@ export default async function handler(
       attachmentUrl: attachmentUrl ? 'attachment_included' : null,
       submittedAt: localReport.created_at,
     },
+    attachments: attachmentUrl ? [
+      {
+        fileName: (attachmentMeta?.fileName as string) || 'attachment.png',
+        fileUrl: attachmentUrl,
+        fileType: (attachmentMeta?.fileType as string) || 'image/png',
+        fileSize: (attachmentMeta?.fileSize as number) || 0,
+      }
+    ] : [],
   }
 
   const teamSyncResult = await sendTicketToTeamSync(teamSyncPayload, {

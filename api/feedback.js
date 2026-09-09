@@ -22617,7 +22617,15 @@ async function handler(req, res) {
               featureArea,
               attachmentUrl: attachmentUrl ? "attachment_included" : null,
               submittedAt: data.created_at
-            }
+            },
+            attachments: attachmentUrl ? [
+              {
+                fileName: attachmentMeta?.fileName || "attachment.png",
+                fileUrl: attachmentUrl,
+                fileType: attachmentMeta?.fileType || "image/png",
+                fileSize: attachmentMeta?.fileSize || 0
+              }
+            ] : []
           },
           { idempotencyKey: dedupeKey }
         );

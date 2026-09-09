@@ -22447,7 +22447,15 @@ async function handler(req, res) {
       featureArea,
       attachmentUrl: attachmentUrl ? "attachment_included" : null,
       submittedAt: localReport.created_at
-    }
+    },
+    attachments: attachmentUrl ? [
+      {
+        fileName: attachmentMeta?.fileName || "attachment.png",
+        fileUrl: attachmentUrl,
+        fileType: attachmentMeta?.fileType || "image/png",
+        fileSize: attachmentMeta?.fileSize || 0
+      }
+    ] : []
   };
   const teamSyncResult = await sendTicketToTeamSync(teamSyncPayload, {
     idempotencyKey: idempotencyHeader || localReport.public_reference
