@@ -429,21 +429,49 @@ export default async function handler(
     const pageUrl = typeof parsedBody.pageUrl === 'string' ? parsedBody.pageUrl.substring(0, 1000) : null
     const module = typeof parsedBody.module === 'string' ? parsedBody.module.substring(0, 100) : null
 
-    // 6. Process Optional Image Attachment
+    // 6. Process Optional Image Attachment (Supports permanent storage URL & Base64 upload)
     let attachmentUrl: string | null = null
     let attachmentMeta: Record<string, unknown> | null = null
 
     if (parsedBody.attachment && typeof parsedBody.attachment === 'object') {
       const att = parsedBody.attachment as Record<string, unknown>
-      const dataUrl = typeof att.dataUrl === 'string' ? att.dataUrl : null
+      const rawUrl = (typeof att.fileUrl === 'string' && att.fileUrl) ? att.fileUrl : (typeof att.dataUrl === 'string' ? att.dataUrl : null)
       const fileName = typeof att.fileName === 'string' ? att.fileName : 'attachment.png'
       const fileType = typeof att.fileType === 'string' ? att.fileType.toLowerCase() : 'image/png'
       const fileSize = typeof att.fileSize === 'number' ? att.fileSize : 0
 
       // Enforce 5MB limit and allowed MIME types
       const allowedMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif']
-      if (dataUrl && allowedMimes.includes(fileType) && fileSize <= 5 * 1024 * 1024) {
-        attachmentUrl = dataUrl
+      if (rawUrl && allowedMimes.includes(fileType) && fileSize <= 5 * 1024 * 1024) {
+        if (rawUrl.startsWith('data:image/')) {
+          try {
+            const matches = rawUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+            if (matches && matches.length === 3) {
+              const buffer = Buffer.from(matches[2], 'base64')
+              const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+              const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`
+              const { error: uploadError } = await supabaseServer.storage
+                .from('feedback-attachments')
+                .upload(path, buffer, {
+                  contentType: matches[1] || fileType,
+                  upsert: true,
+                })
+              if (!uploadError) {
+                const { data: urlData } = supabaseServer.storage
+                  .from('feedback-attachments')
+                  .getPublicUrl(path)
+                if (urlData?.publicUrl) {
+                  attachmentUrl = urlData.publicUrl
+                }
+              }
+            }
+          } catch (storageErr) {
+            console.warn('[feedbackHandler] Base64 upload fallback warning:', storageErr)
+          }
+        }
+        if (!attachmentUrl) {
+          attachmentUrl = rawUrl
+        }
         attachmentMeta = {
           fileName,
           fileType,
@@ -524,7 +552,7 @@ export default async function handler(
               ...deviceInfo,
               rating,
               featureArea,
-              attachmentUrl: attachmentUrl ? 'attachment_included' : null,
+              attachmentUrl: attachmentUrl || null,
               submittedAt: data.created_at,
             },
             attachments: attachmentUrl ? [

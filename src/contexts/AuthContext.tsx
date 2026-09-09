@@ -47,12 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null
     }
   })
-  // Zero-delay initial state: false if user is cached locally, true if verifying session
+  // Zero-delay initial state: false unless actively handling OAuth callback tokens
   const [isLoading, setIsLoading] = useState<boolean>(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_USER_KEY)
-      if (saved) return false
-
       if (typeof window !== 'undefined') {
         const hash = window.location.hash
         const search = window.location.search
@@ -60,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return true
         }
       }
-      return true
+      return false
     } catch {
       return false
     }

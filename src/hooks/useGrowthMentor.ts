@@ -48,57 +48,18 @@ export function useGrowthMentor(studentId?: string | null): UseGrowthMentorResul
   }, [studentId])
 
   useEffect(() => {
-    let isMounted = true
-
-    const executeLoad = async () => {
-      if (!studentId) {
-        if (isMounted) {
-          setMentorName(null)
-          setMentorEmail(null)
-          setMentorCode(null)
-          setIsLoading(false)
-        }
-        return
-      }
-
-      try {
-        if (isMounted) {
-          setIsLoading(true)
-          setError(null)
-        }
-        const details = await fetchStudentGrowthMentorDetails(studentId)
-        if (isMounted) {
-          setMentorName(details?.mentorName || null)
-          setMentorEmail(details?.mentorEmail || null)
-          setMentorCode(details?.mentorCode || null)
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error('Failed to load Growth Mentor on mount/change:', err)
-          setError('Unable to retrieve Growth Mentor')
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    executeLoad()
+    loadMentor()
 
     if (!studentId) return
 
     const unsubscribe = subscribeToStudentMentorUpdates(studentId, () => {
-      if (isMounted) {
-        executeLoad()
-      }
+      loadMentor()
     })
 
     return () => {
-      isMounted = false
       unsubscribe()
     }
-  }, [studentId])
+  }, [studentId, loadMentor])
 
   return {
     mentorName,
