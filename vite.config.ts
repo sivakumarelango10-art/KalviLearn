@@ -16,6 +16,18 @@ function apiPlugin(): Plugin {
       }
     }
 
+    if (req.url?.startsWith('/api/integrations/teamsync')) {
+      try {
+        const { default: teamSyncHandler } = await server.ssrLoadModule('/src/server/teamSyncHandler.ts')
+        return await teamSyncHandler(req, res)
+      } catch (err: any) {
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ success: false, error: 'Internal Server Error', message: err.message }))
+        return
+      }
+    }
+
     if (req.url?.startsWith('/api/submit')) {
       try {
         const { default: submitHandler } = await server.ssrLoadModule('/src/server/submitHandler.ts')

@@ -12,7 +12,8 @@ export interface FeedbackAttachment {
   fileName: string
   fileType: string
   fileSize: number
-  dataUrl: string
+  fileUrl?: string
+  dataUrl?: string
 }
 
 export interface SubmitFeedbackPayload {
@@ -56,6 +57,43 @@ export interface FeedbackSubmissionResult {
 }
 
 export const feedbackService = {
+  /**
+   * Uploads an image attachment directly to Supabase Storage.
+   * Returns the permanent public HTTPS URL and file metadata.
+   */
+  async uploadAttachment(file: File): Promise<{
+    publicUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+  }> {
+    const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`
+
+    const { error } = await supabase.storage
+      .from('feedback-attachments')
+      .upload(path, file, {
+        contentType: file.type || 'image/png',
+        upsert: true,
+      })
+
+    if (error) {
+      console.warn('[FeedbackService] Direct storage upload error, falling back to inline data:', error)
+      throw new Error('Failed to upload attachment.')
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('feedback-attachments')
+      .getPublicUrl(path)
+
+    return {
+      publicUrl: urlData.publicUrl,
+      fileName: file.name,
+      fileType: file.type || 'image/png',
+      fileSize: file.size,
+    }
+  },
+
   /**
    * Dispatches user feedback to the KalviLearn integration service.
    * Authenticates with live Supabase session token, enforces validation, stores in PostgreSQL,

@@ -15,6 +15,7 @@ import {
   Image as ImageIcon,
   Upload,
   Trash2,
+  CheckCircle2,
 } from 'lucide-react'
 import {
   FeedbackType,
@@ -70,26 +71,25 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [fileError, setFileError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const activeUploadRef = useRef<Promise<any> | null>(null)
 
-  // Auto-focus first input on load
+  // Immediate auto-focus first input on load (no artificial delay)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (type === 'FEEDBACK') {
-        descriptionRef.current?.focus()
-      } else {
-        titleInputRef.current?.focus() || descriptionRef.current?.focus()
-      }
-    }, 150)
-    return () => clearTimeout(timer)
+    if (type === 'FEEDBACK') {
+      descriptionRef.current?.focus()
+    } else {
+      titleInputRef.current?.focus() || descriptionRef.current?.focus()
+    }
   }, [type])
 
-  // Process selected or pasted image file
-  const processImageFile = (file: File) => {
+  // Process selected or pasted image file with immediate background upload
+  const processImageFile = async (file: File) => {
     setFileError(null)
 
     if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
@@ -102,22 +102,48 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
       return
     }
 
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string
-      if (dataUrl) {
-        setAttachment({
-          fileName: file.name || 'screenshot.png',
-          fileType: file.type || 'image/png',
-          fileSize: file.size,
-          dataUrl,
-        })
+    // Instant local preview
+    const previewUrl = URL.createObjectURL(file)
+    setAttachment({
+      fileName: file.name || 'screenshot.png',
+      fileType: file.type || 'image/png',
+      fileSize: file.size,
+      dataUrl: previewUrl,
+    })
+
+    // Start background upload immediately to cloud storage
+    setIsUploadingAttachment(true)
+    const uploadPromise = (async () => {
+      try {
+        const uploaded = await feedbackService.uploadAttachment(file)
+        if (uploaded?.publicUrl) {
+          setAttachment((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  fileUrl: uploaded.publicUrl,
+                  dataUrl: uploaded.publicUrl,
+                }
+              : null
+          )
+        }
+      } catch (uploadErr) {
+        console.warn('[FeedbackForm] Direct storage upload fallback to inline dataUrl:', uploadErr)
+        // Fallback: load full base64 dataUrl if storage upload failed
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const b64 = e.target?.result as string
+          if (b64) {
+            setAttachment((prev) => (prev ? { ...prev, dataUrl: b64 } : null))
+          }
+        }
+        reader.readAsDataURL(file)
+      } finally {
+        setIsUploadingAttachment(false)
       }
-    }
-    reader.onerror = () => {
-      setFileError('Failed to process image file.')
-    }
-    reader.readAsDataURL(file)
+    })()
+
+    activeUploadRef.current = uploadPromise
   }
 
   // Handle clipboard paste for screenshots (Ctrl+V / Cmd+V)
@@ -310,6 +336,18 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     setIsSubmitting(true)
 
     try {
+      // If an attachment is still uploading in the background, await completion (up to 4s)
+      if (activeUploadRef.current) {
+        try {
+          await Promise.race([
+            activeUploadRef.current,
+            new Promise((resolve) => setTimeout(resolve, 4000)),
+          ])
+        } catch {
+          // Proceed with local attachment data
+        }
+      }
+
       const telemetry = collectTelemetryContext()
 
       let finalDescription = trimmedDesc
@@ -557,9 +595,21 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 <p className="text-xs font-semibold text-neutral-900 truncate">
                   {attachment.fileName}
                 </p>
-                <p className="text-[10px] text-neutral-500">
-                  {formatFileSize(attachment.fileSize)} • Image ready to upload
-                </p>
+                <div className="text-[10px] text-neutral-500 flex items-center gap-1.5 mt-0.5">
+                  <span>{formatFileSize(attachment.fileSize)}</span>
+                  <span>•</span>
+                  {isUploadingAttachment ? (
+                    <span className="text-amber-600 font-medium inline-flex items-center gap-1">
+                      <Loader2 className="w-2.5 h-2.5 animate-spin" /> Uploading to storage...
+                    </span>
+                  ) : attachment.fileUrl ? (
+                    <span className="text-emerald-600 font-medium inline-flex items-center gap-1">
+                      <CheckCircle2 className="w-2.5 h-2.5" /> Ready for TeamSync
+                    </span>
+                  ) : (
+                    <span className="text-neutral-500">Image attached</span>
+                  )}
+                </div>
               </div>
               <button
                 type="button"

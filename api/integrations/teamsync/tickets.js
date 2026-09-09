@@ -22339,12 +22339,14 @@ async function handler(req, res) {
   let attachmentMeta = null;
   if (parsedBody.attachment && typeof parsedBody.attachment === "object") {
     const att = parsedBody.attachment;
-    const dataUrl = typeof att.dataUrl === "string" ? att.dataUrl : null;
+    const fileUrl = typeof att.fileUrl === "string" && att.fileUrl.trim() ? att.fileUrl.trim() : null;
+    const dataUrl = typeof att.dataUrl === "string" && att.dataUrl.trim() ? att.dataUrl.trim() : null;
+    const rawUrl = fileUrl || dataUrl;
     const fileName = typeof att.fileName === "string" ? att.fileName : "attachment.png";
     const fileType = typeof att.fileType === "string" ? att.fileType.toLowerCase() : "image/png";
     const fileSize = typeof att.fileSize === "number" ? att.fileSize : 0;
     const allowedMimes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"];
-    if (dataUrl) {
+    if (rawUrl) {
       if (!allowedMimes.includes(fileType)) {
         return sendJson(400, {
           success: false,
@@ -22361,7 +22363,29 @@ async function handler(req, res) {
           field: "attachment"
         });
       }
-      attachmentUrl = dataUrl;
+      attachmentUrl = rawUrl;
+      if (rawUrl.startsWith("data:image/")) {
+        try {
+          const parts = rawUrl.split(",");
+          if (parts.length > 1 && parts[1]) {
+            const buffer = Buffer.from(parts[1], "base64");
+            const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+            const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`;
+            const { error: uploadError } = await supabaseServer.storage.from("feedback-attachments").upload(path, buffer, {
+              contentType: fileType,
+              upsert: true
+            });
+            if (!uploadError) {
+              const { data: urlData } = supabaseServer.storage.from("feedback-attachments").getPublicUrl(path);
+              if (urlData?.publicUrl) {
+                attachmentUrl = urlData.publicUrl;
+              }
+            }
+          }
+        } catch (uploadErr) {
+          console.warn("[TeamSyncHandler] Storage conversion warning, keeping original:", uploadErr);
+        }
+      }
       attachmentMeta = { fileName, fileType, fileSize };
     }
   }
