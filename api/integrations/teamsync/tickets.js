@@ -21903,10 +21903,10 @@ function validateFeedbackInput(payload) {
       field: "title"
     };
   }
-  if (requiresTitle && sanitizedTitle.length < 3) {
+  if (sanitizedTitle && sanitizedTitle.length < 3) {
     return {
       valid: false,
-      error: `Title must be at least 3 characters long for ${normType} reports`,
+      error: requiresTitle ? `Title must be at least 3 characters long for ${normType} reports` : "Title must be at least 3 characters long",
       field: "title"
     };
   }
@@ -22333,7 +22333,23 @@ async function handler(req, res) {
     const fileType = typeof att.fileType === "string" ? att.fileType.toLowerCase() : "image/png";
     const fileSize = typeof att.fileSize === "number" ? att.fileSize : 0;
     const allowedMimes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"];
-    if (dataUrl && allowedMimes.includes(fileType) && fileSize <= 5 * 1024 * 1024) {
+    if (dataUrl) {
+      if (!allowedMimes.includes(fileType)) {
+        return sendJson(400, {
+          success: false,
+          error: "Validation Error",
+          message: "Invalid attachment format. Only image files (PNG, JPG, WEBP, GIF) are supported.",
+          field: "attachment"
+        });
+      }
+      if (fileSize > 5 * 1024 * 1024) {
+        return sendJson(400, {
+          success: false,
+          error: "Validation Error",
+          message: "Attachment exceeds 5MB maximum file size limit.",
+          field: "attachment"
+        });
+      }
       attachmentUrl = dataUrl;
       attachmentMeta = { fileName, fileType, fileSize };
     }
@@ -22392,7 +22408,7 @@ async function handler(req, res) {
     source: "KALVILEARN",
     sourceReferenceId: localReport.public_reference,
     type: feedbackType,
-    title: title.length < 3 ? `${title} (Report)` : title,
+    title,
     description,
     priority,
     portal: derivedPortal,

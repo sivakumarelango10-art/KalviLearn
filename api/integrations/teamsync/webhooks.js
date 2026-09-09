@@ -21897,9 +21897,12 @@ function logWebhookEvent(action, details) {
 }
 async function processTeamSyncWebhook(rawPayload, _rawString, eventIdHeader) {
   const startTime = Date.now();
-  const eventId = String(
+  let eventId = String(
     eventIdHeader || rawPayload.eventId || rawPayload.event_id || rawPayload.id || ""
   ).trim();
+  if (eventId.includes(",")) {
+    eventId = eventId.split(",")[0].trim();
+  }
   if (!eventId) {
     return {
       success: false,
@@ -22318,7 +22321,8 @@ async function handler(req, res) {
   }
   const signatureHeader = req.headers["x-teamsync-signature"] || req.headers["x-signature"];
   const timestampHeader = req.headers["x-teamsync-timestamp"] || req.headers["x-timestamp"];
-  const eventIdHeader = req.headers["x-teamsync-event-id"] || req.headers["x-event-id"];
+  const rawEventId = req.headers["x-teamsync-event-id"] || req.headers["x-event-id"] || "";
+  const eventIdHeader = rawEventId ? rawEventId.split(",")[0].trim() : void 0;
   const authResult = verifyTeamSyncWebhookSignature(
     rawBody,
     signatureHeader,

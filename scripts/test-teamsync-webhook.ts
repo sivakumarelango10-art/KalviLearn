@@ -51,13 +51,34 @@
  * 47. subscribeToFeedbackUpdates returns a valid unsubscribe function
  * 48. Zero secret leakage: TEAMSYNC_WEBHOOK_SECRET never present in response payloads
  */
+import fs from 'fs'
+import path from 'path'
+
+// Ensure local .env is loaded in test environment
+const envPath = path.resolve(process.cwd(), '.env')
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8')
+  for (const line of envContent.split('\n')) {
+    const idx = line.indexOf('=')
+    if (idx > 0 && !line.trim().startsWith('#')) {
+      const k = line.slice(0, idx).trim()
+      const v = line.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '')
+      if (!process.env[k]) {
+        process.env[k] = v
+      }
+    }
+  }
+}
 
 import handler, { resetWebhookRateLimitsForTesting } from '../src/server/teamSyncWebhookHandler'
 import { computeTeamSyncSignature, verifyTeamSyncWebhookSignature } from '../src/server/teamSyncWebhookAuth'
 import { feedbackService } from '../src/services/feedbackService'
 import { supabaseServer } from '../src/server/feedbackAuth'
 
-const TEST_SECRET = process.env.TEAMSYNC_WEBHOOK_SECRET || 'teamsync_dev_webhook_secret_key'
+const TEST_SECRET =
+  process.env.TEAMSYNC_WEBHOOK_SECRET ||
+  process.env.KALVILEARN_WEBHOOK_SECRET ||
+  'ts_whsec_kalvilearn_39a1b2c4d5e6'
 
 interface MockResponse {
   statusCode: number

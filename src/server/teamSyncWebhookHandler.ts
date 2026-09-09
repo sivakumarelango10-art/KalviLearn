@@ -120,9 +120,11 @@ export default async function handler(
   const timestampHeader =
     (req.headers['x-teamsync-timestamp'] as string) ||
     (req.headers['x-timestamp'] as string)
-  const eventIdHeader =
+  const rawEventId =
     (req.headers['x-teamsync-event-id'] as string) ||
-    (req.headers['x-event-id'] as string)
+    (req.headers['x-event-id'] as string) ||
+    ''
+  const eventIdHeader = rawEventId ? rawEventId.split(',')[0].trim() : undefined
 
   // 3. Cryptographic Signature & Replay Verification
   const authResult = verifyTeamSyncWebhookSignature(

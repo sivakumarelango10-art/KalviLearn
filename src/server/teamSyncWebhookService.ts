@@ -154,13 +154,17 @@ export async function processTeamSyncWebhook(
   const startTime = Date.now()
 
   // 1. Extract and validate primary event attributes
-  const eventId = String(
+  let eventId = String(
     eventIdHeader ||
     rawPayload.eventId ||
     rawPayload.event_id ||
     rawPayload.id ||
     ''
   ).trim()
+
+  if (eventId.includes(',')) {
+    eventId = eventId.split(',')[0].trim()
+  }
 
   if (!eventId) {
     return {

@@ -21929,10 +21929,10 @@ function validateFeedbackInput(payload) {
       field: "title"
     };
   }
-  if (requiresTitle && sanitizedTitle.length < 3) {
+  if (sanitizedTitle && sanitizedTitle.length < 3) {
     return {
       valid: false,
-      error: `Title must be at least 3 characters long for ${normType} reports`,
+      error: requiresTitle ? `Title must be at least 3 characters long for ${normType} reports` : "Title must be at least 3 characters long",
       field: "title"
     };
   }
