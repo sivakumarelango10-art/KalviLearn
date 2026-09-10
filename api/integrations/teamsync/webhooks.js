@@ -21811,15 +21811,19 @@ var VALID_STATUSES = [
   "TRIAGED",
   "IN_PROGRESS",
   "RESOLVED",
-  "CLOSED"
+  "CLOSED",
+  "BLOCKED",
+  "REJECTED"
 ];
 var VALID_PRIORITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 var ALLOWED_STATUS_TRANSITIONS = {
-  OPEN: ["TRIAGED"],
-  TRIAGED: ["IN_PROGRESS", "RESOLVED"],
-  IN_PROGRESS: ["RESOLVED"],
+  OPEN: ["TRIAGED", "IN_PROGRESS", "BLOCKED", "REJECTED"],
+  TRIAGED: ["IN_PROGRESS", "RESOLVED", "BLOCKED", "REJECTED"],
+  IN_PROGRESS: ["RESOLVED", "BLOCKED", "REJECTED"],
   RESOLVED: ["CLOSED", "OPEN"],
-  CLOSED: ["OPEN"]
+  CLOSED: ["OPEN"],
+  BLOCKED: ["IN_PROGRESS", "TRIAGED", "OPEN"],
+  REJECTED: ["OPEN"]
 };
 function isValidStatusTransition(currentStatus, targetStatus) {
   const current = currentStatus.toUpperCase();
@@ -21866,6 +21870,14 @@ function mapTeamSyncStatus(rawStatus) {
     case "REOPENED":
     case "REOPEN":
       return "OPEN";
+    case "BLOCKED":
+    case "WAITING":
+      return "BLOCKED";
+    case "REJECTED":
+    case "WONTFIX":
+    case "WON'T FIX":
+    case "INVALID":
+      return "REJECTED";
     default:
       if (VALID_STATUSES.includes(clean)) {
         return clean;

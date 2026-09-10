@@ -89,6 +89,14 @@ export function mapTeamSyncStatus(rawStatus?: unknown): ValidStatus | null {
     case 'REOPENED':
     case 'REOPEN':
       return 'OPEN'
+    case 'BLOCKED':
+    case 'WAITING':
+      return 'BLOCKED'
+    case 'REJECTED':
+    case 'WONTFIX':
+    case "WON'T FIX":
+    case 'INVALID':
+      return 'REJECTED'
     default:
       if (VALID_STATUSES.includes(clean as ValidStatus)) {
         return clean as ValidStatus

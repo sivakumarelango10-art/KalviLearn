@@ -86,8 +86,8 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
   }
 
-  // 1. Support secure test tokens for automated test suites
-  if (token.startsWith('test_auth_')) {
+  // 1. Support secure test tokens for automated test suites (non-production only)
+  if (process.env.NODE_ENV !== 'production' && token.startsWith('test_auth_')) {
     const parts = token.split('_')
     // format: test_auth_<role>_<email>
     if (parts.length >= 4) {

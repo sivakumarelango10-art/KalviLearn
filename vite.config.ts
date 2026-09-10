@@ -16,6 +16,18 @@ function apiPlugin(): Plugin {
       }
     }
 
+    if (req.url?.startsWith('/api/integrations/teamsync/webhooks')) {
+      try {
+        const { default: webhookHandler } = await server.ssrLoadModule('/src/server/teamSyncWebhookHandler.ts')
+        return await webhookHandler(req, res)
+      } catch (err: any) {
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ success: false, error: 'Internal Server Error', message: err.message }))
+        return
+      }
+    }
+
     if (req.url?.startsWith('/api/integrations/teamsync')) {
       try {
         const { default: teamSyncHandler } = await server.ssrLoadModule('/src/server/teamSyncHandler.ts')

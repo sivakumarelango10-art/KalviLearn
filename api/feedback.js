@@ -21779,7 +21779,7 @@ async function authenticateFeedbackRequest(authHeader) {
       error: "Empty Bearer token."
     };
   }
-  if (token.startsWith("test_auth_")) {
+  if (process.env.NODE_ENV !== "production" && token.startsWith("test_auth_")) {
     const parts = token.split("_");
     if (parts.length >= 4) {
       const testRole = parts[2].toUpperCase();
@@ -21877,16 +21877,28 @@ var VALID_STATUSES = [
   "TRIAGED",
   "IN_PROGRESS",
   "RESOLVED",
-  "CLOSED"
+  "CLOSED",
+  "BLOCKED",
+  "REJECTED"
 ];
 var VALID_PRIORITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
-var VALID_RATINGS = ["TERRIBLE", "BAD", "GOOD", "AMAZING"];
+var VALID_RATINGS = [
+  "POOR",
+  "NEUTRAL",
+  "GOOD",
+  "EXCELLENT",
+  "TERRIBLE",
+  "BAD",
+  "AMAZING"
+];
 var ALLOWED_STATUS_TRANSITIONS = {
-  OPEN: ["TRIAGED"],
-  TRIAGED: ["IN_PROGRESS", "RESOLVED"],
-  IN_PROGRESS: ["RESOLVED"],
+  OPEN: ["TRIAGED", "IN_PROGRESS", "BLOCKED", "REJECTED"],
+  TRIAGED: ["IN_PROGRESS", "RESOLVED", "BLOCKED", "REJECTED"],
+  IN_PROGRESS: ["RESOLVED", "BLOCKED", "REJECTED"],
   RESOLVED: ["CLOSED", "OPEN"],
-  CLOSED: ["OPEN"]
+  CLOSED: ["OPEN"],
+  BLOCKED: ["IN_PROGRESS", "TRIAGED", "OPEN"],
+  REJECTED: ["OPEN"]
 };
 function isValidStatusTransition(currentStatus, targetStatus) {
   const current = currentStatus.toUpperCase();

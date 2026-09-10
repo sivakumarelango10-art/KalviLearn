@@ -21779,7 +21779,7 @@ async function authenticateFeedbackRequest(authHeader) {
       error: "Empty Bearer token."
     };
   }
-  if (token.startsWith("test_auth_")) {
+  if (process.env.NODE_ENV !== "production" && token.startsWith("test_auth_")) {
     const parts = token.split("_");
     if (parts.length >= 4) {
       const testRole = parts[2].toUpperCase();
@@ -21873,7 +21873,15 @@ var VALID_FEEDBACK_TYPES = [
   "OTHER"
 ];
 var VALID_PRIORITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
-var VALID_RATINGS = ["TERRIBLE", "BAD", "GOOD", "AMAZING"];
+var VALID_RATINGS = [
+  "POOR",
+  "NEUTRAL",
+  "GOOD",
+  "EXCELLENT",
+  "TERRIBLE",
+  "BAD",
+  "AMAZING"
+];
 function normalizeFeedbackType(type) {
   if (typeof type !== "string") return null;
   const upper = type.trim().toUpperCase();
@@ -22469,7 +22477,7 @@ async function handler(req, res) {
       ...deviceInfo,
       rating,
       featureArea,
-      attachmentUrl: attachmentUrl ? "attachment_included" : null,
+      attachmentUrl: attachmentUrl || null,
       submittedAt: localReport.created_at
     },
     attachments: attachmentUrl ? [

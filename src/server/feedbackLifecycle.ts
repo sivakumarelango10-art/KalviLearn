@@ -25,6 +25,8 @@ export const VALID_STATUSES = [
   'IN_PROGRESS',
   'RESOLVED',
   'CLOSED',
+  'BLOCKED',
+  'REJECTED',
 ] as const
 
 export type ValidStatus = (typeof VALID_STATUSES)[number]
@@ -32,23 +34,35 @@ export type ValidStatus = (typeof VALID_STATUSES)[number]
 export const VALID_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const
 export type ValidPriority = (typeof VALID_PRIORITIES)[number]
 
-export const VALID_RATINGS = ['TERRIBLE', 'BAD', 'GOOD', 'AMAZING'] as const
+export const VALID_RATINGS = [
+  'POOR',
+  'NEUTRAL',
+  'GOOD',
+  'EXCELLENT',
+  'TERRIBLE',
+  'BAD',
+  'AMAZING',
+] as const
 export type ValidRating = (typeof VALID_RATINGS)[number]
 
 /**
  * Strict status transition rules:
- * OPEN -> TRIAGED
- * TRIAGED -> IN_PROGRESS, RESOLVED
- * IN_PROGRESS -> RESOLVED
+ * OPEN -> TRIAGED, IN_PROGRESS, BLOCKED, REJECTED
+ * TRIAGED -> IN_PROGRESS, RESOLVED, BLOCKED, REJECTED
+ * IN_PROGRESS -> RESOLVED, BLOCKED, REJECTED
  * RESOLVED -> CLOSED, OPEN (reopen)
  * CLOSED -> OPEN (reopen)
+ * BLOCKED -> IN_PROGRESS, TRIAGED, OPEN
+ * REJECTED -> OPEN (reopen)
  */
 const ALLOWED_STATUS_TRANSITIONS: Record<ValidStatus, ValidStatus[]> = {
-  OPEN: ['TRIAGED'],
-  TRIAGED: ['IN_PROGRESS', 'RESOLVED'],
-  IN_PROGRESS: ['RESOLVED'],
+  OPEN: ['TRIAGED', 'IN_PROGRESS', 'BLOCKED', 'REJECTED'],
+  TRIAGED: ['IN_PROGRESS', 'RESOLVED', 'BLOCKED', 'REJECTED'],
+  IN_PROGRESS: ['RESOLVED', 'BLOCKED', 'REJECTED'],
   RESOLVED: ['CLOSED', 'OPEN'],
   CLOSED: ['OPEN'],
+  BLOCKED: ['IN_PROGRESS', 'TRIAGED', 'OPEN'],
+  REJECTED: ['OPEN'],
 }
 
 /**

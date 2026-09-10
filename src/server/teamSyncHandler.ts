@@ -354,7 +354,7 @@ export default async function handler(
       ...deviceInfo,
       rating,
       featureArea,
-      attachmentUrl: attachmentUrl ? 'attachment_included' : null,
+      attachmentUrl: attachmentUrl || null,
       submittedAt: localReport.created_at,
     },
     attachments: attachmentUrl ? [
