@@ -222,8 +222,8 @@ async function runTestSuite() {
       teamsync_id: testTicketId,
       teamsync_ticket_number: testTicketNumber,
       teamsync_status: 'SENT',
-      user_id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
-      user_email_snapshot: 'kavya.ramesh.s.121@kalvium.community',
+      user_id: '00000000-0000-4000-a000-000000000001',
+      user_email_snapshot: 'synthetic.student@kalvilearn.test',
       user_role: 'STUDENT',
     })
     .select('*')

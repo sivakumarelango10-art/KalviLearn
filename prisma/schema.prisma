@@ -73,6 +73,8 @@ model LearningUnit {
   inputFormat    String   @db.Text
   outputFormat   String   @db.Text
   examples       Json
+  codeSnippets   Json?
+  approach       String?  @db.Text
   createdAt      DateTime @default(now())
 
   @@index([moduleId])

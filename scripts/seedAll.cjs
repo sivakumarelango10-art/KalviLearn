@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
-const { parseLearnMarkdown } = require('./parseLearn.cjs');
+const { parseCurriculumMarkdown } = require('./parseCurriculum.cjs');
 const belt1 = require('./belt1Data.cjs');
 const belt2 = require('./belt2Data.cjs');
 const belt3 = require('./belt3Data.cjs');
@@ -34,16 +34,20 @@ async function main() {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  // 1. PARSE LEARN.MD
-  const learnPath = path.join(__dirname, '..', 'learn.md');
+  // 1. PARSE CURRICULUM MARKDOWN
   let curriculum = [];
-  if (fs.existsSync(learnPath)) {
-    console.log('📖 Parsing learn.md curriculum...');
-    curriculum = parseLearnMarkdown(learnPath);
+  try {
+    console.log('📖 Parsing curriculum content...');
+    curriculum = parseCurriculumMarkdown();
     console.log(`✅ Extracted ${curriculum.length} modules.`);
     fs.writeFileSync(path.join(dataDir, 'curriculum.json'), JSON.stringify(curriculum, null, 2));
-  } else if (fs.existsSync(path.join(dataDir, 'curriculum.json'))) {
-    curriculum = JSON.parse(fs.readFileSync(path.join(dataDir, 'curriculum.json'), 'utf8'));
+  } catch (err) {
+    if (fs.existsSync(path.join(dataDir, 'curriculum.json'))) {
+      console.log('ℹ️ Loading fallback curriculum.json...');
+      curriculum = JSON.parse(fs.readFileSync(path.join(dataDir, 'curriculum.json'), 'utf8'));
+    } else {
+      console.error('❌ Could not parse curriculum:', err.message);
+    }
   }
 
   // 2. COMPILE ALL 85 BELT PROBLEMS & 850 TEST CASES
@@ -200,11 +204,13 @@ async function main() {
           moduleId: moduleRecord.id,
           order: lu.order,
           title: lu.title,
-          content: lu.content,
+          content: lu.concept || lu.content,
           codingQuestion: lu.codingQuestion,
           inputFormat: lu.inputFormat,
           outputFormat: lu.outputFormat,
           examples: lu.examples,
+          codeSnippets: lu.codeSnippets || null,
+          approach: lu.approach || null,
         });
       }
     }
@@ -230,14 +236,7 @@ async function main() {
   console.log(`  - Problems: ${problemsCount} / 85`);
   console.log(`  - Test Cases: ${testCasesCount} / 850`);
   console.log(`  - Modules: ${modulesCount} / 10`);
-  console.log(`  - Learning Units: ${lusCount} / 89`);
-
-  // 5. DELETE LEARN.MD AS REQUESTED
-  if (fs.existsSync(learnPath)) {
-    console.log('🗑️ Deleting learn.md as requested...');
-    fs.unlinkSync(learnPath);
-    console.log('✅ learn.md deleted successfully.');
-  }
+  console.log(`  - Learning Units: ${lusCount} / 85`);
 
   console.log('🎉 Full stack seed completed successfully!');
 }

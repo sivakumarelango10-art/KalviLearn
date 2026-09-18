@@ -46,6 +46,9 @@ import {
 } from '../src/server/teamSyncService'
 import { supabaseServer } from '../src/server/feedbackAuth'
 
+// Track created report IDs for automatic teardown cleanup
+const createdReportIds: string[] = []
+
 // Mock Request/Response Helper
 interface MockResponse {
   statusCode: number
@@ -86,6 +89,13 @@ function createMockReqRes(options: {
     endCalled: false,
   }
 
+  const captureId = (body: any) => {
+    const id = body?.localId || body?.id || body?.feedback?.id
+    if (id && typeof id === 'string' && !createdReportIds.includes(id)) {
+      createdReportIds.push(id)
+    }
+  }
+
   const res: any = {
     statusCode: 200,
     setHeader: (k: string, v: string) => {
@@ -99,6 +109,7 @@ function createMockReqRes(options: {
     json: (data: any) => {
       mockRes.body = data
       mockRes.endCalled = true
+      captureId(data)
     },
     end: (data?: string) => {
       mockRes.statusCode = res.statusCode || mockRes.statusCode
@@ -110,6 +121,7 @@ function createMockReqRes(options: {
         }
       }
       mockRes.endCalled = true
+      captureId(mockRes.body)
     },
   }
 
@@ -134,8 +146,8 @@ async function runTestSuite() {
     }
   }
 
-  const testUserToken = 'Bearer test_auth_student_kavya.ramesh.s.121@kalvium.community'
-  const testMentorToken = 'Bearer test_auth_mentor_sivakumarelango10@gmail.com'
+  const testUserToken = 'Bearer test_auth_student_synthetic.student@kalvilearn.test'
+  const testMentorToken = 'Bearer test_auth_mentor_synthetic.mentor@kalvilearn.test'
 
   // Default Mock Transport: returns 201 Created with mock ticket ID
   let mockTicketSequence = 1000
@@ -159,10 +171,11 @@ async function runTestSuite() {
     }
   })
 
-  // ------------------------------------------------------------------------
-  // Suite 1: Authentication & Authorization
-  // ------------------------------------------------------------------------
-  console.log('--- Suite 1: Authentication & Authorization ---')
+  try {
+    // ------------------------------------------------------------------------
+    // Suite 1: Authentication & Authorization
+    // ------------------------------------------------------------------------
+    console.log('--- Suite 1: Authentication & Authorization ---')
   resetTeamSyncRateLimitsForTesting()
 
   // TEST 1: Unauthorized request rejected with HTTP 401
@@ -230,7 +243,7 @@ async function runTestSuite() {
       .eq('id', mockRes.body.localId)
       .single()
     assert(
-      data?.user_email_snapshot === 'kavya.ramesh.s.121@kalvium.community',
+      data?.user_email_snapshot === 'synthetic.student@kalvilearn.test',
       'TEST 8: Database records authoritative user email from token snapshot',
       data?.user_email_snapshot
     )
@@ -716,21 +729,19 @@ async function runTestSuite() {
     assert(!jsonStr.includes('Bearer '), 'TEST 53: Authorization Bearer token never returned in response payload')
   }
 
-  // Clean up mock transport
-  resetTeamSyncMockTransport()
-
-  // ------------------------------------------------------------------------
-  // Summary
-  // ------------------------------------------------------------------------
-  console.log('\n========================================================================')
-  console.log(`🏁 AUDIT RESULTS: ${passed} / ${passed + failed} TESTS PASSED`)
-  console.log('========================================================================\n')
-
-  if (failed > 0) {
-    console.error(`🚨 ${failed} tests failed!`)
-    process.exit(1)
-  } else {
-    console.log('🎉 ALL 53 TEAMSYNC INTEGRATION, SECURITY, AND DATABASE AUDIT TESTS PASSED!')
+    if (failed > 0) {
+      console.error(`🚨 ${failed} tests failed!`)
+      process.exit(1)
+    } else {
+      console.log('🎉 ALL 53 TEAMSYNC INTEGRATION, SECURITY, AND DATABASE AUDIT TESTS PASSED!')
+    }
+  } finally {
+    resetTeamSyncMockTransport()
+    if (createdReportIds.length > 0) {
+      console.log(`\nCleaning up ${createdReportIds.length} synthetic test reports from PostgreSQL...`)
+      await supabaseServer.from('feedback_reports').delete().in('id', createdReportIds)
+      console.log('Cleanup completed successfully.')
+    }
   }
 }
 

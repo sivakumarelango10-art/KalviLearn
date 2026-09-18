@@ -110,21 +110,6 @@ export const feedbackService = {
     }
 
     if (!token) {
-      // In dev environment or test session, check if active user is in localStorage
-      try {
-        const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('kalvi_active_user') : null
-        if (saved) {
-          const user = JSON.parse(saved)
-          if (user?.email) {
-            token = `test_auth_${user.role || 'STUDENT'}_${user.email}`
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-
-    if (!token) {
       throw new Error('Authentication required. Please sign in to submit feedback.')
     }
 

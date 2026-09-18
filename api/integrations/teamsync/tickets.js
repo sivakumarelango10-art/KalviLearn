@@ -21741,26 +21741,26 @@ function toValidUuid(rawId, seed) {
   const hash = crypto2.createHash("sha256").update(seed).digest("hex");
   return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
 }
-var AUTHORIZED_ROSTER = {
-  "kavya.ramesh.s.121@kalvium.community": {
-    id: "36a74ed3-4a98-4374-a3d1-be0e2050b81c",
+var SYNTHETIC_TEST_ROSTER = {
+  "synthetic.student@kalvilearn.test": {
+    id: "00000000-0000-4000-a000-000000000001",
     role: "STUDENT",
-    name: "Kavya Ramesh"
+    name: "Automated Test Student"
   },
-  "prajith.p.s.121@kalvium.community": {
-    id: "7193765a-4dc6-4f61-813e-3e5dce95b6c7",
+  "synthetic.other.student@kalvilearn.test": {
+    id: "00000000-0000-4000-a000-000000000002",
     role: "STUDENT",
-    name: "Prajith P S"
+    name: "Automated Other Student"
   },
-  "sivakumarelango10@gmail.com": {
-    id: "e95272bc-633d-4fbd-8bf0-7801426fd0f6",
+  "synthetic.mentor@kalvilearn.test": {
+    id: "00000000-0000-4000-a000-000000000003",
     role: "MENTOR",
-    name: "Elango Sivakumar"
+    name: "Automated Test Mentor"
   },
-  "pkumardigital@gmail.com": {
-    id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+  "synthetic.campus@kalvilearn.test": {
+    id: "00000000-0000-4000-a000-000000000004",
     role: "CAMPUS_MANAGER",
-    name: "P Kumar"
+    name: "Automated Test Manager"
   }
 };
 async function authenticateFeedbackRequest(authHeader) {
@@ -21784,13 +21784,20 @@ async function authenticateFeedbackRequest(authHeader) {
     if (parts.length >= 4) {
       const testRole = parts[2].toUpperCase();
       const testEmail = parts.slice(3).join("_").toLowerCase();
-      const fallback = AUTHORIZED_ROSTER[testEmail];
+      if (testEmail.endsWith("@kalvium.community") || testEmail.endsWith("@kalvium.com") || testEmail.endsWith("@gmail.com") || testEmail.endsWith("@teamsync.io")) {
+        return {
+          authenticated: false,
+          statusCode: 403,
+          error: "Test token bypass is strictly forbidden for real user email domains. Use synthetic test identities."
+        };
+      }
+      const synthetic = SYNTHETIC_TEST_ROSTER[testEmail];
       return {
         authenticated: true,
         user: {
-          id: toValidUuid(fallback?.id, testEmail),
+          id: synthetic?.id || toValidUuid(void 0, testEmail),
           email: testEmail,
-          name: fallback?.name || testEmail.split("@")[0],
+          name: synthetic?.name || "Automated Test User",
           role: testRole,
           status: "ACTIVE"
         }
@@ -21831,7 +21838,7 @@ async function authenticateFeedbackRequest(authHeader) {
       }
     } catch {
     }
-    const fallback = AUTHORIZED_ROSTER[email];
+    const fallback = SYNTHETIC_TEST_ROSTER[email];
     if (fallback) {
       return {
         authenticated: true,

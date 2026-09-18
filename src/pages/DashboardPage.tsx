@@ -307,7 +307,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <p className="text-xs text-neutral-500">
-            From basic syntax to algorithmic problem solving. 89 structured learning units.
+            From basic syntax to algorithmic problem solving across {curriculumData.reduce((acc: number, mod: any) => acc + (mod.learningUnits?.length || 0), 0)} structured learning units.
           </p>
 
           <div className="space-y-2.5 divide-y divide-neutral-100">

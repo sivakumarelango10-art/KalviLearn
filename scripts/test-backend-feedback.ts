@@ -21,6 +21,10 @@ import {
   sanitizeString,
 } from '../src/server/feedbackLifecycle'
 import { supabaseServer } from '../src/server/feedbackAuth'
+import { setTeamSyncMockTransport, resetTeamSyncMockTransport } from '../src/server/teamSyncService'
+
+// Track created report IDs for automatic teardown cleanup
+const createdReportIds: string[] = []
 
 // Mock Request & Response Helper to invoke handler directly in-memory
 interface MockResponse {
@@ -62,6 +66,13 @@ function createMockReqRes(options: {
     endCalled: false,
   }
 
+  const captureId = (body: any) => {
+    const id = body?.feedback?.id || body?.id
+    if (id && typeof id === 'string' && !createdReportIds.includes(id)) {
+      createdReportIds.push(id)
+    }
+  }
+
   const res: any = {
     statusCode: 200,
     setHeader: (k: string, v: string) => {
@@ -75,6 +86,7 @@ function createMockReqRes(options: {
     json: (data: any) => {
       mockRes.body = data
       mockRes.endCalled = true
+      captureId(data)
     },
     end: (data?: string) => {
       mockRes.statusCode = res.statusCode || mockRes.statusCode
@@ -86,6 +98,7 @@ function createMockReqRes(options: {
         }
       }
       mockRes.endCalled = true
+      captureId(mockRes.body)
     },
   }
 
@@ -113,21 +126,44 @@ async function runTestSuite() {
 
   resetRateLimitsForTesting()
 
-  // Test identities
-  const studentEmail = 'kavya.ramesh.s.121@kalvium.community'
+  // Install Mock Transport so test suite NEVER makes live network calls to TeamSync production!
+  let mockTicketSeq = 1000
+  setTeamSyncMockTransport(async (_url, opts) => {
+    mockTicketSeq++
+    const parsed = JSON.parse(opts.body)
+    return {
+      status: 201,
+      statusText: 'Created',
+      json: async () => ({
+        success: true,
+        ticket: {
+          id: `ts_mock_${mockTicketSeq}`,
+          ticketNumber: `TS-MOCK-${mockTicketSeq}`,
+          status: 'OPEN',
+          sourceReferenceId: parsed.sourceReferenceId,
+          createdAt: new Date().toISOString(),
+        },
+      }),
+      text: async () => JSON.stringify({ success: true }),
+    }
+  })
+
+  // Test identities (strictly synthetic - isolated from real production users)
+  const studentEmail = 'synthetic.student@kalvilearn.test'
   const studentToken = `test_auth_student_${studentEmail}`
 
-  const otherStudentEmail = 'prajith.p.s.121@kalvium.community'
+  const otherStudentEmail = 'synthetic.other.student@kalvilearn.test'
   const otherStudentToken = `test_auth_student_${otherStudentEmail}`
 
-  const mentorEmail = 'sivakumarelango10@gmail.com'
+  const mentorEmail = 'synthetic.mentor@kalvilearn.test'
   const mentorToken = `test_auth_mentor_${mentorEmail}`
 
   let createdBugId = ''
   let createdBugRef = ''
 
-  // --------------------------------------------------------------------------
-  console.log('--- Suite 1: Authentication & Impersonation Prevention ---')
+  try {
+    // --------------------------------------------------------------------------
+    console.log('--- Suite 1: Authentication & Impersonation Prevention ---')
   // --------------------------------------------------------------------------
   {
     // Test 1: Unauthenticated request rejected
@@ -551,6 +587,14 @@ async function runTestSuite() {
     console.error(`⚠️ ${total - passed} TESTS FAILED!`)
     process.exitCode = 1
   }
+} finally {
+  resetTeamSyncMockTransport()
+  if (createdReportIds.length > 0) {
+    console.log(`\nCleaning up ${createdReportIds.length} synthetic test reports from PostgreSQL...`)
+    await supabaseServer.from('feedback_reports').delete().in('id', createdReportIds)
+    console.log('Cleanup completed successfully.')
+  }
+}
 }
 
 runTestSuite().catch((err) => {
