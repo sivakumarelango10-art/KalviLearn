@@ -1,3 +1,9 @@
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
 // src/server/executeService.ts
 import * as vm from "node:vm";
 
@@ -111,6 +117,12 @@ if (typeof Array !== "undefined") {
   };
 }
 function executePython(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
@@ -174,6 +186,10 @@ function executePython(code, input) {
   const env = {
     sys,
     math,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     int: (val) => {
       if (val === void 0 || val === null || val === "") return 0;
       const parsed = parseInt(String(val).trim(), 10);
@@ -391,6 +407,12 @@ if (typeof solve === 'function') {
 
 // src/lib/runner/cppRunner.ts
 function executeCpp(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
@@ -459,6 +481,10 @@ function executeCpp(code, input) {
   const env = {
     __cin,
     __cout,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     endl: "\n",
     INT_MAX: 2147483647,
     INT_MIN: -2147483648,
@@ -590,6 +616,12 @@ __cout.flush();
 
 // src/lib/runner/javaRunner.ts
 function executeJava(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
@@ -719,6 +751,10 @@ function executeJava(code, input) {
     Scanner,
     Arrays,
     Collections,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     Integer: {
       parseInt: (s) => parseInt(String(s), 10) || 0,
       MAX_VALUE: 2147483647,
@@ -804,6 +840,11 @@ System.out.flush();
 }
 
 // src/server/data/serverTestCases.ts
+var serverTestCases_exports = {};
+__export(serverTestCases_exports, {
+  default: () => serverTestCases_default,
+  serverTestCases: () => serverTestCases
+});
 var serverTestCases = {
   "belt-1-q1-sum-of-two-numbers": {
     "title": "Sum of Two Numbers",
@@ -6435,6 +6476,12 @@ function compareOutput(actual, expected) {
   return false;
 }
 function executeJavaScript(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code) || /binding\s*\(\s*['"]process/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment, process, and native bindings is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
@@ -6481,6 +6528,14 @@ function executeJavaScript(code, input) {
     return {};
   };
   const prelude = `
+    "use strict";
+    try {
+      Object.defineProperty(Function.prototype, 'constructor', {
+        value: function() { throw new Error('Security Violation: Dynamic Function compilation is disabled.'); },
+        configurable: false,
+        writable: false,
+      });
+    } catch (_) {}
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -6495,7 +6550,9 @@ function executeJavaScript(code, input) {
       process: mockProcess,
       setTimeout: void 0,
       setInterval: void 0,
-      setImmediate: void 0
+      setImmediate: void 0,
+      global: void 0,
+      globalThis: void 0
     };
     const script = new vm.Script(`${prelude}
 ${code}`);
@@ -6519,6 +6576,9 @@ function runSingleTestCase(code, language, input) {
   return executeJavaScript(code, input);
 }
 function checkCompilation(code, language) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code) || /binding\s*\(\s*['"]process/i.test(code)) {
+    return { ok: false, error: "SecurityError: Access to process/environment bindings is prohibited." };
+  }
   const lang = (language || "").toLowerCase();
   if (lang === "python") {
     const dryRun = executePython(code, "");
@@ -6547,7 +6607,7 @@ function checkCompilation(code, language) {
 }
 async function executeQuestion(req) {
   const { questionSlug, language, code, isSubmit: _isSubmit = true } = req;
-  const problemMap = serverTestCases_default;
+  const problemMap = serverTestCases || serverTestCases_default || serverTestCases_exports;
   let problem = problemMap[questionSlug];
   if (!problem) {
     const foundKey = Object.keys(problemMap).find(
@@ -6586,14 +6646,15 @@ async function executeQuestion(req) {
   }
   const compCheck = checkCompilation(code, language);
   if (!compCheck.ok) {
+    const isSecErr = compCheck.error?.includes("SecurityError");
     return {
       success: false,
       total: authoritativeTotal,
       passed: 0,
       executed: 0,
       overallTimeMs: 0,
-      status: "COMPILATION_ERROR",
-      error: "Compilation Error",
+      status: isSecErr ? "RUNTIME_ERROR" : "COMPILATION_ERROR",
+      error: isSecErr ? compCheck.error : "Compilation Error",
       message: compCheck.error || "Syntax / Compilation error detected in your code.",
       testCases: []
     };

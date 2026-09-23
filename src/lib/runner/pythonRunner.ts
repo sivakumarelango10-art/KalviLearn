@@ -95,6 +95,18 @@ if (typeof Array !== 'undefined') {
 }
 
 export function executePython(code: string, input: string): { output: string; error?: string } {
+  // Security guard against host secret access
+  if (
+    /process\s*\.\s*env/i.test(code) ||
+    /child_process/i.test(code) ||
+    /__proto__/i.test(code)
+  ) {
+    return {
+      output: '',
+      error: 'Security Violation: Access to system environment and child processes is strictly forbidden.',
+    }
+  }
+
   const outputs: string[] = []
   const normalizedInput = input.replace(/\r\n/g, '\n')
   const inputLines = normalizedInput.split('\n')
@@ -162,6 +174,10 @@ export function executePython(code: string, input: string): { output: string; er
   const env: Record<string, any> = {
     sys,
     math,
+    process: undefined,
+    require: undefined,
+    global: undefined,
+    globalThis: undefined,
     int: (val: any) => {
       if (val === undefined || val === null || val === '') return 0
       const parsed = parseInt(String(val).trim(), 10)

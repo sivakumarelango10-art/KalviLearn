@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti'
 import {
   Play,
   Send,
+  RotateCcw,
   CheckCircle2,
   XCircle,
   FileText,
@@ -104,6 +105,7 @@ export const ProblemArenaPage: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [submissionFailed, setSubmissionFailed] = useState<{ passed: number; total: number } | null>(null)
   const [recentSubmissions, setRecentSubmissions] = useState<SubmissionRecord[]>([])
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false)
 
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
   const antiCheatTimerRef = useRef<NodeJS.Timeout | number | null>(null)
@@ -300,6 +302,27 @@ export const ProblemArenaPage: React.FC = () => {
   const handleRun = () => handleExecute(false)
   const handleSubmit = () => handleExecute(true)
 
+  const performReset = () => {
+    setCode(currentProblem.starterCode || '')
+    setTestResults(null)
+    setExecutionSummary(null)
+    setCompilationError(null)
+    setSubmissionFailed(null)
+    setActiveCaseTab(1)
+    setShowResetConfirmModal(false)
+  }
+
+  const handleResetClick = () => {
+    if (isRunning || isSubmitting) return
+    const starter = currentProblem.starterCode || ''
+    const isModified = code.trim() !== starter.trim()
+    if (isModified) {
+      setShowResetConfirmModal(true)
+    } else {
+      performReset()
+    }
+  }
+
   // Handlers for QuestionCompletionModal
   const handleContinue = () => {
     setShowSuccessModal(false)
@@ -368,6 +391,17 @@ export const ProblemArenaPage: React.FC = () => {
             />
             <span>{curriculum.badgeName}</span>
           </div>
+
+          {/* Reset Button */}
+          <button
+            onClick={handleResetClick}
+            disabled={isRunning || isSubmitting}
+            title={`Reset ${curriculum.name} code to default starter template`}
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-xs font-medium border border-neutral-700 transition-all interactive-btn disabled:opacity-50"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="hidden sm:inline">Reset</span>
+          </button>
 
           <button
             onClick={handleRun}
@@ -869,6 +903,43 @@ export const ProblemArenaPage: React.FC = () => {
         onContinue={handleContinue}
         onCancel={handleCancel}
       />
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center gap-3 text-amber-400">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <RotateCcw className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Reset Editor Code?</h3>
+                <p className="text-xs text-neutral-400">Revert to default starter template</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-neutral-300 leading-relaxed">
+              Your edits in this editor session will be reverted to the official {curriculum.name} starter code.
+              Your solved status, XP, streak, and previous submission history will <strong>not</strong> be affected.
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                onClick={() => setShowResetConfirmModal(false)}
+                className="px-4 py-2 rounded-lg text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-300 transition-colors interactive-btn"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={performReset}
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-[#ED2A2B] hover:bg-red-600 text-white transition-colors shadow-sm shadow-red-950/20 interactive-btn"
+              >
+                Reset to Starter Code
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

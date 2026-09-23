@@ -468,6 +468,7 @@ async function runSenderTestSuite() {
   if (failed > 0) {
     process.exit(1)
   }
+  process.exit(0)
 }
 
 runSenderTestSuite().catch((err) => {

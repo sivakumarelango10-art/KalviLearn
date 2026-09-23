@@ -1,5 +1,6 @@
 import { executeInWorker, type ExecutionResult } from './workerRunner'
 import { getActiveUserId } from '../progress'
+import { supabase } from '../supabase'
 
 export interface TestCaseExecution {
   testIndex: number
@@ -72,11 +73,21 @@ export async function executeCode(
       const activeUserId = getActiveUserId()
       const idempotencyKey = isSubmit ? `sub_${questionSlug}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}` : undefined
 
+      // Get session access token if authenticated
+      let authToken: string | undefined
+      try {
+        const { data: sessionData } = await supabase.auth.getSession()
+        authToken = sessionData?.session?.access_token
+      } catch {
+        // Continue unauthenticated if session retrieval fails
+      }
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
         body: JSON.stringify({
           questionSlug,

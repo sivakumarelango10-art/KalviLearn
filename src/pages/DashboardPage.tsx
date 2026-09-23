@@ -381,7 +381,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   <Link
-                    to={`/practice/${sub.problemSlug}`}
+                    to={`/practice/${sub.language}/${sub.problemSlug}`}
                     className="text-[11px] font-semibold text-neutral-700 bg-neutral-100 hover:bg-neutral-200 px-2.5 py-1 rounded-md transition-colors flex-shrink-0"
                   >
                     Open

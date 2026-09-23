@@ -19,7 +19,8 @@
     "test:teamsync": "npx tsx scripts/test-teamsync-integration.ts",
     "test:teamsync-webhook": "npx tsx scripts/test-teamsync-webhook.ts",
     "test:teamsync-sender": "npx tsx scripts/test-teamsync-webhook-sender.ts",
-    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender",
+    "test:multilang": "npx tsx scripts/test-multilang-revision.ts",
+    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang",
     "preview": "vite preview"
   },
   "dependencies": {
