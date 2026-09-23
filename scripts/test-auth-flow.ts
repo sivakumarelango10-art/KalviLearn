@@ -4,6 +4,7 @@
  * database whitelist checking, and elimination of obsolete kalvicode URLs.
  */
 import { verifyUserInDatabase, type DbUser } from '../src/lib/authService'
+import { supabase } from '../src/lib/supabase'
 
 interface TestResult {
   title: string
@@ -92,9 +93,17 @@ async function runTests() {
   {
     console.log('Testing live database role lookups from users table...')
 
-    // Check Student
+    // Check Student dynamically from database
     try {
-      const student = await verifyUserInDatabase('kavya.ramesh.s.121@kalvium.community')
+      const { data: dbStudent } = await supabase
+        .from('users')
+        .select('email, role')
+        .eq('role', 'STUDENT')
+        .limit(1)
+        .maybeSingle()
+
+      const testEmail = dbStudent?.email || 'student.test@kalvilearn.test'
+      const student = await verifyUserInDatabase(testEmail)
       assert(
         student.allowed && student.user?.role === 'STUDENT',
         'Database verifies STUDENT account and maps role accurately',
@@ -104,9 +113,17 @@ async function runTests() {
       assert(false, 'Database verifies STUDENT account', e.message)
     }
 
-    // Check Mentor
+    // Check Mentor dynamically from database
     try {
-      const mentor = await verifyUserInDatabase('sivakumarelango10@gmail.com')
+      const { data: dbMentor } = await supabase
+        .from('users')
+        .select('email, role')
+        .eq('role', 'MENTOR')
+        .limit(1)
+        .maybeSingle()
+
+      const testEmail = dbMentor?.email || 'mentor.test@kalvilearn.test'
+      const mentor = await verifyUserInDatabase(testEmail)
       assert(
         mentor.allowed && mentor.user?.role === 'MENTOR',
         'Database verifies MENTOR account and maps role accurately',
@@ -116,9 +133,17 @@ async function runTests() {
       assert(false, 'Database verifies MENTOR account', e.message)
     }
 
-    // Check Campus Manager / Admin
+    // Check Campus Manager / Admin dynamically from database
     try {
-      const cm = await verifyUserInDatabase('pkumardigital@gmail.com')
+      const { data: dbCM } = await supabase
+        .from('users')
+        .select('email, role')
+        .in('role', ['CAMPUS_MANAGER', 'ADMIN'])
+        .limit(1)
+        .maybeSingle()
+
+      const testEmail = dbCM?.email || 'manager.test@kalvilearn.test'
+      const cm = await verifyUserInDatabase(testEmail)
       assert(
         cm.allowed && (cm.user?.role === 'CAMPUS_MANAGER' || cm.user?.role === 'ADMIN'),
         'Database verifies CAMPUS_MANAGER / ADMIN account and maps role accurately',
@@ -130,7 +155,7 @@ async function runTests() {
 
     // Check Unauthorized Email
     try {
-      const unauthorized = await verifyUserInDatabase('unknown_unauthorized_user_xyz@gmail.com')
+      const unauthorized = await verifyUserInDatabase('unknown_unauthorized_user_xyz@kalvilearn.test')
       assert(
         !unauthorized.allowed && unauthorized.reason === 'ACCOUNT_NOT_REGISTERED',
         'Unauthorized user is correctly rejected with ACCOUNT_NOT_REGISTERED',

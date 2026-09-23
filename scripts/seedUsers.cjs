@@ -12,37 +12,46 @@ const prisma = new PrismaClient({
 async function main() {
   console.log('--- Cleaning and Seeding Users Table ---');
 
-  // 1. Clear all existing users
-  await prisma.user.deleteMany({});
-  console.log('Cleared all existing users from users table.');
+  // 1. Safety check before wiping users
+  if (process.env.ALLOW_USER_TABLE_RESET === 'true') {
+    await prisma.user.deleteMany({});
+    console.log('Cleared all existing users from users table.');
+  } else {
+    console.log('Skipping destructive user table wipe (ALLOW_USER_TABLE_RESET !== "true"). Upserting test users.');
+  }
 
-  // 2. Insert the two specified users
-  const allowedUsers = [
-    {
-      email: 'kavya.ramesh.s.121@kalvium.community',
-      role: 'STUDENT',
-      status: 'ACTIVE',
-      name: 'Kavya Ramesh',
-    },
-    {
-      email: 'prajith.p.s.121@kalvium.community',
-      role: 'STUDENT',
-      status: 'ACTIVE',
-      name: 'Prajith P S',
-    },
-    {
-      email: 'sivakumarelango10@gmail.com',
-      role: 'MENTOR',
-      status: 'ACTIVE',
-      name: 'Sivakumar Elango',
-    },
-  ];
+  // 2. Synthetic test users for local testing
+  const fs = require('fs');
+  const allowedUsers = process.env.USERS_SEED_FILE && fs.existsSync(process.env.USERS_SEED_FILE)
+    ? JSON.parse(fs.readFileSync(process.env.USERS_SEED_FILE, 'utf8'))
+    : [
+        {
+          email: 'test.student1@kalvilearn.test',
+          role: 'STUDENT',
+          status: 'ACTIVE',
+          name: 'Synthetic Student One',
+        },
+        {
+          email: 'test.student2@kalvilearn.test',
+          role: 'STUDENT',
+          status: 'ACTIVE',
+          name: 'Synthetic Student Two',
+        },
+        {
+          email: 'test.mentor1@kalvilearn.test',
+          role: 'MENTOR',
+          status: 'ACTIVE',
+          name: 'Synthetic Mentor One',
+        },
+      ];
 
   for (const u of allowedUsers) {
-    const created = await prisma.user.create({
-      data: u,
+    const created = await prisma.user.upsert({
+      where: { email: u.email },
+      update: { role: u.role, status: u.status, name: u.name },
+      create: u,
     });
-    console.log(`Created user: ${created.email} (${created.role}, ${created.status})`);
+    console.log(`Configured user: ${created.email} (${created.role}, ${created.status})`);
   }
 
   // 3. Ensure permissions and RLS policies on public.users

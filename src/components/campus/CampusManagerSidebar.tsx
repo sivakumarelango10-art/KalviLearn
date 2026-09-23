@@ -153,7 +153,7 @@ export const CampusManagerSidebar: React.FC<CampusManagerSidebarProps> = ({
               {user?.name || (user?.email ? user.email.split('@')[0] : 'Campus Manager')}
             </div>
             <div className="text-[10px] text-neutral-400 truncate">
-              {user?.email || 'manager@kalvium.com'}
+              {user?.email || ''}
             </div>
           </div>
         </div>

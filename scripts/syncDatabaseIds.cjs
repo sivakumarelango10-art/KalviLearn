@@ -9,43 +9,43 @@ const prisma = new PrismaClient({
   },
 });
 
-const CANONICAL_USERS = {
-  kavya: {
-    id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
-    email: 'kavya.ramesh.s.121@kalvium.community',
-    name: 'Kavya Ramesh',
-    role: 'STUDENT',
-    status: 'ACTIVE',
-    legacyUserIds: [
-      '89d07eb8-4423-4038-87de-fb8b46347696',
-      'd9be4c88-fa61-4204-b196-1a8b45e593be',
-      'local_kavya_ramesh_s_121_kalvium_community',
-    ],
-  },
-  prajith: {
-    id: '7193765a-4dc6-4f61-813e-3e5dce95b6c7',
-    email: 'prajith.p.s.121@kalvium.community',
-    name: 'Prajith P S',
-    role: 'STUDENT',
-    status: 'ACTIVE',
-    legacyUserIds: [
-      '05ff3a01-b711-4016-ac67-6b5f34ae4e65',
-      '175056fa-dd8b-4f1c-a520-c1c2b7c7ed0e',
-      'local_prajith_p_s_121_kalvium_community',
-    ],
-  },
-  sivakumar: {
-    id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',
-    email: 'sivakumarelango10@gmail.com',
-    name: 'Sivakumar Elango',
-    role: 'MENTOR',
-    status: 'ACTIVE',
-    legacyUserIds: [
-      '673f9e93-d869-46dc-9d08-0210d2987769',
-      'local_sivakumarelango10_gmail_com',
-    ],
-  },
-};
+const fs = require('fs');
+// Synthetic mappings for local migration testing.
+// For production database synchronization, supply a JSON mapping file via CANONICAL_USERS_FILE.
+const CANONICAL_USERS = process.env.CANONICAL_USERS_FILE && fs.existsSync(process.env.CANONICAL_USERS_FILE)
+  ? JSON.parse(fs.readFileSync(process.env.CANONICAL_USERS_FILE, 'utf8'))
+  : {
+      testStudent1: {
+        id: '00000000-0000-0000-0000-000000000001',
+        email: 'test.student1@kalvilearn.test',
+        name: 'Synthetic Student One',
+        role: 'STUDENT',
+        status: 'ACTIVE',
+        legacyUserIds: [
+          'local_test_student1',
+        ],
+      },
+      testStudent2: {
+        id: '00000000-0000-0000-0000-000000000002',
+        email: 'test.student2@kalvilearn.test',
+        name: 'Synthetic Student Two',
+        role: 'STUDENT',
+        status: 'ACTIVE',
+        legacyUserIds: [
+          'local_test_student2',
+        ],
+      },
+      testMentor1: {
+        id: '00000000-0000-0000-0000-000000000003',
+        email: 'test.mentor1@kalvilearn.test',
+        name: 'Synthetic Mentor One',
+        role: 'MENTOR',
+        status: 'ACTIVE',
+        legacyUserIds: [
+          'local_test_mentor1',
+        ],
+      },
+    };
 
 async function sync() {
   console.log('--- 1. Synchronizing Users in public.users ---');

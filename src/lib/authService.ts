@@ -14,111 +14,9 @@ export interface VerificationResult {
   reason?: 'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR'
 }
 
-// Fallback authorized roster in sync with PostgreSQL database
-const AUTHORIZED_FALLBACK_USERS: Record<string, { id: string; role: string; name: string; status: string }> = {
-  // Registered Scholars
-  'kavya.ramesh.s.121@kalvium.community': {
-    id: '36a74ed3-4a98-4374-a3d1-be0e2050b81c',
-    role: 'STUDENT',
-    name: 'Kavya Ramesh',
-    status: 'ACTIVE',
-  },
-  'prajith.p.s.121@kalvium.community': {
-    id: '7193765a-4dc6-4f61-813e-3e5dce95b6c7',
-    role: 'STUDENT',
-    name: 'Prajith P S',
-    status: 'ACTIVE',
-  },
-  // Authorized Campus Managers
-  'pkumardigital@gmail.com': {
-    id: 'cm-pkumardigital-001',
-    role: 'CAMPUS_MANAGER',
-    name: 'P Kumar',
-    status: 'ACTIVE',
-  },
-  'nithyashri.rs@kalvium.com': {
-    id: 'cm-nithyashri-002',
-    role: 'CAMPUS_MANAGER',
-    name: 'Nithyashri R S',
-    status: 'ACTIVE',
-  },
-  'avishka.s@kalvium.com': {
-    id: 'cm-avishka-003',
-    role: 'CAMPUS_MANAGER',
-    name: 'Avishka S',
-    status: 'ACTIVE',
-  },
-  // Authorized Mentors
-  'sivakumarelango10@gmail.com': {
-    id: 'e95272bc-633d-4fbd-8bf0-7801426fd0f6',
-    role: 'MENTOR',
-    name: 'Elango Sivakumar',
-    status: 'ACTIVE',
-  },
-  'aaditya.rm@kalvium.com': {
-    id: 'a5ff17af-95dc-4ecf-951e-fa7f19365cf6',
-    role: 'MENTOR',
-    name: 'Aaditya R M',
-    status: 'ACTIVE',
-  },
-  'swathi.ks@kalvium.com': {
-    id: '3901e057-64a5-4554-b8b2-4b3ea514510d',
-    role: 'MENTOR',
-    name: 'Swathi K S',
-    status: 'ACTIVE',
-  },
-  'sanchita.dutta@kalvium.com': {
-    id: '93d30972-5a32-408d-8e76-473c02192ab3',
-    role: 'MENTOR',
-    name: 'Sanchita Dutta',
-    status: 'ACTIVE',
-  },
-  'supriya.muvva@kalvium.com': {
-    id: 'ac0652a0-a087-4252-b750-89e080fdce6e',
-    role: 'MENTOR',
-    name: 'Muvva Supriya',
-    status: 'ACTIVE',
-  },
-  'infanta.f@kalvium.com': {
-    id: '3f499c45-3da7-483e-bfdd-2cd1d5153d62',
-    role: 'MENTOR',
-    name: 'Infanta Carolina Freshale',
-    status: 'ACTIVE',
-  },
-  'chaitra.alur@kalvium.com': {
-    id: 'a6b4599a-40f7-4efc-95f9-111343e5eb28',
-    role: 'MENTOR',
-    name: 'Chaitra Alur',
-    status: 'ACTIVE',
-  },
-  'indhu.k@kalvium.com': {
-    id: '7f6fab30-4574-4bbf-93e6-48da4af13dea',
-    role: 'MENTOR',
-    name: 'Indhu K',
-    status: 'ACTIVE',
-  },
-  'tulika.suman@kalvium.com': {
-    id: '8254bdcf-b0d4-473f-8657-18d9614a2a89',
-    role: 'MENTOR',
-    name: 'Tulika Suman',
-    status: 'ACTIVE',
-  },
-  'mandala.thanuja@kalvium.com': {
-    id: '4d6347a9-43ba-42e5-9bb0-45f3d0ec03eb',
-    role: 'MENTOR',
-    name: 'Mandala Thanuja',
-    status: 'ACTIVE',
-  },
-  'bhavana.r@kalvium.com': {
-    id: '9802f70f-8348-4728-8202-ad75cf9ec78b',
-    role: 'MENTOR',
-    name: 'Bhavana R K',
-    status: 'ACTIVE',
-  },
-}
-
+// In-memory verification cache for active session performance
 const AUTH_CACHE_KEY = 'kalvi_verified_user_cache_v1'
-const AUTH_CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes cache for 200+ concurrent users
+const AUTH_CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes cache for concurrent performance
 
 interface CachedAuth {
   email: string
@@ -180,55 +78,10 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
     return { allowed: true, user: cachedUser }
   }
 
-  // 2. Instant Whitelist Check (Known Verified Scholars & Mentors) -> 0ms response time
-  const fallback = AUTHORIZED_FALLBACK_USERS[normalizedEmail]
-  if (fallback) {
-    if (fallback.status !== 'ACTIVE') {
-      return { allowed: false, reason: 'ACCOUNT_INACTIVE' }
-    }
-    const authorizedUser: DbUser = {
-      id: fallback.id,
-      email: normalizedEmail,
-      role: fallback.role,
-      status: fallback.status,
-      name: fallback.name,
-    }
-    setCachedVerification(normalizedEmail, authorizedUser)
-
-    // Non-blocking background sync with Supabase to update real PostgreSQL UUID
-    void (async () => {
-      try {
-        const { data } = await supabase
-          .from('users')
-          .select('id, email, role, status, name')
-          .ilike('email', normalizedEmail)
-          .maybeSingle()
-
-        if (data && data.id) {
-          const syncedUser: DbUser = {
-            id: data.id,
-            email: normalizedEmail,
-            role: data.role || fallback.role,
-            status: data.status || fallback.status,
-            name: data.name || fallback.name,
-          }
-          setCachedVerification(normalizedEmail, syncedUser)
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('kalvi_active_user', JSON.stringify(syncedUser))
-          }
-        }
-      } catch {
-        // Non-blocking background error ignored
-      }
-    })()
-
-    return { allowed: true, user: authorizedUser }
-  }
-
-  // 3. Fast Network Query for newly added scholars (with 2500ms timeout)
+  // 2. Direct Authoritative Database Query (with 3500ms timeout)
   try {
     const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
-      setTimeout(() => reject(new Error('Auth request timed out')), 2500)
+      setTimeout(() => reject(new Error('Auth request timed out')), 3500)
     )
 
     const queryPromise = supabase
@@ -257,7 +110,7 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
 
     return { allowed: false, reason: 'ACCOUNT_NOT_REGISTERED' }
   } catch (err) {
-    console.warn('Fast auth network query error or timeout:', err)
+    console.warn('Database auth query error or timeout:', err)
     return { allowed: false, reason: 'ACCOUNT_NOT_REGISTERED' }
   }
 }

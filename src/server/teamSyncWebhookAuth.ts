@@ -15,7 +15,7 @@ export interface WebhookAuthResult {
 export function computeTeamSyncSignature(
   rawBody: string,
   timestamp: number | string,
-  secret: string = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || 'ts_whsec_kalvilearn_39a1b2c4d5e6'
+  secret: string = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== 'production' ? 'ts_whsec_kalvilearn_39a1b2c4d5e6' : '')
 ): string {
   const payloadToSign = `${timestamp}.${rawBody}`
   return crypto.createHmac('sha256', secret).update(payloadToSign, 'utf8').digest('hex')
@@ -40,7 +40,7 @@ export function verifyTeamSyncWebhookSignature(
     toleranceSeconds?: number
   } = {}
 ): WebhookAuthResult {
-  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || 'ts_whsec_kalvilearn_39a1b2c4d5e6'
+  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== 'production' ? 'ts_whsec_kalvilearn_39a1b2c4d5e6' : '')
   const toleranceSeconds = options.toleranceSeconds ?? 300 // 5 minutes tolerance
 
   if (!signatureHeader || typeof signatureHeader !== 'string' || signatureHeader.trim() === '') {

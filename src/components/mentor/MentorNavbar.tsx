@@ -26,7 +26,7 @@ export const MentorNavbar: React.FC<MentorNavbarProps> = ({ onToggleMobileSideba
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const mentorName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Faculty Mentor')
-  const mentorEmail = user?.email || 'mentor@kalvium.community'
+  const mentorEmail = user?.email || ''
   const initials = mentorName
     .trim()
     .split(/\s+/)
@@ -117,7 +117,7 @@ export const MentorNavbar: React.FC<MentorNavbarProps> = ({ onToggleMobileSideba
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ED2A2B]" />
         </button>
 
-        {/* Mentor User Dropdown: "Rahul ▼" */}
+        {/* Mentor User Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"

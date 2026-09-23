@@ -5,19 +5,24 @@ const prisma = new PrismaClient({
   datasources: { db: { url: process.env.DIRECT_URL || process.env.DATABASE_URL } },
 });
 
-const SPECIFIED_MENTORS = [
-  { name: 'Aaditya R M', email: 'aaditya.rm@kalvium.com' },
-  { name: 'Swathi K S', email: 'swathi.ks@kalvium.com' },
-  { name: 'Sanchita Dutta', email: 'sanchita.dutta@kalvium.com' },
-  { name: 'Muvva Supriya', email: 'supriya.muvva@kalvium.com' },
-  { name: 'Infanta Carolina Freshale', email: 'infanta.f@kalvium.com' },
-  { name: 'Chaitra Alur', email: 'chaitra.alur@kalvium.com' },
-  { name: 'Indhu K', email: 'indhu.k@kalvium.com' },
-  { name: 'Tulika Suman', email: 'tulika.suman@kalvium.com' },
-  { name: 'Mandala Thanuja', email: 'mandala.thanuja@kalvium.com' },
-  { name: 'Bhavana R K', email: 'bhavana.r@kalvium.com' },
-  { name: 'Sivakumar Elango', email: 'sivakumarelango10@gmail.com' },
-];
+// Synthetic test mentors used for local and testing environments.
+// For production provisioning, supply a JSON file path via MENTORS_SEED_FILE environment variable.
+const fs = require('fs');
+const SPECIFIED_MENTORS = process.env.MENTORS_SEED_FILE && fs.existsSync(process.env.MENTORS_SEED_FILE)
+  ? JSON.parse(fs.readFileSync(process.env.MENTORS_SEED_FILE, 'utf8'))
+  : [
+      { name: 'Faculty Mentor 1', email: 'mentor1@kalvilearn.test' },
+      { name: 'Faculty Mentor 2', email: 'mentor2@kalvilearn.test' },
+      { name: 'Faculty Mentor 3', email: 'mentor3@kalvilearn.test' },
+      { name: 'Faculty Mentor 4', email: 'mentor4@kalvilearn.test' },
+      { name: 'Faculty Mentor 5', email: 'mentor5@kalvilearn.test' },
+      { name: 'Faculty Mentor 6', email: 'mentor6@kalvilearn.test' },
+      { name: 'Faculty Mentor 7', email: 'mentor7@kalvilearn.test' },
+      { name: 'Faculty Mentor 8', email: 'mentor8@kalvilearn.test' },
+      { name: 'Faculty Mentor 9', email: 'mentor9@kalvilearn.test' },
+      { name: 'Faculty Mentor 10', email: 'mentor10@kalvilearn.test' },
+      { name: 'Faculty Mentor 11', email: 'mentor11@kalvilearn.test' },
+    ];
 
 async function seedMentors() {
   console.log('====================================================');

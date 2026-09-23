@@ -36,7 +36,7 @@ export const CampusProfilePage: React.FC = () => {
   const managerName =
     user?.name ||
     (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Campus Manager')
-  const managerEmail = user?.email || 'manager@kalvium.com'
+  const managerEmail = user?.email || ''
   const initial = (managerName[0] || 'C').toUpperCase()
 
   return (

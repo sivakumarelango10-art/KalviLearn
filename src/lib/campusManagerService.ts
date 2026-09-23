@@ -271,7 +271,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       totalXpDistributed,
       avgProblemsSolved,
       rewardVelocity,
-      campusName: 'Kalvium National Technology Campus',
+      campusName: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus',
     }
   } catch (err) {
     console.error('Campus overview metrics error:', err)
@@ -284,7 +284,7 @@ export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetric
       totalXpDistributed: 0,
       avgProblemsSolved: 0,
       rewardVelocity: 50,
-      campusName: 'Kalvium National Technology Campus',
+      campusName: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus',
     }
   }
 }
@@ -726,7 +726,7 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
       for (const u of users || []) {
         userMap.set(u.id, {
           name: u.name || u.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
-          email: u.email || 'student@kalvium.community',
+          email: u.email || '',
         })
       }
     }
@@ -738,7 +738,7 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
       return {
         id: item.id,
         studentName: uInfo?.name || 'Student',
-        studentEmail: uInfo?.email || 'student@kalvium.community',
+        studentEmail: uInfo?.email || '',
         problemTitle: probInfo?.title || 'Competitive Challenge',
         language: normalizeProgressLanguage(item.language),
         status: item.status as 'PASSED' | 'FAILED' | 'ERROR',

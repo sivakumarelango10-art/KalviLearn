@@ -544,7 +544,7 @@ export const CampusMentorsPage: React.FC = () => {
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. Dr. Rajesh Kumar"
+                  placeholder="e.g. Faculty Mentor Name"
                   className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
                 />
               </div>
@@ -556,7 +556,7 @@ export const CampusMentorsPage: React.FC = () => {
                   required
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="rajesh.kumar@kalvium.com"
+                  placeholder="mentor@institution.edu"
                   className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ED2A2B]/20 focus:border-[#ED2A2B]"
                 />
               </div>

@@ -103,7 +103,7 @@ export function getKalviLearnWebhookSecret(): string {
   const secret =
     process.env.KALVILEARN_WEBHOOK_SECRET ||
     process.env.TEAMSYNC_WEBHOOK_SECRET ||
-    'ts_whsec_kalvilearn_39a1b2c4d5e6'
+    (process.env.NODE_ENV !== 'production' ? 'ts_whsec_kalvilearn_39a1b2c4d5e6' : '')
   return secret.trim()
 }
 

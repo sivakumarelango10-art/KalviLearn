@@ -22028,7 +22028,7 @@ function logIntegrationEvent(event, details) {
 }
 async function sendTicketToTeamSync(payload, options = {}) {
   const apiUrl = (process.env.TEAMSYNC_API_URL || "https://teamsync-fawn.vercel.app").replace(/\/+$/, "");
-  const apiKey = process.env.TEAMSYNC_API_KEY || "ts_live_kalvilearn_sec_99a8b1c4e2d3f7";
+  const apiKey = process.env.TEAMSYNC_API_KEY || (process.env.NODE_ENV !== "production" ? "ts_live_kalvilearn_sec_99a8b1c4e2d3f7" : "");
   const endpoint = `${apiUrl}/api/v1/tickets`;
   const timeoutMs = options.timeoutMs ?? 6e3;
   const maxRetries = options.maxRetries ?? 2;
