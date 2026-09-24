@@ -37,6 +37,8 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
   const problems: LanguageProblem[] = rawBelt.problems.map((p) => ({
     id: `nodejs_${p.slug}`,
     slug: p.slug,
+    legacySlug: (p as any).legacySlug,
+    learningUnitId: (p as any).learningUnitId || (p as any).id,
     language: 'nodejs',
     belt: rawBelt.order,
     beltName: meta.name,

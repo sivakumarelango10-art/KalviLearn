@@ -20,7 +20,9 @@
     "test:teamsync-webhook": "npx tsx scripts/test-teamsync-webhook.ts",
     "test:teamsync-sender": "npx tsx scripts/test-teamsync-webhook-sender.ts",
     "test:multilang": "npx tsx scripts/test-multilang-revision.ts",
-    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang",
+    "test:practice-import": "npx tsx scripts/test-imported-practice.ts",
+    "test:practice-e2e": "npx tsx scripts/test-e2e-practice-execution.ts",
+    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:practice-import && npm run test:practice-e2e",
     "preview": "vite preview"
   },
   "dependencies": {

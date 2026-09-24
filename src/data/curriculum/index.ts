@@ -46,7 +46,13 @@ export function getProblemByLanguageAndSlug(
 ): LanguageProblem | null {
   const curriculum = getCurriculum(lang)
   for (const belt of curriculum.belts) {
-    const found = belt.problems.find((problem) => problem.slug === slug)
+    const found = belt.problems.find(
+      (problem) =>
+        problem.slug === slug ||
+        problem.legacySlug === slug ||
+        problem.learningUnitId?.toLowerCase() === slug.toLowerCase() ||
+        problem.id === slug
+    )
     if (found) return found
   }
   return null

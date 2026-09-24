@@ -3,6 +3,8 @@ export type ProgrammingLanguage = 'python' | 'java' | 'nodejs' | 'cpp'
 export interface LanguageProblem {
   id: string
   slug: string
+  legacySlug?: string
+  learningUnitId?: string
   language: ProgrammingLanguage
   belt: number
   beltName: string
