@@ -13716,12 +13716,12 @@ var require_main3 = __commonJS({
 
 // src/server/teamSyncWebhookAuth.ts
 import crypto2 from "crypto";
-function computeTeamSyncSignature(rawBody, timestamp, secret = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || "ts_whsec_kalvilearn_39a1b2c4d5e6") {
+function computeTeamSyncSignature(rawBody, timestamp, secret = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== "production" ? "ts_whsec_kalvilearn_39a1b2c4d5e6" : "")) {
   const payloadToSign = `${timestamp}.${rawBody}`;
   return crypto2.createHmac("sha256", secret).update(payloadToSign, "utf8").digest("hex");
 }
 function verifyTeamSyncWebhookSignature(rawBody, signatureHeader, timestampHeader, eventIdHeader, options = {}) {
-  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || "ts_whsec_kalvilearn_39a1b2c4d5e6";
+  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== "production" ? "ts_whsec_kalvilearn_39a1b2c4d5e6" : "");
   const toleranceSeconds = options.toleranceSeconds ?? 300;
   if (!signatureHeader || typeof signatureHeader !== "string" || signatureHeader.trim() === "") {
     return {

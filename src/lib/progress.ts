@@ -230,57 +230,41 @@ export function hydrateStateFromCloud(cloudState: UserState) {
   if (!cloudState) return
   const localState = getUserState()
 
-  // Cloud is authoritative for solved slugs
-  const allSolved = Array.from(new Set(cloudState.solvedSlugs || []))
-
-  // Build merged progress: cloud is authoritative, local drafts preserved for code
-  const allSlugs = Array.from(
-    new Set([
-      ...Object.keys(cloudState.progress || {}),
-      ...allSolved,
-    ])
-  )
-
   const mergedProgress: Record<string, UserProgressRecord> = {}
 
-  for (const slug of allSlugs) {
-    const localP = localState.progress?.[slug]
-    const cloudP = cloudState.progress?.[slug]
-    const isSolved = allSolved.includes(slug)
-
-    let bestCode = ''
-    let language = 'python'
-    let attempts = 1
-    let solvedAt: string | undefined = undefined
-
-    if (cloudP) {
-      bestCode = cloudP.bestCode || localP?.bestCode || ''
-      language = cloudP.language || 'python'
-      attempts = cloudP.attempts || 1
-      solvedAt = cloudP.solvedAt
-    } else if (localP) {
-      bestCode = localP.bestCode || ''
-      language = localP.language || 'python'
-      attempts = localP.attempts || 1
-      solvedAt = localP.solvedAt
-    }
-
-    mergedProgress[slug] = {
-      problemId: slug,
-      problemSlug: slug,
-      status: isSolved ? 'SOLVED' : 'ATTEMPTED',
-      language,
-      bestCode,
-      solvedAt,
-      attempts,
+  // 1. Seed with local progress
+  for (const [key, record] of Object.entries(localState.progress || {})) {
+    if (record) {
+      mergedProgress[key] = { ...record }
     }
   }
 
-  // Cloud submissions are authoritative
+  // 2. Merge cloud progress (authoritative for saved bestCode and solved status)
+  for (const [key, record] of Object.entries(cloudState.progress || {})) {
+    if (!record) continue
+    const localP = mergedProgress[key]
+    mergedProgress[key] = {
+      problemId: record.problemId || localP?.problemId || key,
+      problemSlug: record.problemSlug || localP?.problemSlug || key.replace(/^(python|java|nodejs|cpp):/, ''),
+      status: record.status || localP?.status || 'ATTEMPTED',
+      language: record.language || localP?.language || 'python',
+      bestCode: record.bestCode || localP?.bestCode || '',
+      solvedAt: record.solvedAt || localP?.solvedAt,
+      attempts: Math.max(record.attempts || 1, localP?.attempts || 1),
+    }
+  }
+
+  // 3. Merge submissions
   const mergedSubmissions: SubmissionRecord[] = [...(cloudState.submissions || [])]
+  const cloudSubIds = new Set(mergedSubmissions.map((s) => s.id))
+  for (const ls of localState.submissions || []) {
+    if (!cloudSubIds.has(ls.id)) {
+      mergedSubmissions.push(ls)
+    }
+  }
   mergedSubmissions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-  // LanguageProgress derived directly from cloud solved slugs
+  // 4. Reconstruct languageProgress for each language independently
   const languageProgress: Record<string, LanguageProgressSummary> = {
     python: { solvedSlugs: [], xp: 0 },
     java: { solvedSlugs: [], xp: 0 },
@@ -288,12 +272,77 @@ export function hydrateStateFromCloud(cloudState: UserState) {
     cpp: { solvedSlugs: [], xp: 0 },
   }
 
-  for (const slug of allSolved) {
-    const prog = mergedProgress[slug]
-    const lang = normalizeProgressLanguage(prog?.language)
-    if (languageProgress[lang] && !languageProgress[lang].solvedSlugs.includes(slug)) {
+  // Helper to register solved problem in language
+  const registerLangSolve = (langRaw: string, slug: string, code?: string, timestamp?: string) => {
+    const lang = normalizeProgressLanguage(langRaw)
+    if (!slug || !languageProgress[lang]) return
+    if (!languageProgress[lang].solvedSlugs.includes(slug)) {
       languageProgress[lang].solvedSlugs.push(slug)
       languageProgress[lang].xp += 50
+    }
+    const langKey = `${lang}:${slug}`
+    if (!mergedProgress[langKey] || mergedProgress[langKey].status !== 'SOLVED' || (code && !mergedProgress[langKey].bestCode)) {
+      mergedProgress[langKey] = {
+        problemId: slug,
+        problemSlug: slug,
+        status: 'SOLVED',
+        language: lang,
+        bestCode: code || mergedProgress[langKey]?.bestCode || mergedProgress[slug]?.bestCode || '',
+        solvedAt: timestamp || mergedProgress[langKey]?.solvedAt || new Date().toISOString(),
+        attempts: mergedProgress[langKey]?.attempts || 1,
+      }
+    }
+  }
+
+  // Inspect cloudState.languageProgress if available
+  if (cloudState.languageProgress) {
+    for (const [langKey, summary] of Object.entries(cloudState.languageProgress)) {
+      for (const slug of summary.solvedSlugs || []) {
+        registerLangSolve(langKey, slug)
+      }
+    }
+  }
+
+  // Inspect all mergedProgress records
+  for (const [key, record] of Object.entries(mergedProgress)) {
+    if (record && record.status === 'SOLVED') {
+      const slug = record.problemSlug || key.replace(/^(python|java|nodejs|cpp):/, '')
+      registerLangSolve(record.language, slug, record.bestCode, record.solvedAt)
+    }
+  }
+
+  // Inspect all passed submissions to recover all solved languages
+  for (const sub of mergedSubmissions) {
+    if (sub.status === 'PASSED' && (sub.passedTests === 10 || sub.passedTests === sub.totalTests)) {
+      registerLangSolve(sub.language, sub.problemSlug, sub.code, sub.createdAt)
+    }
+  }
+
+  // Unique solved slugs overall across all languages
+  const allSolvedSet = new Set<string>()
+  for (const l of ['python', 'java', 'nodejs', 'cpp']) {
+    for (const s of languageProgress[l].solvedSlugs) {
+      allSolvedSet.add(s)
+    }
+  }
+  for (const s of cloudState.solvedSlugs || []) {
+    allSolvedSet.add(s)
+  }
+  const allSolved = Array.from(allSolvedSet)
+
+  // Ensure un-prefixed problemSlug key exists for each solved problem
+  for (const slug of allSolved) {
+    if (!mergedProgress[slug]) {
+      const candidate =
+        mergedProgress[`python:${slug}`] ||
+        mergedProgress[`java:${slug}`] ||
+        mergedProgress[`nodejs:${slug}`] ||
+        mergedProgress[`cpp:${slug}`]
+      if (candidate) {
+        mergedProgress[slug] = { ...candidate }
+      }
+    } else {
+      mergedProgress[slug].status = 'SOLVED'
     }
   }
 
@@ -302,12 +351,13 @@ export function hydrateStateFromCloud(cloudState: UserState) {
     ...Object.values(mergedProgress).map((p) => p.solvedAt),
   ].filter(Boolean) as string[]
 
-  const authoritativeStreak = typeof cloudState.streak === 'number'
-    ? cloudState.streak
-    : calculateAuthoritativeStreak(activityTimestamps).streak
+  const authoritativeStreak =
+    typeof cloudState.streak === 'number'
+      ? cloudState.streak
+      : calculateAuthoritativeStreak(activityTimestamps).streak
 
   const mergedState: UserState = {
-    xp: allSolved.length * 50,
+    xp: Object.values(languageProgress).reduce((acc, lp) => acc + lp.xp, 0),
     streak: authoritativeStreak,
     solvedSlugs: allSolved,
     progress: mergedProgress,
@@ -558,16 +608,37 @@ export function isProblemAttemptedInLanguage(problemSlug: string, rawLanguage: s
 /**
  * Returns saved best code for a problem in a designated language.
  */
-export function getLanguageSavedCode(problemSlug: string, rawLanguage: string): string | null {
+export function getLanguageSavedCode(param1: string, param2: string): string | null {
+  const isParam1Lang = ['python', 'java', 'nodejs', 'cpp', 'javascript', 'node', 'c++'].includes(
+    (param1 || '').toLowerCase()
+  )
+  const problemSlug = isParam1Lang ? param2 : param1
+  const rawLanguage = isParam1Lang ? param1 : param2
+
   const state = getUserState()
   const lang = normalizeProgressLanguage(rawLanguage)
   const langKey = `${lang}:${problemSlug}`
   if (state.progress[langKey]?.bestCode) {
     return state.progress[langKey].bestCode
   }
+  // Fallback to latest passed submission for this specific problem and language
+  const sub = (state.submissions || []).find(
+    (s) =>
+      s.problemSlug === problemSlug &&
+      normalizeProgressLanguage(s.language) === lang &&
+      s.status === 'PASSED' &&
+      Boolean(s.code)
+  )
+  if (sub?.code) {
+    return sub.code
+  }
   // Fallback to un-prefixed if language matches
-  if (state.progress[problemSlug]?.language === lang && state.progress[problemSlug]?.bestCode) {
+  if (
+    state.progress[problemSlug]?.bestCode &&
+    normalizeProgressLanguage(state.progress[problemSlug]?.language) === lang
+  ) {
     return state.progress[problemSlug].bestCode
   }
   return null
 }
+

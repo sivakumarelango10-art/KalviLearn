@@ -1,5 +1,10 @@
 import { supabase } from './supabase'
-import type { UserState, SubmissionRecord, UserProgressRecord } from './progress'
+import {
+  type UserState,
+  type SubmissionRecord,
+  type UserProgressRecord,
+  normalizeProgressLanguage,
+} from './progress'
 import { calculateAuthoritativeStreak } from './streak'
 
 // Slug-to-UUID cache to avoid repeated queries for the 85 problems
@@ -56,13 +61,13 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
       return null
     }
 
-    // 2. Fetch recent submissions for submission history
+    // 2. Fetch submissions for submission history & multi-language recovery
     const { data: submissionRows, error: sError } = await supabase
       .from('Submission')
       .select('id, userId, problemId, language, code, status, passedTests, totalTests, executionTimeMs, createdAt, Problem(slug, title)')
       .eq('userId', userId)
       .order('createdAt', { ascending: false })
-      .limit(50)
+      .limit(100)
 
     if (sError) {
       console.warn('Failed to fetch Submissions from cloud:', sError.message)
@@ -79,20 +84,30 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
         const slug = pObj?.slug
         if (!slug) continue
 
+        const lang = normalizeProgressLanguage(row.language)
+        const langKey = `${lang}:${slug}`
         const isSolved = row.status === 'SOLVED'
+
         if (isSolved && !solvedSlugs.includes(slug)) {
           solvedSlugs.push(slug)
           totalXp += Number(row.xpEarned || 0)
         }
 
-        progressMap[slug] = {
+        const record: UserProgressRecord = {
           problemId: slug,
           problemSlug: slug,
           status: row.status as 'SOLVED' | 'ATTEMPTED',
-          language: row.language || 'python',
+          language: lang,
           bestCode: row.bestCode || '',
           solvedAt: row.solvedAt || undefined,
           attempts: row.attempts || 1,
+        }
+
+        progressMap[langKey] = record
+
+        // Also keep un-prefixed key
+        if (!progressMap[slug] || isSolved) {
+          progressMap[slug] = record
         }
       }
     }
@@ -103,19 +118,44 @@ export async function fetchUserProgressFromCloud(userId: string): Promise<UserSt
         const pObj = row.Problem as { slug?: string; title?: string } | null
         const slug = pObj?.slug || row.problemId
         const title = pObj?.title || slug
+        const lang = normalizeProgressLanguage(row.language)
 
-        submissions.push({
+        const sub: SubmissionRecord = {
           id: row.id,
           problemSlug: slug,
           problemTitle: title,
-          language: row.language || 'python',
+          language: lang,
           code: row.code || '',
           status: row.status as 'PASSED' | 'FAILED' | 'ERROR',
           passedTests: row.passedTests,
           totalTests: row.totalTests || 10,
           executionTimeMs: row.executionTimeMs || 0,
           createdAt: row.createdAt || new Date().toISOString(),
-        })
+        }
+        submissions.push(sub)
+
+        // If this submission passed all tests, guarantee that a per-language progress record exists
+        if (sub.status === 'PASSED' && (sub.passedTests === 10 || sub.passedTests === sub.totalTests)) {
+          const langKey = `${lang}:${slug}`
+          if (!progressMap[langKey] || !progressMap[langKey].bestCode) {
+            progressMap[langKey] = {
+              problemId: slug,
+              problemSlug: slug,
+              status: 'SOLVED',
+              language: lang,
+              bestCode: sub.code,
+              solvedAt: sub.createdAt,
+              attempts: 1,
+            }
+          }
+          if (!solvedSlugs.includes(slug)) {
+            solvedSlugs.push(slug)
+            totalXp += 50
+          }
+          if (!progressMap[slug]) {
+            progressMap[slug] = progressMap[langKey]
+          }
+        }
       }
     }
 
@@ -157,12 +197,14 @@ export async function saveSuccessToCloud(
     const problemId = await getProblemIdBySlug(problemSlug)
     if (!problemId) return
 
+    const normLang = normalizeProgressLanguage(language)
+
     const progressRecord = {
       id: generateUuid(),
       userId,
       problemId,
       status: 'SOLVED',
-      language,
+      language: normLang,
       bestCode: code,
       solvedAt: new Date().toISOString(),
       attempts: 1,
@@ -171,7 +213,7 @@ export async function saveSuccessToCloud(
 
     await supabase
       .from('UserProgress')
-      .upsert(progressRecord, { onConflict: 'userId,problemId' })
+      .upsert(progressRecord, { onConflict: 'userId,problemId,language' })
 
     const subRecord = {
       id: generateUuid(),

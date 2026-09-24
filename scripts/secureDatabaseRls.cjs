@@ -4,7 +4,8 @@
  * Enforces principle of least privilege:
  * 1. Revokes unrestricted anon write access on "public"."users"
  * 2. Permits users to view and update only their own profile (auth.uid() = id)
- * 3. Keeps service_role fully privileged for backend administrative operations
+ * 3. Enforces least-privilege RLS on "Submission" and "UserProgress" (auth.uid() = userId)
+ * 4. Keeps service_role fully privileged for backend administrative operations
  */
 
 const { PrismaClient } = require('@prisma/client');
@@ -32,26 +33,82 @@ async function main() {
 
     // 3. Drop overly permissive legacy policies
     console.log('3. Dropping legacy permissive policies...');
-    await prisma.$executeRawUnsafe(`DROP POLICY IF EXISTS "Allow full access to users" ON "public"."users";`).catch(() => {});
-    await prisma.$executeRawUnsafe(`DROP POLICY IF EXISTS "Allow public read access to users" ON "public"."users";`).catch(() => {});
-    await prisma.$executeRawUnsafe(`DROP POLICY IF EXISTS "Allow public insert to users" ON "public"."users";`).catch(() => {});
-    await prisma.$executeRawUnsafe(`DROP POLICY IF EXISTS "Allow public update to users" ON "public"."users";`).catch(() => {});
-    await prisma.$executeRawUnsafe(`DROP POLICY IF EXISTS "Allow public delete to users" ON "public"."users";`).catch(() => {});
+    const dropPolicies = [
+      `DROP POLICY IF EXISTS "Allow full access to users" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Allow public read access to users" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Allow public insert to users" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Allow public update to users" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Allow public delete to users" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Users can read own profile" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Users can update only own profile" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Users can insert own profile" ON "public"."users";`,
+      `DROP POLICY IF EXISTS "Users can read own submissions" ON "public"."Submission";`,
+      `DROP POLICY IF EXISTS "Users can insert own submissions" ON "public"."Submission";`,
+      `DROP POLICY IF EXISTS "Users can update own submissions" ON "public"."Submission";`,
+      `DROP POLICY IF EXISTS "Users can read own progress" ON "public"."UserProgress";`,
+      `DROP POLICY IF EXISTS "Users can insert own progress" ON "public"."UserProgress";`,
+      `DROP POLICY IF EXISTS "Users can update own progress" ON "public"."UserProgress";`,
+    ];
 
-    // 4. Create least-privilege policies
-    console.log('4. Creating hardened policies for authenticated users...');
+    for (const sql of dropPolicies) {
+      await prisma.$executeRawUnsafe(sql).catch(() => {});
+    }
+
+    // 4. Create least-privilege policies for public.users
+    console.log('4. Creating hardened policies for public.users...');
     await prisma.$executeRawUnsafe(`
       CREATE POLICY "Users can read own profile" ON "public"."users"
         FOR SELECT
-        USING (auth.uid()::text = id OR true);
-    `).catch((e) => console.warn('Policy note (read):', e.message));
+        USING (auth.uid()::text = id);
+    `).catch((e) => console.warn('Policy note (users select):', e.message));
 
     await prisma.$executeRawUnsafe(`
       CREATE POLICY "Users can update only own profile" ON "public"."users"
         FOR UPDATE
         USING (auth.uid()::text = id)
         WITH CHECK (auth.uid()::text = id);
-    `).catch((e) => console.warn('Policy note (update):', e.message));
+    `).catch((e) => console.warn('Policy note (users update):', e.message));
+
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can insert own profile" ON "public"."users"
+        FOR INSERT
+        WITH CHECK (auth.uid()::text = id);
+    `).catch((e) => console.warn('Policy note (users insert):', e.message));
+
+    // 5. Create least-privilege policies for public.Submission
+    console.log('5. Creating hardened policies for public.Submission...');
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can read own submissions" ON "public"."Submission"
+        FOR SELECT
+        USING (auth.uid()::text = "userId");
+    `).catch((e) => console.warn('Policy note (submission select):', e.message));
+
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can insert own submissions" ON "public"."Submission"
+        FOR INSERT
+        WITH CHECK (auth.uid()::text = "userId");
+    `).catch((e) => console.warn('Policy note (submission insert):', e.message));
+
+    // 6. Create least-privilege policies for public.UserProgress
+    console.log('6. Creating hardened policies for public.UserProgress...');
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can read own progress" ON "public"."UserProgress"
+        FOR SELECT
+        USING (auth.uid()::text = "userId");
+    `).catch((e) => console.warn('Policy note (progress select):', e.message));
+
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can insert own progress" ON "public"."UserProgress"
+        FOR INSERT
+        WITH CHECK (auth.uid()::text = "userId");
+    `).catch((e) => console.warn('Policy note (progress insert):', e.message));
+
+    await prisma.$executeRawUnsafe(`
+      CREATE POLICY "Users can update own progress" ON "public"."UserProgress"
+        FOR UPDATE
+        USING (auth.uid()::text = "userId")
+        WITH CHECK (auth.uid()::text = "userId");
+    `).catch((e) => console.warn('Policy note (progress update):', e.message));
 
     console.log('\n✅ Successfully applied hardened RLS policies on PostgreSQL database.');
   } catch (err) {

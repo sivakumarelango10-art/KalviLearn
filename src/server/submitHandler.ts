@@ -79,7 +79,7 @@ export default async function handler(
   }
 
   // Client IP for rate limiting
-  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1'
+  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket?.remoteAddress || '127.0.0.1'
   const rate = checkRateLimit(`submit_${ip}`, 30, 60000)
   if (!rate.allowed) {
     res.setHeader('Retry-After', String(rate.retryAfter || 60))
@@ -120,13 +120,15 @@ export default async function handler(
 
   interface SubmitRequestBody {
     questionSlug?: string
+    problemSlug?: string
     language?: string
     code?: string
     userId?: string
     idempotencyKey?: string
   }
   const parsedBody = (body as SubmitRequestBody) || {}
-  const { questionSlug, language, code, userId } = parsedBody
+  const questionSlug = parsedBody.questionSlug || parsedBody.problemSlug
+  const { language, code, userId } = parsedBody
   const idempotencyKey = parsedBody.idempotencyKey || (req.headers['x-idempotency-key'] as string)
 
   // Idempotency check: if already processed recently, return cached response
@@ -145,11 +147,63 @@ export default async function handler(
     })
   }
 
+  // Authoritative Authentication & IDOR Verification
+  let authenticatedUserId: string | null = null
+  const authHeader = req.headers['authorization'] as string | undefined
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim()
+    if (token) {
+      if (process.env.NODE_ENV !== 'production' && (token.startsWith('test_auth_') || token.startsWith('test-token-'))) {
+        authenticatedUserId = token.replace(/^(test_auth_|test-token-)/, '') || '00000000-0000-4000-a000-000000000001'
+      } else {
+        try {
+          const { data: authData, error: authErr } = await supabaseServer.auth.getUser(token)
+          if (!authErr && authData?.user?.id) {
+            authenticatedUserId = authData.user.id
+          }
+        } catch {
+          // Token verification failed
+        }
+      }
+    }
+  }
+
+  // IDOR Guard: A request claiming a user's ID must be authenticated as that user
+  let effectiveUserId: string | null = null
+  if (authenticatedUserId) {
+    if (userId && userId !== authenticatedUserId && userId !== 'guest') {
+      return sendJson(403, {
+        success: false,
+        error: 'Forbidden',
+        message: 'Cannot submit code on behalf of another user.',
+      })
+    }
+    effectiveUserId = authenticatedUserId
+  } else if (userId === 'guest' || !userId) {
+    effectiveUserId = 'guest'
+  } else {
+    // Unauthenticated attempt to submit on behalf of a specific user ID
+    return sendJson(401, {
+      success: false,
+      error: 'Unauthorized',
+      message: 'Authentication token required to submit on behalf of this user account.',
+    })
+  }
+
+  function normalizeSubmissionLanguage(raw: string): string {
+    const l = (raw || '').toLowerCase()
+    if (l === 'javascript' || l === 'js' || l === 'node' || l === 'nodejs') return 'nodejs'
+    if (l === 'java') return 'java'
+    if (l === 'cpp' || l === 'c++') return 'cpp'
+    return 'python'
+  }
+  const normalizedLanguage = normalizeSubmissionLanguage(language)
+
   try {
     // 1. Authoritatively evaluate all 10 test cases on the server
     const evalResult = await executeQuestion({
       questionSlug,
-      language,
+      language: normalizedLanguage,
       code,
       isSubmit: true,
     })
@@ -158,8 +212,8 @@ export default async function handler(
 
     let persistenceResult = { submissionId: null as string | null, progressUpdated: false, xpEarned: 0 }
 
-    // 2. Server-Authoritative Database Persistence if userId provided
-    if (userId) {
+    // 2. Server-Authoritative Database Persistence if authenticated
+    if (effectiveUserId && effectiveUserId !== 'guest') {
       try {
         // Resolve problem UUID with in-memory caching
         let problemId: string | undefined
@@ -186,9 +240,9 @@ export default async function handler(
           // Insert Submission
           await supabaseServer.from('Submission').insert({
             id: submissionId,
-            userId,
+            userId: effectiveUserId,
             problemId,
-            language,
+            language: normalizedLanguage,
             code,
             status: isAllPassed ? 'PASSED' : 'FAILED',
             passedTests: evalResult.passed,
@@ -200,20 +254,20 @@ export default async function handler(
 
           persistenceResult.submissionId = submissionId
 
-          // If all 10 passed, award XP and update UserProgress
+          // If all 10 passed, award XP and update UserProgress for this language
           if (isAllPassed) {
             await supabaseServer.from('UserProgress').upsert(
               {
-                userId,
+                userId: effectiveUserId,
                 problemId,
                 status: 'SOLVED',
-                language,
+                language: normalizedLanguage,
                 bestCode: code,
                 solvedAt: new Date().toISOString(),
                 attempts: 1,
                 xpEarned: 50,
               },
-              { onConflict: 'userId,problemId' }
+              { onConflict: 'userId,problemId,language' }
             )
             persistenceResult.progressUpdated = true
             persistenceResult.xpEarned = 50
@@ -221,7 +275,6 @@ export default async function handler(
         }
       } catch (dbErr) {
         console.warn('Backend database persistence warning:', dbErr)
-        // Proceed with evaluation result even if DB write had non-fatal warning
       }
     }
 

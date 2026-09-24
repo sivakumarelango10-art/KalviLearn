@@ -2,7 +2,7 @@ import * as vm from 'node:vm'
 import { executePython } from '../lib/runner/pythonRunner'
 import { executeCpp } from '../lib/runner/cppRunner'
 import { executeJava } from '../lib/runner/javaRunner'
-import serverTestCases from './data/serverTestCases'
+import * as serverTestCasesModule from './data/serverTestCases'
 
 export interface ExecuteRequest {
   questionSlug: string
@@ -72,6 +72,19 @@ function compareOutput(actual: string, expected: string): boolean {
 }
 
 function executeJavaScript(code: string, input: string): { output: string; error?: string } {
+  // Security guard against sandbox escape and secret access attempts
+  if (
+    /process\s*\.\s*env/i.test(code) ||
+    /child_process/i.test(code) ||
+    /__proto__/i.test(code) ||
+    /binding\s*\(\s*['"]process/i.test(code)
+  ) {
+    return {
+      output: '',
+      error: 'Security Violation: Access to system environment, process, and native bindings is strictly forbidden.',
+    }
+  }
+
   const outputs: string[] = []
   const normalizedInput = input.replace(/\r\n/g, '\n')
   const inputLines = normalizedInput.split('\n')
@@ -121,6 +134,14 @@ function executeJavaScript(code: string, input: string): { output: string; error
   }
 
   const prelude = `
+    "use strict";
+    try {
+      Object.defineProperty(Function.prototype, 'constructor', {
+        value: function() { throw new Error('Security Violation: Dynamic Function compilation is disabled.'); },
+        configurable: false,
+        writable: false,
+      });
+    } catch (_) {}
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -137,6 +158,8 @@ function executeJavaScript(code: string, input: string): { output: string; error
       setTimeout: undefined,
       setInterval: undefined,
       setImmediate: undefined,
+      global: undefined,
+      globalThis: undefined,
     }
     const script = new vm.Script(`${prelude}\n${code}`)
     const context = vm.createContext(sandbox)
@@ -161,6 +184,16 @@ function runSingleTestCase(code: string, language: string, input: string): { out
 }
 
 function checkCompilation(code: string, language: string): { ok: boolean; error?: string } {
+  // Pre-execution security filter: block process/env/child_process escapes across all languages
+  if (
+    /process\s*\.\s*env/i.test(code) ||
+    /child_process/i.test(code) ||
+    /__proto__/i.test(code) ||
+    /binding\s*\(\s*['"]process/i.test(code)
+  ) {
+    return { ok: false, error: 'SecurityError: Access to process/environment bindings is prohibited.' }
+  }
+
   const lang = (language || '').toLowerCase()
   if (lang === 'python') {
     const dryRun = executePython(code, '')
@@ -204,7 +237,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   interface ServerProblemItem {
     testCases: Array<{ testIndex?: number; input: string; expectedOutput: string; isHidden?: boolean }>
   }
-  const problemMap = serverTestCases as unknown as Record<string, ServerProblemItem>
+  const problemMap = ((serverTestCasesModule as any).serverTestCases || (serverTestCasesModule as any).default || serverTestCasesModule) as unknown as Record<string, ServerProblemItem>
 
   let problem = problemMap[questionSlug]
   if (!problem) {
@@ -249,14 +282,15 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   // Pre-check for compilation/syntax errors
   const compCheck = checkCompilation(code, language)
   if (!compCheck.ok) {
+    const isSecErr = compCheck.error?.includes('SecurityError')
     return {
       success: false,
       total: authoritativeTotal,
       passed: 0,
       executed: 0,
       overallTimeMs: 0,
-      status: 'COMPILATION_ERROR',
-      error: 'Compilation Error',
+      status: isSecErr ? 'RUNTIME_ERROR' : 'COMPILATION_ERROR',
+      error: isSecErr ? compCheck.error : 'Compilation Error',
       message: compCheck.error || 'Syntax / Compilation error detected in your code.',
       testCases: [],
     }

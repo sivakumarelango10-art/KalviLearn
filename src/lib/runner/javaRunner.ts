@@ -8,6 +8,18 @@
  */
 
 export function executeJava(code: string, input: string): { output: string; error?: string } {
+  // Security guard against host secret access
+  if (
+    /process\s*\.\s*env/i.test(code) ||
+    /child_process/i.test(code) ||
+    /__proto__/i.test(code)
+  ) {
+    return {
+      output: '',
+      error: 'Security Violation: Access to system environment and child processes is strictly forbidden.',
+    }
+  }
+
   const outputs: string[] = []
   const normalizedInput = input.replace(/\r\n/g, '\n')
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean)
@@ -158,6 +170,10 @@ export function executeJava(code: string, input: string): { output: string; erro
     Scanner,
     Arrays,
     Collections,
+    process: undefined,
+    require: undefined,
+    global: undefined,
+    globalThis: undefined,
     Integer: {
       parseInt: (s: string) => parseInt(String(s), 10) || 0,
       MAX_VALUE: 2147483647,

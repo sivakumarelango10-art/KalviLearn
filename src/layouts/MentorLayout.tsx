@@ -14,7 +14,7 @@ export const MentorLayout: React.FC = () => {
       {/* Offline Status Detection */}
       <OfflineBanner />
 
-      {/* Top Header: Kalvi Learn Mentor + Rahul Profile Dropdown */}
+      {/* Top Header: Kalvi Learn Mentor + Profile Dropdown */}
       <MentorNavbar onToggleMobileSidebar={() => setMobileOpen(true)} />
 
       {/* Dual Layout: Sidebar + Main Content Area */}

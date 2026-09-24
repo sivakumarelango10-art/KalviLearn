@@ -196,9 +196,9 @@ KalviLearn sends the following payload to `${TEAMSYNC_API_URL}/api/v1/tickets`:
   "priority": "HIGH",
   "portal": "STUDENT",
   "user": {
-    "id": "36a74ed3-4a98-4374-a3d1-be0e2050b81c",
-    "name": "Kavya Ramesh",
-    "email": "kavya.ramesh.s.121@kalvium.community",
+    "id": "00000000-0000-0000-0000-000000000001",
+    "name": "Student Scholar",
+    "email": "student@example.test",
     "role": "STUDENT"
   },
   "page": "/practice",

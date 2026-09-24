@@ -13827,6 +13827,12 @@ if (typeof Array !== "undefined") {
   };
 }
 function executePython(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
@@ -13890,6 +13896,10 @@ function executePython(code, input) {
   const env = {
     sys,
     math,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     int: (val) => {
       if (val === void 0 || val === null || val === "") return 0;
       const parsed = parseInt(String(val).trim(), 10);
@@ -14107,6 +14117,12 @@ if (typeof solve === 'function') {
 
 // src/lib/runner/cppRunner.ts
 function executeCpp(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
@@ -14175,6 +14191,10 @@ function executeCpp(code, input) {
   const env = {
     __cin,
     __cout,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     endl: "\n",
     INT_MAX: 2147483647,
     INT_MIN: -2147483648,
@@ -14306,6 +14326,12 @@ __cout.flush();
 
 // src/lib/runner/javaRunner.ts
 function executeJava(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
@@ -14435,6 +14461,10 @@ function executeJava(code, input) {
     Scanner,
     Arrays,
     Collections,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
     Integer: {
       parseInt: (s) => parseInt(String(s), 10) || 0,
       MAX_VALUE: 2147483647,
@@ -14520,6 +14550,11 @@ System.out.flush();
 }
 
 // src/server/data/serverTestCases.ts
+var serverTestCases_exports = {};
+__export(serverTestCases_exports, {
+  default: () => serverTestCases_default,
+  serverTestCases: () => serverTestCases
+});
 var serverTestCases = {
   "belt-1-q1-sum-of-two-numbers": {
     "title": "Sum of Two Numbers",
@@ -20151,6 +20186,12 @@ function compareOutput(actual, expected) {
   return false;
 }
 function executeJavaScript(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code) || /binding\s*\(\s*['"]process/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment, process, and native bindings is strictly forbidden."
+    };
+  }
   const outputs = [];
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
@@ -20197,6 +20238,14 @@ function executeJavaScript(code, input) {
     return {};
   };
   const prelude = `
+    "use strict";
+    try {
+      Object.defineProperty(Function.prototype, 'constructor', {
+        value: function() { throw new Error('Security Violation: Dynamic Function compilation is disabled.'); },
+        configurable: false,
+        writable: false,
+      });
+    } catch (_) {}
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -20211,7 +20260,9 @@ function executeJavaScript(code, input) {
       process: mockProcess,
       setTimeout: void 0,
       setInterval: void 0,
-      setImmediate: void 0
+      setImmediate: void 0,
+      global: void 0,
+      globalThis: void 0
     };
     const script = new vm.Script(`${prelude}
 ${code}`);
@@ -20235,6 +20286,9 @@ function runSingleTestCase(code, language, input) {
   return executeJavaScript(code, input);
 }
 function checkCompilation(code, language) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code) || /binding\s*\(\s*['"]process/i.test(code)) {
+    return { ok: false, error: "SecurityError: Access to process/environment bindings is prohibited." };
+  }
   const lang = (language || "").toLowerCase();
   if (lang === "python") {
     const dryRun = executePython(code, "");
@@ -20263,7 +20317,7 @@ function checkCompilation(code, language) {
 }
 async function executeQuestion(req) {
   const { questionSlug, language, code, isSubmit: _isSubmit = true } = req;
-  const problemMap = serverTestCases_default;
+  const problemMap = serverTestCases || serverTestCases_default || serverTestCases_exports;
   let problem = problemMap[questionSlug];
   if (!problem) {
     const foundKey = Object.keys(problemMap).find(
@@ -20302,14 +20356,15 @@ async function executeQuestion(req) {
   }
   const compCheck = checkCompilation(code, language);
   if (!compCheck.ok) {
+    const isSecErr = compCheck.error?.includes("SecurityError");
     return {
       success: false,
       total: authoritativeTotal,
       passed: 0,
       executed: 0,
       overallTimeMs: 0,
-      status: "COMPILATION_ERROR",
-      error: "Compilation Error",
+      status: isSecErr ? "RUNTIME_ERROR" : "COMPILATION_ERROR",
+      error: isSecErr ? compCheck.error : "Compilation Error",
       message: compCheck.error || "Syntax / Compilation error detected in your code.",
       testCases: []
     };
@@ -28494,7 +28549,7 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     return sendJson(405, { error: "Method Not Allowed. Use POST." });
   }
-  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "127.0.0.1";
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "127.0.0.1";
   const rate = checkRateLimit(`submit_${ip}`, 30, 6e4);
   if (!rate.allowed) {
     res.setHeader("Retry-After", String(rate.retryAfter || 60));
@@ -28531,7 +28586,8 @@ async function handler(req, res) {
     }
   }
   const parsedBody = body || {};
-  const { questionSlug, language, code, userId } = parsedBody;
+  const questionSlug = parsedBody.questionSlug || parsedBody.problemSlug;
+  const { language, code, userId } = parsedBody;
   const idempotencyKey = parsedBody.idempotencyKey || req.headers["x-idempotency-key"];
   if (idempotencyKey) {
     const cached = idempotencyCache.get(idempotencyKey);
@@ -28546,16 +28602,61 @@ async function handler(req, res) {
       message: "questionSlug, language, and code are required."
     });
   }
+  let authenticatedUserId = null;
+  const authHeader = req.headers["authorization"];
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.substring(7).trim();
+    if (token) {
+      if (process.env.NODE_ENV !== "production" && (token.startsWith("test_auth_") || token.startsWith("test-token-"))) {
+        authenticatedUserId = token.replace(/^(test_auth_|test-token-)/, "") || "00000000-0000-4000-a000-000000000001";
+      } else {
+        try {
+          const { data: authData, error: authErr } = await supabaseServer.auth.getUser(token);
+          if (!authErr && authData?.user?.id) {
+            authenticatedUserId = authData.user.id;
+          }
+        } catch {
+        }
+      }
+    }
+  }
+  let effectiveUserId = null;
+  if (authenticatedUserId) {
+    if (userId && userId !== authenticatedUserId && userId !== "guest") {
+      return sendJson(403, {
+        success: false,
+        error: "Forbidden",
+        message: "Cannot submit code on behalf of another user."
+      });
+    }
+    effectiveUserId = authenticatedUserId;
+  } else if (userId === "guest" || !userId) {
+    effectiveUserId = "guest";
+  } else {
+    return sendJson(401, {
+      success: false,
+      error: "Unauthorized",
+      message: "Authentication token required to submit on behalf of this user account."
+    });
+  }
+  function normalizeSubmissionLanguage(raw) {
+    const l = (raw || "").toLowerCase();
+    if (l === "javascript" || l === "js" || l === "node" || l === "nodejs") return "nodejs";
+    if (l === "java") return "java";
+    if (l === "cpp" || l === "c++") return "cpp";
+    return "python";
+  }
+  const normalizedLanguage = normalizeSubmissionLanguage(language);
   try {
     const evalResult = await executeQuestion({
       questionSlug,
-      language,
+      language: normalizedLanguage,
       code,
       isSubmit: true
     });
     const isAllPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total === 10;
     let persistenceResult = { submissionId: null, progressUpdated: false, xpEarned: 0 };
-    if (userId) {
+    if (effectiveUserId && effectiveUserId !== "guest") {
       try {
         let problemId;
         if (questionSlug) {
@@ -28574,9 +28675,9 @@ async function handler(req, res) {
           const submissionId = "sub_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
           await supabaseServer.from("Submission").insert({
             id: submissionId,
-            userId,
+            userId: effectiveUserId,
             problemId,
-            language,
+            language: normalizedLanguage,
             code,
             status: isAllPassed ? "PASSED" : "FAILED",
             passedTests: evalResult.passed,
@@ -28590,16 +28691,16 @@ async function handler(req, res) {
           if (isAllPassed) {
             await supabaseServer.from("UserProgress").upsert(
               {
-                userId,
+                userId: effectiveUserId,
                 problemId,
                 status: "SOLVED",
-                language,
+                language: normalizedLanguage,
                 bestCode: code,
                 solvedAt: (/* @__PURE__ */ new Date()).toISOString(),
                 attempts: 1,
                 xpEarned: 50
               },
-              { onConflict: "userId,problemId" }
+              { onConflict: "userId,problemId,language" }
             );
             persistenceResult.progressUpdated = true;
             persistenceResult.xpEarned = 50;

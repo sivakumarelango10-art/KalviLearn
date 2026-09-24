@@ -8,6 +8,18 @@
  */
 
 export function executeCpp(code: string, input: string): { output: string; error?: string } {
+  // Security guard against host secret access
+  if (
+    /process\s*\.\s*env/i.test(code) ||
+    /child_process/i.test(code) ||
+    /__proto__/i.test(code)
+  ) {
+    return {
+      output: '',
+      error: 'Security Violation: Access to system environment and child processes is strictly forbidden.',
+    }
+  }
+
   const outputs: string[] = []
   const normalizedInput = input.replace(/\r\n/g, '\n')
   const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean)
@@ -82,6 +94,10 @@ export function executeCpp(code: string, input: string): { output: string; error
   const env: Record<string, any> = {
     __cin,
     __cout,
+    process: undefined,
+    require: undefined,
+    global: undefined,
+    globalThis: undefined,
     endl: '\n',
     INT_MAX: 2147483647,
     INT_MIN: -2147483648,

@@ -615,7 +615,7 @@ export async function fetchMentorSubmissions(
             beltColor: prob.Belt?.color || '#3B82F6',
           })
         }
-        const uInfo = userMap.get(s.userId) || { name: 'Student', email: 'student@kalvium.community' }
+        const uInfo = userMap.get(s.userId) || { name: 'Student', email: '' }
         const lang = normalizeLanguage(s.language)
         return {
           id: s.id, userId: s.userId,
@@ -749,7 +749,7 @@ export function subscribeToLiveSubmissions(
           mentorSubmissionsCache.clear()
 
           let isRelevant = true
-          let studentInfo = { name: 'Student', email: 'student@kalvium.community' }
+          let studentInfo = { name: 'Student', email: '' }
 
           if (mentorUserId) {
             const mp = await getMentorProfile(mentorUserId)

@@ -842,7 +842,7 @@ export const MentorStudentsPage: React.FC = () => {
                       required
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      placeholder="e.g. Rahul Sharma"
+                      placeholder="e.g. Student Full Name"
                       className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
                     />
                   </div>
@@ -860,7 +860,7 @@ export const MentorStudentsPage: React.FC = () => {
                       required
                       value={newEmail}
                       onChange={(e) => setNewEmail(e.target.value)}
-                      placeholder="e.g. rahul.s.121@kalvium.community"
+                      placeholder="student@institution.edu"
                       className="w-full pl-9 pr-3 py-2 text-xs bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
                     />
                   </div>

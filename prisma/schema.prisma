@@ -92,7 +92,8 @@ model UserProgress {
   attempts  Int       @default(1)
   xpEarned  Int       @default(0)
 
-  @@unique([userId, problemId])
+  @@unique([userId, problemId, language])
+  @@index([userId, problemId])
   @@index([status])
   @@index([userId, status])
 }
