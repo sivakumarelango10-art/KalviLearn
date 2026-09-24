@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Check, Copy, Code2, Terminal, Sparkles } from 'lucide-react'
+import { Check, Copy, Code2, Terminal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type SupportedLanguage = 'python' | 'cpp' | 'java' | 'javascript'
@@ -362,10 +362,7 @@ export const CodeSnippetViewer: React.FC<CodeSnippetViewerProps> = ({
 
       {/* Footer Sub-indicator */}
       <div className="px-4 py-2 bg-[#0c111d] border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400">
-        <span className="flex items-center gap-1.5">
-          <Sparkles className="w-3 h-3 text-[#ED2A2B]" />
-          <span>Interactive Language Switcher</span>
-        </span>
+        <span>Interactive Language Switcher</span>
         <span>
           Viewing <strong className="text-neutral-300 font-semibold">{activeMeta.label}</strong> example
         </span>
