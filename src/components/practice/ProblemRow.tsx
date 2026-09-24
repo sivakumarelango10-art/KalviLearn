@@ -17,13 +17,6 @@ export const ProblemRow: React.FC<ProblemRowProps> = ({
   isAttempted,
   language,
 }) => {
-  const difficultyBadge =
-    problem.difficulty === 'Easy'
-      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      : problem.difficulty === 'Medium'
-      ? 'bg-amber-50 text-amber-700 border-amber-200'
-      : 'bg-red-50 text-red-700 border-red-200'
-
   const problemUrl = `/practice/${language}/${problem.slug}`
 
   return (
@@ -42,15 +35,6 @@ export const ProblemRow: React.FC<ProblemRowProps> = ({
             >
               {problem.title}
             </Link>
-
-            <span
-              className={cn(
-                'text-[11px] font-medium px-2 py-0.5 rounded-full border transition-all duration-200',
-                difficultyBadge
-              )}
-            >
-              {problem.difficulty}
-            </span>
 
             {isSolved && (
               <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 animate-in zoom-in-75 duration-200">

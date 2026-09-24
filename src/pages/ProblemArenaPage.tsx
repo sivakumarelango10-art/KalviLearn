@@ -476,9 +476,6 @@ export const ProblemArenaPage: React.FC = () => {
                 {/* Title & Badge */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-400">
-                      {currentProblem.difficulty}
-                    </span>
                     <span className="text-xs text-neutral-500 font-mono">
                       +{currentProblem.xp} XP
                     </span>
