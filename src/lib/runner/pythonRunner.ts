@@ -404,7 +404,39 @@ export function executePython(code: string, input: string): { output: string; er
       if (/^[a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+\s*=/.test(trimmed)) {
         line = line.replace(
           /^(\s*)([a-zA-Z0-9_]+(\s*,\s*[a-zA-Z0-9_]+)+)\s*=\s*(.*)$/,
-          '$1let [$2] = $4'
+          (_match, indent, targets, _lastTarget, rawRhs) => {
+            let rhs = rawRhs.trim()
+            let hasTopComma = false
+            let depth = 0
+            for (let i = 0; i < rhs.length; i++) {
+              const ch = rhs[i]
+              if (ch === '(' || ch === '[' || ch === '{') depth++
+              else if (ch === ')' || ch === ']' || ch === '}') depth--
+              else if (ch === ',' && depth === 0) {
+                hasTopComma = true
+                break
+              }
+            }
+            if (hasTopComma) {
+              rhs = `[${rhs}]`
+            } else if (rhs.startsWith('(') && rhs.endsWith(')')) {
+              let innerDepth = 0
+              let hasInnerComma = false
+              for (let i = 1; i < rhs.length - 1; i++) {
+                const ch = rhs[i]
+                if (ch === '(' || ch === '[' || ch === '{') innerDepth++
+                else if (ch === ')' || ch === ']' || ch === '}') innerDepth--
+                else if (ch === ',' && innerDepth === 0) {
+                  hasInnerComma = true
+                  break
+                }
+              }
+              if (hasInnerComma) {
+                rhs = `[${rhs.slice(1, -1)}]`
+              }
+            }
+            return `${indent}var [${targets}] = ${rhs}`
+          }
         )
       }
 

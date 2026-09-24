@@ -508,33 +508,63 @@ export const ProblemArenaPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Visible Examples (First 3) */}
+                {/* Constraints */}
+                {(currentProblem as any).constraints && (
+                  <div className="space-y-1.5">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                      Constraints
+                    </h3>
+                    <div className="p-3 bg-neutral-950 rounded-lg text-xs font-mono text-neutral-300 border border-neutral-800/80 whitespace-pre-wrap">
+                      {(currentProblem as any).constraints}
+                    </div>
+                  </div>
+                )}
+
+                {/* Worked Examples with Input, Output, and Explanation */}
                 <div className="space-y-4 pt-2">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
                     Examples
                   </h3>
-                  {currentProblem.testCases.slice(0, 3).map((ex, idx) => (
-                    <div
-                      key={idx}
-                      className="p-3.5 bg-neutral-950/80 rounded-lg border border-neutral-800 space-y-2 text-xs"
-                    >
-                      <div className="font-semibold text-neutral-400">
-                        Example {idx + 1}
+                  {((currentProblem.examples && currentProblem.examples.length > 0)
+                    ? currentProblem.examples
+                    : currentProblem.testCases.slice(0, 3)
+                  ).map((ex: any, idx: number) => {
+                    const inputVal = ex.input ?? ''
+                    const outputVal = ex.output ?? ex.expectedOutput ?? ''
+                    const explanationVal = ex.explanation ?? ''
+                    return (
+                      <div
+                        key={idx}
+                        className="p-4 bg-neutral-950/80 rounded-xl border border-neutral-800/90 space-y-3 text-xs"
+                      >
+                        <div className="font-semibold text-neutral-300 flex items-center justify-between">
+                          <span>Example {idx + 1}</span>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-neutral-500 text-[11px] font-medium block">Input:</span>
+                          <pre className="p-2.5 bg-neutral-900 rounded-lg font-mono text-neutral-200 border border-neutral-800/60 overflow-x-auto whitespace-pre-wrap">
+                            {inputVal}
+                          </pre>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-neutral-500 text-[11px] font-medium block">Output:</span>
+                          <pre className="p-2.5 bg-neutral-900 rounded-lg font-mono text-emerald-400 border border-neutral-800/60 overflow-x-auto whitespace-pre-wrap">
+                            {outputVal}
+                          </pre>
+                        </div>
+                        {explanationVal && (
+                          <div className="space-y-1.5 pt-1 border-t border-neutral-800/70">
+                            <span className="text-neutral-400 text-[11px] font-semibold block uppercase tracking-wider">
+                              Explanation:
+                            </span>
+                            <div className="p-3 bg-neutral-900/60 rounded-lg text-neutral-300 text-xs leading-relaxed border border-neutral-800/50 whitespace-pre-wrap">
+                              {explanationVal}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-neutral-500 text-[11px] block">Input:</span>
-                        <pre className="p-2 bg-neutral-900 rounded font-mono text-neutral-200">
-                          {ex.input}
-                        </pre>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-neutral-500 text-[11px] block">Output:</span>
-                        <pre className="p-2 bg-neutral-900 rounded font-mono text-emerald-400">
-                          {ex.expectedOutput}
-                        </pre>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </>
             )}

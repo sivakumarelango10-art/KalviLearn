@@ -1,34 +1,10 @@
 import problemsData from '../problems.json'
 import { LanguageCurriculum, LanguageBelt, LanguageProblem } from './types'
 
-const nodejsBeltsConfig = [
-  {
-    order: 1,
-    name: 'Node.js Belt 1',
-    title: 'JavaScript Core Foundations',
-    description: 'Master Node.js I/O with fs.readFileSync, let/const, types, operators, and conditionals.',
-    color: '#539E43',
-  },
-  {
-    order: 2,
-    name: 'Node.js Belt 2',
-    title: 'Loops & Iterative Control',
-    description: 'Master for/while loops, control flow patterns, and algorithmic loops in Node.js.',
-    color: '#10B981',
-  },
-  {
-    order: 3,
-    name: 'Node.js Belt 3',
-    title: 'Arrays & String Processing',
-    description: 'Master JavaScript arrays, string methods, parsing, and data manipulation in Node.js.',
-    color: '#8B5CF6',
-  },
-]
-
 const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
-  const meta = nodejsBeltsConfig.find((b) => b.order === rawBelt.order) || {
+  const meta = {
     order: rawBelt.order,
-    name: `Node.js Belt ${rawBelt.order}`,
+    name: `${rawBelt.name} (${rawBelt.title})`,
     title: rawBelt.title,
     description: rawBelt.description,
     color: rawBelt.color,
@@ -46,16 +22,20 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
     beltColor: meta.color,
     beltDescription: meta.description,
     order: p.order,
+    globalNumber: (p as any).globalNumber,
+    subdivision: (p as any).subdivision,
     title: p.title,
     description: p.description,
     inputFormat: p.inputFormat,
     outputFormat: p.outputFormat,
-    explanation: (p as { explanation?: string }).explanation,
+    explanation: (p as any).explanation,
+    exampleExplanation: (p as any).exampleExplanation,
+    examples: (p as any).examples || [],
     difficulty: p.difficulty as 'Easy' | 'Medium' | 'Hard',
     xp: 50,
     starterCode:
       p.starterCodes?.javascript ||
-      "const fs = require('fs');\n\nfunction solve() {\n    const input = fs.readFileSync(0, 'utf-8').trim();\n    if (!input) return;\n}\n\nsolve();\n",
+      'const fs = require("fs");\n\nfunction solve() {\n    const input = fs.readFileSync(0, "utf-8").trim();\n    if (!input) return;\n}\n\nsolve();\n',
     testCases: p.testCases || [],
   }))
 
@@ -73,8 +53,8 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
 export const nodejsCurriculum: LanguageCurriculum = {
   language: 'nodejs',
   name: 'Node.js',
-  badgeName: 'Node.js (JavaScript)',
-  description: 'Solve problems using Node.js. Master JavaScript runtime concepts, standard stream I/O, and modern syntax.',
+  badgeName: 'Node 18',
+  description: 'Build fast, scalable algorithms using JavaScript in the Node.js V8 runtime environment.',
   monacoLanguage: 'javascript',
   runnerLanguage: 'javascript',
   belts,

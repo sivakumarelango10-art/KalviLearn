@@ -17,6 +17,14 @@ export interface LanguageProblem {
   inputFormat: string
   outputFormat: string
   explanation?: string
+  exampleExplanation?: string
+  examples?: Array<{
+    input: string
+    output: string
+    explanation?: string
+  }>
+  subdivision?: string
+  globalNumber?: number
   difficulty: 'Easy' | 'Medium' | 'Hard'
   xp: number
   starterCode: string

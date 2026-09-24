@@ -72,11 +72,18 @@ export const DashboardPage: React.FC = () => {
   const totalSolved = userState.solvedSlugs.length
   const overallPercent = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0
 
-  // Current active Belt
+  // Current active Belt across 10 Belts
   const currentBelt = useMemo(() => {
-    if (totalSolved >= 50) return { name: 'Belt 3', title: 'Advanced Algorithmic Patterns', color: '#EF4444' }
-    if (totalSolved >= 20) return { name: 'Belt 2', title: 'Intermediate Data Structures & Logic', color: '#10B981' }
-    return { name: 'Belt 1', title: 'Programming Foundations', color: '#3B82F6' }
+    if (totalSolved >= 410) return { name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
+    if (totalSolved >= 330) return { name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
+    if (totalSolved >= 265) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+    if (totalSolved >= 205) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+    if (totalSolved >= 165) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+    if (totalSolved >= 125) return { name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
+    if (totalSolved >= 85) return { name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
+    if (totalSolved >= 50) return { name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
+    if (totalSolved >= 20) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+    return { name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
   }, [totalSolved])
 
   return (
@@ -93,7 +100,7 @@ export const DashboardPage: React.FC = () => {
               Welcome back, {displayName}
             </h1>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
-              Continue your journey through 85 Belt problems and 10 curriculum modules. Test your algorithmic logic in the Practice Arena and hone your speed.
+              Continue your journey through {totalProblems} Belt problems across 10 progressive Belts. Test your algorithmic logic in the Practice Arena and hone your speed.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">

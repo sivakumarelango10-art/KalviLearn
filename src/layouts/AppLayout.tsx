@@ -46,11 +46,18 @@ export const AppLayout: React.FC = () => {
     }
   }, [user?.id])
 
-  // Calculate current belt based on problems solved
+  // Calculate current belt based on problems solved across 10 Belts
   const getCurrentBelt = () => {
-    if (solvedCount >= 50) return { name: 'Belt 3', color: 'bg-red-50 text-red-700 border-red-200' }
-    if (solvedCount >= 20) return { name: 'Belt 2', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
-    return { name: 'Belt 1', color: 'bg-blue-50 text-blue-700 border-blue-200' }
+    if (solvedCount >= 410) return { name: 'Belt 10 (Black)', color: 'bg-neutral-900 text-white border-neutral-700' }
+    if (solvedCount >= 330) return { name: 'Belt 9 (Sr. Red)', color: 'bg-red-100 text-red-800 border-red-300' }
+    if (solvedCount >= 265) return { name: 'Belt 8 (Red)', color: 'bg-red-50 text-red-700 border-red-200' }
+    if (solvedCount >= 205) return { name: 'Belt 7 (Sr. Brown)', color: 'bg-amber-100 text-amber-900 border-amber-300' }
+    if (solvedCount >= 165) return { name: 'Belt 6 (Brown)', color: 'bg-amber-50 text-amber-800 border-amber-200' }
+    if (solvedCount >= 125) return { name: 'Belt 5 (Blue)', color: 'bg-blue-50 text-blue-700 border-blue-200' }
+    if (solvedCount >= 85) return { name: 'Belt 4 (Purple)', color: 'bg-purple-50 text-purple-700 border-purple-200' }
+    if (solvedCount >= 50) return { name: 'Belt 3 (Green)', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+    if (solvedCount >= 20) return { name: 'Belt 2 (Orange)', color: 'bg-orange-50 text-orange-700 border-orange-200' }
+    return { name: 'Belt 1 (Yellow)', color: 'bg-yellow-50 text-yellow-800 border-yellow-200' }
   }
 
   const belt = getCurrentBelt()

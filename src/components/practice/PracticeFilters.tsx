@@ -1,6 +1,5 @@
 import React from 'react'
 import { Search } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 interface PracticeFiltersProps {
   searchQuery: string
@@ -60,53 +59,24 @@ export const PracticeFilters: React.FC<PracticeFiltersProps> = ({
 
       {/* Filter Pills */}
       <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-        {/* Belt pills */}
-        <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl text-xs font-semibold text-neutral-600">
-          <button
-            onClick={() => onSelectBelt('all')}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
-              selectedBelt === 'all'
-                ? 'bg-white text-neutral-900 shadow-sm scale-105'
-                : 'text-neutral-600 hover:text-neutral-900'
-            )}
-          >
-            All Belts
-          </button>
-          <button
-            onClick={() => onSelectBelt(1)}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
-              selectedBelt === 1
-                ? 'bg-white text-neutral-900 shadow-sm scale-105'
-                : 'text-neutral-600 hover:text-neutral-900'
-            )}
-          >
-            Belt 1
-          </button>
-          <button
-            onClick={() => onSelectBelt(2)}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
-              selectedBelt === 2
-                ? 'bg-white text-neutral-900 shadow-sm scale-105'
-                : 'text-neutral-600 hover:text-neutral-900'
-            )}
-          >
-            Belt 2
-          </button>
-          <button
-            onClick={() => onSelectBelt(3)}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all duration-200 interactive-tab',
-              selectedBelt === 3
-                ? 'bg-white text-neutral-900 shadow-sm scale-105'
-                : 'text-neutral-600 hover:text-neutral-900'
-            )}
-          >
-            Belt 3
-          </button>
-        </div>
+        {/* Belt selector */}
+        <select
+          value={selectedBelt === 'all' ? 'all' : String(selectedBelt)}
+          onChange={(e) => onSelectBelt(e.target.value === 'all' ? 'all' : parseInt(e.target.value, 10))}
+          className="text-xs font-semibold bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-1.5 text-neutral-800 focus:outline-none focus:ring-1 focus:ring-neutral-900 cursor-pointer"
+        >
+          <option value="all">All Belts (10 Belts)</option>
+          <option value="1">Belt 1 (Yellow Belt)</option>
+          <option value="2">Belt 2 (Orange Belt)</option>
+          <option value="3">Belt 3 (Green Belt)</option>
+          <option value="4">Belt 4 (Purple Belt)</option>
+          <option value="5">Belt 5 (Blue Belt)</option>
+          <option value="6">Belt 6 (Brown Belt)</option>
+          <option value="7">Belt 7 (Sr. Brown Belt)</option>
+          <option value="8">Belt 8 (Red Belt)</option>
+          <option value="9">Belt 9 (Sr. Red Belt)</option>
+          <option value="10">Belt 10 (Black Belt)</option>
+        </select>
 
         {/* Difficulty selector */}
         <select

@@ -20,127 +20,97 @@ async function runE2EExecutionAudit() {
   }
 
   // -------------------------------------------------------------
-  // Test 1: M1-LU1 (Belt 1 Q1: Variables and assignment) - Python
+  // Test 1: Belt 1 Q1 (Arithmetic Check Variant 1) - Python
+  // Given integers a, b, and c, compute (a+b)*c - b
   // -------------------------------------------------------------
-  console.log('--- 1. Belt 1: M1-LU1 (Variables and assignment) ---')
-  const m1Lu1SolutionPython = `
+  console.log('--- 1. Belt 1: Q1 (Arithmetic Check Variant 1) in Python ---')
+  const b1q1SolutionPython = `
 import sys
 data = sys.stdin.read().split()
-if len(data) >= 4:
-    initial = int(data[0])
-    c1 = int(data[1])
-    c2 = int(data[2])
-    c3 = int(data[3])
-    print(initial + c1 + c2 + c3)
+if len(data) >= 3:
+    a, b, c = int(data[0]), int(data[1]), int(data[2])
+    print((a + b) * c - b)
 `
   const res1 = await executeQuestion({
-    questionSlug: 'belt-1-q1-variables-and-assignment',
+    questionSlug: 'belt-1-q1-arithmetic-check-v1',
     language: 'python',
-    code: m1Lu1SolutionPython,
+    code: b1q1SolutionPython,
     isSubmit: true,
   })
 
-  assert(res1.success === true, 'M1-LU1: Python execution succeeds')
-  assert(res1.passed === 10, 'M1-LU1: Python passes all 10 test cases (10/10)', { passed: res1.passed, total: res1.total })
-  assert(res1.testCases.length === 10, 'M1-LU1: Returns 10 test case results')
-
-  // Also verify alias access via M1-LU1
-  const res1Alias = await executeQuestion({
-    questionSlug: 'M1-LU1',
-    language: 'python',
-    code: m1Lu1SolutionPython,
-    isSubmit: false,
-  })
-  assert(res1Alias.passed === 10, 'M1-LU1: Resolution via LU ID "M1-LU1" passes all 10 test cases')
+  assert(res1.success === true, 'Belt 1 Q1: Python execution succeeds')
+  assert(res1.passed === 10, 'Belt 1 Q1: Python passes all 10 test cases (10/10)', { passed: res1.passed, total: res1.total })
+  assert(res1.testCases.length === 10, 'Belt 1 Q1: Returns 10 test case results')
 
   // -------------------------------------------------------------
-  // Test 2: M1-LU1 in Node.js (JavaScript)
+  // Test 2: Belt 1 Q1 in Node.js (JavaScript)
   // -------------------------------------------------------------
-  console.log('\n--- 2. Belt 1: M1-LU1 in Node.js ---')
-  const m1Lu1SolutionJs = `
+  console.log('\n--- 2. Belt 1: Q1 in Node.js ---')
+  const b1q1SolutionJs = `
 const fs = require('fs');
 const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);
-if (input.length >= 4) {
-  const sum = Number(input[0]) + Number(input[1]) + Number(input[2]) + Number(input[3]);
-  console.log(sum);
+if (input.length >= 3) {
+  const a = Number(input[0]), b = Number(input[1]), c = Number(input[2]);
+  console.log((a + b) * c - b);
 }
 `
   const resJs = await executeQuestion({
-    questionSlug: 'belt-1-q1-variables-and-assignment',
+    questionSlug: 'belt-1-q1-arithmetic-check-v1',
     language: 'nodejs',
-    code: m1Lu1SolutionJs,
+    code: b1q1SolutionJs,
     isSubmit: true,
   })
-  assert(resJs.success === true && resJs.passed === 10, 'M1-LU1: Node.js passes all 10 test cases')
+  assert(resJs.success === true && resJs.passed === 10, 'Belt 1 Q1: Node.js passes all 10 test cases')
 
   // -------------------------------------------------------------
-  // Test 3: M3-LU5 (Belt 2 Q5: Traversal) - Python
-  // Traversal: print array from last element to first
+  // Test 3: Belt 1 Q2 (Absolute Difference Variant 1) in Python
+  // Given two integers, print their absolute difference.
   // -------------------------------------------------------------
-  console.log('\n--- 3. Belt 2: M3-LU5 (Traversal) ---')
-  const m3Lu5Solution = `
+  console.log('\n--- 3. Belt 1: Q2 (Absolute Difference Variant 1) in Python ---')
+  const b1q2Solution = `
 import sys
 data = sys.stdin.read().split()
-if len(data) >= 1:
-    n = int(data[0])
-    res = []
-    for i in range(n, 0, -1):
-        res.append(data[i])
-    print(' '.join(res))
+if len(data) >= 2:
+    a, b = int(data[0]), int(data[1])
+    print(abs(a - b))
 `
   const res3 = await executeQuestion({
-    questionSlug: 'belt-2-q5-traversal',
+    questionSlug: 'belt-1-q2-absolute-difference-v1',
     language: 'python',
-    code: m3Lu5Solution,
+    code: b1q2Solution,
     isSubmit: true,
   })
-  assert(res3.success === true && res3.passed === 10, 'M3-LU5 (Traversal): Python passes all 10 test cases', {
+  assert(res3.success === true && res3.passed === 10, 'Belt 1 Q2: Python passes all 10 test cases', {
     passed: res3.passed,
     total: res3.total,
   })
 
   // -------------------------------------------------------------
-  // Test 4: M10-LU6 (Belt 3 Q35: Advanced recursion - Tower of Hanoi)
+  // Test 4: Belt 2 Q1 (Arithmetic Check Variant 1) in Python
   // -------------------------------------------------------------
-  console.log('\n--- 4. Belt 3: M10-LU6 (Advanced recursion - Tower of Hanoi) ---')
-  const m10Lu6Solution = `
-import sys
-data = sys.stdin.read().split()
-if data:
-    n = int(data[0])
-    if n == 0:
-        print(0)
-    else:
-        print((1 << n) - 1)
-`
+  console.log('\n--- 4. Belt 2: Q1 in Python ---')
   const res4 = await executeQuestion({
-    questionSlug: 'belt-3-q35-advanced-recursion',
+    questionSlug: 'belt-2-q1-arithmetic-check-v1',
     language: 'python',
-    code: m10Lu6Solution,
+    code: b1q1SolutionPython,
     isSubmit: true,
   })
-  assert(res4.success === true && res4.passed === 10, 'M10-LU6 (Advanced recursion): Passes all 10 test cases (2^n - 1)', {
+  assert(res4.success === true && res4.passed === 10, 'Belt 2 Q1: Python passes all 10 test cases', {
     passed: res4.passed,
     total: res4.total,
   })
 
   // -------------------------------------------------------------
-  // Test 5: Legacy fixture "sum-of-two-numbers" preservation
+  // Test 5: Belt 10 Q90 (Pair Sum Exists Variant 3) presence
   // -------------------------------------------------------------
-  console.log('\n--- 5. Legacy Fixture Preservation ---')
-  const legacySolution = `
-import sys
-data = sys.stdin.read().split()
-if len(data) >= 2:
-    print(int(data[0]) + int(data[1]))
-`
-  const legacyRes = await executeQuestion({
-    questionSlug: 'sum-of-two-numbers',
+  console.log('\n--- 5. Belt 10: Q90 Execution Check ---')
+  const res5 = await executeQuestion({
+    questionSlug: 'belt-10-q90-pair-sum-exists-v3',
     language: 'python',
-    code: legacySolution,
-    isSubmit: true,
+    code: 'print(0)',
+    isSubmit: false,
   })
-  assert(legacyRes.success === true && legacyRes.passed === 10, 'Legacy "sum-of-two-numbers" fixture passes all 10 cases')
+  assert(res5.total === 10, 'Belt 10 Q90: Successfully evaluates 10 test cases on Belt 10')
 
   console.log('\n========================================================================')
   console.log(`🏁 E2E EXECUTION AUDIT COMPLETE: ${passedTests} PASSED, ${failedTests} FAILED`)

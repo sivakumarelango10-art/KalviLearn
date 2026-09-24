@@ -1,34 +1,10 @@
 import problemsData from '../problems.json'
 import { LanguageCurriculum, LanguageBelt, LanguageProblem } from './types'
 
-const pythonBeltsConfig = [
-  {
-    order: 1,
-    name: 'Python Belt 1',
-    title: 'Python Foundations',
-    description: 'Master Python fundamentals, print, input, variables, operators, and conditionals.',
-    color: '#3B82F6',
-  },
-  {
-    order: 2,
-    name: 'Python Belt 2',
-    title: 'Loops & Control Flow in Python',
-    description: 'Master while loops, for-in loops, range(), break/continue, and Pythonic iteration.',
-    color: '#10B981',
-  },
-  {
-    order: 3,
-    name: 'Python Belt 3',
-    title: 'Lists & String Manipulation',
-    description: 'Master Python lists, string methods, slicing, traversal, and algorithmic transformations.',
-    color: '#8B5CF6',
-  },
-]
-
 const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
-  const meta = pythonBeltsConfig.find((b) => b.order === rawBelt.order) || {
+  const meta = {
     order: rawBelt.order,
-    name: `Python Belt ${rawBelt.order}`,
+    name: `${rawBelt.name} (${rawBelt.title})`,
     title: rawBelt.title,
     description: rawBelt.description,
     color: rawBelt.color,
@@ -46,11 +22,15 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
     beltColor: meta.color,
     beltDescription: meta.description,
     order: p.order,
+    globalNumber: (p as any).globalNumber,
+    subdivision: (p as any).subdivision,
     title: p.title,
     description: p.description,
     inputFormat: p.inputFormat,
     outputFormat: p.outputFormat,
-    explanation: (p as { explanation?: string }).explanation,
+    explanation: (p as any).explanation,
+    exampleExplanation: (p as any).exampleExplanation,
+    examples: (p as any).examples || [],
     difficulty: p.difficulty as 'Easy' | 'Medium' | 'Hard',
     xp: 50,
     starterCode:

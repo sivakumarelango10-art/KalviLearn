@@ -142,7 +142,7 @@ export const LanguagePracticePage: React.FC = () => {
       />
 
       {/* Belt Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
         {beltStats.map((b) => {
           const isSelected = selectedBelt === b.order
           return (

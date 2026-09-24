@@ -1,34 +1,10 @@
 import problemsData from '../problems.json'
 import { LanguageCurriculum, LanguageBelt, LanguageProblem } from './types'
 
-const cppBeltsConfig = [
-  {
-    order: 1,
-    name: 'C++ Belt 1',
-    title: 'C++ Core Syntax & Fast I/O',
-    description: 'Master cin/cout, fast I/O optimizations, fundamental types, operators, and branching.',
-    color: '#00599C',
-  },
-  {
-    order: 2,
-    name: 'C++ Belt 2',
-    title: 'Loops & Control Flow',
-    description: 'Master for, while, do-while loops, nested loops, and loop control statements in C++.',
-    color: '#10B981',
-  },
-  {
-    order: 3,
-    name: 'C++ Belt 3',
-    title: 'Arrays, Vectors & Strings',
-    description: 'Master std::vector, C-arrays, string operations, indexing, and array algorithms in C++.',
-    color: '#8B5CF6',
-  },
-]
-
 const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
-  const meta = cppBeltsConfig.find((b) => b.order === rawBelt.order) || {
+  const meta = {
     order: rawBelt.order,
-    name: `C++ Belt ${rawBelt.order}`,
+    name: `${rawBelt.name} (${rawBelt.title})`,
     title: rawBelt.title,
     description: rawBelt.description,
     color: rawBelt.color,
@@ -46,16 +22,20 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
     beltColor: meta.color,
     beltDescription: meta.description,
     order: p.order,
+    globalNumber: (p as any).globalNumber,
+    subdivision: (p as any).subdivision,
     title: p.title,
     description: p.description,
     inputFormat: p.inputFormat,
     outputFormat: p.outputFormat,
-    explanation: (p as { explanation?: string }).explanation,
+    explanation: (p as any).explanation,
+    exampleExplanation: (p as any).exampleExplanation,
+    examples: (p as any).examples || [],
     difficulty: p.difficulty as 'Easy' | 'Medium' | 'Hard',
     xp: 50,
     starterCode:
       p.starterCodes?.cpp ||
-      '#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    return 0;\n}\n',
+      '#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}\n',
     testCases: p.testCases || [],
   }))
 
@@ -73,8 +53,8 @@ const belts: LanguageBelt[] = problemsData.map((rawBelt) => {
 export const cppCurriculum: LanguageCurriculum = {
   language: 'cpp',
   name: 'C++',
-  badgeName: 'C++ (g++)',
-  description: 'Solve problems using C++. Master fast execution, Standard Template Library (STL), and memory efficiency.',
+  badgeName: 'C++ 20',
+  description: 'Write lightning-fast, high-performance competitive programming solutions with standard C++.',
   monacoLanguage: 'cpp',
   runnerLanguage: 'cpp',
   belts,

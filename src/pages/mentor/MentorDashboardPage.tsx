@@ -27,7 +27,7 @@ export const MentorDashboardPage: React.FC = () => {
   const [students, setStudents] = useState<MentorStudent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedBeltFilter, setSelectedBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
+  const [selectedBeltFilter, setSelectedBeltFilter] = useState<string>('all')
   const [selectedStudent, setSelectedStudent] = useState<MentorStudent | null>(null)
 
   useEffect(() => {
@@ -204,7 +204,9 @@ export const MentorDashboardPage: React.FC = () => {
 
             {/* Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              {(['all', 'Belt 3', 'Belt 2', 'Belt 1', 'attention'] as const).map((filter) => {
+              {(['all', 'attention', ...Array.from({ length: 10 }, (_, i) => `Belt ${i + 1}`)])
+                .filter((f) => f === 'all' || f === 'attention' || students.some((s) => s.belt === f))
+                .map((filter) => {
                 const count =
                   filter === 'all'
                     ? students.length

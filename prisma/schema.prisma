@@ -31,6 +31,9 @@ model Problem {
   inputFormat     String         @db.Text
   outputFormat    String         @db.Text
   explanation     String?        @db.Text
+  exampleExplanation String?     @db.Text
+  examples        Json?
+  subdivision     String?
   starterCodes    Json
   testCases       TestCase[]
   submissions     Submission[]
