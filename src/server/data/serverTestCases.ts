@@ -511,8 +511,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "1",
-        "expectedOutput": "50",
+        "input": "15",
+        "expectedOutput": "170",
         "isHidden": true
       },
       {
@@ -1851,8 +1851,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "1",
-        "expectedOutput": "50",
+        "input": "15",
+        "expectedOutput": "170",
         "isHidden": true
       },
       {
@@ -3276,8 +3276,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]
@@ -4616,8 +4616,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]
@@ -6961,8 +6961,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]
@@ -9641,8 +9641,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]
@@ -15001,8 +15001,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]
@@ -32086,8 +32086,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "3\n1 2 3",
-        "expectedOutput": "3 2 1",
+        "input": "3\n4 5 6",
+        "expectedOutput": "6 5 4",
         "isHidden": true
       }
     ]

@@ -25,7 +25,8 @@
     "test:multilang": "npx tsx scripts/test-multilang-revision.ts",
     "test:practice-import": "npx tsx scripts/test-imported-practice.ts",
     "test:practice-e2e": "npx tsx scripts/test-e2e-practice-execution.ts",
-    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e",
+    "test:audit": "npx tsx scripts/test-master-audit.ts",
+    "test:all": "npm test && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:audit",
     "preview": "vite preview"
   },
   "dependencies": {
