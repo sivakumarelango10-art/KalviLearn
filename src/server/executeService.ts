@@ -1,7 +1,4 @@
-import * as vm from 'node:vm'
-import { executePython } from '../lib/runner/pythonRunner'
-import { executeCpp } from '../lib/runner/cppRunner'
-import { executeJava } from '../lib/runner/javaRunner'
+import { runInSandbox } from './sandboxHost'
 import * as serverTestCasesModule from './data/serverTestCases'
 
 export interface ExecuteRequest {
@@ -71,160 +68,6 @@ function compareOutput(actual: string, expected: string): boolean {
   return false
 }
 
-function executeJavaScript(code: string, input: string): { output: string; error?: string } {
-  // Security guard against sandbox escape and secret access attempts
-  if (
-    /process\s*\.\s*env/i.test(code) ||
-    /child_process/i.test(code) ||
-    /__proto__/i.test(code) ||
-    /binding\s*\(\s*['"]process/i.test(code)
-  ) {
-    return {
-      output: '',
-      error: 'Security Violation: Access to system environment, process, and native bindings is strictly forbidden.',
-    }
-  }
-
-  const outputs: string[] = []
-  const normalizedInput = input.replace(/\r\n/g, '\n')
-  const inputLines = normalizedInput.split('\n')
-  const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean)
-
-  const customConsole = {
-    log: (...args: unknown[]) => outputs.push(args.map((a) => (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a))).join(' ')),
-    info: (...args: unknown[]) => outputs.push(args.map((a) => (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a))).join(' ')),
-    error: (...args: unknown[]) => outputs.push(args.map((a) => String(a)).join(' ')),
-    warn: () => {},
-  }
-
-  const mockFs = {
-    readFileSync: (_fd: unknown, _enc?: string) => normalizedInput,
-    readSync: () => normalizedInput,
-  }
-
-  const mockProcess = {
-    stdin: {
-      read: () => normalizedInput,
-      on: (event: string, cb: (data?: unknown) => void) => {
-        if (event === 'data') cb(normalizedInput)
-        if (event === 'end') cb()
-      },
-    },
-    stdout: { write: (data: unknown) => outputs.push(String(data)) },
-    exit: () => {},
-  }
-
-  const mockReadline = {
-    createInterface: () => ({
-      on: (event: string, cb: (line?: string) => void) => {
-        if (event === 'line') {
-          for (const l of inputLines) cb(l)
-        }
-        if (event === 'close') cb()
-      },
-      close: () => {},
-    }),
-  }
-
-  const mockRequire = (mod: string) => {
-    if (mod === 'fs') return mockFs
-    if (mod === 'readline') return mockReadline
-    if (mod === 'process') return mockProcess
-    return {}
-  }
-
-  const prelude = `
-    "use strict";
-    try {
-      Object.defineProperty(Function.prototype, 'constructor', {
-        value: function() { throw new Error('Security Violation: Dynamic Function compilation is disabled.'); },
-        configurable: false,
-        writable: false,
-      });
-    } catch (_) {}
-    const print = console.log;
-    let __lIdx = 0, __tIdx = 0;
-    const __lines = ${JSON.stringify(inputLines)};
-    const __tokens = ${JSON.stringify(inputTokens)};
-    const readline = () => __lIdx < __lines.length ? __lines[__lIdx++] : '';
-    const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
-  `
-
-  try {
-    const sandbox = {
-      console: customConsole,
-      require: mockRequire,
-      process: mockProcess,
-      setTimeout: undefined,
-      setInterval: undefined,
-      setImmediate: undefined,
-      global: undefined,
-      globalThis: undefined,
-    }
-    const script = new vm.Script(`${prelude}\n${code}`)
-    const context = vm.createContext(sandbox)
-    script.runInContext(context, { timeout: 2000 })
-    return { output: outputs.join('\n').trim() }
-  } catch (err: unknown) {
-    const errMsg = err instanceof Error ? err.message : 'JavaScript Runtime Error'
-    return { output: outputs.join('\n').trim(), error: errMsg }
-  }
-}
-
-function runSingleTestCase(code: string, language: string, input: string): { output: string; error?: string } {
-  const lang = (language || '').toLowerCase()
-  if (lang === 'python') {
-    return executePython(code, input)
-  } else if (lang === 'cpp' || lang === 'c++') {
-    return executeCpp(code, input)
-  } else if (lang === 'java') {
-    return executeJava(code, input)
-  }
-  return executeJavaScript(code, input)
-}
-
-function checkCompilation(code: string, language: string): { ok: boolean; error?: string } {
-  // Pre-execution security filter: block process/env/child_process escapes across all languages
-  if (
-    /process\s*\.\s*env/i.test(code) ||
-    /child_process/i.test(code) ||
-    /__proto__/i.test(code) ||
-    /binding\s*\(\s*['"]process/i.test(code)
-  ) {
-    return { ok: false, error: 'SecurityError: Access to process/environment bindings is prohibited.' }
-  }
-
-  const lang = (language || '').toLowerCase()
-  if (lang === 'python') {
-    const dryRun = executePython(code, '')
-    if (dryRun.error && (
-      dryRun.error.includes('SyntaxError') ||
-      dryRun.error.includes('Unexpected') ||
-      dryRun.error.toLowerCase().includes('syntax error')
-    )) {
-      return { ok: false, error: dryRun.error }
-    }
-  } else if (lang === 'javascript' || lang === 'js') {
-    try {
-      new Function('console', 'require', 'process', code)
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : String(err)
-      return { ok: false, error: `SyntaxError: ${errMsg}` }
-    }
-  } else if (lang === 'cpp' || lang === 'c++') {
-    const dryRun = executeCpp(code, '')
-    if (dryRun.error && (dryRun.error.toLowerCase().includes('compil') || dryRun.error.toLowerCase().includes('syntax'))) {
-      return { ok: false, error: dryRun.error }
-    }
-  } else if (lang === 'java') {
-    const dryRun = executeJava(code, '')
-    if (dryRun.error && (dryRun.error.toLowerCase().includes('compil') || dryRun.error.toLowerCase().includes('syntax'))) {
-      return { ok: false, error: dryRun.error }
-    }
-  }
-  return { ok: true }
-}
-
 /**
  * Executes a question's code against all configured test cases (exactly 10: 3 visible + 7 hidden).
  * Both Run and Submit execute the full evaluation suite.
@@ -279,10 +122,12 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     }
   }
 
-  // Pre-check for compilation/syntax errors
-  const compCheck = checkCompilation(code, language)
-  if (!compCheck.ok) {
-    const isSecErr = compCheck.error?.includes('SecurityError')
+  // Pre-check + execution run together inside the sandbox worker (empty env, capped heap, hard kill).
+  const inputs = problem?.testCases?.length === 10 ? problem.testCases.map((t) => t.input) : []
+  const outcome = await runInSandbox({ code, language, inputs })
+
+  if (outcome.kind === 'precheck_failed') {
+    const isSecErr = outcome.error.includes('SecurityError')
     return {
       success: false,
       total: authoritativeTotal,
@@ -290,11 +135,29 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
       executed: 0,
       overallTimeMs: 0,
       status: isSecErr ? 'RUNTIME_ERROR' : 'COMPILATION_ERROR',
-      error: isSecErr ? compCheck.error : 'Compilation Error',
-      message: compCheck.error || 'Syntax / Compilation error detected in your code.',
+      error: isSecErr ? outcome.error : 'Compilation Error',
+      message: outcome.error || 'Syntax / Compilation error detected in your code.',
       testCases: [],
     }
   }
+  if (outcome.kind === 'sandbox_failed' && outcome.reason === 'unavailable') {
+    return {
+      success: false,
+      total: authoritativeTotal,
+      passed: 0,
+      executed: 0,
+      overallTimeMs: 0,
+      status: 'SYSTEM_ERROR',
+      error: 'Execution Unavailable',
+      message: outcome.message,
+      testCases: [],
+    }
+  }
+  // A killed worker (memory / timeout / crash) fails every case with the reason; results are still returned in full.
+  const executed: Array<{ output: string; error?: string; ms: number }> =
+    outcome.kind === 'ran'
+      ? outcome.cases
+      : inputs.map(() => ({ output: '', error: outcome.message, ms: 0 }))
 
   if (!problem) {
     return {
@@ -338,9 +201,8 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
 
   for (let i = 0; i < casesToExecute.length; i++) {
     const tc = casesToExecute[i]
-    const tcStart = performance.now()
-    const exec = runSingleTestCase(code, language, tc.input)
-    const tcTime = Math.round(performance.now() - tcStart)
+    const exec = { output: executed[i].output, error: executed[i].error }
+    const tcTime = executed[i].ms
 
     // Check for syntax / compilation error during execution
     if (exec.error && (

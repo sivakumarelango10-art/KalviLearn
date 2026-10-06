@@ -1,3 +1,5 @@
+import { fetchAllRows } from './supabasePaging'
+import { registerCacheClearer } from './cacheRegistry'
 import { supabase } from './supabase'
 import { calculateAuthoritativeStreak } from './streak'
 
@@ -191,6 +193,14 @@ const mentorRosterCache = new Map<string, CacheEntry<MentorStudent[]>>()
 const mentorSubmissionsCache = new Map<string, CacheEntry<{ submissions: MentorSubmission[]; hasMore: boolean }>>()
 export const problemLookupCache = new Map<string, { title: string; slug: string; beltName: string; beltColor: string }>()
 
+// Per-session caches are wiped on logout / account switch.
+registerCacheClearer(() => {
+  mentorProfileCache.clear()
+  mentorStudentUsersCache.clear()
+  mentorRosterCache.clear()
+  mentorSubmissionsCache.clear()
+})
+
 /**
  * Invalidates cached mentor telemetry to guarantee real-time data consistency.
  */
@@ -370,8 +380,8 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
     const studentUserIds = studentUsers.map((s) => s.userId)
 
     const [progressRes, submissionsRes] = await Promise.all([
-      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED'),
-      supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests, executionTimeMs, Problem(slug, title, difficulty, Belt(order, name, color))').in('userId', studentUserIds).order('createdAt', { ascending: false }),
+      fetchAllRows(() => supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED')),
+      fetchAllRows(() => supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests, executionTimeMs, Problem(slug, title, difficulty, Belt(order, name, color))').in('userId', studentUserIds), [{ column: 'createdAt', ascending: false }]),
     ])
 
     const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; xpEarned?: number; Problem?: unknown }>>()
@@ -649,8 +659,8 @@ export async function fetchMentorSubmissions(
 export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
   try {
     const [progressRes, submissionsRes] = await Promise.all([
-      supabase.from('UserProgress').select('id, userId, status, Problem(beltId, Belt(order, name, color))').eq('status', 'SOLVED'),
-      supabase.from('Submission').select('id, status, Problem(beltId, Belt(order))'),
+      fetchAllRows(() => supabase.from('UserProgress').select('id, userId, status, Problem(beltId, Belt(order, name, color))').eq('status', 'SOLVED')),
+      fetchAllRows(() => supabase.from('Submission').select('id, status, Problem(beltId, Belt(order))')),
     ])
     const progressRows = progressRes.data || []
     const submissionRows = submissionsRes.data || []

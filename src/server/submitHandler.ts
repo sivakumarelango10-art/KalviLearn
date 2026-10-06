@@ -1,53 +1,240 @@
 import type { IncomingMessage, ServerResponse } from 'http'
+import { randomUUID } from 'node:crypto'
 import { executeQuestion } from './executeService'
-import { createClient } from '@supabase/supabase-js'
+import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
+import { hitRateLimit } from './rateLimit'
+import { applyCors, getClientIp, PayloadTooLargeError, RateLimiter, readJsonBody } from './httpSecurity'
 
-// Supabase client for server-authoritative submission with service role key if available, fallback to environment
-const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://iavxnhwbgoarnexmyxpn.supabase.co'
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40'
-const supabaseServer = createClient(supabaseUrl, supabaseKey)
+const SOLVE_XP = 50
+const REQUIRED_TESTS = 10
 
-// In-memory sliding-window rate limiter (e.g. max 30 submissions/minute per IP/user)
-interface RateRecord {
-  count: number
-  resetTime: number
-}
-const rateLimitMap = new Map<string, RateRecord>()
+const ipLimiter = new RateLimiter(300, 60_000)
+const userLimiter = new RateLimiter(30, 60_000)
 
-// In-memory idempotency deduplication cache
-const idempotencyCache = new Map<string, { timestamp: number; response: any }>()
+// Idempotency: a repeated key from the SAME user within the TTL returns the first result. In-flight
+// requests share one promise so a double-click can never create two submissions / two XP awards.
+const IDEMPOTENCY_TTL_MS = 60_000
+const idempotencyCache = new Map<string, { timestamp: number; promise: Promise<SubmitOutcome> }>()
 
-// In-memory Problem Slug -> UUID cache to eliminate redundant Supabase round-trips
+// Problem slug -> id never changes at runtime; cache removes a Supabase round-trip per submission.
 const problemIdCache = new Map<string, string>()
 
-function pruneSubmitCaches() {
+export function resetSubmitStateForTesting() {
+  ipLimiter.reset()
+  userLimiter.reset()
+  idempotencyCache.clear()
+  problemIdCache.clear()
+}
+
+interface SubmitOutcome {
+  statusCode: number
+  payload: Record<string, unknown>
+}
+
+function pruneIdempotencyCache() {
+  if (idempotencyCache.size < 2000) return
   const now = Date.now()
-  if (rateLimitMap.size > 2000) {
-    for (const [key, record] of rateLimitMap.entries()) {
-      if (now > record.resetTime) rateLimitMap.delete(key)
-    }
+  for (const [key, value] of idempotencyCache) {
+    if (now - value.timestamp > IDEMPOTENCY_TTL_MS) idempotencyCache.delete(key)
   }
-  if (idempotencyCache.size > 2000) {
-    for (const [key, val] of idempotencyCache.entries()) {
-      if (now - val.timestamp > 120000) idempotencyCache.delete(key)
-    }
+  while (idempotencyCache.size >= 2000) {
+    const oldest = idempotencyCache.keys().next().value
+    if (oldest === undefined) break
+    idempotencyCache.delete(oldest)
   }
 }
 
-function checkRateLimit(key: string, maxLimit = 30, windowMs = 60000): { allowed: boolean; retryAfter?: number } {
-  pruneSubmitCaches()
-  const now = Date.now()
-  const record = rateLimitMap.get(key)
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(key, { count: 1, resetTime: now + windowMs })
-    return { allowed: true }
+const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,127}$/i
+const MAX_CODE_CHARS = 65536
+
+function normalizeSubmissionLanguage(raw: string): string | null {
+  const l = (raw || '').toLowerCase()
+  if (l === 'javascript' || l === 'js' || l === 'node' || l === 'nodejs') return 'nodejs'
+  if (l === 'java') return 'java'
+  if (l === 'cpp' || l === 'c++') return 'cpp'
+  if (l === 'python' || l === 'py') return 'python'
+  return null
+}
+
+async function resolveProblemId(slug: string): Promise<string | null> {
+  const cachedId = problemIdCache.get(slug)
+  if (cachedId) return cachedId
+  const { data } = await supabaseServer.from('Problem').select('id').eq('slug', slug).maybeSingle()
+  if (data?.id) {
+    const id = String(data.id)
+    problemIdCache.set(slug, id)
+    return id
   }
-  if (record.count >= maxLimit) {
-    const retryAfter = Math.ceil((record.resetTime - now) / 1000)
-    return { allowed: false, retryAfter }
+  return null
+}
+
+interface PersistenceResult {
+  saved: boolean
+  submissionId: string | null
+  progressUpdated: boolean
+  xpEarned: number
+}
+
+/**
+ * Server-authoritative persistence. The caller identity is the verified token's user id.
+ * Logical identity of a progress row is (userId, problemId, language): languages never overwrite each other.
+ */
+async function persistSubmission(params: {
+  userId: string
+  problemId: string
+  language: string
+  code: string
+  allPassed: boolean
+  passed: number
+  total: number
+  executionTimeMs: number
+}): Promise<PersistenceResult> {
+  const { userId, problemId, language, code, allPassed, passed, total, executionTimeMs } = params
+  const result: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
+  const now = new Date().toISOString()
+
+  const submissionId = randomUUID()
+  const { error: subError } = await supabaseServer.from('Submission').insert({
+    id: submissionId,
+    userId,
+    problemId,
+    language,
+    code,
+    status: allPassed ? 'PASSED' : 'FAILED',
+    passedTests: passed,
+    totalTests: total,
+    testResults: [], // hidden test details are never stored client-visible
+    executionTimeMs,
+    createdAt: now,
+  })
+  if (subError) {
+    console.error('[api/submit] submission insert failed:', subError.code)
+    return result
   }
-  record.count++
-  return { allowed: true }
+  result.submissionId = submissionId
+  result.saved = true
+
+  if (!allPassed) return result
+
+  const { data: existing, error: lookupError } = await supabaseServer
+    .from('UserProgress')
+    .select('id, status, attempts, xpEarned')
+    .eq('userId', userId)
+    .eq('problemId', problemId)
+    .eq('language', language)
+    .maybeSingle()
+  if (lookupError) {
+    console.error('[api/submit] progress lookup failed:', lookupError.code)
+    return result
+  }
+
+  if (!existing) {
+    const { error: insertError } = await supabaseServer.from('UserProgress').insert({
+      id: randomUUID(),
+      userId,
+      problemId,
+      language,
+      status: 'SOLVED',
+      bestCode: code,
+      solvedAt: now,
+      attempts: 1,
+      xpEarned: SOLVE_XP,
+    })
+    if (!insertError) {
+      result.progressUpdated = true
+      result.xpEarned = SOLVE_XP
+      return result
+    }
+    // 23505 = a concurrent request created the row first (unique userId+problemId+language): fall through
+    // and treat this as a repeat solve so XP is awarded exactly once.
+    if (insertError.code !== '23505') {
+      console.error('[api/submit] progress insert failed:', insertError.code)
+      return result
+    }
+    const retry = await supabaseServer
+      .from('UserProgress')
+      .select('id, status, attempts, xpEarned')
+      .eq('userId', userId)
+      .eq('problemId', problemId)
+      .eq('language', language)
+      .maybeSingle()
+    if (!retry.data) return result
+    return updateExistingSolve(retry.data, code, now, result)
+  }
+
+  return updateExistingSolve(existing, code, now, result)
+}
+
+async function updateExistingSolve(
+  existing: { id: string; status: string; attempts: number | null; xpEarned: number | null },
+  code: string,
+  now: string,
+  result: PersistenceResult
+): Promise<PersistenceResult> {
+  const wasSolved = existing.status === 'SOLVED'
+  const update: Record<string, unknown> = {
+    status: 'SOLVED',
+    bestCode: code,
+    attempts: (existing.attempts || 0) + 1,
+  }
+  if (!wasSolved) {
+    update.solvedAt = now
+    update.xpEarned = SOLVE_XP
+  }
+  const { error } = await supabaseServer.from('UserProgress').update(update).eq('id', existing.id)
+  if (error) {
+    console.error('[api/submit] progress update failed:', error.code)
+    return result
+  }
+  result.progressUpdated = true
+  result.xpEarned = wasSolved ? 0 : SOLVE_XP
+  return result
+}
+
+async function processSubmission(params: {
+  userId: string
+  questionSlug: string
+  language: string
+  code: string
+  persist: boolean
+}): Promise<SubmitOutcome> {
+  const { userId, questionSlug, language, code, persist } = params
+
+  // 1. Authoritatively evaluate all test cases on the server
+  const evalResult = await executeQuestion({ questionSlug, language, code, isSubmit: true })
+  const allPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total === REQUIRED_TESTS
+
+  // 2. Persist (best effort - the evaluation result is still returned if storage is unavailable)
+  let persistence: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
+  if (persist && evalResult.error !== 'Question Not Found') {
+    try {
+      const problemId = await resolveProblemId(questionSlug)
+      if (problemId) {
+        persistence = await persistSubmission({
+          userId,
+          problemId,
+          language,
+          code,
+          allPassed,
+          passed: evalResult.passed,
+          total: evalResult.total,
+          executionTimeMs: evalResult.overallTimeMs,
+        })
+      }
+    } catch (dbErr) {
+      console.error('[api/submit] persistence failure:', dbErr instanceof Error ? dbErr.message : 'unknown')
+    }
+  }
+
+  return {
+    statusCode: 200,
+    payload: {
+      ...evalResult,
+      persistence,
+      isSolved: allPassed,
+      xpAwarded: persistence.xpEarned,
+    },
+  }
 }
 
 export default async function handler(
@@ -63,10 +250,7 @@ export default async function handler(
     res.end(JSON.stringify(data))
   }
 
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Idempotency-Key')
+  applyCors(req, res, { methods: 'POST, OPTIONS', headers: 'Content-Type, Authorization, X-Idempotency-Key' })
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
@@ -78,229 +262,102 @@ export default async function handler(
     return sendJson(405, { error: 'Method Not Allowed. Use POST.' })
   }
 
-  // Client IP for rate limiting
-  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket?.remoteAddress || '127.0.0.1'
-  const rate = checkRateLimit(`submit_${ip}`, 30, 60000)
-  if (!rate.allowed) {
-    res.setHeader('Retry-After', String(rate.retryAfter || 60))
-    return sendJson(429, {
+  const ipRate = ipLimiter.check(getClientIp(req))
+  if (!ipRate.allowed) {
+    res.setHeader('Retry-After', String(ipRate.retryAfter || 60))
+    return sendJson(429, { success: false, error: 'Too Many Requests', message: 'Rate limit exceeded. Please retry shortly.' })
+  }
+
+  // Authoritative authentication: identity comes from the verified token + users table only.
+  const authResult = await authenticateFeedbackRequest((req.headers['authorization'] as string) || '')
+  if (!authResult.authenticated || !authResult.user) {
+    return sendJson(authResult.statusCode || 401, {
       success: false,
-      error: 'Too Many Requests',
-      message: `Submission rate limit exceeded. Please wait ${rate.retryAfter} seconds before submitting again.`,
+      error: 'Unauthorized',
+      message: 'Authentication is required to submit code.',
+    })
+  }
+  const authenticatedUser = authResult.user
+
+  let body: Record<string, unknown>
+  try {
+    body = await readJsonBody(req, 256 * 1024)
+  } catch (err) {
+    if (err instanceof PayloadTooLargeError) {
+      return sendJson(413, { success: false, error: 'Payload Too Large', message: 'Request body is too large.' })
+    }
+    return sendJson(400, { success: false, error: 'Bad Request', message: 'Malformed request body.' })
+  }
+
+  const questionSlug =
+    typeof body.questionSlug === 'string' ? body.questionSlug : typeof body.problemSlug === 'string' ? body.problemSlug : ''
+  const rawLanguage = typeof body.language === 'string' ? body.language : ''
+  const code = typeof body.code === 'string' ? body.code : ''
+  const claimedUserId = typeof body.userId === 'string' ? body.userId : undefined
+
+  // IDOR guard: a request may only ever act as the authenticated user.
+  if (claimedUserId && claimedUserId !== 'guest' && claimedUserId !== authenticatedUser.id) {
+    return sendJson(403, {
+      success: false,
+      error: 'Forbidden',
+      message: 'Cannot submit code on behalf of another user.',
     })
   }
 
-  // Parse JSON Body
-  let body = req.body
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body)
-    } catch {
-      body = {}
-    }
-  } else if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
-    if (typeof req.on === 'function') {
-      body = await new Promise((resolve) => {
-        let data = ''
-        req.on('data', (chunk) => {
-          data += chunk
-        })
-        req.on('end', () => {
-          try {
-            resolve(JSON.parse(data || '{}'))
-          } catch {
-            resolve({})
-          }
-        })
-        req.on('error', () => resolve({}))
-        setTimeout(() => resolve(body || {}), 300)
-      })
-    }
-  }
-
-  interface SubmitRequestBody {
-    questionSlug?: string
-    problemSlug?: string
-    language?: string
-    code?: string
-    userId?: string
-    idempotencyKey?: string
-  }
-  const parsedBody = (body as SubmitRequestBody) || {}
-  const questionSlug = parsedBody.questionSlug || parsedBody.problemSlug
-  const { language, code, userId } = parsedBody
-  const idempotencyKey = parsedBody.idempotencyKey || (req.headers['x-idempotency-key'] as string)
-
-  // Idempotency check: if already processed recently, return cached response
-  if (idempotencyKey) {
-    const cached = idempotencyCache.get(idempotencyKey)
-    if (cached && Date.now() - cached.timestamp < 30000) {
-      return sendJson(200, cached.response)
-    }
-  }
-
-  if (!questionSlug || !language || !code) {
+  if (!questionSlug || !rawLanguage || !code) {
     return sendJson(400, {
       success: false,
       error: 'Missing Parameters',
       message: 'questionSlug, language, and code are required.',
     })
   }
-
-  // Authoritative Authentication & IDOR Verification
-  let authenticatedUserId: string | null = null
-  const authHeader = req.headers['authorization'] as string | undefined
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7).trim()
-    if (token) {
-      if (process.env.NODE_ENV !== 'production' && (token.startsWith('test_auth_') || token.startsWith('test-token-'))) {
-        authenticatedUserId = token.replace(/^(test_auth_|test-token-)/, '') || '00000000-0000-4000-a000-000000000001'
-      } else {
-        try {
-          const { data: authData, error: authErr } = await supabaseServer.auth.getUser(token)
-          if (!authErr && authData?.user?.id) {
-            authenticatedUserId = authData.user.id
-          }
-        } catch {
-          // Token verification failed
-        }
-      }
-    }
-  }
-
-  // IDOR Guard: A request claiming a user's ID must be authenticated as that user
-  let effectiveUserId: string | null = null
-  if (authenticatedUserId) {
-    if (userId && userId !== authenticatedUserId && userId !== 'guest') {
-      return sendJson(403, {
-        success: false,
-        error: 'Forbidden',
-        message: 'Cannot submit code on behalf of another user.',
-      })
-    }
-    effectiveUserId = authenticatedUserId
-  } else if (userId === 'guest' || !userId) {
-    effectiveUserId = 'guest'
-  } else {
-    // Unauthenticated attempt to submit on behalf of a specific user ID
-    return sendJson(401, {
+  const language = normalizeSubmissionLanguage(rawLanguage)
+  if (!language || !SLUG_PATTERN.test(questionSlug) || code.length > MAX_CODE_CHARS) {
+    return sendJson(400, {
       success: false,
-      error: 'Unauthorized',
-      message: 'Authentication token required to submit on behalf of this user account.',
+      error: 'Invalid Parameters',
+      message: 'Unsupported question, language, or code size.',
     })
   }
 
-  function normalizeSubmissionLanguage(raw: string): string {
-    const l = (raw || '').toLowerCase()
-    if (l === 'javascript' || l === 'js' || l === 'node' || l === 'nodejs') return 'nodejs'
-    if (l === 'java') return 'java'
-    if (l === 'cpp' || l === 'c++') return 'cpp'
-    return 'python'
+  const userRate = await hitRateLimit(userLimiter, `submit:${authenticatedUser.id}`, 30, 60)
+  if (!userRate.allowed) {
+    res.setHeader('Retry-After', String(userRate.retryAfter || 60))
+    return sendJson(429, {
+      success: false,
+      error: 'Too Many Requests',
+      message: `Submission rate limit exceeded. Please wait ${userRate.retryAfter} seconds before submitting again.`,
+    })
   }
-  const normalizedLanguage = normalizeSubmissionLanguage(language)
+
+  // Idempotency (scoped to the authenticated user so keys cannot collide across accounts)
+  const rawKey = (typeof body.idempotencyKey === 'string' && body.idempotencyKey) || (req.headers['x-idempotency-key'] as string) || ''
+  const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : ''
+  pruneIdempotencyCache()
+  if (idempotencyKey) {
+    const existing = idempotencyCache.get(idempotencyKey)
+    if (existing && Date.now() - existing.timestamp < IDEMPOTENCY_TTL_MS) {
+      const outcome = await existing.promise
+      return sendJson(outcome.statusCode, outcome.payload)
+    }
+  }
+
+  const work = processSubmission({ userId: authenticatedUser.id, questionSlug, language, code, persist: !authenticatedUser.synthetic })
+  if (idempotencyKey) {
+    idempotencyCache.set(idempotencyKey, { timestamp: Date.now(), promise: work })
+  }
 
   try {
-    // 1. Authoritatively evaluate all 10 test cases on the server
-    const evalResult = await executeQuestion({
-      questionSlug,
-      language: normalizedLanguage,
-      code,
-      isSubmit: true,
-    })
-
-    const isAllPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total === 10
-
-    let persistenceResult = { submissionId: null as string | null, progressUpdated: false, xpEarned: 0 }
-
-    // 2. Server-Authoritative Database Persistence if authenticated
-    if (effectiveUserId && effectiveUserId !== 'guest') {
-      try {
-        // Resolve problem UUID with in-memory caching
-        let problemId: string | undefined
-        if (questionSlug) {
-          const slug: string = questionSlug
-          problemId = problemIdCache.get(slug)
-          if (!problemId) {
-            const { data: problemRow } = await supabaseServer
-              .from('Problem')
-              .select('id')
-              .eq('slug', slug)
-              .maybeSingle()
-            if (problemRow?.id) {
-              const pid = String(problemRow.id)
-              problemId = pid
-              problemIdCache.set(slug, pid)
-            }
-          }
-        }
-
-        if (problemId) {
-          const submissionId = 'sub_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now()
-
-          // Insert Submission
-          await supabaseServer.from('Submission').insert({
-            id: submissionId,
-            userId: effectiveUserId,
-            problemId,
-            language: normalizedLanguage,
-            code,
-            status: isAllPassed ? 'PASSED' : 'FAILED',
-            passedTests: evalResult.passed,
-            totalTests: evalResult.total,
-            testResults: [], // Don't expose hidden test details
-            executionTimeMs: evalResult.overallTimeMs,
-            createdAt: new Date().toISOString(),
-          })
-
-          persistenceResult.submissionId = submissionId
-
-          // If all 10 passed, award XP and update UserProgress for this language
-          if (isAllPassed) {
-            await supabaseServer.from('UserProgress').upsert(
-              {
-                userId: effectiveUserId,
-                problemId,
-                status: 'SOLVED',
-                language: normalizedLanguage,
-                bestCode: code,
-                solvedAt: new Date().toISOString(),
-                attempts: 1,
-                xpEarned: 50,
-              },
-              { onConflict: 'userId,problemId,language' }
-            )
-            persistenceResult.progressUpdated = true
-            persistenceResult.xpEarned = 50
-          }
-        }
-      } catch (dbErr) {
-        console.warn('Backend database persistence warning:', dbErr)
-      }
-    }
-
-    const responsePayload = {
-      ...evalResult,
-      persistence: persistenceResult,
-      isSolved: isAllPassed,
-      xpAwarded: isAllPassed ? 50 : 0,
-    }
-
-    // Cache idempotency response
-    if (idempotencyKey) {
-      idempotencyCache.set(idempotencyKey, {
-        timestamp: Date.now(),
-        response: responsePayload,
-      })
-    }
-
-    return sendJson(200, responsePayload)
+    const outcome = await work
+    return sendJson(outcome.statusCode, outcome.payload)
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Internal Server Error'
+    if (idempotencyKey) idempotencyCache.delete(idempotencyKey)
+    console.error('[api/submit] processing failure:', err instanceof Error ? err.message : 'unknown error')
     return sendJson(500, {
       success: false,
       error: 'Submission Processing Error',
-      message: msg,
-      total: 10,
+      message: 'Your submission could not be processed. Please try again.',
+      total: REQUIRED_TESTS,
       passed: 0,
       testCases: [],
     })

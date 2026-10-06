@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer, type AuthenticatedUser } from './feedbackAuth'
+import { authenticateFeedbackRequest, isTrustedStorageUrl, supabaseServer, type AuthenticatedUser } from './feedbackAuth'
 import {
   validateFeedbackInput,
   normalizeFeedbackType,
@@ -9,6 +9,8 @@ import {
   sendTicketToTeamSync,
   type TeamSyncTicketPayload,
 } from './teamSyncService'
+import { applyCors, getClientIp } from './httpSecurity'
+import { safeObjectName, sniffImageMime } from './attachmentSecurity'
 
 // Sliding-window rate limiter (15 submissions / 10 min per user + IP)
 interface RateRecord {
@@ -53,10 +55,8 @@ export default async function handler(
     res.end(JSON.stringify(data))
   }
 
-  // Standard CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Idempotency-Key')
+  // Origin allow-list CORS (Bearer-token auth, no cookies, no wildcard)
+  applyCors(req, res, { methods: 'POST, OPTIONS', headers: 'Content-Type, Authorization, X-Idempotency-Key' })
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
@@ -69,10 +69,7 @@ export default async function handler(
   }
 
   // Extract client IP
-  const ip =
-    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-    req.socket?.remoteAddress ||
-    '127.0.0.1'
+  const ip = getClientIp(req)
 
   // 1. Authoritative User Authentication
   const authHeader = (req.headers['authorization'] as string) || ''
@@ -218,7 +215,7 @@ export default async function handler(
         })
       }
 
-      attachmentUrl = rawUrl
+      attachmentUrl = isTrustedStorageUrl(rawUrl) ? rawUrl : null
 
       // If rawUrl is a Base64 dataUrl, persist it into Supabase Storage to obtain a lightweight public HTTPS URL
       if (rawUrl.startsWith('data:image/')) {
@@ -226,12 +223,15 @@ export default async function handler(
           const parts = rawUrl.split(',')
           if (parts.length > 1 && parts[1]) {
             const buffer = Buffer.from(parts[1], 'base64')
-            const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-            const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`
+            if (buffer.length > 5 * 1024 * 1024) throw new Error('Attachment exceeds 5MB')
+            // Content type comes from the file's magic bytes, never from the client-declared MIME/name.
+            const sniffed = sniffImageMime(buffer)
+            if (!sniffed) throw new Error('Attachment is not a PNG/JPEG/GIF/WebP image')
+            const path = safeObjectName(sniffed, Math.random().toString(36).slice(2, 10))
             const { error: uploadError } = await supabaseServer.storage
               .from('feedback-attachments')
               .upload(path, buffer, {
-                contentType: fileType,
+                contentType: sniffed,
                 upsert: true,
               })
             if (!uploadError) {
@@ -248,12 +248,12 @@ export default async function handler(
         }
       }
 
-      attachmentMeta = { fileName, fileType, fileSize }
+      if (attachmentUrl) attachmentMeta = { fileName, fileType, fileSize }
     }
   }
 
   const deviceInfo =
-    parsedBody.deviceInfo && typeof parsedBody.deviceInfo === 'object'
+    parsedBody.deviceInfo && typeof parsedBody.deviceInfo === 'object' && JSON.stringify(parsedBody.deviceInfo).length <= 4000
       ? (parsedBody.deviceInfo as Record<string, unknown>)
       : {
           ip,

@@ -81,8 +81,35 @@ function purgeLegacyStorage() {
   }
 }
 
-export function resetUserState() {
+const STATE_OWNER_KEY = 'kalvi_state_owner'
+
+/**
+ * Local progress is a per-user cache. It is tagged with the owning user id so that signing in as a
+ * DIFFERENT user (expired session, second tab, shared device) can never merge or display the previous
+ * user's cached progress.
+ */
+export function claimStateForUser(userId: string) {
+  try {
+    const owner = localStorage.getItem(STATE_OWNER_KEY)
+    if (owner !== userId) {
+      clearAllUserCaches()
+      resetUserState({ keepOwner: true })
+      localStorage.setItem(STATE_OWNER_KEY, userId)
+    }
+  } catch {
+    // storage unavailable: nothing is persisted, nothing can leak
+  }
+}
+
+export function resetUserState(options: { keepOwner?: boolean } = {}) {
   purgeLegacyStorage()
+  if (!options.keepOwner) {
+    try {
+      localStorage.removeItem(STATE_OWNER_KEY)
+    } catch {
+      // ignore
+    }
+  }
   saveUserState({
     xp: 0,
     streak: 0,
@@ -96,6 +123,26 @@ export function resetUserState() {
       cpp: { solvedSlugs: [], xp: 0 },
     },
   })
+}
+
+// Parse cache for READ-ONLY consumers. The practice list asks "solved/attempted?" for every one of ~500 rows on
+// every render; re-parsing the (potentially hundreds of KB) JSON state per row made a render cost hundreds of ms.
+// The cache is keyed on the exact raw storage string, so any write (this tab or hydration) invalidates it.
+// Callers MUST treat the returned object as immutable; code that mutates state must keep using getUserState().
+let readOnlyRaw: string | null = null
+let readOnlyState: UserState | null = null
+
+export function getUserStateReadOnly(): UserState {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw && raw === readOnlyRaw && readOnlyState) return readOnlyState
+    const fresh = getUserState()
+    readOnlyRaw = raw
+    readOnlyState = raw ? fresh : null
+    return fresh
+  } catch {
+    return getUserState()
+  }
 }
 
 export function getUserState(): UserState {
@@ -207,8 +254,8 @@ export function subscribeProgress(callback: () => void): () => void {
   }
 }
 
-import { saveSuccessToCloud, saveAttemptToCloud } from './cloudSync'
 import { calculateAuthoritativeStreak } from './streak'
+import { clearAllUserCaches } from './cacheRegistry'
 
 export function getActiveUserId(): string | null {
   try {
@@ -462,11 +509,8 @@ export function recordProblemSuccess(
 
   saveUserState(state)
 
-  // Background Cloud Sync
-  const activeUserId = getActiveUserId()
-  if (activeUserId) {
-    saveSuccessToCloud(activeUserId, problemSlug, lang, code, executionTimeMs).catch(() => {})
-  }
+  // Cloud persistence is performed exclusively by the authenticated POST /api/submit endpoint
+  // (server-authoritative). The browser never writes progress, XP or submissions to the database.
 
   return { isFirstSolve: isLangFirstSolve, newXp: state.languageProgress[lang].xp }
 }
@@ -538,18 +582,14 @@ export function recordProblemAttempt(
 
   saveUserState(state)
 
-  // Background Cloud Sync
-  const activeUserId = getActiveUserId()
-  if (activeUserId) {
-    saveAttemptToCloud(activeUserId, problemSlug, lang, code, passedTests, totalTests, executionTimeMs).catch(() => {})
-  }
+  // Cloud persistence is performed exclusively by the authenticated POST /api/submit endpoint.
 }
 
 /**
  * Returns all solved problem slugs for a specific programming language.
  */
 export function getLanguageSolvedSlugs(rawLanguage: string): string[] {
-  const state = getUserState()
+  const state = getUserStateReadOnly()
   const lang = normalizeProgressLanguage(rawLanguage)
   return state.languageProgress?.[lang]?.solvedSlugs || []
 }
@@ -584,7 +624,7 @@ export function getLanguageProgress(rawLanguage: string, totalProblems: number =
  * Checks if a specific problem has been solved in the designated language.
  */
 export function isProblemSolvedInLanguage(problemSlug: string, rawLanguage: string): boolean {
-  const state = getUserState()
+  const state = getUserStateReadOnly()
   const lang = normalizeProgressLanguage(rawLanguage)
   const langKey = `${lang}:${problemSlug}`
   if (state.progress[langKey]?.status === 'SOLVED') return true
@@ -596,7 +636,7 @@ export function isProblemSolvedInLanguage(problemSlug: string, rawLanguage: stri
  * Checks if a problem has been attempted in the designated language.
  */
 export function isProblemAttemptedInLanguage(problemSlug: string, rawLanguage: string): boolean {
-  const state = getUserState()
+  const state = getUserStateReadOnly()
   const lang = normalizeProgressLanguage(rawLanguage)
   const langKey = `${lang}:${problemSlug}`
   return (
@@ -615,7 +655,7 @@ export function getLanguageSavedCode(param1: string, param2: string): string | n
   const problemSlug = isParam1Lang ? param2 : param1
   const rawLanguage = isParam1Lang ? param1 : param2
 
-  const state = getUserState()
+  const state = getUserStateReadOnly()
   const lang = normalizeProgressLanguage(rawLanguage)
   const langKey = `${lang}:${problemSlug}`
   if (state.progress[langKey]?.bestCode) {

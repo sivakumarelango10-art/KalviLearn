@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { clearAllUserCaches } from './cacheRegistry'
 
 export interface DbUser {
   id: string
@@ -128,6 +129,7 @@ export async function signOutUser() {
       localStorage.removeItem('kalvi_active_user')
     }
     clearCachedVerification()
+    clearAllUserCaches()
   }
 }
 

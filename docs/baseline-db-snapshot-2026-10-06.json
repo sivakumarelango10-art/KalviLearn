@@ -1,0 +1,2240 @@
+{
+ "taken": "2026-10-06T10:05:19.347Z",
+ "tables": [
+  {
+   "t": "Belt",
+   "rls": true,
+   "forced": false,
+   "rows": 10
+  },
+  {
+   "t": "LearningUnit",
+   "rls": true,
+   "forced": false,
+   "rows": 85
+  },
+  {
+   "t": "Module",
+   "rls": true,
+   "forced": false,
+   "rows": 10
+  },
+  {
+   "t": "Problem",
+   "rls": true,
+   "forced": false,
+   "rows": 500
+  },
+  {
+   "t": "Submission",
+   "rls": true,
+   "forced": false,
+   "rows": 418
+  },
+  {
+   "t": "TestCase",
+   "rls": true,
+   "forced": false,
+   "rows": 5000
+  },
+  {
+   "t": "UserProgress",
+   "rls": true,
+   "forced": false,
+   "rows": 267
+  },
+  {
+   "t": "feedback_audit_logs",
+   "rls": false,
+   "forced": false,
+   "rows": 26
+  },
+  {
+   "t": "feedback_comments",
+   "rls": false,
+   "forced": false,
+   "rows": 0
+  },
+  {
+   "t": "feedback_reports",
+   "rls": true,
+   "forced": false,
+   "rows": 560
+  },
+  {
+   "t": "mentor_students",
+   "rls": true,
+   "forced": false,
+   "rows": 148
+  },
+  {
+   "t": "mentors",
+   "rls": true,
+   "forced": false,
+   "rows": 11
+  },
+  {
+   "t": "students",
+   "rls": true,
+   "forced": false,
+   "rows": 126
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "rls": false,
+   "forced": false,
+   "rows": 0
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "rls": false,
+   "forced": false,
+   "rows": 142
+  },
+  {
+   "t": "users",
+   "rls": true,
+   "forced": false,
+   "rows": 142
+  }
+ ],
+ "policies": [
+  {
+   "tablename": "Belt",
+   "policyname": "Public read access",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "LearningUnit",
+   "policyname": "Public read access",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "Module",
+   "policyname": "Public read access",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "Problem",
+   "policyname": "Public read access",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "Submission",
+   "policyname": "Allow insert submission",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "qual": null,
+   "with_check": "true"
+  },
+  {
+   "tablename": "Submission",
+   "policyname": "Public read submissions",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "TestCase",
+   "policyname": "Public read visible test cases",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "(\"isHidden\" = false)",
+   "with_check": null
+  },
+  {
+   "tablename": "UserProgress",
+   "policyname": "Allow upsert user progress",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  },
+  {
+   "tablename": "UserProgress",
+   "policyname": "Public read user progress",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "feedback_reports",
+   "policyname": "Users and service can insert feedback",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "qual": null,
+   "with_check": "true"
+  },
+  {
+   "tablename": "feedback_reports",
+   "policyname": "Users and staff can update feedback",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  },
+  {
+   "tablename": "feedback_reports",
+   "policyname": "Users can read own feedback",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "(((auth.uid())::text = user_id) OR true)",
+   "with_check": null
+  },
+  {
+   "tablename": "mentor_students",
+   "policyname": "Allow roster mutations",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  },
+  {
+   "tablename": "mentor_students",
+   "policyname": "Public read roster",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "mentors",
+   "policyname": "Allow roster mutations",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  },
+  {
+   "tablename": "mentors",
+   "policyname": "Public read roster",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "objects",
+   "policyname": "Public Insert Feedback Attachments",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "qual": null,
+   "with_check": "(bucket_id = 'feedback-attachments'::text)"
+  },
+  {
+   "tablename": "objects",
+   "policyname": "Public Read Feedback Attachments",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "(bucket_id = 'feedback-attachments'::text)",
+   "with_check": null
+  },
+  {
+   "tablename": "students",
+   "policyname": "Allow roster mutations",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  },
+  {
+   "tablename": "students",
+   "policyname": "Public read roster",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "users",
+   "policyname": "Public read users",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": null
+  },
+  {
+   "tablename": "users",
+   "policyname": "Users can read own profile",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "qual": "(((auth.uid())::text = id) OR true)",
+   "with_check": null
+  },
+  {
+   "tablename": "users",
+   "policyname": "Users can update only own profile",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "qual": "((auth.uid())::text = id)",
+   "with_check": "((auth.uid())::text = id)"
+  },
+  {
+   "tablename": "users",
+   "policyname": "Users update own profile",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "qual": "true",
+   "with_check": "true"
+  }
+ ],
+ "grants": [
+  {
+   "table_schema": "public",
+   "table_name": "Belt",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Belt",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Belt",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "LearningUnit",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "LearningUnit",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "LearningUnit",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Module",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Module",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Module",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Problem",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Problem",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Problem",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Submission",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Submission",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "Submission",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "TestCase",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "TestCase",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "TestCase",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "UserProgress",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "UserProgress",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "UserProgress",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_audit_logs",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_audit_logs",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_audit_logs",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_comments",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_comments",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_comments",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_reports",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_reports",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "feedback_reports",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentor_students",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentor_students",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentor_students",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentors",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentors",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "mentors",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "students",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "students",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "students",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_deliveries",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_deliveries",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_deliveries",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_events",
+   "grantee": "anon",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_events",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "teamsync_webhook_events",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "users",
+   "grantee": "anon",
+   "privs": "REFERENCES,SELECT,TRIGGER,TRUNCATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "users",
+   "grantee": "authenticated",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  {
+   "table_schema": "public",
+   "table_name": "users",
+   "grantee": "service_role",
+   "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  }
+ ],
+ "indexes": [
+  {
+   "tablename": "Belt",
+   "indexname": "Belt_order_key",
+   "indexdef": "CREATE UNIQUE INDEX \"Belt_order_key\" ON public.\"Belt\" USING btree (\"order\")"
+  },
+  {
+   "tablename": "Belt",
+   "indexname": "Belt_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"Belt_pkey\" ON public.\"Belt\" USING btree (id)"
+  },
+  {
+   "tablename": "LearningUnit",
+   "indexname": "LearningUnit_moduleId_idx",
+   "indexdef": "CREATE INDEX \"LearningUnit_moduleId_idx\" ON public.\"LearningUnit\" USING btree (\"moduleId\")"
+  },
+  {
+   "tablename": "LearningUnit",
+   "indexname": "LearningUnit_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"LearningUnit_pkey\" ON public.\"LearningUnit\" USING btree (id)"
+  },
+  {
+   "tablename": "Module",
+   "indexname": "Module_order_key",
+   "indexdef": "CREATE UNIQUE INDEX \"Module_order_key\" ON public.\"Module\" USING btree (\"order\")"
+  },
+  {
+   "tablename": "Module",
+   "indexname": "Module_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"Module_pkey\" ON public.\"Module\" USING btree (id)"
+  },
+  {
+   "tablename": "Problem",
+   "indexname": "Problem_beltId_idx",
+   "indexdef": "CREATE INDEX \"Problem_beltId_idx\" ON public.\"Problem\" USING btree (\"beltId\")"
+  },
+  {
+   "tablename": "Problem",
+   "indexname": "Problem_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"Problem_pkey\" ON public.\"Problem\" USING btree (id)"
+  },
+  {
+   "tablename": "Problem",
+   "indexname": "Problem_slug_key",
+   "indexdef": "CREATE UNIQUE INDEX \"Problem_slug_key\" ON public.\"Problem\" USING btree (slug)"
+  },
+  {
+   "tablename": "Submission",
+   "indexname": "Submission_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"Submission_pkey\" ON public.\"Submission\" USING btree (id)"
+  },
+  {
+   "tablename": "Submission",
+   "indexname": "Submission_userId_problemId_idx",
+   "indexdef": "CREATE INDEX \"Submission_userId_problemId_idx\" ON public.\"Submission\" USING btree (\"userId\", \"problemId\")"
+  },
+  {
+   "tablename": "TestCase",
+   "indexname": "TestCase_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"TestCase_pkey\" ON public.\"TestCase\" USING btree (id)"
+  },
+  {
+   "tablename": "TestCase",
+   "indexname": "TestCase_problemId_testIndex_key",
+   "indexdef": "CREATE UNIQUE INDEX \"TestCase_problemId_testIndex_key\" ON public.\"TestCase\" USING btree (\"problemId\", \"testIndex\")"
+  },
+  {
+   "tablename": "UserProgress",
+   "indexname": "UserProgress_pkey",
+   "indexdef": "CREATE UNIQUE INDEX \"UserProgress_pkey\" ON public.\"UserProgress\" USING btree (id)"
+  },
+  {
+   "tablename": "UserProgress",
+   "indexname": "UserProgress_userId_problemId_key",
+   "indexdef": "CREATE UNIQUE INDEX \"UserProgress_userId_problemId_key\" ON public.\"UserProgress\" USING btree (\"userId\", \"problemId\")"
+  },
+  {
+   "tablename": "feedback_audit_logs",
+   "indexname": "feedback_audit_logs_pkey",
+   "indexdef": "CREATE UNIQUE INDEX feedback_audit_logs_pkey ON public.feedback_audit_logs USING btree (id)"
+  },
+  {
+   "tablename": "feedback_audit_logs",
+   "indexname": "idx_feedback_audit_logs_action",
+   "indexdef": "CREATE INDEX idx_feedback_audit_logs_action ON public.feedback_audit_logs USING btree (action)"
+  },
+  {
+   "tablename": "feedback_audit_logs",
+   "indexname": "idx_feedback_audit_logs_event_id",
+   "indexdef": "CREATE INDEX idx_feedback_audit_logs_event_id ON public.feedback_audit_logs USING btree (event_id)"
+  },
+  {
+   "tablename": "feedback_audit_logs",
+   "indexname": "idx_feedback_audit_logs_report_id",
+   "indexdef": "CREATE INDEX idx_feedback_audit_logs_report_id ON public.feedback_audit_logs USING btree (feedback_report_id)"
+  },
+  {
+   "tablename": "feedback_comments",
+   "indexname": "feedback_comments_pkey",
+   "indexdef": "CREATE UNIQUE INDEX feedback_comments_pkey ON public.feedback_comments USING btree (id)"
+  },
+  {
+   "tablename": "feedback_comments",
+   "indexname": "feedback_comments_teamsync_comment_id_key",
+   "indexdef": "CREATE UNIQUE INDEX feedback_comments_teamsync_comment_id_key ON public.feedback_comments USING btree (teamsync_comment_id)"
+  },
+  {
+   "tablename": "feedback_comments",
+   "indexname": "idx_feedback_comments_report_id",
+   "indexdef": "CREATE INDEX idx_feedback_comments_report_id ON public.feedback_comments USING btree (feedback_report_id)"
+  },
+  {
+   "tablename": "feedback_comments",
+   "indexname": "idx_feedback_comments_teamsync_comment_id",
+   "indexdef": "CREATE INDEX idx_feedback_comments_teamsync_comment_id ON public.feedback_comments USING btree (teamsync_comment_id)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "feedback_reports_pkey",
+   "indexdef": "CREATE UNIQUE INDEX feedback_reports_pkey ON public.feedback_reports USING btree (id)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "feedback_reports_public_reference_key",
+   "indexdef": "CREATE UNIQUE INDEX feedback_reports_public_reference_key ON public.feedback_reports USING btree (public_reference)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_created_at",
+   "indexdef": "CREATE INDEX idx_feedback_reports_created_at ON public.feedback_reports USING btree (created_at DESC)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_public_ref",
+   "indexdef": "CREATE INDEX idx_feedback_reports_public_ref ON public.feedback_reports USING btree (public_reference)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_status",
+   "indexdef": "CREATE INDEX idx_feedback_reports_status ON public.feedback_reports USING btree (status)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_teamsync_id",
+   "indexdef": "CREATE INDEX idx_feedback_reports_teamsync_id ON public.feedback_reports USING btree (teamsync_id)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_teamsync_status",
+   "indexdef": "CREATE INDEX idx_feedback_reports_teamsync_status ON public.feedback_reports USING btree (teamsync_status)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_type",
+   "indexdef": "CREATE INDEX idx_feedback_reports_type ON public.feedback_reports USING btree (type)"
+  },
+  {
+   "tablename": "feedback_reports",
+   "indexname": "idx_feedback_reports_user_id",
+   "indexdef": "CREATE INDEX idx_feedback_reports_user_id ON public.feedback_reports USING btree (user_id)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "idx_ms_mentor_id",
+   "indexdef": "CREATE INDEX idx_ms_mentor_id ON public.mentor_students USING btree (mentor_id)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "idx_ms_status",
+   "indexdef": "CREATE INDEX idx_ms_status ON public.mentor_students USING btree (status)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "idx_ms_student_id",
+   "indexdef": "CREATE INDEX idx_ms_student_id ON public.mentor_students USING btree (student_id)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "mentor_students_pkey",
+   "indexdef": "CREATE UNIQUE INDEX mentor_students_pkey ON public.mentor_students USING btree (id)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "uq_mentor_student",
+   "indexdef": "CREATE UNIQUE INDEX uq_mentor_student ON public.mentor_students USING btree (mentor_id, student_id)"
+  },
+  {
+   "tablename": "mentor_students",
+   "indexname": "uq_student_one_active_mentor",
+   "indexdef": "CREATE UNIQUE INDEX uq_student_one_active_mentor ON public.mentor_students USING btree (student_id) WHERE ((status)::text = 'ACTIVE'::text)"
+  },
+  {
+   "tablename": "mentors",
+   "indexname": "idx_mentors_user_id",
+   "indexdef": "CREATE INDEX idx_mentors_user_id ON public.mentors USING btree (user_id)"
+  },
+  {
+   "tablename": "mentors",
+   "indexname": "mentors_mentor_code_key",
+   "indexdef": "CREATE UNIQUE INDEX mentors_mentor_code_key ON public.mentors USING btree (mentor_code)"
+  },
+  {
+   "tablename": "mentors",
+   "indexname": "mentors_pkey",
+   "indexdef": "CREATE UNIQUE INDEX mentors_pkey ON public.mentors USING btree (id)"
+  },
+  {
+   "tablename": "mentors",
+   "indexname": "mentors_user_id_key",
+   "indexdef": "CREATE UNIQUE INDEX mentors_user_id_key ON public.mentors USING btree (user_id)"
+  },
+  {
+   "tablename": "students",
+   "indexname": "idx_students_status",
+   "indexdef": "CREATE INDEX idx_students_status ON public.students USING btree (status)"
+  },
+  {
+   "tablename": "students",
+   "indexname": "idx_students_user_id",
+   "indexdef": "CREATE INDEX idx_students_user_id ON public.students USING btree (user_id)"
+  },
+  {
+   "tablename": "students",
+   "indexname": "students_pkey",
+   "indexdef": "CREATE UNIQUE INDEX students_pkey ON public.students USING btree (id)"
+  },
+  {
+   "tablename": "students",
+   "indexname": "students_student_code_key",
+   "indexdef": "CREATE UNIQUE INDEX students_student_code_key ON public.students USING btree (student_code)"
+  },
+  {
+   "tablename": "students",
+   "indexname": "students_user_id_key",
+   "indexdef": "CREATE UNIQUE INDEX students_user_id_key ON public.students USING btree (user_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_created_at_idx",
+   "indexdef": "CREATE INDEX teamsync_webhook_deliveries_created_at_idx ON public.teamsync_webhook_deliveries USING btree (created_at)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_event_id_idx",
+   "indexdef": "CREATE INDEX teamsync_webhook_deliveries_event_id_idx ON public.teamsync_webhook_deliveries USING btree (event_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_event_id_key",
+   "indexdef": "CREATE UNIQUE INDEX teamsync_webhook_deliveries_event_id_key ON public.teamsync_webhook_deliveries USING btree (event_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_pkey",
+   "indexdef": "CREATE UNIQUE INDEX teamsync_webhook_deliveries_pkey ON public.teamsync_webhook_deliveries USING btree (id)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_status_idx",
+   "indexdef": "CREATE INDEX teamsync_webhook_deliveries_status_idx ON public.teamsync_webhook_deliveries USING btree (status)"
+  },
+  {
+   "tablename": "teamsync_webhook_deliveries",
+   "indexname": "teamsync_webhook_deliveries_ticket_id_idx",
+   "indexdef": "CREATE INDEX teamsync_webhook_deliveries_ticket_id_idx ON public.teamsync_webhook_deliveries USING btree (ticket_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "idx_teamsync_webhook_events_event_id",
+   "indexdef": "CREATE INDEX idx_teamsync_webhook_events_event_id ON public.teamsync_webhook_events USING btree (event_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "idx_teamsync_webhook_events_feedback_id",
+   "indexdef": "CREATE INDEX idx_teamsync_webhook_events_feedback_id ON public.teamsync_webhook_events USING btree (feedback_report_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "idx_teamsync_webhook_events_status",
+   "indexdef": "CREATE INDEX idx_teamsync_webhook_events_status ON public.teamsync_webhook_events USING btree (status)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "idx_teamsync_webhook_events_ticket_id",
+   "indexdef": "CREATE INDEX idx_teamsync_webhook_events_ticket_id ON public.teamsync_webhook_events USING btree (ticket_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "teamsync_webhook_events_event_id_key",
+   "indexdef": "CREATE UNIQUE INDEX teamsync_webhook_events_event_id_key ON public.teamsync_webhook_events USING btree (event_id)"
+  },
+  {
+   "tablename": "teamsync_webhook_events",
+   "indexname": "teamsync_webhook_events_pkey",
+   "indexdef": "CREATE UNIQUE INDEX teamsync_webhook_events_pkey ON public.teamsync_webhook_events USING btree (id)"
+  },
+  {
+   "tablename": "users",
+   "indexname": "idx_users_mentor_id",
+   "indexdef": "CREATE INDEX idx_users_mentor_id ON public.users USING btree (\"mentorId\")"
+  },
+  {
+   "tablename": "users",
+   "indexname": "users_email_key",
+   "indexdef": "CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)"
+  },
+  {
+   "tablename": "users",
+   "indexname": "users_pkey",
+   "indexdef": "CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)"
+  }
+ ],
+ "constraints": [
+  {
+   "t": "\"Belt\"",
+   "conname": "Belt_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"LearningUnit\"",
+   "conname": "LearningUnit_moduleId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"moduleId\") REFERENCES \"Module\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+  },
+  {
+   "t": "\"LearningUnit\"",
+   "conname": "LearningUnit_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"Module\"",
+   "conname": "Module_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"Problem\"",
+   "conname": "Problem_beltId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"beltId\") REFERENCES \"Belt\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+  },
+  {
+   "t": "\"Problem\"",
+   "conname": "Problem_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"Submission\"",
+   "conname": "Submission_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"Submission\"",
+   "conname": "Submission_problemId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"problemId\") REFERENCES \"Problem\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+  },
+  {
+   "t": "\"TestCase\"",
+   "conname": "TestCase_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"TestCase\"",
+   "conname": "TestCase_problemId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"problemId\") REFERENCES \"Problem\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+  },
+  {
+   "t": "\"UserProgress\"",
+   "conname": "UserProgress_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "\"UserProgress\"",
+   "conname": "UserProgress_problemId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"problemId\") REFERENCES \"Problem\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "conname": "feedback_audit_logs_feedback_report_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (feedback_report_id) REFERENCES feedback_reports(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "conname": "feedback_audit_logs_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "feedback_comments",
+   "conname": "feedback_comments_feedback_report_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (feedback_report_id) REFERENCES feedback_reports(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "feedback_comments",
+   "conname": "feedback_comments_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "feedback_comments",
+   "conname": "feedback_comments_teamsync_comment_id_key",
+   "contype": "u",
+   "def": "UNIQUE (teamsync_comment_id)"
+  },
+  {
+   "t": "feedback_reports",
+   "conname": "feedback_reports_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "feedback_reports",
+   "conname": "feedback_reports_public_reference_key",
+   "contype": "u",
+   "def": "UNIQUE (public_reference)"
+  },
+  {
+   "t": "feedback_reports",
+   "conname": "feedback_reports_user_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL"
+  },
+  {
+   "t": "mentor_students",
+   "conname": "mentor_students_mentor_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (mentor_id) REFERENCES mentors(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "mentor_students",
+   "conname": "mentor_students_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "mentor_students",
+   "conname": "mentor_students_student_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "mentor_students",
+   "conname": "uq_mentor_student",
+   "contype": "u",
+   "def": "UNIQUE (mentor_id, student_id)"
+  },
+  {
+   "t": "mentors",
+   "conname": "mentors_mentor_code_key",
+   "contype": "u",
+   "def": "UNIQUE (mentor_code)"
+  },
+  {
+   "t": "mentors",
+   "conname": "mentors_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "mentors",
+   "conname": "mentors_user_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "mentors",
+   "conname": "mentors_user_id_key",
+   "contype": "u",
+   "def": "UNIQUE (user_id)"
+  },
+  {
+   "t": "students",
+   "conname": "students_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "students",
+   "conname": "students_student_code_key",
+   "contype": "u",
+   "def": "UNIQUE (student_code)"
+  },
+  {
+   "t": "students",
+   "conname": "students_user_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
+  },
+  {
+   "t": "students",
+   "conname": "students_user_id_key",
+   "contype": "u",
+   "def": "UNIQUE (user_id)"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "conname": "teamsync_webhook_deliveries_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "conname": "teamsync_webhook_events_event_id_key",
+   "contype": "u",
+   "def": "UNIQUE (event_id)"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "conname": "teamsync_webhook_events_feedback_report_id_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (feedback_report_id) REFERENCES feedback_reports(id) ON DELETE SET NULL"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "conname": "teamsync_webhook_events_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  },
+  {
+   "t": "users",
+   "conname": "users_mentorId_fkey",
+   "contype": "f",
+   "def": "FOREIGN KEY (\"mentorId\") REFERENCES users(id) ON DELETE SET NULL"
+  },
+  {
+   "t": "users",
+   "conname": "users_pkey",
+   "contype": "p",
+   "def": "PRIMARY KEY (id)"
+  }
+ ],
+ "triggers": [
+  {
+   "s": "public",
+   "t": "users",
+   "trigger_name": "trigger_check_single_mentor",
+   "action_timing": "BEFORE",
+   "event_manipulation": "INSERT"
+  },
+  {
+   "s": "public",
+   "t": "users",
+   "trigger_name": "trigger_check_single_mentor",
+   "action_timing": "BEFORE",
+   "event_manipulation": "UPDATE"
+  }
+ ],
+ "functions": [
+  {
+   "s": "public",
+   "proname": "check_single_mentor_assignment",
+   "args": "",
+   "secdef": false
+  }
+ ],
+ "publication": [
+  {
+   "tablename": "Submission"
+  },
+  {
+   "tablename": "UserProgress"
+  },
+  {
+   "tablename": "users"
+  }
+ ],
+ "bucket": [
+  {
+   "id": "feedback-attachments",
+   "public": true,
+   "file_size_limit": "5242880",
+   "allowed_mime_types": [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/webp",
+    "image/gif"
+   ]
+  }
+ ],
+ "columns": [
+  {
+   "t": "Belt",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "order",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "name",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "title",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "description",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "color",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Belt",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "moduleId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "order",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "title",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "content",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "codingQuestion",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "inputFormat",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "outputFormat",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "examples",
+   "d": "jsonb",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "codeSnippets",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "LearningUnit",
+   "c": "approach",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "Module",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Module",
+   "c": "order",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Module",
+   "c": "title",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Module",
+   "c": "description",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "Module",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "beltId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "order",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "title",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "slug",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "difficulty",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "description",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "inputFormat",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "outputFormat",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "explanation",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "Problem",
+   "c": "starterCodes",
+   "d": "jsonb",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "Problem",
+   "c": "exampleExplanation",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "Problem",
+   "c": "examples",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "Problem",
+   "c": "subdivision",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "Submission",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "userId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "problemId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "language",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "code",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "status",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "passedTests",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "totalTests",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "testResults",
+   "d": "jsonb",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "executionTimeMs",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "Submission",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "problemId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "testIndex",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "input",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "expectedOutput",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "TestCase",
+   "c": "explanation",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "TestCase",
+   "c": "isHidden",
+   "d": "boolean",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "userId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "problemId",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "status",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "language",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "bestCode",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "solvedAt",
+   "d": "timestamp without time zone",
+   "n": "YES"
+  },
+  {
+   "t": "UserProgress",
+   "c": "attempts",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "UserProgress",
+   "c": "xpEarned",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "feedback_report_id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "source",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "event_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "action",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "previous_value",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "new_value",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "details",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_audit_logs",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "feedback_report_id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "source",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "teamsync_comment_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "author_name",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "author_email",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "author_role",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "content",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_comments",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "public_reference",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "user_id",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "user_name_snapshot",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "user_email_snapshot",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "user_role",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "portal",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "type",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "title",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "description",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "rating",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "feature_area",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "priority",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "page_url",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "route",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "module",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "attachment_url",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "attachment_meta",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "device_info",
+   "d": "jsonb",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "updated_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "resolved_at",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_ticket_number",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_status",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_attempts",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_last_attempt",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "teamsync_error",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "assigned_to",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "assigned_email",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "feedback_reports",
+   "c": "last_synced_at",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "mentor_students",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "mentor_id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "student_id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "assigned_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "unassigned_at",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "mentor_students",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "mentor_students",
+   "c": "updated_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "user_id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "mentor_code",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "max_students",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "updated_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "mentors",
+   "c": "name",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "mentors",
+   "c": "email",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "students",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "user_id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "student_code",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "updated_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "students",
+   "c": "name",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "students",
+   "c": "email",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "event_id",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "event_type",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "ticket_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "ticket_number",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "source_reference_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "destination",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "payload",
+   "d": "jsonb",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "attempt_count",
+   "d": "integer",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "http_status",
+   "d": "integer",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "last_attempt",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "next_retry",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "error",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "created_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_deliveries",
+   "c": "completed_at",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "id",
+   "d": "uuid",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "event_id",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "event_type",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "ticket_id",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "ticket_number",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "feedback_report_id",
+   "d": "uuid",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "payload",
+   "d": "jsonb",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "payload_hash",
+   "d": "character varying",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "status",
+   "d": "character varying",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "error",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "received_at",
+   "d": "timestamp with time zone",
+   "n": "NO"
+  },
+  {
+   "t": "teamsync_webhook_events",
+   "c": "processed_at",
+   "d": "timestamp with time zone",
+   "n": "YES"
+  },
+  {
+   "t": "users",
+   "c": "id",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "email",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "role",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "status",
+   "d": "text",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "name",
+   "d": "text",
+   "n": "YES"
+  },
+  {
+   "t": "users",
+   "c": "createdAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "updatedAt",
+   "d": "timestamp without time zone",
+   "n": "NO"
+  },
+  {
+   "t": "users",
+   "c": "mentorId",
+   "d": "text",
+   "n": "YES"
+  }
+ ]
+}

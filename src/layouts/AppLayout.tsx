@@ -3,8 +3,7 @@ import { Outlet, useLocation, Link } from 'react-router-dom'
 import { Menu, X, Zap, Flame, Award, ArrowRight, GraduationCap } from 'lucide-react'
 import { AppSidebar } from '@/components/common/AppSidebar'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
-import { getUserState, subscribeProgress, hydrateStateFromCloud } from '@/lib/progress'
-import { subscribeToStudentCloudProgress, fetchUserProgressFromCloud } from '@/lib/cloudSync'
+import { getUserState, subscribeProgress } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { GlobalFeedbackWidget } from '@/components/feedback/GlobalFeedbackWidget'
 
@@ -28,23 +27,8 @@ export const AppLayout: React.FC = () => {
     return subscribeProgress(updateStats)
   }, [])
 
-  // Ultra Real-Time: Subscribe to Supabase database changes for UserProgress & Submission
-  useEffect(() => {
-    if (!user?.id) return
-    const unsubscribeCloud = subscribeToStudentCloudProgress(user.id, async () => {
-      try {
-        const cloudState = await fetchUserProgressFromCloud(user.id)
-        if (cloudState) {
-          hydrateStateFromCloud(cloudState)
-        }
-      } catch (err) {
-        console.warn('Realtime progress sync error:', err)
-      }
-    })
-    return () => {
-      unsubscribeCloud()
-    }
-  }, [user?.id])
+  // Realtime progress sync is owned by AuthContext (single subscription per signed-in student); this layout only
+  // reflects the hydrated local state via subscribeProgress above.
 
   // Calculate current belt based on problems solved across 10 Belts
   const getCurrentBelt = () => {

@@ -75,10 +75,13 @@ import { computeTeamSyncSignature, verifyTeamSyncWebhookSignature } from '../src
 import { feedbackService } from '../src/services/feedbackService'
 import { supabaseServer } from '../src/server/feedbackAuth'
 
-const TEST_SECRET =
-  process.env.TEAMSYNC_WEBHOOK_SECRET ||
-  process.env.KALVILEARN_WEBHOOK_SECRET ||
-  'ts_whsec_kalvilearn_39a1b2c4d5e6'
+const TEST_RUN_STARTED_AT = new Date(Date.now() - 1000).toISOString()
+
+// No built-in default secret exists (receiver fails closed). If .env does not provide one, use a random per-run secret.
+if (!process.env.TEAMSYNC_WEBHOOK_SECRET && !process.env.KALVILEARN_WEBHOOK_SECRET) {
+  process.env.TEAMSYNC_WEBHOOK_SECRET = 'test-only-' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
+const TEST_SECRET = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || ''
 
 interface MockResponse {
   statusCode: number
@@ -388,7 +391,7 @@ async function runTestSuite() {
       const { req, res, mockRes } = createMockReqRes({ method: 'OPTIONS' })
       await handler(req, res)
       assert(mockRes.statusCode === 204, 'TEST 11: OPTIONS preflight returns HTTP 204 No Content')
-      assert(mockRes.headers['access-control-allow-origin'] === '*', 'TEST 12: CORS header allow-origin present')
+      assert(mockRes.headers['access-control-allow-origin'] === undefined, 'TEST 12: Webhook endpoint emits NO CORS headers (server-to-server only)')
     }
 
     // TEST 13: Empty body rejected -> HTTP 400
@@ -842,7 +845,8 @@ async function runTestSuite() {
       await supabaseServer.from('feedback_comments').delete().eq('feedback_report_id', testReportId)
       await supabaseServer.from('feedback_audit_logs').delete().eq('feedback_report_id', testReportId)
       await supabaseServer.from('teamsync_webhook_events').delete().eq('feedback_report_id', testReportId)
-      await supabaseServer.from('teamsync_webhook_events').delete().like('event_id', '%evt_%')
+      // Scoped teardown: only evt_* rows created since THIS run started (never historical webhook records)
+      await supabaseServer.from('teamsync_webhook_events').delete().like('event_id', 'evt_%').gte('received_at', TEST_RUN_STARTED_AT)
       await supabaseServer.from('feedback_reports').delete().eq('id', testReportId)
       console.log('Cleanup completed successfully.\n')
     } catch (cleanupErr) {

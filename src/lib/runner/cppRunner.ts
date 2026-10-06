@@ -6,6 +6,8 @@
  * - algorithms (sort, reverse, max, min, abs, sqrt, pow, __gcd, swap)
  * - control flow (for, while, if, else, functions)
  */
+import { evaluate } from './evaluator'
+
 
 export function executeCpp(code: string, input: string): { output: string; error?: string } {
   // Security guard against host secret access
@@ -259,8 +261,7 @@ __cout.flush();
     const keys = Object.keys(env)
     const values = Object.values(env)
 
-    const runner = new Function(...keys, cleanCode)
-    runner(...values)
+    evaluate(keys, values, cleanCode)
 
     __cout.flush()
 

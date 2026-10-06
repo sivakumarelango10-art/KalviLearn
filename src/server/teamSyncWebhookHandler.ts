@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { verifyTeamSyncWebhookSignature } from './teamSyncWebhookAuth'
 import { processTeamSyncWebhook } from './teamSyncWebhookService'
+import { getClientIp } from './httpSecurity'
 
 // Sliding-window rate limiter for webhooks (120 requests / 1 minute per IP)
 interface RateRecord {
@@ -41,10 +42,9 @@ export default async function handler(
     res.end(JSON.stringify(data))
   }
 
-  // CORS Headers
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-TeamSync-Signature, X-TeamSync-Timestamp, X-TeamSync-Event-ID')
+  // Server-to-server endpoint: authenticated by HMAC signature, never called from a browser, so NO CORS headers
+  // are emitted (cross-origin pages cannot read or script this endpoint).
+  res.setHeader('Cache-Control', 'no-store')
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
@@ -61,10 +61,7 @@ export default async function handler(
   }
 
   // Rate Limiting by IP
-  const clientIp =
-    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-    req.socket?.remoteAddress ||
-    '127.0.0.1'
+  const clientIp = getClientIp(req)
 
   const rate = checkRateLimit(clientIp, 120, 60000)
   if (!rate.allowed) {

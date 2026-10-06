@@ -38,6 +38,9 @@
  */
 
 import handler, { resetTeamSyncRateLimitsForTesting } from '../src/server/teamSyncHandler'
+// Test-only bearer tokens are disabled unless explicitly enabled (never in production).
+process.env.ALLOW_TEST_AUTH_TOKENS = '1'
+
 import {
   setTeamSyncMockTransport,
   resetTeamSyncMockTransport,

@@ -6,6 +6,8 @@
  * - utilities (Arrays.sort, Collections.sort, Math methods, Integer.parseInt)
  * - control flow (public static void main, for, while, if, else, methods)
  */
+import { evaluate } from './evaluator'
+
 
 export function executeJava(code: string, input: string): { output: string; error?: string } {
   // Security guard against host secret access
@@ -279,8 +281,7 @@ System.out.flush();
     const keys = Object.keys(env)
     const values = Object.values(env)
 
-    const runner = new Function(...keys, cleanCode)
-    runner(...values)
+    evaluate(keys, values, cleanCode)
 
     System.out.flush()
 

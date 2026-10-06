@@ -46,6 +46,12 @@ import {
 } from '../src/server/teamSyncWebhookSender'
 import { verifyTeamSyncWebhookSignature } from '../src/server/teamSyncWebhookAuth'
 import { processTeamSyncWebhook } from '../src/server/teamSyncWebhookService'
+// The webhook secret has no built-in default (fail-closed). Tests use a random per-run secret.
+if (!process.env.KALVILEARN_WEBHOOK_SECRET && !process.env.TEAMSYNC_WEBHOOK_SECRET) {
+  process.env.KALVILEARN_WEBHOOK_SECRET = 'test-only-' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
+const TEST_RUN_STARTED_AT = new Date(Date.now() - 1000).toISOString()
+
 import { supabaseServer } from '../src/server/feedbackAuth'
 
 const TEST_SECRET = getKalviLearnWebhookSecret()
@@ -447,7 +453,8 @@ async function runSenderTestSuite() {
     // Teardown: Clean up test artifacts
     console.log('\nCleaning up Phase 4B test artifacts from PostgreSQL...')
     try {
-      await supabaseServer.from('teamsync_webhook_deliveries').delete().like('event_id', '%evt_%')
+      // Scoped teardown: only evt_* rows created since THIS run started (never historical delivery records)
+      await supabaseServer.from('teamsync_webhook_deliveries').delete().like('event_id', 'evt_%').gte('created_at', TEST_RUN_STARTED_AT)
       await supabaseServer.from('teamsync_webhook_events').delete().eq('feedback_report_id', reportId)
       await supabaseServer.from('feedback_audit_logs').delete().eq('feedback_report_id', reportId)
       await supabaseServer.from('feedback_reports').delete().eq('id', reportId)

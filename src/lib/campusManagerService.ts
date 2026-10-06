@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { normalizeProgressLanguage } from './progress'
 import problemsData from '../data/problems.json'
+import { fetchAllRows } from './supabasePaging'
 import { calculateAuthoritativeStreak } from './streak'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
@@ -208,17 +209,45 @@ export function subscribeToCampusUpdates(onUpdate: () => void): () => void {
  * Fetches Campus-wide Overview telemetry directly from live database tables.
  */
 export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetrics> {
+  const campusName = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus'
+
+  // Preferred path: aggregates computed in SQL (staff-only RPC). Scales past PostgREST's 1000-row response cap and
+  // avoids shipping every submission row to the browser.
+  try {
+    const { data: agg, error: aggError } = await supabase.rpc('campus_overview_metrics')
+    if (!aggError && agg && typeof agg === 'object') {
+      const m = agg as Record<string, number>
+      const totalStudents = Number(m.totalStudents) || 0
+      const totalSubmissions = Number(m.totalSubmissions) || 0
+      const solvedCount = Number(m.solvedCount) || 0
+      const totalXp = Number(m.totalXp) || 0
+      return {
+        totalStudents,
+        totalMentors: Number(m.totalMentors) || 0,
+        activeLearnersCount: Number(m.activeLearners) || 0,
+        totalSubmissions,
+        campusPassRate: totalSubmissions > 0 ? Math.round((Number(m.passedSubmissions) / totalSubmissions) * 1000) / 10 : 0,
+        totalXpDistributed: totalXp,
+        avgProblemsSolved: totalStudents > 0 ? Math.round((solvedCount / totalStudents) * 10) / 10 : 0,
+        rewardVelocity: solvedCount > 0 ? Math.round(totalXp / solvedCount) : 50,
+        campusName,
+      }
+    }
+  } catch {
+    // RPC not deployed yet (migration pending): fall through to the client-side aggregation below.
+  }
+
   try {
     const [studentsRes, mentorsRes, subsRes, progRes] = await Promise.all([
       supabase.from('students').select('id, user_id, status', { count: 'exact' }),
       supabase.from('mentors').select('id, status', { count: 'exact' }),
-      supabase.from('Submission').select('id, status, createdAt, userId', { count: 'exact' }),
-      supabase.from('UserProgress').select('id, status, xpEarned, solvedAt, userId', { count: 'exact' }),
+      fetchAllRows(() => supabase.from('Submission').select('id, status, createdAt, userId'), [{ column: 'createdAt', ascending: false }]),
+      fetchAllRows(() => supabase.from('UserProgress').select('id, status, xpEarned, solvedAt, userId')),
     ])
 
     const totalStudents = studentsRes.count ?? (studentsRes.data?.length || 0)
     const totalMentors = mentorsRes.count ?? (mentorsRes.data?.length || 0)
-    const totalSubmissions = subsRes.count ?? (subsRes.data?.length || 0)
+    const totalSubmissions = subsRes.data?.length || 0
 
     const subs = subsRes.data || []
     const prog = progRes.data || []
@@ -298,8 +327,8 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
     const [studentsRes, linksRes, progressRes, subsRes] = await Promise.all([
       supabase.from('students').select('id, user_id, name, email, student_code, status, created_at').order('name', { ascending: true }),
       supabase.from('mentor_students').select('student_id, mentor_id, mentors(id, name)').eq('status', 'ACTIVE'),
-      supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned'),
-      supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests').order('createdAt', { ascending: false }),
+      fetchAllRows(() => supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned')),
+      fetchAllRows(() => supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests'), [{ column: 'createdAt', ascending: false }]),
     ])
 
     const dbStudents = studentsRes.data || []
@@ -848,10 +877,12 @@ export async function fetchStudentLeaderboard(
   const cutoffTime = new Date(Date.now() - days * 86400000).toISOString()
 
   try {
-    const { data: progressRows } = await supabase
-      .from('UserProgress')
-      .select('userId, problemId, status, xpEarned, solvedAt')
-      .gte('solvedAt', cutoffTime)
+    const { data: progressRows } = await fetchAllRows(() =>
+      supabase
+        .from('UserProgress')
+        .select('id, userId, problemId, status, xpEarned, solvedAt')
+        .gte('solvedAt', cutoffTime)
+    )
 
     const tfProgressByUser = new Map<string, Array<{ problemId: string; status: string; xpEarned?: number }>>()
     for (const p of progressRows || []) {
@@ -931,8 +962,8 @@ export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnal
   try {
     const [studentsData, subsRes, progRes] = await Promise.all([
       fetchCampusStudents(),
-      supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests, Problem(title, slug)'),
-      supabase.from('UserProgress').select('id, problemId, language, status, solvedAt'),
+      fetchAllRows(() => supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests, Problem(title, slug)')),
+      fetchAllRows(() => supabase.from('UserProgress').select('id, problemId, language, status, solvedAt')),
     ])
 
     const subs = subsRes.data || []

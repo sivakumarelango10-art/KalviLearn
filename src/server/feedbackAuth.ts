@@ -1,19 +1,53 @@
 import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
+import { isTestAuthEnabled } from './httpSecurity'
 
-// Server-authoritative Supabase Client
+// Server-authoritative Supabase Client.
+// Production REQUIRES SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY: there is no silent fallback to the
+// public anon key (which would make every server-side write quietly subject to client RLS).
+// Outside production (local dev / test runs) the public project URL + publishable key are used so the
+// suites can run without a service key.
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+
 const supabaseUrl =
   process.env.SUPABASE_URL ||
   process.env.VITE_SUPABASE_URL ||
-  'https://iavxnhwbgoarnexmyxpn.supabase.co'
+  (IS_PRODUCTION ? '' : 'https://iavxnhwbgoarnexmyxpn.supabase.co')
 
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  process.env.VITE_SUPABASE_ANON_KEY ||
-  'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40'
+  (IS_PRODUCTION
+    ? ''
+    : process.env.SUPABASE_ANON_KEY ||
+      process.env.VITE_SUPABASE_ANON_KEY ||
+      'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
 
-export const supabaseServer = createClient(supabaseUrl, supabaseKey)
+if (IS_PRODUCTION && (!supabaseUrl || !supabaseKey)) {
+  throw new Error('Server misconfigured: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in production.')
+}
+
+/**
+ * Attachment URLs are rendered to staff and forwarded to TeamSync, so only objects in this project's own public
+ * `feedback-attachments` bucket are trusted. Arbitrary client-supplied URLs (tracking pixels, javascript:, internal
+ * hosts) are rejected.
+ */
+export function isTrustedStorageUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw)
+    const base = new URL(supabaseUrl)
+    return (
+      url.protocol === 'https:' &&
+      url.origin === base.origin &&
+      url.pathname.startsWith('/storage/v1/object/public/feedback-attachments/')
+    )
+  } catch {
+    return false
+  }
+}
+
+export const supabaseServer = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+})
 
 export interface AuthenticatedUser {
   id: string
@@ -21,6 +55,8 @@ export interface AuthenticatedUser {
   name: string
   role: 'STUDENT' | 'MENTOR' | 'CAMPUS_MANAGER' | 'ADMIN' | 'SUPERADMIN'
   status: string
+  /** True only for test-token identities (never a real database user). Must never be persisted as real activity. */
+  synthetic?: boolean
 }
 
 export interface AuthVerificationResult {
@@ -28,6 +64,21 @@ export interface AuthVerificationResult {
   user?: AuthenticatedUser
   statusCode?: number
   error?: string
+}
+
+// Short-lived in-memory cache of VERIFIED tokens (sha256(token) -> user). Cuts two Supabase round trips
+// from every Run/Submit. Entries live <= 30s (bounds revocation / deactivation lag) and are never shared
+// across tokens, so one account can never be served another account's identity.
+const AUTH_CACHE_TTL_MS = 30_000
+const AUTH_CACHE_MAX = 1000
+const authCache = new Map<string, { user: AuthenticatedUser; expires: number }>()
+
+function tokenKey(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex')
+}
+
+export function clearAuthCacheForTesting(): void {
+  authCache.clear()
 }
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -86,8 +137,8 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
   }
 
-  // 1. Support secure test tokens for automated test suites (non-production only)
-  if (process.env.NODE_ENV !== 'production' && token.startsWith('test_auth_')) {
+  // 1. Test tokens for automated suites: non-production AND ALLOW_TEST_AUTH_TOKENS=1 only
+  if (isTestAuthEnabled() && token.startsWith('test_auth_')) {
     const parts = token.split('_')
     // format: test_auth_<role>_<email>
     if (parts.length >= 4) {
@@ -117,12 +168,20 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
           name: synthetic?.name || 'Automated Test User',
           role: testRole,
           status: 'ACTIVE',
+          synthetic: true,
         },
       }
     }
   }
 
   // 2. Authoritative Supabase JWT verification
+  const cacheKey = tokenKey(token)
+  const cached = authCache.get(cacheKey)
+  if (cached && cached.expires > Date.now()) {
+    return { authenticated: true, user: cached.user }
+  }
+  authCache.delete(cacheKey)
+
   try {
     const { data, error } = await supabaseServer.auth.getUser(token)
     if (error || !data?.user?.email) {
@@ -136,64 +195,62 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     const email = data.user.email.toLowerCase()
     const metaName = data.user.user_metadata?.full_name || data.user.user_metadata?.name || email.split('@')[0]
 
-    // 3. Database query in users table via supabaseServer
-    try {
-      const { data: dbUser } = await supabaseServer
-        .from('users')
-        .select('id, email, name, role, status')
-        .or(`id.eq.${data.user.id},email.eq.${email}`)
-        .maybeSingle()
+    // 3. The database `users` table is the authoritative source of role/status.
+    //    Canonical mapping: auth.uid() -> users."authUid" (a trusted, client-unwritable column filled by the RLS
+    //    hardening migration). An un-linked row may only be bound by email to a CONFIRMED GOOGLE identity.
+    //    Before that migration is applied the column does not exist (Postgres 42703): the same email rule is used.
+    //    Parameterised .eq() filters only - no filter-string interpolation.
+    type DbUserRow = { id: string; email: string; name: string | null; role: string | null; status: string | null }
+    const columns = 'id, email, name, role, status'
+    let dbUser: DbUserRow | null = null
+    let authUidColumn = true
 
-      if (dbUser) {
-        if (dbUser.status && dbUser.status !== 'ACTIVE') {
-          return {
-            authenticated: false,
-            statusCode: 403,
-            error: 'User account is inactive.',
-          }
-        }
-
-        return {
-          authenticated: true,
-          user: {
-            id: dbUser.id,
-            email: dbUser.email,
-            name: dbUser.name || metaName,
-            role: (dbUser.role || 'STUDENT').toUpperCase() as AuthenticatedUser['role'],
-            status: dbUser.status || 'ACTIVE',
-          },
-        }
+    const byAuth = await supabaseServer.from('users').select(columns).eq('authUid', data.user.id).maybeSingle()
+    if (byAuth.error) {
+      if (byAuth.error.code === '42703' || /authUid/.test(byAuth.error.message || '')) {
+        authUidColumn = false
+      } else {
+        // Fail closed: never skip the role/status check because the database was unreachable.
+        return { authenticated: false, statusCode: 503, error: 'Unable to verify account. Please retry.' }
       }
-    } catch {
-      // If direct DB connection pool is occupied, check fallback roster
+    } else {
+      dbUser = byAuth.data as DbUserRow | null
     }
 
-    // Check synthetic test roster if applicable
-    const fallback = SYNTHETIC_TEST_ROSTER[email]
-    if (fallback) {
-      return {
-        authenticated: true,
-        user: {
-          id: fallback.id,
-          email: email,
-          name: fallback.name || metaName,
-          role: fallback.role,
-          status: 'ACTIVE',
-        },
+    if (!dbUser) {
+      const googleConfirmed =
+        !!data.user.email_confirmed_at && (data.user.identities || []).some((identity) => identity.provider === 'google')
+      if (googleConfirmed) {
+        let byEmailQuery = supabaseServer.from('users').select(columns).eq('email', email)
+        if (authUidColumn) byEmailQuery = byEmailQuery.is('authUid', null)
+        const byEmail = await byEmailQuery.maybeSingle()
+        if (byEmail.error) {
+          return { authenticated: false, statusCode: 503, error: 'Unable to verify account. Please retry.' }
+        }
+        dbUser = byEmail.data as DbUserRow | null
       }
     }
 
-    // Fallback to Supabase authenticated user
-    return {
-      authenticated: true,
-      user: {
-        id: data.user.id,
-        email: email,
-        name: metaName,
-        role: 'STUDENT',
-        status: 'ACTIVE',
-      },
+    if (!dbUser) {
+      return { authenticated: false, statusCode: 403, error: 'Account is not registered.' }
     }
+    if (dbUser.status && dbUser.status.toUpperCase() !== 'ACTIVE') {
+      return { authenticated: false, statusCode: 403, error: 'User account is inactive.' }
+    }
+
+    const verifiedUser: AuthenticatedUser = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name || metaName,
+      role: (dbUser.role || 'STUDENT').toUpperCase() as AuthenticatedUser['role'],
+      status: 'ACTIVE',
+    }
+    if (authCache.size >= AUTH_CACHE_MAX) {
+      const oldest = authCache.keys().next().value
+      if (oldest !== undefined) authCache.delete(oldest)
+    }
+    authCache.set(cacheKey, { user: verifiedUser, expires: Date.now() + AUTH_CACHE_TTL_MS })
+    return { authenticated: true, user: verifiedUser }
   } catch (err) {
     return {
       authenticated: false,

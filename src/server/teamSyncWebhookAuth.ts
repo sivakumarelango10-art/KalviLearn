@@ -12,11 +12,19 @@ export interface WebhookAuthResult {
  * Computes an HMAC-SHA256 signature for TeamSync webhook payloads.
  * Format: HMAC_SHA256(secret, `${timestamp}.${rawBody}`)
  */
+export function resolveWebhookSecret(explicit?: string): string {
+  return explicit || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || ''
+}
+
 export function computeTeamSyncSignature(
   rawBody: string,
   timestamp: number | string,
-  secret: string = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== 'production' ? 'ts_whsec_kalvilearn_39a1b2c4d5e6' : '')
+  secret: string = resolveWebhookSecret()
 ): string {
+  // Never sign/verify with an empty key: HMAC with '' is trivially forgeable by anyone.
+  if (!secret) {
+    throw new Error('Webhook secret is not configured.')
+  }
   const payloadToSign = `${timestamp}.${rawBody}`
   return crypto.createHmac('sha256', secret).update(payloadToSign, 'utf8').digest('hex')
 }
@@ -40,8 +48,17 @@ export function verifyTeamSyncWebhookSignature(
     toleranceSeconds?: number
   } = {}
 ): WebhookAuthResult {
-  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== 'production' ? 'ts_whsec_kalvilearn_39a1b2c4d5e6' : '')
+  const secret = resolveWebhookSecret(options.secret)
   const toleranceSeconds = options.toleranceSeconds ?? 300 // 5 minutes tolerance
+
+  // Fail closed: with no configured secret every request is rejected (never verify against an empty key).
+  if (!secret) {
+    return {
+      valid: false,
+      statusCode: 503,
+      error: 'Webhook receiver is not configured.',
+    }
+  }
 
   if (!signatureHeader || typeof signatureHeader !== 'string' || signatureHeader.trim() === '') {
     return {
