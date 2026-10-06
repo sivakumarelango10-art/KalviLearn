@@ -79,7 +79,7 @@ export const MentorProfilePage: React.FC = () => {
           </div>
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-            <span className="text-neutral-700 font-medium">Broadcast cohort announcements & hints</span>
+            <span className="text-neutral-700 font-medium">Manage assigned cohort roster & guidelines</span>
           </div>
           <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />

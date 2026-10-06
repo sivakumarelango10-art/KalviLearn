@@ -5,7 +5,6 @@ import {
   Users,
   Send,
   BookOpen,
-  Megaphone,
   UserCheck,
   GraduationCap,
   ExternalLink,
@@ -43,12 +42,6 @@ export const MentorSidebar: React.FC<MentorSidebarProps> = ({ className, onClose
       label: 'Curriculum',
       path: '/mentor/curriculum',
       icon: BookOpen,
-      badge: undefined,
-    },
-    {
-      label: 'Announcements',
-      path: '/mentor/announcements',
-      icon: Megaphone,
       badge: undefined,
     },
     {
