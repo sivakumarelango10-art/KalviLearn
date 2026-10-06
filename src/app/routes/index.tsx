@@ -74,10 +74,6 @@ const MentorCurriculumPage = lazyWithRetry(
   () => import('@/pages/mentor/MentorCurriculumPage').then((m) => ({ default: m.MentorCurriculumPage })),
   'MentorCurriculumPage'
 )
-const MentorAnnouncementsPage = lazyWithRetry(
-  () => import('@/pages/mentor/MentorAnnouncementsPage').then((m) => ({ default: m.MentorAnnouncementsPage })),
-  'MentorAnnouncementsPage'
-)
 const MentorProfilePage = lazyWithRetry(
   () => import('@/pages/mentor/MentorProfilePage').then((m) => ({ default: m.MentorProfilePage })),
   'MentorProfilePage'
@@ -227,10 +223,6 @@ export const router = createBrowserRouter([
           {
             path: 'curriculum',
             element: withSuspense(<MentorCurriculumPage />),
-          },
-          {
-            path: 'announcements',
-            element: withSuspense(<MentorAnnouncementsPage />),
           },
           {
             path: 'profile',
