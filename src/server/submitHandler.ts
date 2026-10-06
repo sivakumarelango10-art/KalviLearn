@@ -202,7 +202,7 @@ async function processSubmission(params: {
 
   // 1. Authoritatively evaluate all test cases on the server
   const evalResult = await executeQuestion({ questionSlug, language, code, isSubmit: true })
-  const allPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total === REQUIRED_TESTS
+  const allPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total > 0
 
   // 2. Persist (best effort - the evaluation result is still returned if storage is unavailable)
   let persistence: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }

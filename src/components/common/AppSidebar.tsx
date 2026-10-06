@@ -54,6 +54,9 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile
     if (path === '/practice') {
       return location.pathname.startsWith('/practice')
     }
+    if (path === '/learn') {
+      return location.pathname.startsWith('/learn')
+    }
     return location.pathname === path
   }
 

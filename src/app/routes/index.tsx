@@ -22,9 +22,25 @@ const DashboardPage = lazyWithRetry(
   () => import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
   'DashboardPage'
 )
-const LearnPage = lazyWithRetry(
-  () => import('@/pages/LearnPage').then((m) => ({ default: m.LearnPage })),
-  'LearnPage'
+const LearningModeSelectPage = lazyWithRetry(
+  () => import('@/pages/learn/LearningModeSelectPage').then((m) => ({ default: m.LearningModeSelectPage })),
+  'LearningModeSelectPage'
+)
+const CoursesPage = lazyWithRetry(
+  () => import('@/pages/learn/CoursesPage').then((m) => ({ default: m.CoursesPage })),
+  'CoursesPage'
+)
+const CodingTopicsPage = lazyWithRetry(
+  () => import('@/pages/learn/CodingTopicsPage').then((m) => ({ default: m.CodingTopicsPage })),
+  'CodingTopicsPage'
+)
+const CodingTopicProblemsPage = lazyWithRetry(
+  () => import('@/pages/learn/CodingTopicProblemsPage').then((m) => ({ default: m.CodingTopicProblemsPage })),
+  'CodingTopicProblemsPage'
+)
+const CodingQuestionDetailPage = lazyWithRetry(
+  () => import('@/pages/learn/CodingQuestionDetailPage').then((m) => ({ default: m.CodingQuestionDetailPage })),
+  'CodingQuestionDetailPage'
 )
 const PracticePage = lazyWithRetry(
   () => import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage })),
@@ -162,7 +178,23 @@ export const router = createBrowserRouter([
           },
           {
             path: 'learn',
-            element: withSuspense(<LearnPage />),
+            element: withSuspense(<LearningModeSelectPage />),
+          },
+          {
+            path: 'learn/courses',
+            element: withSuspense(<CoursesPage />),
+          },
+          {
+            path: 'learn/coding',
+            element: withSuspense(<CodingTopicsPage />),
+          },
+          {
+            path: 'learn/coding/:topicId',
+            element: withSuspense(<CodingTopicProblemsPage />),
+          },
+          {
+            path: 'learn/coding/:topicId/:slug',
+            element: withSuspense(<CodingQuestionDetailPage />),
           },
           {
             path: 'practice',

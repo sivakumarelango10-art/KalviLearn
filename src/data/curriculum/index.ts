@@ -3,6 +3,7 @@ import { pythonCurriculum } from './python'
 import { javaCurriculum } from './java'
 import { nodejsCurriculum } from './nodejs'
 import { cppCurriculum } from './cpp'
+import { getCodingQuestionBySlug } from '../../coding/questions'
 
 export * from './types'
 export { pythonCurriculum } from './python'
@@ -40,6 +41,13 @@ export function getCurriculum(lang: string | null | undefined): LanguageCurricul
   return CURRICULA[normalized] || CURRICULA.python
 }
 
+const DEFAULT_STARTER_CODES: Record<ProgrammingLanguage, string> = {
+  python: '# Language: Python 3\nimport sys\n\ndef solve():\n    pass\n\nif __name__ == "__main__":\n    solve()\n',
+  java: 'import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        scanner.close();\n    }\n}\n',
+  cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}\n',
+  nodejs: 'const fs = require("fs");\n\nfunction solve() {\n    const input = fs.readFileSync(0, "utf-8").trim();\n    if (!input) return;\n}\n\nsolve();\n',
+}
+
 export function getProblemByLanguageAndSlug(
   lang: string | null | undefined,
   slug: string
@@ -55,5 +63,38 @@ export function getProblemByLanguageAndSlug(
     )
     if (found) return found
   }
+
+  // Check new Coding Question Bank (740 questions)
+  const codingQ = getCodingQuestionBySlug(slug)
+  if (codingQ) {
+    const normalizedLang = normalizeLanguageSlug(lang)
+    return {
+      id: codingQ.id,
+      slug: codingQ.slug,
+      language: normalizedLang,
+      belt: 1,
+      beltName: codingQ.topicTitle,
+      beltTitle: codingQ.topicTitle,
+      beltColor: '#ED2A2B',
+      beltDescription: 'Topic Coding Practice',
+      order: codingQ.globalNumber,
+      title: codingQ.title,
+      description: codingQ.problemStatement,
+      inputFormat: codingQ.inputFormat,
+      outputFormat: codingQ.outputFormat,
+      constraints: codingQ.constraints,
+      examples: codingQ.examples,
+      difficulty: codingQ.difficulty || 'Easy',
+      xp: 50,
+      starterCode: DEFAULT_STARTER_CODES[normalizedLang],
+      testCases: codingQ.examples.map((ex, idx) => ({
+        testIndex: idx + 1,
+        input: ex.input,
+        expectedOutput: ex.output,
+        isHidden: false,
+      })),
+    } as LanguageProblem
+  }
+
   return null
 }

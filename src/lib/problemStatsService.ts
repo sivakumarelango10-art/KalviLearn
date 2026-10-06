@@ -1,17 +1,41 @@
 import { supabase } from './supabase'
 import { registerCacheClearer } from './cacheRegistry'
 
+export interface BeltStat {
+  order: number
+  name: string
+  title: string
+  color: string
+  totalProblems: number
+  solvedCount: number
+  remaining: number
+  percent: number
+  problemSlugs: string[]
+}
+
 export interface ProblemStats {
   solvedCount: number
   totalProblems: number
   remaining: number
   solvedProblemSlugs: string[]
+  beltStats: BeltStat[]
 }
 
 // In-memory cache for total problem count with TTL to avoid redundant full-table counts
 let cachedTotalProblemCount: number | null = null
 let totalProblemCountTimestamp = 0
 const TOTAL_PROBLEMS_TTL_MS = 2 * 60 * 1000 // 2 minutes
+
+// In-memory cache for authoritative belts with problems
+let cachedBeltsWithProblems: Array<{
+  id: string
+  order: number
+  name: string
+  title: string
+  color: string
+  Problem: Array<{ id: string; slug: string }>
+}> | null = null
+let beltsTimestamp = 0
 
 // Per-user in-memory stats cache for rapid successive component calls
 const userStatsCache = new Map<string, { stats: ProblemStats; timestamp: number }>()
@@ -28,6 +52,8 @@ registerCacheClearer(() => {
 export function clearProblemStatsCache(): void {
   cachedTotalProblemCount = null
   totalProblemCountTimestamp = 0
+  cachedBeltsWithProblems = null
+  beltsTimestamp = 0
   userStatsCache.clear()
 }
 
@@ -63,6 +89,47 @@ export async function fetchTotalProblemCount(forceRefresh = false): Promise<numb
 }
 
 /**
+ * Fetches authoritative belts joined with problem identifiers directly from the Supabase Belt table.
+ */
+export async function fetchAuthoritativeBeltsWithProblems(forceRefresh = false): Promise<Array<{
+  id: string
+  order: number
+  name: string
+  title: string
+  color: string
+  Problem: Array<{ id: string; slug: string }>
+}>> {
+  const now = Date.now()
+  if (!forceRefresh && cachedBeltsWithProblems !== null && now - beltsTimestamp < TOTAL_PROBLEMS_TTL_MS) {
+    return cachedBeltsWithProblems
+  }
+
+  const { data, error } = await supabase
+    .from('Belt')
+    .select('id, order, name, title, color, Problem(id, slug)')
+    .order('order')
+
+  if (error || !data) {
+    if (cachedBeltsWithProblems !== null) {
+      return cachedBeltsWithProblems
+    }
+    throw new Error(`Failed to fetch belts from database: ${error?.message || 'Unknown error'}`)
+  }
+
+  const typedBelts = data as unknown as Array<{
+    id: string
+    order: number
+    name: string
+    title: string
+    color: string
+    Problem: Array<{ id: string; slug: string }>
+  }>
+  cachedBeltsWithProblems = typedBelts
+  beltsTimestamp = now
+  return typedBelts
+}
+
+/**
  * Fetches authoritative problem stats for a specific authenticated student.
  * 
  * Guarantees:
@@ -71,6 +138,7 @@ export async function fetchTotalProblemCount(forceRefresh = false): Promise<numb
  * 3. Authoritative state: Queries UserProgress (SOLVED) and Submission (PASSED 10/10).
  * 4. No fake numbers: Returns exact counts; throws on database failure so caller shows explicit error.
  * 5. Remaining calculation: remaining = Math.max(totalProblems - solvedCount, 0).
+ * 6. Belt breakdown: Per-belt problem counts and user solved counts derived from the database.
  */
 export async function fetchAuthoritativeProblemStats(
   userId: string,
@@ -90,8 +158,8 @@ export async function fetchAuthoritativeProblemStats(
     }
   }
 
-  // Fetch total problem count and user's solved records concurrently
-  const [totalProblems, userProgressResult, submissionResult] = await Promise.all([
+  // Fetch total problem count, user's solved records, and belt catalog concurrently
+  const [totalProblems, userProgressResult, submissionResult, beltResult] = await Promise.all([
     fetchTotalProblemCount(options.forceRefresh),
     supabase
       .from('UserProgress')
@@ -103,6 +171,7 @@ export async function fetchAuthoritativeProblemStats(
       .select('problemId, status, passedTests, totalTests, Problem(slug)')
       .eq('userId', sanitizedUserId)
       .eq('status', 'PASSED'),
+    fetchAuthoritativeBeltsWithProblems(options.forceRefresh),
   ])
 
   if (userProgressResult.error) {
@@ -156,11 +225,32 @@ export async function fetchAuthoritativeProblemStats(
     )
   }
 
+  // Calculate per-belt breakdown from database rows
+  const beltStats: BeltStat[] = (beltResult || []).map((b) => {
+    const problems = (b.Problem as Array<{ id: string; slug: string }>) || []
+    const totalInBelt = problems.length
+    const solvedInBelt = problems.filter((p) => uniqueSolvedProblemKeys.has(p.slug)).length
+    const remainingInBelt = Math.max(totalInBelt - solvedInBelt, 0)
+    const percentInBelt = totalInBelt > 0 ? Math.round((solvedInBelt / totalInBelt) * 100) : 0
+    return {
+      order: b.order,
+      name: b.name,
+      title: b.title,
+      color: b.color || '#ED2A2B',
+      totalProblems: totalInBelt,
+      solvedCount: solvedInBelt,
+      remaining: remainingInBelt,
+      percent: percentInBelt,
+      problemSlugs: problems.map((p) => p.slug),
+    }
+  })
+
   const stats: ProblemStats = {
     solvedCount,
     totalProblems,
     remaining,
     solvedProblemSlugs: Array.from(uniqueSolvedProblemKeys),
+    beltStats,
   }
 
   userStatsCache.set(sanitizedUserId, { stats, timestamp: now })

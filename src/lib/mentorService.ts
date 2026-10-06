@@ -920,7 +920,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
 
     invalidateMentorCache(mentorUserId)
 
-    const dynamicTotalProblems = await fetchTotalProblemCount().catch(() => 500)
+    const dynamicTotalProblems = await fetchTotalProblemCount().catch(() => 0)
 
     return {
       success: true,

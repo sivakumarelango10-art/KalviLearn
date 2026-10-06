@@ -34,12 +34,31 @@ export const DashboardPage: React.FC = () => {
     return subscribeProgress(updateStats)
   }, [])
 
-  // Calculate belt details
+  // Authoritative unique solved problem slugs (from database, falling back to local state)
+  const authoritativeSolvedSlugs = useMemo(() => {
+    if (problemStats?.solvedProblemSlugs && problemStats.solvedProblemSlugs.length > 0) {
+      return problemStats.solvedProblemSlugs
+    }
+    return userState.solvedSlugs
+  }, [problemStats?.solvedProblemSlugs, userState.solvedSlugs])
+
+  // Belt progression from authoritative database stats, with problemData colors/titles
   const beltSummaries = useMemo(() => {
+    if (problemStats?.beltStats && problemStats.beltStats.length > 0) {
+      return problemStats.beltStats.map((bs) => ({
+        order: bs.order,
+        name: bs.name,
+        title: bs.title,
+        color: bs.color,
+        total: bs.totalProblems,
+        solved: bs.solvedCount,
+        percent: bs.percent,
+      }))
+    }
     return problemsData.map((belt) => {
       const total = belt.problems.length
       const solved = belt.problems.filter((p: { slug: string }) =>
-        userState.solvedSlugs.includes(p.slug)
+        authoritativeSolvedSlugs.includes(p.slug)
       ).length
       const percent = total > 0 ? Math.round((solved / total) * 100) : 0
       return {
@@ -52,13 +71,13 @@ export const DashboardPage: React.FC = () => {
         percent,
       }
     })
-  }, [userState.solvedSlugs])
+  }, [problemStats?.beltStats, authoritativeSolvedSlugs])
 
-  // Find next problem to solve
+  // Find next problem to solve based on authoritative database progress
   const nextProblem = useMemo(() => {
     for (const belt of problemsData) {
       for (const p of belt.problems) {
-        if (!userState.solvedSlugs.includes(p.slug)) {
+        if (!authoritativeSolvedSlugs.includes(p.slug)) {
           return {
             ...p,
             beltName: belt.name,
@@ -68,27 +87,29 @@ export const DashboardPage: React.FC = () => {
       }
     }
     return null
-  }, [userState.solvedSlugs])
+  }, [authoritativeSolvedSlugs])
 
-  const fallbackTotalProblems = useMemo(() => problemsData.reduce((acc, belt) => acc + belt.problems.length, 0), [])
-  const totalProblems = problemStats ? problemStats.totalProblems : fallbackTotalProblems
-  const totalSolved = problemStats ? problemStats.solvedCount : userState.solvedSlugs.length
-  const remainingProblems = problemStats ? problemStats.remaining : Math.max(totalProblems - totalSolved, 0)
-  const overallPercent = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0
+  const totalProblems = problemStats?.totalProblems ?? null
+  const totalSolved = problemStats?.solvedCount ?? null
+  const overallPercent =
+    totalProblems !== null && totalProblems > 0 && totalSolved !== null
+      ? Math.round((totalSolved / totalProblems) * 100)
+      : null
 
   // Current active Belt across 10 Belts
   const currentBelt = useMemo(() => {
-    if (totalSolved >= 410) return { name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
-    if (totalSolved >= 330) return { name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
-    if (totalSolved >= 265) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
-    if (totalSolved >= 205) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
-    if (totalSolved >= 165) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
-    if (totalSolved >= 125) return { name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
-    if (totalSolved >= 85) return { name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
-    if (totalSolved >= 50) return { name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
-    if (totalSolved >= 20) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+    const solved = totalSolved ?? userState.solvedSlugs.length
+    if (solved >= 410) return { name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
+    if (solved >= 330) return { name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
+    if (solved >= 265) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+    if (solved >= 205) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+    if (solved >= 165) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+    if (solved >= 125) return { name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
+    if (solved >= 85) return { name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
+    if (solved >= 50) return { name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
+    if (solved >= 20) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
     return { name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
-  }, [totalSolved])
+  }, [totalSolved, userState.solvedSlugs.length])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -104,7 +125,7 @@ export const DashboardPage: React.FC = () => {
               Welcome back, {displayName}
             </h1>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
-              Continue your journey through {statsStatus === 'loading' ? '—' : totalProblems} Belt problems across 10 progressive Belts. Test your algorithmic logic in the Practice Arena and hone your speed.
+              Continue your journey through {statsStatus === 'loading' || totalProblems === null ? '—' : totalProblems} Belt problems across 10 progressive Belts. Test your algorithmic logic in the Practice Arena and hone your speed.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -156,14 +177,14 @@ export const DashboardPage: React.FC = () => {
                   stroke="#ED2A2B"
                   strokeWidth="8"
                   strokeDasharray={238.76}
-                  strokeDashoffset={238.76 - (238.76 * overallPercent) / 100}
+                  strokeDashoffset={238.76 - (238.76 * (overallPercent ?? 0)) / 100}
                   strokeLinecap="round"
                   fill="transparent"
                   className="transition-all duration-1000 ease-out"
                 />
               </svg>
               <div className="absolute text-center">
-                <span className="text-xl font-bold">{overallPercent}%</span>
+                <span className="text-xl font-bold">{overallPercent !== null ? `${overallPercent}%` : '—'}</span>
                 <span className="block text-[9px] uppercase tracking-wider text-neutral-400">Done</span>
               </div>
             </div>
@@ -215,10 +236,10 @@ export const DashboardPage: React.FC = () => {
             <div data-testid="problem-counter-success">
               <div className="text-2xl font-bold text-neutral-900">
                 {problemStats?.solvedCount ?? 0}{' '}
-                <span className="text-xs text-neutral-400 font-normal">/ {problemStats?.totalProblems ?? totalProblems}</span>
+                <span className="text-xs text-neutral-400 font-normal">/ {problemStats?.totalProblems ?? 0}</span>
               </div>
               <div className="text-[11px] text-neutral-500">
-                {problemStats?.remaining ?? remainingProblems} remaining
+                {problemStats?.remaining ?? 0} remaining
               </div>
             </div>
           )}

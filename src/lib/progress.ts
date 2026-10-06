@@ -597,7 +597,7 @@ export function getLanguageSolvedSlugs(rawLanguage: string): string[] {
 /**
  * Calculates language-specific completion stats and XP.
  */
-export function getLanguageProgress(rawLanguage: string, totalProblems: number = 500): {
+export function getLanguageProgress(rawLanguage: string, totalProblems: number): {
   solvedSlugs: string[]
   solvedCount: number
   totalCount: number

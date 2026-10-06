@@ -10,10 +10,12 @@ import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
+import { useProblemStats } from '@/hooks/useProblemStats'
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth()
   const [userState, setUserState] = useState<UserState>(() => getUserState())
+  const { stats: problemStats } = useProblemStats(user?.id)
 
   useEffect(() => {
     const updateStats = () => {
@@ -22,6 +24,14 @@ export const ProfilePage: React.FC = () => {
     updateStats()
     return subscribeProgress(updateStats)
   }, [])
+
+  // Authoritative unique solved problem slugs
+  const authoritativeSolvedSlugs = useMemo(() => {
+    if (problemStats?.solvedProblemSlugs && problemStats.solvedProblemSlugs.length > 0) {
+      return problemStats.solvedProblemSlugs
+    }
+    return userState.solvedSlugs
+  }, [problemStats?.solvedProblemSlugs, userState.solvedSlugs])
 
   // Calculate difficulty breakdown
   const difficultyStats = useMemo(() => {
@@ -34,7 +44,7 @@ export const ProfilePage: React.FC = () => {
 
     for (const belt of problemsData) {
       for (const p of belt.problems) {
-        const isSolved = userState.solvedSlugs.includes(p.slug)
+        const isSolved = authoritativeSolvedSlugs.includes(p.slug)
         if (p.difficulty === 'Easy') {
           easyTotal++
           if (isSolved) easySolved++
@@ -53,9 +63,9 @@ export const ProfilePage: React.FC = () => {
       medium: { solved: medSolved, total: medTotal },
       hard: { solved: hardSolved, total: hardTotal },
     }
-  }, [userState.solvedSlugs])
+  }, [authoritativeSolvedSlugs])
 
-  const solvedCount = userState.solvedSlugs.length
+  const solvedCount = problemStats?.solvedCount ?? userState.solvedSlugs.length
 
   const initials = user?.name
     ? user.name

@@ -26,6 +26,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext'
 import { PythonLogo, JavaLogo, CppLogo } from '@/components/practice/LanguageCards'
 import { StudentDetailModal } from '@/components/mentor/StudentDetailModal'
+import { fetchTotalProblemCount } from '@/lib/problemStatsService'
 
 export const NodejsOfficialLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +105,12 @@ export const MentorStudentsPage: React.FC = () => {
   // Remove confirmation state
   const [studentToDelete, setStudentToDelete] = useState<MentorStudent | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [totalProblemsBenchmark, setTotalProblemsBenchmark] = useState<number | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    fetchTotalProblemCount().then(setTotalProblemsBenchmark).catch(() => {})
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -876,7 +882,9 @@ export const MentorStudentsPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium text-neutral-500">Total Benchmark:</span>
-                    <span className="font-bold text-neutral-900">500 Problems</span>
+                    <span className="font-bold text-neutral-900">
+                      {totalProblemsBenchmark !== null ? `${totalProblemsBenchmark} Problems` : '—'}
+                    </span>
                   </div>
                 </div>
 

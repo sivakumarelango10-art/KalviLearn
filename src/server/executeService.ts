@@ -1,5 +1,6 @@
 import { runInSandbox } from './sandboxHost'
 import * as serverTestCasesModule from './data/serverTestCases'
+import { codingTestCases } from './data/codingTestCases'
 
 export interface ExecuteRequest {
   questionSlug: string
@@ -82,13 +83,17 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   }
   const problemMap = ((serverTestCasesModule as any).serverTestCases || (serverTestCasesModule as any).default || serverTestCasesModule) as unknown as Record<string, ServerProblemItem>
 
-  let problem = problemMap[questionSlug]
+  let problem = problemMap[questionSlug] || (codingTestCases as any)[questionSlug]
   if (!problem) {
-    const foundKey = Object.keys(problemMap).find(
-      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
-    )
+    const foundKey =
+      Object.keys(problemMap).find(
+        (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+      ) ||
+      Object.keys(codingTestCases).find(
+        (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+      )
     if (foundKey) {
-      problem = problemMap[foundKey]
+      problem = problemMap[foundKey] || (codingTestCases as any)[foundKey]
     }
   }
 
@@ -123,7 +128,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   }
 
   // Pre-check + execution run together inside the sandbox worker (empty env, capped heap, hard kill).
-  const inputs = problem?.testCases?.length === 10 ? problem.testCases.map((t) => t.input) : []
+  const inputs = problem?.testCases && problem.testCases.length > 0 ? problem.testCases.map((t) => t.input) : []
   const outcome = await runInSandbox({ code, language, inputs })
 
   if (outcome.kind === 'precheck_failed') {
@@ -174,26 +179,26 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   }
 
   const testCases = problem.testCases
-  // Strict 10 test cases validation (3 visible + 7 hidden)
-  if (!testCases || testCases.length !== 10) {
+  // Ensure valid test cases are configured
+  if (!testCases || testCases.length < 3) {
     return {
       success: false,
-      total: testCases?.length || 10,
+      total: testCases?.length || 3,
       passed: 0,
       executed: 0,
       overallTimeMs: 0,
       status: 'SYSTEM_ERROR',
       error: 'Invalid Question Configuration',
-      message: `Question must have exactly 10 test cases (found ${testCases?.length || 0}).`,
+      message: `Question must have at least 3 test cases (found ${testCases?.length || 0}).`,
       testCases: [],
     }
   }
 
-  // Both Run and Submit execute all authoritative test cases (all 10)
+  // Both Run and Submit execute all authoritative test cases
   const casesToExecute = testCases
   const totalCount = testCases.length
-  const visibleCount = 3
-  const hiddenCount = 7
+  const visibleCount = testCases.filter((tc) => !tc.isHidden).length
+  const hiddenCount = totalCount - visibleCount
 
   const startTime = performance.now()
   const sanitizedResults: ClientTestCaseResult[] = []
