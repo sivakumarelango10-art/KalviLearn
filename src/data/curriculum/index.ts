@@ -68,6 +68,23 @@ export function getProblemByLanguageAndSlug(
   const codingQ = getCodingQuestionBySlug(slug)
   if (codingQ) {
     const normalizedLang = normalizeLanguageSlug(lang)
+    const visibleTests = codingQ.visibleTests || []
+    const visibleCount = codingQ.testCaseMeta?.visibleCount ?? (visibleTests.length || 3)
+    const hiddenCount = codingQ.testCaseMeta?.hiddenCount ?? 7
+
+    const testCases: LanguageProblem['testCases'] = [
+      ...visibleTests.map((vt) => ({
+        testIndex: vt.testIndex,
+        input: vt.input,
+        expectedOutput: vt.expectedOutput,
+        isHidden: false,
+      })),
+      ...Array.from({ length: hiddenCount }, (_, i) => ({
+        testIndex: visibleCount + i + 1,
+        isHidden: true,
+      })),
+    ]
+
     return {
       id: codingQ.id,
       slug: codingQ.slug,
@@ -87,12 +104,7 @@ export function getProblemByLanguageAndSlug(
       difficulty: codingQ.difficulty || 'Easy',
       xp: 50,
       starterCode: DEFAULT_STARTER_CODES[normalizedLang],
-      testCases: codingQ.examples.map((ex, idx) => ({
-        testIndex: idx + 1,
-        input: ex.input,
-        expectedOutput: ex.output,
-        isHidden: false,
-      })),
+      testCases,
     } as LanguageProblem
   }
 

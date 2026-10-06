@@ -247,6 +247,11 @@ export function parseQuestionBankMarkdown(rawMarkdown: string): ParseResult {
           input: t.input,
           expectedOutput: t.expectedOutput,
         })),
+        testCaseMeta: {
+          visibleCount: visibleTests.length,
+          hiddenCount: hiddenTests.length,
+          totalCount: visibleTests.length + hiddenTests.length,
+        },
         difficulty: 'Easy',
       }
 

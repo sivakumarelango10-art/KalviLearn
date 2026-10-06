@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ShieldAlert,
   AlertTriangle,
+  Lock,
 } from 'lucide-react'
 import {
   getCurriculum,
@@ -91,6 +92,11 @@ export const ProblemArenaPage: React.FC = () => {
   const currentProblem = currentProblemData.problem
   const nextProblemSlug = currentProblemData.nextSlug
   const authoritativeTotalCount = currentProblem.testCases?.length || 10
+  const visibleCount = useMemo(() => {
+    if (!currentProblem.testCases || currentProblem.testCases.length === 0) return 3
+    const count = currentProblem.testCases.filter((tc) => !tc.isHidden).length
+    return count > 0 ? count : 3
+  }, [currentProblem])
 
   // State
   const [activeTab, setActiveTab] = useState<'description' | 'submissions' | 'help'>('description')
@@ -212,7 +218,7 @@ export const ProblemArenaPage: React.FC = () => {
     setSubmissionFailed(null)
     setCompilationError(null)
 
-    const visibleCases = (currentProblem.testCases || []).slice(0, 3).map((tc, idx) => ({
+    const visibleCases = (currentProblem.testCases || []).slice(0, visibleCount).map((tc, idx) => ({
       testIndex: tc.testIndex || idx + 1,
       input: tc.input || '',
       expectedOutput: tc.expectedOutput || '',
@@ -719,14 +725,15 @@ export const ProblemArenaPage: React.FC = () => {
           <div className="h-64 border-t border-neutral-800 bg-neutral-900 flex flex-col overflow-hidden">
             {/* Drawer Tabs */}
             <div className="h-10 bg-neutral-950 px-3 flex items-center justify-between border-b border-neutral-800 flex-shrink-0">
-              <div className="flex items-center gap-1 overflow-x-auto py-1">
+              <div className="flex items-center gap-1 overflow-x-auto py-1 scrollbar-thin scrollbar-thumb-neutral-800 flex-nowrap min-w-0">
                 <span className="text-xs font-semibold text-neutral-400 mr-1.5 flex-shrink-0">
                   Test Cases:
                 </span>
                 {Array.from({ length: authoritativeTotalCount }, (_, i) => i + 1).map((caseNum) => {
-                  const isVisible = caseNum <= 3
+                  const isVisible = caseNum <= visibleCount
                   const tcResult = testResults ? testResults[caseNum - 1] : null
-                  const isPassed = tcResult ? tcResult.passed : null
+                  const showPassFail = isVisible ? tcResult !== null : (executionSummary?.isSubmit && tcResult !== null)
+                  const isPassed = showPassFail ? tcResult?.passed : null
 
                   return (
                     <button
@@ -736,7 +743,9 @@ export const ProblemArenaPage: React.FC = () => {
                         'px-2 py-1 rounded text-xs font-medium flex items-center gap-1 transition-all duration-200 interactive-tab flex-shrink-0',
                         activeCaseTab === caseNum
                           ? 'bg-neutral-800 text-white shadow-sm ring-1 ring-neutral-700'
-                          : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
+                          : isVisible
+                          ? 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
+                          : 'text-neutral-500 hover:text-neutral-300 hover:bg-neutral-900/60'
                       )}
                     >
                       {isRunning || isSubmitting ? (
@@ -746,7 +755,10 @@ export const ProblemArenaPage: React.FC = () => {
                       ) : isPassed === false ? (
                         <XCircle className="w-3.5 h-3.5 text-red-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
                       ) : null}
-                      <span>Case {caseNum} {!isVisible && '🔒'}</span>
+                      <span>Case {caseNum}</span>
+                      {!isVisible && (
+                        <Lock className="w-3 h-3 text-neutral-400 ml-0.5 inline-block flex-shrink-0" />
+                      )}
                     </button>
                   )
                 })}
@@ -754,34 +766,45 @@ export const ProblemArenaPage: React.FC = () => {
 
               {/* Status Header */}
               <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
-                {isRunning || isSubmitting ? (
+                {isRunning ? (
+                  <span className="text-amber-400 flex items-center gap-1.5">
+                    <span className="animate-spin text-xs">⏳</span> Evaluating visible tests...
+                  </span>
+                ) : isSubmitting ? (
                   <span className="text-amber-400 flex items-center gap-1.5">
                     <span className="animate-spin text-xs">⏳</span> Evaluating {authoritativeTotalCount} Test Cases...
                   </span>
                 ) : compilationError ? (
                   <span className="text-red-400 font-semibold">Passed 0 / {authoritativeTotalCount}</span>
                 ) : executionSummary ? (
-                  <span
-                    className={cn(
-                      'font-semibold',
-                      executionSummary.passed === executionSummary.total
-                        ? 'text-emerald-400'
-                        : 'text-amber-400'
-                    )}
-                  >
-                    Passed {executionSummary.passed} / {executionSummary.total}
-                  </span>
-                ) : testResults ? (
-                  <span
-                    className={cn(
-                      'font-semibold',
-                      testResults.filter((t) => t.passed).length === authoritativeTotalCount
-                        ? 'text-emerald-400'
-                        : 'text-amber-400'
-                    )}
-                  >
-                    Passed {testResults.filter((t) => t.passed).length} / {authoritativeTotalCount}
-                  </span>
+                  executionSummary.isSubmit ? (
+                    <span
+                      className={cn(
+                        'font-semibold',
+                        executionSummary.passed === executionSummary.total
+                          ? 'text-emerald-400'
+                          : 'text-amber-400'
+                      )}
+                    >
+                      Passed {executionSummary.passed} / {executionSummary.total}
+                    </span>
+                  ) : (
+                    (() => {
+                      const visiblePassed = (testResults || []).slice(0, visibleCount).filter((t) => t.passed).length
+                      return (
+                        <span
+                          className={cn(
+                            'font-semibold',
+                            visiblePassed === visibleCount
+                              ? 'text-emerald-400'
+                              : 'text-amber-400'
+                          )}
+                        >
+                          Visible tests: {visiblePassed} / {visibleCount} passed
+                        </span>
+                      )
+                    })()
+                  )
                 ) : (
                   <span className="text-neutral-500">Passed 0 / {authoritativeTotalCount}</span>
                 )}
@@ -796,7 +819,7 @@ export const ProblemArenaPage: React.FC = () => {
                     <div className="flex flex-col items-center justify-center py-8 space-y-3 font-sans">
                       <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                       <div className="text-xs text-neutral-300 font-medium">
-                        Running all 10 test cases in isolated sandbox...
+                        Running test cases in isolated sandbox...
                       </div>
                       <div className="text-[11px] text-neutral-500">
                         Validating edge cases, boundary constraints, and performance (3000ms limit)
@@ -819,23 +842,28 @@ export const ProblemArenaPage: React.FC = () => {
                   )
                 }
 
-                const isHiddenCase = activeCaseTab > 3
+                const isHiddenCase = activeCaseTab > visibleCount
                 const tcResult = testResults ? testResults[activeCaseTab - 1] : null
 
                 if (isHiddenCase) {
+                  const hasSubmitResult = executionSummary?.isSubmit && tcResult !== null
+
                   return (
                     <div className="space-y-3 font-sans">
                       <div className="p-3 bg-neutral-950/80 rounded-lg border border-neutral-800 text-neutral-400 text-xs space-y-1.5">
                         <div className="flex items-center gap-1.5 font-bold text-neutral-200">
-                          <span>🔒 Hidden Test Case #{activeCaseTab}</span>
-                          <span className="text-[10px] font-normal text-neutral-500">• 1 of 7 Hidden Tests</span>
+                          <Lock className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" />
+                          <span>Hidden Test Case #{activeCaseTab}</span>
+                          <span className="text-[10px] font-normal text-neutral-500">
+                            • {activeCaseTab - visibleCount} of {authoritativeTotalCount - visibleCount} Hidden Tests
+                          </span>
                         </div>
                         <p className="text-[11px] text-neutral-400 leading-relaxed">
-                          Test inputs and expected benchmarks are concealed for hidden test cases to evaluate edge cases, boundary constraints, and prevent hardcoded solutions.
+                          Hidden test case — evaluated when you submit your solution. Inputs and expected benchmarks are concealed to evaluate edge cases, boundary constraints, and prevent hardcoded solutions.
                         </p>
                       </div>
 
-                      {tcResult ? (
+                      {hasSubmitResult ? (
                         <div className="space-y-2">
                           <div className="text-[11px] text-neutral-400 font-medium flex items-center justify-between">
                             <span>Evaluation Result:</span>
@@ -858,24 +886,24 @@ export const ProblemArenaPage: React.FC = () => {
                             {tcResult.passed ? (
                               <>
                                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                                <span>✓ Passed (Matches hidden benchmark)</span>
+                                <span>Case {activeCaseTab} 🔒 — Passed</span>
                               </>
                             ) : tcResult.isTimeLimitExceeded ? (
                               <>
                                 <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                                <span>⏱ Case {activeCaseTab} — Time Limit Exceeded (3000ms timeout)</span>
+                                <span>Case {activeCaseTab} 🔒 — Time Limit Exceeded (3000ms timeout)</span>
                               </>
                             ) : (
                               <>
                                 <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-                                <span>✗ Case {activeCaseTab} — Failed (Output did not match hidden benchmark)</span>
+                                <span>Case {activeCaseTab} 🔒 — Failed</span>
                               </>
                             )}
                           </div>
                         </div>
                       ) : (
                         <div className="p-4 text-center text-neutral-500 text-xs font-sans">
-                          Click <strong className="text-neutral-300">Run</strong> or <strong className="text-neutral-300">Submit</strong> to execute this hidden test case.
+                          Click <strong className="text-neutral-300">Submit</strong> to evaluate all hidden test cases.
                         </div>
                       )}
                     </div>

@@ -150,7 +150,24 @@ async function runTests() {
   const cppProblem = getProblemByLanguageAndSlug('cpp', 'profile-echo')
   assert(!!cppProblem?.starterCode, 'Starter code generated for C++')
 
-  assert(pythonProblem?.testCases?.length === 3, 'Curriculum resolver includes 3 open test cases for practice arena')
+  assert(pythonProblem?.testCases?.length === 10, `Curriculum resolver includes 10 test case descriptors (got ${pythonProblem?.testCases?.length})`)
+  const visibleTcs = (pythonProblem?.testCases || []).filter((tc) => !tc.isHidden)
+  const hiddenTcs = (pythonProblem?.testCases || []).filter((tc) => tc.isHidden)
+  assert(visibleTcs.length === 3, `Visible test count is 3 (got ${visibleTcs.length})`)
+  assert(hiddenTcs.length === 7, `Hidden test metadata count is 7 (got ${hiddenTcs.length})`)
+
+  let hiddenDataLeaked = false
+  for (const h of hiddenTcs) {
+    if (h.input !== undefined || h.expectedOutput !== undefined) {
+      hiddenDataLeaked = true
+    }
+  }
+  assert(!hiddenDataLeaked, 'Client hidden test placeholders contain 0 input or expectedOutput data')
+
+  // Verify safe testCaseMeta on CodingQuestion
+  assert(sampleQuestion?.testCaseMeta?.visibleCount === 3, 'Question model has testCaseMeta.visibleCount === 3')
+  assert(sampleQuestion?.testCaseMeta?.hiddenCount === 7, 'Question model has testCaseMeta.hiddenCount === 7')
+  assert(sampleQuestion?.testCaseMeta?.totalCount === 10, 'Question model has testCaseMeta.totalCount === 10')
 
   // 7. Check server test cases
   const { codingTestCases } = await import('../src/server/data/codingTestCases')

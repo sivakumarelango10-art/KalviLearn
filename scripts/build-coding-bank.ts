@@ -98,6 +98,15 @@ export function buildCodingBank(sourcePath = MARKDOWN_PATH) {
       )
     }
 
+    if (
+      !q.testCaseMeta ||
+      q.testCaseMeta.visibleCount !== 3 ||
+      q.testCaseMeta.hiddenCount !== 7 ||
+      q.testCaseMeta.totalCount !== 10
+    ) {
+      throw new Error(`Validation failed: Question ${q.title} missing or invalid testCaseMeta`)
+    }
+
     const serverEntry = parsed.serverTestCasesBySlug[q.slug]
     if (!serverEntry || !serverEntry.testCases) {
       throw new Error(`Validation failed: Question ${q.title} missing server evaluator entry`)

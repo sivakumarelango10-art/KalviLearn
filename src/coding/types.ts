@@ -13,6 +13,12 @@ export interface JudgeTestCase {
   isHidden: boolean
 }
 
+export interface TestCaseMeta {
+  visibleCount: number
+  hiddenCount: number
+  totalCount: number
+}
+
 export interface CodingQuestion {
   id: string
   slug: string
@@ -30,6 +36,7 @@ export interface CodingQuestion {
     input: string
     expectedOutput: string
   }>
+  testCaseMeta?: TestCaseMeta
   difficulty?: 'Easy' | 'Medium' | 'Hard'
 }
 

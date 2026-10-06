@@ -44,6 +44,11 @@
         "expectedOutput": "Mira 18 158"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "swap-stored-integers": {
@@ -91,6 +96,11 @@
         "expectedOutput": "7 7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "character-code": {
@@ -138,6 +148,11 @@
         "expectedOutput": "48"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "digit-character": {
@@ -185,6 +200,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "boolean-conversion": {
@@ -232,6 +252,11 @@
         "expectedOutput": "TRUE"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "integer-fraction-split": {
@@ -279,6 +304,11 @@
         "expectedOutput": "0 0.125"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "high-low-byte": {
@@ -326,6 +356,11 @@
         "expectedOutput": "255 255"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "rupees-paise-split": {
@@ -373,6 +408,11 @@
         "expectedOutput": "5 0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "two-digit-split": {
@@ -420,6 +460,11 @@
         "expectedOutput": "9 9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "coordinate-formatting": {
@@ -467,6 +512,11 @@
         "expectedOutput": "(0,0)"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "signed-magnitude": {
@@ -514,6 +564,11 @@
         "expectedOutput": "0 0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "hours-to-minutes": {
@@ -561,6 +616,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "scientific-pair-value": {
@@ -608,6 +668,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "date-field-formatting": {
@@ -655,6 +720,11 @@
         "expectedOutput": "1999-12-31"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "celsius-fahrenheit-pair": {
@@ -702,6 +772,11 @@
         "expectedOutput": "-40 -40.0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "quotient-two-decimals": {
@@ -749,6 +824,11 @@
         "expectedOutput": "-1.50"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "binary-flags-to-words": {
@@ -796,6 +876,11 @@
         "expectedOutput": "FALSE FALSE"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "typed-record": {
@@ -843,6 +928,11 @@
         "expectedOutput": "999|0|F"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "cyclic-uppercase-offset": {
@@ -890,6 +980,11 @@
         "expectedOutput": "Z"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "rounded-whole-value": {
@@ -937,6 +1032,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "arithmetic-check": {
@@ -984,6 +1084,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-triple": {
@@ -1031,6 +1136,11 @@
         "expectedOutput": "27"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "square-expansion": {
@@ -1078,6 +1188,11 @@
         "expectedOutput": "66"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "rectangle-measure-sum": {
@@ -1125,6 +1240,11 @@
         "expectedOutput": "25"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "linear-combination": {
@@ -1172,6 +1292,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "difference-product": {
@@ -1219,6 +1344,11 @@
         "expectedOutput": "-6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "triple-sum-square": {
@@ -1266,6 +1396,11 @@
         "expectedOutput": "100"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "pair-product-sum": {
@@ -1313,6 +1448,11 @@
         "expectedOutput": "23"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "remainder-expression": {
@@ -1360,6 +1500,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "scaled-difference": {
@@ -1407,6 +1552,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "cubic-mix": {
@@ -1454,6 +1604,11 @@
         "expectedOutput": "346"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "absolute-triple-difference": {
@@ -1501,6 +1656,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "average-numerator": {
@@ -1548,6 +1708,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "progression-term": {
@@ -1595,6 +1760,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "product-minus-sum": {
@@ -1642,6 +1812,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "nested-multiply-add": {
@@ -1689,6 +1864,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "difference-of-squares": {
@@ -1736,6 +1916,11 @@
         "expectedOutput": "50"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "modulo-product": {
@@ -1783,6 +1968,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "double-then-add": {
@@ -1830,6 +2020,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "three-stage-arithmetic": {
@@ -1877,6 +2072,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "largest-of-three": {
@@ -1924,6 +2124,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "middle-of-three": {
@@ -1971,6 +2176,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "divisible-by-both": {
@@ -2018,6 +2228,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "sign-of-product": {
@@ -2065,6 +2280,11 @@
         "expectedOutput": "NEGATIVE"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "inside-closed-range": {
@@ -2112,6 +2332,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "three-way-compare": {
@@ -2159,6 +2384,11 @@
         "expectedOutput": "LESS"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "parity-class": {
@@ -2206,6 +2436,11 @@
         "expectedOutput": "ODD"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "threshold-band": {
@@ -2253,6 +2488,11 @@
         "expectedOutput": "LOW"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "triangle-validity": {
@@ -2300,6 +2540,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "equal-count": {
@@ -2347,6 +2592,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "maximum-absolute": {
@@ -2394,6 +2644,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "all-positive": {
@@ -2441,6 +2696,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "exactly-one-negative": {
@@ -2488,6 +2748,11 @@
         "expectedOutput": "YES"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "majority-even": {
@@ -2535,6 +2800,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "ordered-strictly-increasing": {
@@ -2582,6 +2852,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "ordered-nondecreasing": {
@@ -2629,6 +2904,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "closest-to-zero": {
@@ -2676,6 +2956,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "same-sign": {
@@ -2723,6 +3008,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "between-other-two-strict": {
@@ -2770,6 +3060,11 @@
         "expectedOutput": "NO"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "maximum-frequency-class": {
@@ -2817,6 +3112,11 @@
         "expectedOutput": "DISTINCT"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "iterative-running-total": {
@@ -2864,6 +3164,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "repeated-increment-score": {
@@ -2911,6 +3216,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "looped-difference-accumulator": {
@@ -2958,6 +3268,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "iteration-weighted-counter": {
@@ -3005,6 +3320,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "loop-range-score": {
@@ -3052,6 +3372,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "stepwise-product-adjustment": {
@@ -3099,6 +3424,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "cyclic-increment-total": {
@@ -3146,6 +3476,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "loop-controlled-offset": {
@@ -3193,6 +3528,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "repeated-linear-update": {
@@ -3240,6 +3580,11 @@
         "expectedOutput": "19"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "iteration-final-state": {
@@ -3287,6 +3632,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-cell-score": {
@@ -3334,6 +3684,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "upper-triangle-score": {
@@ -3381,6 +3736,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "lower-triangle-score": {
@@ -3428,6 +3788,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "ordered-pair-score": {
@@ -3475,6 +3840,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "multiplication-grid-score": {
@@ -3522,6 +3892,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "diagonal-pair-score": {
@@ -3569,6 +3944,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "border-visit-score": {
@@ -3616,6 +3996,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "checkerboard-visit-score": {
@@ -3663,6 +4048,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "divisibility-pair-score": {
@@ -3710,6 +4100,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "nested-coordinate-score": {
@@ -3757,6 +4152,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "two-argument-maximum-function": {
@@ -3804,6 +4204,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "clamp-function": {
@@ -3851,6 +4256,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "digit-score-function": {
@@ -3898,6 +4308,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "range-formula-function": {
@@ -3945,6 +4360,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "transform-function": {
@@ -3992,6 +4412,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "three-argument-helper": {
@@ -4039,6 +4464,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "reusable-tax-function": {
@@ -4086,6 +4516,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "normalization-function": {
@@ -4133,6 +4568,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "composition-function": {
@@ -4180,6 +4620,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "piecewise-helper-function": {
@@ -4227,6 +4672,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "local-shadows-global": {
@@ -4274,6 +4724,11 @@
         "expectedOutput": "6 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "global-counter-update": {
@@ -4321,6 +4776,11 @@
         "expectedOutput": "7 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "parameter-copy-isolation": {
@@ -4368,6 +4828,11 @@
         "expectedOutput": "8 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "enclosing-variable-read": {
@@ -4415,6 +4880,11 @@
         "expectedOutput": "9 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "enclosing-variable-update": {
@@ -4462,6 +4932,11 @@
         "expectedOutput": "10 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "block-local-shadow": {
@@ -4509,6 +4984,11 @@
         "expectedOutput": "11 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "global-constant-read": {
@@ -4556,6 +5036,11 @@
         "expectedOutput": "12 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "independent-local-calls": {
@@ -4603,6 +5088,11 @@
         "expectedOutput": "13 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "local-accumulator-reset": {
@@ -4650,6 +5140,11 @@
         "expectedOutput": "14 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "scope-lookup-priority": {
@@ -4697,6 +5192,11 @@
         "expectedOutput": "15 -2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-indices-raw-1": {
@@ -4744,6 +5244,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-indices-raw-2": {
@@ -4791,6 +5296,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-indices-raw-3": {
@@ -4838,6 +5348,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-indices-raw-4": {
@@ -4885,6 +5400,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-indices-raw-5": {
@@ -4932,6 +5452,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-indices-absolute-6": {
@@ -4979,6 +5504,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-indices-absolute-7": {
@@ -5026,6 +5556,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-indices-absolute-8": {
@@ -5073,6 +5608,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-indices-absolute-9": {
@@ -5120,6 +5660,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-indices-absolute-10": {
@@ -5167,6 +5712,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-indices-square-11": {
@@ -5214,6 +5764,11 @@
         "expectedOutput": "54"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-indices-square-12": {
@@ -5261,6 +5816,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-indices-square-13": {
@@ -5308,6 +5868,11 @@
         "expectedOutput": "49"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-indices-square-14": {
@@ -5355,6 +5920,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-indices-square-15": {
@@ -5402,6 +5972,11 @@
         "expectedOutput": "52"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-indices-value-plus-index-16": {
@@ -5449,6 +6024,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-indices-value-plus-index-17": {
@@ -5496,6 +6076,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-indices-value-plus-index-18": {
@@ -5543,6 +6128,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-indices-value-plus-index-19": {
@@ -5590,6 +6180,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-indices-value-plus-index-20": {
@@ -5637,6 +6232,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-indices-value-minus-index-21": {
@@ -5684,6 +6284,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-indices-value-minus-index-22": {
@@ -5731,6 +6336,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-indices-value-minus-index-23": {
@@ -5778,6 +6388,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-indices-value-minus-index-24": {
@@ -5825,6 +6440,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-indices-value-minus-index-25": {
@@ -5872,6 +6492,11 @@
         "expectedOutput": "-6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-indices-raw-26": {
@@ -5919,6 +6544,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-indices-raw-27": {
@@ -5966,6 +6596,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-indices-raw-28": {
@@ -6013,6 +6648,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-indices-raw-29": {
@@ -6060,6 +6700,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-indices-raw-30": {
@@ -6107,6 +6752,11 @@
         "expectedOutput": "-12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-indices-absolute-31": {
@@ -6154,6 +6804,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-indices-absolute-32": {
@@ -6201,6 +6856,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-indices-absolute-33": {
@@ -6248,6 +6908,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-indices-absolute-34": {
@@ -6295,6 +6960,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-indices-absolute-35": {
@@ -6342,6 +7012,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-indices-square-36": {
@@ -6389,6 +7064,11 @@
         "expectedOutput": "80"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-indices-square-37": {
@@ -6436,6 +7116,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-indices-square-38": {
@@ -6483,6 +7168,11 @@
         "expectedOutput": "64"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-indices-square-39": {
@@ -6530,6 +7220,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-indices-square-40": {
@@ -6577,6 +7272,11 @@
         "expectedOutput": "80"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-indices-value-plus-index-41": {
@@ -6624,6 +7324,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-indices-value-plus-index-42": {
@@ -6671,6 +7376,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-indices-value-plus-index-43": {
@@ -6718,6 +7428,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-indices-value-plus-index-44": {
@@ -6765,6 +7480,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-indices-value-plus-index-45": {
@@ -6812,6 +7532,11 @@
         "expectedOutput": "-10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-indices-value-minus-index-46": {
@@ -6859,6 +7584,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-indices-value-minus-index-47": {
@@ -6906,6 +7636,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-indices-value-minus-index-48": {
@@ -6953,6 +7688,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-indices-value-minus-index-49": {
@@ -7000,6 +7740,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-indices-value-minus-index-50": {
@@ -7047,6 +7792,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-positive-values-raw-51": {
@@ -7094,6 +7844,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-positive-values-raw-52": {
@@ -7141,6 +7896,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-positive-values-raw-53": {
@@ -7188,6 +7948,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-positive-values-raw-54": {
@@ -7235,6 +8000,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-positive-values-raw-55": {
@@ -7282,6 +8052,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-positive-values-absolute-56": {
@@ -7329,6 +8104,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-positive-values-absolute-57": {
@@ -7376,6 +8156,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-positive-values-absolute-58": {
@@ -7423,6 +8208,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-positive-values-absolute-59": {
@@ -7470,6 +8260,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-positive-values-absolute-60": {
@@ -7517,6 +8312,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-positive-values-square-61": {
@@ -7564,6 +8364,11 @@
         "expectedOutput": "118"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-positive-values-square-62": {
@@ -7611,6 +8416,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-positive-values-square-63": {
@@ -7658,6 +8468,11 @@
         "expectedOutput": "64"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-positive-values-square-64": {
@@ -7705,6 +8520,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-positive-values-square-65": {
@@ -7752,6 +8572,11 @@
         "expectedOutput": "116"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-positive-values-value-plus-index-66": {
@@ -7799,6 +8624,11 @@
         "expectedOutput": "27"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-positive-values-value-plus-index-67": {
@@ -7846,6 +8676,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-positive-values-value-plus-index-68": {
@@ -7893,6 +8728,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-positive-values-value-plus-index-69": {
@@ -7940,6 +8780,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-positive-values-value-plus-index-70": {
@@ -7987,6 +8832,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-positive-values-value-minus-index-71": {
@@ -8034,6 +8884,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-positive-values-value-minus-index-72": {
@@ -8081,6 +8936,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-positive-values-value-minus-index-73": {
@@ -8128,6 +8988,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-positive-values-value-minus-index-74": {
@@ -8175,6 +9040,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-positive-values-value-minus-index-75": {
@@ -8222,6 +9092,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-negative-values-raw-76": {
@@ -8269,6 +9144,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-negative-values-raw-77": {
@@ -8316,6 +9196,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-negative-values-raw-78": {
@@ -8363,6 +9248,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-negative-values-raw-79": {
@@ -8410,6 +9300,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-negative-values-raw-80": {
@@ -8457,6 +9352,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-negative-values-absolute-81": {
@@ -8504,6 +9404,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-negative-values-absolute-82": {
@@ -8551,6 +9456,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-negative-values-absolute-83": {
@@ -8598,6 +9508,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-negative-values-absolute-84": {
@@ -8645,6 +9560,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-negative-values-absolute-85": {
@@ -8692,6 +9612,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-negative-values-square-86": {
@@ -8739,6 +9664,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-negative-values-square-87": {
@@ -8786,6 +9716,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-negative-values-square-88": {
@@ -8833,6 +9768,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-negative-values-square-89": {
@@ -8880,6 +9820,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-negative-values-square-90": {
@@ -8927,6 +9872,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-negative-values-value-plus-index-91": {
@@ -8974,6 +9924,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-negative-values-value-plus-index-92": {
@@ -9021,6 +9976,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-negative-values-value-plus-index-93": {
@@ -9068,6 +10028,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-negative-values-value-plus-index-94": {
@@ -9115,6 +10080,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-negative-values-value-plus-index-95": {
@@ -9162,6 +10132,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-negative-values-value-minus-index-96": {
@@ -9209,6 +10184,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-negative-values-value-minus-index-97": {
@@ -9256,6 +10236,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-negative-values-value-minus-index-98": {
@@ -9303,6 +10288,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-negative-values-value-minus-index-99": {
@@ -9350,6 +10340,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-negative-values-value-minus-index-100": {
@@ -9397,6 +10392,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-values-raw-101": {
@@ -9444,6 +10444,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-values-raw-102": {
@@ -9491,6 +10496,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-values-raw-103": {
@@ -9538,6 +10548,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-values-raw-104": {
@@ -9585,6 +10600,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-values-raw-105": {
@@ -9632,6 +10652,11 @@
         "expectedOutput": "-10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-values-absolute-106": {
@@ -9679,6 +10704,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-values-absolute-107": {
@@ -9726,6 +10756,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-values-absolute-108": {
@@ -9773,6 +10808,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-values-absolute-109": {
@@ -9820,6 +10860,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-values-absolute-110": {
@@ -9867,6 +10912,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-values-square-111": {
@@ -9914,6 +10964,11 @@
         "expectedOutput": "84"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-values-square-112": {
@@ -9961,6 +11016,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-values-square-113": {
@@ -10008,6 +11068,11 @@
         "expectedOutput": "64"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-values-square-114": {
@@ -10055,6 +11120,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-values-square-115": {
@@ -10102,6 +11172,11 @@
         "expectedOutput": "84"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-values-value-plus-index-116": {
@@ -10149,6 +11224,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-values-value-plus-index-117": {
@@ -10196,6 +11276,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-values-value-plus-index-118": {
@@ -10243,6 +11328,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-values-value-plus-index-119": {
@@ -10290,6 +11380,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-values-value-plus-index-120": {
@@ -10337,6 +11432,11 @@
         "expectedOutput": "-12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-even-values-value-minus-index-121": {
@@ -10384,6 +11484,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-even-values-value-minus-index-122": {
@@ -10431,6 +11536,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-even-values-value-minus-index-123": {
@@ -10478,6 +11588,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-even-values-value-minus-index-124": {
@@ -10525,6 +11640,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-even-values-value-minus-index-125": {
@@ -10572,6 +11692,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-values-raw-126": {
@@ -10619,6 +11744,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-values-raw-127": {
@@ -10666,6 +11796,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-values-raw-128": {
@@ -10713,6 +11848,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-values-raw-129": {
@@ -10760,6 +11900,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-values-raw-130": {
@@ -10807,6 +11952,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-values-absolute-131": {
@@ -10854,6 +12004,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-values-absolute-132": {
@@ -10901,6 +12056,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-values-absolute-133": {
@@ -10948,6 +12108,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-values-absolute-134": {
@@ -10995,6 +12160,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-values-absolute-135": {
@@ -11042,6 +12212,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-values-square-136": {
@@ -11089,6 +12264,11 @@
         "expectedOutput": "50"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-values-square-137": {
@@ -11136,6 +12316,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-values-square-138": {
@@ -11183,6 +12368,11 @@
         "expectedOutput": "49"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-values-square-139": {
@@ -11230,6 +12420,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-values-square-140": {
@@ -11277,6 +12472,11 @@
         "expectedOutput": "48"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-values-value-plus-index-141": {
@@ -11324,6 +12524,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-values-value-plus-index-142": {
@@ -11371,6 +12576,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-values-value-plus-index-143": {
@@ -11418,6 +12628,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-values-value-plus-index-144": {
@@ -11465,6 +12680,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-values-value-plus-index-145": {
@@ -11512,6 +12732,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-odd-values-value-minus-index-146": {
@@ -11559,6 +12784,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-odd-values-value-minus-index-147": {
@@ -11606,6 +12836,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-odd-values-value-minus-index-148": {
@@ -11653,6 +12888,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-odd-values-value-minus-index-149": {
@@ -11700,6 +12940,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-odd-values-value-minus-index-150": {
@@ -11747,6 +12992,11 @@
         "expectedOutput": "-8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-greater-than-first-raw-151": {
@@ -11794,6 +13044,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-greater-than-first-raw-152": {
@@ -11841,6 +13096,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-greater-than-first-raw-153": {
@@ -11888,6 +13148,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-greater-than-first-raw-154": {
@@ -11935,6 +13200,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-greater-than-first-raw-155": {
@@ -11982,6 +13252,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-greater-than-first-absolute-156": {
@@ -12029,6 +13304,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-greater-than-first-absolute-157": {
@@ -12076,6 +13356,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-greater-than-first-absolute-158": {
@@ -12123,6 +13408,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-greater-than-first-absolute-159": {
@@ -12170,6 +13460,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-greater-than-first-absolute-160": {
@@ -12217,6 +13512,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-greater-than-first-square-161": {
@@ -12264,6 +13564,11 @@
         "expectedOutput": "113"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-greater-than-first-square-162": {
@@ -12311,6 +13616,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-greater-than-first-square-163": {
@@ -12358,6 +13668,11 @@
         "expectedOutput": "64"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-greater-than-first-square-164": {
@@ -12405,6 +13720,11 @@
         "expectedOutput": "49"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-greater-than-first-square-165": {
@@ -12452,6 +13772,11 @@
         "expectedOutput": "113"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-greater-than-first-value-plus-index-166": {
@@ -12499,6 +13824,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-greater-than-first-value-plus-index-167": {
@@ -12546,6 +13876,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-greater-than-first-value-plus-index-168": {
@@ -12593,6 +13928,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-greater-than-first-value-plus-index-169": {
@@ -12640,6 +13980,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-greater-than-first-value-plus-index-170": {
@@ -12687,6 +14032,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-greater-than-first-value-minus-index-171": {
@@ -12734,6 +14084,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-greater-than-first-value-minus-index-172": {
@@ -12781,6 +14136,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-greater-than-first-value-minus-index-173": {
@@ -12828,6 +14188,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-greater-than-first-value-minus-index-174": {
@@ -12875,6 +14240,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-greater-than-first-value-minus-index-175": {
@@ -12922,6 +14292,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-less-than-last-raw-176": {
@@ -12969,6 +14344,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-less-than-last-raw-177": {
@@ -13016,6 +14396,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-less-than-last-raw-178": {
@@ -13063,6 +14448,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-less-than-last-raw-179": {
@@ -13110,6 +14500,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-less-than-last-raw-180": {
@@ -13157,6 +14552,11 @@
         "expectedOutput": "-4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-less-than-last-absolute-181": {
@@ -13204,6 +14604,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-less-than-last-absolute-182": {
@@ -13251,6 +14656,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-less-than-last-absolute-183": {
@@ -13298,6 +14708,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-less-than-last-absolute-184": {
@@ -13345,6 +14760,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-less-than-last-absolute-185": {
@@ -13392,6 +14812,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-less-than-last-square-186": {
@@ -13439,6 +14864,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-less-than-last-square-187": {
@@ -13486,6 +14916,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-less-than-last-square-188": {
@@ -13533,6 +14968,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-less-than-last-square-189": {
@@ -13580,6 +15020,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-less-than-last-square-190": {
@@ -13627,6 +15072,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-less-than-last-value-plus-index-191": {
@@ -13674,6 +15124,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-less-than-last-value-plus-index-192": {
@@ -13721,6 +15176,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-less-than-last-value-plus-index-193": {
@@ -13768,6 +15228,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-less-than-last-value-plus-index-194": {
@@ -13815,6 +15280,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-less-than-last-value-plus-index-195": {
@@ -13862,6 +15332,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-values-less-than-last-value-minus-index-196": {
@@ -13909,6 +15384,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-values-less-than-last-value-minus-index-197": {
@@ -13956,6 +15436,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-values-less-than-last-value-minus-index-198": {
@@ -14003,6 +15488,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-values-less-than-last-value-minus-index-199": {
@@ -14050,6 +15540,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-values-less-than-last-value-minus-index-200": {
@@ -14097,6 +15592,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-sum-indices-divisible-by-3-raw-201": {
@@ -14144,6 +15644,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-count-indices-divisible-by-3-raw-202": {
@@ -14191,6 +15696,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-maximum-indices-divisible-by-3-raw-203": {
@@ -14238,6 +15748,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-minimum-indices-divisible-by-3-raw-204": {
@@ -14285,6 +15800,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "array-xor-indices-divisible-by-3-raw-205": {
@@ -14332,6 +15852,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "vowel-count": {
@@ -14379,6 +15904,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "reverse-by-index": {
@@ -14426,6 +15956,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-unique-character": {
@@ -14473,6 +16008,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "equal-run-count": {
@@ -14520,6 +16060,11 @@
         "expectedOutput": "21"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "upper-lower-balance": {
@@ -14567,6 +16112,11 @@
         "expectedOutput": "26"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "circular-left-shift": {
@@ -14614,6 +16164,11 @@
         "expectedOutput": "17"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "longest-digit-block": {
@@ -14661,6 +16216,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "adjacent-pair-removal": {
@@ -14708,6 +16268,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "lexicographically-smaller-half": {
@@ -14755,6 +16320,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "cyclic-alphabet-distance": {
@@ -14802,6 +16372,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "matrix-total": {
@@ -14849,6 +16424,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "primary-diagonal-metric": {
@@ -14896,6 +16476,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "secondary-diagonal-metric": {
@@ -14943,6 +16528,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "row-maximum-metric": {
@@ -14990,6 +16580,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "column-minimum-metric": {
@@ -15037,6 +16632,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "transpose-score": {
@@ -15084,6 +16684,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "boundary-metric": {
@@ -15131,6 +16736,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "local-peak-metric": {
@@ -15178,6 +16788,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "zero-row-metric": {
@@ -15225,6 +16840,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "chessboard-metric": {
@@ -15272,6 +16892,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-target-position": {
@@ -15319,6 +16944,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "last-target-position": {
@@ -15366,6 +16996,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-greater-position": {
@@ -15413,6 +17048,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "nearest-value-position": {
@@ -15460,6 +17100,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "range-limited-search": {
@@ -15507,6 +17152,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "search-comparison-count": {
@@ -15554,6 +17204,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-repeated-position": {
@@ -15601,6 +17256,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "name-search-position": {
@@ -15648,6 +17308,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "match-index-sum": {
@@ -15695,6 +17360,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-negative-position": {
@@ -15742,6 +17412,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "exact-binary-search": {
@@ -15789,6 +17464,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "lower-bound": {
@@ -15836,6 +17516,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "upper-bound": {
@@ -15883,6 +17568,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-occurrence": {
@@ -15930,6 +17620,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "last-occurrence": {
@@ -15977,6 +17672,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "integer-square-root": {
@@ -16024,6 +17724,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-positive": {
@@ -16071,6 +17776,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "rotated-array-search": {
@@ -16118,6 +17828,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "minimum-feasible-rate": {
@@ -16165,6 +17880,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "mountain-peak": {
@@ -16212,6 +17932,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "bubble-sort": {
@@ -16259,6 +17984,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "selection-sort": {
@@ -16306,6 +18036,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "insertion-sort": {
@@ -16353,6 +18088,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "merge-sort": {
@@ -16400,6 +18140,11 @@
         "expectedOutput": "3 3 1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "quick-sort": {
@@ -16447,6 +18192,11 @@
         "expectedOutput": "3 3 1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "absolute-value-sort": {
@@ -16494,6 +18244,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "pair-secondary-sort": {
@@ -16541,6 +18296,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "stable-parity-sort": {
@@ -16588,6 +18348,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "digit-sum-sort": {
@@ -16635,6 +18400,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "frequency-sort": {
@@ -16682,6 +18452,11 @@
         "expectedOutput": "1 3 3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "unique-count": {
@@ -16729,6 +18504,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "union-metric": {
@@ -16776,6 +18556,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "intersection-metric": {
@@ -16823,6 +18608,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "symmetric-difference-metric": {
@@ -16870,6 +18660,11 @@
         "expectedOutput": "25"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "subset-membership": {
@@ -16917,6 +18712,11 @@
         "expectedOutput": "30"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-repeat": {
@@ -16964,6 +18764,11 @@
         "expectedOutput": "35"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "disjointness": {
@@ -17011,6 +18816,11 @@
         "expectedOutput": "40"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "missing-range-values": {
@@ -17058,6 +18868,11 @@
         "expectedOutput": "34"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "consecutive-run": {
@@ -17105,6 +18920,11 @@
         "expectedOutput": "28"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "exactly-one-collection": {
@@ -17152,6 +18972,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "sorted-pair-sum": {
@@ -17199,6 +19024,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "closest-pair": {
@@ -17246,6 +19076,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "remove-duplicates": {
@@ -17293,6 +19128,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "palindrome-pointers": {
@@ -17340,6 +19180,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "container-area": {
@@ -17387,6 +19232,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "sorted-squares": {
@@ -17434,6 +19284,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "merge-from-end": {
@@ -17481,6 +19336,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "three-sum": {
@@ -17528,6 +19388,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "stable-partition": {
@@ -17575,6 +19440,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "target-difference": {
@@ -17622,6 +19492,11 @@
         "expectedOutput": "24"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "frequency-map": {
@@ -17669,6 +19544,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "word-frequency": {
@@ -17716,6 +19596,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "first-unique-value": {
@@ -17763,6 +19648,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "equal-pair-count": {
@@ -17810,6 +19700,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "anagram-signature": {
@@ -17857,6 +19752,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "prefix-frequency": {
@@ -17904,6 +19804,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "inventory-map": {
@@ -17951,6 +19856,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "common-frequency-product": {
@@ -17998,6 +19908,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "character-histogram": {
@@ -18045,6 +19960,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "difference-histogram": {
@@ -18092,6 +20012,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-sum": {
@@ -18139,6 +20064,11 @@
         "expectedOutput": "28"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-power": {
@@ -18186,6 +20116,11 @@
         "expectedOutput": "43"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-digit-product": {
@@ -18233,6 +20168,11 @@
         "expectedOutput": "45"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-array-sum": {
@@ -18280,6 +20220,11 @@
         "expectedOutput": "47"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-maximum": {
@@ -18327,6 +20272,11 @@
         "expectedOutput": "49"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-palindrome": {
@@ -18374,6 +20324,11 @@
         "expectedOutput": "51"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-gcd": {
@@ -18421,6 +20376,11 @@
         "expectedOutput": "40"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-bit-count": {
@@ -18468,6 +20428,11 @@
         "expectedOutput": "42"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-string-length": {
@@ -18515,6 +20480,11 @@
         "expectedOutput": "44"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "recursive-target-count": {
@@ -18562,6 +20532,11 @@
         "expectedOutput": "46"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-all-nodes-1": {
@@ -18609,6 +20584,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-all-nodes-2": {
@@ -18656,6 +20636,11 @@
         "expectedOutput": "69"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-all-nodes-3": {
@@ -18703,6 +20688,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-all-nodes-4": {
@@ -18750,6 +20740,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-all-nodes-5": {
@@ -18797,6 +20792,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-leaf-nodes-6": {
@@ -18844,6 +20844,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-leaf-nodes-7": {
@@ -18891,6 +20896,11 @@
         "expectedOutput": "39"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-leaf-nodes-8": {
@@ -18938,6 +20948,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-leaf-nodes-9": {
@@ -18985,6 +21000,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-leaf-nodes-10": {
@@ -19032,6 +21052,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-internal-nodes-11": {
@@ -19079,6 +21104,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-internal-nodes-12": {
@@ -19126,6 +21156,11 @@
         "expectedOutput": "30"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-internal-nodes-13": {
@@ -19173,6 +21208,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-internal-nodes-14": {
@@ -19220,6 +21260,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-internal-nodes-15": {
@@ -19267,6 +21312,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-even-depth-nodes-16": {
@@ -19314,6 +21364,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-even-depth-nodes-17": {
@@ -19361,6 +21416,11 @@
         "expectedOutput": "49"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-even-depth-nodes-18": {
@@ -19408,6 +21468,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-even-depth-nodes-19": {
@@ -19455,6 +21520,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-even-depth-nodes-20": {
@@ -19502,6 +21572,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-odd-depth-nodes-21": {
@@ -19549,6 +21624,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-odd-depth-nodes-22": {
@@ -19596,6 +21676,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-odd-depth-nodes-23": {
@@ -19643,6 +21728,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-odd-depth-nodes-24": {
@@ -19690,6 +21780,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-odd-depth-nodes-25": {
@@ -19737,6 +21832,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-even-valued-nodes-26": {
@@ -19784,6 +21884,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-even-valued-nodes-27": {
@@ -19831,6 +21936,11 @@
         "expectedOutput": "42"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-even-valued-nodes-28": {
@@ -19878,6 +21988,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-even-valued-nodes-29": {
@@ -19925,6 +22040,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-even-valued-nodes-30": {
@@ -19972,6 +22092,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-odd-valued-nodes-31": {
@@ -20019,6 +22144,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-odd-valued-nodes-32": {
@@ -20066,6 +22196,11 @@
         "expectedOutput": "27"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-odd-valued-nodes-33": {
@@ -20113,6 +22248,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-odd-valued-nodes-34": {
@@ -20160,6 +22300,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-odd-valued-nodes-35": {
@@ -20207,6 +22352,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-positive-nodes-36": {
@@ -20254,6 +22404,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-positive-nodes-37": {
@@ -20301,6 +22456,11 @@
         "expectedOutput": "69"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-positive-nodes-38": {
@@ -20348,6 +22508,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-positive-nodes-39": {
@@ -20395,6 +22560,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-positive-nodes-40": {
@@ -20442,6 +22612,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-nodes-with-two-children-41": {
@@ -20489,6 +22664,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-nodes-with-two-children-42": {
@@ -20536,6 +22716,11 @@
         "expectedOutput": "25"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-nodes-with-two-children-43": {
@@ -20583,6 +22768,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-nodes-with-two-children-44": {
@@ -20630,6 +22820,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-nodes-with-two-children-45": {
@@ -20677,6 +22872,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-nodes-with-one-child-46": {
@@ -20724,6 +22924,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-nodes-with-one-child-47": {
@@ -20771,6 +22976,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-nodes-with-one-child-48": {
@@ -20818,6 +23028,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-nodes-with-one-child-49": {
@@ -20865,6 +23080,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-nodes-with-one-child-50": {
@@ -20912,6 +23132,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-depth-2-nodes-51": {
@@ -20959,6 +23184,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-depth-2-nodes-52": {
@@ -21006,6 +23236,11 @@
         "expectedOutput": "69"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-depth-2-nodes-53": {
@@ -21053,6 +23288,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-depth-2-nodes-54": {
@@ -21100,6 +23340,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-depth-2-nodes-55": {
@@ -21147,6 +23392,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-depth-2-nodes-56": {
@@ -21194,6 +23444,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-depth-2-nodes-57": {
@@ -21241,6 +23496,11 @@
         "expectedOutput": "39"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-depth-2-nodes-58": {
@@ -21288,6 +23548,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-depth-2-nodes-59": {
@@ -21335,6 +23600,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-depth-2-nodes-60": {
@@ -21382,6 +23652,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-values-root-61": {
@@ -21429,6 +23704,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-values-root-62": {
@@ -21476,6 +23756,11 @@
         "expectedOutput": "57"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-values-root-63": {
@@ -21523,6 +23808,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-values-root-64": {
@@ -21570,6 +23860,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-values-root-65": {
@@ -21617,6 +23912,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-values-root-66": {
@@ -21664,6 +23964,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-values-root-67": {
@@ -21711,6 +24016,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-values-root-68": {
@@ -21758,6 +24068,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-values-root-69": {
@@ -21805,6 +24120,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-values-root-70": {
@@ -21852,6 +24172,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-count-non-leaf-even-depth-71": {
@@ -21899,6 +24224,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-sum-non-leaf-even-depth-72": {
@@ -21946,6 +24276,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-max-non-leaf-even-depth-73": {
@@ -21993,6 +24328,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-min-non-leaf-even-depth-74": {
@@ -22040,6 +24380,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tree-depth-sum-non-leaf-even-depth-75": {
@@ -22087,6 +24432,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-zero-1": {
@@ -22134,6 +24484,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-zero-2": {
@@ -22181,6 +24536,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-zero-3": {
@@ -22228,6 +24588,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-zero-4": {
@@ -22275,6 +24640,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-zero-5": {
@@ -22322,6 +24692,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-zero-6": {
@@ -22369,6 +24744,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-zero-7": {
@@ -22416,6 +24796,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-zero-8": {
@@ -22463,6 +24848,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-zero-9": {
@@ -22510,6 +24900,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-zero-10": {
@@ -22557,6 +24952,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-one-11": {
@@ -22604,6 +25004,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-one-12": {
@@ -22651,6 +25056,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-one-13": {
@@ -22698,6 +25108,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-one-14": {
@@ -22745,6 +25160,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-one-15": {
@@ -22792,6 +25212,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-one-16": {
@@ -22839,6 +25264,11 @@
         "expectedOutput": "51"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-one-17": {
@@ -22886,6 +25316,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-one-18": {
@@ -22933,6 +25368,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-one-19": {
@@ -22980,6 +25420,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-one-20": {
@@ -23027,6 +25472,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-two-21": {
@@ -23074,6 +25524,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-two-22": {
@@ -23121,6 +25576,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-two-23": {
@@ -23168,6 +25628,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-two-24": {
@@ -23215,6 +25680,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-two-25": {
@@ -23262,6 +25732,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-two-26": {
@@ -23309,6 +25784,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-two-27": {
@@ -23356,6 +25836,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-two-28": {
@@ -23403,6 +25888,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-two-29": {
@@ -23450,6 +25940,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-two-30": {
@@ -23497,6 +25992,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-at-least-two-31": {
@@ -23544,6 +26044,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-at-least-two-32": {
@@ -23591,6 +26096,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-at-least-two-33": {
@@ -23638,6 +26148,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-at-least-two-34": {
@@ -23685,6 +26200,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-at-least-two-35": {
@@ -23732,6 +26252,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-at-least-two-36": {
@@ -23779,6 +26304,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-at-least-two-37": {
@@ -23826,6 +26356,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-at-least-two-38": {
@@ -23873,6 +26408,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-at-least-two-39": {
@@ -23920,6 +26460,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-at-least-two-40": {
@@ -23967,6 +26512,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-even-degree-41": {
@@ -24014,6 +26564,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-even-degree-42": {
@@ -24061,6 +26616,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-even-degree-43": {
@@ -24108,6 +26668,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-even-degree-44": {
@@ -24155,6 +26720,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-even-degree-45": {
@@ -24202,6 +26772,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-even-degree-46": {
@@ -24249,6 +26824,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-even-degree-47": {
@@ -24296,6 +26876,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-even-degree-48": {
@@ -24343,6 +26928,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-even-degree-49": {
@@ -24390,6 +26980,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-even-degree-50": {
@@ -24437,6 +27032,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-odd-degree-51": {
@@ -24484,6 +27084,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-odd-degree-52": {
@@ -24531,6 +27136,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-odd-degree-53": {
@@ -24578,6 +27188,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-odd-degree-54": {
@@ -24625,6 +27240,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-odd-degree-55": {
@@ -24672,6 +27292,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-odd-degree-56": {
@@ -24719,6 +27344,11 @@
         "expectedOutput": "51"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-odd-degree-57": {
@@ -24766,6 +27396,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-odd-degree-58": {
@@ -24813,6 +27448,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-odd-degree-59": {
@@ -24860,6 +27500,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-odd-degree-60": {
@@ -24907,6 +27552,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-at-most-two-61": {
@@ -24954,6 +27604,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-at-most-two-62": {
@@ -25001,6 +27656,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-at-most-two-63": {
@@ -25048,6 +27708,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-at-most-two-64": {
@@ -25095,6 +27760,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-at-most-two-65": {
@@ -25142,6 +27812,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-at-most-two-66": {
@@ -25189,6 +27864,11 @@
         "expectedOutput": "55"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-at-most-two-67": {
@@ -25236,6 +27916,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-at-most-two-68": {
@@ -25283,6 +27968,11 @@
         "expectedOutput": "17"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-at-most-two-69": {
@@ -25330,6 +28020,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-at-most-two-70": {
@@ -25377,6 +28072,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-divisible-by-three-71": {
@@ -25424,6 +28124,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-divisible-by-three-72": {
@@ -25471,6 +28176,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-divisible-by-three-73": {
@@ -25518,6 +28228,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-divisible-by-three-74": {
@@ -25565,6 +28280,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-divisible-by-three-75": {
@@ -25612,6 +28332,11 @@
         "expectedOutput": "-1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-divisible-by-three-76": {
@@ -25659,6 +28384,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-divisible-by-three-77": {
@@ -25706,6 +28436,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-divisible-by-three-78": {
@@ -25753,6 +28488,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-divisible-by-three-79": {
@@ -25800,6 +28540,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-divisible-by-three-80": {
@@ -25847,6 +28592,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-non-zero-degree-81": {
@@ -25894,6 +28644,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-non-zero-degree-82": {
@@ -25941,6 +28696,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-non-zero-degree-83": {
@@ -25988,6 +28748,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-non-zero-degree-84": {
@@ -26035,6 +28800,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-non-zero-degree-85": {
@@ -26082,6 +28852,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-non-zero-degree-86": {
@@ -26129,6 +28904,11 @@
         "expectedOutput": "55"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-non-zero-degree-87": {
@@ -26176,6 +28956,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-non-zero-degree-88": {
@@ -26223,6 +29008,11 @@
         "expectedOutput": "17"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-non-zero-degree-89": {
@@ -26270,6 +29060,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-non-zero-degree-90": {
@@ -26317,6 +29112,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-degree-not-one-91": {
@@ -26364,6 +29164,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-degree-not-one-92": {
@@ -26411,6 +29216,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-degree-not-one-93": {
@@ -26458,6 +29268,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-degree-not-one-94": {
@@ -26505,6 +29320,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-degree-not-one-95": {
@@ -26552,6 +29372,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-degree-not-one-96": {
@@ -26599,6 +29424,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-degree-not-one-97": {
@@ -26646,6 +29476,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-degree-not-one-98": {
@@ -26693,6 +29528,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-degree-not-one-99": {
@@ -26740,6 +29580,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-degree-not-one-100": {
@@ -26787,6 +29632,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-label-even-101": {
@@ -26834,6 +29684,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-label-even-102": {
@@ -26881,6 +29736,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-label-even-103": {
@@ -26928,6 +29788,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-label-even-104": {
@@ -26975,6 +29840,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-label-even-105": {
@@ -27022,6 +29892,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-label-even-106": {
@@ -27069,6 +29944,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-label-even-107": {
@@ -27116,6 +29996,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-label-even-108": {
@@ -27163,6 +30048,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-label-even-109": {
@@ -27210,6 +30100,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-label-even-110": {
@@ -27257,6 +30152,11 @@
         "expectedOutput": "8"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-label-odd-111": {
@@ -27304,6 +30204,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-label-odd-112": {
@@ -27351,6 +30256,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-label-odd-113": {
@@ -27398,6 +30308,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-label-odd-114": {
@@ -27445,6 +30360,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-label-odd-115": {
@@ -27492,6 +30412,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-label-odd-116": {
@@ -27539,6 +30464,11 @@
         "expectedOutput": "35"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-label-odd-117": {
@@ -27586,6 +30516,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-label-odd-118": {
@@ -27633,6 +30568,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-label-odd-119": {
@@ -27680,6 +30620,11 @@
         "expectedOutput": "-3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-label-odd-120": {
@@ -27727,6 +30672,11 @@
         "expectedOutput": "6"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-count-label-divisible-by-three-121": {
@@ -27774,6 +30724,11 @@
         "expectedOutput": "2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-sum-label-divisible-by-three-122": {
@@ -27821,6 +30776,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-sum-label-divisible-by-three-123": {
@@ -27868,6 +30828,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-max-label-label-divisible-by-three-124": {
@@ -27915,6 +30880,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-min-label-label-divisible-by-three-125": {
@@ -27962,6 +30932,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-square-label-sum-label-divisible-by-three-126": {
@@ -28009,6 +30984,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-degree-square-sum-label-divisible-by-three-127": {
@@ -28056,6 +31036,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-label-degree-product-sum-label-divisible-by-three-128": {
@@ -28103,6 +31088,11 @@
         "expectedOutput": "3"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-parity-score-label-divisible-by-three-129": {
@@ -28150,6 +31140,11 @@
         "expectedOutput": "0"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "graph-weighted-count-label-divisible-by-three-130": {
@@ -28197,6 +31192,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-1": {
@@ -28244,6 +31244,11 @@
         "expectedOutput": "422"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-2": {
@@ -28291,6 +31296,11 @@
         "expectedOutput": "2619"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-3": {
@@ -28338,6 +31348,11 @@
         "expectedOutput": "65104"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-4": {
@@ -28385,6 +31400,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-5": {
@@ -28432,6 +31452,11 @@
         "expectedOutput": "192"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-6": {
@@ -28479,6 +31504,11 @@
         "expectedOutput": "9315"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-7": {
@@ -28526,6 +31556,11 @@
         "expectedOutput": "21696"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-8": {
@@ -28573,6 +31608,11 @@
         "expectedOutput": "21"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-9": {
@@ -28620,6 +31660,11 @@
         "expectedOutput": "408"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-10": {
@@ -28667,6 +31712,11 @@
         "expectedOutput": "3033"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-11": {
@@ -28714,6 +31764,11 @@
         "expectedOutput": "17152"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-12": {
@@ -28761,6 +31816,11 @@
         "expectedOutput": "441"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-13": {
@@ -28808,6 +31868,11 @@
         "expectedOutput": "678"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-14": {
@@ -28855,6 +31920,11 @@
         "expectedOutput": "2295"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-15": {
@@ -28902,6 +31972,11 @@
         "expectedOutput": "31360"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-16": {
@@ -28949,6 +32024,11 @@
         "expectedOutput": "43"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-17": {
@@ -28996,6 +32076,11 @@
         "expectedOutput": "256"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-18": {
@@ -29043,6 +32128,11 @@
         "expectedOutput": "17727"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-19": {
@@ -29090,6 +32180,11 @@
         "expectedOutput": "17676"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-20": {
@@ -29137,6 +32232,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-21": {
@@ -29184,6 +32284,11 @@
         "expectedOutput": "1640"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-22": {
@@ -29231,6 +32336,11 @@
         "expectedOutput": "3951"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-23": {
@@ -29278,6 +32388,11 @@
         "expectedOutput": "17664"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-24": {
@@ -29325,6 +32440,11 @@
         "expectedOutput": "21"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-25": {
@@ -29372,6 +32492,11 @@
         "expectedOutput": "312"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-26": {
@@ -29419,6 +32544,11 @@
         "expectedOutput": "2511"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-27": {
@@ -29466,6 +32596,11 @@
         "expectedOutput": "52224"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-28": {
@@ -29513,6 +32648,11 @@
         "expectedOutput": "101"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-29": {
@@ -29560,6 +32700,11 @@
         "expectedOutput": "160"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-30": {
@@ -29607,6 +32752,11 @@
         "expectedOutput": "6279"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-31": {
@@ -29654,6 +32804,11 @@
         "expectedOutput": "20332"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-32": {
@@ -29701,6 +32856,11 @@
         "expectedOutput": "17"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-33": {
@@ -29748,6 +32908,11 @@
         "expectedOutput": "4088"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-34": {
@@ -29795,6 +32960,11 @@
         "expectedOutput": "2601"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-35": {
@@ -29842,6 +33012,11 @@
         "expectedOutput": "16896"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-36": {
@@ -29889,6 +33064,11 @@
         "expectedOutput": "217"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-37": {
@@ -29936,6 +33116,11 @@
         "expectedOutput": "544"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-38": {
@@ -29983,6 +33168,11 @@
         "expectedOutput": "2727"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-39": {
@@ -30030,6 +33220,11 @@
         "expectedOutput": "23184"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "weighted-recurrence-dp-40": {
@@ -30077,6 +33272,11 @@
         "expectedOutput": "23"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-1": {
@@ -30124,6 +33324,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-2": {
@@ -30171,6 +33376,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-3": {
@@ -30218,6 +33428,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-4": {
@@ -30265,6 +33480,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-5": {
@@ -30312,6 +33532,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-6": {
@@ -30359,6 +33584,11 @@
         "expectedOutput": "12"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-7": {
@@ -30406,6 +33636,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-8": {
@@ -30453,6 +33688,11 @@
         "expectedOutput": "14"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-9": {
@@ -30500,6 +33740,11 @@
         "expectedOutput": "18"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-10": {
@@ -30547,6 +33792,11 @@
         "expectedOutput": "20"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-11": {
@@ -30594,6 +33844,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-12": {
@@ -30641,6 +33896,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-13": {
@@ -30688,6 +33948,11 @@
         "expectedOutput": "667"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-14": {
@@ -30735,6 +34000,11 @@
         "expectedOutput": "670"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-15": {
@@ -30782,6 +34052,11 @@
         "expectedOutput": "673"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-16": {
@@ -30829,6 +34104,11 @@
         "expectedOutput": "674"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-17": {
@@ -30876,6 +34156,11 @@
         "expectedOutput": "679"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-18": {
@@ -30923,6 +34208,11 @@
         "expectedOutput": "670"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-19": {
@@ -30970,6 +34260,11 @@
         "expectedOutput": "673"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-20": {
@@ -31017,6 +34312,11 @@
         "expectedOutput": "674"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-21": {
@@ -31064,6 +34364,11 @@
         "expectedOutput": "679"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-22": {
@@ -31111,6 +34416,11 @@
         "expectedOutput": "682"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-23": {
@@ -31158,6 +34468,11 @@
         "expectedOutput": "685"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-24": {
@@ -31205,6 +34520,11 @@
         "expectedOutput": "674"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-25": {
@@ -31252,6 +34572,11 @@
         "expectedOutput": "679"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-26": {
@@ -31299,6 +34624,11 @@
         "expectedOutput": "682"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-27": {
@@ -31346,6 +34676,11 @@
         "expectedOutput": "685"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-28": {
@@ -31393,6 +34728,11 @@
         "expectedOutput": "686"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-29": {
@@ -31440,6 +34780,11 @@
         "expectedOutput": "691"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "line-minimum-cost-dp-30": {
@@ -31487,6 +34832,11 @@
         "expectedOutput": "682"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-1": {
@@ -31534,6 +34884,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-2": {
@@ -31581,6 +34936,11 @@
         "expectedOutput": "9"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-3": {
@@ -31628,6 +34988,11 @@
         "expectedOutput": "11"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-4": {
@@ -31675,6 +35040,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-5": {
@@ -31722,6 +35092,11 @@
         "expectedOutput": "15"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-6": {
@@ -31769,6 +35144,11 @@
         "expectedOutput": "17"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-7": {
@@ -31816,6 +35196,11 @@
         "expectedOutput": "5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-8": {
@@ -31863,6 +35248,11 @@
         "expectedOutput": "685"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-9": {
@@ -31910,6 +35300,11 @@
         "expectedOutput": "688"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-10": {
@@ -31957,6 +35352,11 @@
         "expectedOutput": "691"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-11": {
@@ -32004,6 +35404,11 @@
         "expectedOutput": "694"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-12": {
@@ -32051,6 +35456,11 @@
         "expectedOutput": "697"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-13": {
@@ -32098,6 +35508,11 @@
         "expectedOutput": "700"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-14": {
@@ -32145,6 +35560,11 @@
         "expectedOutput": "689"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-15": {
@@ -32192,6 +35612,11 @@
         "expectedOutput": "692"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-16": {
@@ -32239,6 +35664,11 @@
         "expectedOutput": "695"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-17": {
@@ -32286,6 +35716,11 @@
         "expectedOutput": "698"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-18": {
@@ -32333,6 +35768,11 @@
         "expectedOutput": "701"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-19": {
@@ -32380,6 +35820,11 @@
         "expectedOutput": "704"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-20": {
@@ -32427,6 +35872,11 @@
         "expectedOutput": "707"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-21": {
@@ -32474,6 +35924,11 @@
         "expectedOutput": "696"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-22": {
@@ -32521,6 +35976,11 @@
         "expectedOutput": "699"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-23": {
@@ -32568,6 +36028,11 @@
         "expectedOutput": "702"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-24": {
@@ -32615,6 +36080,11 @@
         "expectedOutput": "705"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-25": {
@@ -32662,6 +36132,11 @@
         "expectedOutput": "708"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-26": {
@@ -32709,6 +36184,11 @@
         "expectedOutput": "711"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-27": {
@@ -32756,6 +36236,11 @@
         "expectedOutput": "714"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-28": {
@@ -32803,6 +36288,11 @@
         "expectedOutput": "703"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-29": {
@@ -32850,6 +36340,11 @@
         "expectedOutput": "706"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "grid-minimum-path-dp-30": {
@@ -32897,6 +36392,11 @@
         "expectedOutput": "709"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "stack-balance-score": {
@@ -32944,6 +36444,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "monotonic-stack-score": {
@@ -32991,6 +36496,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "queue-simulation-score": {
@@ -33038,6 +36548,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "sliding-window-score": {
@@ -33085,6 +36600,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "interval-merge-score": {
@@ -33132,6 +36652,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "heap-selection-score": {
@@ -33179,6 +36704,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "greedy-activity-score": {
@@ -33226,6 +36756,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "union-find-score": {
@@ -33273,6 +36808,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "prefix-query-score": {
@@ -33320,6 +36860,11 @@
         "expectedOutput": "19"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "deque-processing-score": {
@@ -33367,6 +36912,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "student-object": {
@@ -33414,6 +36964,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "rectangle-object": {
@@ -33461,6 +37016,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "point-object": {
@@ -33508,6 +37068,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "book-object": {
@@ -33555,6 +37120,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "employee-object": {
@@ -33602,6 +37172,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "car-object": {
@@ -33649,6 +37224,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "product-object": {
@@ -33696,6 +37276,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "time-object": {
@@ -33743,6 +37328,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "fraction-object": {
@@ -33790,6 +37380,11 @@
         "expectedOutput": "19"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "circle-object": {
@@ -33837,6 +37432,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "deposit-method": {
@@ -33884,6 +37484,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "withdraw-method": {
@@ -33931,6 +37536,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "increment-method": {
@@ -33978,6 +37588,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "perimeter-method": {
@@ -34025,6 +37640,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "average-method": {
@@ -34072,6 +37692,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "raise-method": {
@@ -34119,6 +37744,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "cart-add-method": {
@@ -34166,6 +37796,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "tick-method": {
@@ -34213,6 +37848,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "reset-method": {
@@ -34260,6 +37900,11 @@
         "expectedOutput": "19"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "append-length-method": {
@@ -34307,6 +37952,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "person-student": {
@@ -34354,6 +38004,11 @@
         "expectedOutput": "-5"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "vehicle-car": {
@@ -34401,6 +38056,11 @@
         "expectedOutput": "-2"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "employee-manager": {
@@ -34448,6 +38108,11 @@
         "expectedOutput": "1"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "shape-rectangle": {
@@ -34495,6 +38160,11 @@
         "expectedOutput": "4"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "animal-override": {
@@ -34542,6 +38212,11 @@
         "expectedOutput": "7"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "savings-account": {
@@ -34589,6 +38264,11 @@
         "expectedOutput": "10"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "device-phone": {
@@ -34636,6 +38316,11 @@
         "expectedOutput": "13"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "university-role": {
@@ -34683,6 +38368,11 @@
         "expectedOutput": "16"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "payment-override": {
@@ -34730,6 +38420,11 @@
         "expectedOutput": "19"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   },
   "multilevel-developer": {
@@ -34777,6 +38472,11 @@
         "expectedOutput": "22"
       }
     ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 7,
+      "totalCount": 10
+    },
     "difficulty": "Easy"
   }
 }
