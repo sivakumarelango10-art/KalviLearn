@@ -21729,10 +21729,82 @@ function shouldShowDeprecationWarning() {
 }
 if (shouldShowDeprecationWarning()) console.warn("\u26A0\uFE0F  Node.js 20 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 22 or later. For more information, visit: https://github.com/orgs/supabase/discussions/45715");
 
+// src/server/httpSecurity.ts
+var DEFAULT_PRODUCTION_ORIGIN = "https://kalvilearn.vercel.app";
+function normalizeOrigin(value) {
+  if (!value) return null;
+  try {
+    return new URL(value.trim()).origin;
+  } catch {
+    return null;
+  }
+}
+function getAllowedOrigins() {
+  const origins = /* @__PURE__ */ new Set([DEFAULT_PRODUCTION_ORIGIN]);
+  const configured = [
+    process.env.APP_URL,
+    process.env.VITE_APP_URL,
+    ...(process.env.ALLOWED_ORIGINS || "").split(",")
+  ];
+  for (const raw of configured) {
+    const origin = normalizeOrigin(raw);
+    if (origin) origins.add(origin);
+  }
+  if (process.env.NODE_ENV !== "production") {
+    origins.add("http://localhost:5173");
+    origins.add("http://127.0.0.1:5173");
+    origins.add("http://localhost:4173");
+  }
+  return origins;
+}
+function applyCors(req, res, options) {
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  const origin = req.headers["origin"];
+  if (typeof origin === "string" && getAllowedOrigins().has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", options.methods);
+    res.setHeader("Access-Control-Allow-Headers", options.headers);
+    res.setHeader("Access-Control-Max-Age", "600");
+  }
+}
+function getClientIp(req) {
+  const header = (name) => {
+    const value = req.headers[name];
+    return (Array.isArray(value) ? value[0] : value)?.split(",")[0]?.trim() || void 0;
+  };
+  return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
+}
+function isTestAuthEnabled() {
+  return process.env.NODE_ENV !== "production" && process.env.ALLOW_TEST_AUTH_TOKENS === "1";
+}
+
 // src/server/feedbackAuth.ts
-var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://iavxnhwbgoarnexmyxpn.supabase.co";
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
-var supabaseServer = createClient(supabaseUrl, supabaseKey);
+var IS_PRODUCTION = process.env.NODE_ENV === "production";
+var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+if (IS_PRODUCTION && (!supabaseUrl || !supabaseKey)) {
+  throw new Error("Server misconfigured: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in production.");
+}
+function isTrustedStorageUrl(raw) {
+  try {
+    const url = new URL(raw);
+    const base = new URL(supabaseUrl);
+    return url.protocol === "https:" && url.origin === base.origin && url.pathname.startsWith("/storage/v1/object/public/feedback-attachments/");
+  } catch {
+    return false;
+  }
+}
+var supabaseServer = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+var AUTH_CACHE_TTL_MS = 3e4;
+var AUTH_CACHE_MAX = 1e3;
+var authCache = /* @__PURE__ */ new Map();
+function tokenKey(token) {
+  return crypto2.createHash("sha256").update(token).digest("hex");
+}
 var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function toValidUuid(rawId, seed) {
   if (rawId && UUID_REGEX.test(rawId)) {
@@ -21779,7 +21851,7 @@ async function authenticateFeedbackRequest(authHeader) {
       error: "Empty Bearer token."
     };
   }
-  if (process.env.NODE_ENV !== "production" && token.startsWith("test_auth_")) {
+  if (isTestAuthEnabled() && token.startsWith("test_auth_")) {
     const parts = token.split("_");
     if (parts.length >= 4) {
       const testRole = parts[2].toUpperCase();
@@ -21799,11 +21871,18 @@ async function authenticateFeedbackRequest(authHeader) {
           email: testEmail,
           name: synthetic?.name || "Automated Test User",
           role: testRole,
-          status: "ACTIVE"
+          status: "ACTIVE",
+          synthetic: true
         }
       };
     }
   }
+  const cacheKey = tokenKey(token);
+  const cached = authCache.get(cacheKey);
+  if (cached && cached.expires > Date.now()) {
+    return { authenticated: true, user: cached.user };
+  }
+  authCache.delete(cacheKey);
   try {
     const { data, error } = await supabaseServer.auth.getUser(token);
     if (error || !data?.user?.email) {
@@ -21815,52 +21894,50 @@ async function authenticateFeedbackRequest(authHeader) {
     }
     const email = data.user.email.toLowerCase();
     const metaName = data.user.user_metadata?.full_name || data.user.user_metadata?.name || email.split("@")[0];
-    try {
-      const { data: dbUser } = await supabaseServer.from("users").select("id, email, name, role, status").or(`id.eq.${data.user.id},email.eq.${email}`).maybeSingle();
-      if (dbUser) {
-        if (dbUser.status && dbUser.status !== "ACTIVE") {
-          return {
-            authenticated: false,
-            statusCode: 403,
-            error: "User account is inactive."
-          };
-        }
-        return {
-          authenticated: true,
-          user: {
-            id: dbUser.id,
-            email: dbUser.email,
-            name: dbUser.name || metaName,
-            role: (dbUser.role || "STUDENT").toUpperCase(),
-            status: dbUser.status || "ACTIVE"
-          }
-        };
+    const columns = "id, email, name, role, status";
+    let dbUser = null;
+    let authUidColumn = true;
+    const byAuth = await supabaseServer.from("users").select(columns).eq("authUid", data.user.id).maybeSingle();
+    if (byAuth.error) {
+      if (byAuth.error.code === "42703" || /authUid/.test(byAuth.error.message || "")) {
+        authUidColumn = false;
+      } else {
+        return { authenticated: false, statusCode: 503, error: "Unable to verify account. Please retry." };
       }
-    } catch {
+    } else {
+      dbUser = byAuth.data;
     }
-    const fallback = SYNTHETIC_TEST_ROSTER[email];
-    if (fallback) {
-      return {
-        authenticated: true,
-        user: {
-          id: fallback.id,
-          email,
-          name: fallback.name || metaName,
-          role: fallback.role,
-          status: "ACTIVE"
+    if (!dbUser) {
+      const googleConfirmed = !!data.user.email_confirmed_at && (data.user.identities || []).some((identity) => identity.provider === "google");
+      if (googleConfirmed) {
+        let byEmailQuery = supabaseServer.from("users").select(columns).eq("email", email);
+        if (authUidColumn) byEmailQuery = byEmailQuery.is("authUid", null);
+        const byEmail = await byEmailQuery.maybeSingle();
+        if (byEmail.error) {
+          return { authenticated: false, statusCode: 503, error: "Unable to verify account. Please retry." };
         }
-      };
-    }
-    return {
-      authenticated: true,
-      user: {
-        id: data.user.id,
-        email,
-        name: metaName,
-        role: "STUDENT",
-        status: "ACTIVE"
+        dbUser = byEmail.data;
       }
+    }
+    if (!dbUser) {
+      return { authenticated: false, statusCode: 403, error: "Account is not registered." };
+    }
+    if (dbUser.status && dbUser.status.toUpperCase() !== "ACTIVE") {
+      return { authenticated: false, statusCode: 403, error: "User account is inactive." };
+    }
+    const verifiedUser = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name || metaName,
+      role: (dbUser.role || "STUDENT").toUpperCase(),
+      status: "ACTIVE"
     };
+    if (authCache.size >= AUTH_CACHE_MAX) {
+      const oldest = authCache.keys().next().value;
+      if (oldest !== void 0) authCache.delete(oldest);
+    }
+    authCache.set(cacheKey, { user: verifiedUser, expires: Date.now() + AUTH_CACHE_TTL_MS });
+    return { authenticated: true, user: verifiedUser };
   } catch (err) {
     return {
       authenticated: false,
@@ -22223,6 +22300,30 @@ async function sendTicketToTeamSync(payload, options = {}) {
   };
 }
 
+// src/server/attachmentSecurity.ts
+function sniffImageMime(buf) {
+  if (buf.length < 12) return null;
+  if (buf[0] === 137 && buf.subarray(1, 4).toString("latin1") === "PNG" && buf[4] === 13 && buf[5] === 10 && buf[6] === 26 && buf[7] === 10) {
+    return "image/png";
+  }
+  if (buf[0] === 255 && buf[1] === 216 && buf[2] === 255) return "image/jpeg";
+  const head6 = buf.subarray(0, 6).toString("latin1");
+  if (head6 === "GIF87a" || head6 === "GIF89a") return "image/gif";
+  if (buf.subarray(0, 4).toString("latin1") === "RIFF" && buf.subarray(8, 12).toString("latin1") === "WEBP") {
+    return "image/webp";
+  }
+  return null;
+}
+var EXTENSION = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp"
+};
+function safeObjectName(mime, randomId) {
+  return `feedback/${Date.now()}_${randomId}.${EXTENSION[mime]}`;
+}
+
 // src/server/teamSyncHandler.ts
 var rateLimitMap = /* @__PURE__ */ new Map();
 var idempotencyCache = /* @__PURE__ */ new Map();
@@ -22253,9 +22354,7 @@ async function handler(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(data));
   };
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Idempotency-Key");
+  applyCors(req, res, { methods: "POST, OPTIONS", headers: "Content-Type, Authorization, X-Idempotency-Key" });
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
     res.end();
@@ -22264,7 +22363,7 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     return sendJson(405, { success: false, error: "Method Not Allowed", message: "Only POST is allowed on this endpoint." });
   }
-  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "127.0.0.1";
+  const ip = getClientIp(req);
   const authHeader = req.headers["authorization"] || "";
   const authResult = await authenticateFeedbackRequest(authHeader);
   if (!authResult.authenticated || !authResult.user) {
@@ -22378,16 +22477,18 @@ async function handler(req, res) {
           field: "attachment"
         });
       }
-      attachmentUrl = rawUrl;
+      attachmentUrl = isTrustedStorageUrl(rawUrl) ? rawUrl : null;
       if (rawUrl.startsWith("data:image/")) {
         try {
           const parts = rawUrl.split(",");
           if (parts.length > 1 && parts[1]) {
             const buffer = Buffer.from(parts[1], "base64");
-            const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-            const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`;
+            if (buffer.length > 5 * 1024 * 1024) throw new Error("Attachment exceeds 5MB");
+            const sniffed = sniffImageMime(buffer);
+            if (!sniffed) throw new Error("Attachment is not a PNG/JPEG/GIF/WebP image");
+            const path = safeObjectName(sniffed, Math.random().toString(36).slice(2, 10));
             const { error: uploadError } = await supabaseServer.storage.from("feedback-attachments").upload(path, buffer, {
-              contentType: fileType,
+              contentType: sniffed,
               upsert: true
             });
             if (!uploadError) {
@@ -22401,10 +22502,10 @@ async function handler(req, res) {
           console.warn("[TeamSyncHandler] Storage conversion warning, keeping original:", uploadErr);
         }
       }
-      attachmentMeta = { fileName, fileType, fileSize };
+      if (attachmentUrl) attachmentMeta = { fileName, fileType, fileSize };
     }
   }
-  const deviceInfo = parsedBody.deviceInfo && typeof parsedBody.deviceInfo === "object" ? parsedBody.deviceInfo : {
+  const deviceInfo = parsedBody.deviceInfo && typeof parsedBody.deviceInfo === "object" && JSON.stringify(parsedBody.deviceInfo).length <= 4e3 ? parsedBody.deviceInfo : {
     ip,
     userAgent: req.headers["user-agent"] || "unknown",
     browser: typeof parsedBody.browser === "string" ? parsedBody.browser : "unknown",

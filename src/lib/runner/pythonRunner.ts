@@ -2,8 +2,15 @@
  * Robust in-browser Python 3 Execution Engine for competitive programming questions.
  * Handles standard I/O (sys.stdin, input()), arithmetic, conditionals, loops, lists, strings, and prints.
  */
+import { evaluate } from './evaluator'
 
-// Global string & array method extensions for Python compatibility
+
+/**
+ * Installs Python-compatible helper methods (str.strip, list.count, ...) on the CURRENT realm's
+ * String/Array prototypes. Self-contained (no closure references) so the server sandbox can re-run it
+ * inside each fresh vm context via Function.prototype.toString().
+ */
+export function installPythonRuntimeExtensions(): void {
 // Global string & array method extensions for Python compatibility
 if (typeof String !== 'undefined') {
   const sp = String.prototype as any
@@ -93,6 +100,9 @@ if (typeof Array !== 'undefined') {
     return originalSort.call(this)
   }
 }
+}
+
+installPythonRuntimeExtensions()
 
 export function executePython(code: string, input: string): { output: string; error?: string } {
   // Security guard against host secret access
@@ -483,8 +493,7 @@ if (typeof solve === 'function') {
     const keys = Object.keys(env)
     const values = Object.values(env)
 
-    const runner = new Function(...keys, formattedJs)
-    runner(...values)
+    evaluate(keys, values, formattedJs)
 
     return { output: outputs.join('\n').trim() }
   } catch (err: any) {

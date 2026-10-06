@@ -26,6 +26,9 @@ import handler from '../src/server/submitHandler'
 import problemsData from '../src/data/problems.json'
 import { EventEmitter } from 'events'
 
+// Test-only bearer tokens are disabled unless explicitly enabled (never in production).
+process.env.ALLOW_TEST_AUTH_TOKENS = '1'
+
 // In-memory mock for localStorage in Node environment
 const mockStorage = new Map<string, string>()
 if (typeof (globalThis as any).localStorage === 'undefined') {
@@ -427,7 +430,7 @@ async function runTests() {
     url: '/api/submit',
     headers: {
       'content-type': 'application/json',
-      authorization: 'Bearer test-token-attacker',
+      authorization: 'Bearer test_auth_student_synthetic.other.student@kalvilearn.test',
     },
     body: {
       userId: 'victim-student-id-999', // Mismatched userId
@@ -452,13 +455,13 @@ async function runTests() {
   })
 
   // Test 4.3: Valid Authenticated Submission with matching identity
-  const authenticatedUserId = 'student-test-user-123'
+  const authenticatedUserId = '00000000-0000-4000-a000-000000000001' // synthetic.student@kalvilearn.test
   const { req: authReq, res: authRes } = createMockHttpReqRes({
     method: 'POST',
     url: '/api/submit',
     headers: {
       'content-type': 'application/json',
-      authorization: `Bearer test-token-${authenticatedUserId}`,
+      authorization: 'Bearer test_auth_student_synthetic.student@kalvilearn.test',
     },
     body: {
       userId: authenticatedUserId,

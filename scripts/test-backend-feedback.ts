@@ -12,6 +12,9 @@
  */
 
 import http from 'http'
+
+// Test-only bearer tokens are disabled unless explicitly enabled (never in production).
+process.env.ALLOW_TEST_AUTH_TOKENS = '1'
 import handler, { resetRateLimitsForTesting, checkRateLimit } from '../src/server/feedbackHandler'
 import {
   isValidStatusTransition,
@@ -157,6 +160,7 @@ async function runTestSuite() {
 
   const mentorEmail = 'synthetic.mentor@kalvilearn.test'
   const mentorToken = `test_auth_mentor_${mentorEmail}`
+  const adminToken = 'test_auth_admin_synthetic.admin@kalvilearn.test'
 
   let createdBugId = ''
   let createdBugRef = ''
@@ -432,16 +436,34 @@ async function runTestSuite() {
     // Try illegal jump OPEN -> CLOSED via PATCH API (should return HTTP 422)
     const { req: badPatchReq, res: badPatchRes, mockRes: badPatchMock } = createMockReqRes({
       method: 'PATCH',
-      headers: { authorization: `Bearer ${mentorToken}` },
+      headers: { authorization: `Bearer ${adminToken}` },
       body: { id: createdBugId, status: 'CLOSED' },
     })
     await handler(badPatchReq, badPatchRes)
     assert(badPatchMock.statusCode === 422, 'TEST 35: API returns HTTP 422 Unprocessable Entity for illegal transition')
 
+    // Authorization: a mentor who is NOT assigned to the ticket author must not be able to triage it (403)
+    const { req: mentorPatchReq, res: mentorPatchRes, mockRes: mentorPatchMock } = createMockReqRes({
+      method: 'PATCH',
+      headers: { authorization: `Bearer ${mentorToken}` },
+      body: { id: createdBugId, status: 'TRIAGED' },
+    })
+    await handler(mentorPatchReq, mentorPatchRes)
+    assert(mentorPatchMock.statusCode === 403, 'TEST 35b: Unassigned mentor cannot advance a ticket authored by an unrelated user (HTTP 403)')
+
+    // Student cannot self-advance lifecycle either
+    const { req: stuPatchReq, res: stuPatchRes, mockRes: stuPatchMock } = createMockReqRes({
+      method: 'PATCH',
+      headers: { authorization: `Bearer ${studentToken}` },
+      body: { id: createdBugId, status: 'TRIAGED' },
+    })
+    await handler(stuPatchReq, stuPatchRes)
+    assert(stuPatchMock.statusCode === 403, 'TEST 35c: Student cannot advance own ticket lifecycle (HTTP 403)')
+
     // Advance legitimately: OPEN -> TRIAGED via PATCH API
     const { req: p1Req, res: p1Res, mockRes: p1Mock } = createMockReqRes({
       method: 'PATCH',
-      headers: { authorization: `Bearer ${mentorToken}` },
+      headers: { authorization: `Bearer ${adminToken}` },
       body: { id: createdBugId, status: 'TRIAGED' },
     })
     await handler(p1Req, p1Res)
@@ -451,7 +473,7 @@ async function runTestSuite() {
     // Advance: TRIAGED -> RESOLVED
     const { req: p2Req, res: p2Res, mockRes: p2Mock } = createMockReqRes({
       method: 'PATCH',
-      headers: { authorization: `Bearer ${mentorToken}` },
+      headers: { authorization: `Bearer ${adminToken}` },
       body: { id: createdBugId, status: 'RESOLVED' },
     })
     await handler(p2Req, p2Res)

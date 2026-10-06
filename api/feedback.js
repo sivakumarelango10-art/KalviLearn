@@ -21729,10 +21729,116 @@ function shouldShowDeprecationWarning() {
 }
 if (shouldShowDeprecationWarning()) console.warn("\u26A0\uFE0F  Node.js 20 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 22 or later. For more information, visit: https://github.com/orgs/supabase/discussions/45715");
 
+// src/server/httpSecurity.ts
+var DEFAULT_PRODUCTION_ORIGIN = "https://kalvilearn.vercel.app";
+function normalizeOrigin(value) {
+  if (!value) return null;
+  try {
+    return new URL(value.trim()).origin;
+  } catch {
+    return null;
+  }
+}
+function getAllowedOrigins() {
+  const origins = /* @__PURE__ */ new Set([DEFAULT_PRODUCTION_ORIGIN]);
+  const configured = [
+    process.env.APP_URL,
+    process.env.VITE_APP_URL,
+    ...(process.env.ALLOWED_ORIGINS || "").split(",")
+  ];
+  for (const raw of configured) {
+    const origin = normalizeOrigin(raw);
+    if (origin) origins.add(origin);
+  }
+  if (process.env.NODE_ENV !== "production") {
+    origins.add("http://localhost:5173");
+    origins.add("http://127.0.0.1:5173");
+    origins.add("http://localhost:4173");
+  }
+  return origins;
+}
+function applyCors(req, res, options) {
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  const origin = req.headers["origin"];
+  if (typeof origin === "string" && getAllowedOrigins().has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", options.methods);
+    res.setHeader("Access-Control-Allow-Headers", options.headers);
+    res.setHeader("Access-Control-Max-Age", "600");
+  }
+}
+function getClientIp(req) {
+  const header = (name) => {
+    const value = req.headers[name];
+    return (Array.isArray(value) ? value[0] : value)?.split(",")[0]?.trim() || void 0;
+  };
+  return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
+}
+function isTestAuthEnabled() {
+  return process.env.NODE_ENV !== "production" && process.env.ALLOW_TEST_AUTH_TOKENS === "1";
+}
+var RateLimiter = class {
+  constructor(maxRequests, windowMs, maxKeys = 5e3) {
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+    this.maxKeys = maxKeys;
+  }
+  records = /* @__PURE__ */ new Map();
+  check(key) {
+    const now = Date.now();
+    if (this.records.size >= this.maxKeys) {
+      for (const [k, v] of this.records) {
+        if (now > v.resetTime) this.records.delete(k);
+      }
+      while (this.records.size >= this.maxKeys) {
+        const oldest = this.records.keys().next().value;
+        if (oldest === void 0) break;
+        this.records.delete(oldest);
+      }
+    }
+    const record = this.records.get(key);
+    if (!record || now > record.resetTime) {
+      this.records.set(key, { count: 1, resetTime: now + this.windowMs });
+      return { allowed: true };
+    }
+    if (record.count >= this.maxRequests) {
+      return { allowed: false, retryAfter: Math.ceil((record.resetTime - now) / 1e3) };
+    }
+    record.count++;
+    return { allowed: true };
+  }
+  reset() {
+    this.records.clear();
+  }
+};
+
 // src/server/feedbackAuth.ts
-var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://iavxnhwbgoarnexmyxpn.supabase.co";
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
-var supabaseServer = createClient(supabaseUrl, supabaseKey);
+var IS_PRODUCTION = process.env.NODE_ENV === "production";
+var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+if (IS_PRODUCTION && (!supabaseUrl || !supabaseKey)) {
+  throw new Error("Server misconfigured: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in production.");
+}
+function isTrustedStorageUrl(raw) {
+  try {
+    const url = new URL(raw);
+    const base = new URL(supabaseUrl);
+    return url.protocol === "https:" && url.origin === base.origin && url.pathname.startsWith("/storage/v1/object/public/feedback-attachments/");
+  } catch {
+    return false;
+  }
+}
+var supabaseServer = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+var AUTH_CACHE_TTL_MS = 3e4;
+var AUTH_CACHE_MAX = 1e3;
+var authCache = /* @__PURE__ */ new Map();
+function tokenKey(token) {
+  return crypto2.createHash("sha256").update(token).digest("hex");
+}
 var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function toValidUuid(rawId, seed) {
   if (rawId && UUID_REGEX.test(rawId)) {
@@ -21779,7 +21885,7 @@ async function authenticateFeedbackRequest(authHeader) {
       error: "Empty Bearer token."
     };
   }
-  if (process.env.NODE_ENV !== "production" && token.startsWith("test_auth_")) {
+  if (isTestAuthEnabled() && token.startsWith("test_auth_")) {
     const parts = token.split("_");
     if (parts.length >= 4) {
       const testRole = parts[2].toUpperCase();
@@ -21799,11 +21905,18 @@ async function authenticateFeedbackRequest(authHeader) {
           email: testEmail,
           name: synthetic?.name || "Automated Test User",
           role: testRole,
-          status: "ACTIVE"
+          status: "ACTIVE",
+          synthetic: true
         }
       };
     }
   }
+  const cacheKey = tokenKey(token);
+  const cached = authCache.get(cacheKey);
+  if (cached && cached.expires > Date.now()) {
+    return { authenticated: true, user: cached.user };
+  }
+  authCache.delete(cacheKey);
   try {
     const { data, error } = await supabaseServer.auth.getUser(token);
     if (error || !data?.user?.email) {
@@ -21815,52 +21928,50 @@ async function authenticateFeedbackRequest(authHeader) {
     }
     const email = data.user.email.toLowerCase();
     const metaName = data.user.user_metadata?.full_name || data.user.user_metadata?.name || email.split("@")[0];
-    try {
-      const { data: dbUser } = await supabaseServer.from("users").select("id, email, name, role, status").or(`id.eq.${data.user.id},email.eq.${email}`).maybeSingle();
-      if (dbUser) {
-        if (dbUser.status && dbUser.status !== "ACTIVE") {
-          return {
-            authenticated: false,
-            statusCode: 403,
-            error: "User account is inactive."
-          };
-        }
-        return {
-          authenticated: true,
-          user: {
-            id: dbUser.id,
-            email: dbUser.email,
-            name: dbUser.name || metaName,
-            role: (dbUser.role || "STUDENT").toUpperCase(),
-            status: dbUser.status || "ACTIVE"
-          }
-        };
+    const columns = "id, email, name, role, status";
+    let dbUser = null;
+    let authUidColumn = true;
+    const byAuth = await supabaseServer.from("users").select(columns).eq("authUid", data.user.id).maybeSingle();
+    if (byAuth.error) {
+      if (byAuth.error.code === "42703" || /authUid/.test(byAuth.error.message || "")) {
+        authUidColumn = false;
+      } else {
+        return { authenticated: false, statusCode: 503, error: "Unable to verify account. Please retry." };
       }
-    } catch {
+    } else {
+      dbUser = byAuth.data;
     }
-    const fallback = SYNTHETIC_TEST_ROSTER[email];
-    if (fallback) {
-      return {
-        authenticated: true,
-        user: {
-          id: fallback.id,
-          email,
-          name: fallback.name || metaName,
-          role: fallback.role,
-          status: "ACTIVE"
+    if (!dbUser) {
+      const googleConfirmed = !!data.user.email_confirmed_at && (data.user.identities || []).some((identity) => identity.provider === "google");
+      if (googleConfirmed) {
+        let byEmailQuery = supabaseServer.from("users").select(columns).eq("email", email);
+        if (authUidColumn) byEmailQuery = byEmailQuery.is("authUid", null);
+        const byEmail = await byEmailQuery.maybeSingle();
+        if (byEmail.error) {
+          return { authenticated: false, statusCode: 503, error: "Unable to verify account. Please retry." };
         }
-      };
-    }
-    return {
-      authenticated: true,
-      user: {
-        id: data.user.id,
-        email,
-        name: metaName,
-        role: "STUDENT",
-        status: "ACTIVE"
+        dbUser = byEmail.data;
       }
+    }
+    if (!dbUser) {
+      return { authenticated: false, statusCode: 403, error: "Account is not registered." };
+    }
+    if (dbUser.status && dbUser.status.toUpperCase() !== "ACTIVE") {
+      return { authenticated: false, statusCode: 403, error: "User account is inactive." };
+    }
+    const verifiedUser = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name || metaName,
+      role: (dbUser.role || "STUDENT").toUpperCase(),
+      status: "ACTIVE"
     };
+    if (authCache.size >= AUTH_CACHE_MAX) {
+      const oldest = authCache.keys().next().value;
+      if (oldest !== void 0) authCache.delete(oldest);
+    }
+    authCache.set(cacheKey, { user: verifiedUser, expires: Date.now() + AUTH_CACHE_TTL_MS });
+    return { authenticated: true, user: verifiedUser };
   } catch (err) {
     return {
       authenticated: false,
@@ -22253,7 +22364,62 @@ async function sendTicketToTeamSync(payload, options = {}) {
   };
 }
 
+// src/server/rateLimit.ts
+var distributedUnavailableUntil = 0;
+function distributedLimiterActive() {
+  return Date.now() >= distributedUnavailableUntil;
+}
+async function hitRateLimit(local, bucket, maxRequests, windowSeconds) {
+  const localDecision = local.check(bucket);
+  if (!localDecision.allowed) return localDecision;
+  if (!distributedLimiterActive()) return localDecision;
+  try {
+    const { data, error } = await supabaseServer.rpc("rate_limit_hit", {
+      p_bucket: bucket,
+      p_max: maxRequests,
+      p_window_seconds: windowSeconds
+    });
+    if (error) {
+      distributedUnavailableUntil = Date.now() + 6e4;
+      return localDecision;
+    }
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row && typeof row.allowed === "boolean") {
+      return row.allowed ? { allowed: true } : { allowed: false, retryAfter: Number(row.retry_after) || windowSeconds };
+    }
+    return localDecision;
+  } catch {
+    distributedUnavailableUntil = Date.now() + 6e4;
+    return localDecision;
+  }
+}
+
+// src/server/attachmentSecurity.ts
+function sniffImageMime(buf) {
+  if (buf.length < 12) return null;
+  if (buf[0] === 137 && buf.subarray(1, 4).toString("latin1") === "PNG" && buf[4] === 13 && buf[5] === 10 && buf[6] === 26 && buf[7] === 10) {
+    return "image/png";
+  }
+  if (buf[0] === 255 && buf[1] === 216 && buf[2] === 255) return "image/jpeg";
+  const head6 = buf.subarray(0, 6).toString("latin1");
+  if (head6 === "GIF87a" || head6 === "GIF89a") return "image/gif";
+  if (buf.subarray(0, 4).toString("latin1") === "RIFF" && buf.subarray(8, 12).toString("latin1") === "WEBP") {
+    return "image/webp";
+  }
+  return null;
+}
+var EXTENSION = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp"
+};
+function safeObjectName(mime, randomId) {
+  return `feedback/${Date.now()}_${randomId}.${EXTENSION[mime]}`;
+}
+
 // src/server/feedbackHandler.ts
+var feedbackGlobalLimiter = new RateLimiter(1e6, 6e5);
 var rateLimitMap = /* @__PURE__ */ new Map();
 var deduplicationCache = /* @__PURE__ */ new Map();
 function pruneRateLimiter() {
@@ -22284,6 +22450,14 @@ function checkRateLimit(key, maxLimit = 15, windowMs = 6e5) {
   record.count++;
   return { allowed: true };
 }
+async function isMentorOfStudentUser(mentorUserId, studentUserId) {
+  const { data: mentor } = await supabaseServer.from("mentors").select("id").eq("user_id", mentorUserId).maybeSingle();
+  if (!mentor) return false;
+  const { data: student } = await supabaseServer.from("students").select("id").eq("user_id", studentUserId).maybeSingle();
+  if (!student) return false;
+  const { data: link } = await supabaseServer.from("mentor_students").select("id").eq("mentor_id", mentor.id).eq("student_id", student.id).eq("status", "ACTIVE").maybeSingle();
+  return !!link;
+}
 function resetRateLimitsForTesting() {
   rateLimitMap.clear();
   deduplicationCache.clear();
@@ -22297,15 +22471,13 @@ async function handler(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(data));
   };
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Idempotency-Key");
+  applyCors(req, res, { methods: "GET, POST, PATCH, OPTIONS", headers: "Content-Type, Authorization, X-Idempotency-Key" });
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
     res.end();
     return;
   }
-  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "127.0.0.1";
+  const ip = getClientIp(req);
   const authHeader = req.headers["authorization"] || "";
   const authResult = await authenticateFeedbackRequest(authHeader);
   let body = req.body;
@@ -22417,7 +22589,7 @@ async function handler(req, res) {
     if (user.role === "ADMIN" || user.role === "SUPERADMIN") {
       const { data, error } = await supabaseServer.from("feedback_reports").select("id, public_reference, user_name_snapshot, user_email_snapshot, type, title, status, priority, created_at").order("created_at", { ascending: false }).limit(50);
       if (error) {
-        return sendJson(500, { success: false, error: "Database Error", message: error.message });
+        return sendJson(500, { success: false, error: "Database Error", message: "Failed to retrieve feedback list." });
       }
       return sendJson(200, { success: true, items: data || [] });
     }
@@ -22457,7 +22629,7 @@ async function handler(req, res) {
       });
     }
     const isOwner = existing.user_id === user.id || existing.user_email_snapshot === user.email;
-    const isAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN" || user.role === "MENTOR";
+    const isAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN" || user.role === "MENTOR" && !!existing.user_id && await isMentorOfStudentUser(user.id, existing.user_id);
     if (targetStatus === "OPEN") {
       if (!isOwner && !isAdmin) {
         return sendJson(403, {
@@ -22511,7 +22683,8 @@ async function handler(req, res) {
     }
     const user = authResult.user;
     const rateLimitKey = `fb_${user.id}_${ip}`;
-    const rate = checkRateLimit(rateLimitKey, 15, 6e5);
+    const localRate = checkRateLimit(rateLimitKey, 15, 6e5);
+    const rate = localRate.allowed ? await hitRateLimit(feedbackGlobalLimiter, `feedback:${user.id}`, 15, 600) : localRate;
     if (!rate.allowed) {
       res.setHeader("Retry-After", String(rate.retryAfter || 60));
       return sendJson(429, {
@@ -22573,10 +22746,12 @@ async function handler(req, res) {
             const matches = rawUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
             if (matches && matches.length === 3) {
               const buffer = Buffer.from(matches[2], "base64");
-              const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-              const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`;
+              if (buffer.length > 5 * 1024 * 1024) throw new Error("Attachment exceeds 5MB");
+              const sniffed = sniffImageMime(buffer);
+              if (!sniffed) throw new Error("Attachment is not a PNG/JPEG/GIF/WebP image");
+              const path = safeObjectName(sniffed, Math.random().toString(36).slice(2, 10));
               const { error: uploadError } = await supabaseServer.storage.from("feedback-attachments").upload(path, buffer, {
-                contentType: matches[1] || fileType,
+                contentType: sniffed,
                 upsert: true
               });
               if (!uploadError) {
@@ -22590,17 +22765,19 @@ async function handler(req, res) {
             console.warn("[feedbackHandler] Base64 upload fallback warning:", storageErr);
           }
         }
-        if (!attachmentUrl) {
+        if (!attachmentUrl && isTrustedStorageUrl(rawUrl)) {
           attachmentUrl = rawUrl;
         }
-        attachmentMeta = {
-          fileName,
-          fileType,
-          fileSize
-        };
+        if (attachmentUrl) {
+          attachmentMeta = {
+            fileName,
+            fileType,
+            fileSize
+          };
+        }
       }
     }
-    const deviceInfo = parsedBody.deviceInfo && typeof parsedBody.deviceInfo === "object" ? parsedBody.deviceInfo : {
+    const deviceInfo = parsedBody.deviceInfo && typeof parsedBody.deviceInfo === "object" && JSON.stringify(parsedBody.deviceInfo).length <= 4e3 ? parsedBody.deviceInfo : {
       ip,
       userAgent: req.headers["user-agent"] || "unknown"
     };

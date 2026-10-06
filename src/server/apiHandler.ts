@@ -1,37 +1,22 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { executeQuestion } from './executeService'
+import { authenticateFeedbackRequest } from './feedbackAuth'
+import { hitRateLimit } from './rateLimit'
+import { applyCors, getClientIp, PayloadTooLargeError, RateLimiter, readJsonBody } from './httpSecurity'
 
-// Sliding window rate limiter: max 40 executions/min per IP with burst limit
-interface RateRecord {
-  count: number
-  resetTime: number
-}
-const rateLimitMap = new Map<string, RateRecord>()
+// Two limiters: a coarse per-IP flood guard that runs BEFORE authentication (so unauthenticated floods
+// cannot hammer the auth backend), and a per-user execution quota that runs after.
+const ipLimiter = new RateLimiter(300, 60_000)
+const userLimiter = new RateLimiter(60, 60_000)
 
-function pruneRateLimitMap() {
-  if (rateLimitMap.size > 2000) {
-    const now = Date.now()
-    for (const [key, record] of rateLimitMap.entries()) {
-      if (now > record.resetTime) rateLimitMap.delete(key)
-    }
-  }
+export function resetExecuteRateLimitsForTesting() {
+  ipLimiter.reset()
+  userLimiter.reset()
 }
 
-function checkRateLimit(ip: string, maxLimit = 60, windowMs = 60000): { allowed: boolean; retryAfter?: number } {
-  pruneRateLimitMap()
-  const now = Date.now()
-  const record = rateLimitMap.get(ip)
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs })
-    return { allowed: true }
-  }
-  if (record.count >= maxLimit) {
-    const retryAfter = Math.ceil((record.resetTime - now) / 1000)
-    return { allowed: false, retryAfter }
-  }
-  record.count++
-  return { allowed: true }
-}
+const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,127}$/i
+const ALLOWED_LANGUAGES = new Set(['python', 'java', 'cpp', 'c++', 'nodejs', 'node', 'javascript', 'js'])
+const MAX_CODE_CHARS = 65536
 
 export default async function handler(
   req: IncomingMessage & { body?: unknown; query?: unknown },
@@ -46,10 +31,7 @@ export default async function handler(
     res.end(JSON.stringify(data))
   }
 
-  // Support CORS if needed
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  applyCors(req, res, { methods: 'POST, OPTIONS', headers: 'Content-Type, Authorization' })
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
@@ -61,54 +43,49 @@ export default async function handler(
     return sendJson(405, { error: 'Method Not Allowed. Use POST.' })
   }
 
-  // Rate Limiting
-  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1'
-  const rate = checkRateLimit(ip, 60, 60000)
-  if (!rate.allowed) {
-    res.setHeader('Retry-After', String(rate.retryAfter || 60))
-    return sendJson(429, {
+  const ipRate = ipLimiter.check(getClientIp(req))
+  if (!ipRate.allowed) {
+    res.setHeader('Retry-After', String(ipRate.retryAfter || 60))
+    return sendJson(429, { success: false, error: 'Too Many Requests', message: 'Rate limit exceeded. Please retry shortly.' })
+  }
+
+  // Code execution is an authenticated capability: the caller identity comes ONLY from the verified
+  // Supabase token, never from the request body.
+  const authResult = await authenticateFeedbackRequest((req.headers['authorization'] as string) || '')
+  if (!authResult.authenticated || !authResult.user) {
+    return sendJson(authResult.statusCode || 401, {
       success: false,
-      error: 'Too Many Requests',
-      message: `Execution rate limit exceeded. Please wait ${rate.retryAfter} seconds before trying again.`,
+      error: 'Unauthenticated',
+      message: 'Sign in to run code.',
+      total: 10,
+      passed: 0,
+      testCases: [],
     })
   }
 
-  // Parse body if not already parsed by Vercel
-  let body = req.body
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body)
-    } catch {
-      body = {}
-    }
-  } else if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
-    if (typeof req.on === 'function') {
-      body = await new Promise((resolve) => {
-        let data = ''
-        req.on('data', (chunk) => {
-          data += chunk
-        })
-        req.on('end', () => {
-          try {
-            resolve(JSON.parse(data || '{}'))
-          } catch {
-            resolve({})
-          }
-        })
-        req.on('error', () => resolve({}))
-        setTimeout(() => resolve(body || {}), 200)
-      })
-    }
+  const userRate = await hitRateLimit(userLimiter, `exec:${authResult.user.id}`, 60, 60)
+  if (!userRate.allowed) {
+    res.setHeader('Retry-After', String(userRate.retryAfter || 60))
+    return sendJson(429, {
+      success: false,
+      error: 'Too Many Requests',
+      message: `Execution rate limit exceeded. Please wait ${userRate.retryAfter} seconds before trying again.`,
+    })
   }
 
-  interface ExecuteRequestBody {
-    questionSlug?: string
-    language?: string
-    code?: string
-    isSubmit?: boolean
+  let body: Record<string, unknown>
+  try {
+    body = await readJsonBody(req, 256 * 1024)
+  } catch (err) {
+    if (err instanceof PayloadTooLargeError) {
+      return sendJson(413, { success: false, error: 'Payload Too Large', message: 'Request body is too large.' })
+    }
+    return sendJson(400, { success: false, error: 'Bad Request', message: 'Malformed request body.' })
   }
-  const parsedBody = (body as ExecuteRequestBody) || {}
-  const { questionSlug, language, code, isSubmit = true } = parsedBody
+
+  const questionSlug = typeof body.questionSlug === 'string' ? body.questionSlug : ''
+  const language = typeof body.language === 'string' ? body.language.toLowerCase() : ''
+  const code = typeof body.code === 'string' ? body.code : ''
 
   if (!questionSlug || !language || !code) {
     return sendJson(400, {
@@ -120,9 +97,19 @@ export default async function handler(
       testCases: [],
     })
   }
+  if (!SLUG_PATTERN.test(questionSlug) || !ALLOWED_LANGUAGES.has(language) || code.length > MAX_CODE_CHARS) {
+    return sendJson(400, {
+      success: false,
+      error: 'Invalid Parameters',
+      message: 'Unsupported question, language, or code size.',
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
+  }
 
   try {
-    const result = await executeQuestion({ questionSlug, language, code, isSubmit })
+    const result = await executeQuestion({ questionSlug, language, code, isSubmit: false })
     if (result.error === 'Question Not Found') {
       return sendJson(404, result)
     }
@@ -134,11 +121,11 @@ export default async function handler(
     }
     return sendJson(200, result)
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Internal Server Error'
+    console.error('[api/execute] unexpected failure:', err instanceof Error ? err.message : 'unknown error')
     return sendJson(500, {
       success: false,
       error: 'Execution Error',
-      message: msg,
+      message: 'The code could not be evaluated. Please try again.',
       total: 10,
       passed: 0,
       testCases: [],

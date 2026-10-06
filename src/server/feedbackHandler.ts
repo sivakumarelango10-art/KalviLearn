@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer, type AuthenticatedUser } from './feedbackAuth'
+import { authenticateFeedbackRequest, isTrustedStorageUrl, supabaseServer, type AuthenticatedUser } from './feedbackAuth'
 import {
   validateFeedbackInput,
   normalizeFeedbackType,
@@ -7,6 +7,12 @@ import {
   isValidStatusTransition,
 } from './feedbackLifecycle'
 import { sendTicketToTeamSync } from './teamSyncService'
+import { applyCors, getClientIp, RateLimiter } from './httpSecurity'
+import { hitRateLimit } from './rateLimit'
+import { safeObjectName, sniffImageMime } from './attachmentSecurity'
+
+// Supplies the bounded per-instance tier for hitRateLimit; the 15/10min decision itself is made in the handler.
+const feedbackGlobalLimiter = new RateLimiter(1_000_000, 600_000)
 
 // In-memory sliding-window rate limiter (e.g. max 15 submissions/10min per IP/user)
 interface RateRecord {
@@ -48,6 +54,22 @@ export function checkRateLimit(key: string, maxLimit = 15, windowMs = 600000): {
   return { allowed: true }
 }
 
+/** True when `mentorUserId` has an ACTIVE assignment to the student whose users.id is `studentUserId`. */
+async function isMentorOfStudentUser(mentorUserId: string, studentUserId: string): Promise<boolean> {
+  const { data: mentor } = await supabaseServer.from('mentors').select('id').eq('user_id', mentorUserId).maybeSingle()
+  if (!mentor) return false
+  const { data: student } = await supabaseServer.from('students').select('id').eq('user_id', studentUserId).maybeSingle()
+  if (!student) return false
+  const { data: link } = await supabaseServer
+    .from('mentor_students')
+    .select('id')
+    .eq('mentor_id', mentor.id)
+    .eq('student_id', student.id)
+    .eq('status', 'ACTIVE')
+    .maybeSingle()
+  return !!link
+}
+
 export function resetRateLimitsForTesting() {
   rateLimitMap.clear()
   deduplicationCache.clear()
@@ -66,10 +88,8 @@ export default async function handler(
     res.end(JSON.stringify(data))
   }
 
-  // Standard CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Idempotency-Key')
+  // Origin allow-list CORS (Bearer-token auth, no cookies, no wildcard)
+  applyCors(req, res, { methods: 'GET, POST, PATCH, OPTIONS', headers: 'Content-Type, Authorization, X-Idempotency-Key' })
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
@@ -78,10 +98,7 @@ export default async function handler(
   }
 
   // Extract client IP
-  const ip =
-    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-    req.socket?.remoteAddress ||
-    '127.0.0.1'
+  const ip = getClientIp(req)
 
   // Extract Auth Token
   const authHeader = (req.headers['authorization'] as string) || ''
@@ -230,7 +247,7 @@ export default async function handler(
         .limit(50)
 
       if (error) {
-        return sendJson(500, { success: false, error: 'Database Error', message: error.message })
+        return sendJson(500, { success: false, error: 'Database Error', message: 'Failed to retrieve feedback list.' })
       }
 
       return sendJson(200, { success: true, items: data || [] })
@@ -291,7 +308,12 @@ export default async function handler(
     // Only Admin/Mentor can triage, progress, resolve.
     // Creator can only reopen (RESOLVED/CLOSED -> OPEN).
     const isOwner = existing.user_id === user.id || existing.user_email_snapshot === user.email
-    const isAdmin = user.role === 'ADMIN' || user.role === 'SUPERADMIN' || user.role === 'MENTOR'
+    // Staff authority: platform admins everywhere; mentors ONLY for tickets raised by their own ACTIVE students
+    // (a mentor must never be able to triage/close another cohort's or mentor's tickets).
+    const isAdmin =
+      user.role === 'ADMIN' ||
+      user.role === 'SUPERADMIN' ||
+      (user.role === 'MENTOR' && !!existing.user_id && (await isMentorOfStudentUser(user.id, existing.user_id)))
 
     if (targetStatus === 'OPEN') {
       if (!isOwner && !isAdmin) {
@@ -363,7 +385,9 @@ export default async function handler(
 
     // 2. Rate Limiting Check (per user + IP)
     const rateLimitKey = `fb_${user.id}_${ip}`
-    const rate = checkRateLimit(rateLimitKey, 15, 600000) // 15 submissions per 10 min
+    const localRate = checkRateLimit(rateLimitKey, 15, 600000) // 15 submissions per 10 min (per instance)
+    // Global (cross-instance) quota per user; falls back to the per-instance decision if unavailable.
+    const rate = localRate.allowed ? await hitRateLimit(feedbackGlobalLimiter, `feedback:${user.id}`, 15, 600) : localRate
     if (!rate.allowed) {
       res.setHeader('Retry-After', String(rate.retryAfter || 60))
       return sendJson(429, {
@@ -448,12 +472,15 @@ export default async function handler(
             const matches = rawUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
             if (matches && matches.length === 3) {
               const buffer = Buffer.from(matches[2], 'base64')
-              const cleanName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-              const path = `feedback/${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${cleanName}`
+              if (buffer.length > 5 * 1024 * 1024) throw new Error('Attachment exceeds 5MB')
+              // Content type comes from the file's magic bytes, never from the client-declared MIME/name.
+              const sniffed = sniffImageMime(buffer)
+              if (!sniffed) throw new Error('Attachment is not a PNG/JPEG/GIF/WebP image')
+              const path = safeObjectName(sniffed, Math.random().toString(36).slice(2, 10))
               const { error: uploadError } = await supabaseServer.storage
                 .from('feedback-attachments')
                 .upload(path, buffer, {
-                  contentType: matches[1] || fileType,
+                  contentType: sniffed,
                   upsert: true,
                 })
               if (!uploadError) {
@@ -469,20 +496,22 @@ export default async function handler(
             console.warn('[feedbackHandler] Base64 upload fallback warning:', storageErr)
           }
         }
-        if (!attachmentUrl) {
+        if (!attachmentUrl && isTrustedStorageUrl(rawUrl)) {
           attachmentUrl = rawUrl
         }
-        attachmentMeta = {
-          fileName,
-          fileType,
-          fileSize,
+        if (attachmentUrl) {
+          attachmentMeta = {
+            fileName,
+            fileType,
+            fileSize,
+          }
         }
       }
     }
 
     // 7. Device and Telemetry Metadata
     const deviceInfo =
-      parsedBody.deviceInfo && typeof parsedBody.deviceInfo === 'object'
+      parsedBody.deviceInfo && typeof parsedBody.deviceInfo === 'object' && JSON.stringify(parsedBody.deviceInfo).length <= 4000
         ? parsedBody.deviceInfo
         : {
             ip,

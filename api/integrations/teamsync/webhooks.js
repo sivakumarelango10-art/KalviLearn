@@ -13716,13 +13716,26 @@ var require_main3 = __commonJS({
 
 // src/server/teamSyncWebhookAuth.ts
 import crypto2 from "crypto";
-function computeTeamSyncSignature(rawBody, timestamp, secret = process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== "production" ? "ts_whsec_kalvilearn_39a1b2c4d5e6" : "")) {
+function resolveWebhookSecret(explicit) {
+  return explicit || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || "";
+}
+function computeTeamSyncSignature(rawBody, timestamp, secret = resolveWebhookSecret()) {
+  if (!secret) {
+    throw new Error("Webhook secret is not configured.");
+  }
   const payloadToSign = `${timestamp}.${rawBody}`;
   return crypto2.createHmac("sha256", secret).update(payloadToSign, "utf8").digest("hex");
 }
 function verifyTeamSyncWebhookSignature(rawBody, signatureHeader, timestampHeader, eventIdHeader, options = {}) {
-  const secret = options.secret || process.env.TEAMSYNC_WEBHOOK_SECRET || process.env.KALVILEARN_WEBHOOK_SECRET || (process.env.NODE_ENV !== "production" ? "ts_whsec_kalvilearn_39a1b2c4d5e6" : "");
+  const secret = resolveWebhookSecret(options.secret);
   const toleranceSeconds = options.toleranceSeconds ?? 300;
+  if (!secret) {
+    return {
+      valid: false,
+      statusCode: 503,
+      error: "Webhook receiver is not configured."
+    };
+  }
   if (!signatureHeader || typeof signatureHeader !== "string" || signatureHeader.trim() === "") {
     return {
       valid: false,
@@ -21800,10 +21813,25 @@ function shouldShowDeprecationWarning() {
 }
 if (shouldShowDeprecationWarning()) console.warn("\u26A0\uFE0F  Node.js 20 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 22 or later. For more information, visit: https://github.com/orgs/supabase/discussions/45715");
 
+// src/server/httpSecurity.ts
+function getClientIp(req) {
+  const header = (name) => {
+    const value = req.headers[name];
+    return (Array.isArray(value) ? value[0] : value)?.split(",")[0]?.trim() || void 0;
+  };
+  return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
+}
+
 // src/server/feedbackAuth.ts
-var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://iavxnhwbgoarnexmyxpn.supabase.co";
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
-var supabaseServer = createClient(supabaseUrl, supabaseKey);
+var IS_PRODUCTION = process.env.NODE_ENV === "production";
+var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+if (IS_PRODUCTION && (!supabaseUrl || !supabaseKey)) {
+  throw new Error("Server misconfigured: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in production.");
+}
+var supabaseServer = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
 
 // src/server/feedbackLifecycle.ts
 var VALID_STATUSES = [
@@ -22274,9 +22302,7 @@ async function handler(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(data));
   };
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-TeamSync-Signature, X-TeamSync-Timestamp, X-TeamSync-Event-ID");
+  res.setHeader("Cache-Control", "no-store");
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
     res.end();
@@ -22289,7 +22315,7 @@ async function handler(req, res) {
       message: "Only POST requests are supported for TeamSync webhooks."
     });
   }
-  const clientIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "127.0.0.1";
+  const clientIp = getClientIp(req);
   const rate = checkRateLimit(clientIp, 120, 6e4);
   if (!rate.allowed) {
     res.setHeader("Retry-After", String(rate.retryAfter || 60));

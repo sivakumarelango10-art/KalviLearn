@@ -109,6 +109,11 @@ export const ProblemArenaPage: React.FC = () => {
 
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
   const antiCheatTimerRef = useRef<NodeJS.Timeout | number | null>(null)
+  // Synchronous execution lock: React state (isRunning/isSubmitting) updates asynchronously, so two clicks in
+  // the same tick would both pass a state-based guard and fire two executions / two submissions.
+  const executingRef = useRef(false)
+  // Bumped whenever the problem/language changes so late responses for a previous context are not rendered.
+  const contextVersionRef = useRef(0)
 
   // Clean up anti-cheat warning timer on unmount
   useEffect(() => {
@@ -121,6 +126,7 @@ export const ProblemArenaPage: React.FC = () => {
 
   // Initialize code on problem or language change
   useEffect(() => {
+    contextVersionRef.current += 1
     const savedCode = getLanguageSavedCode(currentProblem.slug, currentLanguage)
 
     if (savedCode) {
@@ -190,7 +196,12 @@ export const ProblemArenaPage: React.FC = () => {
 
   // Unified Execution Pipeline across all 10 Test Cases
   const handleExecute = async (isSubmit: boolean) => {
-    if (isRunning || isSubmitting) return
+    if (executingRef.current || isRunning || isSubmitting) return
+    executingRef.current = true
+    const contextVersion = contextVersionRef.current
+    // Capture the identity of what is being executed so a late response is attributed to the right problem.
+    const executedProblem = currentProblem
+    const executedLanguage = currentLanguage
 
     if (isSubmit) {
       setIsSubmitting(true)
@@ -215,6 +226,27 @@ export const ProblemArenaPage: React.FC = () => {
         visibleCases,
         isSubmit
       )
+
+      // The student navigated / switched language while the request was in flight: the server has already
+      // persisted the outcome; do not paint it over a different problem's editor.
+      if (contextVersionRef.current !== contextVersion) {
+        if (isSubmit && !result.compilationError) {
+          if (result.passed && result.passedCount === authoritativeTotalCount) {
+            recordProblemSuccess(executedProblem.slug, executedProblem.title, executedLanguage, code, result.overallTimeMs)
+          } else {
+            recordProblemAttempt(
+              executedProblem.slug,
+              executedProblem.title,
+              executedLanguage,
+              code,
+              result.passedCount,
+              authoritativeTotalCount,
+              result.overallTimeMs
+            )
+          }
+        }
+        return
+      }
 
       if (result.compilationError) {
         setCompilationError(result.compilationError)
@@ -294,6 +326,7 @@ export const ProblemArenaPage: React.FC = () => {
       setExecutionSummary({ passed: 0, total: authoritativeTotalCount, isSubmit })
       setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
     } finally {
+      executingRef.current = false
       setIsRunning(false)
       setIsSubmitting(false)
     }
