@@ -2,6 +2,7 @@ import { fetchAllRows } from './supabasePaging'
 import { registerCacheClearer } from './cacheRegistry'
 import { supabase } from './supabase'
 import { calculateAuthoritativeStreak } from './streak'
+import { fetchTotalProblemCount } from './problemStatsService'
 
 export interface SolvedProblemItem {
   problemId: string
@@ -379,9 +380,10 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
     if (studentUsers.length === 0) return []
     const studentUserIds = studentUsers.map((s) => s.userId)
 
-    const [progressRes, submissionsRes] = await Promise.all([
+    const [progressRes, submissionsRes, totalProblemsCount] = await Promise.all([
       fetchAllRows(() => supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned, Problem(slug, title, difficulty, beltId, Belt(order, name, color))').in('userId', studentUserIds).eq('status', 'SOLVED')),
       fetchAllRows(() => supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests, executionTimeMs, Problem(slug, title, difficulty, Belt(order, name, color))').in('userId', studentUserIds), [{ column: 'createdAt', ascending: false }]),
+      fetchTotalProblemCount(),
     ])
 
     const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; xpEarned?: number; Problem?: unknown }>>()
@@ -414,6 +416,9 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
         const pLang = normalizeLanguage(p.language)
         languageSolvedCounts[pLang] = (languageSolvedCounts[pLang] || 0) + 1
+        if (seenProblemIds.has(p.problemId)) {
+          continue
+        }
         seenProblemIds.add(p.problemId)
         solvedProblems.push({
           problemId: p.problemId,
@@ -452,7 +457,7 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       }
 
       const solvedCount = solvedProblems.length
-      const progressPercent = Math.min(100, Math.round((solvedCount / 85) * 100))
+      const progressPercent = totalProblemsCount > 0 ? Math.min(100, Math.round((solvedCount / totalProblemsCount) * 100)) : 0
 
       const baseSolvedXp = solvedList.reduce((acc, p: any) => acc + Number(p.xpEarned != null ? p.xpEarned : 50), 0)
       const extraPassedCount = recentSubs.filter((s) => s.status === 'PASSED' && s.passedTests === 10 && !seenProblemIds.has(s.problemId)).length
@@ -521,7 +526,7 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         mentorEmail: mentorProfile?.email || mentorProfile?.user?.email || '',
         campus: 'Kalvi National Technology Campus',
         belt, beltColor,
-        progressPercent, solvedCount, totalProblems: 85,
+        progressPercent, solvedCount, totalProblems: totalProblemsCount,
         totalXp,
         streak, language,
         lastActive: formatRelativeTime(lastActiveRaw),
@@ -915,11 +920,13 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
 
     invalidateMentorCache(mentorUserId)
 
+    const dynamicTotalProblems = await fetchTotalProblemCount().catch(() => 500)
+
     return {
       success: true,
       student: {
         id: userRow.id, name: userRow.name || name, email: userRow.email,
-        belt: 'Belt 1', beltColor: '#3B82F6', progressPercent: 0, solvedCount: 0, totalProblems: 85,
+        belt: 'Belt 1', beltColor: '#3B82F6', progressPercent: 0, solvedCount: 0, totalProblems: dynamicTotalProblems,
         totalXp: 0,
         mentorName: mentorProfile.name || 'Assigned Growth Mentor',
         mentorEmail: mentorProfile.email || '',

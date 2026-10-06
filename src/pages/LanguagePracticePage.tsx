@@ -43,9 +43,13 @@ export const LanguagePracticePage: React.FC = () => {
   const [solvedSlugs, setSolvedSlugs] = useState<string[]>([])
   const [languageXp, setLanguageXp] = useState<number>(0)
 
+  const totalCurriculumProblems = useMemo(() => {
+    return curriculum.belts.reduce((sum, b) => sum + b.problems.length, 0)
+  }, [curriculum])
+
   useEffect(() => {
     const updateProgress = () => {
-      const prog = getLanguageProgress(currentLang, 85)
+      const prog = getLanguageProgress(currentLang, totalCurriculumProblems)
       setSolvedSlugs(prog.solvedSlugs)
       setLanguageXp(prog.xp)
     }
@@ -55,7 +59,7 @@ export const LanguagePracticePage: React.FC = () => {
     localStorage.setItem('kalvi_preferred_language', currentLang)
 
     return subscribeProgress(updateProgress)
-  }, [currentLang])
+  }, [currentLang, totalCurriculumProblems])
 
   // Belt Statistics
   const beltStats = useMemo(() => {
@@ -75,9 +79,9 @@ export const LanguagePracticePage: React.FC = () => {
     })
   }, [curriculum, solvedSlugs])
 
-  const totalProblemsCount = 85
+  const totalProblemsCount = totalCurriculumProblems
   const totalSolvedCount = solvedSlugs.length
-  const totalPercentage = Math.round((totalSolvedCount / totalProblemsCount) * 100)
+  const totalPercentage = totalProblemsCount > 0 ? Math.round((totalSolvedCount / totalProblemsCount) * 100) : 0
 
   const toggleBeltCollapse = (order: number) => {
     setCollapsedBelts((prev) => ({ ...prev, [order]: !prev[order] }))

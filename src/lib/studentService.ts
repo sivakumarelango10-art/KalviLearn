@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { fetchAuthoritativeProblemStats } from './problemStatsService'
 
 export interface StudentProfile {
   id: string           // students.id
@@ -134,20 +135,17 @@ export async function getStudentMentorInfo(studentProfileIdOrUserId: string): Pr
  * userId is the users.id (same as UserProgress.userId).
  */
 export async function getStudentProgressSummary(userId: string): Promise<StudentProgressSummary> {
-  const empty = { solvedCount: 0, totalProblems: 85, progressPercent: 0 }
+  const empty = { solvedCount: 0, totalProblems: 0, progressPercent: 0 }
   if (!userId) return empty
   try {
-    const { count } = await supabase
-      .from('UserProgress')
-      .select('id', { count: 'exact', head: true })
-      .eq('userId', userId)
-      .eq('status', 'SOLVED')
-
-    const solvedCount = count ?? 0
+    const stats = await fetchAuthoritativeProblemStats(userId)
+    const progressPercent = stats.totalProblems > 0
+      ? Math.min(100, Math.round((stats.solvedCount / stats.totalProblems) * 100))
+      : 0
     return {
-      solvedCount,
-      totalProblems: 85,
-      progressPercent: Math.min(100, Math.round((solvedCount / 85) * 100)),
+      solvedCount: stats.solvedCount,
+      totalProblems: stats.totalProblems,
+      progressPercent,
     }
   } catch (err) {
     console.error('Error in getStudentProgressSummary:', err)

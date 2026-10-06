@@ -139,14 +139,9 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
 
             <p className="text-xs text-neutral-500 font-mono truncate">
               {student.email}
-              {student.studentCode && (
-                <span className="ml-2 font-sans font-semibold text-neutral-400">
-                  • Roll: <strong className="text-neutral-700 font-mono">{student.studentCode}</strong>
-                </span>
-              )}
             </p>
 
-            {/* Academic Growth Mentor & Campus Lineage */}
+            {/* Academic Growth Mentor */}
             <div className="flex items-center gap-3 pt-1 text-xs text-neutral-600 flex-wrap">
               <span className="inline-flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-neutral-400" />
@@ -154,10 +149,6 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 <strong className="text-neutral-900 font-semibold">
                   {student.mentorName || 'Assigned Growth Mentor'}
                 </strong>
-              </span>
-              <span className="text-neutral-300">•</span>
-              <span className="text-neutral-500">
-                {student.campus || 'Kalvi National Technology Campus'}
               </span>
             </div>
           </div>

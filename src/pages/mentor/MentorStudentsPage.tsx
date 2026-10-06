@@ -876,7 +876,7 @@ export const MentorStudentsPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium text-neutral-500">Total Benchmark:</span>
-                    <span className="font-bold text-neutral-900">85 Problems</span>
+                    <span className="font-bold text-neutral-900">500 Problems</span>
                   </div>
                 </div>
 

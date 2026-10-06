@@ -16,10 +16,12 @@ import problemsData from '@/data/problems.json'
 import curriculumData from '@/data/curriculum.json'
 import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
+import { useProblemStats } from '@/hooks/useProblemStats'
 import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth()
+  const { status: statsStatus, stats: problemStats, error: statsError } = useProblemStats(user?.id)
   const [userState, setUserState] = useState<UserState>(() => getUserState())
 
   const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Student')
@@ -68,8 +70,10 @@ export const DashboardPage: React.FC = () => {
     return null
   }, [userState.solvedSlugs])
 
-  const totalProblems = useMemo(() => problemsData.reduce((acc, belt) => acc + belt.problems.length, 0), [])
-  const totalSolved = userState.solvedSlugs.length
+  const fallbackTotalProblems = useMemo(() => problemsData.reduce((acc, belt) => acc + belt.problems.length, 0), [])
+  const totalProblems = problemStats ? problemStats.totalProblems : fallbackTotalProblems
+  const totalSolved = problemStats ? problemStats.solvedCount : userState.solvedSlugs.length
+  const remainingProblems = problemStats ? problemStats.remaining : Math.max(totalProblems - totalSolved, 0)
   const overallPercent = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0
 
   // Current active Belt across 10 Belts
@@ -100,7 +104,7 @@ export const DashboardPage: React.FC = () => {
               Welcome back, {displayName}
             </h1>
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
-              Continue your journey through {totalProblems} Belt problems across 10 progressive Belts. Test your algorithmic logic in the Practice Arena and hone your speed.
+              Continue your journey through {statsStatus === 'loading' ? '—' : totalProblems} Belt problems across 10 progressive Belts. Test your algorithmic logic in the Practice Arena and hone your speed.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -197,12 +201,27 @@ export const DashboardPage: React.FC = () => {
             <span className="text-xs font-semibold">Total Solved</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-2xl font-bold text-neutral-900">
-            {totalSolved} <span className="text-xs text-neutral-400 font-normal">/ {totalProblems}</span>
-          </div>
-          <div className="text-[11px] text-neutral-500">
-            {totalProblems - totalSolved} challenges left
-          </div>
+          {statsStatus === 'loading' ? (
+            <div className="space-y-1 animate-pulse" data-testid="problem-counter-loading">
+              <div className="text-2xl font-bold text-neutral-400">— / —</div>
+              <div className="text-[11px] text-neutral-400">— remaining</div>
+            </div>
+          ) : statsStatus === 'error' ? (
+            <div className="space-y-1" data-testid="problem-counter-error">
+              <div className="text-sm font-semibold text-red-600">Unable to load progress</div>
+              <div className="text-[11px] text-neutral-400">{statsError || 'Database unavailable'}</div>
+            </div>
+          ) : (
+            <div data-testid="problem-counter-success">
+              <div className="text-2xl font-bold text-neutral-900">
+                {problemStats?.solvedCount ?? 0}{' '}
+                <span className="text-xs text-neutral-400 font-normal">/ {problemStats?.totalProblems ?? totalProblems}</span>
+              </div>
+              <div className="text-[11px] text-neutral-500">
+                {problemStats?.remaining ?? remainingProblems} remaining
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm space-y-2 interactive-card">
