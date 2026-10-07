@@ -106963,8 +106963,8 @@ var RateLimiter = class {
 // src/server/feedbackAuth.ts
 var IS_PRODUCTION = process.env.NODE_ENV === "production";
 var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
-var CONFIG_ERROR = IS_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+var CONFIG_ERROR = IS_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`);
 var supabaseServer = createClient(supabaseUrl || "https://unconfigured.invalid", supabaseKey || "unconfigured", {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
@@ -107051,7 +107051,8 @@ async function authenticateFeedbackRequest(authHeader) {
     return {
       authenticated: false,
       statusCode: 503,
-      error: "The server is missing its Supabase configuration, so it cannot verify your session. Please contact the administrator."
+      // Names only the missing variable(s) - never a value.
+      error: `${CONFIG_ERROR} Code cannot be run until an administrator sets it in the hosting environment and redeploys.`
     };
   }
   const cacheKey = tokenKey(token);
