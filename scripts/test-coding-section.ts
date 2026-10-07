@@ -187,6 +187,31 @@ async function runTests() {
   assert(totalServerVisible === 2220, `Server dictionary has exactly 2,220 visible test cases (got ${totalServerVisible})`)
   assert(totalServerHidden === 5180, `Server dictionary has exactly 5,180 hidden test cases (got ${totalServerHidden})`)
 
+  // 8. Evaluator Consistency (Run vs Submit Parity)
+  console.log('\n--- 8. EVALUATOR RUN VS SUBMIT CONSISTENCY ---')
+  const { executeQuestion } = await import('../src/server/executeService')
+  const pyCode = `import sys\nparts = sys.stdin.read().split()\nif len(parts) >= 3:\n    a = int(parts[0])\n    b = int(parts[1])\n    c = int(parts[2])\n    print((a + b) * c - b)`
+  const runResult = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'python', code: pyCode, isSubmit: false })
+  const submitResult = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'python', code: pyCode, isSubmit: true })
+  const prefixRunResult = await executeQuestion({ questionSlug: 'coding-arithmetic-check', language: 'python', code: pyCode, isSubmit: false })
+
+  assert(runResult.total === 10, 'Run Code evaluates all 10 test cases')
+  assert(runResult.passed === 10, 'Run Code passes 10/10 with correct solution')
+  assert(submitResult.total === 10, 'Submit Code evaluates all 10 test cases')
+  assert(submitResult.passed === 10, 'Submit Code passes 10/10 with correct solution')
+  assert(runResult.passed === submitResult.passed, 'Run Code and Submit Code produce identical results (10/10)')
+  assert(prefixRunResult.passed === 10, 'Slug with coding- prefix resolves accurately to 10/10')
+
+  let hasLeakedHidden = false
+  for (const tc of [...runResult.testCases, ...submitResult.testCases]) {
+    if (tc.testIndex >= 4) {
+      if (tc.visible !== false || tc.input !== undefined || tc.expectedOutput !== undefined || tc.actualOutput !== undefined) {
+        hasLeakedHidden = true
+      }
+    }
+  }
+  assert(!hasLeakedHidden, 'Hidden test cases never leak input, expectedOutput, or actualOutput in Run or Submit responses')
+
   console.log('\n====================================================')
   console.log(`TOTAL: ${passed} PASSED, ${failed} FAILED`)
   console.log('====================================================')

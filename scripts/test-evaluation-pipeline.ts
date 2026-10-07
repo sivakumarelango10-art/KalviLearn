@@ -291,12 +291,244 @@ public class Main {
     'TEST 17: Non-existent question returns SYSTEM_ERROR with total=10'
   )
 
+  // --- Suite 8: Arithmetic Check Explicit Regression & Consistency ---
+  console.log('\n--- Suite 8: Arithmetic Check (Regression Case) ---')
+  const pyArithmetic = `
+import sys
+parts = sys.stdin.read().split()
+if len(parts) >= 3:
+    a = int(parts[0])
+    b = int(parts[1])
+    c = int(parts[2])
+    print((a + b) * c - b)
+`
+  // RUN Code for arithmetic-check
+  const runArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'python',
+    code: pyArithmetic,
+    isSubmit: false,
+  })
+  assert(
+    runArith.total === 10 && runArith.passed === 10 && runArith.status === 'ACCEPTED',
+    'TEST 18: Arithmetic Check RUN (Python) passes 10/10 with status ACCEPTED',
+    { passed: runArith.passed, total: runArith.total, status: runArith.status }
+  )
+
+  // SUBMIT Code for arithmetic-check (unchanged code)
+  const submitArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'python',
+    code: pyArithmetic,
+    isSubmit: true,
+  })
+  assert(
+    submitArith.total === 10 && submitArith.passed === 10 && submitArith.status === 'ACCEPTED' && submitArith.success === true,
+    'TEST 19: Arithmetic Check SUBMIT (Python, unchanged) passes 10/10 with status ACCEPTED',
+    { passed: submitArith.passed, total: submitArith.total, success: submitArith.success }
+  )
+
+  // RUN vs SUBMIT Result Parity
+  assert(
+    runArith.passed === submitArith.passed && runArith.total === submitArith.total,
+    'TEST 20: Arithmetic Check RUN and SUBMIT produce 100% identical pass counts (10 == 10)'
+  )
+
+  // Verify Safe Response on both RUN and SUBMIT (0 hidden inputs or outputs leaked)
+  let arithLeakage = false
+  for (const tc of [...runArith.testCases, ...submitArith.testCases]) {
+    if (tc.testIndex >= 4) {
+      if (tc.visible !== false || tc.input !== undefined || tc.expectedOutput !== undefined || tc.actualOutput !== undefined) {
+        arithLeakage = true
+      }
+    }
+  }
+  assert(!arithLeakage, 'TEST 21: Arithmetic Check RUN and SUBMIT responses leak 0 hidden inputs/outputs')
+
+  // --- Suite 9: Multi-Language Arithmetic Check Evaluation ---
+  console.log('\n--- Suite 9: Multi-Language Arithmetic Check Evaluation ---')
+  const nodeArithmetic = `
+const fs = require('fs');
+const [a, b, c] = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);
+console.log((a + b) * c - b);
+`
+  const runNodeArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'nodejs',
+    code: nodeArithmetic,
+    isSubmit: false,
+  })
+  const submitNodeArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'nodejs',
+    code: nodeArithmetic,
+    isSubmit: true,
+  })
+  assert(
+    runNodeArith.passed === 10 && submitNodeArith.passed === 10,
+    'TEST 22: Arithmetic Check Node.js RUN and SUBMIT both pass 10/10'
+  )
+
+  const cppArithmetic = `
+#include <iostream>
+using namespace std;
+int main() {
+    long long a, b, c;
+    if (cin >> a >> b >> c) {
+        cout << ((a + b) * c - b) << endl;
+    }
+    return 0;
+}
+`
+  const runCppArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'cpp',
+    code: cppArithmetic,
+    isSubmit: false,
+  })
+  const submitCppArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'cpp',
+    code: cppArithmetic,
+    isSubmit: true,
+  })
+  assert(
+    runCppArith.passed === 10 && submitCppArith.passed === 10,
+    'TEST 23: Arithmetic Check C++ RUN and SUBMIT both pass 10/10'
+  )
+
+  const javaArithmetic = `
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextLong()) {
+            long a = sc.nextLong();
+            long b = sc.nextLong();
+            long c = sc.nextLong();
+            System.out.println((a + b) * c - b);
+        }
+    }
+}
+`
+  const runJavaArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'java',
+    code: javaArithmetic,
+    isSubmit: false,
+  })
+  const submitJavaArith = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'java',
+    code: javaArithmetic,
+    isSubmit: true,
+  })
+  assert(
+    runJavaArith.passed === 10 && submitJavaArith.passed === 10,
+    'TEST 24: Arithmetic Check Java RUN and SUBMIT both pass 10/10'
+  )
+
+  // --- Suite 10: Dynamic Code State & Execution Flow ---
+  console.log('\n--- Suite 10: Dynamic Code State & Execution Flow ---')
+  // TEST D: Code changed after Run
+  const brokenCode = `print(0)`
+  const submitBroken = await executeQuestion({
+    questionSlug: 'arithmetic-check',
+    language: 'python',
+    code: brokenCode,
+    isSubmit: true,
+  })
+  assert(
+    submitBroken.passed < 10 && submitBroken.success === false,
+    'TEST 25: Edited broken code after Run fails on SUBMIT (passed < 10, success=false)',
+    { passed: submitBroken.passed }
+  )
+
+  // TEST E: Submit without Run directly
+  const directSubmit = await executeQuestion({
+    questionSlug: 'profile-echo',
+    language: 'python',
+    code: `import sys\nparts = sys.stdin.read().split()\nif len(parts) >= 3:\n    print(parts[0], parts[1], parts[2])`,
+    isSubmit: true,
+  })
+  assert(
+    directSubmit.total === 10 && directSubmit.passed === 10 && directSubmit.success === true,
+    'TEST 26: Submit without Run directly evaluates all 10 cases (10/10 Accepted)'
+  )
+
+  // --- Suite 11: Multi-Topic Representative Question Parity ---
+  console.log('\n--- Suite 11: Multi-Topic Representative Question Parity ---')
+  // Topic: Basic Arithmetic - weighted-triple: 2*a + 3*b + 5*c
+  const weightedTripleCode = `
+import sys
+parts = sys.stdin.read().split()
+if len(parts) >= 3:
+    a = int(parts[0])
+    b = int(parts[1])
+    c = int(parts[2])
+    print(2 * a + 3 * b + 5 * c)
+`
+  const runWeighted = await executeQuestion({
+    questionSlug: 'weighted-triple',
+    language: 'python',
+    code: weightedTripleCode,
+    isSubmit: false,
+  })
+  const submitWeighted = await executeQuestion({
+    questionSlug: 'weighted-triple',
+    language: 'python',
+    code: weightedTripleCode,
+    isSubmit: true,
+  })
+  assert(
+    runWeighted.passed === 10 && submitWeighted.passed === 10,
+    'TEST 27: Weighted Triple (Basic Arithmetic) RUN & SUBMIT both pass 10/10'
+  )
+
+  // Topic: Loops - repeated-increment-score: (a+2)*b-2
+  const loopCode = `
+import sys
+parts = sys.stdin.read().split()
+if len(parts) >= 2:
+    a = int(parts[0])
+    b = int(parts[1])
+    print((a + 2) * b - 2)
+`
+  const runLoop = await executeQuestion({
+    questionSlug: 'repeated-increment-score',
+    language: 'python',
+    code: loopCode,
+    isSubmit: false,
+  })
+  const submitLoop = await executeQuestion({
+    questionSlug: 'repeated-increment-score',
+    language: 'python',
+    code: loopCode,
+    isSubmit: true,
+  })
+  assert(
+    runLoop.passed === 10 && submitLoop.passed === 10,
+    'TEST 28: Repeated Increment Score (Loops) RUN & SUBMIT both pass 10/10'
+  )
+
+  // Topic: Legacy Practice Belt Problem Parity (verify legacy questions continue working with their own test counts)
+  const legacyProblemRes = await executeQuestion({
+    questionSlug: 'belt-1-q1-arithmetic-check-v1',
+    language: 'python',
+    code: `import sys\nparts = sys.stdin.read().split()\nif len(parts) >= 3:\n    a, b, c = map(int, parts[:3])\n    print(a - b + c if (a-b+c) != 0 else 0)`, // check legacy question
+    isSubmit: false,
+  })
+  assert(
+    legacyProblemRes.total > 0 && Array.isArray(legacyProblemRes.testCases),
+    'TEST 29: Legacy belt question evaluates safely respecting its own test suite'
+  )
+
   console.log('\n========================================================================')
   console.log(`🏁 AUDIT RESULTS: ${passedTestsCount} / ${totalTestsCount} TESTS PASSED`)
   console.log('========================================================================\n')
 
   if (passedTestsCount === totalTestsCount) {
-    console.log('🎉 ALL 17 AUTOMATED PIPELINE TESTS PASSED!')
+    console.log(`🎉 ALL ${totalTestsCount} AUTOMATED PIPELINE TESTS PASSED!`)
   } else {
     console.error(`⚠️ ${totalTestsCount - passedTestsCount} TESTS FAILED!`)
     process.exit(1)

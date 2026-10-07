@@ -98240,15 +98240,16 @@ function compareOutput(actual, expected) {
 async function executeQuestion(req) {
   const { questionSlug, language, code, isSubmit: _isSubmit = true } = req;
   const problemMap = serverTestCases || serverTestCases_default || serverTestCases_exports;
-  let problem = problemMap[questionSlug] || codingTestCases[questionSlug];
+  const cleanSlug = questionSlug.replace(/^coding-/, "");
+  let problem = codingTestCases[cleanSlug] || codingTestCases[questionSlug] || problemMap[questionSlug] || problemMap[cleanSlug];
   if (!problem) {
-    const foundKey = Object.keys(problemMap).find(
-      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
-    ) || Object.keys(codingTestCases).find(
-      (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+    const foundKey = Object.keys(codingTestCases).find(
+      (k) => k === cleanSlug || k === questionSlug || k.endsWith(cleanSlug) || cleanSlug.endsWith(k)
+    ) || Object.keys(problemMap).find(
+      (k) => k === questionSlug || k === cleanSlug || k.endsWith(cleanSlug) || cleanSlug.endsWith(k)
     );
     if (foundKey) {
-      problem = problemMap[foundKey] || codingTestCases[foundKey];
+      problem = codingTestCases[foundKey] || problemMap[foundKey];
     }
   }
   const authoritativeTotal = problem?.testCases?.length || 10;
@@ -98363,7 +98364,7 @@ async function executeQuestion(req) {
     }
     const passed = !exec.error && compareOutput(exec.output, tc.expectedOutput);
     if (passed) passedCount++;
-    const isVisible = i < 3;
+    const isVisible = tc.isHidden !== void 0 ? !tc.isHidden : i < 3;
     let status = passed ? "passed" : "failed";
     if (exec.error) {
       if (exec.error.includes("Time Limit Exceeded") || tcTime >= 3e3) {

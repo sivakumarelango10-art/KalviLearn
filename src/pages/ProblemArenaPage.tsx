@@ -218,6 +218,9 @@ export const ProblemArenaPage: React.FC = () => {
     setSubmissionFailed(null)
     setCompilationError(null)
 
+    // Read current code directly from Monaco editor ref if mounted, avoiding any stale React state
+    const currentCode = editorRef.current?.getValue() ?? code
+
     const visibleCases = (currentProblem.testCases || []).slice(0, visibleCount).map((tc, idx) => ({
       testIndex: tc.testIndex || idx + 1,
       input: tc.input || '',
@@ -228,7 +231,7 @@ export const ProblemArenaPage: React.FC = () => {
       const result = await executeCode(
         currentProblem.slug,
         curriculum.runnerLanguage,
-        code,
+        currentCode,
         visibleCases,
         isSubmit
       )
@@ -238,13 +241,13 @@ export const ProblemArenaPage: React.FC = () => {
       if (contextVersionRef.current !== contextVersion) {
         if (isSubmit && !result.compilationError) {
           if (result.passed && result.passedCount === authoritativeTotalCount) {
-            recordProblemSuccess(executedProblem.slug, executedProblem.title, executedLanguage, code, result.overallTimeMs)
+            recordProblemSuccess(executedProblem.slug, executedProblem.title, executedLanguage, currentCode, result.overallTimeMs)
           } else {
             recordProblemAttempt(
               executedProblem.slug,
               executedProblem.title,
               executedLanguage,
-              code,
+              currentCode,
               result.passedCount,
               authoritativeTotalCount,
               result.overallTimeMs
@@ -276,7 +279,7 @@ export const ProblemArenaPage: React.FC = () => {
             currentProblem.slug,
             currentProblem.title,
             currentLanguage,
-            code,
+            currentCode,
             totalTime
           )
 
@@ -303,7 +306,7 @@ export const ProblemArenaPage: React.FC = () => {
             currentProblem.slug,
             currentProblem.title,
             currentLanguage,
-            code,
+            currentCode,
             result.passedCount,
             authoritativeTotalCount,
             result.overallTimeMs
@@ -698,7 +701,15 @@ export const ProblemArenaPage: React.FC = () => {
               theme="vs-dark"
               language={curriculum.monacoLanguage}
               value={code}
-              onChange={(value) => setCode(value || '')}
+              onChange={(value) => {
+                setCode(value || '')
+                if (testResults !== null || executionSummary !== null || compilationError !== null || submissionFailed !== null) {
+                  setTestResults(null)
+                  setExecutionSummary(null)
+                  setCompilationError(null)
+                  setSubmissionFailed(null)
+                }
+              }}
               onMount={handleEditorMount}
             />
           </div>
@@ -709,7 +720,7 @@ export const ProblemArenaPage: React.FC = () => {
               <div className="flex items-center gap-2 text-red-300">
                 <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 animate-pulse-subtle" />
                 <span>
-                  ❌ <strong>{submissionFailed.passed}/10</strong> test cases passed. Fix your solution and try again.
+                  ❌ <strong>{submissionFailed.passed}/{submissionFailed.total}</strong> test cases passed. Fix your solution and try again.
                 </span>
               </div>
               <button
@@ -732,8 +743,7 @@ export const ProblemArenaPage: React.FC = () => {
                 {Array.from({ length: authoritativeTotalCount }, (_, i) => i + 1).map((caseNum) => {
                   const isVisible = caseNum <= visibleCount
                   const tcResult = testResults ? testResults[caseNum - 1] : null
-                  const showPassFail = isVisible ? tcResult !== null : (executionSummary?.isSubmit && tcResult !== null)
-                  const isPassed = showPassFail ? tcResult?.passed : null
+                  const isPassed = tcResult ? tcResult.passed : null
 
                   return (
                     <button
@@ -766,45 +776,23 @@ export const ProblemArenaPage: React.FC = () => {
 
               {/* Status Header */}
               <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
-                {isRunning ? (
-                  <span className="text-amber-400 flex items-center gap-1.5">
-                    <span className="animate-spin text-xs">⏳</span> Evaluating visible tests...
-                  </span>
-                ) : isSubmitting ? (
+                {isRunning || isSubmitting ? (
                   <span className="text-amber-400 flex items-center gap-1.5">
                     <span className="animate-spin text-xs">⏳</span> Evaluating {authoritativeTotalCount} Test Cases...
                   </span>
                 ) : compilationError ? (
                   <span className="text-red-400 font-semibold">Passed 0 / {authoritativeTotalCount}</span>
                 ) : executionSummary ? (
-                  executionSummary.isSubmit ? (
-                    <span
-                      className={cn(
-                        'font-semibold',
-                        executionSummary.passed === executionSummary.total
-                          ? 'text-emerald-400'
-                          : 'text-amber-400'
-                      )}
-                    >
-                      Passed {executionSummary.passed} / {executionSummary.total}
-                    </span>
-                  ) : (
-                    (() => {
-                      const visiblePassed = (testResults || []).slice(0, visibleCount).filter((t) => t.passed).length
-                      return (
-                        <span
-                          className={cn(
-                            'font-semibold',
-                            visiblePassed === visibleCount
-                              ? 'text-emerald-400'
-                              : 'text-amber-400'
-                          )}
-                        >
-                          Visible tests: {visiblePassed} / {visibleCount} passed
-                        </span>
-                      )
-                    })()
-                  )
+                  <span
+                    className={cn(
+                      'font-semibold',
+                      executionSummary.passed === executionSummary.total
+                        ? 'text-emerald-400'
+                        : 'text-amber-400'
+                    )}
+                  >
+                    Passed {executionSummary.passed} / {executionSummary.total}
+                  </span>
                 ) : (
                   <span className="text-neutral-500">Passed 0 / {authoritativeTotalCount}</span>
                 )}
@@ -846,8 +834,6 @@ export const ProblemArenaPage: React.FC = () => {
                 const tcResult = testResults ? testResults[activeCaseTab - 1] : null
 
                 if (isHiddenCase) {
-                  const hasSubmitResult = executionSummary?.isSubmit && tcResult !== null
-
                   return (
                     <div className="space-y-3 font-sans">
                       <div className="p-3 bg-neutral-950/80 rounded-lg border border-neutral-800 text-neutral-400 text-xs space-y-1.5">
@@ -859,14 +845,14 @@ export const ProblemArenaPage: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-[11px] text-neutral-400 leading-relaxed">
-                          Hidden test case — evaluated when you submit your solution. Inputs and expected benchmarks are concealed to evaluate edge cases, boundary constraints, and prevent hardcoded solutions.
+                          This test is evaluated securely. Its input and expected output are hidden to evaluate edge cases, boundary constraints, and prevent hardcoded solutions.
                         </p>
                       </div>
 
-                      {hasSubmitResult ? (
+                      {tcResult !== null ? (
                         <div className="space-y-2">
                           <div className="text-[11px] text-neutral-400 font-medium flex items-center justify-between">
-                            <span>Evaluation Result:</span>
+                            <span>Evaluation Status:</span>
                             {tcResult.executionTimeMs !== undefined && (
                               <span className="text-[10px] text-neutral-500 font-mono">
                                 {tcResult.executionTimeMs}ms
@@ -903,7 +889,7 @@ export const ProblemArenaPage: React.FC = () => {
                         </div>
                       ) : (
                         <div className="p-4 text-center text-neutral-500 text-xs font-sans">
-                          Click <strong className="text-neutral-300">Submit</strong> to evaluate all hidden test cases.
+                          Click <strong className="text-neutral-300">Run</strong> or <strong className="text-neutral-300">Submit</strong> to evaluate this test case.
                         </div>
                       )}
                     </div>

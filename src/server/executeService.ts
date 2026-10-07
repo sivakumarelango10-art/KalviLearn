@@ -83,17 +83,23 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   }
   const problemMap = ((serverTestCasesModule as any).serverTestCases || (serverTestCasesModule as any).default || serverTestCasesModule) as unknown as Record<string, ServerProblemItem>
 
-  let problem = problemMap[questionSlug] || (codingTestCases as any)[questionSlug]
+  const cleanSlug = questionSlug.replace(/^coding-/, '')
+  let problem =
+    (codingTestCases as any)[cleanSlug] ||
+    (codingTestCases as any)[questionSlug] ||
+    problemMap[questionSlug] ||
+    problemMap[cleanSlug]
+
   if (!problem) {
     const foundKey =
-      Object.keys(problemMap).find(
-        (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
-      ) ||
       Object.keys(codingTestCases).find(
-        (k) => k === questionSlug || k.endsWith(questionSlug) || questionSlug.endsWith(k)
+        (k) => k === cleanSlug || k === questionSlug || k.endsWith(cleanSlug) || cleanSlug.endsWith(k)
+      ) ||
+      Object.keys(problemMap).find(
+        (k) => k === questionSlug || k === cleanSlug || k.endsWith(cleanSlug) || cleanSlug.endsWith(k)
       )
     if (foundKey) {
-      problem = problemMap[foundKey] || (codingTestCases as any)[foundKey]
+      problem = (codingTestCases as any)[foundKey] || problemMap[foundKey]
     }
   }
 
@@ -128,7 +134,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   }
 
   // Pre-check + execution run together inside the sandbox worker (empty env, capped heap, hard kill).
-  const inputs = problem?.testCases && problem.testCases.length > 0 ? problem.testCases.map((t) => t.input) : []
+  const inputs = problem?.testCases && problem.testCases.length > 0 ? problem.testCases.map((t: any) => t.input) : []
   const outcome = await runInSandbox({ code, language, inputs })
 
   if (outcome.kind === 'precheck_failed') {
@@ -197,7 +203,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   // Both Run and Submit execute all authoritative test cases
   const casesToExecute = testCases
   const totalCount = testCases.length
-  const visibleCount = testCases.filter((tc) => !tc.isHidden).length
+  const visibleCount = testCases.filter((tc: any) => !tc.isHidden).length
   const hiddenCount = totalCount - visibleCount
 
   const startTime = performance.now()
@@ -234,7 +240,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
 
     if (passed) passedCount++
 
-    const isVisible = i < 3 // Cases 1, 2, 3 are visible; Cases 4-10 are hidden
+    const isVisible = tc.isHidden !== undefined ? !tc.isHidden : i < 3
 
     let status: ClientTestCaseResult['status'] = passed ? 'passed' : 'failed'
     if (exec.error) {
