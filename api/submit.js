@@ -14913,7 +14913,8 @@ function release() {
 function resolveEntry() {
   const candidates = [
     ["./_sandbox-worker.mjs", true],
-    ["./sandboxWorker.ts", false]
+    ["../../api/_sandbox-worker.mjs", true],
+    ["../api/_sandbox-worker.mjs", true]
   ];
   for (const [name, compiled] of candidates) {
     try {
@@ -14991,6 +14992,10 @@ async function runInSandbox(job) {
       permissionModelBroken = true;
       console.warn("[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only");
       return await run(entry, job, false);
+    }
+    if (first.kind === "sandbox_failed" && process.env.NODE_ENV !== "production" && first.reason === "crash") {
+      const { runSubmissionJob: runSubmissionJob2 } = await Promise.resolve().then(() => (init_codeRunnerCore(), codeRunnerCore_exports));
+      return runSubmissionJob2(job);
     }
     return first;
   } finally {

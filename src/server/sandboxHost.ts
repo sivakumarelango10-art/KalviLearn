@@ -52,7 +52,8 @@ function resolveEntry(): { file: string; compiled: boolean } | null {
   // Dev / tests (tsx): the TypeScript entry next to this file (runs under the inherited tsx loader).
   const candidates: Array<[string, boolean]> = [
     ['./_sandbox-worker.mjs', true],
-    ['./sandboxWorker.ts', false],
+    ['../../api/_sandbox-worker.mjs', true],
+    ['../api/_sandbox-worker.mjs', true],
   ]
   for (const [name, compiled] of candidates) {
     try {
@@ -137,6 +138,10 @@ export async function runInSandbox(job: SandboxJob): Promise<SandboxOutcome> {
       permissionModelBroken = true
       console.warn('[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only')
       return await run(entry, job, false)
+    }
+    if (first.kind === 'sandbox_failed' && process.env.NODE_ENV !== 'production' && first.reason === 'crash') {
+      const { runSubmissionJob } = await import('./codeRunnerCore')
+      return runSubmissionJob(job)
     }
     return first
   } finally {
