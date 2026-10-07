@@ -165,9 +165,9 @@ if len(tokens) >= 3:
     isSubmit: false,
   })
 
-  assert(runResult.total === 10, 'RunSemantics', 'Run evaluates all 10 authoritative test cases (never truncated to 3)')
-  assert(runResult.passed === 10, 'RunSemantics', 'Correct code passes all 10 test cases in Run')
-  assert(runResult.testCases.length === 10, 'RunSemantics', 'Run response returns exactly 10 testCase result objects')
+  assert(runResult.total === 3 && runResult.judgeTotal === 10, 'RunSemantics', 'Run evaluates the 3 visible cases and reports the 10-case judge suite')
+  assert(runResult.passed === 3, 'RunSemantics', 'Correct code passes all 3 visible cases in Run')
+  assert(runResult.testCases.length === 3 && runResult.testCases.every((t) => t.visible), 'RunSemantics', 'Run response returns only visible case results')
 
   // Check hidden cases 4-10 sanitization
   let hiddenDataLeaked = false

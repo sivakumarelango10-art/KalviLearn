@@ -34,19 +34,20 @@ if len(data) >= 2:
     isSubmit: false, // RUN
   })
 
+  // Run executes ONLY the visible cases; it reports the full suite size separately and can never accept.
   assert(
-    runRes.total === 10,
-    'TEST 1: Run (isSubmit=false) returns total = 10 (never 3)',
-    { total: runRes.total }
+    runRes.total === 3 && runRes.judgeTotal === 10 && runRes.mode === 'run',
+    'TEST 1: Run (isSubmit=false) executes the 3 visible cases and reports judgeTotal = 10',
+    { total: runRes.total, judgeTotal: runRes.judgeTotal, mode: runRes.mode }
   )
   assert(
-    runRes.passed === 10,
-    'TEST 2: Run (isSubmit=false) perfect solution passes all 10 cases',
+    runRes.passed === 3,
+    'TEST 2: Run (isSubmit=false) perfect solution passes all 3 visible cases',
     { passed: runRes.passed }
   )
   assert(
-    runRes.testCases.length === 10,
-    'TEST 3: Run (isSubmit=false) returns results array with length = 10',
+    runRes.testCases.length === 3 && runRes.testCases.every((tc) => tc.visible),
+    'TEST 3: Run response contains only visible case results (no hidden case is executed or reported)',
     { length: runRes.testCases.length }
   )
 
@@ -79,21 +80,27 @@ elif d == "8 12":
 else:
     print(999999)
 `
+  const runHardcodedVisible = await executeQuestion({
+    questionSlug: 'sum-of-two-numbers',
+    language: 'python',
+    code: hardcodedOnlyVisible,
+    isSubmit: false, // RUN: visible only
+  })
   const runHardcoded = await executeQuestion({
     questionSlug: 'sum-of-two-numbers',
     language: 'python',
     code: hardcodedOnlyVisible,
-    isSubmit: false, // RUN
+    isSubmit: true, // SUBMIT: the full hidden suite
   })
 
   assert(
-    runHardcoded.total === 10,
-    'TEST 5: Hardcoded solution: Run total remains 10 (NEVER 3)',
-    { total: runHardcoded.total }
+    runHardcodedVisible.passed === 3 && runHardcodedVisible.total === 3 && runHardcoded.total === 10,
+    'TEST 5: Hardcoded solution passes Run (3/3 visible) but Submit still judges all 10 cases',
+    { run: `${runHardcodedVisible.passed}/${runHardcodedVisible.total}`, submitTotal: runHardcoded.total }
   )
   assert(
-    runHardcoded.passed === 3,
-    'TEST 6: Hardcoded solution: Passed count is exactly 3/10 (visible only)',
+    runHardcoded.passed === 3 && runHardcoded.success === false,
+    'TEST 6: Hardcoded solution: Submit is exactly 3/10 and NOT accepted',
     { passed: runHardcoded.passed, total: runHardcoded.total }
   )
   assert(
@@ -116,7 +123,7 @@ else:
     questionSlug: 'sum-of-two-numbers',
     language: 'python',
     code: zeroPassCode,
-    isSubmit: false,
+    isSubmit: true,
   })
 
   assert(
@@ -128,7 +135,7 @@ else:
   // --- 5. Security Sanitization Verification: Zero Hidden Data Leakage ---
   console.log('\n--- Suite 3: Security & Hidden Data Protection ---')
   let leakageFound = false
-  runRes.testCases.forEach((tc) => {
+  submitRes.testCases.forEach((tc) => {
     if (tc.testIndex >= 4) {
       if ('input' in tc && tc.input !== undefined) {
         console.error(`🚨 Leakage: Hidden Case ${tc.testIndex} exposed input!`, tc)
@@ -158,9 +165,9 @@ else:
 
   // --- 6. Deterministic Ordering ---
   console.log('\n--- Suite 4: Deterministic Ordering ---')
-  const orderCorrect = runRes.testCases.every((tc, idx) => tc.testIndex === idx + 1)
+  const orderCorrect = submitRes.testCases.every((tc, idx) => tc.testIndex === idx + 1)
   assert(
-    orderCorrect && runRes.testCases.length === 10,
+    orderCorrect && submitRes.testCases.length === 10,
     'TEST 10: Test cases are deterministically ordered 1 to 10 in execution response'
   )
 
@@ -170,7 +177,7 @@ else:
     questionSlug: 'sum-of-two-numbers',
     language: 'python',
     code: 'def broken(:\n  return',
-    isSubmit: false,
+    isSubmit: true,
   })
 
   assert(
@@ -192,7 +199,7 @@ if (input.length >= 2) {
     questionSlug: 'sum-of-two-numbers',
     language: 'javascript',
     code: jsCode,
-    isSubmit: false,
+    isSubmit: true,
   })
 
   assert(
@@ -217,7 +224,7 @@ int main() {
     questionSlug: 'sum-of-two-numbers',
     language: 'cpp',
     code: cppCode,
-    isSubmit: false,
+    isSubmit: true,
   })
 
   assert(
@@ -244,7 +251,7 @@ public class Main {
     questionSlug: 'sum-of-two-numbers',
     language: 'java',
     code: javaCode,
-    isSubmit: false,
+    isSubmit: true,
   })
 
   assert(
@@ -259,7 +266,7 @@ public class Main {
     questionSlug: 'sum-of-two-numbers',
     language: 'python',
     code: '   ',
-    isSubmit: false,
+    isSubmit: true,
   })
   assert(
     emptyRes.total === 10 && emptyRes.passed === 0 && emptyRes.status === 'COMPILATION_ERROR',
@@ -272,7 +279,7 @@ public class Main {
     questionSlug: 'sum-of-two-numbers',
     language: 'python',
     code: hugeCode,
-    isSubmit: false,
+    isSubmit: true,
   })
   assert(
     hugeRes.total === 10 && hugeRes.passed === 0 && hugeRes.error === 'Payload Too Large',
@@ -284,7 +291,7 @@ public class Main {
     questionSlug: 'non-existent-random-question',
     language: 'python',
     code: 'print(1)',
-    isSubmit: false,
+    isSubmit: true,
   })
   assert(
     notFoundRes.total === 10 && notFoundRes.status === 'SYSTEM_ERROR',
@@ -302,7 +309,7 @@ if len(parts) >= 3:
     c = int(parts[2])
     print((a + b) * c - b)
 `
-  // RUN Code for arithmetic-check
+  // RUN Code for arithmetic-check (visible cases only)
   const runArith = await executeQuestion({
     questionSlug: 'arithmetic-check',
     language: 'python',
@@ -310,8 +317,8 @@ if len(parts) >= 3:
     isSubmit: false,
   })
   assert(
-    runArith.total === 10 && runArith.passed === 10 && runArith.status === 'ACCEPTED',
-    'TEST 18: Arithmetic Check RUN (Python) passes 10/10 with status ACCEPTED',
+    runArith.total === 3 && runArith.passed === 3 && runArith.status === 'ACCEPTED' && runArith.judgeTotal === 10,
+    'TEST 18: Arithmetic Check RUN (Python) passes 3/3 visible cases',
     { passed: runArith.passed, total: runArith.total, status: runArith.status }
   )
 
@@ -330,8 +337,11 @@ if len(parts) >= 3:
 
   // RUN vs SUBMIT Result Parity
   assert(
-    runArith.passed === submitArith.passed && runArith.total === submitArith.total,
-    'TEST 20: Arithmetic Check RUN and SUBMIT produce 100% identical pass counts (10 == 10)'
+    runArith.testCases.every((rc) => {
+      const sc = submitArith.testCases.find((t) => t.testIndex === rc.testIndex)
+      return !!sc && sc.status === rc.status && sc.actualOutput === rc.actualOutput
+    }),
+    'TEST 20: Arithmetic Check RUN and SUBMIT agree exactly on the visible cases they share'
   )
 
   // Verify Safe Response on both RUN and SUBMIT (0 hidden inputs or outputs leaked)
@@ -343,7 +353,7 @@ if len(parts) >= 3:
       }
     }
   }
-  assert(!arithLeakage, 'TEST 21: Arithmetic Check RUN and SUBMIT responses leak 0 hidden inputs/outputs')
+  assert(!arithLeakage, 'TEST 21: Arithmetic Check RUN (no hidden cases) and SUBMIT responses leak 0 hidden inputs/outputs')
 
   // --- Suite 9: Multi-Language Arithmetic Check Evaluation ---
   console.log('\n--- Suite 9: Multi-Language Arithmetic Check Evaluation ---')
@@ -365,8 +375,8 @@ console.log((a + b) * c - b);
     isSubmit: true,
   })
   assert(
-    runNodeArith.passed === 10 && submitNodeArith.passed === 10,
-    'TEST 22: Arithmetic Check Node.js RUN and SUBMIT both pass 10/10'
+    runNodeArith.passed === 3 && runNodeArith.total === 3 && submitNodeArith.passed === 10,
+    'TEST 22: Arithmetic Check Node.js RUN 3/3 visible and SUBMIT 10/10'
   )
 
   const cppArithmetic = `
@@ -393,8 +403,8 @@ int main() {
     isSubmit: true,
   })
   assert(
-    runCppArith.passed === 10 && submitCppArith.passed === 10,
-    'TEST 23: Arithmetic Check C++ RUN and SUBMIT both pass 10/10'
+    runCppArith.passed === 3 && runCppArith.total === 3 && submitCppArith.passed === 10,
+    'TEST 23: Arithmetic Check C++ RUN 3/3 visible and SUBMIT 10/10'
   )
 
   const javaArithmetic = `
@@ -424,8 +434,8 @@ public class Main {
     isSubmit: true,
   })
   assert(
-    runJavaArith.passed === 10 && submitJavaArith.passed === 10,
-    'TEST 24: Arithmetic Check Java RUN and SUBMIT both pass 10/10'
+    runJavaArith.passed === 3 && runJavaArith.total === 3 && submitJavaArith.passed === 10,
+    'TEST 24: Arithmetic Check Java RUN 3/3 visible and SUBMIT 10/10'
   )
 
   // --- Suite 10: Dynamic Code State & Execution Flow ---
@@ -481,8 +491,8 @@ if len(parts) >= 3:
     isSubmit: true,
   })
   assert(
-    runWeighted.passed === 10 && submitWeighted.passed === 10,
-    'TEST 27: Weighted Triple (Basic Arithmetic) RUN & SUBMIT both pass 10/10'
+    runWeighted.passed === 3 && submitWeighted.passed === 10,
+    'TEST 27: Weighted Triple (Basic Arithmetic) RUN 3/3 visible & SUBMIT 10/10'
   )
 
   // Topic: Loops - repeated-increment-score: (a+2)*b-2
@@ -507,8 +517,8 @@ if len(parts) >= 2:
     isSubmit: true,
   })
   assert(
-    runLoop.passed === 10 && submitLoop.passed === 10,
-    'TEST 28: Repeated Increment Score (Loops) RUN & SUBMIT both pass 10/10'
+    runLoop.passed === 3 && submitLoop.passed === 10,
+    'TEST 28: Repeated Increment Score (Loops) RUN 3/3 visible & SUBMIT 10/10'
   )
 
   // Topic: Legacy Practice Belt Problem Parity (verify legacy questions continue working with their own test counts)
@@ -516,7 +526,7 @@ if len(parts) >= 2:
     questionSlug: 'belt-1-q1-arithmetic-check-v1',
     language: 'python',
     code: `import sys\nparts = sys.stdin.read().split()\nif len(parts) >= 3:\n    a, b, c = map(int, parts[:3])\n    print(a - b + c if (a-b+c) != 0 else 0)`, // check legacy question
-    isSubmit: false,
+    isSubmit: true,
   })
   assert(
     legacyProblemRes.total > 0 && Array.isArray(legacyProblemRes.testCases),

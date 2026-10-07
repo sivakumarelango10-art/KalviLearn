@@ -31,7 +31,10 @@
     "validate:coding-judge": "npx tsx scripts/validate-coding-judge-data.ts",
     "build:coding-bank": "npx tsx scripts/build-coding-bank.ts",
     "test:audit": "npx tsx scripts/test-master-audit.ts",
-    "test:all": "npm test && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
+    "test:judge": "npx tsx scripts/test-judge-pipeline.ts",
+    "test:judge-audit": "npx tsx scripts/test-judge-bank-audit.ts",
+    "test:judge-oracle": "python scripts/judge_oracle.py",
+    "test:all": "npm test && npm run test:judge-audit && npm run test:judge && npm run test:judge-oracle && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1117,7 +1117,7 @@ ${code}
   }
   return { ok: true };
 }
-function runSubmissionJob(job) {
+function runSubmissionJob(job, onCase) {
   const compCheck = checkCompilation(job.code, job.language);
   if (!compCheck.ok) return { kind: "precheck_failed", error: compCheck.error || "Compilation error" };
   const started = performance.now();
@@ -1126,7 +1126,9 @@ function runSubmissionJob(job) {
     const t0 = performance.now();
     const exhausted = t0 - started > TOTAL_EXECUTION_BUDGET_MS;
     const exec = exhausted ? { output: "", error: "Time Limit Exceeded" } : runSingleTestCase(job.code, job.language, input);
-    cases.push({ output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) });
+    const caseResult = { output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) };
+    cases.push(caseResult);
+    onCase?.(cases.length - 1, caseResult);
   }
   return { kind: "ran", cases };
 }
@@ -1136,6 +1138,8 @@ if (typeof process.send !== "function") {
   throw new Error("sandboxWorker must be started with an IPC channel");
 }
 process.once("message", (job) => {
-  const result = runSubmissionJob(job);
-  process.send(result, void 0, void 0, () => process.exit(0));
+  const result = runSubmissionJob(job, (index, caseResult) => {
+    process.send({ type: "case", index, result: caseResult });
+  });
+  process.send({ type: "done", result }, void 0, void 0, () => process.exit(0));
 });

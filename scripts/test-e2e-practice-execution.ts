@@ -110,7 +110,7 @@ if len(data) >= 2:
     code: 'print(0)',
     isSubmit: false,
   })
-  assert(res5.total === 10, 'Belt 10 Q90: Successfully evaluates 10 test cases on Belt 10')
+  assert(res5.total === 3 && res5.judgeTotal === 10, 'Belt 10 Q90: Run evaluates the visible cases of its 10-case suite')
 
   console.log('\n========================================================================')
   console.log(`🏁 E2E EXECUTION AUDIT COMPLETE: ${passedTests} PASSED, ${failedTests} FAILED`)

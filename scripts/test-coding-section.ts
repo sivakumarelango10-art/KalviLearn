@@ -195,12 +195,15 @@ async function runTests() {
   const submitResult = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'python', code: pyCode, isSubmit: true })
   const prefixRunResult = await executeQuestion({ questionSlug: 'coding-arithmetic-check', language: 'python', code: pyCode, isSubmit: false })
 
-  assert(runResult.total === 10, 'Run Code evaluates all 10 test cases')
-  assert(runResult.passed === 10, 'Run Code passes 10/10 with correct solution')
+  assert(runResult.total === 3 && runResult.judgeTotal === 10, 'Run Code evaluates the 3 visible cases (judge suite = 10)')
+  assert(runResult.passed === 3, 'Run Code passes 3/3 visible cases with correct solution')
   assert(submitResult.total === 10, 'Submit Code evaluates all 10 test cases')
   assert(submitResult.passed === 10, 'Submit Code passes 10/10 with correct solution')
-  assert(runResult.passed === submitResult.passed, 'Run Code and Submit Code produce identical results (10/10)')
-  assert(prefixRunResult.passed === 10, 'Slug with coding- prefix resolves accurately to 10/10')
+  assert(
+    runResult.testCases.every((rc) => submitResult.testCases.find((t) => t.testIndex === rc.testIndex)?.status === rc.status),
+    'Run Code and Submit Code agree on every visible case'
+  )
+  assert(prefixRunResult.passed === 3 && prefixRunResult.questionId === 'coding:arithmetic-check', 'Slug with coding- prefix resolves to the same question')
 
   let hasLeakedHidden = false
   for (const tc of [...runResult.testCases, ...submitResult.testCases]) {

@@ -188,7 +188,7 @@ async function main() {
   {
     const c = mockCall({ method: 'POST', headers: { authorization: STUDENT_TOKEN }, body: { questionSlug: SLUG, language: 'nodejs', code: GOOD_JS } })
     await executeHandler(c.req, c.res)
-    assert(c.status() === 200 && c.json().passed === 10, 'Authenticated execute succeeds (200, 10/10)', `got ${c.status()}`)
+    assert(c.status() === 200 && c.json().passed === 3 && c.json().judgeTotal === 10, 'Authenticated execute (Run) succeeds (200, 3/3 visible)', `got ${c.status()}`)
   }
   {
     const c = mockCall({ method: 'POST', headers: { authorization: STUDENT_TOKEN, origin: 'https://evil.example' }, body: { questionSlug: SLUG, language: 'nodejs', code: GOOD_JS } })

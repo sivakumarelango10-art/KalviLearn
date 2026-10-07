@@ -180,22 +180,33 @@ export interface SandboxJob {
   inputs: string[]
 }
 
+export interface SandboxCaseResult {
+  output: string
+  error?: string
+  ms: number
+}
+
 export type SandboxJobResult =
   | { kind: 'precheck_failed'; error: string }
-  | { kind: 'ran'; cases: Array<{ output: string; error?: string; ms: number }> }
+  | { kind: 'ran'; cases: SandboxCaseResult[] }
 
-/** Pre-checks the submission, then runs it against every input. Pure compute; no I/O. */
-export function runSubmissionJob(job: SandboxJob): SandboxJobResult {
+/**
+ * Pre-checks the submission, then runs it against every input in order. Pure compute; no I/O.
+ * `onCase` is invoked as soon as each case finishes (used to stream genuine per-case progress).
+ */
+export function runSubmissionJob(job: SandboxJob, onCase?: (index: number, result: SandboxCaseResult) => void): SandboxJobResult {
   const compCheck = checkCompilation(job.code, job.language)
   if (!compCheck.ok) return { kind: 'precheck_failed', error: compCheck.error || 'Compilation error' }
 
   const started = performance.now()
-  const cases: Array<{ output: string; error?: string; ms: number }> = []
+  const cases: SandboxCaseResult[] = []
   for (const input of job.inputs) {
     const t0 = performance.now()
     const exhausted = t0 - started > TOTAL_EXECUTION_BUDGET_MS
     const exec = exhausted ? { output: '', error: 'Time Limit Exceeded' } : runSingleTestCase(job.code, job.language, input)
-    cases.push({ output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) })
+    const caseResult: SandboxCaseResult = { output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) }
+    cases.push(caseResult)
+    onCase?.(cases.length - 1, caseResult)
   }
   return { kind: 'ran', cases }
 }

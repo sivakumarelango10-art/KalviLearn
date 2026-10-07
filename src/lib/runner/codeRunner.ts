@@ -2,9 +2,11 @@ import { executeInWorker, type ExecutionResult } from './workerRunner'
 import { getActiveUserId } from '../progress'
 import { supabase } from '../supabase'
 
+export type CaseStatus = 'passed' | 'failed' | 'time_limit_exceeded' | 'runtime_error'
+
 export interface TestCaseExecution {
   testIndex: number
-  status: 'passed' | 'failed' | 'time_limit_exceeded' | 'runtime_error'
+  status: CaseStatus
   passed: boolean
   isHidden: boolean
   executionTimeMs: number
@@ -19,15 +21,58 @@ export interface TestCaseExecution {
 export interface RunResult {
   passed: boolean
   passedCount: number
+  /** Number of cases this action executed (Run: visible cases, Submit: the full judge suite). */
   totalCount: number
   results: TestCaseExecution[]
   overallTimeMs: number
   compilationError?: string
+  mode?: 'run' | 'submit'
+  /** Size of the authoritative server suite (10), reported by the server. */
+  judgeTotal?: number
+  submissionId?: string
+  engine?: 'judge0' | 'local'
+  /** Server-side persistence outcome for Submit. */
+  persistence?: { saved: boolean; progressUpdated: boolean; xpEarned: number; reason?: string }
+  /** True when the server could not be reached and only an offline preview of the visible cases ran. */
+  offlinePreview?: boolean
 }
+
+/**
+ * The ONLY condition under which a problem counts as solved (completion, XP, celebration): a Submit whose
+ * server-reported suite is complete and fully passed. Passing the visible cases of a Run never qualifies.
+ */
+export function isAuthoritativeAccept(result: RunResult, isSubmit: boolean): boolean {
+  return (
+    isSubmit &&
+    !result.compilationError &&
+    !result.offlinePreview &&
+    result.mode === 'submit' &&
+    typeof result.judgeTotal === 'number' &&
+    result.judgeTotal > 0 &&
+    result.totalCount === result.judgeTotal &&
+    result.passedCount === result.judgeTotal &&
+    result.results.length === result.judgeTotal &&
+    result.results.every((r) => r.passed) &&
+    result.passed
+  )
+}
+
+/** Genuine progress events streamed by the server while a Run/Submit executes. */
+export type LiveJudgeEvent =
+  | {
+      type: 'started'
+      submissionId: string
+      mode: 'run' | 'submit'
+      total: number
+      judgeTotal: number
+      cases: Array<{ testIndex: number; hidden: boolean }>
+      engine: 'judge0' | 'local'
+    }
+  | { type: 'case'; submissionId: string; result: TestCaseExecution }
 
 interface ApiTestCasePayload {
   testIndex: number
-  status: 'passed' | 'failed' | 'time_limit_exceeded' | 'runtime_error'
+  status: CaseStatus
   visible: boolean
   executionTimeMs?: number
   input?: string
@@ -36,154 +81,198 @@ interface ApiTestCasePayload {
   error?: string
 }
 
+interface ApiResultPayload {
+  success?: boolean
+  status?: string
+  error?: string
+  message?: string
+  total?: number
+  passed?: number
+  judgeTotal?: number
+  mode?: 'run' | 'submit'
+  submissionId?: string
+  engine?: 'judge0' | 'local'
+  overallTimeMs?: number
+  testCases?: ApiTestCasePayload[]
+  persistence?: RunResult['persistence']
+}
+
 function normalizeOutput(str: string): string {
   if (!str) return ''
   return str
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map(line => line.trimEnd())
+    .map((line) => line.trimEnd())
     .join('\n')
     .trim()
 }
 
+function mapCase(tc: ApiTestCasePayload): TestCaseExecution {
+  return {
+    testIndex: tc.testIndex,
+    status: tc.status,
+    passed: tc.status === 'passed',
+    isHidden: !tc.visible,
+    executionTimeMs: tc.executionTimeMs || 0,
+    input: tc.visible ? tc.input : undefined,
+    expectedOutput: tc.visible ? tc.expectedOutput : undefined,
+    actualOutput: tc.visible ? tc.actualOutput : undefined,
+    error: tc.visible ? tc.error : undefined,
+    isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
+  }
+}
+
+function toRunResult(data: ApiResultPayload, startTime: number): RunResult {
+  const base = {
+    mode: data.mode,
+    judgeTotal: data.judgeTotal,
+    submissionId: data.submissionId,
+    engine: data.engine,
+    persistence: data.persistence,
+  }
+  const results = Array.isArray(data.testCases) ? data.testCases.map(mapCase) : []
+  if (results.length === 0 && data.status && data.status !== 'ACCEPTED' && data.status !== 'WRONG_ANSWER') {
+    return {
+      ...base,
+      passed: false,
+      passedCount: 0,
+      totalCount: data.total || 10,
+      results: [],
+      overallTimeMs: Math.round(performance.now() - startTime),
+      compilationError: data.message || data.error || 'Execution failed.',
+    }
+  }
+  const totalCount = data.total || results.length || 10
+  const passedCount = data.passed ?? results.filter((r) => r.passed).length
+  return {
+    ...base,
+    passed: !!data.success && passedCount === totalCount && results.length === totalCount,
+    passedCount,
+    totalCount,
+    results,
+    overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
+  }
+}
+
+/** Reads an application/x-ndjson body, forwarding progress events and returning the final `result` event. */
+async function readJudgeStream(
+  response: Response,
+  onEvent?: (event: LiveJudgeEvent) => void
+): Promise<ApiResultPayload | null> {
+  const reader = response.body?.getReader()
+  if (!reader) return null
+  const decoder = new TextDecoder()
+  let buffered = ''
+  let final: ApiResultPayload | null = null
+  const handleLine = (line: string) => {
+    if (!line.trim()) return
+    const event = JSON.parse(line) as Record<string, unknown> & { type?: string }
+    if (event.type === 'result') {
+      final = event as ApiResultPayload
+    } else if (event.type === 'started') {
+      onEvent?.(event as unknown as LiveJudgeEvent)
+    } else if (event.type === 'case') {
+      onEvent?.({
+        type: 'case',
+        submissionId: String(event.submissionId),
+        result: mapCase(event as unknown as ApiTestCasePayload),
+      })
+    }
+  }
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffered += decoder.decode(value, { stream: true })
+    let newline: number
+    while ((newline = buffered.indexOf('\n')) >= 0) {
+      handleLine(buffered.slice(0, newline))
+      buffered = buffered.slice(newline + 1)
+    }
+  }
+  handleLine(buffered)
+  return final
+}
+
 /**
- * Universal runner that executes student code against all 10 test cases.
- * Calls backend POST /api/execute for server-side evaluation where hidden test cases
- * are kept strictly secure and never transmitted to the frontend.
+ * Executes student code on the server judge.
+ *   Run    -> POST /api/execute : the VISIBLE cases only (never marks a problem solved)
+ *   Submit -> POST /api/submit  : the full authoritative server suite (3 visible + 7 hidden)
+ * The client sends only question id, language and source; the server owns every test case.
+ * `onEvent` receives genuine per-case progress streamed by the server as each case finishes.
  */
 export async function executeCode(
   questionSlug: string,
   language: string,
   code: string,
   clientVisibleCases?: Array<{ testIndex: number; input: string; expectedOutput: string }>,
-  isSubmit: boolean = true
+  isSubmit: boolean = true,
+  options: { onEvent?: (event: LiveJudgeEvent) => void } = {}
 ): Promise<RunResult> {
   const startTime = performance.now()
   const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
 
   let apiErrorMessage: string | null = null
 
-  // If user is online, attempt backend evaluation
   if (!isOffline) {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 15000)
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
 
     try {
       const endpoint = isSubmit ? '/api/submit' : '/api/execute'
       const activeUserId = getActiveUserId()
       const idempotencyKey = isSubmit ? `sub_${questionSlug}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}` : undefined
 
-      // Get session access token if authenticated
       let authToken: string | undefined
       try {
         const { data: sessionData } = await supabase.auth.getSession()
         authToken = sessionData?.session?.access_token
       } catch {
-        // Continue unauthenticated if session retrieval fails
+        // Continue unauthenticated if session retrieval fails (the server will answer 401)
       }
 
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/x-ndjson, application/json',
           ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
           ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
-        body: JSON.stringify({
-          questionSlug,
-          language,
-          code,
-          isSubmit,
-          userId: activeUserId,
-          idempotencyKey,
-        }),
+        body: JSON.stringify({ questionSlug, language, code, isSubmit, userId: activeUserId, idempotencyKey }),
         signal: controller.signal,
       })
 
-      // HTTP 200: Successful execution
-      if (response.status === 200) {
-        const data = await response.json()
-
-        if (Array.isArray(data.testCases)) {
-          const mappedResults: TestCaseExecution[] = data.testCases.map((tc: ApiTestCasePayload) => ({
-            testIndex: tc.testIndex,
-            status: tc.status,
-            passed: tc.status === 'passed',
-            isHidden: !tc.visible,
-            executionTimeMs: tc.executionTimeMs || 0,
-            input: tc.visible ? tc.input : undefined,
-            expectedOutput: tc.visible ? tc.expectedOutput : undefined,
-            actualOutput: tc.visible ? tc.actualOutput : undefined,
-            error: tc.visible ? tc.error : undefined,
-            isTimeLimitExceeded: tc.status === 'time_limit_exceeded',
-          }))
-
-          const authoritativeTotal = data.total || 10
-
-          return {
-            passed: data.passed === authoritativeTotal,
-            passedCount: data.passed,
-            totalCount: authoritativeTotal,
-            results: mappedResults,
-            overallTimeMs: data.overallTimeMs || Math.round(performance.now() - startTime),
-          }
-        }
-      }
-
-      // HTTP 422: Compilation or syntax error
-      if (response.status === 422) {
-        const errData = await response.json().catch(() => ({}))
+      const contentType = response.headers.get('content-type') || ''
+      if (response.status === 200 && contentType.includes('application/x-ndjson')) {
+        const final = await readJudgeStream(response, options.onEvent)
+        if (final) return toRunResult(final, startTime)
+        apiErrorMessage = 'The judge closed the connection before reporting a result. Please try again.'
+      } else if (response.status === 200) {
+        return toRunResult((await response.json()) as ApiResultPayload, startTime)
+      } else if (response.status === 422) {
+        const errData = (await response.json().catch(() => ({}))) as ApiResultPayload
         return {
           passed: false,
           passedCount: 0,
-          totalCount: 10,
+          totalCount: errData.total || 10,
           results: [],
           overallTimeMs: Math.round(performance.now() - startTime),
           compilationError: errData.message || 'Syntax or compilation error detected in your solution.',
         }
-      }
-
-      // HTTP 400: Bad request
-      if (response.status === 400) {
-        const errData = await response.json().catch(() => ({}))
-        apiErrorMessage = errData.message || 'Invalid code execution parameters provided.'
-      }
-
-      // HTTP 404: Question not found
-      else if (response.status === 404) {
-        const errData = await response.json().catch(() => ({}))
-        apiErrorMessage = errData.message || `Problem "${questionSlug}" was not found on the execution server.`
-      }
-
-      // HTTP 405: Method not allowed
-      else if (response.status === 405) {
-        apiErrorMessage = 'Invalid HTTP method. Only POST submissions are permitted.'
-      }
-
-      // HTTP 429: Rate limit
-      else if (response.status === 429) {
-        apiErrorMessage = 'Rate limit reached. Please wait a few seconds before submitting again.'
-      }
-
-      // HTTP 502, 503, 504: Gateway or Service Unavailable
-      else if (response.status === 502 || response.status === 503 || response.status === 504) {
-        apiErrorMessage = 'The code execution service is temporarily unavailable. Please try again in a moment.'
-      }
-
-      // HTTP 500: Server Error
-      else if (response.status >= 500) {
-        const errData = await response.json().catch(() => ({}))
-        apiErrorMessage = errData.message || 'Server encountered an unexpected error while executing your code.'
       } else {
-        apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
+        const errData = (await response.json().catch(() => ({}))) as ApiResultPayload
+        if (response.status === 401) apiErrorMessage = 'Your session has expired. Please sign in again to run code.'
+        else if (response.status === 429) apiErrorMessage = errData.message || 'Rate limit reached. Please wait a few seconds before trying again.'
+        else if (response.status === 400) apiErrorMessage = errData.message || 'Invalid code execution parameters provided.'
+        else if (response.status === 404) apiErrorMessage = errData.message || `Problem "${questionSlug}" was not found on the execution server.`
+        else if (response.status >= 500) apiErrorMessage = errData.message || 'The code execution service is temporarily unavailable. Please try again in a moment.'
+        else apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
       }
     } catch (err: unknown) {
       const isAbort = err instanceof Error && err.name === 'AbortError'
-      if (isAbort) {
-        apiErrorMessage = 'Execution request timed out (15-second limit exceeded). Please optimize your solution or try again.'
-      } else {
-        apiErrorMessage = 'Unable to connect to the execution server. Please check your network connection.'
-      }
+      apiErrorMessage = isAbort
+        ? 'Execution request timed out. Please try again.'
+        : 'Unable to connect to the execution server. Please check your network connection.'
     } finally {
       clearTimeout(timeoutId)
     }
@@ -191,19 +280,16 @@ export async function executeCode(
     apiErrorMessage = 'You are currently working offline. Please reconnect to the internet to submit code.'
   }
 
-  // If Run Code (not submit) and API was unavailable, fall back to client worker for immediate feedback on visible cases
-  if (!isSubmit && clientVisibleCases && clientVisibleCases.length > 0) {
+  // Run only, server unreachable: an OFFLINE PREVIEW of the visible cases in the browser worker. Hidden cases are
+  // NOT reported at all (the judge never ran them) - they are never fabricated as "failed".
+  if (!isSubmit && clientVisibleCases && clientVisibleCases.length > 0 && isOffline) {
     const results: TestCaseExecution[] = []
     let passedCount = 0
-
     for (let i = 0; i < clientVisibleCases.length; i++) {
       const tc = clientVisibleCases[i]
       const execResult: ExecutionResult = await executeInWorker(code, language, tc.input, 3000)
-      const normActual = normalizeOutput(execResult.output)
-      const normExpected = normalizeOutput(tc.expectedOutput)
-      const passed = !execResult.error && normActual === normExpected
+      const passed = !execResult.error && normalizeOutput(execResult.output) === normalizeOutput(tc.expectedOutput)
       if (passed) passedCount++
-
       results.push({
         testIndex: tc.testIndex || i + 1,
         status: passed ? 'passed' : 'failed',
@@ -217,33 +303,21 @@ export async function executeCode(
         isTimeLimitExceeded: !!execResult.isTimeLimitExceeded,
       })
     }
-
-    // Append placeholders for unexecuted hidden cases 4-10 (cannot be evaluated locally)
-    for (let hIdx = 4; hIdx <= 10; hIdx++) {
-      results.push({
-        testIndex: hIdx,
-        status: 'failed',
-        passed: false,
-        isHidden: true,
-        executionTimeMs: 0,
-        error: 'Hidden test case requires server connection to evaluate',
-      })
-    }
-
     return {
-      passed: false, // Cannot be fully passed without server evaluation of hidden cases
+      passed: false, // an offline preview can never count as a pass
       passedCount,
-      totalCount: 10,
+      totalCount: clientVisibleCases.length,
       results,
       overallTimeMs: Math.round(performance.now() - startTime),
+      mode: 'run',
+      offlinePreview: true,
     }
   }
 
-  // If Submit Code failed or Run Code with no visible cases, return meaningful user-facing error
   return {
     passed: false,
     passedCount: 0,
-    totalCount: 10,
+    totalCount: isSubmit ? 10 : clientVisibleCases?.length || 3,
     results: [],
     overallTimeMs: Math.round(performance.now() - startTime),
     compilationError: apiErrorMessage || 'Code execution service is currently unavailable. Please try again.',
@@ -258,5 +332,3 @@ export const runTestCases = (
 ) => {
   return executeCode('', language, code, testCases)
 }
-
-

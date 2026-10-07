@@ -2253,8 +2253,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -2509,8 +2509,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -2765,8 +2765,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -2874,8 +2874,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -3258,8 +3258,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -3593,8 +3593,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -3849,8 +3849,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -4105,8 +4105,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -4214,8 +4214,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -4598,8 +4598,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -4854,8 +4854,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -5110,8 +5110,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -5219,8 +5219,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -5603,8 +5603,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -5938,8 +5938,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -6194,8 +6194,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -6450,8 +6450,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -6559,8 +6559,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -6943,8 +6943,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -7199,8 +7199,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -7455,8 +7455,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -7564,8 +7564,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -7948,8 +7948,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -8204,8 +8204,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -8618,8 +8618,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -8874,8 +8874,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -9130,8 +9130,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -9239,8 +9239,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -9623,8 +9623,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -9879,8 +9879,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -10135,8 +10135,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -10244,8 +10244,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -10628,8 +10628,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -10884,8 +10884,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -13978,8 +13978,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -14234,8 +14234,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -14490,8 +14490,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -14599,8 +14599,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -14983,8 +14983,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -31063,8 +31063,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -31319,8 +31319,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -31575,8 +31575,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -31684,8 +31684,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -32068,8 +32068,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -32324,8 +32324,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
@@ -32580,8 +32580,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 3,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "1 2",
+        "input": "1 2\n-1000000000\n-1000000000 1000000000",
+        "expectedOutput": "-1000000000 -1000000000 1000000000",
         "isHidden": false
       },
       {
@@ -32689,8 +32689,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 10,
-        "input": "0 0\n",
-        "expectedOutput": "0",
+        "input": "1 1000000000\n1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
@@ -33073,8 +33073,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 7,
-        "input": "0\n",
-        "expectedOutput": "",
+        "input": "5\n-1000000000 1000000000 0 -5 999999999",
+        "expectedOutput": "999999999 -5 0 1000000000 -1000000000",
         "isHidden": true
       },
       {
@@ -33329,8 +33329,8 @@ export const serverTestCases = {
       },
       {
         "testIndex": 5,
-        "input": "0\n",
-        "expectedOutput": "0",
+        "input": "1\n-1000000000",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {

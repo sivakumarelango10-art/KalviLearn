@@ -1,7 +1,7 @@
 import { fork } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import type { SandboxJob, SandboxJobResult } from './codeRunnerCore'
+import type { SandboxCaseResult, SandboxJob, SandboxJobResult } from './codeRunnerCore'
 
 /**
  * Runs submitted code in a short-lived CHILD PROCESS (not in the API process):
@@ -21,7 +21,15 @@ import type { SandboxJob, SandboxJobResult } from './codeRunnerCore'
  */
 export type SandboxOutcome =
   | SandboxJobResult
-  | { kind: 'sandbox_failed'; reason: 'memory' | 'timeout' | 'crash' | 'unavailable'; message: string }
+  | {
+      kind: 'sandbox_failed'
+      reason: 'memory' | 'timeout' | 'crash' | 'unavailable'
+      message: string
+      /** Cases that completed before the child was killed (genuine results; the rest failed with `message`). */
+      completed?: SandboxCaseResult[]
+    }
+
+export type CaseListener = (index: number, result: SandboxCaseResult) => void
 
 const HARD_TIMEOUT_MS = 10_000
 const MAX_CONCURRENT = 4
@@ -47,22 +55,32 @@ function release(): void {
   if (next) next()
 }
 
-function resolveEntry(): { file: string; compiled: boolean } | null {
-  // Production bundle: api/execute.js and api/submit.js sit next to api/_sandbox-worker.mjs.
-  // Dev / tests (tsx): the TypeScript entry next to this file (runs under the inherited tsx loader).
-  const candidates: Array<[string, boolean]> = [
-    ['./_sandbox-worker.mjs', true],
-    ['../../api/_sandbox-worker.mjs', true],
-    ['../api/_sandbox-worker.mjs', true],
-  ]
-  for (const [name, compiled] of candidates) {
-    try {
-      const file = fileURLToPath(new URL(name, import.meta.url))
-      if (existsSync(file)) return { file, compiled }
-    } catch {
-      // try next candidate
-    }
+function exists(name: string): string | null {
+  try {
+    const file = fileURLToPath(new URL(name, import.meta.url))
+    return existsSync(file) ? file : null
+  } catch {
+    return null
   }
+}
+
+/**
+ * Which child entry to fork. The goal is that NO environment ever executes a stale compiled copy of the runners:
+ *   1. KALVI_SANDBOX_ENTRY - set by the Vite dev server, which (re)builds the worker from source on start/changes.
+ *   2. production          - the bundle produced by `npm run build` next to api/execute.js / api/submit.js.
+ *   3. tsx (tests/scripts) - the TypeScript source itself, run under the inherited tsx loader.
+ */
+function resolveEntry(): { file: string; compiled: boolean } | null {
+  const fromDevServer = process.env.KALVI_SANDBOX_ENTRY
+  if (fromDevServer && existsSync(fromDevServer)) return { file: fromDevServer, compiled: true }
+
+  const sibling = exists('./_sandbox-worker.mjs')
+  if (sibling) return { file: sibling, compiled: true }
+
+  const underTsx = process.execArgv.some((arg) => arg.includes('tsx'))
+  const source = exists('./sandboxWorker.ts')
+  if (underTsx && source) return { file: source, compiled: false }
+
   return null
 }
 
@@ -73,7 +91,12 @@ function permissionFlag(): string | null {
   return null
 }
 
-function run(entry: { file: string; compiled: boolean }, job: SandboxJob, usePermission: boolean): Promise<SandboxOutcome & { bootFailed?: boolean }> {
+function run(
+  entry: { file: string; compiled: boolean },
+  job: SandboxJob,
+  usePermission: boolean,
+  onCase?: CaseListener
+): Promise<SandboxOutcome & { bootFailed?: boolean }> {
   return new Promise((resolve) => {
     const execArgv: string[] = entry.compiled ? [] : [...process.execArgv]
     execArgv.push(`--max-old-space-size=${HEAP_MB}`, '--disallow-code-generation-from-strings')
@@ -88,6 +111,7 @@ function run(entry: { file: string; compiled: boolean }, job: SandboxJob, usePer
     })
     let settled = false
     let gotResult = false
+    const completed: SandboxCaseResult[] = []
     const finish = (outcome: SandboxOutcome & { bootFailed?: boolean }) => {
       if (settled) return
       settled = true
@@ -95,31 +119,37 @@ function run(entry: { file: string; compiled: boolean }, job: SandboxJob, usePer
       if (child.exitCode === null && !child.killed) child.kill('SIGKILL')
       resolve(outcome)
     }
-    const timer = setTimeout(
-      () => finish({ kind: 'sandbox_failed', reason: 'timeout', message: 'Time Limit Exceeded' }),
-      HARD_TIMEOUT_MS
-    )
-    child.once('message', (result: SandboxJobResult) => {
-      gotResult = true
-      finish(result)
+    const failed = (reason: 'memory' | 'timeout' | 'crash', message: string, bootFailed?: boolean) =>
+      finish({ kind: 'sandbox_failed', reason, message, completed: [...completed], bootFailed })
+    const timer = setTimeout(() => failed('timeout', 'Time Limit Exceeded'), HARD_TIMEOUT_MS)
+
+    child.on('message', (msg: { type?: string; index?: number; result?: unknown }) => {
+      if (msg?.type === 'case' && typeof msg.index === 'number' && msg.result) {
+        const caseResult = msg.result as SandboxCaseResult
+        completed[msg.index] = caseResult
+        onCase?.(msg.index, caseResult)
+        return
+      }
+      if (msg?.type === 'done' && msg.result) {
+        gotResult = true
+        finish(msg.result as SandboxJobResult)
+      }
     })
-    child.once('error', () =>
-      finish({ kind: 'sandbox_failed', reason: 'crash', message: 'Runtime Error: the program terminated abnormally', bootFailed: true })
-    )
+    child.once('error', () => failed('crash', 'Runtime Error: the program terminated abnormally', true))
     child.once('exit', (code, signal) => {
       if (gotResult) return
       // 134 / SIGABRT = V8 fatal "heap out of memory" (child only); SIGKILL from the OS OOM-killer is treated alike.
       if (code === 134 || signal === 'SIGABRT' || signal === 'SIGKILL') {
-        finish({ kind: 'sandbox_failed', reason: 'memory', message: 'Memory Limit Exceeded' })
+        failed('memory', 'Memory Limit Exceeded')
       } else {
-        finish({ kind: 'sandbox_failed', reason: 'crash', message: 'Runtime Error: the program terminated abnormally', bootFailed: !!flag })
+        failed('crash', 'Runtime Error: the program terminated abnormally', !!flag && completed.length === 0)
       }
     })
     child.send(job)
   })
 }
 
-export async function runInSandbox(job: SandboxJob): Promise<SandboxOutcome> {
+export async function runInSandbox(job: SandboxJob, onCase?: CaseListener): Promise<SandboxOutcome> {
   const entry = resolveEntry()
   if (!entry) {
     // Fail CLOSED in production unless explicitly overridden: never silently run student code in the API process.
@@ -127,21 +157,18 @@ export async function runInSandbox(job: SandboxJob): Promise<SandboxOutcome> {
       console.error('[sandbox] child entry not found; refusing to execute submitted code in-process')
       return { kind: 'sandbox_failed', reason: 'unavailable', message: 'Code execution is temporarily unavailable.' }
     }
+    console.warn('[sandbox] no child entry available outside production; executing in-process (development only)')
     const { runSubmissionJob } = await import('./codeRunnerCore')
-    return runSubmissionJob(job)
+    return runSubmissionJob(job, onCase)
   }
   await acquire()
   try {
-    const first = await run(entry, job, !permissionModelBroken)
+    const first = await run(entry, job, !permissionModelBroken, onCase)
     if (first.kind === 'sandbox_failed' && first.bootFailed && !permissionModelBroken && permissionFlag() && entry.compiled) {
       // The child died before replying while the permission flag was active: retry once without it and remember.
       permissionModelBroken = true
       console.warn('[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only')
-      return await run(entry, job, false)
-    }
-    if (first.kind === 'sandbox_failed' && process.env.NODE_ENV !== 'production' && first.reason === 'crash') {
-      const { runSubmissionJob } = await import('./codeRunnerCore')
-      return runSubmissionJob(job)
+      return await run(entry, job, false, onCase)
     }
     return first
   } finally {

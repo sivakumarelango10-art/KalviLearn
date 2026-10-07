@@ -93401,7 +93401,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 474 — Graph Max Label — Degree Zero #4
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree zero** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree zero** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -93634,7 +93634,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 475 — Graph Min Label — Degree Zero #5
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree zero** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree zero** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -94566,7 +94566,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 479 — Graph Parity Score — Degree Zero #9
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree zero** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree zero** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -94799,7 +94799,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 480 — Graph Weighted Count — Degree Zero #10
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree zero** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree zero** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -95731,7 +95731,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 484 — Graph Max Label — Degree One #14
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree one** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree one** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -95964,7 +95964,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 485 — Graph Min Label — Degree One #15
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree one** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree one** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -96896,7 +96896,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 489 — Graph Parity Score — Degree One #19
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree one** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree one** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -97129,7 +97129,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 490 — Graph Weighted Count — Degree One #20
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree one** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree one** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -98061,7 +98061,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 494 — Graph Max Label — Degree Two #24
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree two** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree two** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -98294,7 +98294,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 495 — Graph Min Label — Degree Two #25
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree two** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree two** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -99226,7 +99226,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 499 — Graph Parity Score — Degree Two #29
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree two** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree two** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -99459,7 +99459,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 500 — Graph Weighted Count — Degree Two #30
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree two** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree two** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -100391,7 +100391,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 504 — Graph Max Label — Degree At Least Two #34
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at least two** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at least two** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -100624,7 +100624,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 505 — Graph Min Label — Degree At Least Two #35
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at least two** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at least two** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -101556,7 +101556,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 509 — Graph Parity Score — Degree At Least Two #39
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at least two** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at least two** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -101789,7 +101789,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 510 — Graph Weighted Count — Degree At Least Two #40
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at least two** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at least two** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -102721,7 +102721,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 514 — Graph Max Label — Even Degree #44
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **even degree** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **even degree** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -102954,7 +102954,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 515 — Graph Min Label — Even Degree #45
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **even degree** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **even degree** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -103886,7 +103886,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 519 — Graph Parity Score — Even Degree #49
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **even degree** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **even degree** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -104119,7 +104119,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 520 — Graph Weighted Count — Even Degree #50
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **even degree** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **even degree** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -105051,7 +105051,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 524 — Graph Max Label — Odd Degree #54
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **odd degree** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **odd degree** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -105284,7 +105284,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 525 — Graph Min Label — Odd Degree #55
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **odd degree** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **odd degree** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -106216,7 +106216,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 529 — Graph Parity Score — Odd Degree #59
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **odd degree** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **odd degree** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -106449,7 +106449,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 530 — Graph Weighted Count — Odd Degree #60
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **odd degree** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **odd degree** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -107381,7 +107381,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 534 — Graph Max Label — Degree At Most Two #64
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at most two** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at most two** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -107614,7 +107614,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 535 — Graph Min Label — Degree At Most Two #65
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at most two** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at most two** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -108546,7 +108546,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 539 — Graph Parity Score — Degree At Most Two #69
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at most two** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at most two** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -108779,7 +108779,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 540 — Graph Weighted Count — Degree At Most Two #70
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree at most two** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree at most two** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -109711,7 +109711,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 544 — Graph Max Label — Degree Divisible By Three #74
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree divisible by three** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree divisible by three** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -109944,7 +109944,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 545 — Graph Min Label — Degree Divisible By Three #75
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree divisible by three** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree divisible by three** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -110876,7 +110876,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 549 — Graph Parity Score — Degree Divisible By Three #79
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree divisible by three** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree divisible by three** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -111109,7 +111109,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 550 — Graph Weighted Count — Degree Divisible By Three #80
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree divisible by three** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree divisible by three** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -112041,7 +112041,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 554 — Graph Max Label — Non-Zero Degree #84
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **non-zero degree** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **non-zero degree** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -112274,7 +112274,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 555 — Graph Min Label — Non-Zero Degree #85
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **non-zero degree** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **non-zero degree** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -113206,7 +113206,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 559 — Graph Parity Score — Non-Zero Degree #89
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **non-zero degree** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **non-zero degree** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -113439,7 +113439,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 560 — Graph Weighted Count — Non-Zero Degree #90
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **non-zero degree** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **non-zero degree** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -114371,7 +114371,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 564 — Graph Max Label — Degree Not One #94
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree not one** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree not one** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -114604,7 +114604,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 565 — Graph Min Label — Degree Not One #95
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree not one** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree not one** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -115536,7 +115536,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 569 — Graph Parity Score — Degree Not One #99
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree not one** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree not one** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -115769,7 +115769,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 570 — Graph Weighted Count — Degree Not One #100
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **degree not one** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **degree not one** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -116701,7 +116701,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 574 — Graph Max Label — Label Even #104
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label even** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label even** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -116934,7 +116934,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 575 — Graph Min Label — Label Even #105
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label even** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label even** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -117866,7 +117866,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 579 — Graph Parity Score — Label Even #109
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label even** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **label even** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -118099,7 +118099,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 580 — Graph Weighted Count — Label Even #110
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label even** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **label even** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -119031,7 +119031,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 584 — Graph Max Label — Label Odd #114
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label odd** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label odd** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -119264,7 +119264,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 585 — Graph Min Label — Label Odd #115
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label odd** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label odd** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -120196,7 +120196,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 589 — Graph Parity Score — Label Odd #119
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label odd** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **label odd** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -120429,7 +120429,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 590 — Graph Weighted Count — Label Odd #120
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label odd** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **label odd** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -121361,7 +121361,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 594 — Graph Max Label — Label Divisible By Three #124
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label divisible by three** and compute **max label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label divisible by three** and compute **max label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -121594,7 +121594,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 595 — Graph Min Label — Label Divisible By Three #125
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label divisible by three** and compute **min label** over the selected vertices.
+In an undirected graph, select vertices satisfying **label divisible by three** and compute **min label** over the selected vertices. If no vertex is selected, print -1.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -122526,7 +122526,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 599 — Graph Parity Score — Label Divisible By Three #129
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label divisible by three** and compute **parity score** over the selected vertices.
+In an undirected graph, select vertices satisfying **label divisible by three** and compute **parity score** over the selected vertices. The parity score is (number of selected vertices with an even label) minus (number of selected vertices with an odd label).
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.
@@ -122759,7 +122759,7 @@ HIDDEN_TEST_CASES_END -->
 ## Question 600 — Graph Weighted Count — Label Divisible By Three #130
 
 ### Problem Statement
-In an undirected graph, select vertices satisfying **label divisible by three** and compute **weighted count** over the selected vertices.
+In an undirected graph, select vertices satisfying **label divisible by three** and compute **weighted count** over the selected vertices. The weighted count is the sum of (degree + 1) over the selected vertices.
 
 ### Input Format
 The first line contains `n m`; each of the next m lines contains an undirected edge `u v`.

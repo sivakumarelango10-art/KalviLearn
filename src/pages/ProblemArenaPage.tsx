@@ -22,7 +22,7 @@ import {
   normalizeLanguageSlug,
   ProgrammingLanguage,
 } from '@/data/curriculum/index'
-import { executeCode, TestCaseExecution } from '@/lib/runner/codeRunner'
+import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult } from '@/lib/runner/codeRunner'
 import {
   getUserState,
   recordProblemSuccess,
@@ -103,8 +103,18 @@ export const ProblemArenaPage: React.FC = () => {
   const [code, setCode] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [testResults, setTestResults] = useState<TestCaseExecution[] | null>(null)
-  const [executionSummary, setExecutionSummary] = useState<{ passed: number; total: number; isSubmit: boolean } | null>(null)
+  // Results keyed by testIndex (filled live from the judge stream; never by array position).
+  const [testResults, setTestResults] = useState<Record<number, TestCaseExecution> | null>(null)
+  // Cases included in the current/last execution (Run: visible only, Submit: all) and live phase.
+  const [runScope, setRunScope] = useState<{ mode: 'run' | 'submit'; caseIndexes: number[]; judgeTotal: number } | null>(null)
+  const [judgePhase, setJudgePhase] = useState<'idle' | 'connecting' | 'judging'>('idle')
+  const [executionSummary, setExecutionSummary] = useState<{
+    passed: number
+    total: number
+    isSubmit: boolean
+    accepted: boolean
+    offlinePreview?: boolean
+  } | null>(null)
   const [compilationError, setCompilationError] = useState<string | null>(null)
   const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
   const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
@@ -120,6 +130,8 @@ export const ProblemArenaPage: React.FC = () => {
   const executingRef = useRef(false)
   // Bumped whenever the problem/language changes so late responses for a previous context are not rendered.
   const contextVersionRef = useRef(0)
+  // Server-issued id of the evaluation currently being displayed; events for any other evaluation are ignored.
+  const activeSubmissionIdRef = useRef<string | null>(null)
 
   // Clean up anti-cheat warning timer on unmount
   useEffect(() => {
@@ -142,6 +154,9 @@ export const ProblemArenaPage: React.FC = () => {
     }
 
     setTestResults(null)
+    setRunScope(null)
+    setJudgePhase('idle')
+    activeSubmissionIdRef.current = null
     setExecutionSummary(null)
     setCompilationError(null)
     setShowSuccessModal(false)
@@ -217,6 +232,18 @@ export const ProblemArenaPage: React.FC = () => {
 
     setSubmissionFailed(null)
     setCompilationError(null)
+    setExecutionSummary(null)
+    setTestResults({})
+    activeSubmissionIdRef.current = null
+    setJudgePhase('connecting')
+    // Immediate, honest scope: Run executes the visible cases, Submit the full suite. Nothing is marked
+    // passed/failed until the server reports that specific case.
+    const allIndexes = (currentProblem.testCases || []).map((tc, idx) => tc.testIndex || idx + 1)
+    setRunScope({
+      mode: isSubmit ? 'submit' : 'run',
+      caseIndexes: isSubmit ? allIndexes : allIndexes.filter((i) => i <= visibleCount),
+      judgeTotal: authoritativeTotalCount,
+    })
 
     // Read current code directly from Monaco editor ref if mounted, avoiding any stale React state
     const currentCode = editorRef.current?.getValue() ?? code
@@ -227,20 +254,31 @@ export const ProblemArenaPage: React.FC = () => {
       expectedOutput: tc.expectedOutput || '',
     }))
 
+    const isCurrent = () => contextVersionRef.current === contextVersion
+
     try {
-      const result = await executeCode(
-        currentProblem.slug,
-        curriculum.runnerLanguage,
-        currentCode,
-        visibleCases,
-        isSubmit
-      )
+      const result: RunResult = await executeCode(currentProblem.slug, curriculum.runnerLanguage, currentCode, visibleCases, isSubmit, {
+        onEvent: (event) => {
+          if (!isCurrent()) return
+          if (event.type === 'started') {
+            activeSubmissionIdRef.current = event.submissionId
+            setJudgePhase('judging')
+            setRunScope({ mode: event.mode, caseIndexes: event.cases.map((c) => c.testIndex), judgeTotal: event.judgeTotal })
+            return
+          }
+          if (event.submissionId !== activeSubmissionIdRef.current) return // stale evaluation
+          setTestResults((prev) => ({ ...(prev || {}), [event.result.testIndex]: event.result }))
+        },
+      })
+
+      // Authoritative acceptance: a Submit whose server-reported suite is complete and fully passed.
+      const accepted = isAuthoritativeAccept(result, isSubmit)
 
       // The student navigated / switched language while the request was in flight: the server has already
       // persisted the outcome; do not paint it over a different problem's editor.
-      if (contextVersionRef.current !== contextVersion) {
+      if (!isCurrent()) {
         if (isSubmit && !result.compilationError) {
-          if (result.passed && result.passedCount === authoritativeTotalCount) {
+          if (accepted) {
             recordProblemSuccess(executedProblem.slug, executedProblem.title, executedLanguage, currentCode, result.overallTimeMs)
           } else {
             recordProblemAttempt(
@@ -249,7 +287,7 @@ export const ProblemArenaPage: React.FC = () => {
               executedLanguage,
               currentCode,
               result.passedCount,
-              authoritativeTotalCount,
+              result.totalCount,
               result.overallTimeMs
             )
           }
@@ -260,30 +298,29 @@ export const ProblemArenaPage: React.FC = () => {
       if (result.compilationError) {
         setCompilationError(result.compilationError)
         setTestResults(null)
-        setExecutionSummary({ passed: 0, total: authoritativeTotalCount, isSubmit })
-        setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
+        setExecutionSummary({ passed: 0, total: result.totalCount, isSubmit, accepted: false })
+        setSubmissionFailed(isSubmit ? { passed: 0, total: result.totalCount } : null)
         return
       }
 
-      setTestResults(result.results)
+      // Final, authoritative per-case results (also covers environments that buffer the stream).
+      const byIndex: Record<number, TestCaseExecution> = {}
+      for (const r of result.results) byIndex[r.testIndex] = r
+      setTestResults(byIndex)
+      if (result.submissionId) activeSubmissionIdRef.current = result.submissionId
       setExecutionSummary({
         passed: result.passedCount,
-        total: result.totalCount || authoritativeTotalCount,
+        total: result.totalCount,
         isSubmit,
+        accepted,
+        offlinePreview: result.offlinePreview,
       })
 
       if (isSubmit) {
-        if (result.passed && result.passedCount === authoritativeTotalCount) {
+        if (accepted) {
           const totalTime = result.results.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || result.overallTimeMs || 0
-          recordProblemSuccess(
-            currentProblem.slug,
-            currentProblem.title,
-            currentLanguage,
-            currentCode,
-            totalTime
-          )
+          recordProblemSuccess(currentProblem.slug, currentProblem.title, currentLanguage, currentCode, totalTime)
 
-          // Refresh recent submissions
           const state = getUserState()
           setRecentSubmissions(
             state.submissions.filter(
@@ -293,31 +330,21 @@ export const ProblemArenaPage: React.FC = () => {
             )
           )
 
-          // All 10 passed! Fire celebratory confetti and display completion modal
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-          })
+          // All judge tests passed (server-confirmed): celebrate.
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } })
           setShowSuccessModal(true)
         } else {
-          // Record attempt
           recordProblemAttempt(
             currentProblem.slug,
             currentProblem.title,
             currentLanguage,
             currentCode,
             result.passedCount,
-            authoritativeTotalCount,
+            result.totalCount,
             result.overallTimeMs
           )
+          setSubmissionFailed({ passed: result.passedCount, total: result.totalCount })
 
-          setSubmissionFailed({
-            passed: result.passedCount,
-            total: authoritativeTotalCount,
-          })
-
-          // Refresh recent submissions
           const state = getUserState()
           setRecentSubmissions(
             state.submissions.filter(
@@ -329,13 +356,15 @@ export const ProblemArenaPage: React.FC = () => {
         }
       }
     } catch (err: unknown) {
+      if (!isCurrent()) return
       const errMsg = err instanceof Error ? err.message : 'An unexpected execution error occurred.'
       setCompilationError(errMsg)
       setTestResults(null)
-      setExecutionSummary({ passed: 0, total: authoritativeTotalCount, isSubmit })
+      setExecutionSummary({ passed: 0, total: isSubmit ? authoritativeTotalCount : visibleCount, isSubmit, accepted: false })
       setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
     } finally {
       executingRef.current = false
+      if (isCurrent()) setJudgePhase('idle')
       setIsRunning(false)
       setIsSubmitting(false)
     }
@@ -347,6 +376,7 @@ export const ProblemArenaPage: React.FC = () => {
   const performReset = () => {
     setCode(currentProblem.starterCode || '')
     setTestResults(null)
+    setRunScope(null)
     setExecutionSummary(null)
     setCompilationError(null)
     setSubmissionFailed(null)
@@ -742,13 +772,17 @@ export const ProblemArenaPage: React.FC = () => {
                 </span>
                 {Array.from({ length: authoritativeTotalCount }, (_, i) => i + 1).map((caseNum) => {
                   const isVisible = caseNum <= visibleCount
-                  const tcResult = testResults ? testResults[caseNum - 1] : null
-                  const isPassed = tcResult ? tcResult.passed : null
+                  const tcResult = testResults?.[caseNum] ?? null
+                  const inScope = runScope?.caseIndexes.includes(caseNum) ?? false
+                  const executing = isRunning || isSubmitting
+                  const pending = executing && inScope && !tcResult
+                  const notRun = !!runScope && !inScope && !executing
 
                   return (
                     <button
                       key={caseNum}
                       onClick={() => setActiveCaseTab(caseNum)}
+                      title={notRun ? 'Not run - Run evaluates only the visible cases. Submit runs all cases.' : undefined}
                       className={cn(
                         'px-2 py-1 rounded text-xs font-medium flex items-center gap-1 transition-all duration-200 interactive-tab flex-shrink-0',
                         activeCaseTab === caseNum
@@ -758,12 +792,18 @@ export const ProblemArenaPage: React.FC = () => {
                           : 'text-neutral-500 hover:text-neutral-300 hover:bg-neutral-900/60'
                       )}
                     >
-                      {isRunning || isSubmitting ? (
-                        <span className="text-amber-400 text-[10px] animate-pulse">⏳</span>
-                      ) : isPassed === true ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
-                      ) : isPassed === false ? (
-                        <XCircle className="w-3.5 h-3.5 text-red-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                      {tcResult ? (
+                        tcResult.passed ? (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                        ) : tcResult.isTimeLimitExceeded ? (
+                          <XCircle className="w-3.5 h-3.5 text-amber-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                        ) : (
+                          <XCircle className="w-3.5 h-3.5 text-red-400 animate-in zoom-in-75 duration-200 flex-shrink-0" />
+                        )
+                      ) : pending ? (
+                        <span className="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin flex-shrink-0" aria-label="pending" />
+                      ) : notRun ? (
+                        <span className="w-2 h-2 rounded-full bg-neutral-700 flex-shrink-0" aria-label="not run" />
                       ) : null}
                       <span>Case {caseNum}</span>
                       {!isVisible && (
@@ -774,24 +814,42 @@ export const ProblemArenaPage: React.FC = () => {
                 })}
               </div>
 
-              {/* Status Header */}
+              {/* Status Header: live, authoritative counts */}
               <div className="text-[11px] font-mono flex items-center gap-2 pl-3 flex-shrink-0">
                 {isRunning || isSubmitting ? (
                   <span className="text-amber-400 flex items-center gap-1.5">
-                    <span className="animate-spin text-xs">⏳</span> Evaluating {authoritativeTotalCount} Test Cases...
+                    <span className="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+                    {judgePhase === 'connecting'
+                      ? isSubmitting
+                        ? 'Submitting…'
+                        : 'Running…'
+                      : `${isSubmitting ? 'Judging' : 'Running'} · Passed ${
+                          Object.values(testResults || {}).filter((r) => r.passed).length
+                        } / ${runScope?.caseIndexes.length ?? (isSubmitting ? authoritativeTotalCount : visibleCount)}`}
                   </span>
                 ) : compilationError ? (
-                  <span className="text-red-400 font-semibold">Passed 0 / {authoritativeTotalCount}</span>
+                  <span className="text-red-400 font-semibold">
+                    Passed 0 / {executionSummary?.total ?? authoritativeTotalCount}
+                  </span>
                 ) : executionSummary ? (
                   <span
                     className={cn(
                       'font-semibold',
-                      executionSummary.passed === executionSummary.total
+                      executionSummary.accepted
                         ? 'text-emerald-400'
+                        : executionSummary.passed === executionSummary.total
+                        ? 'text-emerald-400/80'
                         : 'text-amber-400'
                     )}
                   >
                     Passed {executionSummary.passed} / {executionSummary.total}
+                    {executionSummary.isSubmit
+                      ? executionSummary.accepted
+                        ? ' · Accepted'
+                        : ''
+                      : executionSummary.offlinePreview
+                      ? ' visible · offline preview'
+                      : ' visible · Submit to run all ' + authoritativeTotalCount}
                   </span>
                 ) : (
                   <span className="text-neutral-500">Passed 0 / {authoritativeTotalCount}</span>
@@ -802,15 +860,13 @@ export const ProblemArenaPage: React.FC = () => {
             {/* Active Test Case Details */}
             <div key={activeCaseTab} className="flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3 animate-page-enter">
               {(() => {
-                if (isRunning || isSubmitting) {
+                const activeResult = testResults?.[activeCaseTab] ?? null
+                if ((isRunning || isSubmitting) && !activeResult && (runScope?.caseIndexes.includes(activeCaseTab) ?? true)) {
                   return (
                     <div className="flex flex-col items-center justify-center py-8 space-y-3 font-sans">
                       <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                       <div className="text-xs text-neutral-300 font-medium">
-                        Running test cases in isolated sandbox...
-                      </div>
-                      <div className="text-[11px] text-neutral-500">
-                        Validating edge cases, boundary constraints, and performance (3000ms limit)
+                        {judgePhase === 'connecting' ? 'Sending to the judge…' : `Case ${activeCaseTab} is being evaluated…`}
                       </div>
                     </div>
                   )
@@ -831,7 +887,8 @@ export const ProblemArenaPage: React.FC = () => {
                 }
 
                 const isHiddenCase = activeCaseTab > visibleCount
-                const tcResult = testResults ? testResults[activeCaseTab - 1] : null
+                const tcResult = activeResult
+                const caseNotRun = !!runScope && !runScope.caseIndexes.includes(activeCaseTab)
 
                 if (isHiddenCase) {
                   return (
@@ -877,19 +934,29 @@ export const ProblemArenaPage: React.FC = () => {
                             ) : tcResult.isTimeLimitExceeded ? (
                               <>
                                 <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                                <span>Case {activeCaseTab} 🔒 — Time Limit Exceeded (3000ms timeout)</span>
+                                <span>Case {activeCaseTab} 🔒 — Time Limit Exceeded</span>
+                              </>
+                            ) : tcResult.status === 'runtime_error' ? (
+                              <>
+                                <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                                <span>Case {activeCaseTab} 🔒 — Runtime Error</span>
                               </>
                             ) : (
                               <>
                                 <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-                                <span>Case {activeCaseTab} 🔒 — Failed</span>
+                                <span>Case {activeCaseTab} 🔒 — Wrong Answer</span>
                               </>
                             )}
                           </div>
                         </div>
+                      ) : caseNotRun ? (
+                        <div className="p-4 text-center text-neutral-500 text-xs font-sans">
+                          Not run: <strong className="text-neutral-300">Run</strong> evaluates only the visible cases. Click{' '}
+                          <strong className="text-neutral-300">Submit</strong> to evaluate all {authoritativeTotalCount} cases, including this one.
+                        </div>
                       ) : (
                         <div className="p-4 text-center text-neutral-500 text-xs font-sans">
-                          Click <strong className="text-neutral-300">Run</strong> or <strong className="text-neutral-300">Submit</strong> to evaluate this test case.
+                          Click <strong className="text-neutral-300">Submit</strong> to evaluate this hidden test case.
                         </div>
                       )}
                     </div>
@@ -943,7 +1010,9 @@ export const ProblemArenaPage: React.FC = () => {
                                 ? '✓ Passed'
                                 : tcResult.isTimeLimitExceeded
                                 ? '⏱ Time Limit Exceeded'
-                                : '✗ Incorrect Output'}
+                                : tcResult.status === 'runtime_error'
+                                ? '✗ Runtime Error'
+                                : '✗ Wrong Answer'}
                             </span>
                           </div>
                         </div>

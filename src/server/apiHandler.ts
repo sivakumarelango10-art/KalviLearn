@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { executeQuestion } from './executeService'
+import { openStream, wantsStream } from './judge/stream'
 import { authenticateFeedbackRequest } from './feedbackAuth'
 import { hitRateLimit } from './rateLimit'
 import { applyCors, getClientIp, PayloadTooLargeError, RateLimiter, readJsonBody } from './httpSecurity'
@@ -108,8 +109,22 @@ export default async function handler(
     })
   }
 
+  // Run = the VISIBLE cases only (quick feedback). Only Submit executes the full hidden suite.
+  if (wantsStream(req)) {
+    const stream = openStream(res)
+    try {
+      const result = await executeQuestion({ questionSlug, language, code, mode: 'run', onEvent: (e) => stream(e) })
+      stream({ type: 'result', ...result })
+    } catch (err: unknown) {
+      console.error('[api/execute] unexpected failure:', err instanceof Error ? err.message : 'unknown error')
+      stream({ type: 'result', success: false, status: 'SYSTEM_ERROR', error: 'Execution Error', message: 'The code could not be evaluated. Please try again.', total: 3, passed: 0, testCases: [] })
+    }
+    res.end()
+    return
+  }
+
   try {
-    const result = await executeQuestion({ questionSlug, language, code, isSubmit: false })
+    const result = await executeQuestion({ questionSlug, language, code, mode: 'run' })
     if (result.error === 'Question Not Found') {
       return sendJson(404, result)
     }

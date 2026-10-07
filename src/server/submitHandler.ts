@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { randomUUID } from 'node:crypto'
-import { executeQuestion } from './executeService'
+import { executeQuestion, type JudgeEvent } from './executeService'
+import { openStream, wantsStream } from './judge/stream'
 import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
 import { hitRateLimit } from './rateLimit'
 import { applyCors, getClientIp, PayloadTooLargeError, RateLimiter, readJsonBody } from './httpSecurity'
@@ -73,6 +74,8 @@ interface PersistenceResult {
   submissionId: string | null
   progressUpdated: boolean
   xpEarned: number
+  /** Why nothing was stored, when `saved` is false. */
+  reason?: 'not_persisted_test_identity' | 'question_not_registered' | 'storage_error' | 'evaluation_failed'
 }
 
 /**
@@ -197,19 +200,34 @@ async function processSubmission(params: {
   language: string
   code: string
   persist: boolean
+  onEvent?: (event: JudgeEvent) => void
 }): Promise<SubmitOutcome> {
-  const { userId, questionSlug, language, code, persist } = params
+  const { userId, questionSlug, language, code, persist, onEvent } = params
 
-  // 1. Authoritatively evaluate all test cases on the server
-  const evalResult = await executeQuestion({ questionSlug, language, code, isSubmit: true })
-  const allPassed = evalResult.success && evalResult.passed === evalResult.total && evalResult.total > 0
+  // 1. Authoritatively evaluate the FULL server suite (3 visible + 7 hidden). The client never supplies tests.
+  const evalResult = await executeQuestion({ questionSlug, language, code, mode: 'submit', onEvent })
+  // Accepted strictly means every case of the complete judge suite passed (never "visible cases passed").
+  const allPassed =
+    evalResult.success &&
+    evalResult.mode === 'submit' &&
+    evalResult.total === evalResult.judgeTotal &&
+    evalResult.passed === evalResult.judgeTotal &&
+    evalResult.total > 0
 
   // 2. Persist (best effort - the evaluation result is still returned if storage is unavailable)
   let persistence: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
-  if (persist && evalResult.error !== 'Question Not Found') {
+  const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding):/, '')
+  if (!persist) {
+    persistence.reason = 'not_persisted_test_identity'
+  } else if (!evalResult.questionId || evalResult.status === 'SYSTEM_ERROR') {
+    persistence.reason = 'evaluation_failed'
+  } else {
     try {
-      const problemId = await resolveProblemId(questionSlug)
-      if (problemId) {
+      const problemId = await resolveProblemId(questionKey)
+      if (!problemId) {
+        persistence.reason = 'question_not_registered'
+        console.warn(`[api/submit] ${evalResult.questionId} has no Problem row; submission not persisted`)
+      } else {
         persistence = await persistSubmission({
           userId,
           problemId,
@@ -220,8 +238,10 @@ async function processSubmission(params: {
           total: evalResult.total,
           executionTimeMs: evalResult.overallTimeMs,
         })
+        if (!persistence.saved) persistence.reason = 'storage_error'
       }
     } catch (dbErr) {
+      persistence.reason = 'storage_error'
       console.error('[api/submit] persistence failure:', dbErr instanceof Error ? dbErr.message : 'unknown')
     }
   }
@@ -334,25 +354,44 @@ export default async function handler(
   const rawKey = (typeof body.idempotencyKey === 'string' && body.idempotencyKey) || (req.headers['x-idempotency-key'] as string) || ''
   const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : ''
   pruneIdempotencyCache()
+  const stream = wantsStream(req) ? openStream(res) : null
+  const deliver = (outcome: SubmitOutcome) => {
+    if (!stream) return sendJson(outcome.statusCode, outcome.payload)
+    stream({ type: 'result', ...outcome.payload })
+    res.end()
+  }
+
   if (idempotencyKey) {
     const existing = idempotencyCache.get(idempotencyKey)
     if (existing && Date.now() - existing.timestamp < IDEMPOTENCY_TTL_MS) {
       const outcome = await existing.promise
-      return sendJson(outcome.statusCode, outcome.payload)
+      return deliver(outcome)
     }
   }
 
-  const work = processSubmission({ userId: authenticatedUser.id, questionSlug, language, code, persist: !authenticatedUser.synthetic })
+  const work = processSubmission({
+    userId: authenticatedUser.id,
+    questionSlug,
+    language,
+    code,
+    persist: !authenticatedUser.synthetic,
+    onEvent: stream ? (event) => stream(event) : undefined,
+  })
   if (idempotencyKey) {
     idempotencyCache.set(idempotencyKey, { timestamp: Date.now(), promise: work })
   }
 
   try {
     const outcome = await work
-    return sendJson(outcome.statusCode, outcome.payload)
+    return deliver(outcome)
   } catch (err: unknown) {
     if (idempotencyKey) idempotencyCache.delete(idempotencyKey)
     console.error('[api/submit] processing failure:', err instanceof Error ? err.message : 'unknown error')
+    if (stream) {
+      stream({ type: 'result', success: false, status: 'SYSTEM_ERROR', error: 'Submission Processing Error', message: 'Your submission could not be processed. Please try again.', total: 10, passed: 0, testCases: [] })
+      res.end()
+      return
+    }
     return sendJson(500, {
       success: false,
       error: 'Submission Processing Error',
