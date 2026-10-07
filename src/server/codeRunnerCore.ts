@@ -31,64 +31,85 @@ function executeJavaScript(code: string, input: string): { output: string; error
     }
   }
 
-  const outputs: string[] = []
-  let outputChars = 0
-  const emit = (text: string) => {
-    outputChars += text.length + 1
-    if (outputChars > MAX_OUTPUT_CHARS) throw new Error('Output Limit Exceeded')
-    outputs.push(text)
+  // stdout is a byte stream, exactly like Node: console.log appends a line, process.stdout.write appends raw text.
+  // stderr (console.error / console.warn / process.stderr.write) is not graded, as on any judge.
+  let stdout = ''
+  const write = (text: string) => {
+    if (stdout.length + text.length > MAX_OUTPUT_CHARS) throw new Error('Output Limit Exceeded')
+    stdout += text
   }
   const normalizedInput = input.replace(/\r\n/g, '\n')
   const inputLines = normalizedInput.split('\n')
   const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean)
 
   const formatArg = (a: unknown) => (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a))
+  const logLine = (...args: unknown[]) => write(args.map(formatArg).join(' ') + '\n')
   const customConsole = {
-    log: (...args: unknown[]) => emit(args.map(formatArg).join(' ')),
-    info: (...args: unknown[]) => emit(args.map(formatArg).join(' ')),
-    error: (...args: unknown[]) => emit(args.map((a) => String(a)).join(' ')),
+    log: logLine,
+    info: logLine,
+    debug: logLine,
+    error: () => {},
     warn: () => {},
+    trace: () => {},
   }
+  let asyncError: string | null = null
 
-  const mockFs = {
-    readFileSync: (_fd: unknown, _enc?: string) => normalizedInput,
-    readSync: () => normalizedInput,
-  }
-
-  const mockProcess = {
-    stdin: {
-      read: () => normalizedInput,
-      on: (event: string, cb: (data?: unknown) => void) => {
-        if (event === 'data') cb(normalizedInput)
-        if (event === 'end') cb()
-      },
-    },
-    stdout: { write: (data: unknown) => emit(String(data)) },
-    exit: () => {},
-  }
-
-  const mockReadline = {
-    createInterface: () => ({
-      on: (event: string, cb: (line?: string) => void) => {
-        if (event === 'line') {
-          for (const l of inputLines) cb(l)
-        }
-        if (event === 'close') cb()
-      },
-      close: () => {},
-    }),
-  }
-
-  const mockRequire = (mod: string) => {
-    if (mod === 'fs') return mockFs
-    if (mod === 'readline') return mockReadline
-    if (mod === 'process') return mockProcess
-    return {}
-  }
-
-  // Input is injected as JSON data literals (never as executable text).
+  // Node's stdin APIs are implemented INSIDE the sandbox realm (no extra host surface). As in Node, 'data'/'end' and
+  // readline 'line'/'close' events are delivered after the main script has run, so handlers may be registered in any
+  // order and chained (`rl.on(...).on(...)`). readline drops the empty segment after a final newline but keeps blank
+  // lines elsewhere. Input is injected as a JSON data literal (never as executable text).
   const prelude = `
     "use strict";
+    const __kalviInput = ${JSON.stringify(normalizedInput)};
+    const __kalviExit = new Error('__KALVI_EXIT__');
+    const __kalviIo = (() => {
+      const rlH = { line: [], close: [] }, inH = { data: [], end: [] };
+      let flushed = false, rlClosed = false;
+      const lines = () => { const l = __kalviInput.split('\\n'); if (l[l.length - 1] === '') l.pop(); return l; };
+      const fireClose = () => { if (rlClosed) return; rlClosed = true; for (const cb of rlH.close.slice()) cb(); };
+      const rl = {
+        on(ev, cb) { if (rlH[ev] && typeof cb === 'function') rlH[ev].push(cb); return rl; },
+        once(ev, cb) { return rl.on(ev, cb); },
+        addListener(ev, cb) { return rl.on(ev, cb); },
+        close() { fireClose(); },
+        pause() { return rl; }, resume() { return rl; }, setPrompt() {}, prompt() {}, write() {},
+        [Symbol.asyncIterator]() {
+          const ls = lines(); let i = 0;
+          const it = { next: async () => (i < ls.length ? { value: ls[i++], done: false } : { value: undefined, done: true }), return: async () => ({ value: undefined, done: true }) };
+          it[Symbol.asyncIterator] = () => it;
+          return it;
+        },
+      };
+      const stdin = {
+        on(ev, cb) { if (inH[ev] && typeof cb === 'function') inH[ev].push(cb); return stdin; },
+        once(ev, cb) { return stdin.on(ev, cb); },
+        addListener(ev, cb) { return stdin.on(ev, cb); },
+        resume() { return stdin; }, pause() { return stdin; }, setEncoding() { return stdin; },
+        read() { return __kalviInput; }, fd: 0, isTTY: false,
+      };
+      const fs = { readFileSync: () => __kalviInput, readSync: () => __kalviInput };
+      const readlineModule = { createInterface: () => rl };
+      const proc = {
+        stdin,
+        stdout: { write: (d) => { __kalviWrite(String(d)); return true; }, isTTY: false },
+        stderr: { write: () => true, isTTY: false },
+        exit: () => { throw __kalviExit; },
+        argv: ['node', 'main.js'], platform: 'linux', exitCode: undefined,
+        nextTick: (fn, ...args) => { Promise.resolve().then(() => fn(...args)); },
+      };
+      const modules = { fs, readline: readlineModule, process: proc, os: { EOL: '\\n' } };
+      const req = (name) => { const m = modules[String(name).replace(/^node:/, '')]; return m === undefined ? {} : m; };
+      const flush = () => {
+        if (flushed) return; flushed = true;
+        if (__kalviInput.length) for (const cb of inH.data.slice()) cb(__kalviInput);
+        for (const cb of inH.end.slice()) cb();
+        for (const l of lines()) { if (rlClosed) break; for (const cb of rlH.line.slice()) cb(l); }
+        fireClose();
+      };
+      return { proc, req, flush };
+    })();
+    process = __kalviIo.proc;
+    require = __kalviIo.req;
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -96,23 +117,34 @@ function executeJavaScript(code: string, input: string): { output: string; error
     const readline = () => __lIdx < __lines.length ? __lines[__lIdx++] : '';
     const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
   `
+  // Student code runs in its own block so its declarations (const readline = require('readline'), function print)
+  // shadow the helpers above instead of colliding with them. stdin events fire once the main script's microtasks settle.
+  const epilogue = `
+    (async () => {
+      for (let i = 0; i < 16; i++) await null;
+      try { __kalviIo.flush(); } catch (e) { if (e !== __kalviExit) __kalviFail(e && typeof e.message === 'string' ? e.message : 'Runtime Error'); }
+    })();
+  `
 
   try {
     const bindings: Record<string, unknown> = {
       console: customConsole,
-      require: mockRequire,
-      process: mockProcess,
+      require: undefined,
+      process: undefined,
+      __kalviWrite: (text: string) => write(String(text)),
+      __kalviFail: (message: string) => void (asyncError = asyncError ?? String(message)),
       setTimeout: undefined,
       setInterval: undefined,
       setImmediate: undefined,
       global: undefined,
       globalThis: undefined,
     }
-    evaluate(Object.keys(bindings), Object.values(bindings), `${prelude}\n${code}`)
-    return { output: outputs.join('\n').trim() }
+    evaluate(Object.keys(bindings), Object.values(bindings), `${prelude}\n{\n${code}\n}\n${epilogue}`)
+    return asyncError ? { output: stdout.trim(), error: asyncError } : { output: stdout.trim() }
   } catch (err: unknown) {
     const errMsg = err instanceof Error ? err.message : 'JavaScript Runtime Error'
-    return { output: outputs.join('\n').trim(), error: errMsg }
+    if (errMsg === '__KALVI_EXIT__') return { output: stdout.trim() }
+    return { output: stdout.trim(), error: errMsg }
   }
 }
 

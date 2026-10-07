@@ -994,60 +994,80 @@ function executeJavaScript(code, input) {
       error: "Security Violation: Access to system environment, process, and native bindings is strictly forbidden."
     };
   }
-  const outputs = [];
-  let outputChars = 0;
-  const emit = (text) => {
-    outputChars += text.length + 1;
-    if (outputChars > MAX_OUTPUT_CHARS) throw new Error("Output Limit Exceeded");
-    outputs.push(text);
+  let stdout = "";
+  const write = (text) => {
+    if (stdout.length + text.length > MAX_OUTPUT_CHARS) throw new Error("Output Limit Exceeded");
+    stdout += text;
   };
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
   const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
   const formatArg = (a) => typeof a === "object" && a !== null ? JSON.stringify(a) : String(a);
+  const logLine = (...args) => write(args.map(formatArg).join(" ") + "\n");
   const customConsole = {
-    log: (...args) => emit(args.map(formatArg).join(" ")),
-    info: (...args) => emit(args.map(formatArg).join(" ")),
-    error: (...args) => emit(args.map((a) => String(a)).join(" ")),
-    warn: () => {
-    }
-  };
-  const mockFs = {
-    readFileSync: (_fd, _enc) => normalizedInput,
-    readSync: () => normalizedInput
-  };
-  const mockProcess = {
-    stdin: {
-      read: () => normalizedInput,
-      on: (event, cb) => {
-        if (event === "data") cb(normalizedInput);
-        if (event === "end") cb();
-      }
+    log: logLine,
+    info: logLine,
+    debug: logLine,
+    error: () => {
     },
-    stdout: { write: (data) => emit(String(data)) },
-    exit: () => {
+    warn: () => {
+    },
+    trace: () => {
     }
   };
-  const mockReadline = {
-    createInterface: () => ({
-      on: (event, cb) => {
-        if (event === "line") {
-          for (const l of inputLines) cb(l);
-        }
-        if (event === "close") cb();
-      },
-      close: () => {
-      }
-    })
-  };
-  const mockRequire = (mod) => {
-    if (mod === "fs") return mockFs;
-    if (mod === "readline") return mockReadline;
-    if (mod === "process") return mockProcess;
-    return {};
-  };
+  let asyncError = null;
   const prelude = `
     "use strict";
+    const __kalviInput = ${JSON.stringify(normalizedInput)};
+    const __kalviExit = new Error('__KALVI_EXIT__');
+    const __kalviIo = (() => {
+      const rlH = { line: [], close: [] }, inH = { data: [], end: [] };
+      let flushed = false, rlClosed = false;
+      const lines = () => { const l = __kalviInput.split('\\n'); if (l[l.length - 1] === '') l.pop(); return l; };
+      const fireClose = () => { if (rlClosed) return; rlClosed = true; for (const cb of rlH.close.slice()) cb(); };
+      const rl = {
+        on(ev, cb) { if (rlH[ev] && typeof cb === 'function') rlH[ev].push(cb); return rl; },
+        once(ev, cb) { return rl.on(ev, cb); },
+        addListener(ev, cb) { return rl.on(ev, cb); },
+        close() { fireClose(); },
+        pause() { return rl; }, resume() { return rl; }, setPrompt() {}, prompt() {}, write() {},
+        [Symbol.asyncIterator]() {
+          const ls = lines(); let i = 0;
+          const it = { next: async () => (i < ls.length ? { value: ls[i++], done: false } : { value: undefined, done: true }), return: async () => ({ value: undefined, done: true }) };
+          it[Symbol.asyncIterator] = () => it;
+          return it;
+        },
+      };
+      const stdin = {
+        on(ev, cb) { if (inH[ev] && typeof cb === 'function') inH[ev].push(cb); return stdin; },
+        once(ev, cb) { return stdin.on(ev, cb); },
+        addListener(ev, cb) { return stdin.on(ev, cb); },
+        resume() { return stdin; }, pause() { return stdin; }, setEncoding() { return stdin; },
+        read() { return __kalviInput; }, fd: 0, isTTY: false,
+      };
+      const fs = { readFileSync: () => __kalviInput, readSync: () => __kalviInput };
+      const readlineModule = { createInterface: () => rl };
+      const proc = {
+        stdin,
+        stdout: { write: (d) => { __kalviWrite(String(d)); return true; }, isTTY: false },
+        stderr: { write: () => true, isTTY: false },
+        exit: () => { throw __kalviExit; },
+        argv: ['node', 'main.js'], platform: 'linux', exitCode: undefined,
+        nextTick: (fn, ...args) => { Promise.resolve().then(() => fn(...args)); },
+      };
+      const modules = { fs, readline: readlineModule, process: proc, os: { EOL: '\\n' } };
+      const req = (name) => { const m = modules[String(name).replace(/^node:/, '')]; return m === undefined ? {} : m; };
+      const flush = () => {
+        if (flushed) return; flushed = true;
+        if (__kalviInput.length) for (const cb of inH.data.slice()) cb(__kalviInput);
+        for (const cb of inH.end.slice()) cb();
+        for (const l of lines()) { if (rlClosed) break; for (const cb of rlH.line.slice()) cb(l); }
+        fireClose();
+      };
+      return { proc, req, flush };
+    })();
+    process = __kalviIo.proc;
+    require = __kalviIo.req;
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -1055,11 +1075,19 @@ function executeJavaScript(code, input) {
     const readline = () => __lIdx < __lines.length ? __lines[__lIdx++] : '';
     const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
   `;
+  const epilogue = `
+    (async () => {
+      for (let i = 0; i < 16; i++) await null;
+      try { __kalviIo.flush(); } catch (e) { if (e !== __kalviExit) __kalviFail(e && typeof e.message === 'string' ? e.message : 'Runtime Error'); }
+    })();
+  `;
   try {
     const bindings = {
       console: customConsole,
-      require: mockRequire,
-      process: mockProcess,
+      require: void 0,
+      process: void 0,
+      __kalviWrite: (text) => write(String(text)),
+      __kalviFail: (message) => void (asyncError = asyncError ?? String(message)),
       setTimeout: void 0,
       setInterval: void 0,
       setImmediate: void 0,
@@ -1067,11 +1095,15 @@ function executeJavaScript(code, input) {
       globalThis: void 0
     };
     evaluate(Object.keys(bindings), Object.values(bindings), `${prelude}
-${code}`);
-    return { output: outputs.join("\n").trim() };
+{
+${code}
+}
+${epilogue}`);
+    return asyncError ? { output: stdout.trim(), error: asyncError } : { output: stdout.trim() };
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : "JavaScript Runtime Error";
-    return { output: outputs.join("\n").trim(), error: errMsg };
+    if (errMsg === "__KALVI_EXIT__") return { output: stdout.trim() };
+    return { output: stdout.trim(), error: errMsg };
   }
 }
 function runSingleTestCase(code, language, input) {

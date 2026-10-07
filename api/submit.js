@@ -1053,60 +1053,80 @@ function executeJavaScript(code, input) {
       error: "Security Violation: Access to system environment, process, and native bindings is strictly forbidden."
     };
   }
-  const outputs = [];
-  let outputChars = 0;
-  const emit = (text) => {
-    outputChars += text.length + 1;
-    if (outputChars > MAX_OUTPUT_CHARS) throw new Error("Output Limit Exceeded");
-    outputs.push(text);
+  let stdout = "";
+  const write = (text) => {
+    if (stdout.length + text.length > MAX_OUTPUT_CHARS) throw new Error("Output Limit Exceeded");
+    stdout += text;
   };
   const normalizedInput = input.replace(/\r\n/g, "\n");
   const inputLines = normalizedInput.split("\n");
   const inputTokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
   const formatArg = (a) => typeof a === "object" && a !== null ? JSON.stringify(a) : String(a);
+  const logLine = (...args) => write(args.map(formatArg).join(" ") + "\n");
   const customConsole = {
-    log: (...args) => emit(args.map(formatArg).join(" ")),
-    info: (...args) => emit(args.map(formatArg).join(" ")),
-    error: (...args) => emit(args.map((a) => String(a)).join(" ")),
-    warn: () => {
-    }
-  };
-  const mockFs = {
-    readFileSync: (_fd, _enc) => normalizedInput,
-    readSync: () => normalizedInput
-  };
-  const mockProcess = {
-    stdin: {
-      read: () => normalizedInput,
-      on: (event, cb) => {
-        if (event === "data") cb(normalizedInput);
-        if (event === "end") cb();
-      }
+    log: logLine,
+    info: logLine,
+    debug: logLine,
+    error: () => {
     },
-    stdout: { write: (data) => emit(String(data)) },
-    exit: () => {
+    warn: () => {
+    },
+    trace: () => {
     }
   };
-  const mockReadline = {
-    createInterface: () => ({
-      on: (event, cb) => {
-        if (event === "line") {
-          for (const l of inputLines) cb(l);
-        }
-        if (event === "close") cb();
-      },
-      close: () => {
-      }
-    })
-  };
-  const mockRequire = (mod) => {
-    if (mod === "fs") return mockFs;
-    if (mod === "readline") return mockReadline;
-    if (mod === "process") return mockProcess;
-    return {};
-  };
+  let asyncError = null;
   const prelude = `
     "use strict";
+    const __kalviInput = ${JSON.stringify(normalizedInput)};
+    const __kalviExit = new Error('__KALVI_EXIT__');
+    const __kalviIo = (() => {
+      const rlH = { line: [], close: [] }, inH = { data: [], end: [] };
+      let flushed = false, rlClosed = false;
+      const lines = () => { const l = __kalviInput.split('\\n'); if (l[l.length - 1] === '') l.pop(); return l; };
+      const fireClose = () => { if (rlClosed) return; rlClosed = true; for (const cb of rlH.close.slice()) cb(); };
+      const rl = {
+        on(ev, cb) { if (rlH[ev] && typeof cb === 'function') rlH[ev].push(cb); return rl; },
+        once(ev, cb) { return rl.on(ev, cb); },
+        addListener(ev, cb) { return rl.on(ev, cb); },
+        close() { fireClose(); },
+        pause() { return rl; }, resume() { return rl; }, setPrompt() {}, prompt() {}, write() {},
+        [Symbol.asyncIterator]() {
+          const ls = lines(); let i = 0;
+          const it = { next: async () => (i < ls.length ? { value: ls[i++], done: false } : { value: undefined, done: true }), return: async () => ({ value: undefined, done: true }) };
+          it[Symbol.asyncIterator] = () => it;
+          return it;
+        },
+      };
+      const stdin = {
+        on(ev, cb) { if (inH[ev] && typeof cb === 'function') inH[ev].push(cb); return stdin; },
+        once(ev, cb) { return stdin.on(ev, cb); },
+        addListener(ev, cb) { return stdin.on(ev, cb); },
+        resume() { return stdin; }, pause() { return stdin; }, setEncoding() { return stdin; },
+        read() { return __kalviInput; }, fd: 0, isTTY: false,
+      };
+      const fs = { readFileSync: () => __kalviInput, readSync: () => __kalviInput };
+      const readlineModule = { createInterface: () => rl };
+      const proc = {
+        stdin,
+        stdout: { write: (d) => { __kalviWrite(String(d)); return true; }, isTTY: false },
+        stderr: { write: () => true, isTTY: false },
+        exit: () => { throw __kalviExit; },
+        argv: ['node', 'main.js'], platform: 'linux', exitCode: undefined,
+        nextTick: (fn, ...args) => { Promise.resolve().then(() => fn(...args)); },
+      };
+      const modules = { fs, readline: readlineModule, process: proc, os: { EOL: '\\n' } };
+      const req = (name) => { const m = modules[String(name).replace(/^node:/, '')]; return m === undefined ? {} : m; };
+      const flush = () => {
+        if (flushed) return; flushed = true;
+        if (__kalviInput.length) for (const cb of inH.data.slice()) cb(__kalviInput);
+        for (const cb of inH.end.slice()) cb();
+        for (const l of lines()) { if (rlClosed) break; for (const cb of rlH.line.slice()) cb(l); }
+        fireClose();
+      };
+      return { proc, req, flush };
+    })();
+    process = __kalviIo.proc;
+    require = __kalviIo.req;
     const print = console.log;
     let __lIdx = 0, __tIdx = 0;
     const __lines = ${JSON.stringify(inputLines)};
@@ -1114,11 +1134,19 @@ function executeJavaScript(code, input) {
     const readline = () => __lIdx < __lines.length ? __lines[__lIdx++] : '';
     const readToken = () => __tIdx < __tokens.length ? __tokens[__tIdx++] : '';
   `;
+  const epilogue = `
+    (async () => {
+      for (let i = 0; i < 16; i++) await null;
+      try { __kalviIo.flush(); } catch (e) { if (e !== __kalviExit) __kalviFail(e && typeof e.message === 'string' ? e.message : 'Runtime Error'); }
+    })();
+  `;
   try {
     const bindings = {
       console: customConsole,
-      require: mockRequire,
-      process: mockProcess,
+      require: void 0,
+      process: void 0,
+      __kalviWrite: (text) => write(String(text)),
+      __kalviFail: (message) => void (asyncError = asyncError ?? String(message)),
       setTimeout: void 0,
       setInterval: void 0,
       setImmediate: void 0,
@@ -1126,11 +1154,15 @@ function executeJavaScript(code, input) {
       globalThis: void 0
     };
     evaluate(Object.keys(bindings), Object.values(bindings), `${prelude}
-${code}`);
-    return { output: outputs.join("\n").trim() };
+{
+${code}
+}
+${epilogue}`);
+    return asyncError ? { output: stdout.trim(), error: asyncError } : { output: stdout.trim() };
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : "JavaScript Runtime Error";
-    return { output: outputs.join("\n").trim(), error: errMsg };
+    if (errMsg === "__KALVI_EXIT__") return { output: stdout.trim() };
+    return { output: stdout.trim(), error: errMsg };
   }
 }
 function runSingleTestCase(code, language, input) {
@@ -1184,8 +1216,8 @@ function runSubmissionJob(job, onCase) {
   for (const input of job.inputs) {
     const t0 = performance.now();
     const exhausted = t0 - started > TOTAL_EXECUTION_BUDGET_MS;
-    const exec = exhausted ? { output: "", error: "Time Limit Exceeded" } : runSingleTestCase(job.code, job.language, input);
-    const caseResult = { output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) };
+    const exec2 = exhausted ? { output: "", error: "Time Limit Exceeded" } : runSingleTestCase(job.code, job.language, input);
+    const caseResult = { output: exec2.output, error: exec2.error, ms: Math.round(performance.now() - t0) };
     cases.push(caseResult);
     onCase?.(cases.length - 1, caseResult);
   }
@@ -5559,8 +5591,8 @@ var require_RealtimeChannel = __commonJS({
       }
       /** @internal */
       _notThisChannelEvent(event, ref) {
-        const { close, error, leave, join } = constants_1.CHANNEL_EVENTS;
-        const events = [close, error, leave, join];
+        const { close, error, leave, join: join2 } = constants_1.CHANNEL_EVENTS;
+        const events = [close, error, leave, join2];
         return ref && events.includes(event) && ref !== this.joinPush.ref;
       }
       /** @internal */
@@ -15042,6 +15074,173 @@ async function runInSandbox(job, onCase) {
   }
 }
 
+// src/server/judge/native.ts
+import { spawn, spawnSync } from "node:child_process";
+import { mkdtempSync, writeFileSync, rmSync, existsSync as existsSync2 } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+var OUTPUT_CAP = 1 << 20;
+var CONCURRENCY = 4;
+function timeLimitMs(language) {
+  const base = Number(process.env.NATIVE_JUDGE_TIME_LIMIT_MS || 3e3);
+  return language === "java" ? base + 2e3 : base;
+}
+function childEnv() {
+  const keep = ["PATH", "Path", "SystemRoot", "SYSTEMROOT", "windir", "TEMP", "TMP", "JAVA_HOME", "LANG"];
+  const env = {};
+  for (const k of keep) if (process.env[k]) env[k] = process.env[k];
+  env.PYTHONIOENCODING = "utf-8";
+  env.PYTHONDONTWRITEBYTECODE = "1";
+  return env;
+}
+var runtimeCache = /* @__PURE__ */ new Map();
+function probe(candidates, args) {
+  for (const cmd of candidates) {
+    try {
+      const r = spawnSync(cmd, args, { stdio: "pipe", timeout: 8e3, env: childEnv() });
+      if (r.status === 0 && /\d+\.\d+/.test(`${r.stdout}${r.stderr}`)) return cmd;
+    } catch {
+    }
+  }
+  return null;
+}
+function runtime(tool) {
+  if (!runtimeCache.has(tool)) {
+    const found = tool === "python" ? probe(["python3", "python"], ["--version"]) : tool === "java" ? probe(["java"], ["-version"]) : tool === "javac" ? probe(["javac"], ["-version"]) : probe(["g++"], ["--version"]);
+    runtimeCache.set(tool, found);
+  }
+  return runtimeCache.get(tool) ?? null;
+}
+function nativeLanguage(language) {
+  const l = (language || "").toLowerCase();
+  if (l === "python" || l === "py") return "python";
+  if (l === "java") return "java";
+  if (l === "cpp" || l === "c++") return "cpp";
+  return null;
+}
+function nativeEnabled() {
+  if (process.env.KALVI_NATIVE_JUDGE === "0") return false;
+  if (process.env.KALVI_NATIVE_JUDGE === "1") return true;
+  return process.env.NODE_ENV !== "production";
+}
+function nativeAvailable(language) {
+  const lang = nativeLanguage(language);
+  if (!lang || !nativeEnabled()) return false;
+  if (lang === "python") return !!runtime("python");
+  if (lang === "java") return !!runtime("java") && !!runtime("javac");
+  return !!runtime("g++");
+}
+function exec(cmd, args, cwd, stdin, limitMs) {
+  return new Promise((resolve) => {
+    const t0 = Date.now();
+    let stdout = "";
+    let stderr = "";
+    let timedOut = false;
+    let overflow = false;
+    let child;
+    try {
+      child = spawn(cmd, args, { cwd, env: childEnv(), windowsHide: true });
+    } catch (err) {
+      return resolve({ code: -1, stdout: "", stderr: String(err), timedOut: false, overflow: false, ms: 0 });
+    }
+    const timer = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGKILL");
+    }, limitMs);
+    const cap = (which) => (d) => {
+      if (which === "out") stdout += d;
+      else stderr += d;
+      if (stdout.length > OUTPUT_CAP || stderr.length > OUTPUT_CAP) {
+        overflow = true;
+        child.kill("SIGKILL");
+      }
+    };
+    child.stdout.on("data", cap("out"));
+    child.stderr.on("data", cap("err"));
+    child.stdin.on("error", () => {
+    });
+    child.stdin.end(stdin);
+    child.on("error", (err) => {
+      clearTimeout(timer);
+      resolve({ code: -1, stdout, stderr: String(err), timedOut, overflow, ms: Date.now() - t0 });
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      resolve({ code, stdout: stdout.replace(/\r\n/g, "\n"), stderr, timedOut, overflow, ms: Date.now() - t0 });
+    });
+  });
+}
+function tidy(stderr, dir) {
+  const lines = stderr.split(dir).join("").replace(/\r\n/g, "\n").trim().split("\n");
+  return lines.slice(-4).join("\n");
+}
+function javaMainClass(code) {
+  return code.match(/public\s+(?:final\s+)?class\s+([A-Za-z_$][\w$]*)/)?.[1] || "Main";
+}
+var nativeEngine = {
+  name: "native",
+  async run(job, onCase) {
+    const lang = nativeLanguage(job.language);
+    if (!lang || !nativeAvailable(job.language)) return { kind: "unavailable", message: "Code execution is temporarily unavailable." };
+    const dir = mkdtempSync(join(tmpdir(), "kalvi-judge-"));
+    try {
+      let cmd;
+      let args;
+      if (lang === "python") {
+        writeFileSync(join(dir, "main.py"), job.code);
+        cmd = runtime("python");
+        args = ["-I", "main.py"];
+      } else if (lang === "java") {
+        const cls = javaMainClass(job.code);
+        writeFileSync(join(dir, `${cls}.java`), job.code);
+        const c = await exec(runtime("javac"), ["-encoding", "UTF-8", "-nowarn", `${cls}.java`], dir, "", 3e4);
+        if (c.code !== 0) return { kind: "compile_error", error: tidy(c.stderr || c.stdout || "Compilation Error", dir) };
+        cmd = runtime("java");
+        args = ["-Xss64m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-Dfile.encoding=UTF-8", "-cp", ".", cls];
+      } else {
+        writeFileSync(join(dir, "main.cpp"), job.code);
+        const exe = process.platform === "win32" ? "main.exe" : "main";
+        const c = await exec(runtime("g++"), ["-std=c++17", "-O2", "-o", exe, "main.cpp"], dir, "", 3e4);
+        if (c.code !== 0 || !existsSync2(join(dir, exe))) return { kind: "compile_error", error: tidy(c.stderr || "Compilation Error", dir) };
+        cmd = join(dir, exe);
+        args = [];
+      }
+      const limit = timeLimitMs(lang);
+      const classify = (r) => {
+        if (r.timedOut) return { output: r.stdout, kind: "timeout", error: "Time Limit Exceeded", ms: r.ms };
+        if (r.overflow) return { output: "", kind: "runtime_error", error: "Output Limit Exceeded", ms: r.ms };
+        if (r.code !== 0) {
+          const memory = /MemoryError|OutOfMemoryError|bad_alloc/.test(r.stderr);
+          return { output: r.stdout, kind: memory ? "memory" : "runtime_error", error: tidy(r.stderr, dir) || `Exited with code ${r.code}`, ms: r.ms };
+        }
+        return { output: r.stdout, kind: "ok", ms: r.ms };
+      };
+      const results = new Array(job.inputs.length);
+      const record = (i, result) => {
+        results[i] = result;
+        onCase?.(i, result);
+      };
+      if (!job.inputs.length) return { kind: "ran", cases: [] };
+      const r0 = await exec(cmd, args, dir, job.inputs[0], limit);
+      if (lang === "python" && r0.code !== 0 && /^\s*(SyntaxError|IndentationError|TabError)\b/m.test(r0.stderr)) {
+        return { kind: "compile_error", error: tidy(r0.stderr, dir) };
+      }
+      record(0, classify(r0));
+      let next = 1;
+      const worker = async () => {
+        while (next < job.inputs.length) {
+          const i = next++;
+          record(i, classify(await exec(cmd, args, dir, job.inputs[i], limit)));
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(CONCURRENCY, job.inputs.length - 1) }, worker));
+      return { kind: "ran", cases: results };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+};
+
 // src/server/judge/engines.ts
 function classifyLocal(error) {
   if (!error) return "ok";
@@ -15200,8 +15399,10 @@ var judge0Engine = {
     return { kind: "ran", cases: results };
   }
 };
-function selectEngine() {
-  return judge0Configured() ? judge0Engine : localEngine;
+function selectEngine(language) {
+  if (judge0Configured()) return judge0Engine;
+  if (nativeAvailable(language)) return nativeEngine;
+  return localEngine;
 }
 
 // src/server/data/codingTestCases.ts
@@ -98534,7 +98735,7 @@ async function executeQuestion(req) {
     console.error(`[judge] invalid suite ${suite.questionId}: ${suite.visibleCount} visible / ${suite.hiddenCount} hidden`);
     return failure("SYSTEM_ERROR", "Invalid Question Configuration", "This question is misconfigured on the server.", total, base);
   }
-  const engine = selectEngine();
+  const engine = selectEngine(language);
   onEvent?.({
     type: "started",
     submissionId,

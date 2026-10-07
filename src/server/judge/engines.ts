@@ -1,4 +1,5 @@
 import { runInSandbox } from '../sandboxHost'
+import { nativeEngine, nativeAvailable } from './native'
 
 /**
  * Judge execution engines. An engine executes ONE program against N stdin inputs and reports raw per-case results;
@@ -6,11 +7,16 @@ import { runInSandbox } from '../sandboxHost'
  *
  *  - judge0: a Judge0-compatible service (real CPython / OpenJDK / GCC / Node, container-isolated). Used for every
  *            language whenever JUDGE0_URL is configured.
+ *  - native: the real python / javac+java / g++ installed on this machine (see ./native.ts). Used for Python, Java
+ *            and C++ when no Judge0 endpoint is configured and the runtime exists; enabled outside production only
+ *            unless KALVI_NATIVE_JUDGE=1.
  *  - local:  the in-repo sandbox child process. Node.js is executed as real JavaScript. Python, Java and C++ are
  *            TRANSPILED to JavaScript and do not reproduce those languages' semantics (integer division, modulo,
- *            overflow, number formatting, much syntax) - see docs/JUDGE_ROOT_CAUSE_REPORT.md. Used only when no Judge0
- *            endpoint is configured; responses carry `engine: 'local'` so this is never invisible.
+ *            overflow, number formatting, much syntax) - see docs/JUDGE_ROOT_CAUSE_REPORT.md. Used for those
+ *            languages only as a last resort (no Judge0, no native runtime); responses carry `engine: 'local'`.
  */
+export type EngineName = 'judge0' | 'native' | 'local'
+
 export type CaseKind = 'ok' | 'runtime_error' | 'timeout' | 'memory'
 
 export interface EngineCaseResult {
@@ -34,7 +40,7 @@ export interface EngineJob {
 }
 
 export interface JudgeEngine {
-  name: 'judge0' | 'local'
+  name: EngineName
   run(job: EngineJob, onCase?: EngineCaseListener): Promise<EngineOutcome>
 }
 
@@ -232,6 +238,8 @@ export const judge0Engine: JudgeEngine = {
   },
 }
 
-export function selectEngine(): JudgeEngine {
-  return judge0Configured() ? judge0Engine : localEngine
+export function selectEngine(language: string): JudgeEngine {
+  if (judge0Configured()) return judge0Engine
+  if (nativeAvailable(language)) return nativeEngine
+  return localEngine
 }

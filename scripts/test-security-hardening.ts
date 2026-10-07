@@ -112,6 +112,29 @@ async function main() {
   }
 
   {
+    // Native engine (real python / java when no Judge0 is configured): programs run in a child process whose
+    // environment is stripped, so server secrets are never visible to submitted code.
+    const { nativeAvailable } = await import('../src/server/judge/native')
+    const probes: Array<[string, string, string]> = [
+      ['python', 'python os.environ', `import os\nprint(os.environ.get('POC_SECRET_PROBE', 'absent'))\nprint(len([k for k in os.environ if 'SUPABASE' in k or 'DATABASE' in k or 'SECRET' in k]))`],
+      ['java', 'java System.getenv', `public class Main { public static void main(String[] a) { System.out.println(System.getenv("POC_SECRET_PROBE")); System.out.println(System.getenv().keySet().stream().filter(k -> k.contains("SUPABASE") || k.contains("DATABASE") || k.contains("SECRET")).count()); } }`],
+    ]
+    for (const [lang, name, code] of probes) {
+      if (!nativeAvailable(lang)) {
+        console.log(`  (skipped: no native ${lang} runtime here)`)
+        continue
+      }
+      const r = await executeQuestion({ questionSlug: SLUG, language: lang, code, mode: 'run' })
+      const outputs = r.testCases.map((t) => t.actualOutput || '').join('|')
+      assert(
+        r.engine === 'native' && !/super-secret-probe-value/.test(JSON.stringify(r)) && /^(absent|null)\n0$/.test(r.testCases[0]?.actualOutput?.trim() || ''),
+        `Native engine hides server environment from submitted code: ${name}`,
+        `${r.engine} ${outputs.slice(0, 120)}`
+      )
+    }
+  }
+
+  {
     // A rejected promise from submitted code must never terminate the server process (Node default = crash).
     for (const code of [`Promise.reject(new Error('crash'))`, `(async()=>{ throw new Error('x') })()`, `import('x')`]) {
       await executeQuestion({ questionSlug: SLUG, language: 'nodejs', code })

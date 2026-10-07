@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { outputsMatch } from './judge/compare'
-import { selectEngine, type EngineCaseResult } from './judge/engines'
+import { selectEngine, type EngineCaseResult, type EngineName } from './judge/engines'
 import { resolveQuestion, type JudgeCase } from './judge/testRepository'
 
 /**
@@ -64,7 +64,7 @@ export interface ExecuteResponse {
   judgeTotal?: number
   submissionId?: string
   questionId?: string
-  engine?: 'judge0' | 'local'
+  engine?: EngineName
 }
 
 export type JudgeEvent =
@@ -78,7 +78,7 @@ export type JudgeEvent =
       visibleCount: number
       hiddenCount: number
       cases: Array<{ testIndex: number; hidden: boolean }>
-      engine: 'judge0' | 'local'
+      engine: EngineName
     }
   | ({ type: 'case'; submissionId: string } & ClientTestCaseResult)
 
@@ -151,7 +151,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question is misconfigured on the server.', total, base)
   }
 
-  const engine = selectEngine()
+  const engine = selectEngine(language)
   onEvent?.({
     type: 'started',
     submissionId,

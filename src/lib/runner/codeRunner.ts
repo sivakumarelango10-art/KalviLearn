@@ -30,7 +30,7 @@ export interface RunResult {
   /** Size of the authoritative server suite (10), reported by the server. */
   judgeTotal?: number
   submissionId?: string
-  engine?: 'judge0' | 'local'
+  engine?: 'judge0' | 'native' | 'local'
   /** Server-side persistence outcome for Submit. */
   persistence?: { saved: boolean; progressUpdated: boolean; xpEarned: number; reason?: string }
   /** True when the server could not be reached and only an offline preview of the visible cases ran. */
@@ -66,7 +66,7 @@ export type LiveJudgeEvent =
       total: number
       judgeTotal: number
       cases: Array<{ testIndex: number; hidden: boolean }>
-      engine: 'judge0' | 'local'
+      engine: 'judge0' | 'native' | 'local'
     }
   | { type: 'case'; submissionId: string; result: TestCaseExecution }
 
@@ -91,7 +91,7 @@ interface ApiResultPayload {
   judgeTotal?: number
   mode?: 'run' | 'submit'
   submissionId?: string
-  engine?: 'judge0' | 'local'
+  engine?: 'judge0' | 'native' | 'local'
   overallTimeMs?: number
   testCases?: ApiTestCasePayload[]
   persistence?: RunResult['persistence']

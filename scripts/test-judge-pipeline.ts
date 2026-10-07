@@ -169,6 +169,43 @@ async function main() {
   const local = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'nodejs', code: node, mode: 'submit' })
   assert(local.engine === 'local' && local.passed === 10, `local engine runs JavaScript correctly (${local.passed}/10, engine=${local.engine})`)
 
+  // ---------------------------------------------------------------- N
+  console.log('\n--- N. In-sandbox Node.js runner behaves like real Node on common stdin/stdout patterns ---')
+  const { runSubmissionJob } = await import('../src/server/codeRunnerCore')
+  const { NODE_IO_PATTERNS } = await import('./lib/node-io-patterns')
+  for (const p of NODE_IO_PATTERNS) {
+    const job = runSubmissionJob({ code: p.code, language: 'nodejs', inputs: [p.input] })
+    const c = job.kind === 'ran' ? job.cases[0] : { output: '', error: job.error }
+    assert(!c.error && c.output === p.expected, `node I/O: ${p.name}`, `got ${JSON.stringify(c.output)} ${c.error || ''}`)
+  }
+
+  // ---------------------------------------------------------------- P
+  console.log('\n--- P. No Judge0 configured: Python / Java are graded by the real runtimes (native engine) ---')
+  const { nativeAvailable } = await import('../src/server/judge/native')
+  for (const ref of REFERENCES) {
+    for (const lang of ['python', 'java'] as const) {
+      const code = ref[lang]
+      if (!code || !nativeAvailable(lang)) continue
+      const r = await executeQuestion({ questionSlug: ref.slug, language: lang, code, mode: 'submit' })
+      assert(r.engine === 'native' && r.status === 'ACCEPTED' && r.passed === 10, `native ${lang}: ${ref.slug} -> ${r.passed}/${r.total} (${r.engine})`, `${r.status} ${(r.message || '').slice(0, 80)}`)
+    }
+  }
+  for (const w of WRONG) {
+    if (!nativeAvailable('python')) break
+    const r = await executeQuestion({ questionSlug: w.slug, language: 'python', code: w.python, mode: 'submit' })
+    assert(r.engine === 'native' && r.status !== 'ACCEPTED' && r.passed < 10, `native python rejects wrong solution ${w.slug} -> ${r.passed}/10 ${r.status}`)
+  }
+  if (nativeAvailable('python')) {
+    const syntax = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'python', code: 'def broken(:\n  pass', mode: 'submit' })
+    assert(syntax.status === 'COMPILATION_ERROR' && syntax.testCases.length === 0, 'native python syntax error -> COMPILATION_ERROR, no case results')
+    const tle = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'python', code: 'while True:\n  pass', mode: 'run' })
+    assert(tle.status === 'TIME_LIMIT_EXCEEDED' || tle.testCases.every((t) => t.status === 'time_limit_exceeded'), `native python infinite loop -> time limit (${tle.status})`)
+  }
+  if (nativeAvailable('java')) {
+    const javac = await executeQuestion({ questionSlug: 'arithmetic-check', language: 'java', code: 'public class Main { public static void main(String[] a) { int x = } }', mode: 'submit' })
+    assert(javac.status === 'COMPILATION_ERROR', 'native java compile error -> COMPILATION_ERROR')
+  }
+
   console.log('\n========================================================================')
   console.log(`🏁 JUDGE PIPELINE RESULTS: ${passed} PASSED, ${failed} FAILED`)
   console.log('========================================================================')
