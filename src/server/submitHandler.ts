@@ -291,10 +291,11 @@ export default async function handler(
   // Authoritative authentication: identity comes from the verified token + users table only.
   const authResult = await authenticateFeedbackRequest((req.headers['authorization'] as string) || '')
   if (!authResult.authenticated || !authResult.user) {
-    return sendJson(authResult.statusCode || 401, {
+    const statusCode = authResult.statusCode || 401
+    return sendJson(statusCode, {
       success: false,
-      error: 'Unauthorized',
-      message: 'Authentication is required to submit code.',
+      error: statusCode === 401 ? 'Unauthorized' : 'Authentication Unavailable',
+      message: statusCode === 401 ? 'Authentication is required to submit code.' : authResult.error || 'Unable to verify your account. Please retry.',
     })
   }
   const authenticatedUser = authResult.user

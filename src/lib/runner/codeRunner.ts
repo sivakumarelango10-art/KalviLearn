@@ -26,6 +26,8 @@ export interface RunResult {
   results: TestCaseExecution[]
   overallTimeMs: number
   compilationError?: string
+  /** What `compilationError` describes: a real compile/syntax error in the code, or a server-side failure. */
+  errorKind?: 'compile' | 'system'
   mode?: 'run' | 'submit'
   /** Size of the authoritative server suite (10), reported by the server. */
   judgeTotal?: number
@@ -140,6 +142,7 @@ function toRunResult(data: ApiResultPayload, startTime: number): RunResult {
       results: [],
       overallTimeMs: Math.round(performance.now() - startTime),
       compilationError: data.message || data.error || 'Execution failed.',
+      errorKind: data.status === 'COMPILATION_ERROR' ? 'compile' : 'system',
     }
   }
   const totalCount = data.total || results.length || 10
@@ -258,6 +261,7 @@ export async function executeCode(
           results: [],
           overallTimeMs: Math.round(performance.now() - startTime),
           compilationError: errData.message || 'Syntax or compilation error detected in your solution.',
+          errorKind: 'compile',
         }
       } else {
         const errData = (await response.json().catch(() => ({}))) as ApiResultPayload
@@ -265,7 +269,10 @@ export async function executeCode(
         else if (response.status === 429) apiErrorMessage = errData.message || 'Rate limit reached. Please wait a few seconds before trying again.'
         else if (response.status === 400) apiErrorMessage = errData.message || 'Invalid code execution parameters provided.'
         else if (response.status === 404) apiErrorMessage = errData.message || `Problem "${questionSlug}" was not found on the execution server.`
-        else if (response.status >= 500) apiErrorMessage = errData.message || 'The code execution service is temporarily unavailable. Please try again in a moment.'
+        else if (response.status >= 500)
+          apiErrorMessage =
+            errData.message ||
+            `The execution server failed before running your code (HTTP ${response.status}). Your code was not evaluated; please try again, and contact support if this persists.`
         else apiErrorMessage = `Unexpected server response (HTTP ${response.status}).`
       }
     } catch (err: unknown) {
@@ -321,6 +328,7 @@ export async function executeCode(
     results: [],
     overallTimeMs: Math.round(performance.now() - startTime),
     compilationError: apiErrorMessage || 'Code execution service is currently unavailable. Please try again.',
+    errorKind: 'system',
   }
 }
 

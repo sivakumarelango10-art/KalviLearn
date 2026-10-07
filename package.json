@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build:sandbox-worker && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook && npm run check:bundle",
+    "build": "tsc -b && vite build && npm run build:sandbox-worker && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook && npm run check:bundle && npm run check:api-startup",
     "build:sandbox-worker": "esbuild src/server/sandboxWorker.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/_sandbox-worker.mjs",
     "build:api": "esbuild src/server/apiHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/execute.js",
     "build:submit": "esbuild src/server/submitHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/submit.js",
@@ -22,6 +22,7 @@
     "test:teamsync-sender": "npx tsx scripts/test-teamsync-webhook-sender.ts",
     "test:security": "npx tsx scripts/test-security-hardening.ts",
     "check:bundle": "node scripts/check-bundle-no-hidden-tests.cjs",
+    "check:api-startup": "node scripts/check-api-startup.mjs",
     "test:multilang": "npx tsx scripts/test-multilang-revision.ts",
     "test:practice-import": "npx tsx scripts/test-imported-practice.ts",
     "test:practice-e2e": "npx tsx scripts/test-e2e-practice-execution.ts",

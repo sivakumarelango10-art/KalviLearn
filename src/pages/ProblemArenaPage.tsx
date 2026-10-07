@@ -116,6 +116,8 @@ export const ProblemArenaPage: React.FC = () => {
     offlinePreview?: boolean
   } | null>(null)
   const [compilationError, setCompilationError] = useState<string | null>(null)
+  // True when `compilationError` is a server/infrastructure failure rather than an error in the student's code.
+  const [errorIsSystem, setErrorIsSystem] = useState(false)
   const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
   const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -297,6 +299,7 @@ export const ProblemArenaPage: React.FC = () => {
 
       if (result.compilationError) {
         setCompilationError(result.compilationError)
+        setErrorIsSystem(result.errorKind === 'system')
         setTestResults(null)
         setExecutionSummary({ passed: 0, total: result.totalCount, isSubmit, accepted: false })
         setSubmissionFailed(isSubmit ? { passed: 0, total: result.totalCount } : null)
@@ -359,6 +362,7 @@ export const ProblemArenaPage: React.FC = () => {
       if (!isCurrent()) return
       const errMsg = err instanceof Error ? err.message : 'An unexpected execution error occurred.'
       setCompilationError(errMsg)
+      setErrorIsSystem(true)
       setTestResults(null)
       setExecutionSummary({ passed: 0, total: isSubmit ? authoritativeTotalCount : visibleCount, isSubmit, accepted: false })
       setSubmissionFailed(isSubmit ? { passed: 0, total: authoritativeTotalCount } : null)
@@ -877,7 +881,11 @@ export const ProblemArenaPage: React.FC = () => {
                     <div className="space-y-3 font-sans">
                       <div className="p-3 bg-red-950/60 border border-red-900/80 rounded-lg text-red-200 text-xs flex items-center gap-2 font-semibold">
                         <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
-                        <span>Compilation / Syntax Error: Test cases not executed</span>
+                        <span>
+                          {errorIsSystem
+                            ? 'Execution service error: your code was not run'
+                            : 'Compilation / Syntax Error: Test cases not executed'}
+                        </span>
                       </div>
                       <div className="p-3 bg-neutral-950 rounded-lg border border-neutral-800 text-red-400 font-mono text-xs whitespace-pre-wrap overflow-x-auto">
                         {compilationError}

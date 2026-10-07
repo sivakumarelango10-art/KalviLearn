@@ -22,8 +22,18 @@ const supabaseKey =
       process.env.VITE_SUPABASE_ANON_KEY ||
       'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
 
-if (IS_PRODUCTION && (!supabaseUrl || !supabaseKey)) {
-  throw new Error('Server misconfigured: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in production.')
+// A missing production credential must NOT crash the module at import time: on Vercel that turns every request to
+// every function importing this file (Run, Submit, feedback) into a bare 500 with no explanation. Instead the
+// server starts, logs the misconfiguration once, and authentication fails CLOSED per request with a clear 503.
+const CONFIG_ERROR =
+  IS_PRODUCTION && (!supabaseUrl || !supabaseKey)
+    ? `Server misconfigured: missing ${[!supabaseUrl && 'SUPABASE_URL', !supabaseKey && 'SUPABASE_SERVICE_ROLE_KEY'].filter(Boolean).join(' and ')} in the deployment environment.`
+    : null
+if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`)
+
+/** Non-null when the server cannot verify identities (production without Supabase service credentials). */
+export function serverConfigError(): string | null {
+  return CONFIG_ERROR
 }
 
 /**
@@ -45,7 +55,9 @@ export function isTrustedStorageUrl(raw: string): boolean {
   }
 }
 
-export const supabaseServer = createClient(supabaseUrl, supabaseKey, {
+// When misconfigured, a placeholder client keeps the module loadable; it is never reached because authentication
+// (which every data path requires first) refuses all requests while CONFIG_ERROR is set.
+export const supabaseServer = createClient(supabaseUrl || 'https://unconfigured.invalid', supabaseKey || 'unconfigured', {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
 })
 
@@ -174,7 +186,14 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
   }
 
-  // 2. Authoritative Supabase JWT verification
+  // 2. Authoritative Supabase JWT verification (impossible without the server credentials: fail closed)
+  if (CONFIG_ERROR) {
+    return {
+      authenticated: false,
+      statusCode: 503,
+      error: 'The server is missing its Supabase configuration, so it cannot verify your session. Please contact the administrator.',
+    }
+  }
   const cacheKey = tokenKey(token)
   const cached = authCache.get(cacheKey)
   if (cached && cached.expires > Date.now()) {

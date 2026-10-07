@@ -54,10 +54,11 @@ export default async function handler(
   // Supabase token, never from the request body.
   const authResult = await authenticateFeedbackRequest((req.headers['authorization'] as string) || '')
   if (!authResult.authenticated || !authResult.user) {
-    return sendJson(authResult.statusCode || 401, {
+    const statusCode = authResult.statusCode || 401
+    return sendJson(statusCode, {
       success: false,
-      error: 'Unauthenticated',
-      message: 'Sign in to run code.',
+      error: statusCode === 401 ? 'Unauthenticated' : 'Authentication Unavailable',
+      message: statusCode === 401 ? 'Sign in to run code.' : authResult.error || 'Unable to verify your account. Please retry.',
       total: 10,
       passed: 0,
       testCases: [],
