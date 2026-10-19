@@ -287,14 +287,14 @@ export const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Platform Security */}
+      {/* Platform Security & Evaluation Engine */}
       <div className="bg-neutral-900 text-white rounded-2xl p-6 border border-neutral-800 space-y-3">
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
-          <h3 className="font-bold text-sm">Anti-Cheat & Evaluation Engine</h3>
+          <h3 className="font-bold text-sm">Evaluation Engine & Workspace</h3>
         </div>
         <p className="text-xs text-neutral-400 leading-relaxed">
-          The Kalvi Practice Arena enforces honest learning. Keyboard shortcuts for cut, copy, and paste (<code className="text-neutral-200">Ctrl+C / Ctrl+V / Ctrl+X</code>) as well as right-click are permanently disabled in the Monaco editor.
+          The Kalvi Practice Arena provides a full-featured Monaco editor with copy, paste, and developer shortcut support (<code className="text-neutral-200">Ctrl+C / Ctrl+V / Ctrl+X</code>) alongside comprehensive automated test case evaluation.
         </p>
       </div>
     </div>

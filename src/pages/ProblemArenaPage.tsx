@@ -12,7 +12,6 @@ import {
   History,
   HelpCircle,
   ChevronRight,
-  ShieldAlert,
   AlertTriangle,
   Lock,
 } from 'lucide-react'
@@ -119,14 +118,12 @@ export const ProblemArenaPage: React.FC = () => {
   // True when `compilationError` is a server/infrastructure failure rather than an error in the student's code.
   const [errorIsSystem, setErrorIsSystem] = useState(false)
   const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
-  const [antiCheatWarning, setAntiCheatWarning] = useState<string | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [submissionFailed, setSubmissionFailed] = useState<{ passed: number; total: number } | null>(null)
   const [recentSubmissions, setRecentSubmissions] = useState<SubmissionRecord[]>([])
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false)
 
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
-  const antiCheatTimerRef = useRef<NodeJS.Timeout | number | null>(null)
   // Synchronous execution lock: React state (isRunning/isSubmitting) updates asynchronously, so two clicks in
   // the same tick would both pass a state-based guard and fire two executions / two submissions.
   const executingRef = useRef(false)
@@ -134,15 +131,6 @@ export const ProblemArenaPage: React.FC = () => {
   const contextVersionRef = useRef(0)
   // Server-issued id of the evaluation currently being displayed; events for any other evaluation are ignored.
   const activeSubmissionIdRef = useRef<string | null>(null)
-
-  // Clean up anti-cheat warning timer on unmount
-  useEffect(() => {
-    return () => {
-      if (antiCheatTimerRef.current) {
-        clearTimeout(antiCheatTimerRef.current)
-      }
-    }
-  }, [])
 
   // Initialize code on problem or language change
   useEffect(() => {
@@ -175,30 +163,11 @@ export const ProblemArenaPage: React.FC = () => {
     setRecentSubmissions(subs)
   }, [currentProblem.slug, currentLanguage, currentProblem.starterCode, curriculum.runnerLanguage])
 
-  // Anti-Cheat: Intercept Cut, Copy, Paste & Right Click
-  const triggerAntiCheatWarning = () => {
-    setAntiCheatWarning('⚠️ Manual Coding Enforced: Copy, Paste, and Cut are disabled in Practice Arena.')
-    if (antiCheatTimerRef.current) {
-      clearTimeout(antiCheatTimerRef.current)
-    }
-    antiCheatTimerRef.current = setTimeout(() => setAntiCheatWarning(null), 3000)
-  }
-
   const handleEditorMount: OnMount = (editor) => {
     editorRef.current = editor
 
-    // Intercept keyboard shortcuts
-    editor.onKeyDown((e) => {
-      const isModifier = e.ctrlKey || e.metaKey
-      if (isModifier && (e.code === 'KeyC' || e.code === 'KeyV' || e.code === 'KeyX')) {
-        e.preventDefault()
-        e.stopPropagation()
-        triggerAntiCheatWarning()
-      }
-    })
-
     editor.updateOptions({
-      contextmenu: false,
+      contextmenu: true,
       minimap: { enabled: false },
       fontSize: 14,
       fontFamily: "'Fira Code', 'Cascadia Code', Consolas, monospace",
@@ -426,14 +395,6 @@ export const ProblemArenaPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-neutral-900 text-neutral-100">
-      {/* Anti-Cheat Warning Toast with smooth slide */}
-      {antiCheatWarning && (
-        <div className="fixed top-16 right-6 z-50 bg-amber-500 text-neutral-950 font-medium px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs sm:text-sm animate-toast-slide border border-amber-300">
-          <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-          <span>{antiCheatWarning}</span>
-        </div>
-      )}
-
       {/* Arena Top Toolbar with Clean Breadcrumb */}
       <div className="h-12 bg-neutral-950 border-b border-neutral-800 px-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
@@ -711,25 +672,7 @@ export const ProblemArenaPage: React.FC = () => {
         {/* Right Panel: Monaco Code Editor + Test Case Drawer */}
         <div className="w-full md:w-1/2 lg:w-7/12 flex flex-col bg-neutral-950 overflow-hidden">
           {/* Monaco Editor Container */}
-          <div
-            className="flex-1 relative overflow-hidden"
-            onContextMenu={(e) => {
-              e.preventDefault()
-              triggerAntiCheatWarning()
-            }}
-            onPaste={(e) => {
-              e.preventDefault()
-              triggerAntiCheatWarning()
-            }}
-            onCopy={(e) => {
-              e.preventDefault()
-              triggerAntiCheatWarning()
-            }}
-            onCut={(e) => {
-              e.preventDefault()
-              triggerAntiCheatWarning()
-            }}
-          >
+          <div className="flex-1 relative overflow-hidden">
             <Editor
               height="100%"
               theme="vs-dark"

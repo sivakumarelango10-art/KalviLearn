@@ -1,6 +1,6 @@
 # Kalvi Learn 🔴
 
-> An advanced, gamified competitive programming education platform featuring 85 Belt Mastery Problems, a 10-Module Curriculum, strict Anti-Cheat Monaco Code Editor, and automated test evaluation.
+> An advanced, gamified competitive programming education platform featuring 85 Belt Mastery Problems, a 10-Module Curriculum, full-featured Monaco Code Editor, and automated test evaluation.
 
 ---
 
@@ -14,9 +14,9 @@
 - **🧪 10 Test Cases per Problem**:
   - 3 visible test cases for quick feedback during "Run".
   - 7 hidden test cases executed upon "Submit" to thoroughly validate edge cases, constraints, and correctness.
-- **🛡️ Strict Anti-Cheat Code Arena**:
-  - Monaco Editor sandbox with keyboard shortcut interception (`Ctrl+C`, `Ctrl+V`, `Ctrl+X`, `Cmd+C`, `Cmd+V`, `Cmd+X`).
-  - Context menu / right-click disabled in the editor to foster authentic, muscle-memory coding habits.
+- **💻 Full-Featured Code Arena**:
+  - Monaco Editor sandbox with full keyboard shortcut support (`Ctrl+C`, `Ctrl+V`, `Ctrl+X`, `Cmd+C`, `Cmd+V`, `Cmd+X`) and right-click context menu.
+  - Multi-language starter templates and real-time syntax highlighting.
 - **⚡ In-Browser Multi-Language Execution**:
   - Fast client-side evaluation engine supporting Python 3 and JavaScript with formatted I/O, whitespace splitting, and runtime measurement.
   - Multi-language starter templates (Python 3, JavaScript, C++, Java).
