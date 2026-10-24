@@ -420,10 +420,12 @@ export function recordProblemSuccess(
   problemTitle: string,
   rawLanguage: string,
   code: string,
-  executionTimeMs: number
+  executionTimeMs: number,
+  options?: { awardXp?: boolean }
 ): { isFirstSolve: boolean; newXp: number } {
   const state = getUserState()
   const lang = normalizeProgressLanguage(rawLanguage)
+  const shouldAwardXp = options?.awardXp !== false
 
   if (!state.languageProgress) {
     state.languageProgress = {
@@ -440,7 +442,9 @@ export function recordProblemSuccess(
   const isLangFirstSolve = !state.languageProgress[lang].solvedSlugs.includes(problemSlug)
   if (isLangFirstSolve) {
     state.languageProgress[lang].solvedSlugs.push(problemSlug)
-    state.languageProgress[lang].xp += 50
+    if (shouldAwardXp) {
+      state.languageProgress[lang].xp += 50
+    }
   }
 
   // Overall unique solved tracking
@@ -448,7 +452,7 @@ export function recordProblemSuccess(
   if (isGlobalFirstSolve) {
     state.solvedSlugs.push(problemSlug)
   }
-  if (isLangFirstSolve) {
+  if (isLangFirstSolve && shouldAwardXp) {
     state.xp += 50
   }
 

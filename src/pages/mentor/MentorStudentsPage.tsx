@@ -86,7 +86,7 @@ export const MentorStudentsPage: React.FC = () => {
   const [students, setStudents] = useState<MentorStudent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [beltFilter, setBeltFilter] = useState<'all' | 'Belt 1' | 'Belt 2' | 'Belt 3' | 'attention'>('all')
+  const [beltFilter, setBeltFilter] = useState<string>('all')
   const [langFilter, setLangFilter] = useState<LanguageKey>('all')
   const [onlyWithSolved, setOnlyWithSolved] = useState(false)
   const [sortBy, setSortBy] = useState<'progress' | 'streak' | 'name'>('progress')
@@ -162,6 +162,18 @@ export const MentorStudentsPage: React.FC = () => {
   }, [loadData])
 
   const attentionCount = students.filter((student) => student.needsAttention).length
+
+  const beltFilterOptions = useMemo(() => {
+    const activeBelts = Array.from(new Set(students.map((s) => s.belt))).filter(Boolean)
+    const defaults = ['Belt 1', 'Belt 2', 'Belt 3']
+    const combined = Array.from(new Set([...defaults, ...activeBelts]))
+    combined.sort((a, b) => {
+      const aNum = parseInt(a.replace(/\D/g, ''), 10) || 0
+      const bNum = parseInt(b.replace(/\D/g, ''), 10) || 0
+      return aNum - bNum
+    })
+    return ['all', 'attention', ...combined]
+  }, [students])
 
   const filtered = useMemo(() => {
     return students
@@ -401,7 +413,7 @@ export const MentorStudentsPage: React.FC = () => {
         <div className="flex items-center gap-2 flex-wrap">
           {/* Belt Filters */}
           <div className="flex items-center gap-1 overflow-x-auto">
-            {(['all', 'Belt 3', 'Belt 2', 'Belt 1', 'attention'] as const).map((filter) => {
+            {beltFilterOptions.map((filter) => {
               const count =
                 filter === 'all'
                   ? students.length
@@ -414,7 +426,7 @@ export const MentorStudentsPage: React.FC = () => {
                   key={filter}
                   onClick={() => setBeltFilter(filter)}
                   className={cn(
-                    'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all interactive-tab',
+                    'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all interactive-tab whitespace-nowrap',
                     beltFilter === filter
                       ? 'bg-neutral-900 text-white shadow-xs'
                       : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
@@ -735,24 +747,27 @@ export const MentorStudentsPage: React.FC = () => {
                         </div>
 
                         {/* Most recently solved problem if any */}
-                        {student.solvedProblems.length > 0 && (
-                          <div
-                            onClick={() => setSelectedStudent(student)}
-                            className="mt-2 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2"
-                          >
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                              <span className="text-xs text-neutral-800 truncate font-semibold">
-                                <span className="text-neutral-500 font-normal">Latest: </span>
-                                {student.solvedProblems[0]?.title}
+                        {(student.latestSolved || student.solvedProblems.length > 0) && (() => {
+                          const latest = student.latestSolved || student.solvedProblems[0]
+                          return (
+                            <div
+                              onClick={() => setSelectedStudent(student)}
+                              className="mt-2 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200/70 transition-all cursor-pointer flex items-center justify-between gap-2"
+                            >
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                <span className="text-xs text-neutral-800 truncate font-semibold">
+                                  <span className="text-neutral-500 font-normal">Latest Solved: </span>
+                                  {latest.title}
+                                </span>
+                              </div>
+                              <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 uppercase flex-shrink-0 inline-flex items-center gap-1.5">
+                                {renderLangLogo(latest.language, 'w-3 h-3')}
+                                <span>{latest.languageLabel}</span>
                               </span>
                             </div>
-                            <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 uppercase flex-shrink-0 inline-flex items-center gap-1.5">
-                              {renderLangLogo(student.solvedProblems[0]?.language, 'w-3 h-3')}
-                              <span>{student.solvedProblems[0]?.languageLabel}</span>
-                            </span>
-                          </div>
-                        )}
+                          )
+                        })()}
                       </div>
                     )}
                   </div>

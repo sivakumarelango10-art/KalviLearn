@@ -14919,7 +14919,7 @@ var require_main3 = __commonJS({
 });
 
 // src/server/submitHandler.ts
-import { randomUUID as randomUUID2 } from "node:crypto";
+import { randomUUID as randomUUID2, createHash } from "node:crypto";
 
 // src/server/executeService.ts
 import { randomUUID } from "node:crypto";
@@ -107284,13 +107284,13 @@ async function updateExistingSolve(existing, code, now, result) {
   return result;
 }
 async function processSubmission(params) {
-  const { userId, questionSlug, language, code, persist, onEvent } = params;
+  const { userId, questionSlug, language, code, persist, isMentorPreview, onEvent } = params;
   const evalResult = await executeQuestion({ questionSlug, language, code, mode: "submit", onEvent });
   const allPassed = evalResult.success && evalResult.mode === "submit" && evalResult.total === evalResult.judgeTotal && evalResult.passed === evalResult.judgeTotal && evalResult.total > 0;
   let persistence = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 };
   const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding):/, "");
   if (!persist) {
-    persistence.reason = "not_persisted_test_identity";
+    persistence.reason = isMentorPreview ? "preview_mode_mentor" : "not_persisted_test_identity";
   } else if (!evalResult.questionId || evalResult.status === "SYSTEM_ERROR") {
     persistence.reason = "evaluation_failed";
   } else {
@@ -107404,8 +107404,11 @@ async function handler(req, res) {
       message: `Submission rate limit exceeded. Please wait ${userRate.retryAfter} seconds before submitting again.`
     });
   }
+  const isMentorPreview = authenticatedUser.role === "MENTOR";
+  const persist = !authenticatedUser.synthetic && !isMentorPreview;
   const rawKey = typeof body.idempotencyKey === "string" && body.idempotencyKey || req.headers["x-idempotency-key"] || "";
-  const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : "";
+  const codeHash = createHash("sha256").update(code).digest("hex");
+  const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : `${authenticatedUser.id}:${questionSlug}:${language}:${codeHash}`;
   pruneIdempotencyCache();
   const stream = wantsStream(req) ? openStream(res) : null;
   const deliver = (outcome) => {
@@ -107425,7 +107428,8 @@ async function handler(req, res) {
     questionSlug,
     language,
     code,
-    persist: !authenticatedUser.synthetic,
+    persist,
+    isMentorPreview,
     onEvent: stream ? (event) => stream(event) : void 0
   });
   if (idempotencyKey) {

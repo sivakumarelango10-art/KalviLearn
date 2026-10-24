@@ -223,7 +223,7 @@ export async function executeCode(
     try {
       const endpoint = isSubmit ? '/api/submit' : '/api/execute'
       const activeUserId = getActiveUserId()
-      const idempotencyKey = isSubmit ? `sub_${questionSlug}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}` : undefined
+      const idempotencyKey = isSubmit ? `submit_${questionSlug}_${language}` : undefined
 
       let authToken: string | undefined
       try {

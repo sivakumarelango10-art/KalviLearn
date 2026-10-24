@@ -22,20 +22,21 @@ export const MentorCurriculumPage: React.FC = () => {
   const [totalStudents, setTotalStudents] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
 
+  const totalProblemsCount = problemsData.reduce((acc, b) => acc + b.problems.length, 0)
+  const totalBeltsCount = problemsData.length
+
   useEffect(() => {
     let isMounted = true
 
     async function loadMetrics() {
       try {
         const [metrics, students] = await Promise.all([
-          fetchMentorCurriculumMetrics(),
+          fetchMentorCurriculumMetrics(user?.id),
           fetchMentorRoster(user?.id),
         ])
         if (isMounted) {
           setBeltMetrics(metrics)
-          if (students.length > 0) {
-            setTotalStudents(students.length)
-          }
+          setTotalStudents(students.length)
           setIsLoading(false)
         }
       } catch (err) {
@@ -70,13 +71,13 @@ export const MentorCurriculumPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Cohort progression through 85 standardized problems across Belt 1, Belt 2, and Belt 3.
+            Cohort progression through {totalProblemsCount} standardized problems across {totalBeltsCount} belts.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-700">
-            85 Benchmark Problems
+            {totalProblemsCount} Benchmark Problems
           </span>
         </div>
       </div>
@@ -90,7 +91,7 @@ export const MentorCurriculumPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {beltMetrics.map((belt) => (
             <div
               key={belt.order}
@@ -118,12 +119,14 @@ export const MentorCurriculumPage: React.FC = () => {
               <div className="space-y-1 pt-2 border-t border-neutral-100">
                 <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
                   <span>Pass Rate</span>
-                  <span className="font-bold text-neutral-900">{belt.avgPassRate}%</span>
+                  <span className="font-bold text-neutral-900">
+                    {belt.avgPassRate !== null ? `${belt.avgPassRate}%` : 'No data yet'}
+                  </span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${belt.avgPassRate}%`, backgroundColor: belt.color }}
+                    style={{ width: `${belt.avgPassRate ?? 0}%`, backgroundColor: belt.color }}
                   />
                 </div>
               </div>
@@ -131,7 +134,7 @@ export const MentorCurriculumPage: React.FC = () => {
               <div className="pt-2 text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-1.5">
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
                 <span>
-                  <strong>Key Bottleneck:</strong> {belt.bottleneck}
+                  <strong>Key Bottleneck:</strong> {belt.bottleneck ?? 'No data yet'}
                 </span>
               </div>
             </div>
