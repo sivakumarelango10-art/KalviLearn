@@ -75,7 +75,7 @@ interface PersistenceResult {
   progressUpdated: boolean
   xpEarned: number
   /** Why nothing was stored, when `saved` is false. */
-  reason?: 'not_persisted_test_identity' | 'question_not_registered' | 'storage_error' | 'evaluation_failed' | 'preview_mode_mentor'
+  reason?: 'not_persisted_test_identity' | 'question_not_registered' | 'storage_error' | 'evaluation_failed' | 'preview_mode_mentor' | 'learn_practice_isolated'
 }
 
 /**
@@ -252,8 +252,14 @@ async function processSubmission(params: {
 
   // 2. Persist (best effort - the evaluation result is still returned if storage is unavailable)
   let persistence: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
-  const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding):/, '')
-  if (!persist) {
+  const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding|learn):/, '')
+  const isLearn =
+    questionSlug.startsWith('learn:') ||
+    Boolean(evalResult.questionId?.startsWith('learn:')) ||
+    Boolean(evalResult.questionId?.startsWith('coding:'))
+  if (isLearn) {
+    persistence.reason = 'learn_practice_isolated'
+  } else if (!persist) {
     persistence.reason = isMentorPreview ? 'preview_mode_mentor' : 'not_persisted_test_identity'
   } else if (!evalResult.questionId || evalResult.status === 'SYSTEM_ERROR') {
     persistence.reason = 'evaluation_failed'

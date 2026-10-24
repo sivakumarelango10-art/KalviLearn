@@ -1,0 +1,682 @@
+{
+  "local-shadows-global": {
+    "id": "learn:scope:local-shadows-global",
+    "slug": "local-shadows-global",
+    "topicId": "scope",
+    "title": "Local Shadows Global",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "5 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "8 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "6 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "-2 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "9 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "-5 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "2 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "3 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "10 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "global-counter-update": {
+    "id": "learn:scope:global-counter-update",
+    "slug": "global-counter-update",
+    "topicId": "scope",
+    "title": "Global Counter Update",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "6 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "9 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "7 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "-1 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "10 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "-4 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "3 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "4 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "11 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "parameter-copy-isolation": {
+    "id": "learn:scope:parameter-copy-isolation",
+    "slug": "parameter-copy-isolation",
+    "topicId": "scope",
+    "title": "Parameter Copy Isolation",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "7 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "10 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "8 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "11 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "-3 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "4 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "5 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "12 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "enclosing-variable-read": {
+    "id": "learn:scope:enclosing-variable-read",
+    "slug": "enclosing-variable-read",
+    "topicId": "scope",
+    "title": "Enclosing Variable Read",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "8 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "11 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "9 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "4 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "1 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "12 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "-2 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "5 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "6 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "13 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "enclosing-variable-update": {
+    "id": "learn:scope:enclosing-variable-update",
+    "slug": "enclosing-variable-update",
+    "topicId": "scope",
+    "title": "Enclosing Variable Update",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "9 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "12 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "10 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "2 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "13 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "-1 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "6 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "7 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "14 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "block-local-shadow": {
+    "id": "learn:scope:block-local-shadow",
+    "slug": "block-local-shadow",
+    "topicId": "scope",
+    "title": "Block Local Shadow",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "10 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "13 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "11 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "3 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "14 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "0 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "7 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "8 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "15 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "global-constant-read": {
+    "id": "learn:scope:global-constant-read",
+    "slug": "global-constant-read",
+    "topicId": "scope",
+    "title": "Global Constant Read",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "11 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "14 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "12 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "7 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "15 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "1 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "8 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "9 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "16 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "independent-local-calls": {
+    "id": "learn:scope:independent-local-calls",
+    "slug": "independent-local-calls",
+    "topicId": "scope",
+    "title": "Independent Local Calls",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "12 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "15 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "13 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "8 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "5 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "16 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "2 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "9 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "10 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "17 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "local-accumulator-reset": {
+    "id": "learn:scope:local-accumulator-reset",
+    "slug": "local-accumulator-reset",
+    "topicId": "scope",
+    "title": "Local Accumulator Reset",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "13 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "16 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "14 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "9 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "6 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "17 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "3 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "10 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "11 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "18 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "scope-lookup-priority": {
+    "id": "learn:scope:scope-lookup-priority",
+    "slug": "scope-lookup-priority",
+    "topicId": "scope",
+    "title": "Scope Lookup Priority",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4",
+        "expectedOutput": "14 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 7",
+        "expectedOutput": "17 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 5",
+        "expectedOutput": "15 -2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "10 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 -3",
+        "expectedOutput": "7 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "12 8",
+        "expectedOutput": "18 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -6",
+        "expectedOutput": "4 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "7 1",
+        "expectedOutput": "11 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "100 2",
+        "expectedOutput": "12 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "9 9",
+        "expectedOutput": "19 9",
+        "isHidden": true
+      }
+    ]
+  }
+}

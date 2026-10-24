@@ -1,0 +1,682 @@
+{
+  "iterative-running-total": {
+    "id": "learn:loops:iterative-running-total",
+    "slug": "iterative-running-total",
+    "topicId": "loops",
+    "title": "Iterative Running Total",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "-5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "32",
+        "isHidden": true
+      }
+    ]
+  },
+  "repeated-increment-score": {
+    "id": "learn:loops:repeated-increment-score",
+    "slug": "repeated-increment-score",
+    "topicId": "loops",
+    "title": "Repeated Increment Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "-2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "34",
+        "isHidden": true
+      }
+    ]
+  },
+  "looped-difference-accumulator": {
+    "id": "learn:loops:looped-difference-accumulator",
+    "slug": "looped-difference-accumulator",
+    "topicId": "loops",
+    "title": "Looped Difference Accumulator",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "36",
+        "isHidden": true
+      }
+    ]
+  },
+  "iteration-weighted-counter": {
+    "id": "learn:loops:iteration-weighted-counter",
+    "slug": "iteration-weighted-counter",
+    "topicId": "loops",
+    "title": "Iteration Weighted Counter",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "31",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "41",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "38",
+        "isHidden": true
+      }
+    ]
+  },
+  "loop-range-score": {
+    "id": "learn:loops:loop-range-score",
+    "slug": "loop-range-score",
+    "topicId": "loops",
+    "title": "Loop Range Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "35",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "40",
+        "isHidden": true
+      }
+    ]
+  },
+  "stepwise-product-adjustment": {
+    "id": "learn:loops:stepwise-product-adjustment",
+    "slug": "stepwise-product-adjustment",
+    "topicId": "loops",
+    "title": "Stepwise Product Adjustment",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "39",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "42",
+        "isHidden": true
+      }
+    ]
+  },
+  "cyclic-increment-total": {
+    "id": "learn:loops:cyclic-increment-total",
+    "slug": "cyclic-increment-total",
+    "topicId": "loops",
+    "title": "Cyclic Increment Total",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "13",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "43",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "65",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "44",
+        "isHidden": true
+      }
+    ]
+  },
+  "loop-controlled-offset": {
+    "id": "learn:loops:loop-controlled-offset",
+    "slug": "loop-controlled-offset",
+    "topicId": "loops",
+    "title": "Loop Controlled Offset",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "47",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "73",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "46",
+        "isHidden": true
+      }
+    ]
+  },
+  "repeated-linear-update": {
+    "id": "learn:loops:repeated-linear-update",
+    "slug": "repeated-linear-update",
+    "topicId": "loops",
+    "title": "Repeated Linear Update",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "24",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "19",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "51",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "81",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "48",
+        "isHidden": true
+      }
+    ]
+  },
+  "iteration-final-state": {
+    "id": "learn:loops:iteration-final-state",
+    "slug": "iteration-final-state",
+    "topicId": "loops",
+    "title": "Iteration Final State",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "26",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-29",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "26",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "89",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "50",
+        "isHidden": true
+      }
+    ]
+  }
+}

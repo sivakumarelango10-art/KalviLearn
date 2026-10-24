@@ -1,0 +1,682 @@
+{
+  "recursive-sum": {
+    "id": "learn:recursion:recursive-sum",
+    "slug": "recursive-sum",
+    "topicId": "recursion",
+    "title": "Recursive Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "28",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "55",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-power": {
+    "id": "learn:recursion:recursive-power",
+    "slug": "recursive-power",
+    "topicId": "recursion",
+    "title": "Recursive Power",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "30",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "43",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "46",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "58",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-digit-product": {
+    "id": "learn:recursion:recursive-digit-product",
+    "slug": "recursive-digit-product",
+    "topicId": "recursion",
+    "title": "Recursive Digit Product",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "45",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "37",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "56",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "61",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-array-sum": {
+    "id": "learn:recursion:recursive-array-sum",
+    "slug": "recursive-array-sum",
+    "topicId": "recursion",
+    "title": "Recursive Array Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "24",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "34",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "47",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "53",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "64",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-maximum": {
+    "id": "learn:recursion:recursive-maximum",
+    "slug": "recursive-maximum",
+    "topicId": "recursion",
+    "title": "Recursive Maximum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "36",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "49",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "67",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-palindrome": {
+    "id": "learn:recursion:recursive-palindrome",
+    "slug": "recursive-palindrome",
+    "topicId": "recursion",
+    "title": "Recursive Palindrome",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "23",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "38",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "51",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "34",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "70",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-gcd": {
+    "id": "learn:recursion:recursive-gcd",
+    "slug": "recursive-gcd",
+    "topicId": "recursion",
+    "title": "Recursive GCD",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "27",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "40",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "44",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "60",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-bit-count": {
+    "id": "learn:recursion:recursive-bit-count",
+    "slug": "recursive-bit-count",
+    "topicId": "recursion",
+    "title": "Recursive Bit Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "29",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "42",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "63",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-string-length": {
+    "id": "learn:recursion:recursive-string-length",
+    "slug": "recursive-string-length",
+    "topicId": "recursion",
+    "title": "Recursive String Length",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "31",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "44",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "51",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "66",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-target-count": {
+    "id": "learn:recursion:recursive-target-count",
+    "slug": "recursive-target-count",
+    "topicId": "recursion",
+    "title": "Recursive Target Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3",
+        "expectedOutput": "21",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5",
+        "expectedOutput": "33",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "7",
+        "expectedOutput": "46",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6",
+        "expectedOutput": "41",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "8",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10",
+        "expectedOutput": "69",
+        "isHidden": true
+      }
+    ]
+  }
+}

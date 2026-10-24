@@ -2,10 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import type { CodingTopic } from '@/coding/types'
+import type { LearnCodingTopic } from '@/data/learn/coding'
 import { cn } from '@/lib/utils'
 
 interface CodingTopicCardProps {
-  topic: CodingTopic
+  topic: CodingTopic | LearnCodingTopic
   className?: string
 }
 

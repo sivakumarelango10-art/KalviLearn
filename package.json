@@ -36,8 +36,8 @@
     "test:judge-audit": "npx tsx scripts/test-judge-bank-audit.ts",
     "test:judge-oracle": "python scripts/judge_oracle.py",
     "test:practice-oracle": "python scripts/practice_oracle.py",
-    "test:judge-all": "npx tsx scripts/test-judge-all-questions.ts",
-    "test:all": "npm test && npm run test:judge-audit && npm run test:judge && npm run test:judge-oracle && npm run test:practice-oracle && npm run test:judge-all && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
+    "test:learn-separation": "npx tsx scripts/test-learn-practice-separation.ts",
+    "test:all": "npm test && npm run test:learn-separation && npm run test:judge-audit && npm run test:judge && npm run test:judge-oracle && npm run test:practice-oracle && npm run test:judge-all && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
     "preview": "vite preview"
   },
   "dependencies": {

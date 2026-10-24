@@ -1,0 +1,682 @@
+{
+  "deposit-method": {
+    "id": "learn:oop-methods:deposit-method",
+    "slug": "deposit-method",
+    "topicId": "oop-methods",
+    "title": "Deposit Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "-5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "32",
+        "isHidden": true
+      }
+    ]
+  },
+  "withdraw-method": {
+    "id": "learn:oop-methods:withdraw-method",
+    "slug": "withdraw-method",
+    "topicId": "oop-methods",
+    "title": "Withdraw Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "-2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "34",
+        "isHidden": true
+      }
+    ]
+  },
+  "increment-method": {
+    "id": "learn:oop-methods:increment-method",
+    "slug": "increment-method",
+    "topicId": "oop-methods",
+    "title": "Increment Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "36",
+        "isHidden": true
+      }
+    ]
+  },
+  "perimeter-method": {
+    "id": "learn:oop-methods:perimeter-method",
+    "slug": "perimeter-method",
+    "topicId": "oop-methods",
+    "title": "Perimeter Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "31",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "41",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "38",
+        "isHidden": true
+      }
+    ]
+  },
+  "average-method": {
+    "id": "learn:oop-methods:average-method",
+    "slug": "average-method",
+    "topicId": "oop-methods",
+    "title": "Average Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "35",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "40",
+        "isHidden": true
+      }
+    ]
+  },
+  "raise-method": {
+    "id": "learn:oop-methods:raise-method",
+    "slug": "raise-method",
+    "topicId": "oop-methods",
+    "title": "Raise Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "39",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "42",
+        "isHidden": true
+      }
+    ]
+  },
+  "cart-add-method": {
+    "id": "learn:oop-methods:cart-add-method",
+    "slug": "cart-add-method",
+    "topicId": "oop-methods",
+    "title": "Cart Add Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "13",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "43",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "65",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "44",
+        "isHidden": true
+      }
+    ]
+  },
+  "tick-method": {
+    "id": "learn:oop-methods:tick-method",
+    "slug": "tick-method",
+    "topicId": "oop-methods",
+    "title": "Tick Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "47",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "73",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "46",
+        "isHidden": true
+      }
+    ]
+  },
+  "reset-method": {
+    "id": "learn:oop-methods:reset-method",
+    "slug": "reset-method",
+    "topicId": "oop-methods",
+    "title": "Reset Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "24",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "19",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "51",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "81",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "48",
+        "isHidden": true
+      }
+    ]
+  },
+  "append-length-method": {
+    "id": "learn:oop-methods:append-length-method",
+    "slug": "append-length-method",
+    "topicId": "oop-methods",
+    "title": "Append Length Method",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 3",
+        "expectedOutput": "26",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 1",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-2 4",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 7",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "9 -1",
+        "expectedOutput": "-29",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 5",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-4 -2",
+        "expectedOutput": "-22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "8 2",
+        "expectedOutput": "26",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "1 9",
+        "expectedOutput": "89",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "10 3",
+        "expectedOutput": "50",
+        "isHidden": true
+      }
+    ]
+  }
+}

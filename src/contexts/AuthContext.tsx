@@ -92,6 +92,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!session?.user?.email) {
           // If Supabase session is absent, purge any stored cached active user to prevent unauthenticated bypass
           if (isMounted) {
+            if (!import.meta.env.PROD) {
+              const saved = localStorage.getItem(LOCAL_USER_KEY)
+              if (saved) {
+                try {
+                  const u = JSON.parse(saved)
+                  if (u && u.id && u.email) {
+                    setUser(u)
+                    setIsLoading(false)
+                    return
+                  }
+                } catch {
+                  // Fall through to removal
+                }
+              }
+            }
             localStorage.removeItem(LOCAL_USER_KEY)
             setUser(null)
             setIsLoading(false)

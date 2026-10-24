@@ -103,6 +103,28 @@ if (fs.existsSync(codingServerPath)) {
   }
 }
 
+// 3. Check server/learn/coding/hidden/*.json files
+const serverLearnHiddenDir = path.resolve(__dirname, '..', 'server', 'learn', 'coding', 'hidden')
+if (fs.existsSync(serverLearnHiddenDir)) {
+  const jsonFiles = fs.readdirSync(serverLearnHiddenDir).filter((f) => f.endsWith('.json'))
+  for (const file of jsonFiles) {
+    const hiddenData = JSON.parse(fs.readFileSync(path.join(serverLearnHiddenDir, file), 'utf8'))
+    for (const [slug, entry] of Object.entries(hiddenData)) {
+      const cases = entry.testCases || []
+      cases.forEach((tc) => {
+        if (!tc.isHidden && tc.testIndex <= 3) return
+        for (const value of [tc.input, tc.expectedOutput]) {
+          if (typeof value !== 'string' || value.length < 10) continue
+          const needle = JSON.stringify(value).slice(1, -1)
+          if (publicText.includes(needle)) continue
+          checked++
+          if (bundle.includes(needle)) leaks.push(`learn:${slug}#${tc.testIndex}`)
+        }
+      })
+    }
+  }
+}
+
 // Ensure server repository exports/identifiers are not bundled in frontend
 const markers = ['serverTestCases', 'codingTestCases'].filter((m) => {
   // Only flag if it appears as an actual code identifier in a non-api bundle

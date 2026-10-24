@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom'
 import Editor, { OnMount } from '@monaco-editor/react'
 import confetti from 'canvas-confetti'
 import {
@@ -21,7 +21,7 @@ import {
   normalizeLanguageSlug,
   ProgrammingLanguage,
 } from '@/data/curriculum/index'
-import { getCodingQuestionBySlug } from '@/coding/questions'
+import { findLearnQuestionBySlug } from '@/data/learn/coding'
 import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult } from '@/lib/runner/codeRunner'
 import {
   getUserState,
@@ -47,48 +47,30 @@ export const ProblemArenaPage: React.FC = () => {
 
   const curriculum = useMemo(() => getCurriculum(currentLanguage), [currentLanguage])
 
-  const codingQuestion = useMemo(() => getCodingQuestionBySlug(slug), [slug])
-  const isLearnCoding = Boolean(codingQuestion)
+  // 1. Redirection for old bookmarks to Learn questions (/practice/<slug> or /practice/:lang/<slug>)
+  const learnQuestion = useMemo(() => (slug ? findLearnQuestionBySlug(slug) : undefined), [slug])
 
   // Find problem within this language's curriculum
   const currentProblemData = useMemo(() => {
-    if (codingQuestion) {
-      const targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
-      return {
-        belt: {
-          order: 0,
-          name: codingQuestion.topicTitle,
-          title: `Learn › Coding › ${codingQuestion.topicTitle}`,
-          color: '#ED2A2B',
-          description: codingQuestion.topicTitle,
-          problems: [],
-        },
-        problem: targetProblem!,
-        nextSlug: null,
-      }
+    if (learnQuestion) return null
+
+    const targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
+    if (!targetProblem) {
+      return null
     }
 
-    let targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
     let targetBelt = curriculum.belts[0]
     let targetBeltIndex = 0
     let targetProblemIndex = 0
 
-    if (!targetProblem) {
-      // Fallback to first problem in first belt
-      targetBelt = curriculum.belts[0]
-      targetProblem = targetBelt.problems[0]
-      targetBeltIndex = 0
-      targetProblemIndex = 0
-    } else {
-      for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
-        const currentBelt = curriculum.belts[bIdx]
-        const problemIdx = currentBelt.problems.findIndex((problemItem) => problemItem.slug === targetProblem?.slug)
-        if (problemIdx !== -1) {
-          targetBelt = currentBelt
-          targetBeltIndex = bIdx
-          targetProblemIndex = problemIdx
-          break
-        }
+    for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
+      const currentBelt = curriculum.belts[bIdx]
+      const problemIdx = currentBelt.problems.findIndex((problemItem) => problemItem.slug === targetProblem.slug)
+      if (problemIdx !== -1) {
+        targetBelt = currentBelt
+        targetBeltIndex = bIdx
+        targetProblemIndex = problemIdx
+        break
       }
     }
 
@@ -102,10 +84,25 @@ export const ProblemArenaPage: React.FC = () => {
 
     return {
       belt: targetBelt,
-      problem: targetProblem!,
+      problem: targetProblem,
       nextSlug,
     }
-  }, [curriculum, currentLanguage, slug, codingQuestion])
+  }, [curriculum, currentLanguage, slug, learnQuestion])
+
+  // Redirect if this was a Learn question
+  if (learnQuestion) {
+    return (
+      <Navigate
+        to={`/learn/coding/${learnQuestion.topicSlug}/${learnQuestion.slug}/solve?lang=${currentLanguage}`}
+        replace
+      />
+    )
+  }
+
+  // If not a Practice problem, render not found card
+  if (!currentProblemData) {
+    return <ProblemNotFoundCard slug={slug} language={currentLanguage} />
+  }
 
   const currentBelt = currentProblemData.belt
   const currentProblem = currentProblemData.problem
@@ -311,9 +308,7 @@ export const ProblemArenaPage: React.FC = () => {
       if (isSubmit) {
         if (accepted) {
           const totalTime = result.results.reduce((acc, t) => acc + (t.executionTimeMs || 0), 0) || result.overallTimeMs || 0
-          recordProblemSuccess(currentProblem.slug, currentProblem.title, currentLanguage, currentCode, totalTime, {
-            awardXp: !isLearnCoding,
-          })
+          recordProblemSuccess(currentProblem.slug, currentProblem.title, currentLanguage, currentCode, totalTime)
 
           const state = getUserState()
           setRecentSubmissions(
@@ -396,8 +391,6 @@ export const ProblemArenaPage: React.FC = () => {
 
     if (nextProblemSlug) {
       navigate(`/practice/${currentLanguage}/${nextProblemSlug}`)
-    } else if (isLearnCoding && codingQuestion) {
-      navigate(`/learn/coding/${codingQuestion.topicId}`)
     } else {
       navigate(`/practice/${currentLanguage}`)
     }
@@ -421,55 +414,26 @@ export const ProblemArenaPage: React.FC = () => {
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-neutral-900 text-neutral-100">
       {/* Arena Top Toolbar with Clean Breadcrumb */}
       <div className="h-12 bg-neutral-950 border-b border-neutral-800 px-4 flex items-center justify-between flex-shrink-0">
-        {isLearnCoding && codingQuestion ? (
-          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
-            <Link
-              to="/learn"
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
-            >
-              Learn <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              to="/learn/coding"
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
-            >
-              Coding <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              to={`/learn/coding/${codingQuestion.topicId}`}
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
-            >
-              {codingQuestion.topicTitle} <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-red-950/60 text-red-300 border border-red-800/60 flex-shrink-0">
-              {codingQuestion.topicTitle}
-            </span>
-            <h1 className="text-sm font-semibold text-white truncate max-w-xs sm:max-w-md">
-              {currentProblem.title}
-            </h1>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
-            <Link
-              to="/practice"
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
-            >
-              Practice <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              to={`/practice/${currentLanguage}`}
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
-            >
-              {curriculum.name} Practice <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 flex-shrink-0">
-              {currentBelt.name}
-            </span>
-            <h1 className="text-sm font-semibold text-white truncate max-w-xs sm:max-w-md">
-              {currentProblem.order}. {currentProblem.title}
-            </h1>
-          </div>
-        )}
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
+          <Link
+            to="/practice"
+            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
+          >
+            Practice <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+          <Link
+            to={`/practice/${currentLanguage}`}
+            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors flex-shrink-0"
+          >
+            {curriculum.name} Practice <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 flex-shrink-0">
+            {currentBelt.name}
+          </span>
+          <h1 className="text-sm font-semibold text-white truncate max-w-xs sm:max-w-md">
+            {currentProblem.order}. {currentProblem.title}
+          </h1>
+        </div>
 
         {/* Locked Language Indicator (no cross-language switching inside a problem) & Action Buttons */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
@@ -1049,7 +1013,6 @@ export const ProblemArenaPage: React.FC = () => {
         nextQuestionSlug={nextProblemSlug}
         onContinue={handleContinue}
         onCancel={handleCancel}
-        isLearnCoding={isLearnCoding}
       />
 
       {/* Reset Confirmation Modal */}

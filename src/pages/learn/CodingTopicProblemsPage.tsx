@@ -8,8 +8,9 @@ import {
   ArrowRight,
   Code2,
 } from 'lucide-react'
-import { getCodingTopicById, getCodingQuestionsByTopic } from '@/coding/questions'
-import { getUserState, subscribeProgress } from '@/lib/progress'
+import { getLearnTopic, getLearnQuestionsByTopic } from '@/data/learn/coding'
+import { getLearnQuestionStatus, subscribeLearnProgress } from '@/lib/learnProgress'
+import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
 /**
@@ -19,28 +20,26 @@ import { cn } from '@/lib/utils'
  */
 export const CodingTopicProblemsPage: React.FC = () => {
   const { topicId } = useParams<{ topicId: string }>()
+  const { user } = useAuth()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const [userProgressMap, setUserProgressMap] = useState<Record<string, any>>({})
+  const [, setProgressTick] = useState(0)
 
   // Topic lookup
   const topic = useMemo(() => {
-    return topicId ? getCodingTopicById(topicId) : undefined
+    return topicId ? getLearnTopic(topicId) : undefined
   }, [topicId])
 
   // Problems in this topic
   const problems = useMemo(() => {
-    return topicId ? getCodingQuestionsByTopic(topicId) : []
+    return topicId ? getLearnQuestionsByTopic(topicId) : []
   }, [topicId])
 
   // Subscribe to user progress
   useEffect(() => {
-    const update = () => {
-      const state = getUserState()
-      setUserProgressMap(state.progress || {})
-    }
-    update()
-    const unsubscribe = subscribeProgress(update)
+    const unsubscribe = subscribeLearnProgress(() => {
+      setProgressTick((t) => t + 1)
+    })
     return () => unsubscribe()
   }, [])
 
@@ -51,7 +50,7 @@ export const CodingTopicProblemsPage: React.FC = () => {
     return problems.filter(
       (p) =>
         p.title.toLowerCase().includes(q) ||
-        p.preview.toLowerCase().includes(q)
+        p.problemStatement.toLowerCase().includes(q)
     )
   }, [problems, searchQuery])
 
@@ -144,9 +143,9 @@ export const CodingTopicProblemsPage: React.FC = () => {
       {filteredProblems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredProblems.map((problem) => {
-            const prog = userProgressMap[problem.slug]
-            const isSolved = prog?.status === 'SOLVED'
-            const isAttempted = prog?.status === 'ATTEMPTED'
+            const status = getLearnQuestionStatus(problem.slug, user?.id)
+            const isSolved = status === 'SOLVED'
+            const isAttempted = status === 'ATTEMPTED'
 
             return (
               <div
@@ -181,7 +180,7 @@ export const CodingTopicProblemsPage: React.FC = () => {
 
                   {/* Problem preview */}
                   <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed line-clamp-2">
-                    {problem.preview}
+                    {problem.problemStatement}
                   </p>
                 </div>
 
@@ -195,10 +194,10 @@ export const CodingTopicProblemsPage: React.FC = () => {
                   </Link>
 
                   <Link
-                    to={`/practice/${problem.slug}`}
+                    to={`/learn/coding/${topic.id}/${problem.slug}/solve`}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-sm transition-all group-hover:translate-x-0.5"
                   >
-                    <span>Practice</span>
+                    <span>Solve</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>

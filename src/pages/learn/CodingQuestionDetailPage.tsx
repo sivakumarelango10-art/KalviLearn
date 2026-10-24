@@ -10,38 +10,37 @@ import {
   Check,
   BookOpen,
 } from 'lucide-react'
-import { getCodingTopicById, getCodingQuestionBySlug } from '@/coding/questions'
-import { getUserState, subscribeProgress } from '@/lib/progress'
+import { getLearnTopic, getLearnQuestion } from '@/data/learn/coding'
+import { getLearnQuestionStatus, subscribeLearnProgress } from '@/lib/learnProgress'
+import { useAuth } from '@/contexts/AuthContext'
 
 /**
  * CodingQuestionDetailPage
  * Displays the complete problem statement, input/output formats, constraints,
  * and 3 worked examples with input, output, and explanation.
- * Provides direct action to solve in the existing Practice Arena.
+ * Provides direct action to solve in the Learn Workspace.
  * STRICT RULE: No hidden test cases are EVER displayed or referenced.
  */
 export const CodingQuestionDetailPage: React.FC = () => {
   const { topicId, slug } = useParams<{ topicId: string; slug: string }>()
+  const { user } = useAuth()
 
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
-  const [userProgressMap, setUserProgressMap] = useState<Record<string, any>>({})
+  const [, setProgressTick] = useState(0)
 
   const topic = useMemo(() => {
-    return topicId ? getCodingTopicById(topicId) : undefined
+    return topicId ? getLearnTopic(topicId) : undefined
   }, [topicId])
 
   const question = useMemo(() => {
-    return slug ? getCodingQuestionBySlug(slug) : undefined
-  }, [slug])
+    return slug && topicId ? getLearnQuestion(topicId, slug) : undefined
+  }, [topicId, slug])
 
   // Subscribe to user progress
   useEffect(() => {
-    const update = () => {
-      const state = getUserState()
-      setUserProgressMap(state.progress || {})
-    }
-    update()
-    const unsubscribe = subscribeProgress(update)
+    const unsubscribe = subscribeLearnProgress(() => {
+      setProgressTick((t) => t + 1)
+    })
     return () => unsubscribe()
   }, [])
 
@@ -73,9 +72,9 @@ export const CodingQuestionDetailPage: React.FC = () => {
     )
   }
 
-  const prog = userProgressMap[question.slug]
-  const isSolved = prog?.status === 'SOLVED'
-  const isAttempted = prog?.status === 'ATTEMPTED'
+  const status = getLearnQuestionStatus(question.slug, user?.id)
+  const isSolved = status === 'SOLVED'
+  const isAttempted = status === 'ATTEMPTED'
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -144,11 +143,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
 
         {/* Solve CTA */}
         <Link
-          to={`/practice/${question.slug}`}
+          to={`/learn/coding/${topic.id}/${question.slug}/solve`}
           className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all shrink-0 hover:shadow-md"
         >
           <Code2 className="w-4 h-4" />
-          <span>Solve in Practice Arena</span>
+          <span>Start Coding</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -298,15 +297,15 @@ export const CodingQuestionDetailPage: React.FC = () => {
               Ready to write and evaluate your solution?
             </h3>
             <p className="text-xs text-neutral-500">
-              Launch the Practice Arena to write code in Python, Java, Node.js, or C++ with live test execution.
+              Launch the Learn Workspace to write code in Python, Java, Node.js, or C++ with live test execution.
             </p>
           </div>
 
           <Link
-            to={`/practice/${question.slug}`}
+            to={`/learn/coding/${topic.id}/${question.slug}/solve`}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all shrink-0 hover:shadow-md"
           >
-            <span>Open in Practice Arena</span>
+            <span>Start Coding</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

@@ -1,0 +1,682 @@
+{
+  "exact-binary-search": {
+    "id": "learn:binary-search:exact-binary-search",
+    "slug": "exact-binary-search",
+    "topicId": "binary-search",
+    "title": "Exact Binary Search",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "lower-bound": {
+    "id": "learn:binary-search:lower-bound",
+    "slug": "lower-bound",
+    "topicId": "binary-search",
+    "title": "Lower Bound",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "upper-bound": {
+    "id": "learn:binary-search:upper-bound",
+    "slug": "upper-bound",
+    "topicId": "binary-search",
+    "title": "Upper Bound",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-occurrence": {
+    "id": "learn:binary-search:first-occurrence",
+    "slug": "first-occurrence",
+    "topicId": "binary-search",
+    "title": "First Occurrence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-occurrence": {
+    "id": "learn:binary-search:last-occurrence",
+    "slug": "last-occurrence",
+    "topicId": "binary-search",
+    "title": "Last Occurrence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-square-root": {
+    "id": "learn:binary-search:integer-square-root",
+    "slug": "integer-square-root",
+    "topicId": "binary-search",
+    "title": "Integer Square Root",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-positive": {
+    "id": "learn:binary-search:first-positive",
+    "slug": "first-positive",
+    "topicId": "binary-search",
+    "title": "First Positive",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "rotated-array-search": {
+    "id": "learn:binary-search:rotated-array-search",
+    "slug": "rotated-array-search",
+    "topicId": "binary-search",
+    "title": "Rotated Array Search",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-feasible-rate": {
+    "id": "learn:binary-search:minimum-feasible-rate",
+    "slug": "minimum-feasible-rate",
+    "topicId": "binary-search",
+    "title": "Minimum Feasible Rate",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  },
+  "mountain-peak": {
+    "id": "learn:binary-search:mountain-peak",
+    "slug": "mountain-peak",
+    "topicId": "binary-search",
+    "title": "Mountain Peak",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "25",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "50",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "100",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "999",
+        "expectedOutput": "32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "12345",
+        "expectedOutput": "112",
+        "isHidden": true
+      }
+    ]
+  }
+}

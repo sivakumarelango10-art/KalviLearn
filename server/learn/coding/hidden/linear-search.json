@@ -1,0 +1,682 @@
+{
+  "first-target-position": {
+    "id": "learn:linear-search:first-target-position",
+    "slug": "first-target-position",
+    "topicId": "linear-search",
+    "title": "First Target Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-target-position": {
+    "id": "learn:linear-search:last-target-position",
+    "slug": "last-target-position",
+    "topicId": "linear-search",
+    "title": "Last Target Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-greater-position": {
+    "id": "learn:linear-search:first-greater-position",
+    "slug": "first-greater-position",
+    "topicId": "linear-search",
+    "title": "First Greater Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "nearest-value-position": {
+    "id": "learn:linear-search:nearest-value-position",
+    "slug": "nearest-value-position",
+    "topicId": "linear-search",
+    "title": "Nearest Value Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "range-limited-search": {
+    "id": "learn:linear-search:range-limited-search",
+    "slug": "range-limited-search",
+    "topicId": "linear-search",
+    "title": "Range Limited Search",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "search-comparison-count": {
+    "id": "learn:linear-search:search-comparison-count",
+    "slug": "search-comparison-count",
+    "topicId": "linear-search",
+    "title": "Search Comparison Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-repeated-position": {
+    "id": "learn:linear-search:first-repeated-position",
+    "slug": "first-repeated-position",
+    "topicId": "linear-search",
+    "title": "First Repeated Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "name-search-position": {
+    "id": "learn:linear-search:name-search-position",
+    "slug": "name-search-position",
+    "topicId": "linear-search",
+    "title": "Name Search Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "match-index-sum": {
+    "id": "learn:linear-search:match-index-sum",
+    "slug": "match-index-sum",
+    "topicId": "linear-search",
+    "title": "Match Index Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-negative-position": {
+    "id": "learn:linear-search:first-negative-position",
+    "slug": "first-negative-position",
+    "topicId": "linear-search",
+    "title": "First Negative Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n1 4 2 4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n3 3 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3\n5 -1 2",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n10 20 30",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n-5 -4 -3 -2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5\n9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n2 7 12 17",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n4 0 9 -1 14",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  }
+}

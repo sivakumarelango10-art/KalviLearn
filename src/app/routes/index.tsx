@@ -42,6 +42,10 @@ const CodingQuestionDetailPage = lazyWithRetry(
   () => import('@/pages/learn/CodingQuestionDetailPage').then((m) => ({ default: m.CodingQuestionDetailPage })),
   'CodingQuestionDetailPage'
 )
+const LearnWorkspacePage = lazyWithRetry(
+  () => import('@/pages/learn/LearnWorkspacePage').then((m) => ({ default: m.LearnWorkspacePage })),
+  'LearnWorkspacePage'
+)
 const PracticePage = lazyWithRetry(
   () => import('@/pages/PracticePage').then((m) => ({ default: m.PracticePage })),
   'PracticePage'
@@ -195,6 +199,10 @@ export const router = createBrowserRouter([
           {
             path: 'learn/coding/:topicId/:slug',
             element: withSuspense(<CodingQuestionDetailPage />),
+          },
+          {
+            path: 'learn/coding/:topicId/:slug/solve',
+            element: withSuspense(<LearnWorkspacePage />),
           },
           {
             path: 'practice',

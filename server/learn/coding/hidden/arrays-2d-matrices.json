@@ -1,0 +1,682 @@
+{
+  "matrix-total": {
+    "id": "learn:arrays-2d-matrices:matrix-total",
+    "slug": "matrix-total",
+    "topicId": "arrays-2d-matrices",
+    "title": "Matrix Total",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "24",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "24",
+        "isHidden": true
+      }
+    ]
+  },
+  "primary-diagonal-metric": {
+    "id": "learn:arrays-2d-matrices:primary-diagonal-metric",
+    "slug": "primary-diagonal-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Primary Diagonal Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "33",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "28",
+        "isHidden": true
+      }
+    ]
+  },
+  "secondary-diagonal-metric": {
+    "id": "learn:arrays-2d-matrices:secondary-diagonal-metric",
+    "slug": "secondary-diagonal-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Secondary Diagonal Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "22",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "42",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "66",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "32",
+        "isHidden": true
+      }
+    ]
+  },
+  "row-maximum-metric": {
+    "id": "learn:arrays-2d-matrices:row-maximum-metric",
+    "slug": "row-maximum-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Row Maximum Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "26",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "51",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "75",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "39",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "36",
+        "isHidden": true
+      }
+    ]
+  },
+  "column-minimum-metric": {
+    "id": "learn:arrays-2d-matrices:column-minimum-metric",
+    "slug": "column-minimum-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Column Minimum Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "30",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "60",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "26",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "84",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "40",
+        "isHidden": true
+      }
+    ]
+  },
+  "transpose-score": {
+    "id": "learn:arrays-2d-matrices:transpose-score",
+    "slug": "transpose-score",
+    "topicId": "arrays-2d-matrices",
+    "title": "Transpose Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "34",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "69",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "93",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "26",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "44",
+        "isHidden": true
+      }
+    ]
+  },
+  "boundary-metric": {
+    "id": "learn:arrays-2d-matrices:boundary-metric",
+    "slug": "boundary-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Boundary Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "38",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "78",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "34",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "102",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "66",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "48",
+        "isHidden": true
+      }
+    ]
+  },
+  "local-peak-metric": {
+    "id": "learn:arrays-2d-matrices:local-peak-metric",
+    "slug": "local-peak-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Local Peak Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "42",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "87",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "27",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "111",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "34",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "75",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "52",
+        "isHidden": true
+      }
+    ]
+  },
+  "zero-row-metric": {
+    "id": "learn:arrays-2d-matrices:zero-row-metric",
+    "slug": "zero-row-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Zero Row Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "46",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "96",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "120",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "84",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "56",
+        "isHidden": true
+      }
+    ]
+  },
+  "chessboard-metric": {
+    "id": "learn:arrays-2d-matrices:chessboard-metric",
+    "slug": "chessboard-metric",
+    "topicId": "arrays-2d-matrices",
+    "title": "Chessboard Metric",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "50",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "2 3\n2 0 1\n4 3 5",
+        "expectedOutput": "105",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 3\n1 1 1",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 1\n2\n3\n4",
+        "expectedOutput": "39",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2\n0 -1\n5 2",
+        "expectedOutput": "46",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "2 3\n9 8 7\n6 5 4",
+        "expectedOutput": "129",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 3\n3 2 1\n0 -1 -2",
+        "expectedOutput": "93",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "2 2\n5 5\n5 5",
+        "expectedOutput": "60",
+        "isHidden": true
+      }
+    ]
+  }
+}

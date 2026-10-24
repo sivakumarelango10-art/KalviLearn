@@ -1,20 +1,22 @@
 import { codingTestCases } from '../data/codingTestCases'
 import * as practiceModule from '../data/serverTestCases'
+import { resolveLearnServerSuite } from '../../../server/learn/coding/hidden/index'
 
 /**
  * Authoritative, server-only judge test repository for BOTH question banks:
  *   practice: the original 10-belt bank (src/server/data/serverTestCases.*)
- *   coding:   the topic-wise coding bank   (src/server/data/codingTestCases.*)
+ *   coding/learn: the topic-wise coding bank (server/learn/coding/hidden/*)
  *
  * Lookup is EXACT and source-aware. There is deliberately no fuzzy/prefix/suffix matching: an unknown or
  * ambiguous identifier resolves to nothing rather than silently grading against another question's tests.
  *
  * Accepted identifiers:
- *   "coding:<slug>" | "practice:<slug>"   explicit composite ids
+ *   "learn:<topic>:<slug>" | "learn:<slug>" explicit Learn composite ids
+ *   "coding:<slug>" | "practice:<slug>"     explicit composite ids
  *   "coding-<slug>"                         CodingQuestion.id as shipped to the client
  *   "<slug>"                                bare slug (must exist in exactly one bank)
  */
-export type QuestionSource = 'practice' | 'coding'
+export type QuestionSource = 'practice' | 'coding' | 'learn'
 
 export interface JudgeCase {
   testIndex: number
@@ -46,6 +48,7 @@ const codingBank = codingTestCases as unknown as Record<string, RawSuite>
 const BANKS: Record<QuestionSource, Record<string, RawSuite>> = {
   practice: practiceBank,
   coding: codingBank,
+  learn: {},
 }
 
 function toSuite(source: QuestionSource, key: string, raw: RawSuite): QuestionSuite {
@@ -78,6 +81,26 @@ export type ResolveFailure = 'not_found' | 'ambiguous'
 
 export function resolveQuestion(identifier: string): { suite: QuestionSuite } | { error: ResolveFailure } {
   const id = (identifier || '').trim()
+
+  // 1. Explicit learn: namespace
+  if (id.startsWith('learn:')) {
+    const learnSuite = resolveLearnServerSuite(id)
+    if (learnSuite) {
+      return {
+        suite: {
+          source: 'learn',
+          key: learnSuite.slug,
+          questionId: learnSuite.id,
+          title: learnSuite.title,
+          testCases: learnSuite.testCases,
+          visibleCount: learnSuite.testCases.filter((t) => !t.isHidden).length,
+          hiddenCount: learnSuite.testCases.filter((t) => t.isHidden).length,
+        },
+      }
+    }
+    return { error: 'not_found' }
+  }
+
   const explicit = /^(practice|coding):(.+)$/.exec(id)
   if (explicit) {
     const source = explicit[1] as QuestionSource
@@ -85,15 +108,49 @@ export function resolveQuestion(identifier: string): { suite: QuestionSuite } | 
     return has(source, key) ? { suite: toSuite(source, key, BANKS[source][key]) } : { error: 'not_found' }
   }
   // CodingQuestion.id is "coding-<slug>"; only treat it as such when that coding slug really exists.
-  if (id.startsWith('coding-') && has('coding', id.slice('coding-'.length)) && !has('practice', id)) {
+  if (id.startsWith('coding-') && (has('coding', id.slice('coding-'.length)) || resolveLearnServerSuite(id)) && !has('practice', id)) {
     const key = id.slice('coding-'.length)
-    return { suite: toSuite('coding', key, codingBank[key]) }
+    if (has('coding', key)) {
+      return { suite: toSuite('coding', key, codingBank[key]) }
+    }
+    const learnSuite = resolveLearnServerSuite(id)
+    if (learnSuite) {
+      return {
+        suite: {
+          source: 'learn',
+          key: learnSuite.slug,
+          questionId: learnSuite.id,
+          title: learnSuite.title,
+          testCases: learnSuite.testCases,
+          visibleCount: learnSuite.testCases.filter((t) => !t.isHidden).length,
+          hiddenCount: learnSuite.testCases.filter((t) => t.isHidden).length,
+        },
+      }
+    }
   }
   const inPractice = has('practice', id)
-  const inCoding = has('coding', id)
+  const inCoding = has('coding', id) || Boolean(resolveLearnServerSuite(id))
   if (inPractice && inCoding) return { error: 'ambiguous' }
   if (inPractice) return { suite: toSuite('practice', id, practiceBank[id]) }
-  if (inCoding) return { suite: toSuite('coding', id, codingBank[id]) }
+  if (inCoding) {
+    if (has('coding', id)) {
+      return { suite: toSuite('coding', id, codingBank[id]) }
+    }
+    const learnSuite = resolveLearnServerSuite(id)
+    if (learnSuite) {
+      return {
+        suite: {
+          source: 'learn',
+          key: learnSuite.slug,
+          questionId: learnSuite.id,
+          title: learnSuite.title,
+          testCases: learnSuite.testCases,
+          visibleCount: learnSuite.testCases.filter((t) => !t.isHidden).length,
+          hiddenCount: learnSuite.testCases.filter((t) => t.isHidden).length,
+        },
+      }
+    }
+  }
   return { error: 'not_found' }
 }
 

@@ -21,7 +21,7 @@ export const LoginCard: FC<LoginCardProps> = ({
   isLoading: controlledLoading,
   errorMessage: controlledError,
 }) => {
-  const { loginWithGoogle, isLoading: authLoading } = useAuth()
+  const { loginWithGoogle, loginWithEmail, isLoading: authLoading } = useAuth()
   const [internalLoading, setInternalLoading] = useState(false)
   const [internalError, setInternalError] = useState<string | null>(null)
 
@@ -90,6 +90,34 @@ export const LoginCard: FC<LoginCardProps> = ({
           isLoading={isLoading}
           onClick={handleLoginClick}
         />
+
+        {!import.meta.env.PROD && (
+          <div className="pt-2 border-t border-neutral-100 flex flex-col gap-2">
+            <span className="text-[11px] font-medium text-neutral-400 text-center uppercase tracking-wider">Dev Quick Login</span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                id="dev-login-student"
+                onClick={async () => {
+                  await loginWithEmail('prajith.ps@kalvium.community')
+                }}
+                className="px-2.5 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors text-center cursor-pointer"
+              >
+                Student (Prajith)
+              </button>
+              <button
+                type="button"
+                id="dev-login-mentor"
+                onClick={async () => {
+                  await loginWithEmail('sivakumarelango10@gmail.com')
+                }}
+                className="px-2.5 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors text-center cursor-pointer"
+              >
+                Mentor (Elango)
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Legal Agreement */}
         <p className="text-xs text-neutral-500 text-center leading-relaxed pt-2">

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Search, Code2 } from 'lucide-react'
-import { searchCodingTopics } from '@/coding/questions'
+import { searchLearnTopics } from '@/data/learn/coding'
 import { CodingTopicCard } from '@/components/learn/CodingTopicCard'
 
 /**
@@ -13,7 +13,7 @@ export const CodingTopicsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredTopics = useMemo(() => {
-    return searchCodingTopics(searchQuery)
+    return searchLearnTopics(searchQuery)
   }, [searchQuery])
 
   return (
