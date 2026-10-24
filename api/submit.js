@@ -107206,11 +107206,11 @@ async function resolveProblemId(slug) {
   return null;
 }
 async function persistSubmission(params) {
-  const { userId, problemId, language, code, allPassed, passed, total, executionTimeMs } = params;
+  const { userId, problemId, language, code, allPassed, passed, total, executionTimeMs, idempotencyKey } = params;
   const result = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 };
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const submissionId = randomUUID2();
-  const { error: subError } = await supabaseServer.from("Submission").insert({
+  const insertPayload = {
     id: submissionId,
     userId,
     problemId,
@@ -107223,7 +107223,24 @@ async function persistSubmission(params) {
     // hidden test details are never stored client-visible
     executionTimeMs,
     createdAt: now
-  });
+  };
+  if (idempotencyKey) {
+    insertPayload.idempotencyKey = idempotencyKey;
+  }
+  let { error: subError } = await supabaseServer.from("Submission").insert(insertPayload);
+  if (subError && (subError.code === "PGRST204" || subError.message?.includes("idempotencyKey"))) {
+    delete insertPayload.idempotencyKey;
+    const retry = await supabaseServer.from("Submission").insert(insertPayload);
+    subError = retry.error;
+  }
+  if (subError && subError.code === "23505") {
+    const { data: existingSub } = await supabaseServer.from("Submission").select("id").eq("userId", userId).eq("problemId", problemId).eq("language", language).order("createdAt", { ascending: false }).limit(1).maybeSingle();
+    if (existingSub) {
+      result.submissionId = existingSub.id;
+      result.saved = true;
+      return result;
+    }
+  }
   if (subError) {
     console.error("[api/submit] submission insert failed:", subError.code);
     return result;
@@ -107284,7 +107301,7 @@ async function updateExistingSolve(existing, code, now, result) {
   return result;
 }
 async function processSubmission(params) {
-  const { userId, questionSlug, language, code, persist, isMentorPreview, onEvent } = params;
+  const { userId, questionSlug, language, code, persist, isMentorPreview, idempotencyKey, onEvent } = params;
   const evalResult = await executeQuestion({ questionSlug, language, code, mode: "submit", onEvent });
   const allPassed = evalResult.success && evalResult.mode === "submit" && evalResult.total === evalResult.judgeTotal && evalResult.passed === evalResult.judgeTotal && evalResult.total > 0;
   let persistence = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 };
@@ -107308,7 +107325,8 @@ async function processSubmission(params) {
           allPassed,
           passed: evalResult.passed,
           total: evalResult.total,
-          executionTimeMs: evalResult.overallTimeMs
+          executionTimeMs: evalResult.overallTimeMs,
+          idempotencyKey
         });
         if (!persistence.saved) persistence.reason = "storage_error";
       }
@@ -107406,9 +107424,8 @@ async function handler(req, res) {
   }
   const isMentorPreview = authenticatedUser.role === "MENTOR";
   const persist = !authenticatedUser.synthetic && !isMentorPreview;
-  const rawKey = typeof body.idempotencyKey === "string" && body.idempotencyKey || req.headers["x-idempotency-key"] || "";
   const codeHash = createHash("sha256").update(code).digest("hex");
-  const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : `${authenticatedUser.id}:${questionSlug}:${language}:${codeHash}`;
+  const idempotencyKey = `${authenticatedUser.id}:${questionSlug}:${language}:${codeHash}`;
   pruneIdempotencyCache();
   const stream = wantsStream(req) ? openStream(res) : null;
   const deliver = (outcome) => {
@@ -107430,6 +107447,7 @@ async function handler(req, res) {
     code,
     persist,
     isMentorPreview,
+    idempotencyKey,
     onEvent: stream ? (event) => stream(event) : void 0
   });
   if (idempotencyKey) {
