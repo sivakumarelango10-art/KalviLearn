@@ -7,6 +7,7 @@ interface QuestionCompletionModalProps {
   nextQuestionSlug?: string | null
   onContinue: () => void
   onCancel: () => void
+  isLearnCoding?: boolean
 }
 
 export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = ({
@@ -14,6 +15,7 @@ export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = (
   hasNextQuestion,
   onContinue,
   onCancel,
+  isLearnCoding = false,
 }) => {
   React.useEffect(() => {
     if (!isOpen) return
@@ -50,18 +52,26 @@ export const QuestionCompletionModal: React.FC<QuestionCompletionModalProps> = (
 
         {/* Header and Details */}
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Passed 10 / 10 Test Cases</span>
-          </div>
+          {isLearnCoding ? (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-neutral-300 text-xs font-semibold">
+              <CheckCircle2 className="w-3.5 h-3.5 text-neutral-400" />
+              <span>Practice only — no XP</span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-semibold">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Passed 10 / 10 Test Cases • +50 XP</span>
+            </div>
+          )}
           <h3 id="completion-dialog-title" className="text-2xl font-bold text-white tracking-tight">
             Question Completed!
           </h3>
           <p className="text-sm text-neutral-400 max-w-xs mx-auto">
-            You passed all 10 test cases.
-            {hasNextQuestion
-              ? ' Continue to the next question?'
-              : ' You have conquered all questions in this belt!'}
+            {isLearnCoding
+              ? 'You passed all 10 test cases. Practice only — no XP awarded.'
+              : hasNextQuestion
+              ? 'You passed all 10 test cases. Continue to the next question?'
+              : 'You have conquered all questions in this belt!'}
           </p>
         </div>
 

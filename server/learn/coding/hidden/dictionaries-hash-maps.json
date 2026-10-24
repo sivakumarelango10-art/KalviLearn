@@ -1,0 +1,682 @@
+{
+  "frequency-map": {
+    "id": "learn:dictionaries-hash-maps:frequency-map",
+    "slug": "frequency-map",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Frequency Map",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      }
+    ]
+  },
+  "word-frequency": {
+    "id": "learn:dictionaries-hash-maps:word-frequency",
+    "slug": "word-frequency",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Word Frequency",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "72",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "42",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-unique-value": {
+    "id": "learn:dictionaries-hash-maps:first-unique-value",
+    "slug": "first-unique-value",
+    "topicId": "dictionaries-hash-maps",
+    "title": "First Unique Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "26",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "30",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "35",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "96",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "54",
+        "isHidden": true
+      }
+    ]
+  },
+  "equal-pair-count": {
+    "id": "learn:dictionaries-hash-maps:equal-pair-count",
+    "slug": "equal-pair-count",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Equal Pair Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "35",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "120",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "66",
+        "isHidden": true
+      }
+    ]
+  },
+  "anagram-signature": {
+    "id": "learn:dictionaries-hash-maps:anagram-signature",
+    "slug": "anagram-signature",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Anagram Signature",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "38",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "40",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "144",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "78",
+        "isHidden": true
+      }
+    ]
+  },
+  "prefix-frequency": {
+    "id": "learn:dictionaries-hash-maps:prefix-frequency",
+    "slug": "prefix-frequency",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Prefix Frequency",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "44",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "45",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "56",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "168",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "90",
+        "isHidden": true
+      }
+    ]
+  },
+  "inventory-map": {
+    "id": "learn:dictionaries-hash-maps:inventory-map",
+    "slug": "inventory-map",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Inventory Map",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "50",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "50",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "63",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "192",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "102",
+        "isHidden": true
+      }
+    ]
+  },
+  "common-frequency-product": {
+    "id": "learn:dictionaries-hash-maps:common-frequency-product",
+    "slug": "common-frequency-product",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Common Frequency Product",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "56",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "55",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "70",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "216",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "114",
+        "isHidden": true
+      }
+    ]
+  },
+  "character-histogram": {
+    "id": "learn:dictionaries-hash-maps:character-histogram",
+    "slug": "character-histogram",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Character Histogram",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "62",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "60",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "77",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "240",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "126",
+        "isHidden": true
+      }
+    ]
+  },
+  "difference-histogram": {
+    "id": "learn:dictionaries-hash-maps:difference-histogram",
+    "slug": "difference-histogram",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Difference Histogram",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "4\n1 2 2 3",
+        "expectedOutput": "68",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3\n5 5 5",
+        "expectedOutput": "65",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4\n0 -1 0 2",
+        "expectedOutput": "11",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1\n1",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n3 3 4 4",
+        "expectedOutput": "84",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3\n10 -10 10",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "4\n-2 -2 -2 1",
+        "expectedOutput": "-15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3\n7 8 9",
+        "expectedOutput": "264",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5\n2 4 2 4 6",
+        "expectedOutput": "138",
+        "isHidden": true
+      }
+    ]
+  }
+}

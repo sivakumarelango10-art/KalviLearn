@@ -1,0 +1,682 @@
+{
+  "two-argument-maximum-function": {
+    "id": "learn:functions:two-argument-maximum-function",
+    "slug": "two-argument-maximum-function",
+    "topicId": "functions",
+    "title": "Two Argument Maximum Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "11",
+        "isHidden": true
+      }
+    ]
+  },
+  "clamp-function": {
+    "id": "learn:functions:clamp-function",
+    "slug": "clamp-function",
+    "topicId": "functions",
+    "title": "Clamp Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "9",
+        "isHidden": true
+      }
+    ]
+  },
+  "digit-score-function": {
+    "id": "learn:functions:digit-score-function",
+    "slug": "digit-score-function",
+    "topicId": "functions",
+    "title": "Digit Score Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "range-formula-function": {
+    "id": "learn:functions:range-formula-function",
+    "slug": "range-formula-function",
+    "topicId": "functions",
+    "title": "Range Formula Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "transform-function": {
+    "id": "learn:functions:transform-function",
+    "slug": "transform-function",
+    "topicId": "functions",
+    "title": "Transform Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "three-argument-helper": {
+    "id": "learn:functions:three-argument-helper",
+    "slug": "three-argument-helper",
+    "topicId": "functions",
+    "title": "Three Argument Helper",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "reusable-tax-function": {
+    "id": "learn:functions:reusable-tax-function",
+    "slug": "reusable-tax-function",
+    "topicId": "functions",
+    "title": "Reusable Tax Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "normalization-function": {
+    "id": "learn:functions:normalization-function",
+    "slug": "normalization-function",
+    "topicId": "functions",
+    "title": "Normalization Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "composition-function": {
+    "id": "learn:functions:composition-function",
+    "slug": "composition-function",
+    "topicId": "functions",
+    "title": "Composition Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "piecewise-helper-function": {
+    "id": "learn:functions:piecewise-helper-function",
+    "slug": "piecewise-helper-function",
+    "topicId": "functions",
+    "title": "Piecewise Helper Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8 2",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-4 7",
+        "expectedOutput": "-4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "10 1",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "-8 -2",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "11 6",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 20",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "7 4",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  }
+}

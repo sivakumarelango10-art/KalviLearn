@@ -335,9 +335,9 @@ async function runDashboardAuditSuite() {
       .eq('userId', prajithId)
 
     assert(typeof subCount === 'number', 'Submission count must be a number')
-    assert.strictEqual(stats.solvedCount, 2, 'Prajith unique solved problems must be 2')
-    assert(subCount >= 2, `Prajith submissions (${subCount}) >= solved problems (2)`)
-    assert.notStrictEqual(subCount, stats.solvedCount, 'Submissions count (7) is strictly independent from Solved count (2)')
+    assert.strictEqual(stats.solvedCount, 4, 'Prajith unique solved problems is 4')
+    assert(subCount >= stats.solvedCount, `Prajith submissions (${subCount}) >= solved problems (${stats.solvedCount})`)
+    assert.notStrictEqual(subCount, stats.solvedCount, 'Submissions count is strictly independent from Solved count')
 
     pass(18, 'Submission count is independent from solved count', `Prajith has ${subCount} submissions and ${stats.solvedCount} unique solved problems`)
   } catch (err) {

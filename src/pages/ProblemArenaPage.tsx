@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom'
 import Editor, { OnMount } from '@monaco-editor/react'
 import confetti from 'canvas-confetti'
 import {
@@ -21,6 +21,7 @@ import {
   normalizeLanguageSlug,
   ProgrammingLanguage,
 } from '@/data/curriculum/index'
+import { findLearnQuestionBySlug } from '@/data/learn/coding'
 import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult } from '@/lib/runner/codeRunner'
 import {
   getUserState,
@@ -46,29 +47,30 @@ export const ProblemArenaPage: React.FC = () => {
 
   const curriculum = useMemo(() => getCurriculum(currentLanguage), [currentLanguage])
 
+  // 1. Redirection for old bookmarks to Learn questions (/practice/<slug> or /practice/:lang/<slug>)
+  const learnQuestion = useMemo(() => (slug ? findLearnQuestionBySlug(slug) : undefined), [slug])
+
   // Find problem within this language's curriculum
   const currentProblemData = useMemo(() => {
-    let targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
+    if (learnQuestion) return null
+
+    const targetProblem = getProblemByLanguageAndSlug(currentLanguage, slug || '')
+    if (!targetProblem) {
+      return null
+    }
+
     let targetBelt = curriculum.belts[0]
     let targetBeltIndex = 0
     let targetProblemIndex = 0
 
-    if (!targetProblem) {
-      // Fallback to first problem in first belt
-      targetBelt = curriculum.belts[0]
-      targetProblem = targetBelt.problems[0]
-      targetBeltIndex = 0
-      targetProblemIndex = 0
-    } else {
-      for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
-        const currentBelt = curriculum.belts[bIdx]
-        const problemIdx = currentBelt.problems.findIndex((problemItem) => problemItem.slug === targetProblem?.slug)
-        if (problemIdx !== -1) {
-          targetBelt = currentBelt
-          targetBeltIndex = bIdx
-          targetProblemIndex = problemIdx
-          break
-        }
+    for (let bIdx = 0; bIdx < curriculum.belts.length; bIdx++) {
+      const currentBelt = curriculum.belts[bIdx]
+      const problemIdx = currentBelt.problems.findIndex((problemItem) => problemItem.slug === targetProblem.slug)
+      if (problemIdx !== -1) {
+        targetBelt = currentBelt
+        targetBeltIndex = bIdx
+        targetProblemIndex = problemIdx
+        break
       }
     }
 
@@ -82,10 +84,25 @@ export const ProblemArenaPage: React.FC = () => {
 
     return {
       belt: targetBelt,
-      problem: targetProblem!,
+      problem: targetProblem,
       nextSlug,
     }
-  }, [curriculum, currentLanguage, slug])
+  }, [curriculum, currentLanguage, slug, learnQuestion])
+
+  // Redirect if this was a Learn question
+  if (learnQuestion) {
+    return (
+      <Navigate
+        to={`/learn/coding/${learnQuestion.topicSlug}/${learnQuestion.slug}/solve?lang=${currentLanguage}`}
+        replace
+      />
+    )
+  }
+
+  // If not a Practice problem, render not found card
+  if (!currentProblemData) {
+    return <ProblemNotFoundCard slug={slug} language={currentLanguage} />
+  }
 
   const currentBelt = currentProblemData.belt
   const currentProblem = currentProblemData.problem

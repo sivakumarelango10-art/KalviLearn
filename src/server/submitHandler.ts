@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { randomUUID } from 'node:crypto'
+import { randomUUID, createHash } from 'node:crypto'
 import { executeQuestion, type JudgeEvent } from './executeService'
 import { openStream, wantsStream } from './judge/stream'
 import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
@@ -75,7 +75,7 @@ interface PersistenceResult {
   progressUpdated: boolean
   xpEarned: number
   /** Why nothing was stored, when `saved` is false. */
-  reason?: 'not_persisted_test_identity' | 'question_not_registered' | 'storage_error' | 'evaluation_failed'
+  reason?: 'not_persisted_test_identity' | 'question_not_registered' | 'storage_error' | 'evaluation_failed' | 'preview_mode_mentor' | 'learn_practice_isolated'
 }
 
 /**
@@ -91,13 +91,14 @@ async function persistSubmission(params: {
   passed: number
   total: number
   executionTimeMs: number
+  idempotencyKey?: string
 }): Promise<PersistenceResult> {
-  const { userId, problemId, language, code, allPassed, passed, total, executionTimeMs } = params
+  const { userId, problemId, language, code, allPassed, passed, total, executionTimeMs, idempotencyKey } = params
   const result: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
   const now = new Date().toISOString()
 
   const submissionId = randomUUID()
-  const { error: subError } = await supabaseServer.from('Submission').insert({
+  const insertPayload: Record<string, unknown> = {
     id: submissionId,
     userId,
     problemId,
@@ -109,7 +110,40 @@ async function persistSubmission(params: {
     testResults: [], // hidden test details are never stored client-visible
     executionTimeMs,
     createdAt: now,
-  })
+  }
+  if (idempotencyKey) {
+    insertPayload.idempotencyKey = idempotencyKey
+  }
+
+  let { error: subError } = await supabaseServer.from('Submission').insert(insertPayload)
+
+  // Fallback: If DB table does not yet have idempotencyKey column (migration pending in prod),
+  // retry without that column so production submissions don't fail.
+  if (subError && (subError.code === 'PGRST204' || subError.message?.includes('idempotencyKey'))) {
+    delete insertPayload.idempotencyKey
+    const retry = await supabaseServer.from('Submission').insert(insertPayload)
+    subError = retry.error
+  }
+
+  // DB-level uniqueness constraint handling (code 23505):
+  // A concurrent serverless instance or duplicate request already inserted this submission!
+  if (subError && subError.code === '23505') {
+    const { data: existingSub } = await supabaseServer
+      .from('Submission')
+      .select('id')
+      .eq('userId', userId)
+      .eq('problemId', problemId)
+      .eq('language', language)
+      .order('createdAt', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (existingSub) {
+      result.submissionId = existingSub.id
+      result.saved = true
+      return result
+    }
+  }
+
   if (subError) {
     console.error('[api/submit] submission insert failed:', subError.code)
     return result
@@ -200,9 +234,11 @@ async function processSubmission(params: {
   language: string
   code: string
   persist: boolean
+  isMentorPreview?: boolean
+  idempotencyKey?: string
   onEvent?: (event: JudgeEvent) => void
 }): Promise<SubmitOutcome> {
-  const { userId, questionSlug, language, code, persist, onEvent } = params
+  const { userId, questionSlug, language, code, persist, isMentorPreview, idempotencyKey, onEvent } = params
 
   // 1. Authoritatively evaluate the FULL server suite (3 visible + 7 hidden). The client never supplies tests.
   const evalResult = await executeQuestion({ questionSlug, language, code, mode: 'submit', onEvent })
@@ -216,9 +252,15 @@ async function processSubmission(params: {
 
   // 2. Persist (best effort - the evaluation result is still returned if storage is unavailable)
   let persistence: PersistenceResult = { saved: false, submissionId: null, progressUpdated: false, xpEarned: 0 }
-  const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding):/, '')
-  if (!persist) {
-    persistence.reason = 'not_persisted_test_identity'
+  const questionKey = (evalResult.questionId || questionSlug).replace(/^(practice|coding|learn):/, '')
+  const isLearn =
+    questionSlug.startsWith('learn:') ||
+    Boolean(evalResult.questionId?.startsWith('learn:')) ||
+    Boolean(evalResult.questionId?.startsWith('coding:'))
+  if (isLearn) {
+    persistence.reason = 'learn_practice_isolated'
+  } else if (!persist) {
+    persistence.reason = isMentorPreview ? 'preview_mode_mentor' : 'not_persisted_test_identity'
   } else if (!evalResult.questionId || evalResult.status === 'SYSTEM_ERROR') {
     persistence.reason = 'evaluation_failed'
   } else {
@@ -237,6 +279,7 @@ async function processSubmission(params: {
           passed: evalResult.passed,
           total: evalResult.total,
           executionTimeMs: evalResult.overallTimeMs,
+          idempotencyKey,
         })
         if (!persistence.saved) persistence.reason = 'storage_error'
       }
@@ -351,9 +394,13 @@ export default async function handler(
     })
   }
 
-  // Idempotency (scoped to the authenticated user so keys cannot collide across accounts)
-  const rawKey = (typeof body.idempotencyKey === 'string' && body.idempotencyKey) || (req.headers['x-idempotency-key'] as string) || ''
-  const idempotencyKey = rawKey && rawKey.length <= 200 ? `${authenticatedUser.id}:${rawKey}` : ''
+  const isMentorPreview = (authenticatedUser as any).role === 'MENTOR'
+  const persist = !authenticatedUser.synthetic && !isMentorPreview
+
+  // Idempotency (scoped to authenticated user so keys cannot collide across accounts)
+  // Deterministic SHA-256 hash of user + question + language + code provides cross-instance idempotency
+  const codeHash = createHash('sha256').update(code).digest('hex')
+  const idempotencyKey = `${authenticatedUser.id}:${questionSlug}:${language}:${codeHash}`
   pruneIdempotencyCache()
   const stream = wantsStream(req) ? openStream(res) : null
   const deliver = (outcome: SubmitOutcome) => {
@@ -375,7 +422,9 @@ export default async function handler(
     questionSlug,
     language,
     code,
-    persist: !authenticatedUser.synthetic,
+    persist,
+    isMentorPreview,
+    idempotencyKey,
     onEvent: stream ? (event) => stream(event) : undefined,
   })
   if (idempotencyKey) {

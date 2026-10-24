@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 export const PythonLogo: React.FC<{ className?: string }> = ({ className = 'w-12 h-12' }) => (
@@ -165,12 +165,15 @@ export const LanguageCards: React.FC<LanguageCardsProps> = ({
   onSelectLanguage,
   targetProblemSlug,
 }) => {
+  const location = useLocation()
+  const searchParams = location.search
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 max-w-5xl mx-auto w-full">
       {LANGUAGE_OPTIONS.map((lang) => {
         const targetUrl = targetProblemSlug
-          ? `/practice/${lang.id}/${targetProblemSlug}`
-          : `/practice/${lang.id}`
+          ? `/practice/${lang.id}/${targetProblemSlug}${searchParams}`
+          : `/practice/${lang.id}${searchParams}`
 
         return (
           <Link

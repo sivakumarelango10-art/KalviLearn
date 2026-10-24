@@ -18,12 +18,13 @@ interface GrowthMentorCardProps {
  */
 export const GrowthMentorCard: React.FC<GrowthMentorCardProps> = ({ className }) => {
   const { user } = useAuth()
-  const { mentorName, isLoading, error } = useGrowthMentor(user?.id)
+  const isMentor = user?.role === 'MENTOR'
+  const { mentorName, isLoading, error } = useGrowthMentor(isMentor ? undefined : user?.id)
 
   return (
     <div
       className={cn(
-        'bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 shadow-sm interactive-card',
+        'bg-white rounded-2xl p-5 sm:p-5 border border-neutral-200/80 shadow-xs interactive-card',
         className
       )}
     >
@@ -31,7 +32,11 @@ export const GrowthMentorCard: React.FC<GrowthMentorCardProps> = ({ className })
         Growth Mentor
       </h2>
 
-      {isLoading ? (
+      {isMentor ? (
+        <div className="text-sm font-medium text-neutral-500">
+          Preview Mode: Not applicable for Mentors
+        </div>
+      ) : isLoading ? (
         <div className="py-1">
           <div className="h-6 w-36 bg-neutral-100 animate-pulse rounded-lg" />
         </div>

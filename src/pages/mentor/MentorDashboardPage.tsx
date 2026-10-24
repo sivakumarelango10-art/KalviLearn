@@ -3,7 +3,6 @@ import {
   Users,
   Flame,
   Search,
-  TrendingUp,
   CheckCircle2,
   AlertTriangle,
   Award,
@@ -61,8 +60,9 @@ export const MentorDashboardPage: React.FC = () => {
 
   // Real mentor cohort telemetry computed directly from real database state
   const totalStudents = students.length
-  const activeStudents = students.filter((student) => !student.needsAttention).length
+  const activeStudents = students.filter((student) => student.isActive).length
   const attentionCount = students.filter((student) => student.needsAttention).length
+  const activePercent = totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 0
   const cohortMasteryPercent = totalStudents > 0
     ? Math.round(students.reduce((accumulator, student) => accumulator + student.progressPercent, 0) / totalStudents)
     : 0
@@ -116,9 +116,9 @@ export const MentorDashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-            <span>Kalvi AI & Computing Track</span>
-            <span className="text-emerald-600 font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> 100% Onboarded
+            <span>Enrolled Cohort</span>
+            <span className="text-neutral-700 font-semibold flex items-center gap-1">
+              <Users className="w-3 h-3" /> {totalStudents} Assigned
             </span>
           </div>
         </div>
@@ -138,12 +138,12 @@ export const MentorDashboardPage: React.FC = () => {
               {isLoading ? '...' : activeStudents}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
-              Active Students ({totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 100}%)
+              Active Students ({activePercent}%)
             </div>
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-            <span>Maintained coding streaks</span>
-            <span className="text-emerald-600 font-semibold">Active daily</span>
+            <span>Active within 7 days</span>
+            <span className="text-emerald-600 font-semibold">{activeStudents} of {totalStudents}</span>
           </div>
         </div>
 
@@ -153,12 +153,20 @@ export const MentorDashboardPage: React.FC = () => {
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
               Intervention Status
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <CheckCircle2 className="w-5 h-5" />
+            <div className={cn(
+              "w-10 h-10 rounded-2xl flex items-center justify-center border",
+              attentionCount > 0
+                ? "bg-amber-50 text-amber-600 border-amber-200"
+                : "bg-emerald-50 text-emerald-600 border-emerald-100"
+            )}>
+              {attentionCount > 0 ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
+            <div className={cn(
+              "text-3xl sm:text-4xl font-extrabold tracking-tight",
+              attentionCount > 0 ? "text-amber-600" : "text-neutral-900"
+            )}>
               {isLoading ? '...' : attentionCount}
             </div>
             <div className="text-xs font-semibold text-neutral-500 mt-1">
@@ -167,10 +175,10 @@ export const MentorDashboardPage: React.FC = () => {
           </div>
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
             <span className={cn('font-medium', attentionCount > 0 ? 'text-amber-600' : 'text-emerald-600')}>
-              {attentionCount > 0 ? `${attentionCount} students flagged` : 'All registered students on track'}
+              {attentionCount > 0 ? `${attentionCount} student${attentionCount > 1 ? 's' : ''} flagged` : 'All registered students on track'}
             </span>
-            <span className="text-emerald-600 font-semibold">
-              {attentionCount === 0 ? '100% Healthy' : 'Action suggested'}
+            <span className={cn('font-semibold', attentionCount > 0 ? 'text-amber-600' : 'text-emerald-600')}>
+              {attentionCount === 0 ? 'All on track' : 'Action suggested'}
             </span>
           </div>
         </div>

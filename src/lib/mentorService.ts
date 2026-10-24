@@ -3,6 +3,7 @@ import { registerCacheClearer } from './cacheRegistry'
 import { supabase } from './supabase'
 import { calculateAuthoritativeStreak } from './streak'
 import { fetchTotalProblemCount } from './problemStatsService'
+import problemsData from '../data/problems.json'
 
 export interface SolvedProblemItem {
   problemId: string
@@ -35,7 +36,7 @@ export interface MentorStudent {
   mentorName?: string
   mentorEmail?: string
   campus?: string
-  belt: 'Belt 1' | 'Belt 2' | 'Belt 3'
+  belt: string
   beltColor: string
   progressPercent: number
   solvedCount: number
@@ -46,11 +47,13 @@ export interface MentorStudent {
   lastActive: string
   lastActiveRaw?: string
   status: 'ACTIVE' | 'ATTENTION'
+  isActive: boolean
   needsAttention: boolean
   attentionReason?: string
   joinedDate?: string
   solvedSlugs?: string[]
   solvedProblems: SolvedProblemItem[]
+  latestSolved?: SolvedProblemItem | null
   languageSolvedCounts: {
     python: number
     java: number
@@ -108,8 +111,8 @@ export interface BeltMetric {
   color: string
   totalProblems: number
   cohortCompleted: number
-  avgPassRate: number
-  bottleneck: string
+  avgPassRate: number | null
+  bottleneck: string | null
 }
 
 export interface MentorProfile {
@@ -139,11 +142,65 @@ export interface AddStudentResult {
   student?: MentorStudent
 }
 
-const BELT_DEFINITIONS = [
-  { order: 1, name: 'Belt 1', title: 'Programming Foundations', color: '#3B82F6', totalProblems: 20, bottleneck: 'Basic Syntax & Loop Bounds' },
-  { order: 2, name: 'Belt 2', title: 'Intermediate Data Structures & Logic', color: '#10B981', totalProblems: 30, bottleneck: 'Two-Pointer & Sliding Window Bounds' },
-  { order: 3, name: 'Belt 3', title: 'Advanced Algorithmic Patterns', color: '#EF4444', totalProblems: 35, bottleneck: 'Dynamic Programming & State Transitions' },
-]
+export const COHORT_THRESHOLDS = {
+  ACTIVE_DAYS: 7,
+  ATTENTION_INACTIVE_DAYS: 7,
+  ATTENTION_FAILED_TESTS: 4,
+} as const
+
+export function computeStudentBelt(solvedCount: number) {
+  if (solvedCount >= 410) return { order: 10, name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
+  if (solvedCount >= 330) return { order: 9, name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
+  if (solvedCount >= 265) return { order: 8, name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+  if (solvedCount >= 205) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+  if (solvedCount >= 165) return { order: 6, name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+  if (solvedCount >= 125) return { order: 5, name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
+  if (solvedCount >= 85) return { order: 4, name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
+  if (solvedCount >= 50) return { order: 3, name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
+  if (solvedCount >= 20) return { order: 2, name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+  return { order: 1, name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
+}
+
+export const BELT_DEFINITIONS: Array<{
+  order: number
+  name: string
+  title: string
+  color: string
+  totalProblems: number
+}> = (problemsData as Array<{ order: number; name: string; title: string; color: string; problems: unknown[] }>).map((b) => ({
+  order: b.order,
+  name: b.name,
+  title: b.title,
+  color: b.color,
+  totalProblems: b.problems.length,
+}))
+
+export function deduplicateSubmissions<T extends { userId?: string; studentId?: string; problemId?: string; problemSlug?: string; language?: string; createdAt?: string; createdAtRaw?: string; code?: string; status?: string }>(
+  subs: T[],
+  windowSec = 15
+): T[] {
+  const result: T[] = []
+  const lastSeenMap = new Map<string, number>()
+  const windowMs = windowSec * 1000
+
+  for (const s of subs) {
+    const user = s.userId || s.studentId || ''
+    const slug = s.problemSlug || s.problemId || ''
+    const lang = normalizeLanguage(s.language)
+    const codeSnippet = (s.code || '').trim().slice(0, 100)
+    const timeMs = s.createdAtRaw || s.createdAt ? new Date(s.createdAtRaw || s.createdAt || 0).getTime() : 0
+    const groupKey = `${user}:${slug}:${lang}:${s.status}:${codeSnippet}`
+
+    const prevTime = lastSeenMap.get(groupKey)
+    if (prevTime !== undefined && Math.abs(timeMs - prevTime) <= windowMs) {
+      continue
+    }
+
+    lastSeenMap.set(groupKey, timeMs)
+    result.push(s)
+  }
+  return result
+}
 
 export function formatRelativeTime(dateString?: string | null): string {
   if (!dateString) return 'Inactive'
@@ -162,7 +219,7 @@ export function formatRelativeTime(dateString?: string | null): string {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-function normalizeLanguage(lang?: string | null): 'python' | 'java' | 'nodejs' | 'cpp' {
+export function normalizeLanguage(lang?: string | null): 'python' | 'java' | 'nodejs' | 'cpp' {
   if (!lang) return 'python'
   const lower = lang.toLowerCase()
   if (lower.includes('java') && !lower.includes('script')) return 'java'
@@ -171,7 +228,7 @@ function normalizeLanguage(lang?: string | null): 'python' | 'java' | 'nodejs' |
   return 'python'
 }
 
-function getLanguageLabel(lang: string): string {
+export function getLanguageLabel(lang: string): string {
   switch (lang) {
     case 'java': return 'Java'
     case 'nodejs': return 'Node.js'
@@ -401,67 +458,88 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
 
     const students: MentorStudent[] = studentUsers.map((su) => {
       const solvedList = progressByUser.get(su.userId) || []
-      const recentSubs = submissionsByUser.get(su.userId) || []
+      const rawSubs = submissionsByUser.get(su.userId) || []
+      // Deduplicate near-duplicate submissions (within 15s with same code) so double-writes don't distort pass rate or counts
+      const recentSubs = deduplicateSubmissions(rawSubs)
 
-      const solvedProblems: SolvedProblemItem[] = []
-      const languageSolvedCounts = {
-        python: 0,
-        java: 0,
-        cpp: 0,
-        nodejs: 0,
+      // A problem is solved in language L if UserProgress has (SOLVED, L) OR Submission has (PASSED 10/10, L)
+      const solvedByLang: Record<'python' | 'java' | 'nodejs' | 'cpp', Set<string>> = {
+        python: new Set(),
+        java: new Set(),
+        cpp: new Set(),
+        nodejs: new Set(),
       }
-      const seenProblemIds = new Set<string>()
+      const uniqueSolvedOverall = new Map<string, SolvedProblemItem>()
 
       for (const p of solvedList) {
         const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
         const pLang = normalizeLanguage(p.language)
-        languageSolvedCounts[pLang] = (languageSolvedCounts[pLang] || 0) + 1
-        if (seenProblemIds.has(p.problemId)) {
-          continue
+        const slug = prob?.slug || p.problemId
+        if (slug) {
+          solvedByLang[pLang].add(slug)
+          if (!uniqueSolvedOverall.has(slug)) {
+            uniqueSolvedOverall.set(slug, {
+              problemId: p.problemId,
+              title: prob?.title || 'Practice Challenge',
+              slug,
+              difficulty: prob?.difficulty || 'Easy',
+              beltName: prob?.Belt?.name || 'Belt 1',
+              beltColor: prob?.Belt?.color || '#3B82F6',
+              language: pLang,
+              languageLabel: getLanguageLabel(pLang),
+              solvedAt: p.solvedAt || new Date().toISOString(),
+              solvedAtFormatted: formatRelativeTime(p.solvedAt),
+            })
+          }
         }
-        seenProblemIds.add(p.problemId)
-        solvedProblems.push({
-          problemId: p.problemId,
-          title: prob?.title || 'Practice Challenge',
-          slug: prob?.slug || 'challenge',
-          difficulty: prob?.difficulty || 'Easy',
-          beltName: prob?.Belt?.name || 'Belt 1',
-          beltColor: prob?.Belt?.color || '#3B82F6',
-          language: pLang,
-          languageLabel: getLanguageLabel(pLang),
-          solvedAt: p.solvedAt || new Date().toISOString(),
-          solvedAtFormatted: formatRelativeTime(p.solvedAt),
-        })
       }
 
       // Also include any 10/10 passed submissions not already present in UserProgress
       for (const s of recentSubs) {
-        if (s.status === 'PASSED' && s.passedTests === 10 && !seenProblemIds.has(s.problemId)) {
-          seenProblemIds.add(s.problemId)
+        if (s.status === 'PASSED' && (s.passedTests === 10 || s.passedTests === s.totalTests)) {
           const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
           const sLang = normalizeLanguage(s.language)
-          languageSolvedCounts[sLang] = (languageSolvedCounts[sLang] || 0) + 1
-          solvedProblems.push({
-            problemId: s.problemId,
-            title: prob?.title || 'Practice Challenge',
-            slug: prob?.slug || 'challenge',
-            difficulty: prob?.difficulty || 'Easy',
-            beltName: prob?.Belt?.name || 'Belt 1',
-            beltColor: prob?.Belt?.color || '#3B82F6',
-            language: sLang,
-            languageLabel: getLanguageLabel(sLang),
-            solvedAt: s.createdAt || new Date().toISOString(),
-            solvedAtFormatted: formatRelativeTime(s.createdAt),
-          })
+          const slug = prob?.slug || s.problemId
+          if (slug) {
+            solvedByLang[sLang].add(slug)
+            const existing = uniqueSolvedOverall.get(slug)
+            const subTime = s.createdAt ? new Date(s.createdAt).getTime() : 0
+            const existingTime = existing?.solvedAt ? new Date(existing.solvedAt).getTime() : 0
+            if (!existing || subTime > existingTime) {
+              uniqueSolvedOverall.set(slug, {
+                problemId: s.problemId,
+                title: prob?.title || 'Practice Challenge',
+                slug,
+                difficulty: prob?.difficulty || 'Easy',
+                beltName: prob?.Belt?.name || 'Belt 1',
+                beltColor: prob?.Belt?.color || '#3B82F6',
+                language: sLang,
+                languageLabel: getLanguageLabel(sLang),
+                solvedAt: s.createdAt || new Date().toISOString(),
+                solvedAtFormatted: formatRelativeTime(s.createdAt),
+              })
+            }
+          }
         }
       }
 
-      const solvedCount = solvedProblems.length
-      const progressPercent = totalProblemsCount > 0 ? Math.min(100, Math.round((solvedCount / totalProblemsCount) * 100)) : 0
+      const languageSolvedCounts = {
+        python: solvedByLang.python.size,
+        java: solvedByLang.java.size,
+        cpp: solvedByLang.cpp.size,
+        nodejs: solvedByLang.nodejs.size,
+      }
 
-      const baseSolvedXp = solvedList.reduce((acc, p: any) => acc + Number(p.xpEarned != null ? p.xpEarned : 50), 0)
-      const extraPassedCount = recentSubs.filter((s) => s.status === 'PASSED' && s.passedTests === 10 && !seenProblemIds.has(s.problemId)).length
-      const totalXp = baseSolvedXp + (extraPassedCount * 50)
+      // Solved problems sorted by solvedAt descending (newest first!)
+      const solvedProblems = Array.from(uniqueSolvedOverall.values()).sort(
+        (a, b) => new Date(b.solvedAt).getTime() - new Date(a.solvedAt).getTime()
+      )
+      const latestSolved = solvedProblems[0] || null
+      const solvedCount = uniqueSolvedOverall.size
+      const solvedSlugs = Array.from(uniqueSolvedOverall.keys())
+
+      const progressPercent = totalProblemsCount > 0 ? Math.min(100, Math.round((solvedCount / totalProblemsCount) * 100)) : 0
+      const totalXp = solvedCount * 50
 
       const recentSubmissions = recentSubs.slice(0, 15).map((s: any) => {
         const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
@@ -483,29 +561,38 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         }
       })
 
-      let highestBeltOrder = 1
-      const solvedSlugs: string[] = []
-      for (const p of solvedProblems) {
-        if (p.slug) solvedSlugs.push(p.slug)
-        const bOrder = p.beltName === 'Belt 3' ? 3 : p.beltName === 'Belt 2' ? 2 : 1
-        if (bOrder > highestBeltOrder) highestBeltOrder = bOrder
-      }
-
-      let belt: 'Belt 1' | 'Belt 2' | 'Belt 3' = 'Belt 1'
-      let beltColor = '#3B82F6'
-      if (highestBeltOrder >= 3 || solvedCount >= 40) { belt = 'Belt 3'; beltColor = '#EF4444' }
-      else if (highestBeltOrder >= 2 || solvedCount >= 15) { belt = 'Belt 2'; beltColor = '#10B981' }
+      // Single source of truth for belt progression: aligned with Student Dashboard cumulative solved thresholds
+      const studentBelt = computeStudentBelt(solvedCount)
+      const belt = studentBelt.name
+      const beltColor = studentBelt.color
 
       const latestSub = recentSubs[0]
-      const latestProg = [...solvedProblems].sort((a, b) => new Date(b.solvedAt || 0).getTime() - new Date(a.solvedAt || 0).getTime())[0]
       const subTime = latestSub?.createdAt ? new Date(latestSub.createdAt).getTime() : 0
-      const progTime = latestProg?.solvedAt ? new Date(latestProg.solvedAt).getTime() : 0
+      const progTime = latestSolved?.solvedAt ? new Date(latestSolved.solvedAt).getTime() : 0
       const lastActiveRaw = Math.max(subTime, progTime) > 0 ? new Date(Math.max(subTime, progTime)).toISOString() : su.createdAt
-      const language = normalizeLanguage(latestSub?.language || latestProg?.language)
+      const language = normalizeLanguage(latestSub?.language || latestSolved?.language)
       const activityTimestamps = [...recentSubs.map((s) => s.createdAt), ...solvedProblems.map((p) => p.solvedAt)].filter(Boolean) as string[]
       const streak = calculateAuthoritativeStreak(activityTimestamps).streak
+
+      // Threshold-based Attention & Active calculation
+      const nowMs = Date.now()
+      const daysSinceActive = lastActiveRaw
+        ? Math.floor((nowMs - new Date(lastActiveRaw).getTime()) / (1000 * 60 * 60 * 24))
+        : 999
       const recentFailedCount = recentSubs.slice(0, 5).filter((s) => s.status === 'FAILED').length
-      const needsAttention = recentFailedCount >= 4
+
+      let needsAttention = false
+      let attentionReason: string | undefined = undefined
+
+      if (daysSinceActive > COHORT_THRESHOLDS.ATTENTION_INACTIVE_DAYS) {
+        needsAttention = true
+        attentionReason = `Inactive for ${daysSinceActive} days`
+      } else if (recentFailedCount >= COHORT_THRESHOLDS.ATTENTION_FAILED_TESTS) {
+        needsAttention = true
+        attentionReason = `${recentFailedCount} failed test executions in recent problems`
+      }
+
+      const status: 'ACTIVE' | 'ATTENTION' = needsAttention ? 'ATTENTION' : 'ACTIVE'
 
       return {
         id: su.userId,
@@ -525,18 +612,24 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         mentorName: mentorProfile?.name || mentorProfile?.user?.name || 'Assigned Growth Mentor',
         mentorEmail: mentorProfile?.email || mentorProfile?.user?.email || '',
         campus: 'Kalvi National Technology Campus',
-        belt, beltColor,
-        progressPercent, solvedCount, totalProblems: totalProblemsCount,
+        belt,
+        beltColor,
+        progressPercent,
+        solvedCount,
+        totalProblems: totalProblemsCount,
         totalXp,
-        streak, language,
+        streak,
+        language,
         lastActive: formatRelativeTime(lastActiveRaw),
         lastActiveRaw,
-        status: needsAttention ? 'ATTENTION' as const : 'ACTIVE' as const,
+        status,
+        isActive: !needsAttention && daysSinceActive <= COHORT_THRESHOLDS.ACTIVE_DAYS,
         needsAttention,
-        attentionReason: needsAttention ? `${recentFailedCount} failed test executions in recent problems` : undefined,
+        attentionReason,
         joinedDate: su.createdAt ? new Date(su.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Jan 2026',
         solvedSlugs,
         solvedProblems,
+        latestSolved,
         languageSolvedCounts,
         recentSubmissions,
       }
@@ -604,8 +697,9 @@ export async function fetchMentorSubmissions(
       return emptyResult
     }
 
-    const hasMore = subs.length > limit
-    const pageSubs = subs.slice(0, limit)
+    const deduplicatedSubs = deduplicateSubmissions(subs)
+    const hasMore = deduplicatedSubs.length > limit
+    const pageSubs = deduplicatedSubs.slice(0, limit)
 
     // Check if any submission userId is missing from userMap (e.g. if studentUserIds was null)
     const missingUserIds = Array.from(
@@ -660,32 +754,145 @@ export async function fetchMentorSubmissions(
 
 /**
  * Computes live curriculum metrics per belt from actual student progress and submissions.
+ * Scoped strictly to the authenticated mentor's assigned students.
  */
-export async function fetchMentorCurriculumMetrics(): Promise<BeltMetric[]> {
+export async function fetchMentorCurriculumMetrics(mentorUserId?: string): Promise<BeltMetric[]> {
   try {
+    let studentUserIds: string[] = []
+
+    if (mentorUserId) {
+      const mp = await getMentorProfile(mentorUserId)
+      if (mp) {
+        const sus = await getMentorStudentUsers(mp.id)
+        studentUserIds = sus.map((s) => s.userId)
+      }
+    } else {
+      const { data: allStudents } = await supabase
+        .from('students')
+        .select('user_id')
+        .eq('status', 'ACTIVE')
+      studentUserIds = (allStudents || []).map((s) => s.user_id).filter(Boolean)
+    }
+
+    if (studentUserIds.length === 0) {
+      return BELT_DEFINITIONS.map((def) => ({
+        order: def.order,
+        name: def.name,
+        title: def.title,
+        color: def.color,
+        totalProblems: def.totalProblems,
+        cohortCompleted: 0,
+        avgPassRate: null,
+        bottleneck: null,
+      }))
+    }
+
     const [progressRes, submissionsRes] = await Promise.all([
-      fetchAllRows(() => supabase.from('UserProgress').select('id, userId, status, Problem(beltId, Belt(order, name, color))').eq('status', 'SOLVED')),
-      fetchAllRows(() => supabase.from('Submission').select('id, status, Problem(beltId, Belt(order))')),
+      fetchAllRows(() =>
+        supabase
+          .from('UserProgress')
+          .select('id, userId, problemId, status, Problem(slug, title, beltId, Belt(order, name, color))')
+          .in('userId', studentUserIds)
+          .eq('status', 'SOLVED')
+      ),
+      fetchAllRows(
+        () =>
+          supabase
+            .from('Submission')
+            .select('id, userId, problemId, status, language, code, createdAt, passedTests, totalTests, Problem(slug, title, beltId, Belt(order, name, color))')
+            .in('userId', studentUserIds),
+        [{ column: 'createdAt', ascending: false }]
+      ),
     ])
+
     const progressRows = progressRes.data || []
-    const submissionRows = submissionsRes.data || []
+    const rawSubmissionRows = submissionsRes.data || []
+    const submissionRows = deduplicateSubmissions(rawSubmissionRows)
+
     return BELT_DEFINITIONS.map((def) => {
-      const solvedInBeltByUser = new Map<string, number>()
+      // Active in this milestone: distinct student user IDs assigned to THIS mentor who have
+      // solved or submitted a problem in that belt.
+      const activeStudentsInBelt = new Set<string>()
+
       for (const row of progressRows) {
         const problemData = row.Problem as { Belt?: { order?: number } } | null
-        if (problemData?.Belt?.order === def.order) {
-          solvedInBeltByUser.set(row.userId, (solvedInBeltByUser.get(row.userId) || 0) + 1)
+        if (problemData?.Belt?.order === def.order && row.userId) {
+          activeStudentsInBelt.add(row.userId)
         }
       }
-      const subsInBelt = submissionRows.filter((submissionItem) => (submissionItem.Problem as { Belt?: { order?: number } } | null)?.Belt?.order === def.order)
-      const avgPassRate = subsInBelt.length > 0
-        ? Math.round((subsInBelt.filter((submissionItem) => submissionItem.status === 'PASSED').length / subsInBelt.length) * 1000) / 10
-        : 100
-      return { order: def.order, name: def.name, title: def.title, color: def.color, totalProblems: def.totalProblems, cohortCompleted: solvedInBeltByUser.size, avgPassRate, bottleneck: def.bottleneck }
+
+      const subsInBelt = submissionRows.filter(
+        (submissionItem) => (submissionItem.Problem as { Belt?: { order?: number } } | null)?.Belt?.order === def.order
+      )
+
+      for (const sub of subsInBelt) {
+        if (sub.userId) {
+          activeStudentsInBelt.add(sub.userId)
+        }
+      }
+
+      // Numerator: DISTINCT students assigned to this mentor active in that belt (guaranteed <= total mentor students)
+      const cohortCompleted = activeStudentsInBelt.size
+
+      // Formula: passed submissions / total submissions for this mentor's students on problems in that belt
+      let avgPassRate: number | null = null
+      let bottleneck: string | null = null
+
+      if (subsInBelt.length > 0) {
+        const passedCount = subsInBelt.filter(
+          (s) => s.status === 'PASSED' && (s.passedTests === 10 || s.passedTests === s.totalTests)
+        ).length
+        avgPassRate = Math.round((passedCount / subsInBelt.length) * 1000) / 10
+
+        // Derive bottleneck from real failure telemetry on this belt
+        const problemStatsMap = new Map<string, { title: string; total: number; passed: number }>()
+        for (const s of subsInBelt) {
+          const prob = s.Problem as { title?: string; slug?: string } | null
+          const title = prob?.title || 'Problem'
+          const curr = problemStatsMap.get(title) || { title, total: 0, passed: 0 }
+          curr.total += 1
+          if (s.status === 'PASSED' && (s.passedTests === 10 || s.passedTests === s.totalTests)) {
+            curr.passed += 1
+          }
+          problemStatsMap.set(title, curr)
+        }
+
+        const problemStatsList = Array.from(problemStatsMap.values()).sort((a, b) => {
+          const aRate = a.total > 0 ? a.passed / a.total : 1
+          const bRate = b.total > 0 ? b.passed / b.total : 1
+          return aRate - bRate
+        })
+
+        const worst = problemStatsList[0]
+        if (worst) {
+          const worstRate = Math.round((worst.passed / worst.total) * 100)
+          if (worstRate < 100) {
+            bottleneck = `${worst.title} (${worstRate}% pass rate)`
+          } else {
+            bottleneck = 'All problems on track (100% pass)'
+          }
+        }
+      }
+
+      return {
+        order: def.order,
+        name: def.name,
+        title: def.title,
+        color: def.color,
+        totalProblems: def.totalProblems,
+        cohortCompleted,
+        avgPassRate,
+        bottleneck,
+      }
     })
   } catch (err) {
     console.error('Error in fetchMentorCurriculumMetrics:', err)
-    return BELT_DEFINITIONS.map((beltDef) => ({ ...beltDef, cohortCompleted: 0, avgPassRate: 0 }))
+    return BELT_DEFINITIONS.map((beltDef) => ({
+      ...beltDef,
+      cohortCompleted: 0,
+      avgPassRate: null,
+      bottleneck: null,
+    }))
   }
 }
 
@@ -931,7 +1138,7 @@ export async function addStudent(params: AddStudentParams): Promise<AddStudentRe
         mentorName: mentorProfile.name || 'Assigned Growth Mentor',
         mentorEmail: mentorProfile.email || '',
         campus: 'Kalvi National Technology Campus',
-        streak: 0, language: 'python', lastActive: 'Just mapped', status: 'ACTIVE', needsAttention: false, joinedDate: 'Just now',
+        streak: 0, language: 'python', lastActive: 'Just mapped', status: 'ACTIVE', isActive: true, needsAttention: false, joinedDate: 'Just now',
         solvedProblems: [],
         languageSolvedCounts: { python: 0, java: 0, cpp: 0, nodejs: 0 },
         recentSubmissions: [],

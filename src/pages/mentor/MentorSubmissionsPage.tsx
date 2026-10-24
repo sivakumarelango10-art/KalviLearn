@@ -96,7 +96,7 @@ export const MentorSubmissionsPage: React.FC = () => {
       (newSub) => {
         if (!isMounted) return
         setSubmissions((prev) => {
-          if (prev.some((s) => s.id === newSub.id)) return prev
+          if (prev.some((s) => s.id === newSub.id || (s.problemSlug === newSub.problemSlug && s.userId === newSub.userId && s.language === newSub.language && Math.abs(new Date(s.createdAtRaw || s.createdAt).getTime() - new Date(newSub.createdAtRaw || newSub.createdAt).getTime()) < 15000))) return prev
           return [newSub, ...prev.slice(0, 49)]
         })
         setNewArrivalIds((prev) => new Set(prev).add(newSub.id))
@@ -246,7 +246,7 @@ export const MentorSubmissionsPage: React.FC = () => {
                 <th className="py-3 px-4">Problem</th>
                 <th className="py-3 px-4">Language</th>
                 <th className="py-3 px-4">Result (All 10 Cases)</th>
-                <th className="py-3 px-4">Exec Time</th>
+                <th className="py-3 px-4" title="Total suite execution time including child-process evaluation">Total Time</th>
                 <th className="py-3 px-4">Submitted</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
@@ -484,7 +484,7 @@ export const MentorSubmissionsPage: React.FC = () => {
                 <div className="flex items-center gap-4 text-[11px] text-neutral-400 font-mono">
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3 text-neutral-500" />
-                    <span>{inspectingSub.executionTimeMs}ms execution</span>
+                    <span>{inspectingSub.executionTimeMs}ms total time</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-neutral-500" />

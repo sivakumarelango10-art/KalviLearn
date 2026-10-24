@@ -11,6 +11,7 @@ import {
   TrendingUp,
   ChevronRight,
   Clock,
+  Eye,
 } from 'lucide-react'
 import problemsData from '@/data/problems.json'
 import curriculumData from '@/data/curriculum.json'
@@ -25,6 +26,7 @@ export const DashboardPage: React.FC = () => {
   const [userState, setUserState] = useState<UserState>(() => getUserState())
 
   const displayName = user?.name || (user?.email ? user.email.split('@')[0].replace(/\./g, ' ') : 'Student')
+  const preferredLang = (typeof window !== 'undefined' ? localStorage.getItem('kalvi_preferred_language') : null) || 'python'
 
   useEffect(() => {
     const updateStats = () => {
@@ -113,6 +115,30 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Mentor Preview Notice Banner */}
+      {user?.role === 'MENTOR' && (
+        <div className="bg-amber-50 border border-amber-200/90 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-900 shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-3">
+            <span className="p-2 rounded-xl bg-amber-100 text-amber-800 flex-shrink-0">
+              <Eye className="w-4 h-4" />
+            </span>
+            <div>
+              <p className="text-xs font-bold text-amber-950">Faculty Mentor Preview Mode</p>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                You are previewing the student dashboard experience in read-only mode. Code evaluations and submissions in preview mode will not affect production progress or student cohort analytics.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/mentor"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold transition-all shadow-2xs whitespace-nowrap self-start sm:self-auto flex-shrink-0"
+          >
+            <span>Return to Mentor Portal</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
+
       {/* Welcome Hero Banner */}
       <div className="bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white rounded-3xl p-6 sm:p-8 shadow-md border border-neutral-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-80 h-80 bg-[#ED2A2B]/15 rounded-full blur-3xl pointer-events-none" />
@@ -139,7 +165,7 @@ export const DashboardPage: React.FC = () => {
                 </Link>
               ) : (
                 <Link
-                  to="/practice"
+                  to={`/practice/${preferredLang}`}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-sm font-semibold shadow-sm transition-all interactive-btn hover:shadow-lg hover:shadow-red-600/25"
                 >
                   <span>Open Practice Arena</span>
@@ -278,7 +304,7 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-neutral-900">Belt Progression System</h2>
           <Link
-            to="/practice"
+            to={`/practice/${preferredLang}`}
             className="text-xs font-semibold text-[#ED2A2B] hover:underline flex items-center gap-1"
           >
             <span>View All Problems</span>
@@ -328,7 +354,7 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               <Link
-                to={`/practice`}
+                to={`/practice/${preferredLang}?belt=${b.order}`}
                 className="w-full py-2 px-3 rounded-xl border border-neutral-200 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center justify-center gap-1.5 transition-colors"
               >
                 <span>Explore Belt {b.order}</span>
@@ -400,7 +426,7 @@ export const DashboardPage: React.FC = () => {
                 No submissions logged yet. Start solving problems to see your history!
               </p>
               <Link
-                to="/practice"
+                to={`/practice/${preferredLang}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800"
               >
                 <span>Start Practice</span>

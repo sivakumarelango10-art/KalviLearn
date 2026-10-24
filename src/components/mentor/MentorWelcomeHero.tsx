@@ -36,7 +36,7 @@ export const MentorWelcomeHero: React.FC<MentorWelcomeHeroProps> = ({
   totalStudents,
   activeStudents,
   studentsNeedingAttention,
-  cohortMasteryPercent = 77,
+  cohortMasteryPercent = 0,
   className,
 }) => {
   // SVG Ring Calculations (circumference for radius 38 is ~238.76)

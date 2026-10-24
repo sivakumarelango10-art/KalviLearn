@@ -135,34 +135,31 @@ async function runTests() {
     }
   }
 
-  // 6. Practice Resolver Integration
-  console.log('\n--- 6. PRACTICE ARENA INTEGRITY ---')
-  const pythonProblem = getProblemByLanguageAndSlug('python', 'profile-echo')
-  assert(!!pythonProblem, 'Curriculum resolver returns problem for Python')
-  assert(!!pythonProblem?.starterCode, 'Starter code generated for Python')
+  // 6. Learn Loader Integration & Practice Isolation
+  console.log('\n--- 6. LEARN LOADER & PRACTICE ISOLATION ---')
+  const { findLearnQuestionBySlug } = await import('../src/data/learn/coding/index')
+  const { DEFAULT_STARTER_CODES } = await import('../src/data/curriculum/index')
 
-  const javaProblem = getProblemByLanguageAndSlug('java', 'profile-echo')
-  assert(!!javaProblem?.starterCode, 'Starter code generated for Java')
+  const learnQuestion = findLearnQuestionBySlug('profile-echo')
+  assert(!!learnQuestion, 'Learn question resolver returns question for profile-echo')
+  assert(!getProblemByLanguageAndSlug('python', 'profile-echo'), 'Practice curriculum resolver does NOT return Learn questions (strict isolation)')
 
-  const nodejsProblem = getProblemByLanguageAndSlug('nodejs', 'profile-echo')
-  assert(!!nodejsProblem?.starterCode, 'Starter code generated for Node.js')
+  assert(!!DEFAULT_STARTER_CODES.python, 'Starter code exists for Python')
+  assert(!!DEFAULT_STARTER_CODES.java, 'Starter code exists for Java')
+  assert(!!DEFAULT_STARTER_CODES.nodejs, 'Starter code exists for Node.js')
+  assert(!!DEFAULT_STARTER_CODES.cpp, 'Starter code exists for C++')
 
-  const cppProblem = getProblemByLanguageAndSlug('cpp', 'profile-echo')
-  assert(!!cppProblem?.starterCode, 'Starter code generated for C++')
-
-  assert(pythonProblem?.testCases?.length === 10, `Curriculum resolver includes 10 test case descriptors (got ${pythonProblem?.testCases?.length})`)
-  const visibleTcs = (pythonProblem?.testCases || []).filter((tc) => !tc.isHidden)
-  const hiddenTcs = (pythonProblem?.testCases || []).filter((tc) => tc.isHidden)
-  assert(visibleTcs.length === 3, `Visible test count is 3 (got ${visibleTcs.length})`)
-  assert(hiddenTcs.length === 7, `Hidden test metadata count is 7 (got ${hiddenTcs.length})`)
+  const visibleTests = learnQuestion?.visibleTests || []
+  assert(visibleTests.length === 3, `Visible test count is 3 (got ${visibleTests.length})`)
+  assert(learnQuestion?.testCaseMeta?.hiddenCount === 7, `Hidden test metadata count is 7 (got ${learnQuestion?.testCaseMeta?.hiddenCount})`)
 
   let hiddenDataLeaked = false
-  for (const h of hiddenTcs) {
-    if (h.input !== undefined || h.expectedOutput !== undefined) {
+  for (const vt of visibleTests) {
+    if (vt.input === undefined || vt.expectedOutput === undefined) {
       hiddenDataLeaked = true
     }
   }
-  assert(!hiddenDataLeaked, 'Client hidden test placeholders contain 0 input or expectedOutput data')
+  assert(!hiddenDataLeaked, 'Client visible tests contain valid inputs and expected outputs')
 
   // Verify safe testCaseMeta on CodingQuestion
   assert(sampleQuestion?.testCaseMeta?.visibleCount === 3, 'Question model has testCaseMeta.visibleCount === 3')

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useParams, Navigate } from 'react-router-dom'
+import { useParams, Navigate, useSearchParams } from 'react-router-dom'
 import { ChevronDown, ChevronUp, Search, RotateCcw } from 'lucide-react'
 import {
   getCurriculum,
@@ -19,25 +19,32 @@ import { ProblemRow } from '@/components/practice/ProblemRow'
 
 export const LanguagePracticePage: React.FC = () => {
   const { lang } = useParams<{ lang: string }>()
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  // Validate language param - if it's a legacy problem slug, redirect cleanly
-  if (!isValidLanguage(lang)) {
-    const preferredLang = normalizeLanguageSlug(localStorage.getItem('kalvi_preferred_language'))
-    if (lang && (lang.includes('belt') || lang.includes('-'))) {
-      return <Navigate to={`/practice/${preferredLang}/${lang}`} replace />
-    }
-    return <Navigate to="/practice" replace />
-  }
-
+  const isLangValid = isValidLanguage(lang)
   const currentLang = normalizeLanguageSlug(lang) as ProgrammingLanguage
   const curriculum = useMemo(() => getCurriculum(currentLang), [currentLang])
 
   // Filters and state
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedBelt, setSelectedBelt] = useState<number | 'all'>('all')
+  const beltParam = searchParams.get('belt')
+  const initialBelt = beltParam ? parseInt(beltParam, 10) : 'all'
+  const [selectedBelt, setSelectedBelt] = useState<number | 'all'>(
+    typeof initialBelt === 'number' && !isNaN(initialBelt) && initialBelt >= 1 && initialBelt <= 10 ? initialBelt : 'all'
+  )
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all')
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'solved' | 'unsolved'>('all')
   const [collapsedBelts, setCollapsedBelts] = useState<Record<number, boolean>>({})
+
+  useEffect(() => {
+    const b = searchParams.get('belt')
+    if (b) {
+      const parsed = parseInt(b, 10)
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 10) {
+        setSelectedBelt(parsed)
+      }
+    }
+  }, [searchParams])
 
   // Progress state
   const [solvedSlugs, setSolvedSlugs] = useState<string[]>([])
@@ -127,11 +134,29 @@ export const LanguagePracticePage: React.FC = () => {
     return filteredBelts.reduce((sum, b) => sum + b.problems.length, 0)
   }, [filteredBelts])
 
+  const handleSelectBelt = (belt: number | 'all') => {
+    setSelectedBelt(belt)
+    if (belt === 'all') {
+      searchParams.delete('belt')
+    } else {
+      searchParams.set('belt', String(belt))
+    }
+    setSearchParams(searchParams, { replace: true })
+  }
+
   const handleResetFilters = () => {
     setSearchQuery('')
-    setSelectedBelt('all')
+    handleSelectBelt('all')
     setSelectedDifficulty('all')
     setSelectedStatus('all')
+  }
+
+  if (!isLangValid) {
+    const preferredLang = normalizeLanguageSlug(localStorage.getItem('kalvi_preferred_language'))
+    if (lang && (lang.includes('belt') || lang.includes('-'))) {
+      return <Navigate to={`/practice/${preferredLang}/${lang}`} replace />
+    }
+    return <Navigate to="/practice" replace />
   }
 
   return (
@@ -160,7 +185,7 @@ export const LanguagePracticePage: React.FC = () => {
               total={b.total}
               percentage={b.percentage}
               isSelected={isSelected}
-              onClick={() => setSelectedBelt(isSelected ? 'all' : b.order)}
+              onClick={() => handleSelectBelt(isSelected ? 'all' : b.order)}
             />
           )
         })}
@@ -171,7 +196,7 @@ export const LanguagePracticePage: React.FC = () => {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedBelt={selectedBelt}
-        onSelectBelt={setSelectedBelt}
+        onSelectBelt={handleSelectBelt}
         selectedDifficulty={selectedDifficulty}
         onSelectDifficulty={setSelectedDifficulty}
         selectedStatus={selectedStatus}

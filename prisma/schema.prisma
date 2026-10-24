@@ -114,6 +114,7 @@ model Submission {
   testResults     Json
   executionTimeMs Int
   createdAt       DateTime @default(now())
+  idempotencyKey  String?  @unique
 
   @@index([userId, problemId])
   @@index([createdAt])
