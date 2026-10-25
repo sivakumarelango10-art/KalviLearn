@@ -14,6 +14,8 @@ import {
   ChevronRight,
   AlertTriangle,
   Lock,
+  Plus,
+  X,
 } from 'lucide-react'
 import {
   getCurriculum,
@@ -22,7 +24,7 @@ import {
   ProgrammingLanguage,
 } from '@/data/curriculum/index'
 import { findLearnQuestionBySlug } from '@/data/learn/coding'
-import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult } from '@/lib/runner/codeRunner'
+import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult, executeCustomCode } from '@/lib/runner/codeRunner'
 import {
   getUserState,
   recordProblemSuccess,
@@ -33,6 +35,9 @@ import {
 import { cn } from '@/lib/utils'
 import { QuestionCompletionModal } from '@/components/arena/QuestionCompletionModal'
 import { ProblemNotFoundCard } from '@/components/common/ProblemNotFoundCard'
+import { CustomTestCaseEditor } from '@/components/arena/CustomTestCaseEditor'
+import { type CustomTestCase } from '@/types/customTest'
+import { outputsMatch, validateJsonInput } from '@/lib/judge/compare'
 
 export const ProblemArenaPage: React.FC = () => {
   const { lang, slug } = useParams<{ lang?: string; slug?: string }>()
@@ -134,11 +139,104 @@ export const ProblemArenaPage: React.FC = () => {
   const [compilationError, setCompilationError] = useState<string | null>(null)
   // True when `compilationError` is a server/infrastructure failure rather than an error in the student's code.
   const [errorIsSystem, setErrorIsSystem] = useState(false)
-  const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
+  const [activeCaseTab, setActiveCaseTab] = useState<number | string>(1)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [submissionFailed, setSubmissionFailed] = useState<{ passed: number; total: number } | null>(null)
   const [recentSubmissions, setRecentSubmissions] = useState<SubmissionRecord[]>([])
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false)
+  const [customCases, setCustomCases] = useState<CustomTestCase[]>([])
+
+  const isJsonQuestion = useMemo((): boolean => {
+    if (!currentProblem) return false
+    if (typeof (currentProblem as any).inputFormat === 'string' && /json/i.test((currentProblem as any).inputFormat)) {
+      return true
+    }
+    const firstInput = currentProblem.testCases?.[0]?.input
+    return typeof firstInput === 'string' && /^\s*(\{|\[)/.test(firstInput)
+  }, [currentProblem])
+
+  // Namespaced custom cases storage key: strictly per practice problem + language in localStorage
+  const customStorageKey = useMemo(() => {
+    return `kalvi_custom_cases:practice:${currentProblem.slug || slug || 'unknown'}:${currentLanguage}`
+  }, [currentProblem.slug, slug, currentLanguage])
+
+  // Load custom cases from localStorage
+  useEffect(() => {
+    if (!currentProblem) return
+    try {
+      const saved = localStorage.getItem(customStorageKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          setCustomCases(parsed)
+          return
+        }
+      }
+    } catch {}
+    setCustomCases([])
+  }, [customStorageKey, currentProblem])
+
+  const saveCustomCases = (updated: CustomTestCase[]) => {
+    setCustomCases(updated)
+    try {
+      localStorage.setItem(customStorageKey, JSON.stringify(updated))
+    } catch {}
+  }
+
+  const handleAddCustomCase = () => {
+    if (customCases.length >= 5) return
+    const nextNum = customCases.length + 1
+    const newId = `custom-${Date.now()}-${nextNum}`
+    const exampleInput = currentProblem?.testCases?.[0]?.input || ''
+    const newCase: CustomTestCase = {
+      id: newId,
+      name: `Custom ${nextNum}`,
+      input: exampleInput,
+      expectedOutput: '',
+    }
+    const nextList = [...customCases, newCase]
+    saveCustomCases(nextList)
+    setActiveCaseTab(newId)
+  }
+
+  const handleCloseCustomCase = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const nextList = customCases.filter((c) => c.id !== id)
+    const renumbered = nextList.map((c, i) => ({ ...c, name: `Custom ${i + 1}` }))
+    saveCustomCases(renumbered)
+    if (activeCaseTab === id) {
+      if (renumbered.length > 0) {
+        setActiveCaseTab(renumbered[renumbered.length - 1].id)
+      } else {
+        setActiveCaseTab(1)
+      }
+    }
+  }
+
+  const handleResetCustomCase = (id: string) => {
+    const exampleInput = currentProblem?.testCases?.[0]?.input || ''
+    const nextList = customCases.map((c) => {
+      if (c.id === id) {
+        return {
+          ...c,
+          input: exampleInput,
+          expectedOutput: '',
+          actualOutput: undefined,
+          error: undefined,
+          compilationError: undefined,
+          status: undefined,
+          executionTimeMs: undefined,
+        }
+      }
+      return c
+    })
+    saveCustomCases(nextList)
+  }
+
+  const handleUpdateCustomCase = (id: string, partial: Partial<CustomTestCase>) => {
+    const nextList = customCases.map((c) => (c.id === id ? { ...c, ...partial } : c))
+    saveCustomCases(nextList)
+  }
 
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
   // Synchronous execution lock: React state (isRunning/isSubmitting) updates asynchronously, so two clicks in
@@ -205,12 +303,73 @@ export const ProblemArenaPage: React.FC = () => {
 
   // Unified Execution Pipeline across all 10 Test Cases
   const handleExecute = async (isSubmit: boolean) => {
+    // If Custom Case is selected and user clicked Run: run ONLY that custom test case!
+    if (!isSubmit && typeof activeCaseTab === 'string') {
+      const activeCustom = customCases.find((c) => c.id === activeCaseTab)
+      if (!activeCustom) return
+
+      // Validate JSON input if JSON question
+      if (isJsonQuestion) {
+        const jsonValidation = validateJsonInput(activeCustom.input)
+        if (!jsonValidation.valid) {
+          handleUpdateCustomCase(activeCustom.id, {
+            error: jsonValidation.error,
+            status: 'error',
+          })
+          return
+        }
+      }
+
+      setIsRunning(true)
+      const currentCode = editorRef.current?.getValue() ?? code
+
+      try {
+        const outcome = await executeCustomCode(
+          currentProblem.slug,
+          curriculum.runnerLanguage,
+          currentCode,
+          activeCustom.input
+        )
+
+        let status: CustomTestCase['status'] = 'ran'
+        if (outcome.compilationError) {
+          status = 'error'
+        } else if (outcome.error) {
+          status = 'error'
+        } else if (activeCustom.expectedOutput && activeCustom.expectedOutput.trim()) {
+          const isMatch = outputsMatch(outcome.actualOutput || '', activeCustom.expectedOutput)
+          status = isMatch ? 'matches' : 'mismatches'
+        }
+
+        handleUpdateCustomCase(activeCustom.id, {
+          actualOutput: outcome.actualOutput,
+          error: outcome.error,
+          compilationError: outcome.compilationError,
+          executionTimeMs: outcome.executionTimeMs,
+          status,
+          lastRunAt: Date.now(),
+        })
+      } catch (err: any) {
+        handleUpdateCustomCase(activeCustom.id, {
+          error: err.message || 'Execution error encountered.',
+          status: 'error',
+        })
+      } finally {
+        setIsRunning(false)
+      }
+      return
+    }
+
     if (executingRef.current || isRunning || isSubmitting) return
     executingRef.current = true
     const contextVersion = contextVersionRef.current
     // Capture the identity of what is being executed so a late response is attributed to the right problem.
     const executedProblem = currentProblem
     const executedLanguage = currentLanguage
+
+    if (typeof activeCaseTab === 'string') {
+      setActiveCaseTab(1)
+    }
 
     if (isSubmit) {
       setIsSubmitting(true)
@@ -776,6 +935,56 @@ export const ProblemArenaPage: React.FC = () => {
                     </button>
                   )
                 })}
+
+                {/* Custom Case Tabs */}
+                {customCases.map((cc) => {
+                  const isSelected = activeCaseTab === cc.id
+                  return (
+                    <div
+                      key={cc.id}
+                      className={cn(
+                        'flex items-center rounded text-xs font-medium transition-all duration-200 flex-shrink-0 border',
+                        isSelected
+                          ? 'bg-neutral-800 text-white shadow-sm ring-1 ring-neutral-700'
+                          : 'border-transparent text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setActiveCaseTab(cc.id)}
+                        className="px-2 py-1 flex items-center gap-1"
+                      >
+                        {cc.status === 'matches' ? (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        ) : cc.status === 'mismatches' || cc.status === 'error' ? (
+                          <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                        ) : null}
+                        <span>{cc.name}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleCloseCustomCase(cc.id, e)}
+                        title={`Close ${cc.name}`}
+                        className="pr-1.5 pl-0.5 py-1 text-neutral-500 hover:text-red-400 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )
+                })}
+
+                {/* + Custom Button */}
+                {customCases.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={handleAddCustomCase}
+                    title="Add custom test input (up to 5)"
+                    className="px-2 py-1 rounded text-xs font-medium flex items-center gap-1 text-neutral-400 hover:text-white bg-neutral-900/60 hover:bg-neutral-800 border border-dashed border-neutral-700 hover:border-neutral-500 transition-all flex-shrink-0"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Custom</span>
+                  </button>
+                )}
               </div>
 
               {/* Status Header: live, authoritative counts */}
@@ -823,9 +1032,27 @@ export const ProblemArenaPage: React.FC = () => {
 
             {/* Active Test Case Details */}
             <div key={activeCaseTab} className="flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3 animate-page-enter">
-              {(() => {
-                const activeResult = testResults?.[activeCaseTab] ?? null
-                if ((isRunning || isSubmitting) && !activeResult && (runScope?.caseIndexes.includes(activeCaseTab) ?? true)) {
+              {typeof activeCaseTab === 'string' ? (
+                (() => {
+                  const currentCustom = customCases.find((c) => c.id === activeCaseTab)
+                  if (!currentCustom) return null
+                  const exampleInput = currentProblem.testCases?.[0]?.input || ''
+                  return (
+                    <CustomTestCaseEditor
+                      customCase={currentCustom}
+                      exampleInput={exampleInput}
+                      isJsonQuestion={isJsonQuestion}
+                      inputFormatHint={currentProblem.inputFormat}
+                      isRunning={isRunning}
+                      onUpdate={(partial) => handleUpdateCustomCase(currentCustom.id, partial)}
+                      onReset={() => handleResetCustomCase(currentCustom.id)}
+                    />
+                  )
+                })()
+              ) : (() => {
+                const numCaseTab = Number(activeCaseTab)
+                const activeResult = testResults?.[numCaseTab] ?? null
+                if ((isRunning || isSubmitting) && !activeResult && (runScope?.caseIndexes.includes(numCaseTab) ?? true)) {
                   return (
                     <div className="flex flex-col items-center justify-center py-8 space-y-3 font-sans">
                       <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
@@ -854,9 +1081,9 @@ export const ProblemArenaPage: React.FC = () => {
                   )
                 }
 
-                const isHiddenCase = activeCaseTab > visibleCount
+                const isHiddenCase = numCaseTab > visibleCount
                 const tcResult = activeResult
-                const caseNotRun = !!runScope && !runScope.caseIndexes.includes(activeCaseTab)
+                const caseNotRun = !!runScope && !runScope.caseIndexes.includes(numCaseTab)
 
                 if (isHiddenCase) {
                   return (
@@ -866,7 +1093,7 @@ export const ProblemArenaPage: React.FC = () => {
                           <Lock className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" />
                           <span>Hidden Test Case #{activeCaseTab}</span>
                           <span className="text-[10px] font-normal text-neutral-500">
-                            • {activeCaseTab - visibleCount} of {authoritativeTotalCount - visibleCount} Hidden Tests
+                            • {numCaseTab - visibleCount} of {authoritativeTotalCount - visibleCount} Hidden Tests
                           </span>
                         </div>
                         <p className="text-[11px] text-neutral-400 leading-relaxed">
@@ -932,7 +1159,7 @@ export const ProblemArenaPage: React.FC = () => {
                 }
 
                 // Visible Test Case (1, 2, 3)
-                const visibleTestCase = currentProblem.testCases[activeCaseTab - 1]
+                const visibleTestCase = currentProblem.testCases[numCaseTab - 1]
 
                 return (
                   <div className="space-y-3">

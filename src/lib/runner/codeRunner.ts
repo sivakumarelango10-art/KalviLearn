@@ -340,3 +340,118 @@ export const runTestCases = (
 ) => {
   return executeCode('', language, code, testCases)
 }
+
+export interface CustomRunOutcome {
+  success: boolean
+  status: string
+  actualOutput?: string
+  error?: string
+  compilationError?: string
+  executionTimeMs?: number
+  isTimeLimitExceeded?: boolean
+}
+
+/**
+ * Executes code on the server against a single student-supplied custom input.
+ * Does not modify any database records or submit tracking.
+ */
+export async function executeCustomCode(
+  questionSlug: string,
+  language: string,
+  code: string,
+  customInput: string
+): Promise<CustomRunOutcome> {
+  const startTime = performance.now()
+  const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
+
+  if (isOffline) {
+    return {
+      success: false,
+      status: 'SYSTEM_ERROR',
+      error: 'You are currently working offline. Please reconnect to the internet to run custom test cases.',
+      executionTimeMs: 0,
+    }
+  }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 30000)
+
+  try {
+    let authToken: string | undefined
+    try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      authToken = sessionData?.session?.access_token
+    } catch {
+      // ignore
+    }
+
+    const response = await fetch('/api/execute', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      },
+      body: JSON.stringify({
+        questionSlug,
+        language,
+        code,
+        customInput,
+      }),
+      signal: controller.signal,
+    })
+
+    const data = await response.json().catch(() => ({}))
+    const executionTimeMs = data.overallTimeMs || Math.round(performance.now() - startTime)
+
+    if (response.status === 200) {
+      const tc = Array.isArray(data.testCases) && data.testCases[0]
+      return {
+        success: data.success || data.status === 'ACCEPTED',
+        status: data.status || 'ACCEPTED',
+        actualOutput: tc?.actualOutput || data.message || '',
+        error: tc?.error,
+        executionTimeMs: tc?.executionTimeMs || executionTimeMs,
+        isTimeLimitExceeded: tc?.status === 'time_limit_exceeded',
+      }
+    } else if (response.status === 422) {
+      return {
+        success: false,
+        status: 'COMPILATION_ERROR',
+        compilationError: data.message || data.error || 'Syntax or compilation error in code.',
+        executionTimeMs,
+      }
+    } else if (response.status === 401) {
+      return {
+        success: false,
+        status: 'UNAUTHORIZED',
+        error: 'Your session has expired. Please sign in again to run code.',
+        executionTimeMs,
+      }
+    } else if (response.status === 400 && data.error === 'Payload Too Large') {
+      return {
+        success: false,
+        status: 'PAYLOAD_TOO_LARGE',
+        error: data.message || 'Custom test input exceeds maximum limit of 64 KB.',
+        executionTimeMs,
+      }
+    } else {
+      return {
+        success: false,
+        status: data.status || 'SYSTEM_ERROR',
+        error: data.message || data.error || `Execution failed (HTTP ${response.status}).`,
+        executionTimeMs,
+      }
+    }
+  } catch (err: unknown) {
+    const isAbort = err instanceof Error && err.name === 'AbortError'
+    return {
+      success: false,
+      status: 'SYSTEM_ERROR',
+      error: isAbort ? 'Execution timed out.' : 'Unable to connect to execution server.',
+      executionTimeMs: Math.round(performance.now() - startTime),
+    }
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
