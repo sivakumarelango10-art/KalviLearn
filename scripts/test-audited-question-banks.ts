@@ -47,29 +47,29 @@ console.log('===================================================================
 // --------------------------------------------------------------------------
 // TEST 1: Learn Questions Counts and Topic Distribution
 // --------------------------------------------------------------------------
-console.log('Test 1: Learn total = 950 questions & per-topic counts match Excel specification')
+console.log('Test 1: Learn total = 480 questions & per-topic counts (20 per topic across all 24 topics)')
 {
   const EXPECTED_TOPIC_COUNTS: Record<string, number> = {
-    'variables-data-types': 40,
-    'basic-arithmetic-operations': 40,
-    'conditionals-control-flow': 34,
-    'loops': 21,
-    'nested-loops': 21,
-    'functions': 21,
-    'scope': 21,
-    'arrays-1d-lists': 225,
-    'strings-as-arrays': 21,
-    'arrays-2d-matrices': 21,
-    'linear-search': 21,
-    'binary-search': 21,
-    'sorting': 21,
-    'sets': 21,
-    'two-pointers': 21,
-    'dictionaries-hash-maps': 21,
-    'recursion': 21,
-    'trees-bst': 85,
-    'graphs': 150,
-    'dynamic-programming': 23,
+    'variables-data-types': 20,
+    'basic-arithmetic-operations': 20,
+    'conditionals-control-flow': 20,
+    'loops': 20,
+    'nested-loops': 20,
+    'functions': 20,
+    'scope': 20,
+    'arrays-1d-lists': 20,
+    'strings-as-arrays': 20,
+    'arrays-2d-matrices': 20,
+    'linear-search': 20,
+    'binary-search': 20,
+    'sorting': 20,
+    'sets': 20,
+    'two-pointers': 20,
+    'dictionaries-hash-maps': 20,
+    'recursion': 20,
+    'trees-bst': 20,
+    'graphs': 20,
+    'dynamic-programming': 20,
     'dsa-algorithms': 20,
     'oop-classes-objects': 20,
     'oop-methods': 20,
@@ -77,7 +77,7 @@ console.log('Test 1: Learn total = 950 questions & per-topic counts match Excel 
   }
 
   const allQuestions = getAllLearnQuestions()
-  assert.strictEqual(allQuestions.length, 950, `Expected exactly 950 Learn questions, got ${allQuestions.length}`)
+  assert.strictEqual(allQuestions.length, 480, `Expected exactly 480 Learn questions, got ${allQuestions.length}`)
 
   for (const [topicId, expectedCount] of Object.entries(EXPECTED_TOPIC_COUNTS)) {
     const topicQuestions = getLearnQuestionsByTopic(topicId)
@@ -95,7 +95,7 @@ console.log('Test 1: Learn total = 950 questions & per-topic counts match Excel 
   const backlogQuestions = Object.values(backlog).flat() as any[]
   assert.strictEqual(backlogQuestions.length, 231, `Expected 231 questions in backlog, got ${backlogQuestions.length}`)
 
-  console.log('  ✓ Learn total = 950 questions across 24 topics verified (all counts strictly match).')
+  console.log('  ✓ Learn total = 480 questions across 24 topics verified (all counts strictly 20 per topic).')
   console.log('  ✓ Backlog has 231 title-only questions documented.')
 }
 
@@ -134,12 +134,12 @@ console.log('\nTest 2: No duplicate statements between Learn and active Practice
 // --------------------------------------------------------------------------
 // TEST 3: All 270 Removed Learn Slugs Redirect Correctly
 // --------------------------------------------------------------------------
-console.log('\nTest 3: All 270 removed Learn slugs redirect correctly')
+console.log('\nTest 3: All 740 removed Learn slugs redirect correctly')
 {
   assert.strictEqual(
     Object.keys(redirectsData).length,
-    270,
-    `Expected exactly 270 redirects, got ${Object.keys(redirectsData).length}`
+    740,
+    `Expected exactly 740 redirects, got ${Object.keys(redirectsData).length}`
   )
 
   for (const [sourceSlug, target] of Object.entries(redirectsData as Record<string, any>)) {
