@@ -16,19 +16,22 @@ import {
   Terminal,
   FileText,
   AlertTriangle,
+  Plus,
+  X,
 } from 'lucide-react'
 import {
   getLearnTopic,
   getLearnQuestion,
   getLearnQuestionsByTopic,
   getLearnRedirect,
+  getQuestionSupportedLanguages,
 } from '@/data/learn/coding'
 import {
   DEFAULT_STARTER_CODES,
   ProgrammingLanguage,
   normalizeLanguageSlug,
 } from '@/data/curriculum/index'
-import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult } from '@/lib/runner/codeRunner'
+import { executeCode, isAuthoritativeAccept, TestCaseExecution, type RunResult, executeCustomCode } from '@/lib/runner/codeRunner'
 import {
   recordLearnQuestionSolve,
   recordLearnQuestionAttempt,
@@ -36,6 +39,9 @@ import {
   subscribeLearnProgress,
 } from '@/lib/learnProgress'
 import { FormattedText } from '@/components/common/FormattedText'
+import { CustomTestCaseEditor } from '@/components/arena/CustomTestCaseEditor'
+import { type CustomTestCase } from '@/types/customTest'
+import { outputsMatch, validateJsonInput } from '@/lib/judge/compare'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
@@ -57,12 +63,18 @@ export const LearnWorkspacePage: React.FC = () => {
     }
   }
 
-  // Language management via ?lang= query param (default to python or last used; force python if python-only)
+  const availableLanguages: ProgrammingLanguage[] = useMemo(() => {
+    if (!question) return ['python']
+    return getQuestionSupportedLanguages(question) as ProgrammingLanguage[]
+  }, [question])
+
+  // Language management via ?lang= query param (default to preferred if available; fallback to first available)
   const langParam = searchParams.get('lang')
   const currentLanguage: ProgrammingLanguage = useMemo(() => {
-    if (question?.isPythonOnly) return 'python'
-    return normalizeLanguageSlug(langParam || localStorage.getItem('kalvi_preferred_language'))
-  }, [langParam, question?.isPythonOnly])
+    const preferred = normalizeLanguageSlug(langParam || localStorage.getItem('kalvi_preferred_language'))
+    if (availableLanguages.includes(preferred)) return preferred
+    return availableLanguages[0] || 'python'
+  }, [langParam, availableLanguages])
 
   // Question navigation context
   const currentIndex = useMemo(() => {
@@ -79,7 +91,7 @@ export const LearnWorkspacePage: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeTab, setActiveTab] = useState<'description' | 'history'>('description')
-  const [activeCaseTab, setActiveCaseTab] = useState<number>(1)
+  const [activeCaseTab, setActiveCaseTab] = useState<number | string>(1)
   const [testResults, setTestResults] = useState<Record<number, TestCaseExecution> | null>(null)
   const [executionSummary, setExecutionSummary] = useState<{
     passed: number
@@ -91,6 +103,99 @@ export const LearnWorkspacePage: React.FC = () => {
   const [compilationError, setCompilationError] = useState<string | null>(null)
   const [isSolvedLocally, setIsSolvedLocally] = useState<boolean>(false)
   const [showCompletionModal, setShowCompletionModal] = useState(false)
+  const [customCases, setCustomCases] = useState<CustomTestCase[]>([])
+
+  const isJsonQuestion = useMemo(() => {
+    if (!question) return false
+    return (
+      question.inputMode === 'json' ||
+      (typeof (question as any).bankId === 'string' && (question as any).bankId.startsWith('T')) ||
+      (typeof question.inputFormat === 'string' && /json/i.test(question.inputFormat))
+    )
+  }, [question])
+
+  // Namespaced custom cases storage key: strictly per question + language in localStorage
+  const customStorageKey = useMemo(() => {
+    return `kalvi_custom_cases:learn:${topicId || 'unknown'}:${slug || 'unknown'}:${currentLanguage}`
+  }, [topicId, slug, currentLanguage])
+
+  // Load custom cases from localStorage
+  useEffect(() => {
+    if (!slug) return
+    try {
+      const saved = localStorage.getItem(customStorageKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          setCustomCases(parsed)
+          return
+        }
+      }
+    } catch {}
+    setCustomCases([])
+  }, [customStorageKey, slug])
+
+  const saveCustomCases = (updated: CustomTestCase[]) => {
+    setCustomCases(updated)
+    try {
+      localStorage.setItem(customStorageKey, JSON.stringify(updated))
+    } catch {}
+  }
+
+  const handleAddCustomCase = () => {
+    if (customCases.length >= 5) return
+    const nextNum = customCases.length + 1
+    const newId = `custom-${Date.now()}-${nextNum}`
+    const exampleInput = question?.visibleTests?.[0]?.input || ''
+    const newCase: CustomTestCase = {
+      id: newId,
+      name: `Custom ${nextNum}`,
+      input: exampleInput,
+      expectedOutput: '',
+    }
+    const nextList = [...customCases, newCase]
+    saveCustomCases(nextList)
+    setActiveCaseTab(newId)
+  }
+
+  const handleCloseCustomCase = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const nextList = customCases.filter((c) => c.id !== id)
+    const renumbered = nextList.map((c, i) => ({ ...c, name: `Custom ${i + 1}` }))
+    saveCustomCases(renumbered)
+    if (activeCaseTab === id) {
+      if (renumbered.length > 0) {
+        setActiveCaseTab(renumbered[renumbered.length - 1].id)
+      } else {
+        setActiveCaseTab(1)
+      }
+    }
+  }
+
+  const handleResetCustomCase = (id: string) => {
+    const exampleInput = question?.visibleTests?.[0]?.input || ''
+    const nextList = customCases.map((c) => {
+      if (c.id === id) {
+        return {
+          ...c,
+          input: exampleInput,
+          expectedOutput: '',
+          actualOutput: undefined,
+          error: undefined,
+          compilationError: undefined,
+          status: undefined,
+          executionTimeMs: undefined,
+        }
+      }
+      return c
+    })
+    saveCustomCases(nextList)
+  }
+
+  const handleUpdateCustomCase = (id: string, partial: Partial<CustomTestCase>) => {
+    const nextList = customCases.map((c) => (c.id === id ? { ...c, ...partial } : c))
+    saveCustomCases(nextList)
+  }
 
   // Storage key for user's code: namespaced strictly to Learn
   const storageKey = useMemo(() => {
@@ -125,7 +230,7 @@ export const LearnWorkspacePage: React.FC = () => {
   }, [slug, user?.id])
 
   const handleLanguageChange = (newLang: ProgrammingLanguage) => {
-    if (question?.isPythonOnly && newLang !== 'python') return
+    if (!availableLanguages.includes(newLang)) return
     localStorage.setItem('kalvi_preferred_language', newLang)
     searchParams.set('lang', newLang)
     setSearchParams(searchParams, { replace: true })
@@ -157,6 +262,69 @@ export const LearnWorkspacePage: React.FC = () => {
 
   const handleExecute = async (isSubmit: boolean) => {
     if (!question || !topic || isRunning || isSubmitting) return
+
+    // If Custom Case is selected and user clicked Run: run ONLY that custom test case!
+    if (!isSubmit && typeof activeCaseTab === 'string') {
+      const activeCustom = customCases.find((c) => c.id === activeCaseTab)
+      if (!activeCustom) return
+
+      // Validate JSON input if JSON question
+      if (isJsonQuestion) {
+        const jsonValidation = validateJsonInput(activeCustom.input)
+        if (!jsonValidation.valid) {
+          handleUpdateCustomCase(activeCustom.id, {
+            error: jsonValidation.error,
+            status: 'error',
+          })
+          return
+        }
+      }
+
+      setIsRunning(true)
+      const currentCode = editorRef.current?.getValue() ?? code
+      const namespacedIdentifier = `learn:${topic.slug}:${question.slug}`
+
+      try {
+        const outcome = await executeCustomCode(
+          namespacedIdentifier,
+          currentLanguage,
+          currentCode,
+          activeCustom.input
+        )
+
+        let status: CustomTestCase['status'] = 'ran'
+        if (outcome.compilationError) {
+          status = 'error'
+        } else if (outcome.error) {
+          status = 'error'
+        } else if (activeCustom.expectedOutput && activeCustom.expectedOutput.trim()) {
+          const isMatch = outputsMatch(outcome.actualOutput || '', activeCustom.expectedOutput)
+          status = isMatch ? 'matches' : 'mismatches'
+        }
+
+        handleUpdateCustomCase(activeCustom.id, {
+          actualOutput: outcome.actualOutput,
+          error: outcome.error,
+          compilationError: outcome.compilationError,
+          executionTimeMs: outcome.executionTimeMs,
+          status,
+          lastRunAt: Date.now(),
+        })
+      } catch (err: any) {
+        handleUpdateCustomCase(activeCustom.id, {
+          error: err.message || 'Execution error encountered.',
+          status: 'error',
+        })
+      } finally {
+        setIsRunning(false)
+      }
+      return
+    }
+
+    // Normal Run or Submit:
+    if (typeof activeCaseTab === 'string') {
+      setActiveCaseTab(1)
+    }
     if (isSubmit) setIsSubmitting(true)
     else setIsRunning(true)
 
@@ -333,9 +501,25 @@ export const LearnWorkspacePage: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Language Selector */}
           <div className="flex items-center bg-neutral-950 rounded-lg p-0.5 border border-neutral-800">
-            {((question.isPythonOnly ? ['python'] : ['python', 'java', 'nodejs', 'cpp']) as ProgrammingLanguage[]).map((lang) => {
+            {(['python', 'nodejs', 'java', 'cpp'] as ProgrammingLanguage[]).map((lang) => {
               const label = lang === 'nodejs' ? 'JS' : lang === 'cpp' ? 'C++' : lang.charAt(0).toUpperCase() + lang.slice(1)
+              const isSupported = availableLanguages.includes(lang)
               const isActive = currentLanguage === lang
+
+              if (!isSupported) {
+                return (
+                  <button
+                    key={lang}
+                    type="button"
+                    disabled
+                    title={`${label} isn't available for this question yet.`}
+                    className="px-2.5 py-1 rounded-md text-xs font-semibold text-neutral-600 cursor-not-allowed opacity-50 select-none"
+                  >
+                    {label}
+                  </button>
+                )
+              }
+
               return (
                 <button
                   key={lang}
@@ -628,8 +812,8 @@ export const LearnWorkspacePage: React.FC = () => {
           <div className="h-[280px] sm:h-[320px] flex flex-col bg-neutral-900/60 shrink-0">
             {/* Test Case Tab Bar */}
             <div className="px-4 py-2 border-b border-neutral-800 flex items-center justify-between gap-3 shrink-0 overflow-x-auto">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mr-2 flex items-center gap-1">
+              <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mr-2 flex items-center gap-1 shrink-0">
                   <Terminal className="w-3.5 h-3.5" />
                   <span>Test Cases</span>
                 </span>
@@ -664,6 +848,56 @@ export const LearnWorkspacePage: React.FC = () => {
                     </button>
                   )
                 })}
+
+                {/* Custom Case Tabs */}
+                {customCases.map((cc) => {
+                  const isSelected = activeCaseTab === cc.id
+                  return (
+                    <div
+                      key={cc.id}
+                      className={cn(
+                        'inline-flex items-center rounded-md transition-all shrink-0 border group',
+                        isSelected
+                          ? 'bg-neutral-800 text-white border-neutral-700 shadow-sm'
+                          : 'border-transparent text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/50'
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setActiveCaseTab(cc.id)}
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold"
+                      >
+                        {cc.status === 'matches' ? (
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        ) : cc.status === 'mismatches' || cc.status === 'error' ? (
+                          <XCircle className="w-3 h-3 text-rose-400" />
+                        ) : null}
+                        <span>{cc.name}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleCloseCustomCase(cc.id, e)}
+                        title={`Close ${cc.name}`}
+                        className="pr-1.5 pl-0.5 py-1 text-neutral-500 hover:text-rose-400 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )
+                })}
+
+                {/* + Custom Button */}
+                {customCases.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={handleAddCustomCase}
+                    title="Add custom test input (up to 5)"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold text-neutral-400 hover:text-white bg-neutral-800/40 hover:bg-neutral-800 border border-dashed border-neutral-700 hover:border-neutral-500 transition-all shrink-0"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Custom</span>
+                  </button>
+                )}
               </div>
 
               {/* Execution Summary Pill */}
@@ -677,7 +911,7 @@ export const LearnWorkspacePage: React.FC = () => {
                   )}
                 >
                   {executionSummary.accepted
-                    ? 'All 10 Passed (Accepted)'
+                    ? `All ${executionSummary.total} Passed (Accepted)`
                     : `${executionSummary.passed} / ${executionSummary.total} Passed`}
                 </div>
               )}
@@ -685,7 +919,24 @@ export const LearnWorkspacePage: React.FC = () => {
 
             {/* Test Case Detail Display */}
             <div className="flex-1 p-4 overflow-y-auto font-mono text-xs text-neutral-300 space-y-3">
-              {compilationError ? (
+              {typeof activeCaseTab === 'string' ? (
+                (() => {
+                  const currentCustom = customCases.find((c) => c.id === activeCaseTab)
+                  if (!currentCustom) return null
+                  const exampleInput = question.visibleTests?.[0]?.input || ''
+                  return (
+                    <CustomTestCaseEditor
+                      customCase={currentCustom}
+                      exampleInput={exampleInput}
+                      isJsonQuestion={isJsonQuestion}
+                      inputFormatHint={question.inputFormat}
+                      isRunning={isRunning}
+                      onUpdate={(partial) => handleUpdateCustomCase(currentCustom.id, partial)}
+                      onReset={() => handleResetCustomCase(currentCustom.id)}
+                    />
+                  )
+                })()
+              ) : compilationError ? (
                 <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-900/60 text-rose-300 space-y-1.5">
                   <div className="flex items-center gap-1.5 font-bold text-rose-400">
                     <AlertTriangle className="w-4 h-4" />
@@ -695,33 +946,33 @@ export const LearnWorkspacePage: React.FC = () => {
                     {compilationError}
                   </pre>
                 </div>
-              ) : activeCaseTab > 3 ? (
+              ) : Number(activeCaseTab) > 3 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-2 p-6 text-neutral-500">
                   <Lock className="w-8 h-8 text-neutral-600" />
                   <p className="text-xs font-semibold text-neutral-400">Hidden Test Case #{activeCaseTab}</p>
                   <p className="text-[11px] max-w-xs text-neutral-500">
                     Hidden test inputs and expected outputs are verified server-side upon clicking &quot;Submit&quot;.
                   </p>
-                  {testResults?.[activeCaseTab] && (
+                  {testResults?.[Number(activeCaseTab)] && (
                     <div className="pt-2">
                       <span
                         className={cn(
                           'px-2.5 py-1 rounded-md text-xs font-semibold border',
-                          testResults[activeCaseTab].passed
+                          testResults[Number(activeCaseTab)].passed
                             ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800'
                             : 'bg-rose-950/80 text-rose-400 border-rose-900'
                         )}
                       >
-                        {testResults[activeCaseTab].passed ? 'Passed' : 'Failed'}
+                        {testResults[Number(activeCaseTab)].passed ? 'Passed' : 'Failed'}
                       </span>
                     </div>
                   )}
                 </div>
               ) : (
                 (() => {
-                  const visibleIndex = activeCaseTab - 1
+                  const visibleIndex = Number(activeCaseTab) - 1
                   const visibleCase = question.visibleTests?.[visibleIndex]
-                  const caseResult = testResults?.[activeCaseTab]
+                  const caseResult = testResults?.[Number(activeCaseTab)]
 
                   return (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
