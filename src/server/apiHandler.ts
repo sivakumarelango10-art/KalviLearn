@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { executeQuestion } from './executeService'
+import { executeQuestion, executeCustomInput } from './executeService'
 import { openStream, wantsStream } from './judge/stream'
 import { authenticateFeedbackRequest } from './feedbackAuth'
 import { hitRateLimit } from './rateLimit'
@@ -15,9 +15,7 @@ export function resetExecuteRateLimitsForTesting() {
   userLimiter.reset()
 }
 
-const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,127}$/i
-const ALLOWED_LANGUAGES = new Set(['python', 'java', 'cpp', 'c++', 'nodejs', 'node', 'javascript', 'js'])
-const MAX_CODE_CHARS = 65536
+import { isValidQuestionId, normalizeLanguage, isPythonOnlyQuestion, MAX_CODE_CHARS } from './judge/questionId'
 
 export default async function handler(
   req: IncomingMessage & { body?: unknown; query?: unknown },
@@ -86,10 +84,10 @@ export default async function handler(
   }
 
   const questionSlug = typeof body.questionSlug === 'string' ? body.questionSlug : ''
-  const language = typeof body.language === 'string' ? body.language.toLowerCase() : ''
+  const rawLanguage = typeof body.language === 'string' ? body.language : ''
   const code = typeof body.code === 'string' ? body.code : ''
 
-  if (!questionSlug || !language || !code) {
+  if (!questionSlug || !rawLanguage || !code) {
     return sendJson(400, {
       success: false,
       error: 'Missing Parameters',
@@ -99,15 +97,92 @@ export default async function handler(
       testCases: [],
     })
   }
-  if (!SLUG_PATTERN.test(questionSlug) || !ALLOWED_LANGUAGES.has(language) || code.length > MAX_CODE_CHARS) {
+
+  if (code.length > MAX_CODE_CHARS) {
     return sendJson(400, {
       success: false,
-      error: 'Invalid Parameters',
-      message: 'Unsupported question, language, or code size.',
+      error: 'Payload Too Large',
+      message: `Code size exceeds maximum limit of ${MAX_CODE_CHARS} characters.`,
       total: 10,
       passed: 0,
       testCases: [],
     })
+  }
+
+  if (!isValidQuestionId(questionSlug)) {
+    return sendJson(400, {
+      success: false,
+      error: 'Invalid Question',
+      message: 'Invalid question identifier.',
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
+  }
+
+  const language = normalizeLanguage(rawLanguage)
+  if (!language) {
+    return sendJson(400, {
+      success: false,
+      error: 'Unsupported Language',
+      message: `Unsupported programming language: "${rawLanguage}". Supported languages are: python, java, cpp, nodejs.`,
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
+  }
+
+  if (isPythonOnlyQuestion(questionSlug) && language !== 'python') {
+    return sendJson(400, {
+      success: false,
+      error: 'Unsupported Language',
+      message: 'This question only supports Python.',
+      total: 10,
+      passed: 0,
+      testCases: [],
+    })
+  }
+
+  // Custom Input run: evaluate student code solely against the provided customInput
+  if (typeof body.customInput === 'string') {
+    const customInput = body.customInput
+    if (customInput.length > MAX_CODE_CHARS) {
+      return sendJson(400, {
+        success: false,
+        error: 'Payload Too Large',
+        message: 'Custom test input exceeds maximum limit of 64KB.',
+        total: 1,
+        passed: 0,
+        testCases: [],
+      })
+    }
+
+    try {
+      const result = await executeCustomInput({ questionSlug, language, code, customInput })
+      if (result.error === 'Unsupported Language') {
+        return sendJson(400, result)
+      }
+      if (result.error === 'Question Not Found') {
+        return sendJson(404, result)
+      }
+      if (result.error === 'Compilation Error') {
+        return sendJson(422, result)
+      }
+      if (!result.success && result.error && result.status === 'SYSTEM_ERROR') {
+        return sendJson(500, result)
+      }
+      return sendJson(200, result)
+    } catch (err: unknown) {
+      console.error('[api/execute] custom input failure:', err instanceof Error ? err.message : 'unknown error')
+      return sendJson(500, {
+        success: false,
+        error: 'Execution Error',
+        message: 'The custom input could not be evaluated. Please try again.',
+        total: 1,
+        passed: 0,
+        testCases: [],
+      })
+    }
   }
 
   // Run = the VISIBLE cases only (quick feedback). Only Submit executes the full hidden suite.
@@ -128,6 +203,9 @@ export default async function handler(
     const result = await executeQuestion({ questionSlug, language, code, mode: 'run' })
     if (result.error === 'Question Not Found') {
       return sendJson(404, result)
+    }
+    if (result.error === 'Unsupported Language') {
+      return sendJson(400, result)
     }
     if (result.error === 'Compilation Error') {
       return sendJson(422, result)

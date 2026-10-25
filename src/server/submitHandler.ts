@@ -45,17 +45,7 @@ function pruneIdempotencyCache() {
   }
 }
 
-const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,127}$/i
-const MAX_CODE_CHARS = 65536
-
-function normalizeSubmissionLanguage(raw: string): string | null {
-  const l = (raw || '').toLowerCase()
-  if (l === 'javascript' || l === 'js' || l === 'node' || l === 'nodejs') return 'nodejs'
-  if (l === 'java') return 'java'
-  if (l === 'cpp' || l === 'c++') return 'cpp'
-  if (l === 'python' || l === 'py') return 'python'
-  return null
-}
+import { isValidQuestionId, normalizeLanguage, isPythonOnlyQuestion, MAX_CODE_CHARS } from './judge/questionId'
 
 async function resolveProblemId(slug: string): Promise<string | null> {
   const cachedId = problemIdCache.get(slug)
@@ -242,6 +232,18 @@ async function processSubmission(params: {
 
   // 1. Authoritatively evaluate the FULL server suite (3 visible + 7 hidden). The client never supplies tests.
   const evalResult = await executeQuestion({ questionSlug, language, code, mode: 'submit', onEvent })
+  if (evalResult.error === 'Question Not Found') {
+    return {
+      statusCode: 404,
+      payload: { ...evalResult },
+    }
+  }
+  if (evalResult.error === 'Unsupported Language') {
+    return {
+      statusCode: 400,
+      payload: { ...evalResult },
+    }
+  }
   // Accepted strictly means every case of the complete judge suite passed (never "visible cases passed").
   const allPassed =
     evalResult.success &&
@@ -375,12 +377,37 @@ export default async function handler(
       message: 'questionSlug, language, and code are required.',
     })
   }
-  const language = normalizeSubmissionLanguage(rawLanguage)
-  if (!language || !SLUG_PATTERN.test(questionSlug) || code.length > MAX_CODE_CHARS) {
+
+  if (code.length > MAX_CODE_CHARS) {
     return sendJson(400, {
       success: false,
-      error: 'Invalid Parameters',
-      message: 'Unsupported question, language, or code size.',
+      error: 'Payload Too Large',
+      message: `Code size exceeds maximum limit of ${MAX_CODE_CHARS} characters.`,
+    })
+  }
+
+  if (!isValidQuestionId(questionSlug)) {
+    return sendJson(400, {
+      success: false,
+      error: 'Invalid Question',
+      message: 'Invalid question identifier.',
+    })
+  }
+
+  const language = normalizeLanguage(rawLanguage)
+  if (!language) {
+    return sendJson(400, {
+      success: false,
+      error: 'Unsupported Language',
+      message: `Unsupported programming language: "${rawLanguage}". Supported languages are: python, java, cpp, nodejs.`,
+    })
+  }
+
+  if (isPythonOnlyQuestion(questionSlug) && language !== 'python') {
+    return sendJson(400, {
+      success: false,
+      error: 'Unsupported Language',
+      message: 'This question only supports Python.',
     })
   }
 
