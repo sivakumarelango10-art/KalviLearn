@@ -78,11 +78,26 @@ export function getClientIp(req: IncomingMessage): string {
 }
 
 /**
- * Test-only bearer tokens (`test_auth_*`) are honoured ONLY when the process is not running
- * in production AND ALLOW_TEST_AUTH_TOKENS=1 is set explicitly. Unset by default.
+ * Test-only bearer tokens (`test_auth_*`) are strictly forbidden in production and preview environments.
+ * They are honoured ONLY when neither NODE_ENV nor VERCEL_ENV is 'production' or 'preview',
+ * AND ALLOW_TEST_AUTH_TOKENS=1 is explicitly set.
  */
 export function isTestAuthEnabled(): boolean {
-  return process.env.NODE_ENV !== 'production' && process.env.ALLOW_TEST_AUTH_TOKENS === '1'
+  const isProductionOrPreview =
+    process.env.NODE_ENV === 'production' ||
+    process.env.VERCEL_ENV === 'production' ||
+    process.env.VERCEL_ENV === 'preview'
+
+  if (isProductionOrPreview) {
+    if (process.env.ALLOW_TEST_AUTH_TOKENS === '1') {
+      console.warn(
+        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production/preview (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
+      )
+    }
+    return false
+  }
+
+  return process.env.ALLOW_TEST_AUTH_TOKENS === '1'
 }
 
 export class PayloadTooLargeError extends Error {

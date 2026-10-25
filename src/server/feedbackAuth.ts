@@ -151,8 +151,18 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
   }
 
-  // 1. Test tokens for automated suites: non-production AND ALLOW_TEST_AUTH_TOKENS=1 only
-  if (isTestAuthEnabled() && token.startsWith('test_auth_')) {
+  // 1. Test tokens for automated suites: non-production AND non-preview AND ALLOW_TEST_AUTH_TOKENS=1 only
+  if (token.startsWith('test_auth_')) {
+    if (!isTestAuthEnabled()) {
+      console.warn(
+        `[auth] SECURITY WARNING: test_auth_ token rejected because test authentication is disabled in this environment (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}).`
+      )
+      return {
+        authenticated: false,
+        statusCode: 401,
+        error: 'Test token authentication is not permitted in this environment.',
+      }
+    }
     const parts = token.split('_')
     // format: test_auth_<role>_<email>
     if (parts.length >= 4) {
