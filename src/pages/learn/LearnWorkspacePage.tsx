@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { useParams, Link, useSearchParams } from 'react-router-dom'
+import { useParams, Link, useSearchParams, Navigate } from 'react-router-dom'
 import Editor, { OnMount } from '@monaco-editor/react'
 import confetti from 'canvas-confetti'
 import {
@@ -16,12 +16,12 @@ import {
   Terminal,
   FileText,
   AlertTriangle,
-  Sparkles,
 } from 'lucide-react'
 import {
   getLearnTopic,
   getLearnQuestion,
   getLearnQuestionsByTopic,
+  getLearnRedirect,
 } from '@/data/learn/coding'
 import {
   DEFAULT_STARTER_CODES,
@@ -35,6 +35,7 @@ import {
   isLearnQuestionSolved,
   subscribeLearnProgress,
 } from '@/lib/learnProgress'
+import { FormattedText } from '@/components/common/FormattedText'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
@@ -43,16 +44,25 @@ export const LearnWorkspacePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { user } = useAuth()
 
-  // Language management via ?lang= query param (default to python or last used)
-  const langParam = searchParams.get('lang')
-  const currentLanguage: ProgrammingLanguage = useMemo(() => {
-    return normalizeLanguageSlug(langParam || localStorage.getItem('kalvi_preferred_language'))
-  }, [langParam])
-
   // Resolve Topic and Question
   const topic = useMemo(() => getLearnTopic(topicId), [topicId])
   const question = useMemo(() => getLearnQuestion(topicId, slug), [topicId, slug])
   const topicQuestions = useMemo(() => (topicId ? getLearnQuestionsByTopic(topicId) : []), [topicId])
+
+  // Check for redirect if question not found
+  if (!question && slug) {
+    const redirect = getLearnRedirect(slug)
+    if (redirect) {
+      return <Navigate to={redirect.targetSolveUrl} replace />
+    }
+  }
+
+  // Language management via ?lang= query param (default to python or last used; force python if python-only)
+  const langParam = searchParams.get('lang')
+  const currentLanguage: ProgrammingLanguage = useMemo(() => {
+    if (question?.isPythonOnly) return 'python'
+    return normalizeLanguageSlug(langParam || localStorage.getItem('kalvi_preferred_language'))
+  }, [langParam, question?.isPythonOnly])
 
   // Question navigation context
   const currentIndex = useMemo(() => {
@@ -94,7 +104,8 @@ export const LearnWorkspacePage: React.FC = () => {
     if (saved) {
       setCode(saved)
     } else {
-      setCode(DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python)
+      const questionStarter = question.starterCodes?.[currentLanguage]
+      setCode(questionStarter || DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python)
     }
 
     // Reset runtime states
@@ -114,6 +125,7 @@ export const LearnWorkspacePage: React.FC = () => {
   }, [slug, user?.id])
 
   const handleLanguageChange = (newLang: ProgrammingLanguage) => {
+    if (question?.isPythonOnly && newLang !== 'python') return
     localStorage.setItem('kalvi_preferred_language', newLang)
     searchParams.set('lang', newLang)
     setSearchParams(searchParams, { replace: true })
@@ -130,7 +142,8 @@ export const LearnWorkspacePage: React.FC = () => {
   }
 
   const handleReset = () => {
-    const starter = DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python
+    const questionStarter = question?.starterCodes?.[currentLanguage]
+    const starter = questionStarter || DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python
     setCode(starter)
     try {
       localStorage.removeItem(storageKey)
@@ -302,12 +315,14 @@ export const LearnWorkspacePage: React.FC = () => {
           </nav>
 
           {/* Topic Position Tag */}
-          <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700/60">
-            {currentIndex >= 0 ? `${currentIndex + 1} of ${topicQuestions.length}` : 'Practice'}
-          </span>
+          {currentIndex >= 0 && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700/60 shrink-0">
+              {`${currentIndex + 1} of ${topicQuestions.length}`}
+            </span>
+          )}
 
           {isSolvedLocally && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-950/70 text-emerald-400 border border-emerald-800/80">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-950/70 text-emerald-400 border border-emerald-800/80 shrink-0">
               <CheckCircle2 className="w-3 h-3" />
               <span>Solved</span>
             </span>
@@ -318,7 +333,7 @@ export const LearnWorkspacePage: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Language Selector */}
           <div className="flex items-center bg-neutral-950 rounded-lg p-0.5 border border-neutral-800">
-            {(['python', 'java', 'nodejs', 'cpp'] as ProgrammingLanguage[]).map((lang) => {
+            {((question.isPythonOnly ? ['python'] : ['python', 'java', 'nodejs', 'cpp']) as ProgrammingLanguage[]).map((lang) => {
               const label = lang === 'nodejs' ? 'JS' : lang === 'cpp' ? 'C++' : lang.charAt(0).toUpperCase() + lang.slice(1)
               const isActive = currentLanguage === lang
               return (
@@ -451,43 +466,70 @@ export const LearnWorkspacePage: React.FC = () => {
             {activeTab === 'description' ? (
               <>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-950/80 text-red-400 border border-red-900/50">
-                      Learn Practice
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-800 text-neutral-300 border border-neutral-700/60">
+                      Coding
                     </span>
-                    <span
-                      className={cn(
-                        'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border',
-                        question.difficulty === 'Easy'
-                          ? 'bg-emerald-950/60 text-emerald-400 border-emerald-900/60'
-                          : question.difficulty === 'Medium'
-                          ? 'bg-amber-950/60 text-amber-400 border-amber-900/60'
-                          : 'bg-rose-950/60 text-rose-400 border-rose-900/60'
-                      )}
-                    >
-                      {question.difficulty}
-                    </span>
+                    {currentIndex >= 0 && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold text-neutral-400 bg-neutral-900 border border-neutral-800">
+                        {currentIndex + 1} of {topicQuestions.length}
+                      </span>
+                    )}
+                    {question.difficulty && (
+                      <span
+                        className={cn(
+                          'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border',
+                          question.difficulty === 'Easy'
+                            ? 'bg-emerald-950/60 text-emerald-400 border-emerald-900/60'
+                            : question.difficulty === 'Medium'
+                            ? 'bg-amber-950/60 text-amber-400 border-amber-900/60'
+                            : 'bg-rose-950/60 text-rose-400 border-rose-900/60'
+                        )}
+                      >
+                        {question.difficulty}
+                      </span>
+                    )}
+                    {question.isPythonOnly && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-950/80 text-amber-300 border border-amber-800/60">
+                        Python Only
+                      </span>
+                    )}
                   </div>
                   <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{question.title}</h1>
+                  {question.isPythonOnly && (
+                    <div className="p-3 bg-amber-950/40 border border-amber-800/60 rounded-xl text-xs text-amber-300 leading-relaxed">
+                      {question.pythonOnlyNote || 'Note: This challenge evaluates Python-specific language semantics and is solved exclusively in Python.'}
+                    </div>
+                  )}
                 </div>
 
                 {/* Problem Statement */}
                 <div className="space-y-2">
                   <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Statement</h2>
-                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed whitespace-pre-line">
-                    {question.problemStatement}
-                  </p>
+                  <FormattedText
+                    as="div"
+                    text={question.problemStatement}
+                    className="text-xs sm:text-sm text-neutral-300 leading-relaxed whitespace-pre-line"
+                  />
                 </div>
 
                 {/* Input / Output Formats */}
                 <div className="grid grid-cols-1 gap-4 pt-2">
                   <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800/80 space-y-1.5">
                     <h3 className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Input Format</h3>
-                    <p className="text-xs text-neutral-300 leading-relaxed">{question.inputFormat}</p>
+                    <FormattedText
+                      as="div"
+                      text={question.inputFormat}
+                      className="text-xs text-neutral-300 leading-relaxed"
+                    />
                   </div>
                   <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800/80 space-y-1.5">
                     <h3 className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Output Format</h3>
-                    <p className="text-xs text-neutral-300 leading-relaxed">{question.outputFormat}</p>
+                    <FormattedText
+                      as="div"
+                      text={question.outputFormat}
+                      className="text-xs text-neutral-300 leading-relaxed"
+                    />
                   </div>
                 </div>
 
@@ -495,9 +537,11 @@ export const LearnWorkspacePage: React.FC = () => {
                 {question.constraints && (
                   <div className="space-y-2">
                     <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Constraints</h2>
-                    <div className="p-3.5 rounded-xl bg-neutral-950/70 border border-neutral-800/80 font-mono text-xs text-neutral-300 whitespace-pre-line">
-                      {question.constraints}
-                    </div>
+                    <FormattedText
+                      as="div"
+                      text={question.constraints}
+                      className="p-3.5 rounded-xl bg-neutral-950/70 border border-neutral-800/80 font-mono text-xs text-neutral-300 whitespace-pre-line"
+                    />
                   </div>
                 )}
 
@@ -536,7 +580,7 @@ export const LearnWorkspacePage: React.FC = () => {
             ) : (
               <div className="space-y-4">
                 <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Learn Practice Status</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Challenge Status</h3>
                   <div className="flex items-center gap-2">
                     {isSolvedLocally ? (
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
@@ -727,13 +771,13 @@ export const LearnWorkspacePage: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Practice only — no XP</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Solved Successfully</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Challenge Completed!</h2>
               <p className="text-xs text-neutral-400 leading-relaxed">
-                Great job solving <span className="text-neutral-200 font-semibold">{question.title}</span>! Learn track practice reinforces conceptual understanding.
+                Great job solving <span className="text-neutral-200 font-semibold">{question.title}</span>! Learn track challenges reinforce your problem solving foundations.
               </p>
             </div>
 

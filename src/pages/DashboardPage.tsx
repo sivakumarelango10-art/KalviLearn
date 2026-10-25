@@ -19,6 +19,7 @@ import { getUserState, subscribeProgress, UserState } from '@/lib/progress'
 import { useAuth } from '@/contexts/AuthContext'
 import { useProblemStats } from '@/hooks/useProblemStats'
 import { GrowthMentorCard } from '@/components/student/GrowthMentorCard'
+import { isPracticeArchiveEnabled } from '@/lib/featureFlags'
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth()
@@ -57,9 +58,13 @@ export const DashboardPage: React.FC = () => {
         percent: bs.percent,
       }))
     }
+    const archiveEnabled = isPracticeArchiveEnabled()
     return problemsData.map((belt) => {
-      const total = belt.problems.length
-      const solved = belt.problems.filter((p: { slug: string }) =>
+      const problems = archiveEnabled
+        ? belt.problems.filter((p: any) => p.isActive !== false)
+        : belt.problems
+      const total = problems.length
+      const solved = problems.filter((p: { slug: string }) =>
         authoritativeSolvedSlugs.includes(p.slug)
       ).length
       const percent = total > 0 ? Math.round((solved / total) * 100) : 0
@@ -77,8 +82,10 @@ export const DashboardPage: React.FC = () => {
 
   // Find next problem to solve based on authoritative database progress
   const nextProblem = useMemo(() => {
+    const archiveEnabled = isPracticeArchiveEnabled()
     for (const belt of problemsData) {
       for (const p of belt.problems) {
+        if (archiveEnabled && (p as any).isActive === false) continue
         if (!authoritativeSolvedSlugs.includes(p.slug)) {
           return {
             ...p,
@@ -100,16 +107,24 @@ export const DashboardPage: React.FC = () => {
 
   // Current active Belt across 10 Belts
   const currentBelt = useMemo(() => {
+    const archiveEnabled = isPracticeArchiveEnabled()
     const solved = totalSolved ?? userState.solvedSlugs.length
-    if (solved >= 410) return { name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
-    if (solved >= 330) return { name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
-    if (solved >= 265) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
-    if (solved >= 205) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
-    if (solved >= 165) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
-    if (solved >= 125) return { name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
-    if (solved >= 85) return { name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
-    if (solved >= 50) return { name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
-    if (solved >= 20) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+    if (!archiveEnabled) {
+      if (solved >= 410) return { name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
+      if (solved >= 330) return { name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
+      if (solved >= 265) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+      if (solved >= 205) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+      if (solved >= 165) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+      if (solved >= 125) return { name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
+      if (solved >= 85) return { name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
+      if (solved >= 50) return { name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
+      if (solved >= 20) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+      return { name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
+    }
+    if (solved >= 45) return { name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+    if (solved >= 35) return { name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+    if (solved >= 25) return { name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+    if (solved >= 10) return { name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
     return { name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
   }, [totalSolved, userState.solvedSlugs.length])
 

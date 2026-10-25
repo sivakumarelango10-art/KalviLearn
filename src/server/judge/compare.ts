@@ -40,10 +40,84 @@ function tokensEqualWithTolerance(actual: string, expected: string): boolean {
   return true
 }
 
+function parseJsonLenient(text: string): { ok: boolean; value?: unknown } {
+  const trimmed = text.trim()
+  if (!trimmed) return { ok: false }
+  try {
+    return { ok: true, value: JSON.parse(trimmed) }
+  } catch {
+    try {
+      const fixed = trimmed
+        .replace(/\bTrue\b/g, 'true')
+        .replace(/\bFalse\b/g, 'false')
+        .replace(/\bNone\b/g, 'null')
+      return { ok: true, value: JSON.parse(fixed) }
+    } catch {
+      return { ok: false }
+    }
+  }
+}
+
+function jsonValuesMatch(a: unknown, e: unknown): boolean {
+  if (a === e) return true
+  if (a === null || e === null || a === undefined || e === undefined) return a === e
+
+  if (typeof a === 'number' && typeof e === 'number') {
+    if (Number.isInteger(e) && Number.isInteger(a)) return a === e
+    return Math.abs(a - e) <= 1e-6 * Math.max(1, Math.abs(e))
+  }
+
+  if (typeof a !== typeof e) return false
+
+  if (Array.isArray(e)) {
+    if (!Array.isArray(a)) return false
+    if (a.length !== e.length) return false
+    for (let i = 0; i < e.length; i++) {
+      if (!jsonValuesMatch(a[i], e[i])) return false
+    }
+    return true
+  }
+
+  if (typeof e === 'object' && typeof a === 'object') {
+    const keysE = Object.keys(e as object).sort()
+    const keysA = Object.keys(a as object).sort()
+    if (keysE.length !== keysA.length) return false
+    for (let i = 0; i < keysE.length; i++) {
+      if (keysE[i] !== keysA[i]) return false
+      const key = keysE[i]
+      if (!jsonValuesMatch((a as Record<string, unknown>)[key], (e as Record<string, unknown>)[key])) {
+        return false
+      }
+    }
+    return true
+  }
+
+  return a === e
+}
+
 export function outputsMatch(actual: string, expected: string): boolean {
   const a = normalizeOutput(actual)
   const e = normalizeOutput(expected)
   if (a === e) return true
+
+  // If expected is JSON (array, object, boolean, or string), support parsed JSON comparison
+  const parsedE = parseJsonLenient(e)
+  if (parsedE.ok && typeof parsedE.value !== 'string' && typeof parsedE.value !== 'number') {
+    const parsedA = parseJsonLenient(a)
+    if (parsedA.ok) {
+      return jsonValuesMatch(parsedA.value, parsedE.value)
+    }
+  } else if (parsedE.ok && typeof parsedE.value === 'string') {
+    const parsedA = parseJsonLenient(a)
+    if (parsedA.ok && typeof parsedA.value === 'string' && parsedA.value === parsedE.value) {
+      return true
+    }
+    if (a === parsedE.value) {
+      return true
+    }
+  }
+
   if (!/\d\.\d/.test(e)) return false
   return tokensEqualWithTolerance(a, e)
 }
+

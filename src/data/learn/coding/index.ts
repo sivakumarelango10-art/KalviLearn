@@ -110,7 +110,26 @@ export function findLearnQuestionBySlug(questionSlug?: string): LearnQuestion | 
   return QUESTION_BY_SLUG_ONLY.get(cleaned.toLowerCase())
 }
 
+import redirectsData from './redirects.json'
+
+export interface LearnRedirect {
+  originalId: string
+  originalSlug: string
+  targetSource: string
+  targetId: string
+  targetTitle: string
+  targetUrl: string
+  targetSolveUrl: string
+}
+
+export function getLearnRedirect(slug?: string): LearnRedirect | undefined {
+  if (!slug) return undefined
+  const cleaned = slug.toLowerCase().replace(/^(learn:|coding-)/i, '')
+  return (redirectsData as Record<string, LearnRedirect>)[cleaned]
+}
+
 export function isLearnQuestionSlug(slug?: string): boolean {
   if (!slug) return false
   return QUESTION_BY_SLUG_ONLY.has(slug.toLowerCase())
 }
+

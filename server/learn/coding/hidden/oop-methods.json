@@ -1,680 +1,1740 @@
 {
-  "deposit-method": {
-    "id": "learn:oop-methods:deposit-method",
-    "slug": "deposit-method",
+  "counter-increment-and-decrement": {
+    "id": "learn:oop-methods:counter-increment-and-decrement",
+    "bankId": "T23-Q01",
+    "slug": "counter-increment-and-decrement",
     "topicId": "oop-methods",
-    "title": "Deposit Method",
+    "title": "Counter Increment and Decrement",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "32",
-        "isHidden": true
-      }
-    ]
-  },
-  "withdraw-method": {
-    "id": "learn:oop-methods:withdraw-method",
-    "slug": "withdraw-method",
-    "topicId": "oop-methods",
-    "title": "Withdraw Method",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"increment\",\"value\":3},{\"method\":\"decrement\",\"value\":4},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":1}]}",
         "expectedOutput": "10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-2",
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"increment\",\"value\":1}]}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "12",
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"decrement\",\"value\":0},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":0}]}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-13",
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"increment\",\"value\":12},{\"method\":\"decrement\",\"value\":7},{\"method\":\"increment\",\"value\":15}]}",
+        "expectedOutput": "40",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "23",
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"decrement\",\"value\":2},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":2},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":2}]}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "2",
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"increment\",\"value\":9},{\"method\":\"decrement\",\"value\":5},{\"method\":\"increment\",\"value\":12},{\"method\":\"decrement\",\"value\":4},{\"method\":\"increment\",\"value\":8},{\"method\":\"decrement\",\"value\":1}]}",
+        "expectedOutput": "38",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "18",
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"decrement\",\"value\":12},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":1}]}",
+        "expectedOutput": "-10",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "25",
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"increment\",\"value\":11},{\"method\":\"decrement\",\"value\":11},{\"method\":\"increment\",\"value\":11}]}",
+        "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "34",
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"decrement\",\"value\":5},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":7},{\"method\":\"increment\",\"value\":1}]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":6},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":6}]}",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"decrement\",\"value\":20},{\"method\":\"increment\",\"value\":19},{\"method\":\"decrement\",\"value\":18}]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"increment\",\"value\":4},{\"method\":\"decrement\",\"value\":8},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":10},{\"method\":\"increment\",\"value\":1},{\"method\":\"decrement\",\"value\":3},{\"method\":\"increment\",\"value\":6}]}",
+        "expectedOutput": "-3",
         "isHidden": true
       }
     ]
   },
-  "increment-method": {
-    "id": "learn:oop-methods:increment-method",
-    "slug": "increment-method",
+  "bankaccount-deposit-and-withdraw": {
+    "id": "learn:oop-methods:bankaccount-deposit-and-withdraw",
+    "bankId": "T23-Q02",
+    "slug": "bankaccount-deposit-and-withdraw",
     "topicId": "oop-methods",
-    "title": "Increment Method",
+    "title": "BankAccount Deposit and Withdraw",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "12",
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"deposit\",\"value\":3},{\"method\":\"withdraw\",\"value\":4},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":1}]}",
+        "expectedOutput": "{\"balance\":10,\"rejected\":0}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"balance\":0,\"rejected\":0}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "1",
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"deposit\",\"value\":1}]}",
+        "expectedOutput": "{\"balance\":2,\"rejected\":0}",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "18",
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"withdraw\",\"value\":0},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":0}]}",
+        "expectedOutput": "{\"balance\":5,\"rejected\":0}",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-15",
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"deposit\",\"value\":12},{\"method\":\"withdraw\",\"value\":7},{\"method\":\"deposit\",\"value\":15}]}",
+        "expectedOutput": "{\"balance\":40,\"rejected\":0}",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "27",
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"withdraw\",\"value\":2},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":2},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":2}]}",
+        "expectedOutput": "{\"balance\":6,\"rejected\":0}",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-1",
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"deposit\",\"value\":9},{\"method\":\"withdraw\",\"value\":5},{\"method\":\"deposit\",\"value\":12},{\"method\":\"withdraw\",\"value\":4},{\"method\":\"deposit\",\"value\":8},{\"method\":\"withdraw\",\"value\":1}]}",
+        "expectedOutput": "{\"balance\":38,\"rejected\":0}",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "19",
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"withdraw\",\"value\":12},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":1}]}",
+        "expectedOutput": "{\"balance\":2,\"rejected\":1}",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "33",
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"deposit\",\"value\":11},{\"method\":\"withdraw\",\"value\":11},{\"method\":\"deposit\",\"value\":11}]}",
+        "expectedOutput": "{\"balance\":11,\"rejected\":0}",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "36",
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"withdraw\",\"value\":5},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":7},{\"method\":\"deposit\",\"value\":1}]}",
+        "expectedOutput": "{\"balance\":6,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":6},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":6}]}",
+        "expectedOutput": "{\"balance\":2,\"rejected\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"withdraw\",\"value\":20},{\"method\":\"deposit\",\"value\":19},{\"method\":\"withdraw\",\"value\":18}]}",
+        "expectedOutput": "{\"balance\":1,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"deposit\",\"value\":4},{\"method\":\"withdraw\",\"value\":8},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":10},{\"method\":\"deposit\",\"value\":1},{\"method\":\"withdraw\",\"value\":3},{\"method\":\"deposit\",\"value\":6}]}",
+        "expectedOutput": "{\"balance\":7,\"rejected\":1}",
         "isHidden": true
       }
     ]
   },
-  "perimeter-method": {
-    "id": "learn:oop-methods:perimeter-method",
-    "slug": "perimeter-method",
+  "stack-push-and-pop": {
+    "id": "learn:oop-methods:stack-push-and-pop",
+    "bankId": "T23-Q03",
+    "slug": "stack-push-and-pop",
     "topicId": "oop-methods",
-    "title": "Perimeter Method",
+    "title": "Stack Push and Pop",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"push\",\"value\":3},{\"method\":\"pop\",\"value\":4},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":1}]}",
+        "expectedOutput": "{\"items\":[10],\"popped\":[3,2]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"items\":[0],\"popped\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"push\",\"value\":1}]}",
+        "expectedOutput": "{\"items\":[1,1],\"popped\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"pop\",\"value\":0},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":0}]}",
+        "expectedOutput": "{\"items\":[],\"popped\":[5,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"push\",\"value\":12},{\"method\":\"pop\",\"value\":7},{\"method\":\"push\",\"value\":15}]}",
+        "expectedOutput": "{\"items\":[20,15],\"popped\":[12]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"pop\",\"value\":2},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":2},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":2}]}",
+        "expectedOutput": "{\"items\":[],\"popped\":[8,2,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"push\",\"value\":9},{\"method\":\"pop\",\"value\":5},{\"method\":\"push\",\"value\":12},{\"method\":\"pop\",\"value\":4},{\"method\":\"push\",\"value\":8},{\"method\":\"pop\",\"value\":1}]}",
+        "expectedOutput": "{\"items\":[19],\"popped\":[9,12,8]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"pop\",\"value\":12},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":1}]}",
+        "expectedOutput": "{\"items\":[],\"popped\":[3,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"push\",\"value\":11},{\"method\":\"pop\",\"value\":11},{\"method\":\"push\",\"value\":11}]}",
+        "expectedOutput": "{\"items\":[0,11],\"popped\":[11]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"pop\",\"value\":5},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":7},{\"method\":\"push\",\"value\":1}]}",
+        "expectedOutput": "{\"items\":[1],\"popped\":[15,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":6},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":6}]}",
+        "expectedOutput": "{\"items\":[2],\"popped\":[0,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"pop\",\"value\":20},{\"method\":\"push\",\"value\":19},{\"method\":\"pop\",\"value\":18}]}",
+        "expectedOutput": "{\"items\":[],\"popped\":[20,19]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"push\",\"value\":4},{\"method\":\"pop\",\"value\":8},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":10},{\"method\":\"push\",\"value\":1},{\"method\":\"pop\",\"value\":3},{\"method\":\"push\",\"value\":6}]}",
+        "expectedOutput": "{\"items\":[7,6],\"popped\":[4,0,1]}",
+        "isHidden": true
+      }
+    ]
+  },
+  "queue-enqueue-and-dequeue": {
+    "id": "learn:oop-methods:queue-enqueue-and-dequeue",
+    "bankId": "T23-Q04",
+    "slug": "queue-enqueue-and-dequeue",
+    "topicId": "oop-methods",
+    "title": "Queue Enqueue and Dequeue",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"enqueue\",\"value\":3},{\"method\":\"dequeue\",\"value\":4},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":1}]}",
+        "expectedOutput": "{\"queue\":[2],\"dequeued\":[10,3]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"queue\":[0],\"dequeued\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"enqueue\",\"value\":1}]}",
+        "expectedOutput": "{\"queue\":[1,1],\"dequeued\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"dequeue\",\"value\":0},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":0}]}",
+        "expectedOutput": "{\"queue\":[],\"dequeued\":[5,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"enqueue\",\"value\":12},{\"method\":\"dequeue\",\"value\":7},{\"method\":\"enqueue\",\"value\":15}]}",
+        "expectedOutput": "{\"queue\":[12,15],\"dequeued\":[20]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"dequeue\",\"value\":2},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":2},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":2}]}",
+        "expectedOutput": "{\"queue\":[],\"dequeued\":[8,2,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"enqueue\",\"value\":9},{\"method\":\"dequeue\",\"value\":5},{\"method\":\"enqueue\",\"value\":12},{\"method\":\"dequeue\",\"value\":4},{\"method\":\"enqueue\",\"value\":8},{\"method\":\"dequeue\",\"value\":1}]}",
+        "expectedOutput": "{\"queue\":[8],\"dequeued\":[19,9,12]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"dequeue\",\"value\":12},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":1}]}",
+        "expectedOutput": "{\"queue\":[],\"dequeued\":[3,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"enqueue\",\"value\":11},{\"method\":\"dequeue\",\"value\":11},{\"method\":\"enqueue\",\"value\":11}]}",
+        "expectedOutput": "{\"queue\":[11,11],\"dequeued\":[0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"dequeue\",\"value\":5},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":7},{\"method\":\"enqueue\",\"value\":1}]}",
+        "expectedOutput": "{\"queue\":[1],\"dequeued\":[15,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":6},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":6}]}",
+        "expectedOutput": "{\"queue\":[0],\"dequeued\":[2,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"dequeue\",\"value\":20},{\"method\":\"enqueue\",\"value\":19},{\"method\":\"dequeue\",\"value\":18}]}",
+        "expectedOutput": "{\"queue\":[],\"dequeued\":[20,19]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"enqueue\",\"value\":4},{\"method\":\"dequeue\",\"value\":8},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":10},{\"method\":\"enqueue\",\"value\":1},{\"method\":\"dequeue\",\"value\":3},{\"method\":\"enqueue\",\"value\":6}]}",
+        "expectedOutput": "{\"queue\":[1,6],\"dequeued\":[7,4,0]}",
+        "isHidden": true
+      }
+    ]
+  },
+  "inventory-restock-and-sell": {
+    "id": "learn:oop-methods:inventory-restock-and-sell",
+    "bankId": "T23-Q05",
+    "slug": "inventory-restock-and-sell",
+    "topicId": "oop-methods",
+    "title": "Inventory Restock and Sell",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"restock\",\"value\":3},{\"method\":\"sell\",\"value\":4},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":1}]}",
+        "expectedOutput": "{\"stock\":10,\"unfilled_units\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"stock\":0,\"unfilled_units\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"restock\",\"value\":1}]}",
+        "expectedOutput": "{\"stock\":2,\"unfilled_units\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"sell\",\"value\":0},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":0}]}",
+        "expectedOutput": "{\"stock\":5,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"restock\",\"value\":12},{\"method\":\"sell\",\"value\":7},{\"method\":\"restock\",\"value\":15}]}",
+        "expectedOutput": "{\"stock\":40,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"sell\",\"value\":2},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":2},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":2}]}",
+        "expectedOutput": "{\"stock\":6,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"restock\",\"value\":9},{\"method\":\"sell\",\"value\":5},{\"method\":\"restock\",\"value\":12},{\"method\":\"sell\",\"value\":4},{\"method\":\"restock\",\"value\":8},{\"method\":\"sell\",\"value\":1}]}",
+        "expectedOutput": "{\"stock\":38,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"sell\",\"value\":12},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":1}]}",
+        "expectedOutput": "{\"stock\":0,\"unfilled_units\":10}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"restock\",\"value\":11},{\"method\":\"sell\",\"value\":11},{\"method\":\"restock\",\"value\":11}]}",
+        "expectedOutput": "{\"stock\":11,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"sell\",\"value\":5},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":7},{\"method\":\"restock\",\"value\":1}]}",
+        "expectedOutput": "{\"stock\":6,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":6},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":6}]}",
+        "expectedOutput": "{\"stock\":0,\"unfilled_units\":10}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"sell\",\"value\":20},{\"method\":\"restock\",\"value\":19},{\"method\":\"sell\",\"value\":18}]}",
+        "expectedOutput": "{\"stock\":1,\"unfilled_units\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"restock\",\"value\":4},{\"method\":\"sell\",\"value\":8},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":10},{\"method\":\"restock\",\"value\":1},{\"method\":\"sell\",\"value\":3},{\"method\":\"restock\",\"value\":6}]}",
+        "expectedOutput": "{\"stock\":6,\"unfilled_units\":9}",
+        "isHidden": true
+      }
+    ]
+  },
+  "lamp-toggle-and-explicit-states": {
+    "id": "learn:oop-methods:lamp-toggle-and-explicit-states",
+    "bankId": "T23-Q06",
+    "slug": "lamp-toggle-and-explicit-states",
+    "topicId": "oop-methods",
+    "title": "Lamp Toggle and Explicit States",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"toggle\",\"value\":3},{\"method\":\"turn_on\",\"value\":4},{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":1}]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"turn_off\",\"value\":1}]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"toggle\",\"value\":0},{\"method\":\"turn_on\",\"value\":0},{\"method\":\"turn_off\",\"value\":0}]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"turn_on\",\"value\":12},{\"method\":\"turn_off\",\"value\":7},{\"method\":\"toggle\",\"value\":15}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":2},{\"method\":\"turn_on\",\"value\":2},{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":2}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"toggle\",\"value\":9},{\"method\":\"turn_on\",\"value\":5},{\"method\":\"turn_off\",\"value\":12},{\"method\":\"toggle\",\"value\":4},{\"method\":\"turn_on\",\"value\":8},{\"method\":\"turn_off\",\"value\":1}]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"turn_on\",\"value\":12},{\"method\":\"turn_off\",\"value\":0},{\"method\":\"toggle\",\"value\":1}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"turn_off\",\"value\":11},{\"method\":\"toggle\",\"value\":11},{\"method\":\"turn_on\",\"value\":11}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"toggle\",\"value\":5},{\"method\":\"turn_on\",\"value\":2},{\"method\":\"turn_off\",\"value\":7},{\"method\":\"toggle\",\"value\":1}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"turn_on\",\"value\":0},{\"method\":\"turn_off\",\"value\":6},{\"method\":\"toggle\",\"value\":0},{\"method\":\"turn_on\",\"value\":6}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"turn_off\",\"value\":20},{\"method\":\"toggle\",\"value\":19},{\"method\":\"turn_on\",\"value\":18}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"toggle\",\"value\":4},{\"method\":\"turn_on\",\"value\":8},{\"method\":\"turn_off\",\"value\":0},{\"method\":\"toggle\",\"value\":10},{\"method\":\"turn_on\",\"value\":1},{\"method\":\"turn_off\",\"value\":3},{\"method\":\"toggle\",\"value\":6}]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "thermometer-methods": {
+    "id": "learn:oop-methods:thermometer-methods",
+    "bankId": "T23-Q07",
+    "slug": "thermometer-methods",
+    "topicId": "oop-methods",
+    "title": "Thermometer Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"raise_c\",\"value\":3},{\"method\":\"lower_c\",\"value\":4},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":1}]}",
+        "expectedOutput": "{\"celsius\":10,\"fahrenheit_x5\":250}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"celsius\":0,\"fahrenheit_x5\":160}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"raise_c\",\"value\":1}]}",
+        "expectedOutput": "{\"celsius\":2,\"fahrenheit_x5\":178}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"lower_c\",\"value\":0},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":0}]}",
+        "expectedOutput": "{\"celsius\":5,\"fahrenheit_x5\":205}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"raise_c\",\"value\":12},{\"method\":\"lower_c\",\"value\":7},{\"method\":\"raise_c\",\"value\":15}]}",
+        "expectedOutput": "{\"celsius\":40,\"fahrenheit_x5\":520}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"lower_c\",\"value\":2},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":2},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":2}]}",
+        "expectedOutput": "{\"celsius\":6,\"fahrenheit_x5\":214}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"raise_c\",\"value\":9},{\"method\":\"lower_c\",\"value\":5},{\"method\":\"raise_c\",\"value\":12},{\"method\":\"lower_c\",\"value\":4},{\"method\":\"raise_c\",\"value\":8},{\"method\":\"lower_c\",\"value\":1}]}",
+        "expectedOutput": "{\"celsius\":38,\"fahrenheit_x5\":502}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"lower_c\",\"value\":12},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":1}]}",
+        "expectedOutput": "{\"celsius\":-10,\"fahrenheit_x5\":70}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"raise_c\",\"value\":11},{\"method\":\"lower_c\",\"value\":11},{\"method\":\"raise_c\",\"value\":11}]}",
+        "expectedOutput": "{\"celsius\":11,\"fahrenheit_x5\":259}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"lower_c\",\"value\":5},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":7},{\"method\":\"raise_c\",\"value\":1}]}",
+        "expectedOutput": "{\"celsius\":6,\"fahrenheit_x5\":214}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":6},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":6}]}",
+        "expectedOutput": "{\"celsius\":-10,\"fahrenheit_x5\":70}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"lower_c\",\"value\":20},{\"method\":\"raise_c\",\"value\":19},{\"method\":\"lower_c\",\"value\":18}]}",
+        "expectedOutput": "{\"celsius\":1,\"fahrenheit_x5\":169}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"raise_c\",\"value\":4},{\"method\":\"lower_c\",\"value\":8},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":10},{\"method\":\"raise_c\",\"value\":1},{\"method\":\"lower_c\",\"value\":3},{\"method\":\"raise_c\",\"value\":6}]}",
+        "expectedOutput": "{\"celsius\":-3,\"fahrenheit_x5\":133}",
+        "isHidden": true
+      }
+    ]
+  },
+  "shopping-cart-item-methods": {
+    "id": "learn:oop-methods:shopping-cart-item-methods",
+    "bankId": "T23-Q08",
+    "slug": "shopping-cart-item-methods",
+    "topicId": "oop-methods",
+    "title": "Shopping Cart Item Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add_item\",\"value\":3},{\"method\":\"remove_item\",\"value\":4},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":1}]}",
+        "expectedOutput": "{\"2\":1,\"3\":1,\"10\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"0\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"add_item\",\"value\":1}]}",
+        "expectedOutput": "{\"1\":2}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"remove_item\",\"value\":0},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":0}]}",
+        "expectedOutput": "{\"5\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"add_item\",\"value\":12},{\"method\":\"remove_item\",\"value\":7},{\"method\":\"add_item\",\"value\":15}]}",
+        "expectedOutput": "{\"12\":1,\"15\":1,\"20\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"remove_item\",\"value\":2},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":2},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":2}]}",
+        "expectedOutput": "{\"8\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add_item\",\"value\":9},{\"method\":\"remove_item\",\"value\":5},{\"method\":\"add_item\",\"value\":12},{\"method\":\"remove_item\",\"value\":4},{\"method\":\"add_item\",\"value\":8},{\"method\":\"remove_item\",\"value\":1}]}",
+        "expectedOutput": "{\"8\":1,\"9\":1,\"12\":1,\"19\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"remove_item\",\"value\":12},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":1}]}",
+        "expectedOutput": "{\"0\":1,\"3\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"add_item\",\"value\":11},{\"method\":\"remove_item\",\"value\":11},{\"method\":\"add_item\",\"value\":11}]}",
+        "expectedOutput": "{\"0\":1,\"11\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"remove_item\",\"value\":5},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":7},{\"method\":\"add_item\",\"value\":1}]}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"15\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":6},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":6}]}",
+        "expectedOutput": "{\"0\":2,\"2\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"remove_item\",\"value\":20},{\"method\":\"add_item\",\"value\":19},{\"method\":\"remove_item\",\"value\":18}]}",
+        "expectedOutput": "{\"19\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add_item\",\"value\":4},{\"method\":\"remove_item\",\"value\":8},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":10},{\"method\":\"add_item\",\"value\":1},{\"method\":\"remove_item\",\"value\":3},{\"method\":\"add_item\",\"value\":6}]}",
+        "expectedOutput": "{\"0\":1,\"1\":1,\"4\":1,\"6\":1,\"7\":1}",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-collection-methods": {
+    "id": "learn:oop-methods:unique-collection-methods",
+    "bankId": "T23-Q09",
+    "slug": "unique-collection-methods",
+    "topicId": "oop-methods",
+    "title": "Unique Collection Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"remove\",\"value\":4},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":1}]}",
+        "expectedOutput": "[2,3,10]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "[0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "[1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"remove\",\"value\":0},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":0}]}",
+        "expectedOutput": "[5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"add\",\"value\":12},{\"method\":\"remove\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
+        "expectedOutput": "[12,15,20]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"remove\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":2}]}",
+        "expectedOutput": "[8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"remove\",\"value\":5},{\"method\":\"add\",\"value\":12},{\"method\":\"remove\",\"value\":4},{\"method\":\"add\",\"value\":8},{\"method\":\"remove\",\"value\":1}]}",
+        "expectedOutput": "[8,9,12,19]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"remove\",\"value\":12},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":1}]}",
+        "expectedOutput": "[0,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"add\",\"value\":11},{\"method\":\"remove\",\"value\":11},{\"method\":\"add\",\"value\":11}]}",
+        "expectedOutput": "[0,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"remove\",\"value\":5},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "[1,2,15]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":6}]}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"remove\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"remove\",\"value\":18}]}",
+        "expectedOutput": "[19]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"remove\",\"value\":8},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":10},{\"method\":\"add\",\"value\":1},{\"method\":\"remove\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
+        "expectedOutput": "[0,1,4,6,7]",
+        "isHidden": true
+      }
+    ]
+  },
+  "undoable-calculator": {
+    "id": "learn:oop-methods:undoable-calculator",
+    "bankId": "T23-Q10",
+    "slug": "undoable-calculator",
+    "topicId": "oop-methods",
+    "title": "Undoable Calculator",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"subtract\",\"value\":4},{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "{\"value\":14,\"undo_depth\":2}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"value\":0,\"undo_depth\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"undo\",\"value\":1}]}",
+        "expectedOutput": "{\"value\":1,\"undo_depth\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"subtract\",\"value\":0},{\"method\":\"undo\",\"value\":0}]}",
+        "expectedOutput": "{\"value\":5,\"undo_depth\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"subtract\",\"value\":12},{\"method\":\"undo\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
+        "expectedOutput": "{\"value\":35,\"undo_depth\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"subtract\",\"value\":2},{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":2}]}",
+        "expectedOutput": "{\"value\":12,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"subtract\",\"value\":5},{\"method\":\"undo\",\"value\":12},{\"method\":\"add\",\"value\":4},{\"method\":\"subtract\",\"value\":8},{\"method\":\"undo\",\"value\":1}]}",
+        "expectedOutput": "{\"value\":32,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"subtract\",\"value\":12},{\"method\":\"undo\",\"value\":0},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "{\"value\":4,\"undo_depth\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"undo\",\"value\":11},{\"method\":\"add\",\"value\":11},{\"method\":\"subtract\",\"value\":11}]}",
+        "expectedOutput": "{\"value\":0,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"add\",\"value\":5},{\"method\":\"subtract\",\"value\":2},{\"method\":\"undo\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "{\"value\":21,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"subtract\",\"value\":0},{\"method\":\"undo\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"subtract\",\"value\":6}]}",
+        "expectedOutput": "{\"value\":-4,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"undo\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"subtract\",\"value\":18}]}",
+        "expectedOutput": "{\"value\":21,\"undo_depth\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"subtract\",\"value\":8},{\"method\":\"undo\",\"value\":0},{\"method\":\"add\",\"value\":10},{\"method\":\"subtract\",\"value\":1},{\"method\":\"undo\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
+        "expectedOutput": "{\"value\":27,\"undo_depth\":3}",
+        "isHidden": true
+      }
+    ]
+  },
+  "clamped-gradebook-score": {
+    "id": "learn:oop-methods:clamped-gradebook-score",
+    "bankId": "T23-Q11",
+    "slug": "clamped-gradebook-score",
+    "topicId": "oop-methods",
+    "title": "Clamped GradeBook Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"award\",\"value\":3},{\"method\":\"penalty\",\"value\":4},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":1}]}",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"award\",\"value\":1}]}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"penalty\",\"value\":0},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":0}]}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"award\",\"value\":12},{\"method\":\"penalty\",\"value\":7},{\"method\":\"award\",\"value\":15}]}",
+        "expectedOutput": "40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"penalty\",\"value\":2},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":2},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":2}]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"award\",\"value\":9},{\"method\":\"penalty\",\"value\":5},{\"method\":\"award\",\"value\":12},{\"method\":\"penalty\",\"value\":4},{\"method\":\"award\",\"value\":8},{\"method\":\"penalty\",\"value\":1}]}",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"penalty\",\"value\":12},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":1}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"award\",\"value\":11},{\"method\":\"penalty\",\"value\":11},{\"method\":\"award\",\"value\":11}]}",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"penalty\",\"value\":5},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":7},{\"method\":\"award\",\"value\":1}]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":6},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":6}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"penalty\",\"value\":20},{\"method\":\"award\",\"value\":19},{\"method\":\"penalty\",\"value\":18}]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"award\",\"value\":4},{\"method\":\"penalty\",\"value\":8},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":10},{\"method\":\"award\",\"value\":1},{\"method\":\"penalty\",\"value\":3},{\"method\":\"award\",\"value\":6}]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "digitalclock-time-methods": {
+    "id": "learn:oop-methods:digitalclock-time-methods",
+    "bankId": "T23-Q12",
+    "slug": "digitalclock-time-methods",
+    "topicId": "oop-methods",
+    "title": "DigitalClock Time Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"forward\",\"value\":3},{\"method\":\"back\",\"value\":4},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":1}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":10}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"forward\",\"value\":1}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":2}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"back\",\"value\":0},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":0}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":5}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"forward\",\"value\":12},{\"method\":\"back\",\"value\":7},{\"method\":\"forward\",\"value\":15}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":40}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"back\",\"value\":2},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":2},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":2}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":6}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"forward\",\"value\":9},{\"method\":\"back\",\"value\":5},{\"method\":\"forward\",\"value\":12},{\"method\":\"back\",\"value\":4},{\"method\":\"forward\",\"value\":8},{\"method\":\"back\",\"value\":1}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":38}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"back\",\"value\":12},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":1}]}",
+        "expectedOutput": "{\"hour\":23,\"minute\":50}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"forward\",\"value\":11},{\"method\":\"back\",\"value\":11},{\"method\":\"forward\",\"value\":11}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":11}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"back\",\"value\":5},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":7},{\"method\":\"forward\",\"value\":1}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":6}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":6},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":6}]}",
+        "expectedOutput": "{\"hour\":23,\"minute\":50}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"back\",\"value\":20},{\"method\":\"forward\",\"value\":19},{\"method\":\"back\",\"value\":18}]}",
+        "expectedOutput": "{\"hour\":0,\"minute\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"forward\",\"value\":4},{\"method\":\"back\",\"value\":8},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":10},{\"method\":\"forward\",\"value\":1},{\"method\":\"back\",\"value\":3},{\"method\":\"forward\",\"value\":6}]}",
+        "expectedOutput": "{\"hour\":23,\"minute\":57}",
+        "isHidden": true
+      }
+    ]
+  },
+  "stringbuilder-append-and-delete": {
+    "id": "learn:oop-methods:stringbuilder-append-and-delete",
+    "bankId": "T23-Q13",
+    "slug": "stringbuilder-append-and-delete",
+    "topicId": "oop-methods",
+    "title": "StringBuilder Append and Delete",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"append_digit\",\"value\":3},{\"method\":\"delete_last\",\"value\":4},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":1}]}",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"append_digit\",\"value\":1}]}",
+        "expectedOutput": "11",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"delete_last\",\"value\":0},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":0}]}",
+        "expectedOutput": "\"\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"append_digit\",\"value\":12},{\"method\":\"delete_last\",\"value\":7},{\"method\":\"append_digit\",\"value\":15}]}",
+        "expectedOutput": "\"205\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"delete_last\",\"value\":2},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":2},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":2}]}",
+        "expectedOutput": "\"\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"append_digit\",\"value\":9},{\"method\":\"delete_last\",\"value\":5},{\"method\":\"append_digit\",\"value\":12},{\"method\":\"delete_last\",\"value\":4},{\"method\":\"append_digit\",\"value\":8},{\"method\":\"delete_last\",\"value\":1}]}",
+        "expectedOutput": "\"19\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"delete_last\",\"value\":12},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":1}]}",
+        "expectedOutput": "\"\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"append_digit\",\"value\":11},{\"method\":\"delete_last\",\"value\":11},{\"method\":\"append_digit\",\"value\":11}]}",
+        "expectedOutput": "\"01\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"delete_last\",\"value\":5},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":7},{\"method\":\"append_digit\",\"value\":1}]}",
+        "expectedOutput": "\"11\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":6},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":6}]}",
+        "expectedOutput": "\"2\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"delete_last\",\"value\":20},{\"method\":\"append_digit\",\"value\":19},{\"method\":\"delete_last\",\"value\":18}]}",
+        "expectedOutput": "\"2\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"append_digit\",\"value\":4},{\"method\":\"delete_last\",\"value\":8},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":10},{\"method\":\"append_digit\",\"value\":1},{\"method\":\"delete_last\",\"value\":3},{\"method\":\"append_digit\",\"value\":6}]}",
+        "expectedOutput": "\"76\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "priorityqueue-min-methods": {
+    "id": "learn:oop-methods:priorityqueue-min-methods",
+    "bankId": "T23-Q14",
+    "slug": "priorityqueue-min-methods",
+    "topicId": "oop-methods",
+    "title": "PriorityQueue Min Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"insert\",\"value\":3},{\"method\":\"extract_min\",\"value\":4},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":1}]}",
+        "expectedOutput": "{\"sorted_items\":[10],\"removed_mins\":[3,2]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"sorted_items\":[0],\"removed_mins\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"insert\",\"value\":1}]}",
+        "expectedOutput": "{\"sorted_items\":[1,1],\"removed_mins\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"extract_min\",\"value\":0},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":0}]}",
+        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[5,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"insert\",\"value\":12},{\"method\":\"extract_min\",\"value\":7},{\"method\":\"insert\",\"value\":15}]}",
+        "expectedOutput": "{\"sorted_items\":[15,20],\"removed_mins\":[12]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"extract_min\",\"value\":2},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":2},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":2}]}",
+        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[8,2,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"insert\",\"value\":9},{\"method\":\"extract_min\",\"value\":5},{\"method\":\"insert\",\"value\":12},{\"method\":\"extract_min\",\"value\":4},{\"method\":\"insert\",\"value\":8},{\"method\":\"extract_min\",\"value\":1}]}",
+        "expectedOutput": "{\"sorted_items\":[19],\"removed_mins\":[9,12,8]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"extract_min\",\"value\":12},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":1}]}",
+        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[3,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"insert\",\"value\":11},{\"method\":\"extract_min\",\"value\":11},{\"method\":\"insert\",\"value\":11}]}",
+        "expectedOutput": "{\"sorted_items\":[11,11],\"removed_mins\":[0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"extract_min\",\"value\":5},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":7},{\"method\":\"insert\",\"value\":1}]}",
+        "expectedOutput": "{\"sorted_items\":[1],\"removed_mins\":[15,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":6},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":6}]}",
+        "expectedOutput": "{\"sorted_items\":[2],\"removed_mins\":[0,0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"extract_min\",\"value\":20},{\"method\":\"insert\",\"value\":19},{\"method\":\"extract_min\",\"value\":18}]}",
+        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[20,19]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"insert\",\"value\":4},{\"method\":\"extract_min\",\"value\":8},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":10},{\"method\":\"insert\",\"value\":1},{\"method\":\"extract_min\",\"value\":3},{\"method\":\"insert\",\"value\":6}]}",
+        "expectedOutput": "{\"sorted_items\":[6,7],\"removed_mins\":[4,0,1]}",
+        "isHidden": true
+      }
+    ]
+  },
+  "accumulator-add-multiply-reset": {
+    "id": "learn:oop-methods:accumulator-add-multiply-reset",
+    "bankId": "T23-Q15",
+    "slug": "accumulator-add-multiply-reset",
+    "topicId": "oop-methods",
+    "title": "Accumulator Add Multiply Reset",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"multiply\",\"value\":4},{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"multiply\",\"value\":12},{\"method\":\"reset\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"reset\",\"value\":1}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"multiply\",\"value\":0},{\"method\":\"reset\",\"value\":0}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"multiply\",\"value\":2},{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":2}]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"multiply\",\"value\":5},{\"method\":\"reset\",\"value\":12},{\"method\":\"add\",\"value\":4},{\"method\":\"multiply\",\"value\":8},{\"method\":\"reset\",\"value\":1}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"multiply\",\"value\":12},{\"method\":\"reset\",\"value\":0},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"reset\",\"value\":11},{\"method\":\"add\",\"value\":11},{\"method\":\"multiply\",\"value\":11}]}",
+        "expectedOutput": "121",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"add\",\"value\":5},{\"method\":\"multiply\",\"value\":2},{\"method\":\"reset\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"multiply\",\"value\":0},{\"method\":\"reset\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"multiply\",\"value\":6}]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"reset\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"multiply\",\"value\":18}]}",
+        "expectedOutput": "342",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"multiply\",\"value\":8},{\"method\":\"reset\",\"value\":0},{\"method\":\"add\",\"value\":10},{\"method\":\"multiply\",\"value\":1},{\"method\":\"reset\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "seat-reservation-object": {
+    "id": "learn:oop-methods:seat-reservation-object",
+    "bankId": "T23-Q16",
+    "slug": "seat-reservation-object",
+    "topicId": "oop-methods",
+    "title": "Seat Reservation Object",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"reserve\",\"value\":3},{\"method\":\"cancel\",\"value\":4},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":1}]}",
+        "expectedOutput": "{\"reserved\":10,\"rejected\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"reserve\",\"value\":1}]}",
+        "expectedOutput": "{\"reserved\":2,\"rejected\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"cancel\",\"value\":0},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":0}]}",
+        "expectedOutput": "{\"reserved\":5,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"reserve\",\"value\":12},{\"method\":\"cancel\",\"value\":7},{\"method\":\"reserve\",\"value\":15}]}",
+        "expectedOutput": "{\"reserved\":13,\"rejected\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"cancel\",\"value\":2},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":2},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":2}]}",
+        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"reserve\",\"value\":9},{\"method\":\"cancel\",\"value\":5},{\"method\":\"reserve\",\"value\":12},{\"method\":\"cancel\",\"value\":4},{\"method\":\"reserve\",\"value\":8},{\"method\":\"cancel\",\"value\":1}]}",
+        "expectedOutput": "{\"reserved\":17,\"rejected\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"cancel\",\"value\":12},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":1}]}",
+        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"reserve\",\"value\":11},{\"method\":\"cancel\",\"value\":11},{\"method\":\"reserve\",\"value\":11}]}",
+        "expectedOutput": "{\"reserved\":11,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"cancel\",\"value\":5},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":7},{\"method\":\"reserve\",\"value\":1}]}",
+        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":6},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":6}]}",
+        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"cancel\",\"value\":20},{\"method\":\"reserve\",\"value\":19},{\"method\":\"cancel\",\"value\":18}]}",
+        "expectedOutput": "{\"reserved\":1,\"rejected\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"reserve\",\"value\":4},{\"method\":\"cancel\",\"value\":8},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":10},{\"method\":\"reserve\",\"value\":1},{\"method\":\"cancel\",\"value\":3},{\"method\":\"reserve\",\"value\":6}]}",
+        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "isHidden": true
+      }
+    ]
+  },
+  "circular-playlist-cursor-methods": {
+    "id": "learn:oop-methods:circular-playlist-cursor-methods",
+    "bankId": "T23-Q17",
+    "slug": "circular-playlist-cursor-methods",
+    "topicId": "oop-methods",
+    "title": "Circular Playlist Cursor Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"next\",\"value\":3},{\"method\":\"previous\",\"value\":4},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":1}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"next\",\"value\":1}]}",
+        "expectedOutput": "{\"length\":2,\"cursor\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"previous\",\"value\":2},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":2},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":2}]}",
+        "expectedOutput": "{\"length\":4,\"cursor\":2}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"previous\",\"value\":0},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":0}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"next\",\"value\":12},{\"method\":\"previous\",\"value\":7},{\"method\":\"next\",\"value\":15}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"next\",\"value\":9},{\"method\":\"previous\",\"value\":5},{\"method\":\"next\",\"value\":12},{\"method\":\"previous\",\"value\":4},{\"method\":\"next\",\"value\":8},{\"method\":\"previous\",\"value\":1}]}",
+        "expectedOutput": "{\"length\":5,\"cursor\":4}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"previous\",\"value\":12},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":1}]}",
+        "expectedOutput": "{\"length\":4,\"cursor\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"next\",\"value\":11},{\"method\":\"previous\",\"value\":11},{\"method\":\"next\",\"value\":11}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"previous\",\"value\":5},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":7},{\"method\":\"next\",\"value\":1}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":6},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":6}]}",
+        "expectedOutput": "{\"length\":3,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"previous\",\"value\":20},{\"method\":\"next\",\"value\":19},{\"method\":\"previous\",\"value\":18}]}",
+        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"next\",\"value\":4},{\"method\":\"previous\",\"value\":8},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":10},{\"method\":\"next\",\"value\":1},{\"method\":\"previous\",\"value\":3},{\"method\":\"next\",\"value\":6}]}",
+        "expectedOutput": "{\"length\":3,\"cursor\":2}",
+        "isHidden": true
+      }
+    ]
+  },
+  "flagregister-bit-methods": {
+    "id": "learn:oop-methods:flagregister-bit-methods",
+    "bankId": "T23-Q18",
+    "slug": "flagregister-bit-methods",
+    "topicId": "oop-methods",
+    "title": "FlagRegister Bit Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"set_bit\",\"value\":3},{\"method\":\"clear_bit\",\"value\":4},{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":1}]}",
         "expectedOutput": "14",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "4",
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"toggle_bit\",\"value\":1}]}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "24",
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"set_bit\",\"value\":0},{\"method\":\"clear_bit\",\"value\":0},{\"method\":\"toggle_bit\",\"value\":0}]}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-17",
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"clear_bit\",\"value\":12},{\"method\":\"toggle_bit\",\"value\":7},{\"method\":\"set_bit\",\"value\":15}]}",
+        "expectedOutput": "132",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "31",
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":2},{\"method\":\"clear_bit\",\"value\":2},{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":2}]}",
+        "expectedOutput": "12",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "20",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "41",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "38",
-        "isHidden": true
-      }
-    ]
-  },
-  "average-method": {
-    "id": "learn:oop-methods:average-method",
-    "slug": "average-method",
-    "topicId": "oop-methods",
-    "title": "Average Method",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"set_bit\",\"value\":9},{\"method\":\"clear_bit\",\"value\":5},{\"method\":\"toggle_bit\",\"value\":12},{\"method\":\"set_bit\",\"value\":4},{\"method\":\"clear_bit\",\"value\":8},{\"method\":\"toggle_bit\",\"value\":1}]}",
         "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "30",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "35",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "21",
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"clear_bit\",\"value\":12},{\"method\":\"toggle_bit\",\"value\":0},{\"method\":\"set_bit\",\"value\":1}]}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "49",
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"toggle_bit\",\"value\":11},{\"method\":\"set_bit\",\"value\":11},{\"method\":\"clear_bit\",\"value\":11}]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "40",
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"set_bit\",\"value\":5},{\"method\":\"clear_bit\",\"value\":2},{\"method\":\"toggle_bit\",\"value\":7},{\"method\":\"set_bit\",\"value\":1}]}",
+        "expectedOutput": "171",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"clear_bit\",\"value\":0},{\"method\":\"toggle_bit\",\"value\":6},{\"method\":\"set_bit\",\"value\":0},{\"method\":\"clear_bit\",\"value\":6}]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"toggle_bit\",\"value\":20},{\"method\":\"set_bit\",\"value\":19},{\"method\":\"clear_bit\",\"value\":18}]}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"set_bit\",\"value\":4},{\"method\":\"clear_bit\",\"value\":8},{\"method\":\"toggle_bit\",\"value\":0},{\"method\":\"set_bit\",\"value\":10},{\"method\":\"clear_bit\",\"value\":1},{\"method\":\"toggle_bit\",\"value\":3},{\"method\":\"set_bit\",\"value\":6}]}",
+        "expectedOutput": "93",
         "isHidden": true
       }
     ]
   },
-  "raise-method": {
-    "id": "learn:oop-methods:raise-method",
-    "slug": "raise-method",
+  "robot-2d-movement-methods": {
+    "id": "learn:oop-methods:robot-2d-movement-methods",
+    "bankId": "T23-Q19",
+    "slug": "robot-2d-movement-methods",
     "topicId": "oop-methods",
-    "title": "Raise Method",
+    "title": "Robot 2D Movement Methods",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "18",
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"east\",\"value\":3},{\"method\":\"north\",\"value\":4},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":1}]}",
+        "expectedOutput": "{\"x\":11,\"y\":3}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"x\":0,\"y\":0}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "10",
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"south\",\"value\":0},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":0}]}",
+        "expectedOutput": "{\"x\":5,\"y\":0}",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "36",
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"west\",\"value\":1}]}",
+        "expectedOutput": "{\"x\":0,\"y\":0}",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-21",
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"east\",\"value\":12},{\"method\":\"north\",\"value\":7},{\"method\":\"west\",\"value\":15}]}",
+        "expectedOutput": "{\"x\":17,\"y\":7}",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "39",
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"north\",\"value\":2},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":2},{\"method\":\"east\",\"value\":2},{\"method\":\"north\",\"value\":2}]}",
+        "expectedOutput": "{\"x\":8,\"y\":2}",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-10",
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"west\",\"value\":9},{\"method\":\"south\",\"value\":5},{\"method\":\"east\",\"value\":12},{\"method\":\"north\",\"value\":4},{\"method\":\"west\",\"value\":8},{\"method\":\"south\",\"value\":1}]}",
+        "expectedOutput": "{\"x\":14,\"y\":-2}",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "22",
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"south\",\"value\":12},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":1}]}",
+        "expectedOutput": "{\"x\":3,\"y\":-11}",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "57",
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"east\",\"value\":11},{\"method\":\"north\",\"value\":11},{\"method\":\"west\",\"value\":11}]}",
+        "expectedOutput": "{\"x\":0,\"y\":11}",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "42",
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"north\",\"value\":5},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":7},{\"method\":\"east\",\"value\":1}]}",
+        "expectedOutput": "{\"x\":14,\"y\":-2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"west\",\"value\":0},{\"method\":\"south\",\"value\":6},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":6}]}",
+        "expectedOutput": "{\"x\":2,\"y\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"south\",\"value\":20},{\"method\":\"east\",\"value\":19},{\"method\":\"north\",\"value\":18}]}",
+        "expectedOutput": "{\"x\":39,\"y\":-2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"east\",\"value\":4},{\"method\":\"north\",\"value\":8},{\"method\":\"west\",\"value\":0},{\"method\":\"south\",\"value\":10},{\"method\":\"east\",\"value\":1},{\"method\":\"north\",\"value\":3},{\"method\":\"west\",\"value\":6}]}",
+        "expectedOutput": "{\"x\":6,\"y\":1}",
         "isHidden": true
       }
     ]
   },
-  "cart-add-method": {
-    "id": "learn:oop-methods:cart-add-method",
-    "slug": "cart-add-method",
+  "door-state-machine-methods": {
+    "id": "learn:oop-methods:door-state-machine-methods",
+    "bankId": "T23-Q20",
+    "slug": "door-state-machine-methods",
     "topicId": "oop-methods",
-    "title": "Cart Add Method",
+    "title": "Door State Machine Methods",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "20",
+        "input": "{\"initial\":10,\"commands\":[{\"method\":\"open\",\"value\":3},{\"method\":\"close\",\"value\":4},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":1}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"initial\":1,\"commands\":[{\"method\":\"lock\",\"value\":1}]}",
+        "expectedOutput": "{\"state\":\"open\",\"invalid_actions\":1}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "13",
+        "input": "{\"initial\":5,\"commands\":[{\"method\":\"unlock\",\"value\":0},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":0}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "42",
+        "input": "{\"initial\":0,\"commands\":[]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-23",
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"open\",\"value\":12},{\"method\":\"close\",\"value\":7},{\"method\":\"lock\",\"value\":15}]}",
+        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "43",
+        "input": "{\"initial\":8,\"commands\":[{\"method\":\"close\",\"value\":2},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":2},{\"method\":\"open\",\"value\":2},{\"method\":\"close\",\"value\":2}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-13",
+        "input": "{\"initial\":19,\"commands\":[{\"method\":\"lock\",\"value\":9},{\"method\":\"unlock\",\"value\":5},{\"method\":\"open\",\"value\":12},{\"method\":\"close\",\"value\":4},{\"method\":\"lock\",\"value\":8},{\"method\":\"unlock\",\"value\":1}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":2}",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "23",
+        "input": "{\"initial\":3,\"commands\":[{\"method\":\"unlock\",\"value\":12},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":1}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "65",
+        "input": "{\"initial\":0,\"commands\":[{\"method\":\"open\",\"value\":11},{\"method\":\"close\",\"value\":11},{\"method\":\"lock\",\"value\":11}]}",
+        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "44",
-        "isHidden": true
-      }
-    ]
-  },
-  "tick-method": {
-    "id": "learn:oop-methods:tick-method",
-    "slug": "tick-method",
-    "topicId": "oop-methods",
-    "title": "Tick Method",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "48",
+        "input": "{\"initial\":15,\"commands\":[{\"method\":\"close\",\"value\":5},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":7},{\"method\":\"open\",\"value\":1}]}",
+        "expectedOutput": "{\"state\":\"open\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-25",
+        "testIndex": 11,
+        "input": "{\"initial\":2,\"commands\":[{\"method\":\"lock\",\"value\":0},{\"method\":\"unlock\",\"value\":6},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":6}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "47",
+        "testIndex": 12,
+        "input": "{\"initial\":20,\"commands\":[{\"method\":\"unlock\",\"value\":20},{\"method\":\"open\",\"value\":19},{\"method\":\"close\",\"value\":18}]}",
+        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
         "isHidden": true
       },
       {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "73",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "46",
-        "isHidden": true
-      }
-    ]
-  },
-  "reset-method": {
-    "id": "learn:oop-methods:reset-method",
-    "slug": "reset-method",
-    "topicId": "oop-methods",
-    "title": "Reset Method",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "24",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "19",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "54",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-27",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "51",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "81",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "48",
-        "isHidden": true
-      }
-    ]
-  },
-  "append-length-method": {
-    "id": "learn:oop-methods:append-length-method",
-    "slug": "append-length-method",
-    "topicId": "oop-methods",
-    "title": "Append Length Method",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "26",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "60",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-29",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "55",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "26",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "89",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "50",
+        "testIndex": 13,
+        "input": "{\"initial\":7,\"commands\":[{\"method\":\"open\",\"value\":4},{\"method\":\"close\",\"value\":8},{\"method\":\"lock\",\"value\":0},{\"method\":\"unlock\",\"value\":10},{\"method\":\"open\",\"value\":1},{\"method\":\"close\",\"value\":3},{\"method\":\"lock\",\"value\":6}]}",
+        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
         "isHidden": true
       }
     ]

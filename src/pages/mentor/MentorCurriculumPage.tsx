@@ -14,6 +14,8 @@ import {
   fetchMentorRoster,
   subscribeToMentorUpdates,
 } from '@/lib/mentorService'
+import { getActiveProblemsCount } from '@/lib/problemStatsService'
+import { isPracticeArchiveEnabled } from '@/lib/featureFlags'
 
 export const MentorCurriculumPage: React.FC = () => {
   const { user } = useAuth()
@@ -22,7 +24,7 @@ export const MentorCurriculumPage: React.FC = () => {
   const [totalStudents, setTotalStudents] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
 
-  const totalProblemsCount = problemsData.reduce((acc, b) => acc + b.problems.length, 0)
+  const totalProblemsCount = getActiveProblemsCount()
   const totalBeltsCount = problemsData.length
 
   useEffect(() => {
@@ -155,6 +157,10 @@ export const MentorCurriculumPage: React.FC = () => {
 
         {problemsData.map((belt) => {
           const isExpanded = expandedBelt === belt.order
+          const archiveEnabled = isPracticeArchiveEnabled()
+          const beltProblems = archiveEnabled
+            ? belt.problems.filter((p: any) => p.isActive !== false)
+            : belt.problems
 
           return (
             <div key={belt.order} className="select-none">
@@ -178,7 +184,7 @@ export const MentorCurriculumPage: React.FC = () => {
 
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-semibold text-neutral-400">
-                    {belt.problems.length} problems
+                    {beltProblems.length} {beltProblems.length === 1 ? 'problem' : 'problems'}
                   </span>
                   {isExpanded ? (
                     <ChevronUp className="w-4 h-4 text-neutral-400" />
@@ -189,29 +195,35 @@ export const MentorCurriculumPage: React.FC = () => {
               </button>
 
               {isExpanded && (
-                <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2 bg-neutral-50/50">
-                  {belt.problems.map((p) => (
-                    <div
-                      key={p.slug}
-                      className="p-3 bg-white rounded-xl border border-neutral-200/80 space-y-1.5 shadow-2xs"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[11px] font-bold text-neutral-400">
-                          #{p.order}
-                        </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
-                          {p.difficulty}
-                        </span>
+                beltProblems.length > 0 ? (
+                  <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2 bg-neutral-50/50">
+                    {beltProblems.map((p) => (
+                      <div
+                        key={p.slug}
+                        className="p-3 bg-white rounded-xl border border-neutral-200/80 space-y-1.5 shadow-2xs"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-[11px] font-bold text-neutral-400">
+                            #{p.order}
+                          </span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                            {p.difficulty}
+                          </span>
+                        </div>
+                        <p className="font-bold text-xs text-neutral-900 truncate">
+                          {p.title}
+                        </p>
+                        <div className="text-[10px] text-neutral-500 font-mono">
+                          10 Test Cases (3 Visible, 7 Hidden)
+                        </div>
                       </div>
-                      <p className="font-bold text-xs text-neutral-900 truncate">
-                        {p.title}
-                      </p>
-                      <div className="text-[10px] text-neutral-500 font-mono">
-                        10 Test Cases (3 Visible, 7 Hidden)
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-6 pb-6 pt-4 bg-neutral-50/50 text-center text-xs text-neutral-400 italic">
+                    New problems coming soon. Curated challenges in development.
+                  </div>
+                )
               )}
             </div>
           )

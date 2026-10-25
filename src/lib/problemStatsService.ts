@@ -1,5 +1,7 @@
 import { supabase } from './supabase'
 import { registerCacheClearer } from './cacheRegistry'
+import problemsData from '../data/problems.json'
+import { isPracticeArchiveEnabled } from './featureFlags'
 
 export interface BeltStat {
   order: number
@@ -21,21 +23,61 @@ export interface ProblemStats {
   beltStats: BeltStat[]
 }
 
-// In-memory cache for total problem count with TTL to avoid redundant full-table counts
-let cachedTotalProblemCount: number | null = null
-let totalProblemCountTimestamp = 0
-const TOTAL_PROBLEMS_TTL_MS = 2 * 60 * 1000 // 2 minutes
+// All practice problems (500)
+const ALL_PRACTICE_PROBLEMS = problemsData.flatMap((b) => b.problems)
+export const TOTAL_ALL_PRACTICE_PROBLEMS = ALL_PRACTICE_PROBLEMS.length // 500
 
-// In-memory cache for authoritative belts with problems
-let cachedBeltsWithProblems: Array<{
-  id: string
-  order: number
-  name: string
-  title: string
-  color: string
-  Problem: Array<{ id: string; slug: string }>
-}> | null = null
-let beltsTimestamp = 0
+// All active practice problems (58)
+const ALL_ACTIVE_PRACTICE_PROBLEMS = problemsData.flatMap((b) =>
+  b.problems.filter((p: any) => p.isActive !== false)
+)
+export const TOTAL_ACTIVE_PRACTICE_PROBLEMS = ALL_ACTIVE_PRACTICE_PROBLEMS.length // 58
+
+// Fast canonical map for archived duplicates: slug/id -> canonicalProblemId
+const CANONICAL_PROBLEM_MAP = new Map<string, string>()
+const CANONICAL_SLUG_MAP = new Map<string, string>()
+
+for (const b of problemsData) {
+  for (const p of b.problems) {
+    if ((p as any).canonicalProblemId) {
+      CANONICAL_PROBLEM_MAP.set(p.id, (p as any).canonicalProblemId)
+      CANONICAL_PROBLEM_MAP.set(p.slug, (p as any).canonicalProblemId)
+    }
+  }
+}
+
+// Build map from canonical problem ID to canonical problem slug
+for (const p of ALL_ACTIVE_PRACTICE_PROBLEMS) {
+  CANONICAL_SLUG_MAP.set(p.id, p.slug)
+  CANONICAL_SLUG_MAP.set(p.slug, p.slug)
+}
+
+export function mapToCanonicalPracticeSlug(slugOrId: string): string {
+  if (!isPracticeArchiveEnabled()) {
+    return slugOrId
+  }
+  const targetId = CANONICAL_PROBLEM_MAP.get(slugOrId) || slugOrId
+  return CANONICAL_SLUG_MAP.get(targetId) || targetId
+}
+
+export function isPracticeProblemActive(slugOrId: string): boolean {
+  if (!isPracticeArchiveEnabled()) {
+    return true
+  }
+  return !CANONICAL_PROBLEM_MAP.has(slugOrId)
+}
+
+export function getActiveProblemsCount(): number {
+  return isPracticeArchiveEnabled() ? TOTAL_ACTIVE_PRACTICE_PROBLEMS : TOTAL_ALL_PRACTICE_PROBLEMS
+}
+
+export function getCanonicalPracticeProblem(slugOrId: string) {
+  if (!isPracticeArchiveEnabled()) {
+    return ALL_PRACTICE_PROBLEMS.find((p) => p.slug === slugOrId || p.id === slugOrId)
+  }
+  const canonicalSlug = mapToCanonicalPracticeSlug(slugOrId)
+  return ALL_ACTIVE_PRACTICE_PROBLEMS.find((p) => p.slug === canonicalSlug || p.id === canonicalSlug)
+}
 
 // Per-user in-memory stats cache for rapid successive component calls
 const userStatsCache = new Map<string, { stats: ProblemStats; timestamp: number }>()
@@ -50,48 +92,22 @@ registerCacheClearer(() => {
  * Clears all cached problem statistics. Called on logout, account switch, or data mutations.
  */
 export function clearProblemStatsCache(): void {
-  cachedTotalProblemCount = null
-  totalProblemCountTimestamp = 0
-  cachedBeltsWithProblems = null
-  beltsTimestamp = 0
   userStatsCache.clear()
 }
 
 /**
- * Fetches the authoritative total problem count directly from the Supabase Problem table.
- * Guaranteed to be database-backed with no hardcoded fallbacks.
+ * Fetches the authoritative total problem count directly from the local catalog.
+ * Does NOT query the remote database for Problem.isActive, guaranteeing seamless operation
+ * even if merged before the database migration is applied.
  */
-export async function fetchTotalProblemCount(forceRefresh = false): Promise<number> {
-  const now = Date.now()
-  if (!forceRefresh && cachedTotalProblemCount !== null && now - totalProblemCountTimestamp < TOTAL_PROBLEMS_TTL_MS) {
-    return cachedTotalProblemCount
-  }
-
-  const { count, error } = await supabase
-    .from('Problem')
-    .select('id', { count: 'exact', head: true })
-
-  if (error) {
-    // If we have an existing cached count, use it rather than failing if network blipped
-    if (cachedTotalProblemCount !== null) {
-      return cachedTotalProblemCount
-    }
-    throw new Error(`Failed to fetch total problem count from database: ${error.message}`)
-  }
-
-  if (typeof count !== 'number') {
-    throw new Error('Database returned invalid problem count')
-  }
-
-  cachedTotalProblemCount = count
-  totalProblemCountTimestamp = now
-  return count
+export async function fetchTotalProblemCount(_forceRefresh = false): Promise<number> {
+  return getActiveProblemsCount()
 }
 
 /**
- * Fetches authoritative belts joined with problem identifiers directly from the Supabase Belt table.
+ * Fetches authoritative belts joined with problem identifiers, filtered by feature flag.
  */
-export async function fetchAuthoritativeBeltsWithProblems(forceRefresh = false): Promise<Array<{
+export async function fetchAuthoritativeBeltsWithProblems(_forceRefresh = false): Promise<Array<{
   id: string
   order: number
   name: string
@@ -99,34 +115,17 @@ export async function fetchAuthoritativeBeltsWithProblems(forceRefresh = false):
   color: string
   Problem: Array<{ id: string; slug: string }>
 }>> {
-  const now = Date.now()
-  if (!forceRefresh && cachedBeltsWithProblems !== null && now - beltsTimestamp < TOTAL_PROBLEMS_TTL_MS) {
-    return cachedBeltsWithProblems
-  }
-
-  const { data, error } = await supabase
-    .from('Belt')
-    .select('id, order, name, title, color, Problem(id, slug)')
-    .order('order')
-
-  if (error || !data) {
-    if (cachedBeltsWithProblems !== null) {
-      return cachedBeltsWithProblems
-    }
-    throw new Error(`Failed to fetch belts from database: ${error?.message || 'Unknown error'}`)
-  }
-
-  const typedBelts = data as unknown as Array<{
-    id: string
-    order: number
-    name: string
-    title: string
-    color: string
-    Problem: Array<{ id: string; slug: string }>
-  }>
-  cachedBeltsWithProblems = typedBelts
-  beltsTimestamp = now
-  return typedBelts
+  const archiveEnabled = isPracticeArchiveEnabled()
+  return problemsData.map((b) => ({
+    id: `belt-${b.order}`,
+    order: b.order,
+    name: b.name,
+    title: b.title,
+    color: b.color,
+    Problem: b.problems
+      .filter((p: any) => !archiveEnabled || p.isActive !== false)
+      .map((p: any) => ({ id: p.id, slug: p.slug })),
+  }))
 }
 
 /**
@@ -136,9 +135,9 @@ export async function fetchAuthoritativeBeltsWithProblems(forceRefresh = false):
  * 1. User isolation: Scoped strictly by userId.
  * 2. Uniqueness: Multi-language solves (Python, Java, JS, C++) on the same problem count as 1 solve.
  * 3. Authoritative state: Queries UserProgress (SOLVED) and Submission (PASSED 10/10).
- * 4. No fake numbers: Returns exact counts; throws on database failure so caller shows explicit error.
- * 5. Remaining calculation: remaining = Math.max(totalProblems - solvedCount, 0).
- * 6. Belt breakdown: Per-belt problem counts and user solved counts derived from the database.
+ * 4. Carry-over: Archived duplicates map to their canonical active problem at most once, with no double XP.
+ * 5. Active totals: totalProblems equals 58, and empty belts report 0 problems cleanly.
+ * 6. Remaining calculation: remaining = Math.max(totalProblems - solvedCount, 0).
  */
 export async function fetchAuthoritativeProblemStats(
   userId: string,
@@ -184,6 +183,23 @@ export async function fetchAuthoritativeProblemStats(
 
   // Deduplicate solved problems across languages and submission records
   const uniqueSolvedProblemKeys = new Set<string>()
+  const archiveEnabled = isPracticeArchiveEnabled()
+  const validProblemSet = new Set(
+    (archiveEnabled ? ALL_ACTIVE_PRACTICE_PROBLEMS : ALL_PRACTICE_PROBLEMS).map((p) => p.slug)
+  )
+
+  function registerSolvedProblem(rawKey: string) {
+    if (archiveEnabled) {
+      const canonicalSlug = mapToCanonicalPracticeSlug(rawKey)
+      if (validProblemSet.has(canonicalSlug)) {
+        uniqueSolvedProblemKeys.add(canonicalSlug)
+      }
+    } else {
+      if (validProblemSet.has(rawKey)) {
+        uniqueSolvedProblemKeys.add(rawKey)
+      }
+    }
+  }
 
   // 1. Add canonical problems from UserProgress table
   if (Array.isArray(userProgressResult.data)) {
@@ -191,7 +207,7 @@ export async function fetchAuthoritativeProblemStats(
       const pObj = row.Problem as { slug?: string } | null
       const slug = pObj?.slug || row.problemId
       if (slug) {
-        uniqueSolvedProblemKeys.add(slug)
+        registerSolvedProblem(slug)
       }
     }
   }
@@ -199,7 +215,6 @@ export async function fetchAuthoritativeProblemStats(
   // 2. Add canonical problems from passed Submissions
   if (Array.isArray(submissionResult.data)) {
     for (const row of submissionResult.data) {
-      // Must have passed all test cases
       const isFullPass =
         row.passedTests != null && row.totalTests != null
           ? row.passedTests === row.totalTests && row.totalTests > 0
@@ -209,7 +224,7 @@ export async function fetchAuthoritativeProblemStats(
         const pObj = row.Problem as { slug?: string } | null
         const slug = pObj?.slug || row.problemId
         if (slug) {
-          uniqueSolvedProblemKeys.add(slug)
+          registerSolvedProblem(slug)
         }
       }
     }
@@ -225,7 +240,7 @@ export async function fetchAuthoritativeProblemStats(
     )
   }
 
-  // Calculate per-belt breakdown from database rows
+  // Calculate per-belt breakdown from active problem rows
   const beltStats: BeltStat[] = (beltResult || []).map((b) => {
     const problems = (b.Problem as Array<{ id: string; slug: string }>) || []
     const totalInBelt = problems.length

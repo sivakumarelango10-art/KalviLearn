@@ -67,614 +67,1742 @@
       }
     ]
   },
-  "union-metric": {
-    "id": "learn:sets:union-metric",
-    "slug": "union-metric",
+  "union-of-two-sets": {
+    "id": "learn:sets:union-of-two-sets",
+    "bankId": "T14-Q01",
+    "slug": "union-of-two-sets",
     "topicId": "sets",
-    "title": "Union Metric",
+    "title": "Union of Two Sets",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "18",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[1,2,3,4]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "15",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "15",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "7",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[1,2]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "9",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[-1,0,1]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "33",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[5]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "11",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[0,1,2,3,4,5,6,7,8,9,10,11]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "20",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "2",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[-3,-2,-1,1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "23",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[1,2,3,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[0,1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[1,2,3,4,5,6,8]",
         "isHidden": true
       }
     ]
   },
-  "intersection-metric": {
-    "id": "learn:sets:intersection-metric",
-    "slug": "intersection-metric",
+  "intersection-of-two-sets": {
+    "id": "learn:sets:intersection-of-two-sets",
+    "bankId": "T14-Q02",
+    "slug": "intersection-of-two-sets",
     "topicId": "sets",
-    "title": "Intersection Metric",
+    "title": "Intersection of Two Sets",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "22",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[2,3]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "17",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "20",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[0,1]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "9",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "10",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "39",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[5]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "3",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[4,5,6,7]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "13",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "3",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "18",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[2,4,6]",
         "isHidden": true
       }
     ]
   },
-  "symmetric-difference-metric": {
-    "id": "learn:sets:symmetric-difference-metric",
-    "slug": "symmetric-difference-metric",
+  "a-difference-b": {
+    "id": "learn:sets:a-difference-b",
+    "bankId": "T14-Q03",
+    "slug": "a-difference-b",
     "topicId": "sets",
-    "title": "Symmetric Difference Metric",
+    "title": "A Difference B",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "26",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[1]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "19",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "25",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "11",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "0",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[-1]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "45",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "6",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[0,1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "6",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[-3,-2,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "b-difference-a": {
+    "id": "learn:sets:b-difference-a",
+    "bankId": "T14-Q04",
+    "slug": "b-difference-a",
+    "topicId": "sets",
+    "title": "B Difference A",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[1,2]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[8,9,10,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[1,3,5]",
+        "isHidden": true
+      }
+    ]
+  },
+  "symmetric-difference": {
+    "id": "learn:sets:symmetric-difference",
+    "bankId": "T14-Q05",
+    "slug": "symmetric-difference",
+    "topicId": "sets",
+    "title": "Symmetric Difference",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[1,4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[0,1,2,3,8,9,10,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[-3,-2,-1,1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[1,2,3,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[1,3,5,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-a-subset-of-b": {
+    "id": "learn:sets:is-a-subset-of-b",
+    "bankId": "T14-Q06",
+    "slug": "is-a-subset-of-b",
+    "topicId": "sets",
+    "title": "Is A Subset of B",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-a-strict-subset": {
+    "id": "learn:sets:is-a-strict-subset",
+    "bankId": "T14-Q07",
+    "slug": "is-a-strict-subset",
+    "topicId": "sets",
+    "title": "Is A Strict Subset",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "are-sets-equal": {
+    "id": "learn:sets:are-sets-equal",
+    "bankId": "T14-Q08",
+    "slug": "are-sets-equal",
+    "topicId": "sets",
+    "title": "Are Sets Equal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "are-sets-disjoint": {
+    "id": "learn:sets:are-sets-disjoint",
+    "bankId": "T14-Q09",
+    "slug": "are-sets-disjoint",
+    "topicId": "sets",
+    "title": "Are Sets Disjoint",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "union-cardinality": {
+    "id": "learn:sets:union-cardinality",
+    "bankId": "T14-Q10",
+    "slug": "union-cardinality",
+    "topicId": "sets",
+    "title": "Union Cardinality",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
         "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "24",
-        "isHidden": true
-      }
-    ]
-  },
-  "subset-membership": {
-    "id": "learn:sets:subset-membership",
-    "slug": "subset-membership",
-    "topicId": "sets",
-    "title": "Subset Membership",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "30",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "10",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "30",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "40",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "30",
-        "isHidden": true
-      }
-    ]
-  },
-  "first-repeat": {
-    "id": "learn:sets:first-repeat",
-    "slug": "first-repeat",
-    "topicId": "sets",
-    "title": "First Repeat",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "34",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
+        "input": "{\"a\":[7],\"b\":[]}",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
-        "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "35",
-        "isHidden": false
-      },
-      {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 1\n7\n7",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "35",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
         "expectedOutput": "12",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "14",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "36",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "7",
         "isHidden": true
       }
     ]
   },
-  "disjointness": {
-    "id": "learn:sets:disjointness",
-    "slug": "disjointness",
+  "intersection-cardinality": {
+    "id": "learn:sets:intersection-cardinality",
+    "bankId": "T14-Q11",
+    "slug": "intersection-cardinality",
     "topicId": "sets",
-    "title": "Disjointness",
+    "title": "Intersection Cardinality",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "27",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "3",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "40",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "17",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "3",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "30",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "42",
-        "isHidden": true
-      }
-    ]
-  },
-  "missing-range-values": {
-    "id": "learn:sets:missing-range-values",
-    "slug": "missing-range-values",
-    "topicId": "sets",
-    "title": "Missing Range Values",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "34",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 1\n7\n7",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "22",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "8",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "37",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "consecutive-run": {
-    "id": "learn:sets:consecutive-run",
-    "slug": "consecutive-run",
+  "remove-duplicates-from-a": {
+    "id": "learn:sets:remove-duplicates-from-a",
+    "bankId": "T14-Q12",
+    "slug": "remove-duplicates-from-a",
     "topicId": "sets",
-    "title": "Consecutive Run",
+    "title": "Remove Duplicates from A",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "13",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "7",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "28",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
-        "expectedOutput": "10",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "5",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[-1,0,1]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "20",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[5]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "21",
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[0,1,2,3,4,5,6,7]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "26",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "9",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[-3,-2,-1]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "32",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[2,4,6,8]",
         "isHidden": true
       }
     ]
   },
-  "exactly-one-collection": {
-    "id": "learn:sets:exactly-one-collection",
-    "slug": "exactly-one-collection",
+  "common-even-values": {
+    "id": "learn:sets:common-even-values",
+    "bankId": "T14-Q13",
+    "slug": "common-even-values",
     "topicId": "sets",
-    "title": "Exactly One Collection",
+    "title": "Common Even Values",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4 2\n1 2 2 3\n2 4",
-        "expectedOutput": "6",
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[2]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 2\n5 5\n5 6",
-        "expectedOutput": "9",
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n-1 0 1\n2 3",
-        "expectedOutput": "22",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[0]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 2\n\n1 2",
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[4,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[2,4,6]",
+        "isHidden": true
+      }
+    ]
+  },
+  "distinct-values-occurring-in-a-only": {
+    "id": "learn:sets:distinct-values-occurring-in-a-only",
+    "bankId": "T14-Q14",
+    "slug": "distinct-values-occurring-in-a-only",
+    "topicId": "sets",
+    "title": "Distinct Values Occurring in A Only",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[7],\"b\":[]}",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 1\n7\n7",
-        "expectedOutput": "6",
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 3\n1 3 5\n2 4 6",
-        "expectedOutput": "15",
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n-3 -2\n-2 -1",
-        "expectedOutput": "24",
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n10 20\n20 30 40",
-        "expectedOutput": "30",
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "3 1\n0 0 0\n0",
-        "expectedOutput": "10",
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "3 3\n8 9 10\n1 2 3",
-        "expectedOutput": "27",
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "smallest-shared-value": {
+    "id": "learn:sets:smallest-shared-value",
+    "bankId": "T14-Q15",
+    "slug": "smallest-shared-value",
+    "topicId": "sets",
+    "title": "Smallest Shared Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "largest-union-element": {
+    "id": "learn:sets:largest-union-element",
+    "bankId": "T14-Q16",
+    "slug": "largest-union-element",
+    "topicId": "sets",
+    "title": "Largest Union Element",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "a-duplicated-input-values": {
+    "id": "learn:sets:a-duplicated-input-values",
+    "bankId": "T14-Q17",
+    "slug": "a-duplicated-input-values",
+    "topicId": "sets",
+    "title": "A Duplicated Input Values",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[2]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-counts-of-both-inputs": {
+    "id": "learn:sets:unique-counts-of-both-inputs",
+    "bankId": "T14-Q18",
+    "slug": "unique-counts-of-both-inputs",
+    "topicId": "sets",
+    "title": "Unique Counts of Both Inputs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[3,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[0,0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[1,0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[3,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[8,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[4,6]",
+        "isHidden": true
+      }
+    ]
+  },
+  "exclusive-elements-count": {
+    "id": "learn:sets:exclusive-elements-count",
+    "bankId": "T14-Q19",
+    "slug": "exclusive-elements-count",
+    "topicId": "sets",
+    "title": "Exclusive Elements Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "jaccard-similarity-fraction": {
+    "id": "learn:sets:jaccard-similarity-fraction",
+    "bankId": "T14-Q20",
+    "slug": "jaccard-similarity-fraction",
+    "topicId": "sets",
+    "title": "Jaccard Similarity Fraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "expectedOutput": "[1,2]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":[],\"b\":[]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":[7],\"b\":[]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "expectedOutput": "[2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "expectedOutput": "[2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "expectedOutput": "[3,7]",
         "isHidden": true
       }
     ]

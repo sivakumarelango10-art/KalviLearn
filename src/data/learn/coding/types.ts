@@ -24,7 +24,8 @@ export interface LearnQuestion {
   topicTitle: string
   title: string
   order: number
-  difficulty: 'Easy' | 'Medium' | 'Hard'
+  difficulty?: 'Easy' | 'Medium' | 'Hard'
+  bankId?: string
   problemStatement: string
   inputFormat: string
   outputFormat: string
@@ -32,6 +33,10 @@ export interface LearnQuestion {
   examples: LearnExample[]
   visibleTests: LearnVisibleTest[]
   testCaseMeta: LearnTestCaseMeta
+  isPythonOnly?: boolean
+  pythonOnlyNote?: string
+  starterCodes?: Record<string, string>
+  inputMode?: 'line' | 'json'
 }
 
 export interface LearnQuestionSummary {
@@ -43,5 +48,6 @@ export interface LearnQuestionSummary {
   title: string
   order: number
   preview: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
+  difficulty?: 'Easy' | 'Medium' | 'Hard'
 }
+

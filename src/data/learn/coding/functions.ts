@@ -9,7 +9,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "Functions",
     "title": "Two Argument Maximum Function",
     "order": 1,
-    "difficulty": "Easy",
     "problemStatement": "Write a function `f(a,b)` that returns `(a*1+b)//1` and print the returned value.",
     "inputFormat": "One line contains integers `a b`.",
     "outputFormat": "Print the value returned by `f`.",
@@ -52,484 +51,1249 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
-    "id": "learn:functions:clamp-function",
-    "slug": "clamp-function",
+    "id": "learn:functions:reusable-max-function",
+    "bankId": "T06-Q01",
+    "slug": "reusable-max-function",
     "topicId": "functions",
     "topicSlug": "functions",
     "topicTitle": "Functions",
-    "title": "Clamp Function",
+    "title": "Reusable Max Function",
     "order": 2,
     "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*2+b)//2` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
+    "problemStatement": "Write/use a function larger(a,b) returning the greater input.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
     "examples": [
       {
-        "input": "3 5",
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "7",
+        "explanation": "Substitute a=7 and b=3. Write/use a function larger(a,b) returning the greater input. Therefore the expected JSON output is 7."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
         "output": "5",
-        "explanation": "The function returns `(a*2+b)//2` = 5."
+        "explanation": "Substitute a=0 and b=5. Write/use a function larger(a,b) returning the greater input. Therefore the expected JSON output is 5."
       },
       {
-        "input": "8 2",
-        "output": "9",
-        "explanation": "The function returns `(a*2+b)//2` = 9."
-      },
-      {
-        "input": "-4 7",
-        "output": "-1",
-        "explanation": "The function returns `(a*2+b)//2` = -1."
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "12",
+        "explanation": "Substitute a=12 and b=4. Write/use a function larger(a,b) returning the greater input. Therefore the expected JSON output is 12."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "5"
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "7"
       },
       {
         "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "9"
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "5"
       },
       {
         "testIndex": 3,
-        "input": "-4 7",
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "12"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:reusable-min-function",
+    "bankId": "T06-Q02",
+    "slug": "reusable-min-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Reusable Min Function",
+    "order": 3,
+    "difficulty": "Easy",
+    "problemStatement": "Write/use a function smaller(a,b) returning the lesser input.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "3",
+        "explanation": "Substitute a=7 and b=3. Write/use a function smaller(a,b) returning the lesser input. Therefore the expected JSON output is 3."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "0",
+        "explanation": "Substitute a=0 and b=5. Write/use a function smaller(a,b) returning the lesser input. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "4",
+        "explanation": "Substitute a=12 and b=4. Write/use a function smaller(a,b) returning the lesser input. Therefore the expected JSON output is 4."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "3"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "4"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:absolute-difference-function",
+    "bankId": "T06-Q03",
+    "slug": "absolute-difference-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Absolute Difference Function",
+    "order": 4,
+    "difficulty": "Easy",
+    "problemStatement": "Write/use a helper distance(a,b) returning |a-b|.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "4",
+        "explanation": "Substitute a=7 and b=3. Write/use a helper distance(a,b) returning |a-b|. Therefore the expected JSON output is 4."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "5",
+        "explanation": "Substitute a=0 and b=5. Write/use a helper distance(a,b) returning |a-b|. Therefore the expected JSON output is 5."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "8",
+        "explanation": "Substitute a=12 and b=4. Write/use a helper distance(a,b) returning |a-b|. Therefore the expected JSON output is 8."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "4"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "5"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "8"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 12,
+      "totalCount": 15
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:parity-comparison-function",
+    "bankId": "T06-Q04",
+    "slug": "parity-comparison-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Parity Comparison Function",
+    "order": 5,
+    "difficulty": "Easy",
+    "problemStatement": "Write/use a function returning true when a and b have the same parity.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "true",
+        "explanation": "Substitute a=7 and b=3. Write/use a function returning true when a and b have the same parity. Therefore the expected JSON output is true."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "false",
+        "explanation": "Substitute a=0 and b=5. Write/use a function returning true when a and b have the same parity. Therefore the expected JSON output is false."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "true",
+        "explanation": "Substitute a=12 and b=4. Write/use a function returning true when a and b have the same parity. Therefore the expected JSON output is true."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "true"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "false"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "true"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:integer-gcd-helper",
+    "bankId": "T06-Q05",
+    "slug": "integer-gcd-helper",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Integer GCD Helper",
+    "order": 6,
+    "difficulty": "Easy",
+    "problemStatement": "Implement a function gcd(a,b), then return gcd(|a|,|b|).",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "1",
+        "explanation": "Substitute a=7 and b=3. Implement a function gcd(a,b), then return gcd(|a|,|b|). Therefore the expected JSON output is 1."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "5",
+        "explanation": "Substitute a=0 and b=5. Implement a function gcd(a,b), then return gcd(|a|,|b|). Therefore the expected JSON output is 5."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "4",
+        "explanation": "Substitute a=12 and b=4. Implement a function gcd(a,b), then return gcd(|a|,|b|). Therefore the expected JSON output is 4."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "1"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "5"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "4"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 12,
+      "totalCount": 15
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:safe-division-function",
+    "bankId": "T06-Q06",
+    "slug": "safe-division-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Safe Division Function",
+    "order": 7,
+    "difficulty": "Easy",
+    "problemStatement": "Make divide(a,b) return null when b=0; otherwise return truncation-toward-zero integer quotient.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "2",
+        "explanation": "Substitute a=7 and b=3. Make divide(a,b) return null when b=0; otherwise return truncation-toward-zero integer quotient. Therefore the expected JSON output is 2."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "0",
+        "explanation": "Substitute a=0 and b=5. Make divide(a,b) return null when b=0; otherwise return truncation-toward-zero integer quotient. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "3",
+        "explanation": "Substitute a=12 and b=4. Make divide(a,b) return null when b=0; otherwise return truncation-toward-zero integer quotient. Therefore the expected JSON output is 3."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "2"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "3"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:composite-function-evaluation",
+    "bankId": "T06-Q07",
+    "slug": "composite-function-evaluation",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Composite Function Evaluation",
+    "order": 8,
+    "difficulty": "Easy",
+    "problemStatement": "Define double(x)=2*x and increment(x)=x+1; return double(increment(a))+increment(b).",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "20",
+        "explanation": "Substitute a=7 and b=3. Define double(x)=2*x and increment(x)=x+1; return double(increment(a))+increment(b). Therefore the expected JSON output is 20."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "8",
+        "explanation": "Substitute a=0 and b=5. Define double(x)=2*x and increment(x)=x+1; return double(increment(a))+increment(b). Therefore the expected JSON output is 8."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "31",
+        "explanation": "Substitute a=12 and b=4. Define double(x)=2*x and increment(x)=x+1; return double(increment(a))+increment(b). Therefore the expected JSON output is 31."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "20"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "8"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "31"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:function-returns-a-pair",
+    "bankId": "T06-Q08",
+    "slug": "function-returns-a-pair",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Function Returns a Pair",
+    "order": 9,
+    "difficulty": "Medium",
+    "problemStatement": "Create a function returning [a+b,a-b].",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "[10,4]",
+        "explanation": "Substitute a=7 and b=3. Create a function returning [a+b,a-b]. Therefore the expected JSON output is [10,4]."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "[5,-5]",
+        "explanation": "Substitute a=0 and b=5. Create a function returning [a+b,a-b]. Therefore the expected JSON output is [5,-5]."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "[16,8]",
+        "explanation": "Substitute a=12 and b=4. Create a function returning [a+b,a-b]. Therefore the expected JSON output is [16,8]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "[10,4]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "[5,-5]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "[16,8]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 12,
+      "totalCount": 15
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:range-sum-helper",
+    "bankId": "T06-Q09",
+    "slug": "range-sum-helper",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Range Sum Helper",
+    "order": 10,
+    "difficulty": "Medium",
+    "problemStatement": "Return the sum of every integer from min(a,b) through max(a,b), endpoints included.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "25",
+        "explanation": "Substitute a=7 and b=3. Return the sum of every integer from min(a,b) through max(a,b), endpoints included. Therefore the expected JSON output is 25."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "15",
+        "explanation": "Substitute a=0 and b=5. Return the sum of every integer from min(a,b) through max(a,b), endpoints included. Therefore the expected JSON output is 15."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "72",
+        "explanation": "Substitute a=12 and b=4. Return the sum of every integer from min(a,b) through max(a,b), endpoints included. Therefore the expected JSON output is 72."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "25"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "15"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "72"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:divisibility-function",
+    "bankId": "T06-Q10",
+    "slug": "divisibility-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Divisibility Function",
+    "order": 11,
+    "difficulty": "Medium",
+    "problemStatement": "Return true if b is nonzero and a is divisible by b; otherwise false.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "false",
+        "explanation": "Substitute a=7 and b=3. Return true if b is nonzero and a is divisible by b; otherwise false. Therefore the expected JSON output is false."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "true",
+        "explanation": "Substitute a=0 and b=5. Return true if b is nonzero and a is divisible by b; otherwise false. Therefore the expected JSON output is true."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "true",
+        "explanation": "Substitute a=12 and b=4. Return true if b is nonzero and a is divisible by b; otherwise false. Therefore the expected JSON output is true."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "false"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "true"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "true"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:prime-checker-function",
+    "bankId": "T06-Q11",
+    "slug": "prime-checker-function",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Prime Checker Function",
+    "order": 12,
+    "difficulty": "Medium",
+    "problemStatement": "Return true iff |a|+|b| is prime.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "false",
+        "explanation": "Substitute a=7 and b=3. Return true iff |a|+|b| is prime. Therefore the expected JSON output is false."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "true",
+        "explanation": "Substitute a=0 and b=5. Return true iff |a|+|b| is prime. Therefore the expected JSON output is true."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "false",
+        "explanation": "Substitute a=12 and b=4. Return true iff |a|+|b| is prime. Therefore the expected JSON output is false."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "false"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "true"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "false"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:factor-count-helper",
+    "bankId": "T06-Q12",
+    "slug": "factor-count-helper",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Factor Count Helper",
+    "order": 13,
+    "difficulty": "Medium",
+    "problemStatement": "Return the number of positive factors of |a|+|b|; define count(0)=0.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "4",
+        "explanation": "Substitute a=7 and b=3. Return the number of positive factors of |a|+|b|; define count(0)=0. Therefore the expected JSON output is 4."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "2",
+        "explanation": "Substitute a=0 and b=5. Return the number of positive factors of |a|+|b|; define count(0)=0. Therefore the expected JSON output is 2."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "5",
+        "explanation": "Substitute a=12 and b=4. Return the number of positive factors of |a|+|b|; define count(0)=0. Therefore the expected JSON output is 5."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "4"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "2"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "5"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:function-composition-of-squares",
+    "bankId": "T06-Q13",
+    "slug": "function-composition-of-squares",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Function Composition of Squares",
+    "order": 14,
+    "difficulty": "Medium",
+    "problemStatement": "Let square(x)=x*x; return square(a)+square(b).",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "58",
+        "explanation": "Substitute a=7 and b=3. Let square(x)=x*x; return square(a)+square(b). Therefore the expected JSON output is 58."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "25",
+        "explanation": "Substitute a=0 and b=5. Let square(x)=x*x; return square(a)+square(b). Therefore the expected JSON output is 25."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "160",
+        "explanation": "Substitute a=12 and b=4. Let square(x)=x*x; return square(a)+square(b). Therefore the expected JSON output is 160."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "58"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "25"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "160"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 12,
+      "totalCount": 15
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:swap-function-output",
+    "bankId": "T06-Q14",
+    "slug": "swap-function-output",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Swap Function Output",
+    "order": 15,
+    "difficulty": "Medium",
+    "problemStatement": "A swap(a,b) function returns [b,a]; return that array.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "[3,7]",
+        "explanation": "Substitute a=7 and b=3. A swap(a,b) function returns [b,a]; return that array. Therefore the expected JSON output is [3,7]."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "[5,0]",
+        "explanation": "Substitute a=0 and b=5. A swap(a,b) function returns [b,a]; return that array. Therefore the expected JSON output is [5,0]."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "[4,12]",
+        "explanation": "Substitute a=12 and b=4. A swap(a,b) function returns [b,a]; return that array. Therefore the expected JSON output is [4,12]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "[3,7]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "[5,0]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "[4,12]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 12,
+      "totalCount": 15
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:clamp-using-helper-functions",
+    "bankId": "T06-Q15",
+    "slug": "clamp-using-helper-functions",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Clamp Using Helper Functions",
+    "order": 16,
+    "difficulty": "Medium",
+    "problemStatement": "Create low=min(a,b), high=max(a,b); clamp zero into [low,high].",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "3",
+        "explanation": "Substitute a=7 and b=3. Create low=min(a,b), high=max(a,b); clamp zero into [low,high]. Therefore the expected JSON output is 3."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "0",
+        "explanation": "Substitute a=0 and b=5. Create low=min(a,b), high=max(a,b); clamp zero into [low,high]. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "4",
+        "explanation": "Substitute a=12 and b=4. Create low=min(a,b), high=max(a,b); clamp zero into [low,high]. Therefore the expected JSON output is 4."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "3"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "4"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:digits-in-both-arguments",
+    "bankId": "T06-Q16",
+    "slug": "digits-in-both-arguments",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Digits in Both Arguments",
+    "order": 17,
+    "difficulty": "Hard",
+    "problemStatement": "Define digits(x)=number of digits of |x| (zero is one digit); return digits(a)+digits(b).",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "2",
+        "explanation": "Substitute a=7 and b=3. Define digits(x)=number of digits of |x| (zero is one digit); return digits(a)+digits(b). Therefore the expected JSON output is 2."
+      },
+      {
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "3",
+        "explanation": "Substitute a=12 and b=4. Define digits(x)=number of digits of |x| (zero is one digit); return digits(a)+digits(b). Therefore the expected JSON output is 3."
+      },
+      {
+        "input": "{\"a\":15,\"b\":15}",
+        "output": "4",
+        "explanation": "Substitute a=15 and b=15. Define digits(x)=number of digits of |x| (zero is one digit); return digits(a)+digits(b). Therefore the expected JSON output is 4."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "2"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "3"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":15,\"b\":15}",
+        "expectedOutput": "4"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:functions:function-returns-sign-product",
+    "bankId": "T06-Q17",
+    "slug": "function-returns-sign-product",
+    "topicId": "functions",
+    "topicSlug": "functions",
+    "topicTitle": "Functions",
+    "title": "Function Returns Sign Product",
+    "order": 18,
+    "difficulty": "Hard",
+    "problemStatement": "Let sign(x) be -1,0,1 for negative,zero,positive; return sign(a)*sign(b).",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
+    "examples": [
+      {
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "1",
+        "explanation": "Substitute a=7 and b=3. Let sign(x) be -1,0,1 for negative,zero,positive; return sign(a)*sign(b). Therefore the expected JSON output is 1."
+      },
+      {
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "0",
+        "explanation": "Substitute a=0 and b=5. Let sign(x) be -1,0,1 for negative,zero,positive; return sign(a)*sign(b). Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"a\":-8,\"b\":3}",
+        "output": "-1",
+        "explanation": "Substitute a=-8 and b=3. Let sign(x) be -1,0,1 for negative,zero,positive; return sign(a)*sign(b). Therefore the expected JSON output is -1."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "1"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":-8,\"b\":3}",
         "expectedOutput": "-1"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:functions:digit-score-function",
-    "slug": "digit-score-function",
+    "id": "learn:functions:coprime-function",
+    "bankId": "T06-Q18",
+    "slug": "coprime-function",
     "topicId": "functions",
     "topicSlug": "functions",
     "topicTitle": "Functions",
-    "title": "Digit Score Function",
-    "order": 3,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*3+b)//3` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
+    "title": "Coprime Function",
+    "order": 19,
+    "difficulty": "Hard",
+    "problemStatement": "Return true exactly when gcd(|a|,|b|)=1.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
     "examples": [
       {
-        "input": "3 5",
-        "output": "4",
-        "explanation": "The function returns `(a*3+b)//3` = 4."
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "true",
+        "explanation": "Substitute a=7 and b=3. Return true exactly when gcd(|a|,|b|)=1. Therefore the expected JSON output is true."
       },
       {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*3+b)//3` = 8."
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "false",
+        "explanation": "Substitute a=0 and b=5. Return true exactly when gcd(|a|,|b|)=1. Therefore the expected JSON output is false."
       },
       {
-        "input": "-4 7",
-        "output": "-2",
-        "explanation": "The function returns `(a*3+b)//3` = -2."
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "false",
+        "explanation": "Substitute a=12 and b=4. Return true exactly when gcd(|a|,|b|)=1. Therefore the expected JSON output is false."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "4"
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "true"
       },
       {
         "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "false"
       },
       {
         "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-2"
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "false"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:functions:range-formula-function",
-    "slug": "range-formula-function",
+    "id": "learn:functions:normalize-fraction-function",
+    "bankId": "T06-Q19",
+    "slug": "normalize-fraction-function",
     "topicId": "functions",
     "topicSlug": "functions",
     "topicTitle": "Functions",
-    "title": "Range Formula Function",
-    "order": 4,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*4+b)//4` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
+    "title": "Normalize Fraction Function",
+    "order": 20,
+    "difficulty": "Hard",
+    "problemStatement": "Treat a/b as a fraction: when b=0 return null; otherwise return its canonical signed [numerator,denominator] pair with denominator >0.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
     "examples": [
       {
-        "input": "3 5",
-        "output": "4",
-        "explanation": "The function returns `(a*4+b)//4` = 4."
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "[7,3]",
+        "explanation": "Substitute a=7 and b=3. Treat a/b as a fraction: when b=0 return null; otherwise return its canonical signed [numerator,denominator] pair with denominator >0. Therefore the expected JSON output is [7,3]."
       },
       {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*4+b)//4` = 8."
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "[0,1]",
+        "explanation": "Substitute a=0 and b=5. Treat a/b as a fraction: when b=0 return null; otherwise return its canonical signed [numerator,denominator] pair with denominator >0. Therefore the expected JSON output is [0,1]."
       },
       {
-        "input": "-4 7",
-        "output": "-3",
-        "explanation": "The function returns `(a*4+b)//4` = -3."
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "[3,1]",
+        "explanation": "Substitute a=12 and b=4. Treat a/b as a fraction: when b=0 return null; otherwise return its canonical signed [numerator,denominator] pair with denominator >0. Therefore the expected JSON output is [3,1]."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "4"
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "[7,3]"
       },
       {
         "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "[0,1]"
       },
       {
         "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-3"
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "[3,1]"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:functions:transform-function",
-    "slug": "transform-function",
+    "id": "learn:functions:math-utility-summary",
+    "bankId": "T06-Q20",
+    "slug": "math-utility-summary",
     "topicId": "functions",
     "topicSlug": "functions",
     "topicTitle": "Functions",
-    "title": "Transform Function",
-    "order": 5,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*5+b)//5` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
+    "title": "Math Utility Summary",
+    "order": 21,
+    "difficulty": "Hard",
+    "problemStatement": "Implement helpers to return {\"gcd\": gcd(a,b), \"lcm\": lcm(|a|,|b|), \"sum\":a+b}.",
+    "inputFormat": "A single JSON object: {\"a\": integer, \"b\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "-100 ≤ a,b ≤ 100; use integer arithmetic and the explicitly stated handling for invalid arguments.",
     "examples": [
       {
-        "input": "3 5",
-        "output": "4",
-        "explanation": "The function returns `(a*5+b)//5` = 4."
+        "input": "{\"a\":7,\"b\":3}",
+        "output": "{\"gcd\":1,\"lcm\":21,\"sum\":10}",
+        "explanation": "Substitute a=7 and b=3. Implement helpers to return {\"gcd\": gcd(a,b), \"lcm\": lcm(|a|,|b|), \"sum\":a+b}. Therefore the expected JSON output is {\"gcd\":1,\"lcm\":21,\"sum\":10}."
       },
       {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*5+b)//5` = 8."
+        "input": "{\"a\":0,\"b\":5}",
+        "output": "{\"gcd\":5,\"lcm\":0,\"sum\":5}",
+        "explanation": "Substitute a=0 and b=5. Implement helpers to return {\"gcd\": gcd(a,b), \"lcm\": lcm(|a|,|b|), \"sum\":a+b}. Therefore the expected JSON output is {\"gcd\":5,\"lcm\":0,\"sum\":5}."
       },
       {
-        "input": "-4 7",
-        "output": "-3",
-        "explanation": "The function returns `(a*5+b)//5` = -3."
+        "input": "{\"a\":12,\"b\":4}",
+        "output": "{\"gcd\":4,\"lcm\":12,\"sum\":16}",
+        "explanation": "Substitute a=12 and b=4. Implement helpers to return {\"gcd\": gcd(a,b), \"lcm\": lcm(|a|,|b|), \"sum\":a+b}. Therefore the expected JSON output is {\"gcd\":4,\"lcm\":12,\"sum\":16}."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "4"
+        "input": "{\"a\":7,\"b\":3}",
+        "expectedOutput": "{\"gcd\":1,\"lcm\":21,\"sum\":10}"
       },
       {
         "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
+        "input": "{\"a\":0,\"b\":5}",
+        "expectedOutput": "{\"gcd\":5,\"lcm\":0,\"sum\":5}"
       },
       {
         "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-3"
+        "input": "{\"a\":12,\"b\":4}",
+        "expectedOutput": "{\"gcd\":4,\"lcm\":12,\"sum\":16}"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:functions:three-argument-helper",
-    "slug": "three-argument-helper",
-    "topicId": "functions",
-    "topicSlug": "functions",
-    "topicTitle": "Functions",
-    "title": "Three Argument Helper",
-    "order": 6,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*6+b)//6` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
-    "examples": [
-      {
-        "input": "3 5",
-        "output": "3",
-        "explanation": "The function returns `(a*6+b)//6` = 3."
-      },
-      {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*6+b)//6` = 8."
-      },
-      {
-        "input": "-4 7",
-        "output": "-3",
-        "explanation": "The function returns `(a*6+b)//6` = -3."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "3"
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
-      },
-      {
-        "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-3"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:functions:reusable-tax-function",
-    "slug": "reusable-tax-function",
-    "topicId": "functions",
-    "topicSlug": "functions",
-    "topicTitle": "Functions",
-    "title": "Reusable Tax Function",
-    "order": 7,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*7+b)//7` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
-    "examples": [
-      {
-        "input": "3 5",
-        "output": "3",
-        "explanation": "The function returns `(a*7+b)//7` = 3."
-      },
-      {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*7+b)//7` = 8."
-      },
-      {
-        "input": "-4 7",
-        "output": "-3",
-        "explanation": "The function returns `(a*7+b)//7` = -3."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "3"
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
-      },
-      {
-        "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-3"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:functions:normalization-function",
-    "slug": "normalization-function",
-    "topicId": "functions",
-    "topicSlug": "functions",
-    "topicTitle": "Functions",
-    "title": "Normalization Function",
-    "order": 8,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*8+b)//8` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
-    "examples": [
-      {
-        "input": "3 5",
-        "output": "3",
-        "explanation": "The function returns `(a*8+b)//8` = 3."
-      },
-      {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*8+b)//8` = 8."
-      },
-      {
-        "input": "-4 7",
-        "output": "-4",
-        "explanation": "The function returns `(a*8+b)//8` = -4."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "3"
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
-      },
-      {
-        "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-4"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:functions:composition-function",
-    "slug": "composition-function",
-    "topicId": "functions",
-    "topicSlug": "functions",
-    "topicTitle": "Functions",
-    "title": "Composition Function",
-    "order": 9,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*9+b)//9` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
-    "examples": [
-      {
-        "input": "3 5",
-        "output": "3",
-        "explanation": "The function returns `(a*9+b)//9` = 3."
-      },
-      {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*9+b)//9` = 8."
-      },
-      {
-        "input": "-4 7",
-        "output": "-4",
-        "explanation": "The function returns `(a*9+b)//9` = -4."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "3"
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
-      },
-      {
-        "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-4"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:functions:piecewise-helper-function",
-    "slug": "piecewise-helper-function",
-    "topicId": "functions",
-    "topicSlug": "functions",
-    "topicTitle": "Functions",
-    "title": "Piecewise Helper Function",
-    "order": 10,
-    "difficulty": "Easy",
-    "problemStatement": "Write a function `f(a,b)` that returns `(a*10+b)//10` and print the returned value.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the value returned by `f`.",
-    "constraints": "-10^6 <= a,b <= 10^6.",
-    "examples": [
-      {
-        "input": "3 5",
-        "output": "3",
-        "explanation": "The function returns `(a*10+b)//10` = 3."
-      },
-      {
-        "input": "8 2",
-        "output": "8",
-        "explanation": "The function returns `(a*10+b)//10` = 8."
-      },
-      {
-        "input": "-4 7",
-        "output": "-4",
-        "explanation": "The function returns `(a*10+b)//10` = -4."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "3 5",
-        "expectedOutput": "3"
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2",
-        "expectedOutput": "8"
-      },
-      {
-        "testIndex": 3,
-        "input": "-4 7",
-        "expectedOutput": "-4"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   }
 ]
 

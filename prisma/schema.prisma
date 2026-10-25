@@ -35,12 +35,15 @@ model Problem {
   examples        Json?
   subdivision     String?
   starterCodes    Json
+  isActive        Boolean        @default(true)
+  canonicalProblemId String?
   testCases       TestCase[]
   submissions     Submission[]
   userProgress    UserProgress[]
   createdAt       DateTime       @default(now())
 
   @@index([beltId])
+  @@index([isActive])
 }
 
 model TestCase {

@@ -1,680 +1,1740 @@
 {
-  "student-object": {
-    "id": "learn:oop-classes-objects:student-object",
-    "slug": "student-object",
+  "construct-student-summaries": {
+    "id": "learn:oop-classes-objects:construct-student-summaries",
+    "bankId": "T22-Q01",
+    "slug": "construct-student-summaries",
     "topicId": "oop-classes-objects",
-    "title": "Student Object",
+    "title": "Construct Student Summaries",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "8",
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu:82\",\"Bala:65\",\"Charu:82\"]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-5",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A:100\"]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "6",
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"Mira:0\"]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-11",
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[\"Adi:50\",\"Bea:50\",\"Cal:50\"]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "19",
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"Zed:20\",\"Yam:80\",\"Xia:100\"]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "5",
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"S0:0\",\"S1:17\",\"S2:34\",\"S3:51\",\"S4:68\",\"S5:85\",\"S6:1\",\"S7:18\",\"S8:35\",\"S9:52\"]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "17",
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[\"K:40\",\"K:90\"]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "17",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"A:100\",\"B:0\"]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "32",
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[\"Jim:60\",\"Amy:70\",\"Lee:80\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"Zoe:90\",\"Ann:90\",\"Eli:85\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[\"Bob:0\",\"Bob:0\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"Pa:45\",\"Mo:75\",\"Li:35\",\"Sam:95\"]",
         "isHidden": true
       }
     ]
   },
-  "rectangle-object": {
-    "id": "learn:oop-classes-objects:rectangle-object",
-    "slug": "rectangle-object",
+  "count-constructed-objects": {
+    "id": "learn:oop-classes-objects:count-constructed-objects",
+    "bankId": "T22-Q02",
+    "slug": "count-constructed-objects",
     "topicId": "oop-classes-objects",
-    "title": "Rectangle Object",
+    "title": "Count Constructed Objects",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "10",
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-2",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "23",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "34",
-        "isHidden": true
-      }
-    ]
-  },
-  "point-object": {
-    "id": "learn:oop-classes-objects:point-object",
-    "slug": "point-object",
-    "topicId": "oop-classes-objects",
-    "title": "Point Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "18",
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-15",
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "27",
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "33",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "36",
-        "isHidden": true
-      }
-    ]
-  },
-  "book-object": {
-    "id": "learn:oop-classes-objects:book-object",
-    "slug": "book-object",
-    "topicId": "oop-classes-objects",
-    "title": "Book Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "14",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "4",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "31",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "20",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "41",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "38",
-        "isHidden": true
-      }
-    ]
-  },
-  "employee-object": {
-    "id": "learn:oop-classes-objects:employee-object",
-    "slug": "employee-object",
-    "topicId": "oop-classes-objects",
-    "title": "Employee Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "30",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "35",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "49",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "40",
-        "isHidden": true
-      }
-    ]
-  },
-  "car-object": {
-    "id": "learn:oop-classes-objects:car-object",
-    "slug": "car-object",
-    "topicId": "oop-classes-objects",
-    "title": "Car Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
         "expectedOutput": "10",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "36",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "39",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-10",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "22",
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "57",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "42",
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "4",
         "isHidden": true
       }
     ]
   },
-  "product-object": {
-    "id": "learn:oop-classes-objects:product-object",
-    "slug": "product-object",
+  "highest-scoring-student": {
+    "id": "learn:oop-classes-objects:highest-scoring-student",
+    "bankId": "T22-Q03",
+    "slug": "highest-scoring-student",
     "topicId": "oop-classes-objects",
-    "title": "Product Object",
+    "title": "Highest Scoring Student",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Anu\",\"score\":82}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"index\":0,\"name\":\"A\",\"score\":100}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Mira\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Adi\",\"score\":50}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "{\"index\":2,\"name\":\"Xia\",\"score\":100}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":5,\"name\":\"S5\",\"score\":85}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "{\"index\":1,\"name\":\"K\",\"score\":90}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":0,\"name\":\"A\",\"score\":100}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "{\"index\":2,\"name\":\"Lee\",\"score\":80}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Zoe\",\"score\":90}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Bob\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "{\"index\":3,\"name\":\"Sam\",\"score\":95}",
+        "isHidden": true
+      }
+    ]
+  },
+  "lowest-scoring-student": {
+    "id": "learn:oop-classes-objects:lowest-scoring-student",
+    "bankId": "T22-Q04",
+    "slug": "lowest-scoring-student",
+    "topicId": "oop-classes-objects",
+    "title": "Lowest Scoring Student",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"index\":1,\"name\":\"Bala\",\"score\":65}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"index\":0,\"name\":\"A\",\"score\":100}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Mira\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Adi\",\"score\":50}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Zed\",\"score\":20}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":0,\"name\":\"S0\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "{\"index\":0,\"name\":\"K\",\"score\":40}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "{\"index\":1,\"name\":\"B\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Jim\",\"score\":60}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "{\"index\":2,\"name\":\"Eli\",\"score\":85}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Bob\",\"score\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "{\"index\":2,\"name\":\"Li\",\"score\":35}",
+        "isHidden": true
+      }
+    ]
+  },
+  "passing-students": {
+    "id": "learn:oop-classes-objects:passing-students",
+    "bankId": "T22-Q05",
+    "slug": "passing-students",
+    "topicId": "oop-classes-objects",
+    "title": "Passing Students",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu\",\"Charu\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[\"Adi\",\"Bea\",\"Cal\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"Yam\",\"Xia\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"S3\",\"S4\",\"S5\",\"S9\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[\"K\",\"K\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"A\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[\"Jim\",\"Amy\",\"Lee\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"Zoe\",\"Ann\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[\"Bob\",\"Bob\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"Pa\",\"Mo\",\"Sam\"]",
+        "isHidden": true
+      }
+    ]
+  },
+  "failing-students": {
+    "id": "learn:oop-classes-objects:failing-students",
+    "bankId": "T22-Q06",
+    "slug": "failing-students",
+    "topicId": "oop-classes-objects",
+    "title": "Failing Students",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Bala\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"Mira\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"Zed\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"S0\",\"S1\",\"S2\",\"S6\",\"S7\",\"S8\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"B\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"Eli\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"Li\"]",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-passing-objects": {
+    "id": "learn:oop-classes-objects:count-passing-objects",
+    "bankId": "T22-Q07",
+    "slug": "count-passing-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Count Passing Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "average-object-score-fraction": {
+    "id": "learn:oop-classes-objects:average-object-score-fraction",
+    "bankId": "T22-Q08",
+    "slug": "average-object-score-fraction",
+    "topicId": "oop-classes-objects",
+    "title": "Average Object Score Fraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[229,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[100,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[50,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[200,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[361,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[65,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[50,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[70,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[265,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[125,2]",
+        "isHidden": true
+      }
+    ]
+  },
+  "total-marks-across-objects": {
+    "id": "learn:oop-classes-objects:total-marks-across-objects",
+    "bankId": "T22-Q09",
+    "slug": "total-marks-across-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Total Marks Across Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "229",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "150",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "361",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "130",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "210",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "265",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "250",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-score-gap": {
+    "id": "learn:oop-classes-objects:maximum-score-gap",
+    "bankId": "T22-Q10",
+    "slug": "maximum-score-gap",
+    "topicId": "oop-classes-objects",
+    "title": "Maximum Score Gap",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "80",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
         "expectedOutput": "20",
-        "isHidden": false
+        "isHidden": true
       },
       {
-        "testIndex": 2,
-        "input": "5 1",
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
         "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "13",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "42",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-23",
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "43",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "23",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "65",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "44",
-        "isHidden": true
-      }
-    ]
-  },
-  "time-object": {
-    "id": "learn:oop-classes-objects:time-object",
-    "slug": "time-object",
-    "topicId": "oop-classes-objects",
-    "title": "Time Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "48",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "47",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "73",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "46",
-        "isHidden": true
-      }
-    ]
-  },
-  "fraction-object": {
-    "id": "learn:oop-classes-objects:fraction-object",
-    "slug": "fraction-object",
-    "topicId": "oop-classes-objects",
-    "title": "Fraction Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "24",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "19",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "54",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-27",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "51",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "81",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "48",
-        "isHidden": true
-      }
-    ]
-  },
-  "circle-object": {
-    "id": "learn:oop-classes-objects:circle-object",
-    "slug": "circle-object",
-    "topicId": "oop-classes-objects",
-    "title": "Circle Object",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "26",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
         "expectedOutput": "60",
         "isHidden": true
+      }
+    ]
+  },
+  "rank-objects-by-score": {
+    "id": "learn:oop-classes-objects:rank-objects-by-score",
+    "bankId": "T22-Q11",
+    "slug": "rank-objects-by-score",
+    "topicId": "oop-classes-objects",
+    "title": "Rank Objects by Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu\",\"Charu\",\"Bala\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"Mira\"]",
+        "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-29",
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[\"Adi\",\"Bea\",\"Cal\"]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "55",
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"Xia\",\"Yam\",\"Zed\"]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-22",
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"S5\",\"S4\",\"S9\",\"S3\",\"S8\",\"S2\",\"S7\",\"S1\",\"S6\",\"S0\"]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "26",
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[\"K\",\"K\"]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "89",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"A\",\"B\"]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "50",
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[\"Lee\",\"Amy\",\"Jim\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"Zoe\",\"Ann\",\"Eli\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[\"Bob\",\"Bob\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"Sam\",\"Mo\",\"Pa\",\"Li\"]",
+        "isHidden": true
+      }
+    ]
+  },
+  "alphabetical-object-display": {
+    "id": "learn:oop-classes-objects:alphabetical-object-display",
+    "bankId": "T22-Q12",
+    "slug": "alphabetical-object-display",
+    "topicId": "oop-classes-objects",
+    "title": "Alphabetical Object Display",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[[\"Anu\",82],[\"Bala\",65],[\"Charu\",82]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[[\"A\",100]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[[\"Mira\",0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[[\"Adi\",50],[\"Bea\",50],[\"Cal\",50]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[[\"Xia\",100],[\"Yam\",80],[\"Zed\",20]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[[\"S0\",0],[\"S1\",17],[\"S2\",34],[\"S3\",51],[\"S4\",68],[\"S5\",85],[\"S6\",1],[\"S7\",18],[\"S8\",35],[\"S9\",52]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[[\"K\",40],[\"K\",90]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[[\"A\",100],[\"B\",0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[[\"Amy\",70],[\"Jim\",60],[\"Lee\",80]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[[\"Ann\",90],[\"Eli\",85],[\"Zoe\",90]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[[\"Bob\",0],[\"Bob\",0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[[\"Li\",35],[\"Mo\",75],[\"Pa\",45],[\"Sam\",95]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "score-as-letter-grade": {
+    "id": "learn:oop-classes-objects:score-as-letter-grade",
+    "bankId": "T22-Q13",
+    "slug": "score-as-letter-grade",
+    "topicId": "oop-classes-objects",
+    "title": "Score as Letter Grade",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"B\",\"D\",\"B\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"F\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[\"F\",\"F\",\"F\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"F\",\"B\",\"A\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"F\",\"F\",\"F\",\"F\",\"D\",\"B\",\"F\",\"F\",\"F\",\"F\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[\"F\",\"A\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"A\",\"F\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[\"D\",\"C\",\"B\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"A\",\"A\",\"B\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[\"F\",\"F\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"F\",\"C\",\"F\",\"A\"]",
+        "isHidden": true
+      }
+    ]
+  },
+  "pass-fail-status-for-objects": {
+    "id": "learn:oop-classes-objects:pass-fail-status-for-objects",
+    "bankId": "T22-Q14",
+    "slug": "pass-fail-status-for-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Pass Fail Status for Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"passed\":2,\"failed\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"passed\":0,\"failed\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"passed\":1,\"failed\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "{\"passed\":0,\"failed\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "{\"passed\":3,\"failed\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "{\"passed\":2,\"failed\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "{\"passed\":4,\"failed\":6}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "{\"passed\":2,\"failed\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "{\"passed\":1,\"failed\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "{\"passed\":3,\"failed\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "{\"passed\":2,\"failed\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "{\"passed\":2,\"failed\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "{\"passed\":3,\"failed\":1}",
+        "isHidden": true
+      }
+    ]
+  },
+  "clone-scores-with-bonus": {
+    "id": "learn:oop-classes-objects:clone-scores-with-bonus",
+    "bankId": "T22-Q15",
+    "slug": "clone-scores-with-bonus",
+    "topicId": "oop-classes-objects",
+    "title": "Clone Scores with Bonus",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[87,70,87]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[100]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[55,55,55]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[25,85,100]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[5,22,39,56,73,90,6,23,40,57]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[45,95]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[100,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[65,75,85]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[95,95,90]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[50,80,40,100]",
+        "isHidden": true
+      }
+    ]
+  },
+  "copy-independence-check": {
+    "id": "learn:oop-classes-objects:copy-independence-check",
+    "bankId": "T22-Q16",
+    "slug": "copy-independence-check",
+    "topicId": "oop-classes-objects",
+    "title": "Copy Independence Check",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"original\":[82,65,82],\"copy\":[87,70,87]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"original\":[],\"copy\":[]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"original\":[100],\"copy\":[100]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "{\"original\":[0],\"copy\":[5]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "{\"original\":[50,50,50],\"copy\":[55,55,55]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "{\"original\":[20,80,100],\"copy\":[25,85,100]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "{\"original\":[0,17,34,51,68,85,1,18,35,52],\"copy\":[5,22,39,56,73,90,6,23,40,57]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "{\"original\":[40,90],\"copy\":[45,95]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "{\"original\":[100,0],\"copy\":[100,5]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "{\"original\":[60,70,80],\"copy\":[65,75,85]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "{\"original\":[90,90,85],\"copy\":[95,95,90]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "{\"original\":[0,0],\"copy\":[5,5]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "{\"original\":[45,75,35,95],\"copy\":[50,80,40,100]}",
+        "isHidden": true
+      }
+    ]
+  },
+  "distinct-student-names": {
+    "id": "learn:oop-classes-objects:distinct-student-names",
+    "bankId": "T22-Q17",
+    "slug": "distinct-student-names",
+    "topicId": "oop-classes-objects",
+    "title": "Distinct Student Names",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "threshold-score-distance": {
+    "id": "learn:oop-classes-objects:threshold-score-distance",
+    "bankId": "T22-Q18",
+    "slug": "threshold-score-distance",
+    "topicId": "oop-classes-objects",
+    "title": "Threshold Score Distance",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[12,-5,12]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[-55,5,25]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[-50,-33,-16,1,18,35,-49,-32,-15,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[0,50]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[50,-50]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[0,10,20]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[0,0,-5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[5,35,-5,55]",
+        "isHidden": true
+      }
+    ]
+  },
+  "sort-objects-by-distance-to-pass": {
+    "id": "learn:oop-classes-objects:sort-objects-by-distance-to-pass",
+    "bankId": "T22-Q19",
+    "slug": "sort-objects-by-distance-to-pass",
+    "topicId": "oop-classes-objects",
+    "title": "Sort Objects by Distance to Pass",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Bala\",\"Anu\",\"Charu\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"Mira\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "[\"Adi\",\"Bea\",\"Cal\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "[\"Yam\",\"Xia\",\"Zed\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "[\"S3\",\"S9\",\"S8\",\"S2\",\"S4\",\"S7\",\"S1\",\"S5\",\"S6\",\"S0\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "[\"K\",\"K\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "[\"A\",\"B\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "[\"Jim\",\"Amy\",\"Lee\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "[\"Zoe\",\"Ann\",\"Eli\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "[\"Bob\",\"Bob\"]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "[\"Pa\",\"Li\",\"Mo\",\"Sam\"]",
+        "isHidden": true
+      }
+    ]
+  },
+  "roster-grade-histogram": {
+    "id": "learn:oop-classes-objects:roster-grade-histogram",
+    "bankId": "T22-Q20",
+    "slug": "roster-grade-histogram",
+    "topicId": "oop-classes-objects",
+    "title": "Roster Grade Histogram",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"A\":0,\"B\":2,\"C\":0,\"D\":1,\"F\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"records\":[{\"name\":\"Adi\",\"score\":50},{\"name\":\"Bea\",\"score\":50},{\"name\":\"Cal\",\"score\":50}],\"threshold\":50}",
+        "expectedOutput": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "{\"A\":1,\"B\":1,\"C\":0,\"D\":0,\"F\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"records\":[{\"name\":\"S0\",\"score\":0},{\"name\":\"S1\",\"score\":17},{\"name\":\"S2\",\"score\":34},{\"name\":\"S3\",\"score\":51},{\"name\":\"S4\",\"score\":68},{\"name\":\"S5\",\"score\":85},{\"name\":\"S6\",\"score\":1},{\"name\":\"S7\",\"score\":18},{\"name\":\"S8\",\"score\":35},{\"name\":\"S9\",\"score\":52}],\"threshold\":50}",
+        "expectedOutput": "{\"A\":0,\"B\":1,\"C\":0,\"D\":1,\"F\":8}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"records\":[{\"name\":\"K\",\"score\":40},{\"name\":\"K\",\"score\":90}],\"threshold\":40}",
+        "expectedOutput": "{\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100},{\"name\":\"B\",\"score\":0}],\"threshold\":50}",
+        "expectedOutput": "{\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"records\":[{\"name\":\"Jim\",\"score\":60},{\"name\":\"Amy\",\"score\":70},{\"name\":\"Lee\",\"score\":80}],\"threshold\":60}",
+        "expectedOutput": "{\"A\":0,\"B\":1,\"C\":1,\"D\":1,\"F\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"records\":[{\"name\":\"Zoe\",\"score\":90},{\"name\":\"Ann\",\"score\":90},{\"name\":\"Eli\",\"score\":85}],\"threshold\":90}",
+        "expectedOutput": "{\"A\":2,\"B\":1,\"C\":0,\"D\":0,\"F\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"records\":[{\"name\":\"Bob\",\"score\":0},{\"name\":\"Bob\",\"score\":0}],\"threshold\":0}",
+        "expectedOutput": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"records\":[{\"name\":\"Pa\",\"score\":45},{\"name\":\"Mo\",\"score\":75},{\"name\":\"Li\",\"score\":35},{\"name\":\"Sam\",\"score\":95}],\"threshold\":40}",
+        "expectedOutput": "{\"A\":1,\"B\":0,\"C\":1,\"D\":0,\"F\":2}",
         "isHidden": true
       }
     ]

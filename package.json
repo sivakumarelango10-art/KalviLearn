@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "lint": "tsc -b",
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:sandbox-worker && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook && npm run check:bundle && npm run check:api-startup",
     "build:sandbox-worker": "esbuild src/server/sandboxWorker.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/_sandbox-worker.mjs",
@@ -37,7 +38,8 @@
     "test:judge-oracle": "python scripts/judge_oracle.py",
     "test:practice-oracle": "python scripts/practice_oracle.py",
     "test:learn-separation": "npx tsx scripts/test-learn-practice-separation.ts",
-    "test:all": "npm test && npm run test:learn-separation && npm run test:judge-audit && npm run test:judge && npm run test:judge-oracle && npm run test:practice-oracle && npm run test:judge-all && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
+    "test:audited": "npx tsx scripts/test-audited-question-banks.ts",
+    "test:all": "npm test && npm run test:learn-separation && npm run test:audited && npx tsx scripts/test-no-migration-safety.ts && npm run test:judge-audit && npm run test:judge && npm run test:judge-oracle && npm run test:practice-oracle && npm run test:judge-all && npm run test:coding && npm run test:auth && npm run test:streak && npm run test:feedback && npm run test:backend-feedback && npm run test:teamsync && npm run test:teamsync-webhook && npm run test:teamsync-sender && npm run test:multilang && npm run test:security && npm run test:practice-import && npm run test:practice-e2e && npm run test:problem-stats && npm run test:dashboard-stats && npm run test:audit",
     "preview": "vite preview"
   },
   "dependencies": {

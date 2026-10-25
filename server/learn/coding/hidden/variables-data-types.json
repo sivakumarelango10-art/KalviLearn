@@ -1358,5 +1358,1745 @@
         "isHidden": true
       }
     ]
+  },
+  "integer-to-decimal-string": {
+    "id": "learn:variables-data-types:integer-to-decimal-string",
+    "bankId": "T01-Q01",
+    "slug": "integer-to-decimal-string",
+    "topicId": "variables-data-types",
+    "title": "Integer to Decimal String",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"-1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"-12\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"45\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"99\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"-99\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"256\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"9\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"-256\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-to-binary-digits": {
+    "id": "learn:variables-data-types:integer-to-binary-digits",
+    "bankId": "T01-Q02",
+    "slug": "integer-to-binary-digits",
+    "topicId": "variables-data-types",
+    "title": "Integer to Binary Digits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "111",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "1100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"-1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"-1100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"101101\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"1100100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"1100011\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"-1100011\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"100000000\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"1001\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"-100000000\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-to-hexadecimal": {
+    "id": "learn:variables-data-types:integer-to-hexadecimal",
+    "bankId": "T01-Q03",
+    "slug": "integer-to-hexadecimal",
+    "topicId": "variables-data-types",
+    "title": "Integer to Hexadecimal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "c",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"-1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"-c\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"2d\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"64\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"63\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"-63\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"9\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"-100\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-to-octal": {
+    "id": "learn:variables-data-types:integer-to-octal",
+    "bankId": "T01-Q04",
+    "slug": "integer-to-octal",
+    "topicId": "variables-data-types",
+    "title": "Integer to Octal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"-1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"-14\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"55\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"144\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"143\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"-143\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"400\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"11\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"-400\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "absolute-value-assignment": {
+    "id": "learn:variables-data-types:absolute-value-assignment",
+    "bankId": "T01-Q05",
+    "slug": "absolute-value-assignment",
+    "topicId": "variables-data-types",
+    "title": "Absolute Value Assignment",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "256",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "256",
+        "isHidden": true
+      }
+    ]
+  },
+  "boolean-from-integer": {
+    "id": "learn:variables-data-types:boolean-from-integer",
+    "bankId": "T01-Q06",
+    "slug": "boolean-from-integer",
+    "topicId": "variables-data-types",
+    "title": "Boolean From Integer",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "sign-as-integer": {
+    "id": "learn:variables-data-types:sign-as-integer",
+    "bankId": "T01-Q07",
+    "slug": "sign-as-integer",
+    "topicId": "variables-data-types",
+    "title": "Sign as Integer",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":12}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "square-as-numeric-value": {
+    "id": "learn:variables-data-types:square-as-numeric-value",
+    "bankId": "T01-Q08",
+    "slug": "square-as-numeric-value",
+    "topicId": "variables-data-types",
+    "title": "Square as Numeric Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "49",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "144",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "144",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "2025",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "10000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "9801",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "9801",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "65536",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "81",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "65536",
+        "isHidden": true
+      }
+    ]
+  },
+  "truncated-half": {
+    "id": "learn:variables-data-types:truncated-half",
+    "bankId": "T01-Q09",
+    "slug": "truncated-half",
+    "topicId": "variables-data-types",
+    "title": "Truncated Half",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "-49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "128",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "-128",
+        "isHidden": true
+      }
+    ]
+  },
+  "floor-half": {
+    "id": "learn:variables-data-types:floor-half",
+    "bankId": "T01-Q10",
+    "slug": "floor-half",
+    "topicId": "variables-data-types",
+    "title": "Floor Half",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "-50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "128",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "-128",
+        "isHidden": true
+      }
+    ]
+  },
+  "decimal-digit-count": {
+    "id": "learn:variables-data-types:decimal-digit-count",
+    "bankId": "T01-Q11",
+    "slug": "decimal-digit-count",
+    "topicId": "variables-data-types",
+    "title": "Decimal Digit Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":12}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":100}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":45}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "unit-digit-extraction": {
+    "id": "learn:variables-data-types:unit-digit-extraction",
+    "bankId": "T01-Q12",
+    "slug": "unit-digit-extraction",
+    "topicId": "variables-data-types",
+    "title": "Unit Digit Extraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "tens-digit-extraction": {
+    "id": "learn:variables-data-types:tens-digit-extraction",
+    "bankId": "T01-Q13",
+    "slug": "tens-digit-extraction",
+    "topicId": "variables-data-types",
+    "title": "Tens Digit Extraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":12}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":45}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "minutes-to-seconds": {
+    "id": "learn:variables-data-types:minutes-to-seconds",
+    "bankId": "T01-Q14",
+    "slug": "minutes-to-seconds",
+    "topicId": "variables-data-types",
+    "title": "Minutes to Seconds",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "420",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "720",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "720",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "2700",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "6000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "5940",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "5940",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "15360",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "540",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "15360",
+        "isHidden": true
+      }
+    ]
+  },
+  "celsius-to-fahrenheit-number": {
+    "id": "learn:variables-data-types:celsius-to-fahrenheit-number",
+    "bankId": "T01-Q15",
+    "slug": "celsius-to-fahrenheit-number",
+    "topicId": "variables-data-types",
+    "title": "Celsius to Fahrenheit Number",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "44.6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "53.6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "33.8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "30.2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "10.4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "113",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "212",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "210.2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "-146.2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "492.8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "48.2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "-428.8",
+        "isHidden": true
+      }
+    ]
+  },
+  "parity-as-text": {
+    "id": "learn:variables-data-types:parity-as-text",
+    "bankId": "T01-Q16",
+    "slug": "parity-as-text",
+    "topicId": "variables-data-types",
+    "title": "Parity as Text",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "odd",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "even",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "even",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "lowest-eight-bits": {
+    "id": "learn:variables-data-types:lowest-eight-bits",
+    "bankId": "T01-Q17",
+    "slug": "lowest-eight-bits",
+    "topicId": "variables-data-types",
+    "title": "Lowest Eight Bits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "00000111",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "00000000",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "00001100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "\"00000001\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "\"11111111\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "\"11110100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "\"00101101\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "\"01100100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "\"01100011\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "\"10011101\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "\"00000000\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "\"00001001\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "\"00000000\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-set-bits": {
+    "id": "learn:variables-data-types:number-of-set-bits",
+    "bankId": "T01-Q18",
+    "slug": "number-of-set-bits",
+    "topicId": "variables-data-types",
+    "title": "Number of Set Bits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "reverse-decimal-digits": {
+    "id": "learn:variables-data-types:reverse-decimal-digits",
+    "bankId": "T01-Q19",
+    "slug": "reverse-decimal-digits",
+    "topicId": "variables-data-types",
+    "title": "Reverse Decimal Digits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "21",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "-21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "-99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "652",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "-652",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-to-string-type-tag": {
+    "id": "learn:variables-data-types:integer-to-string-type-tag",
+    "bankId": "T01-Q20",
+    "slug": "integer-to-string-type-tag",
+    "topicId": "variables-data-types",
+    "title": "Integer to String Type Tag",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"value\":7}",
+        "expectedOutput": "{\"text\":\"7\",\"length\":1,\"type\":\"string\"}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"value\":0}",
+        "expectedOutput": "{\"text\":\"0\",\"length\":1,\"type\":\"string\"}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"value\":12}",
+        "expectedOutput": "{\"text\":\"12\",\"length\":2,\"type\":\"string\"}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"value\":1}",
+        "expectedOutput": "{\"text\":\"1\",\"length\":1,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"value\":-1}",
+        "expectedOutput": "{\"text\":\"-1\",\"length\":2,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"value\":-12}",
+        "expectedOutput": "{\"text\":\"-12\",\"length\":3,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"value\":45}",
+        "expectedOutput": "{\"text\":\"45\",\"length\":2,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"value\":100}",
+        "expectedOutput": "{\"text\":\"100\",\"length\":3,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"value\":99}",
+        "expectedOutput": "{\"text\":\"99\",\"length\":2,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"value\":-99}",
+        "expectedOutput": "{\"text\":\"-99\",\"length\":3,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"value\":256}",
+        "expectedOutput": "{\"text\":\"256\",\"length\":3,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"value\":9}",
+        "expectedOutput": "{\"text\":\"9\",\"length\":1,\"type\":\"string\"}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"value\":-256}",
+        "expectedOutput": "{\"text\":\"-256\",\"length\":4,\"type\":\"string\"}",
+        "isHidden": true
+      }
+    ]
   }
 }

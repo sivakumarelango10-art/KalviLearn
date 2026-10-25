@@ -67,614 +67,1742 @@
       }
     ]
   },
-  "primary-diagonal-metric": {
-    "id": "learn:arrays-2d-matrices:primary-diagonal-metric",
-    "slug": "primary-diagonal-metric",
+  "total-matrix-sum": {
+    "id": "learn:arrays-2d-matrices:total-matrix-sum",
+    "bankId": "T10-Q01",
+    "slug": "total-matrix-sum",
     "topicId": "arrays-2d-matrices",
-    "title": "Primary Diagonal Metric",
+    "title": "Total Matrix Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "18",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "21",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "33",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "1 1\n7",
+        "input": "{\"grid\":[[7]]}",
         "expectedOutput": "7",
         "isHidden": false
       },
       {
-        "testIndex": 4,
-        "input": "1 3\n1 1 1",
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
         "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "15",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "14",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "57",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "300",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
         "expectedOutput": "10",
         "isHidden": true
       },
       {
-        "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "21",
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "28",
-        "isHidden": true
-      }
-    ]
-  },
-  "secondary-diagonal-metric": {
-    "id": "learn:arrays-2d-matrices:secondary-diagonal-metric",
-    "slug": "secondary-diagonal-metric",
-    "topicId": "arrays-2d-matrices",
-    "title": "Secondary Diagonal Metric",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "42",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "66",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "14",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
         "expectedOutput": "30",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "32",
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "36",
         "isHidden": true
       }
     ]
   },
-  "row-maximum-metric": {
-    "id": "learn:arrays-2d-matrices:row-maximum-metric",
-    "slug": "row-maximum-metric",
+  "sum-every-row": {
+    "id": "learn:arrays-2d-matrices:sum-every-row",
+    "bankId": "T10-Q02",
+    "slug": "sum-every-row",
     "topicId": "arrays-2d-matrices",
-    "title": "Row Maximum Metric",
+    "title": "Sum Every Row",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "26",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[6,15]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "51",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[1,1,7]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[10,35,60,85,110]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[24,15,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[-1,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[15,15]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[3,7,11,15]",
+        "isHidden": true
+      }
+    ]
+  },
+  "sum-every-column": {
+    "id": "learn:arrays-2d-matrices:sum-every-column",
+    "bankId": "T10-Q03",
+    "slug": "sum-every-column",
+    "topicId": "arrays-2d-matrices",
+    "title": "Sum Every Column",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[5,7,9]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[3,6]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[50,55,60,65,70]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[18,15,12]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[-8,12]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[1,2,3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[2,-1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[10,10,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[16,20]",
+        "isHidden": true
+      }
+    ]
+  },
+  "matrix-maximum": {
+    "id": "learn:arrays-2d-matrices:matrix-maximum",
+    "bankId": "T10-Q04",
+    "slug": "matrix-maximum",
+    "topicId": "arrays-2d-matrices",
+    "title": "Matrix Maximum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "matrix-minimum": {
+    "id": "learn:arrays-2d-matrices:matrix-minimum",
+    "bankId": "T10-Q05",
+    "slug": "matrix-minimum",
+    "topicId": "arrays-2d-matrices",
+    "title": "Matrix Minimum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "transpose-the-matrix": {
+    "id": "learn:arrays-2d-matrices:transpose-the-matrix",
+    "bankId": "T10-Q06",
+    "slug": "transpose-the-matrix",
+    "topicId": "arrays-2d-matrices",
+    "title": "Transpose the Matrix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[1,4],[2,5],[3,6]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[1,-1,3],[0,2,4]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0],[0],[0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[1,2,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,2],[2,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[9,6,3],[8,5,2],[7,4,1]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[-2,-6],[4,8]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[1],[2],[3],[4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[0,2],[-1,0],[0,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,5],[5,5],[5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[1,3,5,7],[2,4,6,8]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "flip-matrix-horizontally": {
+    "id": "learn:arrays-2d-matrices:flip-matrix-horizontally",
+    "bankId": "T10-Q07",
+    "slug": "flip-matrix-horizontally",
+    "topicId": "arrays-2d-matrices",
+    "title": "Flip Matrix Horizontally",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[3,2,1],[6,5,4]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[0,1],[2,-1],[4,3]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0,0,0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[1],[2],[3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,2],[2,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[4,3,2,1,0],[9,8,7,6,5],[14,13,12,11,10],[19,18,17,16,15],[24,23,22,21,20]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[7,8,9],[4,5,6],[1,2,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[4,-2],[8,-6]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[4,3,2,1]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[0,-1,0],[3,0,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,5,5],[5,5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[2,1],[4,3],[6,5],[8,7]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "flip-matrix-vertically": {
+    "id": "learn:arrays-2d-matrices:flip-matrix-vertically",
+    "bankId": "T10-Q08",
+    "slug": "flip-matrix-vertically",
+    "topicId": "arrays-2d-matrices",
+    "title": "Flip Matrix Vertically",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[4,5,6],[1,2,3]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[3,4],[-1,2],[1,0]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0,0,0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[3],[2],[1]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,2],[2,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[20,21,22,23,24],[15,16,17,18,19],[10,11,12,13,14],[5,6,7,8,9],[0,1,2,3,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[3,2,1],[6,5,4],[9,8,7]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[-6,8],[-2,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[1,2,3,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[2,0,3],[0,-1,0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,5,5],[5,5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[7,8],[5,6],[3,4],[1,2]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "rotate-matrix-clockwise": {
+    "id": "learn:arrays-2d-matrices:rotate-matrix-clockwise",
+    "bankId": "T10-Q09",
+    "slug": "rotate-matrix-clockwise",
+    "topicId": "arrays-2d-matrices",
+    "title": "Rotate Matrix Clockwise",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[4,1],[5,2],[6,3]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[3,-1,1],[4,2,0]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0],[0],[0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[3,2,1]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,2],[2,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[20,15,10,5,0],[21,16,11,6,1],[22,17,12,7,2],[23,18,13,8,3],[24,19,14,9,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[3,6,9],[2,5,8],[1,4,7]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[-6,-2],[8,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[1],[2],[3],[4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[2,0],[0,-1],[3,0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,5],[5,5],[5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[7,5,3,1],[8,6,4,2]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "rotate-matrix-counterclockwise": {
+    "id": "learn:arrays-2d-matrices:rotate-matrix-counterclockwise",
+    "bankId": "T10-Q10",
+    "slug": "rotate-matrix-counterclockwise",
+    "topicId": "arrays-2d-matrices",
+    "title": "Rotate Matrix Counterclockwise",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[3,6],[2,5],[1,4]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[0,2,4],[1,-1,3]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0],[0],[0]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[1,2,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,2],[2,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[4,9,14,19,24],[3,8,13,18,23],[2,7,12,17,22],[1,6,11,16,21],[0,5,10,15,20]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[7,4,1],[8,5,2],[9,6,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[4,8],[-2,-6]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[4],[3],[2],[1]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[0,3],[-1,0],[0,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,5],[5,5],[5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[2,4,6,8],[1,3,5,7]]",
+        "isHidden": true
+      }
+    ]
+  },
+  "flatten-matrix-row-major": {
+    "id": "learn:arrays-2d-matrices:flatten-matrix-row-major",
+    "bankId": "T10-Q11",
+    "slug": "flatten-matrix-row-major",
+    "topicId": "arrays-2d-matrices",
+    "title": "Flatten Matrix Row Major",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[1,2,3,4,5,6]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[1,0,-1,2,3,4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[2,2,2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[-2,4,-6,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[1,2,3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[0,-1,0,2,0,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[5,5,5,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[1,2,3,4,5,6,7,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "flatten-matrix-column-major": {
+    "id": "learn:arrays-2d-matrices:flatten-matrix-column-major",
+    "bankId": "T10-Q12",
+    "slug": "flatten-matrix-column-major",
+    "topicId": "arrays-2d-matrices",
+    "title": "Flatten Matrix Column Major",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[1,4,2,5,3,6]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[1,-1,3,0,2,4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[2,2,2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[0,5,10,15,20,1,6,11,16,21,2,7,12,17,22,3,8,13,18,23,4,9,14,19,24]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[9,6,3,8,5,2,7,4,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[-2,-6,4,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[1,2,3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[0,2,-1,0,0,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[5,5,5,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[1,3,5,7,2,4,6,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "main-diagonal-sum": {
+    "id": "learn:arrays-2d-matrices:main-diagonal-sum",
+    "bankId": "T10-Q13",
+    "slug": "main-diagonal-sum",
+    "topicId": "arrays-2d-matrices",
+    "title": "Main Diagonal Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
         "expectedOutput": "15",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "75",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "39",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "36",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "5",
         "isHidden": true
       }
     ]
   },
-  "column-minimum-metric": {
-    "id": "learn:arrays-2d-matrices:column-minimum-metric",
-    "slug": "column-minimum-metric",
+  "top-right-diagonal-sum": {
+    "id": "learn:arrays-2d-matrices:top-right-diagonal-sum",
+    "bankId": "T10-Q14",
+    "slug": "top-right-diagonal-sum",
     "topicId": "arrays-2d-matrices",
-    "title": "Column Minimum Metric",
+    "title": "Top Right Diagonal Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "30",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "8",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
         "expectedOutput": "60",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "26",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "84",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "22",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "15",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "48",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "-2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "40",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "5",
         "isHidden": true
       }
     ]
   },
-  "transpose-score": {
-    "id": "learn:arrays-2d-matrices:transpose-score",
-    "slug": "transpose-score",
+  "count-zero-cells": {
+    "id": "learn:arrays-2d-matrices:count-zero-cells",
+    "bankId": "T10-Q15",
+    "slug": "count-zero-cells",
     "topicId": "arrays-2d-matrices",
-    "title": "Transpose Score",
+    "title": "Count Zero Cells",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "34",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "69",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "21",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "27",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "30",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "93",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "26",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "57",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "44",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "0",
         "isHidden": true
       }
     ]
   },
-  "boundary-metric": {
-    "id": "learn:arrays-2d-matrices:boundary-metric",
-    "slug": "boundary-metric",
+  "positive-cell-coordinates": {
+    "id": "learn:arrays-2d-matrices:positive-cell-coordinates",
+    "bankId": "T10-Q16",
+    "slug": "positive-cell-coordinates",
     "topicId": "arrays-2d-matrices",
-    "title": "Boundary Metric",
+    "title": "Positive Cell Coordinates",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "38",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "78",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[0,0]]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[0,0],[1,1],[2,0],[2,1]]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "24",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "30",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[0,0],[1,0],[2,0]]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "34",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[0,0],[0,1],[1,0],[1,1]]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "102",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0],[2,1],[2,2],[2,3],[2,4],[3,0],[3,1],[3,2],[3,3],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "30",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "66",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[0,1],[1,1]]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "48",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[0,0],[0,1],[0,2],[0,3]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[1,0],[1,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[0,0],[0,1],[1,0],[1,1],[2,0],[2,1],[3,0],[3,1]]",
         "isHidden": true
       }
     ]
   },
-  "local-peak-metric": {
-    "id": "learn:arrays-2d-matrices:local-peak-metric",
-    "slug": "local-peak-metric",
+  "row-maximums": {
+    "id": "learn:arrays-2d-matrices:row-maximums",
+    "bankId": "T10-Q17",
+    "slug": "row-maximums",
     "topicId": "arrays-2d-matrices",
-    "title": "Local Peak Metric",
+    "title": "Row Maximums",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "42",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[3,6]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "87",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[1,2,4]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "27",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "33",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "38",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[2,2]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "111",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[4,9,14,19,24]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "34",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[9,6,3]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "75",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[4,8]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "52",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[0,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[2,4,6,8]",
         "isHidden": true
       }
     ]
   },
-  "zero-row-metric": {
-    "id": "learn:arrays-2d-matrices:zero-row-metric",
-    "slug": "zero-row-metric",
+  "column-minimums": {
+    "id": "learn:arrays-2d-matrices:column-minimums",
+    "bankId": "T10-Q18",
+    "slug": "column-minimums",
     "topicId": "arrays-2d-matrices",
-    "title": "Zero Row Metric",
+    "title": "Column Minimums",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "46",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "96",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[-1,0]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "30",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0,0,0]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "36",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "42",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[2,2]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "120",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[0,1,2,3,4]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "38",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[3,2,1]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "84",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[-6,4]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "56",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[1,2,3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[0,-1,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[1,2]",
         "isHidden": true
       }
     ]
   },
-  "chessboard-metric": {
-    "id": "learn:arrays-2d-matrices:chessboard-metric",
-    "slug": "chessboard-metric",
+  "spiral-order-traversal": {
+    "id": "learn:arrays-2d-matrices:spiral-order-traversal",
+    "bankId": "T10-Q19",
+    "slug": "spiral-order-traversal",
     "topicId": "arrays-2d-matrices",
-    "title": "Chessboard Metric",
+    "title": "Spiral Order Traversal",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "50",
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[1,2,3,6,5,4]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 0 1\n4 3 5",
-        "expectedOutput": "105",
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[7]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[1,0,2,4,3,-1]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "33",
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[0,0,0]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "39",
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[1,2,3]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2 2\n0 -1\n5 2",
-        "expectedOutput": "46",
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[2,2,2,2]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 3\n9 8 7\n6 5 4",
-        "expectedOutput": "129",
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[0,1,2,3,4,9,14,19,24,23,22,21,20,15,10,5,6,7,8,13,18,17,16,11,12]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 2\n1 0\n0 1",
-        "expectedOutput": "42",
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[9,8,7,4,1,2,3,6,5]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 3\n3 2 1\n0 -1 -2",
-        "expectedOutput": "93",
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[-2,4,8,-6]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 2\n5 5\n5 5",
-        "expectedOutput": "60",
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[1,2,3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[0,-1,0,3,0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[5,5,5,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[1,2,4,6,8,7,5,3]",
+        "isHidden": true
+      }
+    ]
+  },
+  "add-row-and-column-indices": {
+    "id": "learn:arrays-2d-matrices:add-row-and-column-indices",
+    "bankId": "T10-Q20",
+    "slug": "add-row-and-column-indices",
+    "topicId": "arrays-2d-matrices",
+    "title": "Add Row and Column Indices",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"grid\":[[1,2,3],[4,5,6]]}",
+        "expectedOutput": "[[1,3,5],[5,7,9]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"grid\":[[7]]}",
+        "expectedOutput": "[[7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"grid\":[[1,0],[-1,2],[3,4]]}",
+        "expectedOutput": "[[1,1],[0,4],[5,7]]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"grid\":[[0,0,0]]}",
+        "expectedOutput": "[[0,1,2]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"grid\":[[1],[2],[3]]}",
+        "expectedOutput": "[[1],[3],[5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"grid\":[[2,2],[2,2]]}",
+        "expectedOutput": "[[2,3],[3,4]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"grid\":[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]}",
+        "expectedOutput": "[[0,2,4,6,8],[6,8,10,12,14],[12,14,16,18,20],[18,20,22,24,26],[24,26,28,30,32]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"grid\":[[9,8,7],[6,5,4],[3,2,1]]}",
+        "expectedOutput": "[[9,9,9],[7,7,7],[5,5,5]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"grid\":[[-2,4],[-6,8]]}",
+        "expectedOutput": "[[-2,5],[-5,10]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"grid\":[[1,2,3,4]]}",
+        "expectedOutput": "[[1,3,5,7]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"grid\":[[0,-1,0],[2,0,3]]}",
+        "expectedOutput": "[[0,0,2],[3,2,6]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"grid\":[[5,5,5],[5,5,5]]}",
+        "expectedOutput": "[[5,6,7],[6,7,8]]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"grid\":[[1,2],[3,4],[5,6],[7,8]]}",
+        "expectedOutput": "[[1,3],[4,6],[7,9],[10,12]]",
         "isHidden": true
       }
     ]

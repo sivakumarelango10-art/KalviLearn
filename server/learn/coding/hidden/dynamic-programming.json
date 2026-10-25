@@ -67,2658 +67,6 @@
       }
     ]
   },
-  "weighted-recurrence-dp-2": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-2",
-    "slug": "weighted-recurrence-dp-2",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #2",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "27",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "267",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "2619",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "85",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "837",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "8197",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "25659",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-3": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-3",
-    "slug": "weighted-recurrence-dp-3",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #3",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "104",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "2604",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "65104",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "521",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "13021",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "325521",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "1627604",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-4": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-4",
-    "slug": "weighted-recurrence-dp-4",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #4",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "2",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "4",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "9",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "19",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-5": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-5",
-    "slug": "weighted-recurrence-dp-5",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #5",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "40",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "192",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "88",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "420",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "920",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-6": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-6",
-    "slug": "weighted-recurrence-dp-6",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #6",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "45",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "648",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "9315",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "171",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "2457",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "35316",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "133893",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-7": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-7",
-    "slug": "weighted-recurrence-dp-7",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #7",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "68",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1216",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "21696",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "288",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "5136",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "91648",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "387136",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-8": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-8",
-    "slug": "weighted-recurrence-dp-8",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #8",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "1",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "11",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "21",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "51",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "106",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-9": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-9",
-    "slug": "weighted-recurrence-dp-9",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #9",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "70",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "408",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "29",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "169",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "985",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "2378",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-10": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-10",
-    "slug": "weighted-recurrence-dp-10",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #10",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "29",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "297",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "3033",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "93",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "949",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "9693",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "30977",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-11": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-11",
-    "slug": "weighted-recurrence-dp-11",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #11",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "64",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1048",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "17152",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "259",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4240",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "69385",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "280684",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-12": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-12",
-    "slug": "weighted-recurrence-dp-12",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #12",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "9",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "65",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "441",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "29",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "181",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "1165",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "2929",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-13": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-13",
-    "slug": "weighted-recurrence-dp-13",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #13",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "13",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "92",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "678",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "36",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "249",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "1816",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "4877",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-14": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-14",
-    "slug": "weighted-recurrence-dp-14",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #14",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "27",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "249",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "2295",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "82",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "756",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "6967",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "21150",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-15": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-15",
-    "slug": "weighted-recurrence-dp-15",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #15",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "80",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1584",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "31360",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "356",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "7048",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "139536",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "620864",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-16": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-16",
-    "slug": "weighted-recurrence-dp-16",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #16",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "4",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "10",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "43",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "73",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "139",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-17": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-17",
-    "slug": "weighted-recurrence-dp-17",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #17",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "48",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "256",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "20",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "112",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "592",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "1376",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-18": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-18",
-    "slug": "weighted-recurrence-dp-18",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #18",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "57",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1008",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "17727",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "14",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "241",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4229",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "74326",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "311613",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-19": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-19",
-    "slug": "weighted-recurrence-dp-19",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #19",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "65",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1072",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "17676",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "264",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4353",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "71776",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "291457",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-20": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-20",
-    "slug": "weighted-recurrence-dp-20",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #20",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "1",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "9",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "25",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-21": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-21",
-    "slug": "weighted-recurrence-dp-21",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #21",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "182",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "1640",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "61",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "547",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "4921",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "14762",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-22": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-22",
-    "slug": "weighted-recurrence-dp-22",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #22",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "31",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "351",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "3951",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "105",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "1177",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "13257",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "44479",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-23": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-23",
-    "slug": "weighted-recurrence-dp-23",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #23",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "64",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1064",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "17664",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "261",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4336",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "71961",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "293164",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-24": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-24",
-    "slug": "weighted-recurrence-dp-24",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #24",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "3",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "21",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "34",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "55",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-25": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-25",
-    "slug": "weighted-recurrence-dp-25",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #25",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "10",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "56",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "312",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "132",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "736",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "1736",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-26": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-26",
-    "slug": "weighted-recurrence-dp-26",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #26",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "27",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "261",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "2511",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "84",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "810",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "7785",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "24138",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-27": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-27",
-    "slug": "weighted-recurrence-dp-27",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #27",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "96",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "2240",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "52224",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "20",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "464",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "10816",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "252160",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "1217536",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-28": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-28",
-    "slug": "weighted-recurrence-dp-28",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #28",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "6",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "101",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "46",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "181",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "411",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-29": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-29",
-    "slug": "weighted-recurrence-dp-29",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #29",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "36",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "160",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "76",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "337",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "710",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-30": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-30",
-    "slug": "weighted-recurrence-dp-30",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #30",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "39",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "495",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "6279",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "139",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "1763",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "22363",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "79647",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-31": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-31",
-    "slug": "weighted-recurrence-dp-31",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #31",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "67",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1168",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "20332",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "280",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4873",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "84832",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "353947",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-32": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-32",
-    "slug": "weighted-recurrence-dp-32",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #32",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "1",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "9",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "17",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "37",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "73",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-33": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-33",
-    "slug": "weighted-recurrence-dp-33",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #33",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "28",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "342",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "4088",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "101",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "1189",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "14121",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "48682",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-34": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-34",
-    "slug": "weighted-recurrence-dp-34",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #34",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "28",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "270",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "2601",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "87",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "838",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "8073",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "25057",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-35": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-35",
-    "slug": "weighted-recurrence-dp-35",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #35",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "64",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1040",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "16896",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "258",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "4192",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "68100",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "274480",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-36": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-36",
-    "slug": "weighted-recurrence-dp-36",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #36",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "40",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "217",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "97",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "508",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "1159",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-37": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-37",
-    "slug": "weighted-recurrence-dp-37",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #37",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "80",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "544",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "32",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "208",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "1408",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "3648",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-38": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-38",
-    "slug": "weighted-recurrence-dp-38",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #38",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "27",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "273",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "2727",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "86",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "864",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "8611",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "27198",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-39": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-39",
-    "slug": "weighted-recurrence-dp-39",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #39",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "72",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "1292",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "23184",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "305",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "5473",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "98209",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "416020",
-        "isHidden": true
-      }
-    ]
-  },
-  "weighted-recurrence-dp-40": {
-    "id": "learn:dynamic-programming:weighted-recurrence-dp-40",
-    "slug": "weighted-recurrence-dp-40",
-    "topicId": "dynamic-programming",
-    "title": "Weighted Recurrence DP #40",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3",
-        "expectedOutput": "3",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "7",
-        "expectedOutput": "23",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "6",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "8",
-        "expectedOutput": "37",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "9",
-        "expectedOutput": "63",
-        "isHidden": true
-      }
-    ]
-  },
   "line-minimum-cost-dp-1": {
     "id": "learn:dynamic-programming:line-minimum-cost-dp-1",
     "slug": "line-minimum-cost-dp-1",
@@ -2783,1978 +131,6 @@
         "testIndex": 10,
         "input": "4\n10 0 5 0",
         "expectedOutput": "11",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-2": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-2",
-    "slug": "line-minimum-cost-dp-2",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #2",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "19",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-3": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-3",
-    "slug": "line-minimum-cost-dp-3",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #3",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "26",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "31",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "21",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-4": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-4",
-    "slug": "line-minimum-cost-dp-4",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #4",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "15",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "19",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "24",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "20",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "14",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-5": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-5",
-    "slug": "line-minimum-cost-dp-5",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #5",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "11",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "19",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "15",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-6": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-6",
-    "slug": "line-minimum-cost-dp-6",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #6",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "0",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "15",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-7": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-7",
-    "slug": "line-minimum-cost-dp-7",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #7",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "14",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "14",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "25",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "17",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-8": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-8",
-    "slug": "line-minimum-cost-dp-8",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #8",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "11",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "15",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "14",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "3",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "12",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-9": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-9",
-    "slug": "line-minimum-cost-dp-9",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #9",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "9",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "15",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "4",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "14",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "13",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-10": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-10",
-    "slug": "line-minimum-cost-dp-10",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #10",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "16",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "14",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "23",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-11": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-11",
-    "slug": "line-minimum-cost-dp-11",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #11",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "32",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "30",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "37",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "25",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-12": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-12",
-    "slug": "line-minimum-cost-dp-12",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #12",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "11",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "10",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "1",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "0",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "10",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-13": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-13",
-    "slug": "line-minimum-cost-dp-13",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #13",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "660",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "664",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "667",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "655",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "655",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "660",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "663",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "664",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-14": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-14",
-    "slug": "line-minimum-cost-dp-14",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #14",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "670",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "666",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "670",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "657",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "658",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "662",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "662",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "673",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-15": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-15",
-    "slug": "line-minimum-cost-dp-15",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #15",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "673",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "681",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "673",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "659",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "661",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "668",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "686",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "676",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-16": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-16",
-    "slug": "line-minimum-cost-dp-16",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #16",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "671",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "675",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "674",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "661",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "680",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "666",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "670",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-17": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-17",
-    "slug": "line-minimum-cost-dp-17",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #17",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "668",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "676",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "679",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "663",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "668",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "675",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "672",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-18": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-18",
-    "slug": "line-minimum-cost-dp-18",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #18",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "670",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "666",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "670",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "659",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "658",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "669",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "662",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "673",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-19": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-19",
-    "slug": "line-minimum-cost-dp-19",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #19",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "673",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "679",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "673",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "661",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "661",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "666",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "677",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "684",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "676",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-20": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-20",
-    "slug": "line-minimum-cost-dp-20",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #20",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "671",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "675",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "674",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "663",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "678",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "668",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "675",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "672",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "672",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-21": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-21",
-    "slug": "line-minimum-cost-dp-21",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #21",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "670",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "676",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "679",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "665",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "675",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "674",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-22": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-22",
-    "slug": "line-minimum-cost-dp-22",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #22",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "678",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "677",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "672",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "685",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-23": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-23",
-    "slug": "line-minimum-cost-dp-23",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #23",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "685",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "695",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "685",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "669",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "673",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "678",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "693",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "688",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-24": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-24",
-    "slug": "line-minimum-cost-dp-24",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #24",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "671",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "675",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "674",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "665",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "664",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "673",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "674",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-25": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-25",
-    "slug": "line-minimum-cost-dp-25",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #25",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "672",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "676",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "679",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "667",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "672",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "675",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "676",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-26": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-26",
-    "slug": "line-minimum-cost-dp-26",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #26",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "678",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "669",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "685",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-27": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-27",
-    "slug": "line-minimum-cost-dp-27",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #27",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "685",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "693",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "685",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "671",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "673",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "680",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "691",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "698",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "688",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-28": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-28",
-    "slug": "line-minimum-cost-dp-28",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #28",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "683",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "687",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "686",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "673",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "692",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "678",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "688",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "686",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "682",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-29": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-29",
-    "slug": "line-minimum-cost-dp-29",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #29",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "680",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "688",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "691",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "675",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "679",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "691",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "680",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "687",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "691",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "684",
-        "isHidden": true
-      }
-    ]
-  },
-  "line-minimum-cost-dp-30": {
-    "id": "learn:dynamic-programming:line-minimum-cost-dp-30",
-    "slug": "line-minimum-cost-dp-30",
-    "topicId": "dynamic-programming",
-    "title": "Line Minimum Cost DP #30",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n2 5 1 4",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5\n3 1 6 2 5",
-        "expectedOutput": "678",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3\n7 2 3",
-        "expectedOutput": "682",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "671",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "3\n0 0 0",
-        "expectedOutput": "670",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "6\n9 1 1 9 1 1",
-        "expectedOutput": "681",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2\n4 2",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "5\n5 4 3 2 1",
-        "expectedOutput": "676",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "5\n2 8 2 8 2",
-        "expectedOutput": "674",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "4\n10 0 5 0",
-        "expectedOutput": "685",
         "isHidden": true
       }
     ]
@@ -4827,1974 +203,1742 @@
       }
     ]
   },
-  "grid-minimum-path-dp-2": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-2",
-    "slug": "grid-minimum-path-dp-2",
+  "subset-sum-feasibility": {
+    "id": "learn:dynamic-programming:subset-sum-feasibility",
+    "bankId": "T20-Q01",
+    "slug": "subset-sum-feasibility",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #2",
+    "title": "Subset Sum Feasibility",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "9",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "9",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "7",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "13",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "14",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "13",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-subsets-equal-target": {
+    "id": "learn:dynamic-programming:count-subsets-equal-target",
+    "bankId": "T20-Q02",
+    "slug": "count-subsets-equal-target",
+    "topicId": "dynamic-programming",
+    "title": "Count Subsets Equal Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "16",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-3": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-3",
-    "slug": "grid-minimum-path-dp-3",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #3",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "13",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "12",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "11",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "16",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "18",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-4": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-4",
-    "slug": "grid-minimum-path-dp-4",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #4",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "15",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "14",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "13",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "18",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "17",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "20",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "0",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-5": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-5",
-    "slug": "grid-minimum-path-dp-5",
+  "minimum-elements-for-exact-subset-sum": {
+    "id": "learn:dynamic-programming:minimum-elements-for-exact-subset-sum",
+    "bankId": "T20-Q03",
+    "slug": "minimum-elements-for-exact-subset-sum",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #5",
+    "title": "Minimum Elements for Exact Subset Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "17",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "16",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "15",
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "-1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "12",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "13",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "19",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "20",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "19",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "22",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "-1",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-6": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-6",
-    "slug": "grid-minimum-path-dp-6",
+  "maximum-elements-for-exact-subset-sum": {
+    "id": "learn:dynamic-programming:maximum-elements-for-exact-subset-sum",
+    "bankId": "T20-Q04",
+    "slug": "maximum-elements-for-exact-subset-sum",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #6",
+    "title": "Maximum Elements for Exact Subset Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "19",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "18",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "17",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "15",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "24",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-7": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-7",
-    "slug": "grid-minimum-path-dp-7",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #7",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "6",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-subsets-not-exceeding-target": {
+    "id": "learn:dynamic-programming:count-subsets-not-exceeding-target",
+    "bankId": "T20-Q05",
+    "slug": "count-subsets-not-exceeding-target",
+    "topicId": "dynamic-programming",
+    "title": "Count Subsets Not Exceeding Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
         "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "100",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "9",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "14",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "128",
+        "isHidden": true
+      }
+    ]
+  },
+  "largest-attainable-subset-sum": {
+    "id": "learn:dynamic-programming:largest-attainable-subset-sum",
+    "bankId": "T20-Q06",
+    "slug": "largest-attainable-subset-sum",
+    "topicId": "dynamic-programming",
+    "title": "Largest Attainable Subset Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "can-partition-into-equal-sums": {
+    "id": "learn:dynamic-programming:can-partition-into-equal-sums",
+    "bankId": "T20-Q07",
+    "slug": "can-partition-into-equal-sums",
+    "topicId": "dynamic-programming",
+    "title": "Can Partition into Equal Sums",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-equal-partition-difference": {
+    "id": "learn:dynamic-programming:minimum-equal-partition-difference",
+    "bankId": "T20-Q08",
+    "slug": "minimum-equal-partition-difference",
+    "topicId": "dynamic-programming",
+    "title": "Minimum Equal Partition Difference",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-plus-minus-expressions": {
+    "id": "learn:dynamic-programming:count-plus-minus-expressions",
+    "bankId": "T20-Q09",
+    "slug": "count-plus-minus-expressions",
+    "topicId": "dynamic-programming",
+    "title": "Count Plus Minus Expressions",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "56",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-increasing-subsequence-length": {
+    "id": "learn:dynamic-programming:longest-increasing-subsequence-length",
+    "bankId": "T20-Q10",
+    "slug": "longest-increasing-subsequence-length",
+    "topicId": "dynamic-programming",
+    "title": "Longest Increasing Subsequence Length",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-nondecreasing-subsequence-length": {
+    "id": "learn:dynamic-programming:longest-nondecreasing-subsequence-length",
+    "bankId": "T20-Q11",
+    "slug": "longest-nondecreasing-subsequence-length",
+    "topicId": "dynamic-programming",
+    "title": "Longest Nondecreasing Subsequence Length",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-strictly-decreasing-subsequence": {
+    "id": "learn:dynamic-programming:longest-strictly-decreasing-subsequence",
+    "bankId": "T20-Q12",
+    "slug": "longest-strictly-decreasing-subsequence",
+    "topicId": "dynamic-programming",
+    "title": "Longest Strictly Decreasing Subsequence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "house-robber-on-a-line": {
+    "id": "learn:dynamic-programming:house-robber-on-a-line",
+    "bankId": "T20-Q13",
+    "slug": "house-robber-on-a-line",
+    "topicId": "dynamic-programming",
+    "title": "House Robber on a Line",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
         "expectedOutput": "12",
         "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-8": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-8",
-    "slug": "grid-minimum-path-dp-8",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #8",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "687",
-        "isHidden": false
       },
       {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "686",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "685",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "686",
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "683",
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "689",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "690",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "689",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "680",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "692",
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "6",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-9": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-9",
-    "slug": "grid-minimum-path-dp-9",
+  "circular-house-robber": {
+    "id": "learn:dynamic-programming:circular-house-robber",
+    "bankId": "T20-Q14",
+    "slug": "circular-house-robber",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #9",
+    "title": "Circular House Robber",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "690",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "9",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "689",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "688",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "688",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "686",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "17",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "13",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "683",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "10",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "6",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-10": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-10",
-    "slug": "grid-minimum-path-dp-10",
+  "maximum-nonnegative-contiguous-sum": {
+    "id": "learn:dynamic-programming:maximum-nonnegative-contiguous-sum",
+    "bankId": "T20-Q15",
+    "slug": "maximum-nonnegative-contiguous-sum",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #10",
+    "title": "Maximum Nonnegative Contiguous Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "14",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "691",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "690",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "689",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "10",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "14",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "31",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "21",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "686",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "20",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "698",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "6",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-11": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-11",
-    "slug": "grid-minimum-path-dp-11",
+  "maximum-sum-increasing-subsequence": {
+    "id": "learn:dynamic-programming:maximum-sum-increasing-subsequence",
+    "bankId": "T20-Q16",
+    "slug": "maximum-sum-increasing-subsequence",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #11",
+    "title": "Maximum Sum Increasing Subsequence",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "12",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "694",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "698",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "699",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "28",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "698",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "689",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "701",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "6",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-12": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-12",
-    "slug": "grid-minimum-path-dp-12",
+  "minimum-unlimited-coins": {
+    "id": "learn:dynamic-programming:minimum-unlimited-coins",
+    "bankId": "T20-Q17",
+    "slug": "minimum-unlimited-coins",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #12",
+    "title": "Minimum Unlimited Coins",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "699",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "698",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "697",
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "9",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "694",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "701",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "702",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "701",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "704",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-13": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-13",
-    "slug": "grid-minimum-path-dp-13",
+  "count-unlimited-coin-combinations": {
+    "id": "learn:dynamic-programming:count-unlimited-coin-combinations",
+    "bankId": "T20-Q18",
+    "slug": "count-unlimited-coin-combinations",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #13",
+    "title": "Count Unlimited Coin Combinations",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "702",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "701",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "700",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "15",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "698",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "704",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "705",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "704",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "695",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "707",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "10",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-14": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-14",
-    "slug": "grid-minimum-path-dp-14",
+  "count-ordered-coin-sequences": {
+    "id": "learn:dynamic-programming:count-ordered-coin-sequences",
+    "bankId": "T20-Q19",
+    "slug": "count-ordered-coin-sequences",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #14",
+    "title": "Count Ordered Coin Sequences",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "691",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "690",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "689",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "64",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "691",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "687",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "694",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "16",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "684",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "81",
         "isHidden": true
       }
     ]
   },
-  "grid-minimum-path-dp-15": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-15",
-    "slug": "grid-minimum-path-dp-15",
+  "longest-alternating-up-down-subsequence": {
+    "id": "learn:dynamic-programming:longest-alternating-up-down-subsequence",
+    "bankId": "T20-Q20",
+    "slug": "longest-alternating-up-down-subsequence",
     "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #15",
+    "title": "Longest Alternating Up Down Subsequence",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "694",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "5",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "692",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "693",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "690",
+        "input": "{\"nums\":[4,1,3,2],\"target\":1}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "697",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,0,1,2],\"target\":7}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "696",
+        "input": "{\"nums\":[2,1,0,7,6,5],\"target\":6}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "687",
+        "input": "{\"nums\":[5,5,5,5,0],\"target\":5}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "699",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "2",
         "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-16": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-16",
-    "slug": "grid-minimum-path-dp-16",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #16",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "697",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "696",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "695",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "695",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "693",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "699",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "699",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "690",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "702",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-17": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-17",
-    "slug": "grid-minimum-path-dp-17",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #17",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "700",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "699",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "698",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "697",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "696",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "702",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "702",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "693",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "705",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-18": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-18",
-    "slug": "grid-minimum-path-dp-18",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #18",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "703",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "702",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "701",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "699",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "699",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "705",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "705",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "696",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "708",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-19": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-19",
-    "slug": "grid-minimum-path-dp-19",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #19",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "706",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "705",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "704",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "701",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "702",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "708",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "708",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "699",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "711",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-20": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-20",
-    "slug": "grid-minimum-path-dp-20",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #20",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "709",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "708",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "707",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "705",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "711",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "712",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "711",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "702",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "714",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-21": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-21",
-    "slug": "grid-minimum-path-dp-21",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #21",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "698",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "697",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "696",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "698",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "694",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "701",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "691",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "703",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-22": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-22",
-    "slug": "grid-minimum-path-dp-22",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #22",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "701",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "700",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "699",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "697",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "704",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "694",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "706",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-23": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-23",
-    "slug": "grid-minimum-path-dp-23",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #23",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "704",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "703",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "702",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "702",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "707",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "697",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "709",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-24": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-24",
-    "slug": "grid-minimum-path-dp-24",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #24",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "707",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "706",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "705",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "704",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "710",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "700",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "712",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-25": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-25",
-    "slug": "grid-minimum-path-dp-25",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #25",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "710",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "709",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "708",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "712",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "713",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "712",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "703",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "715",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-26": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-26",
-    "slug": "grid-minimum-path-dp-26",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #26",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "713",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "712",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "711",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "708",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "715",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "716",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "715",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "706",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "718",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-27": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-27",
-    "slug": "grid-minimum-path-dp-27",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #27",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "716",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "715",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "714",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "710",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "712",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "718",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "719",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "718",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "721",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-28": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-28",
-    "slug": "grid-minimum-path-dp-28",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #28",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "705",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "704",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "703",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "705",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "701",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "707",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "708",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "707",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "698",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "710",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-29": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-29",
-    "slug": "grid-minimum-path-dp-29",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #29",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "708",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "707",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "706",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "707",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "704",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "710",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "711",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "710",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "701",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "713",
-        "isHidden": true
-      }
-    ]
-  },
-  "grid-minimum-path-dp-30": {
-    "id": "learn:dynamic-programming:grid-minimum-path-dp-30",
-    "slug": "grid-minimum-path-dp-30",
-    "topicId": "dynamic-programming",
-    "title": "Grid Minimum Path DP #30",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 2\n1 2\n3 4",
-        "expectedOutput": "711",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "2 3\n2 1 3\n4 2 1",
-        "expectedOutput": "710",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "3 2\n0 5\n2 1\n3 2",
-        "expectedOutput": "709",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1 1\n7",
-        "expectedOutput": "709",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1 3\n1 1 1",
-        "expectedOutput": "707",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 1\n2\n3\n4",
-        "expectedOutput": "713",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "2 2\n5 0\n0 5",
-        "expectedOutput": "714",
-        "isHidden": true
       },
       {
-        "testIndex": 8,
-        "input": "2 3\n3 2 1\n1 2 3",
-        "expectedOutput": "713",
+        "testIndex": 11,
+        "input": "{\"nums\":[1,0,1],\"target\":9}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
-        "testIndex": 9,
-        "input": "2 2\n0 0\n0 0",
-        "expectedOutput": "704",
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "2 3\n9 1 9\n1 1 1",
-        "expectedOutput": "716",
+        "testIndex": 13,
+        "input": "{\"nums\":[0,1,0,2,0,3,0],\"target\":8}",
+        "expectedOutput": "7",
         "isHidden": true
       }
     ]

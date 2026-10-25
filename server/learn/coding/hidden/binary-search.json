@@ -67,614 +67,1826 @@
       }
     ]
   },
-  "lower-bound": {
-    "id": "learn:binary-search:lower-bound",
-    "slug": "lower-bound",
+  "leftmost-target-position": {
+    "id": "learn:binary-search:leftmost-target-position",
+    "bankId": "T12-Q01",
+    "slug": "leftmost-target-position",
     "topicId": "binary-search",
-    "title": "Lower Bound",
+    "title": "Leftmost Target Position",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "-1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "2",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
-        "isHidden": true
-      }
-    ]
-  },
-  "upper-bound": {
-    "id": "learn:binary-search:upper-bound",
-    "slug": "upper-bound",
-    "topicId": "binary-search",
-    "title": "Upper Bound",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "4",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "2",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "first-occurrence": {
-    "id": "learn:binary-search:first-occurrence",
-    "slug": "first-occurrence",
+  "rightmost-target-position": {
+    "id": "learn:binary-search:rightmost-target-position",
+    "bankId": "T12-Q02",
+    "slug": "rightmost-target-position",
     "topicId": "binary-search",
-    "title": "First Occurrence",
+    "title": "Rightmost Target Position",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "-1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "lower-bound-insertion-index": {
+    "id": "learn:binary-search:lower-bound-insertion-index",
+    "bankId": "T12-Q03",
+    "slug": "lower-bound-insertion-index",
+    "topicId": "binary-search",
+    "title": "Lower Bound Insertion Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[7],\"target\":7,\"__weak_diff\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":2}",
+        "expectedOutput": "0",
         "isHidden": true
       }
     ]
   },
-  "last-occurrence": {
-    "id": "learn:binary-search:last-occurrence",
-    "slug": "last-occurrence",
+  "upper-bound-insertion-index": {
+    "id": "learn:binary-search:upper-bound-insertion-index",
+    "bankId": "T12-Q04",
+    "slug": "upper-bound-insertion-index",
     "topicId": "binary-search",
-    "title": "Last Occurrence",
+    "title": "Upper Bound Insertion Index",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":1}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-target-occurrences": {
+    "id": "learn:binary-search:number-of-target-occurrences",
+    "bankId": "T12-Q05",
+    "slug": "number-of-target-occurrences",
+    "topicId": "binary-search",
+    "title": "Number of Target Occurrences",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "4",
         "isHidden": true
       }
     ]
   },
-  "integer-square-root": {
-    "id": "learn:binary-search:integer-square-root",
-    "slug": "integer-square-root",
+  "has-exact-target": {
+    "id": "learn:binary-search:has-exact-target",
+    "bankId": "T12-Q06",
+    "slug": "has-exact-target",
     "topicId": "binary-search",
-    "title": "Integer Square Root",
+    "title": "Has Exact Target",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "floor-value-of-target": {
+    "id": "learn:binary-search:floor-value-of-target",
+    "bankId": "T12-Q07",
+    "slug": "floor-value-of-target",
+    "topicId": "binary-search",
+    "title": "Floor Value of Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "-1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "-1",
         "isHidden": true
       }
     ]
   },
-  "first-positive": {
-    "id": "learn:binary-search:first-positive",
-    "slug": "first-positive",
+  "ceiling-value-of-target": {
+    "id": "learn:binary-search:ceiling-value-of-target",
+    "bankId": "T12-Q08",
+    "slug": "ceiling-value-of-target",
     "topicId": "binary-search",
-    "title": "First Positive",
+    "title": "Ceiling Value of Target",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "predecessor-strict": {
+    "id": "learn:binary-search:predecessor-strict",
+    "bankId": "T12-Q09",
+    "slug": "predecessor-strict",
+    "topicId": "binary-search",
+    "title": "Predecessor Strict",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "successor-strict": {
+    "id": "learn:binary-search:successor-strict",
+    "bankId": "T12-Q10",
+    "slug": "successor-strict",
+    "topicId": "binary-search",
+    "title": "Successor Strict",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
         "expectedOutput": "5",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "null",
         "isHidden": true
       }
     ]
   },
-  "rotated-array-search": {
-    "id": "learn:binary-search:rotated-array-search",
-    "slug": "rotated-array-search",
+  "count-values-strictly-less": {
+    "id": "learn:binary-search:count-values-strictly-less",
+    "bankId": "T12-Q11",
+    "slug": "count-values-strictly-less",
     "topicId": "binary-search",
-    "title": "Rotated Array Search",
+    "title": "Count Values Strictly Less",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "5",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[7],\"target\":7,\"__weak_diff\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":2}",
+        "expectedOutput": "0",
         "isHidden": true
       }
     ]
   },
-  "minimum-feasible-rate": {
-    "id": "learn:binary-search:minimum-feasible-rate",
-    "slug": "minimum-feasible-rate",
+  "count-values-at-most": {
+    "id": "learn:binary-search:count-values-at-most",
+    "bankId": "T12-Q12",
+    "slug": "count-values-at-most",
     "topicId": "binary-search",
-    "title": "Minimum Feasible Rate",
+    "title": "Count Values at Most",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "5",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":1}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "mountain-peak": {
-    "id": "learn:binary-search:mountain-peak",
-    "slug": "mountain-peak",
+  "count-values-strictly-greater": {
+    "id": "learn:binary-search:count-values-strictly-greater",
+    "bankId": "T12-Q13",
+    "slug": "count-values-strictly-greater",
     "topicId": "binary-search",
-    "title": "Mountain Peak",
+    "title": "Count Values Strictly Greater",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "10",
-        "expectedOutput": "5",
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "25",
-        "expectedOutput": "6",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "50",
-        "expectedOutput": "8",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "1",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "2",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "99",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "100",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "999",
-        "expectedOutput": "32",
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "12345",
-        "expectedOutput": "112",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-values-at-least": {
+    "id": "learn:binary-search:count-values-at-least",
+    "bankId": "T12-Q14",
+    "slug": "count-values-at-least",
+    "topicId": "binary-search",
+    "title": "Count Values at Least",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-elements-between-t-and-t-plus-two": {
+    "id": "learn:binary-search:count-elements-between-t-and-t-plus-two",
+    "bankId": "T12-Q15",
+    "slug": "count-elements-between-t-and-t-plus-two",
+    "topicId": "binary-search",
+    "title": "Count Elements Between T and T Plus Two",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "nearest-value-in-sorted-array": {
+    "id": "learn:binary-search:nearest-value-in-sorted-array",
+    "bankId": "T12-Q16",
+    "slug": "nearest-value-in-sorted-array",
+    "topicId": "binary-search",
+    "title": "Nearest Value in Sorted Array",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[0,0,0],\"target\":0,\"__weak_diff\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "exact-target-index-interval": {
+    "id": "learn:binary-search:exact-target-index-interval",
+    "bankId": "T12-Q17",
+    "slug": "exact-target-index-interval",
+    "topicId": "binary-search",
+    "title": "Exact Target Index Interval",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "[3,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "[0,0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "[2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "[3,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "[6,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "[1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "[3,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "[3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "[2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "[0,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "[3,6]",
+        "isHidden": true
+      }
+    ]
+  },
+  "insert-target-maintaining-order": {
+    "id": "learn:binary-search:insert-target-maintaining-order",
+    "bankId": "T12-Q18",
+    "slug": "insert-target-maintaining-order",
+    "topicId": "binary-search",
+    "title": "Insert Target Maintaining Order",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "[1,1,3,4,4,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "[0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "[7,7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "[0,0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "[-4,-3,-1,-1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "[1,2,2,3,3,3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "[1,2,3,4,5,6,7,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "[5,6,6,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "[-5,-5,0,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "[1,2,3,4,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "[-9,0,9,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "[4,4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "[1,2,3,8,8,8,8,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "remove-all-exact-target-values": {
+    "id": "learn:binary-search:remove-all-exact-target-values",
+    "bankId": "T12-Q19",
+    "slug": "remove-all-exact-target-values",
+    "topicId": "binary-search",
+    "title": "Remove All Exact Target Values",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "[1,1,3,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "[-4,-3,2]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "[1,2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "[1,2,3,4,5,6,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "[5,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "[-5,-5,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "[1,2,3,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "[-9,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "[1,2,3]",
+        "isHidden": true
+      }
+    ]
+  },
+  "midpoint-partition-by-target": {
+    "id": "learn:binary-search:midpoint-partition-by-target",
+    "bankId": "T12-Q20",
+    "slug": "midpoint-partition-by-target",
+    "topicId": "binary-search",
+    "title": "Midpoint Partition by Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "expectedOutput": "{\"less\":3,\"equal\":1,\"greater\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{\"less\":0,\"equal\":0,\"greater\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"less\":0,\"equal\":1,\"greater\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"less\":0,\"equal\":3,\"greater\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "expectedOutput": "{\"less\":2,\"equal\":1,\"greater\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "expectedOutput": "{\"less\":3,\"equal\":3,\"greater\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"less\":6,\"equal\":1,\"greater\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "expectedOutput": "{\"less\":1,\"equal\":1,\"greater\":4}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "expectedOutput": "{\"less\":3,\"equal\":2,\"greater\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"less\":3,\"equal\":1,\"greater\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"less\":2,\"equal\":1,\"greater\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"less\":0,\"equal\":4,\"greater\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "expectedOutput": "{\"less\":3,\"equal\":4,\"greater\":0}",
         "isHidden": true
       }
     ]

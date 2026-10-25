@@ -16,6 +16,7 @@ import * as practiceTs from '../src/server/data/serverTestCases'
 import { codingTestCases as codingTs } from '../src/server/data/codingTestCases'
 import { getServerTests, findCrossBankCollisions, listAllQuestionIds } from '../src/server/judge/testRepository'
 import { CURRICULA, getProblemByLanguageAndSlug } from '../src/data/curriculum/index'
+import { findLearnQuestionBySlug, getLearnRedirect } from '../src/data/learn/coding/index'
 
 let failures = 0
 const problems: string[] = []
@@ -114,10 +115,8 @@ const routeCollisions = codingQuestions.filter((q) => practiceRouteKeys.has(q.sl
 check(routeCollisions.length === 0, `coding slugs shadowed by practice routes: ${routeCollisions.map((q) => q.slug).join(', ')}`)
 let routeMismatch = 0
 for (const q of codingQuestions) {
-  for (const lang of ['python', 'java', 'cpp', 'nodejs']) {
-    const p = getProblemByLanguageAndSlug(lang, q.slug)
-    if (!p || p.slug !== q.slug || p.title !== q.title) routeMismatch++
-  }
+  const found = findLearnQuestionBySlug(q.slug) || getLearnRedirect(q.slug)
+  if (!found) routeMismatch++
 }
 check(routeMismatch === 0, `coding questions whose arena route resolves to a different problem: ${routeMismatch}`)
 

@@ -62,6 +62,23 @@ if (fs.existsSync(codingClientQuestionsPath)) {
   } catch (e) {}
 }
 
+const curriculumClientPath = path.resolve(__dirname, '..', 'src', 'data', 'curriculum.json')
+if (fs.existsSync(curriculumClientPath)) {
+  try {
+    publicText += fs.readFileSync(curriculumClientPath, 'utf8')
+  } catch (e) {}
+}
+
+const learnCodingClientDir = path.resolve(__dirname, '..', 'src', 'data', 'learn', 'coding')
+if (fs.existsSync(learnCodingClientDir)) {
+  try {
+    const tsFiles = fs.readdirSync(learnCodingClientDir).filter((f) => f.endsWith('.ts'))
+    for (const f of tsFiles) {
+      publicText += fs.readFileSync(path.join(learnCodingClientDir, f), 'utf8')
+    }
+  } catch (e) {}
+}
+
 // 1. Check Belt server test cases
 let checked = 0
 const leaks = []

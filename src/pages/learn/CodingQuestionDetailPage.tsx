@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, Navigate } from 'react-router-dom'
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,9 +10,11 @@ import {
   Check,
   BookOpen,
 } from 'lucide-react'
-import { getLearnTopic, getLearnQuestion } from '@/data/learn/coding'
+import { getLearnTopic, getLearnQuestion, getLearnRedirect } from '@/data/learn/coding'
 import { getLearnQuestionStatus, subscribeLearnProgress } from '@/lib/learnProgress'
+import { FormattedText } from '@/components/common/FormattedText'
 import { useAuth } from '@/contexts/AuthContext'
+import { cn } from '@/lib/utils'
 
 /**
  * CodingQuestionDetailPage
@@ -35,6 +37,14 @@ export const CodingQuestionDetailPage: React.FC = () => {
   const question = useMemo(() => {
     return slug && topicId ? getLearnQuestion(topicId, slug) : undefined
   }, [topicId, slug])
+
+  // Check for redirect if question not found
+  if (!question && slug) {
+    const redirect = getLearnRedirect(slug)
+    if (redirect) {
+      return <Navigate to={redirect.targetUrl} replace />
+    }
+  }
 
   // Subscribe to user progress
   useEffect(() => {
@@ -124,6 +134,25 @@ export const CodingQuestionDetailPage: React.FC = () => {
             <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">
               {question.title}
             </h1>
+            {question.difficulty && (
+              <span
+                className={cn(
+                  'px-2.5 py-0.5 rounded-full text-xs font-semibold border',
+                  question.difficulty === 'Easy'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : question.difficulty === 'Medium'
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                )}
+              >
+                {question.difficulty}
+              </span>
+            )}
+            {question.isPythonOnly && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                Python Only
+              </span>
+            )}
             {isSolved ? (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -139,6 +168,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
           <p className="text-xs text-neutral-500">
             Topic: <span className="font-semibold text-neutral-700">{topic.title}</span>
           </p>
+          {question.isPythonOnly && (
+            <p className="text-xs text-amber-700 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/80">
+              {question.pythonOnlyNote || 'Note: This challenge evaluates Python-specific language semantics and is solved exclusively in Python.'}
+            </p>
+          )}
         </div>
 
         {/* Solve CTA */}
@@ -147,7 +181,7 @@ export const CodingQuestionDetailPage: React.FC = () => {
           className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ED2A2B] hover:bg-red-600 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all shrink-0 hover:shadow-md"
         >
           <Code2 className="w-4 h-4" />
-          <span>Start Coding</span>
+          <span>Solve</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -160,9 +194,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
             <BookOpen className="w-4 h-4 text-neutral-500" />
             <span>Problem Statement</span>
           </h2>
-          <div className="text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap">
-            {question.problemStatement}
-          </div>
+          <FormattedText
+            as="div"
+            text={question.problemStatement}
+            className="text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap"
+          />
         </div>
 
         {/* Input & Output Format Grid */}
@@ -172,9 +208,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
             <h2 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
               Input Format
             </h2>
-            <div className="text-xs sm:text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
-              {question.inputFormat}
-            </div>
+            <FormattedText
+              as="div"
+              text={question.inputFormat}
+              className="text-xs sm:text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap"
+            />
           </div>
 
           {/* Output Format */}
@@ -182,9 +220,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
             <h2 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
               Output Format
             </h2>
-            <div className="text-xs sm:text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
-              {question.outputFormat}
-            </div>
+            <FormattedText
+              as="div"
+              text={question.outputFormat}
+              className="text-xs sm:text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap"
+            />
           </div>
         </div>
 
@@ -193,9 +233,11 @@ export const CodingQuestionDetailPage: React.FC = () => {
           <h2 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
             Constraints
           </h2>
-          <div className="text-xs sm:text-sm font-mono text-neutral-800 bg-neutral-50 p-4 rounded-xl border border-neutral-100 whitespace-pre-wrap">
-            {question.constraints}
-          </div>
+          <FormattedText
+            as="div"
+            text={question.constraints}
+            className="text-xs sm:text-sm font-mono text-neutral-800 bg-neutral-50 p-4 rounded-xl border border-neutral-100 whitespace-pre-wrap"
+          />
         </div>
 
         {/* Worked Examples (1, 2, 3) */}

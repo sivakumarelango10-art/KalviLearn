@@ -1,72 +1,4 @@
 {
-  "largest-of-three": {
-    "id": "learn:conditionals-control-flow:largest-of-three",
-    "slug": "largest-of-three",
-    "topicId": "conditionals-control-flow",
-    "title": "Largest of Three",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "6",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "-2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "6",
-        "isHidden": true
-      }
-    ]
-  },
   "middle-of-three": {
     "id": "learn:conditionals-control-flow:middle-of-three",
     "slug": "middle-of-three",
@@ -679,74 +611,6 @@
       }
     ]
   },
-  "maximum-absolute": {
-    "id": "learn:conditionals-control-flow:maximum-absolute",
-    "slug": "maximum-absolute",
-    "topicId": "conditionals-control-flow",
-    "title": "Maximum Absolute",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "6",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "5",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "2",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "-6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "8",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "9",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "6",
-        "isHidden": true
-      }
-    ]
-  },
   "all-positive": {
     "id": "learn:conditionals-control-flow:all-positive",
     "slug": "all-positive",
@@ -883,74 +747,6 @@
       }
     ]
   },
-  "majority-even": {
-    "id": "learn:conditionals-control-flow:majority-even",
-    "slug": "majority-even",
-    "topicId": "conditionals-control-flow",
-    "title": "Majority Even",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "YES",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "YES",
-        "isHidden": true
-      }
-    ]
-  },
   "ordered-strictly-increasing": {
     "id": "learn:conditionals-control-flow:ordered-strictly-increasing",
     "slug": "ordered-strictly-increasing",
@@ -979,74 +775,6 @@
         "testIndex": 4,
         "input": "5 5 5",
         "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "NO",
-        "isHidden": true
-      }
-    ]
-  },
-  "ordered-nondecreasing": {
-    "id": "learn:conditionals-control-flow:ordered-nondecreasing",
-    "slug": "ordered-nondecreasing",
-    "topicId": "conditionals-control-flow",
-    "title": "Ordered Nondecreasing",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "YES",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "YES",
         "isHidden": true
       },
       {
@@ -1155,142 +883,6 @@
       }
     ]
   },
-  "same-sign": {
-    "id": "learn:conditionals-control-flow:same-sign",
-    "slug": "same-sign",
-    "topicId": "conditionals-control-flow",
-    "title": "Same Sign",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "YES",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "YES",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "YES",
-        "isHidden": true
-      }
-    ]
-  },
-  "between-other-two-strict": {
-    "id": "learn:conditionals-control-flow:between-other-two-strict",
-    "slug": "between-other-two-strict",
-    "topicId": "conditionals-control-flow",
-    "title": "Between Other Two Strict",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "3 5 7",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "8 2 4",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-3 6 1",
-        "expectedOutput": "NO",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "5 5 5",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "0 -1 2",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "10 3 10",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2 -6",
-        "expectedOutput": "YES",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "2 8 5",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "9 4 1",
-        "expectedOutput": "NO",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "6 6 2",
-        "expectedOutput": "NO",
-        "isHidden": true
-      }
-    ]
-  },
   "maximum-frequency-class": {
     "id": "learn:conditionals-control-flow:maximum-frequency-class",
     "slug": "maximum-frequency-class",
@@ -1355,6 +947,1770 @@
         "testIndex": 10,
         "input": "6 6 2",
         "expectedOutput": "PAIR",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-of-three": {
+    "id": "learn:conditionals-control-flow:maximum-of-three",
+    "bankId": "T03-Q01",
+    "slug": "maximum-of-three",
+    "topicId": "conditionals-control-flow",
+    "title": "Maximum of Three",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-of-three": {
+    "id": "learn:conditionals-control-flow:minimum-of-three",
+    "bankId": "T03-Q02",
+    "slug": "minimum-of-three",
+    "topicId": "conditionals-control-flow",
+    "title": "Minimum of Three",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "median-of-three": {
+    "id": "learn:conditionals-control-flow:median-of-three",
+    "bankId": "T03-Q03",
+    "slug": "median-of-three",
+    "topicId": "conditionals-control-flow",
+    "title": "Median of Three",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"a\":9,\"b\":4,\"c\":1,\"__weak_diff\":1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5,\"__weak_diff\":2}",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "all-three-equal": {
+    "id": "learn:conditionals-control-flow:all-three-equal",
+    "bankId": "T03-Q04",
+    "slug": "all-three-equal",
+    "topicId": "conditionals-control-flow",
+    "title": "All Three Equal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "exactly-two-equal": {
+    "id": "learn:conditionals-control-flow:exactly-two-equal",
+    "bankId": "T03-Q05",
+    "slug": "exactly-two-equal",
+    "topicId": "conditionals-control-flow",
+    "title": "Exactly Two Equal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "strict-increasing-order": {
+    "id": "learn:conditionals-control-flow:strict-increasing-order",
+    "bankId": "T03-Q06",
+    "slug": "strict-increasing-order",
+    "topicId": "conditionals-control-flow",
+    "title": "Strict Increasing Order",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "nondecreasing-order": {
+    "id": "learn:conditionals-control-flow:nondecreasing-order",
+    "bankId": "T03-Q07",
+    "slug": "nondecreasing-order",
+    "topicId": "conditionals-control-flow",
+    "title": "Nondecreasing Order",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "classify-sum-sign": {
+    "id": "learn:conditionals-control-flow:classify-sum-sign",
+    "bankId": "T03-Q08",
+    "slug": "classify-sum-sign",
+    "topicId": "conditionals-control-flow",
+    "title": "Classify Sum Sign",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "positive",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "zero",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "negative",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "\"positive\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "\"zero\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "largest-absolute-value": {
+    "id": "learn:conditionals-control-flow:largest-absolute-value",
+    "bankId": "T03-Q09",
+    "slug": "largest-absolute-value",
+    "topicId": "conditionals-control-flow",
+    "title": "Largest Absolute Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-positive-numbers": {
+    "id": "learn:conditionals-control-flow:count-positive-numbers",
+    "bankId": "T03-Q10",
+    "slug": "count-positive-numbers",
+    "topicId": "conditionals-control-flow",
+    "title": "Count Positive Numbers",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-even-numbers": {
+    "id": "learn:conditionals-control-flow:count-even-numbers",
+    "bankId": "T03-Q11",
+    "slug": "count-even-numbers",
+    "topicId": "conditionals-control-flow",
+    "title": "Count Even Numbers",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "triangle-possibility": {
+    "id": "learn:conditionals-control-flow:triangle-possibility",
+    "bankId": "T03-Q12",
+    "slug": "triangle-possibility",
+    "topicId": "conditionals-control-flow",
+    "title": "Triangle Possibility",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "right-triangle-test": {
+    "id": "learn:conditionals-control-flow:right-triangle-test",
+    "bankId": "T03-Q13",
+    "slug": "right-triangle-test",
+    "topicId": "conditionals-control-flow",
+    "title": "Right Triangle Test",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "range-inclusive-check": {
+    "id": "learn:conditionals-control-flow:range-inclusive-check",
+    "bankId": "T03-Q14",
+    "slug": "range-inclusive-check",
+    "topicId": "conditionals-control-flow",
+    "title": "Range Inclusive Check",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "parity-majority": {
+    "id": "learn:conditionals-control-flow:parity-majority",
+    "bankId": "T03-Q15",
+    "slug": "parity-majority",
+    "topicId": "conditionals-control-flow",
+    "title": "Parity Majority",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "odd",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "even",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "odd",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "\"even\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "\"odd\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "choose-nearest-to-target": {
+    "id": "learn:conditionals-control-flow:choose-nearest-to-target",
+    "bankId": "T03-Q16",
+    "slug": "choose-nearest-to-target",
+    "topicId": "conditionals-control-flow",
+    "title": "Choose Nearest to Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "basic-triangle-classification": {
+    "id": "learn:conditionals-control-flow:basic-triangle-classification",
+    "bankId": "T03-Q17",
+    "slug": "basic-triangle-classification",
+    "topicId": "conditionals-control-flow",
+    "title": "Basic Triangle Classification",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "scalene",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "invalid",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "equilateral",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "\"isosceles\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "\"isosceles\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "\"invalid\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "select-first-maximum-variable": {
+    "id": "learn:conditionals-control-flow:select-first-maximum-variable",
+    "bankId": "T03-Q18",
+    "slug": "select-first-maximum-variable",
+    "topicId": "conditionals-control-flow",
+    "title": "Select First Maximum Variable",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "c",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "b",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "\"a\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "\"c\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "\"c\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "\"a\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "\"a\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "\"c\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "\"a\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "\"c\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "\"a\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "\"c\"",
+        "isHidden": true
+      }
+    ]
+  },
+  "all-values-same-sign": {
+    "id": "learn:conditionals-control-flow:all-values-same-sign",
+    "bankId": "T03-Q19",
+    "slug": "all-values-same-sign",
+    "topicId": "conditionals-control-flow",
+    "title": "All Values Same Sign",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "clamp-to-dynamic-bounds": {
+    "id": "learn:conditionals-control-flow:clamp-to-dynamic-bounds",
+    "bankId": "T03-Q20",
+    "slug": "clamp-to-dynamic-bounds",
+    "topicId": "conditionals-control-flow",
+    "title": "Clamp to Dynamic Bounds",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"a\":3,\"b\":4,\"c\":5}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"a\":0,\"b\":0,\"c\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"a\":1,\"b\":1,\"c\":2}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"a\":9,\"b\":4,\"c\":1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"a\":5,\"b\":5,\"c\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"a\":100,\"b\":-2,\"c\":7}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"a\":2,\"b\":4,\"c\":6}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"a\":-4,\"b\":-2,\"c\":-3}",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"a\":10,\"b\":10,\"c\":1}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"a\":1,\"b\":9,\"c\":10}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"a\":6,\"b\":2,\"c\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"a\":-1,\"b\":0,\"c\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"a\":9,\"b\":4,\"c\":1,\"__weak_diff\":1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"a\":-3,\"b\":2,\"c\":5,\"__weak_diff\":2}",
+        "expectedOutput": "2",
         "isHidden": true
       }
     ]

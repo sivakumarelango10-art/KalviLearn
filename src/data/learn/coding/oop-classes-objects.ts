@@ -2,534 +2,1244 @@ import type { LearnQuestion } from './types'
 
 export const questions: LearnQuestion[] = [
   {
-    "id": "learn:oop-classes-objects:student-object",
-    "slug": "student-object",
+    "id": "learn:oop-classes-objects:construct-student-summaries",
+    "bankId": "T22-Q01",
+    "slug": "construct-student-summaries",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Student Object",
+    "title": "Construct Student Summaries",
     "order": 1,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+1)*b-1`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Instantiate Student(name,score) for each record. Serialize objects in original order to strings \"name:score\".",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "8",
-        "explanation": "Applying the question's stated computation gives (2+1)×3-1 = 8."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"Anu:82\",\"Bala:65\",\"Charu:82\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Instantiate Student(name,score) for each record. Serialize objects in original order to strings \"name:score\". Therefore the expected JSON output is [\"Anu:82\",\"Bala:65\",\"Charu:82\"]."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+1)×1-1 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Instantiate Student(name,score) for each record. Serialize objects in original order to strings \"name:score\". Therefore the expected JSON output is []."
       },
       {
-        "input": "-2 4",
-        "output": "-5",
-        "explanation": "Applying the question's stated computation gives (-2+1)×4-1 = -5."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[\"A:100\"]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Instantiate Student(name,score) for each record. Serialize objects in original order to strings \"name:score\". Therefore the expected JSON output is [\"A:100\"]."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "8"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu:82\",\"Bala:65\",\"Charu:82\"]"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-5"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A:100\"]"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:rectangle-object",
-    "slug": "rectangle-object",
+    "id": "learn:oop-classes-objects:count-constructed-objects",
+    "bankId": "T22-Q02",
+    "slug": "count-constructed-objects",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Rectangle Object",
+    "title": "Count Constructed Objects",
     "order": 2,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+2)*b-2`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Construct a Student object per record; return the total number of instantiated objects.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "10",
-        "explanation": "Applying the question's stated computation gives (2+2)×3-2 = 10."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "3",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Construct a Student object per record; return the total number of instantiated objects. Therefore the expected JSON output is 3."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+2)×1-2 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "0",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Construct a Student object per record; return the total number of instantiated objects. Therefore the expected JSON output is 0."
       },
       {
-        "input": "-2 4",
-        "output": "-2",
-        "explanation": "Applying the question's stated computation gives (-2+2)×4-2 = -2."
-      }
-    ],
-    "visibleTests": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "10"
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-2"
-      }
-    ],
-    "testCaseMeta": {
-      "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
-  },
-  {
-    "id": "learn:oop-classes-objects:point-object",
-    "slug": "point-object",
-    "topicId": "oop-classes-objects",
-    "topicSlug": "oop-classes-objects",
-    "topicTitle": "OOP — Classes & Objects",
-    "title": "Point Object",
-    "order": 3,
-    "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+3)*b-3`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
-    "examples": [
-      {
-        "input": "2 3",
-        "output": "12",
-        "explanation": "Applying the question's stated computation gives (2+3)×3-3 = 12."
-      },
-      {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+3)×1-3 = 5."
-      },
-      {
-        "input": "-2 4",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
         "output": "1",
-        "explanation": "Applying the question's stated computation gives (-2+3)×4-3 = 1."
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Construct a Student object per record; return the total number of instantiated objects. Therefore the expected JSON output is 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "12"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
         "expectedOutput": "1"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:book-object",
-    "slug": "book-object",
+    "id": "learn:oop-classes-objects:highest-scoring-student",
+    "bankId": "T22-Q03",
+    "slug": "highest-scoring-student",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Book Object",
+    "title": "Highest Scoring Student",
+    "order": 3,
+    "difficulty": "Easy",
+    "problemStatement": "Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the highest scoring object; tie breaks by earliest record; null when empty.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "{\"index\":0,\"name\":\"Anu\",\"score\":82}",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the highest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is {\"index\":0,\"name\":\"Anu\",\"score\":82}."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "null",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the highest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is null."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "{\"index\":0,\"name\":\"A\",\"score\":100}",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the highest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is {\"index\":0,\"name\":\"A\",\"score\":100}."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"index\":0,\"name\":\"Anu\",\"score\":82}"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"index\":0,\"name\":\"A\",\"score\":100}"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:lowest-scoring-student",
+    "bankId": "T22-Q04",
+    "slug": "lowest-scoring-student",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Lowest Scoring Student",
     "order": 4,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+4)*b-4`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the lowest scoring object; tie breaks by earliest record; null when empty.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "14",
-        "explanation": "Applying the question's stated computation gives (2+4)×3-4 = 14."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "{\"index\":1,\"name\":\"Bala\",\"score\":65}",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the lowest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is {\"index\":1,\"name\":\"Bala\",\"score\":65}."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+4)×1-4 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "null",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the lowest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is null."
       },
       {
-        "input": "-2 4",
-        "output": "4",
-        "explanation": "Applying the question's stated computation gives (-2+4)×4-4 = 4."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "{\"index\":0,\"name\":\"A\",\"score\":100}",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return {\"index\",\"name\",\"score\"} for the lowest scoring object; tie breaks by earliest record; null when empty. Therefore the expected JSON output is {\"index\":0,\"name\":\"A\",\"score\":100}."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "14"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"index\":1,\"name\":\"Bala\",\"score\":65}"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "4"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"index\":0,\"name\":\"A\",\"score\":100}"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:employee-object",
-    "slug": "employee-object",
+    "id": "learn:oop-classes-objects:passing-students",
+    "bankId": "T22-Q05",
+    "slug": "passing-students",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Employee Object",
+    "title": "Passing Students",
     "order": 5,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+5)*b-5`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Return names of Student objects whose score is at least threshold, preserving roster order.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "16",
-        "explanation": "Applying the question's stated computation gives (2+5)×3-5 = 16."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"Anu\",\"Charu\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return names of Student objects whose score is at least threshold, preserving roster order. Therefore the expected JSON output is [\"Anu\",\"Charu\"]."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+5)×1-5 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return names of Student objects whose score is at least threshold, preserving roster order. Therefore the expected JSON output is []."
       },
       {
-        "input": "-2 4",
-        "output": "7",
-        "explanation": "Applying the question's stated computation gives (-2+5)×4-5 = 7."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[\"A\"]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return names of Student objects whose score is at least threshold, preserving roster order. Therefore the expected JSON output is [\"A\"]."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "16"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu\",\"Charu\"]"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "7"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:car-object",
-    "slug": "car-object",
+    "id": "learn:oop-classes-objects:failing-students",
+    "bankId": "T22-Q06",
+    "slug": "failing-students",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Car Object",
+    "title": "Failing Students",
     "order": 6,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+6)*b-6`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Return names of Student objects whose score is strictly below threshold, preserving order.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "18",
-        "explanation": "Applying the question's stated computation gives (2+6)×3-6 = 18."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"Bala\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return names of Student objects whose score is strictly below threshold, preserving order. Therefore the expected JSON output is [\"Bala\"]."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+6)×1-6 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return names of Student objects whose score is strictly below threshold, preserving order. Therefore the expected JSON output is []."
       },
       {
-        "input": "-2 4",
-        "output": "10",
-        "explanation": "Applying the question's stated computation gives (-2+6)×4-6 = 10."
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "output": "[\"Mira\"]",
+        "explanation": "Instantiate 1 Student objects with scores [0] and threshold 1. Define a Student class with name and score fields. Return names of Student objects whose score is strictly below threshold, preserving order. Therefore the expected JSON output is [\"Mira\"]."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "18"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Bala\"]"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "10"
+        "input": "{\"records\":[{\"name\":\"Mira\",\"score\":0}],\"threshold\":1}",
+        "expectedOutput": "[\"Mira\"]"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:product-object",
-    "slug": "product-object",
+    "id": "learn:oop-classes-objects:count-passing-objects",
+    "bankId": "T22-Q07",
+    "slug": "count-passing-objects",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Product Object",
+    "title": "Count Passing Objects",
     "order": 7,
     "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+7)*b-7`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "problemStatement": "Define a Student class with name and score fields. Return number of Student objects with score≥threshold.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "20",
-        "explanation": "Applying the question's stated computation gives (2+7)×3-7 = 20."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "2",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return number of Student objects with score≥threshold. Therefore the expected JSON output is 2."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+7)×1-7 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "0",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return number of Student objects with score≥threshold. Therefore the expected JSON output is 0."
       },
       {
-        "input": "-2 4",
-        "output": "13",
-        "explanation": "Applying the question's stated computation gives (-2+7)×4-7 = 13."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "1",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return number of Student objects with score≥threshold. Therefore the expected JSON output is 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "20"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "13"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "1"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:time-object",
-    "slug": "time-object",
+    "id": "learn:oop-classes-objects:average-object-score-fraction",
+    "bankId": "T22-Q08",
+    "slug": "average-object-score-fraction",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Time Object",
+    "title": "Average Object Score Fraction",
     "order": 8,
-    "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+8)*b-8`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return exact average score [reduced_numerator,positive_denominator], or null for no Student objects.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "22",
-        "explanation": "Applying the question's stated computation gives (2+8)×3-8 = 22."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[229,3]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return exact average score [reduced_numerator,positive_denominator], or null for no Student objects. Therefore the expected JSON output is [229,3]."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+8)×1-8 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "null",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return exact average score [reduced_numerator,positive_denominator], or null for no Student objects. Therefore the expected JSON output is null."
       },
       {
-        "input": "-2 4",
-        "output": "16",
-        "explanation": "Applying the question's stated computation gives (-2+8)×4-8 = 16."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[100,1]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return exact average score [reduced_numerator,positive_denominator], or null for no Student objects. Therefore the expected JSON output is [100,1]."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "22"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[229,3]"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "16"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[100,1]"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:fraction-object",
-    "slug": "fraction-object",
+    "id": "learn:oop-classes-objects:total-marks-across-objects",
+    "bankId": "T22-Q09",
+    "slug": "total-marks-across-objects",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Fraction Object",
+    "title": "Total Marks Across Objects",
     "order": 9,
-    "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+9)*b-9`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return sum of the score properties of all Student objects.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "24",
-        "explanation": "Applying the question's stated computation gives (2+9)×3-9 = 24."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "229",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return sum of the score properties of all Student objects. Therefore the expected JSON output is 229."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+9)×1-9 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "0",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return sum of the score properties of all Student objects. Therefore the expected JSON output is 0."
       },
       {
-        "input": "-2 4",
-        "output": "19",
-        "explanation": "Applying the question's stated computation gives (-2+9)×4-9 = 19."
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "100",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return sum of the score properties of all Student objects. Therefore the expected JSON output is 100."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "24"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "229"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "19"
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "100"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   },
   {
-    "id": "learn:oop-classes-objects:circle-object",
-    "slug": "circle-object",
+    "id": "learn:oop-classes-objects:maximum-score-gap",
+    "bankId": "T22-Q10",
+    "slug": "maximum-score-gap",
     "topicId": "oop-classes-objects",
     "topicSlug": "oop-classes-objects",
     "topicTitle": "OOP — Classes & Objects",
-    "title": "Circle Object",
+    "title": "Maximum Score Gap",
     "order": 10,
-    "difficulty": "Easy",
-    "problemStatement": "Model the inputs as fields of an object and compute the requested derived field. For this task, compute `(a+10)*b-10`.",
-    "inputFormat": "One line contains integers `a b`.",
-    "outputFormat": "Print the computed integer.",
-    "constraints": "-10^6 <= a,b <= 10^6; result fits signed 64-bit integer.",
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return highest minus lowest score, or 0 for fewer than two students.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
     "examples": [
       {
-        "input": "2 3",
-        "output": "26",
-        "explanation": "Applying the question's stated computation gives (2+10)×3-10 = 26."
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "17",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return highest minus lowest score, or 0 for fewer than two students. Therefore the expected JSON output is 17."
       },
       {
-        "input": "5 1",
-        "output": "5",
-        "explanation": "Applying the question's stated computation gives (5+10)×1-10 = 5."
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "0",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return highest minus lowest score, or 0 for fewer than two students. Therefore the expected JSON output is 0."
       },
       {
-        "input": "-2 4",
-        "output": "22",
-        "explanation": "Applying the question's stated computation gives (-2+10)×4-10 = 22."
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "output": "80",
+        "explanation": "Instantiate 3 Student objects with scores [20, 80, 100] and threshold 75. Define a Student class with name and score fields. Return highest minus lowest score, or 0 for fewer than two students. Therefore the expected JSON output is 80."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "26"
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "17"
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5"
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "22"
+        "input": "{\"records\":[{\"name\":\"Zed\",\"score\":20},{\"name\":\"Yam\",\"score\":80},{\"name\":\"Xia\",\"score\":100}],\"threshold\":75}",
+        "expectedOutput": "80"
       }
     ],
     "testCaseMeta": {
       "visibleCount": 3,
-      "hiddenCount": 7,
-      "totalCount": 10
-    }
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:rank-objects-by-score",
+    "bankId": "T22-Q11",
+    "slug": "rank-objects-by-score",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Rank Objects by Score",
+    "order": 11,
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return student names sorted by descending score, with original-index tie-break.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"Anu\",\"Charu\",\"Bala\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return student names sorted by descending score, with original-index tie-break. Therefore the expected JSON output is [\"Anu\",\"Charu\",\"Bala\"]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return student names sorted by descending score, with original-index tie-break. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[\"A\"]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return student names sorted by descending score, with original-index tie-break. Therefore the expected JSON output is [\"A\"]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Anu\",\"Charu\",\"Bala\"]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:alphabetical-object-display",
+    "bankId": "T22-Q12",
+    "slug": "alphabetical-object-display",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Alphabetical Object Display",
+    "order": 12,
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return [name,score] arrays sorted by name (case-sensitive), then original index.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[[\"Anu\",82],[\"Bala\",65],[\"Charu\",82]]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return [name,score] arrays sorted by name (case-sensitive), then original index. Therefore the expected JSON output is [[\"Anu\",82],[\"Bala\",65],[\"Charu\",82]]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return [name,score] arrays sorted by name (case-sensitive), then original index. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[[\"A\",100]]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return [name,score] arrays sorted by name (case-sensitive), then original index. Therefore the expected JSON output is [[\"A\",100]]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[[\"Anu\",82],[\"Bala\",65],[\"Charu\",82]]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[[\"A\",100]]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:score-as-letter-grade",
+    "bankId": "T22-Q13",
+    "slug": "score-as-letter-grade",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Score as Letter Grade",
+    "order": 13,
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return [\"A\"/\"B\"/\"C\"/\"D\"/\"F\",...] for every Student object in original order, using 90/80/70/60 thresholds.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"B\",\"D\",\"B\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return [\"A\"/\"B\"/\"C\"/\"D\"/\"F\",...] for every Student object in original order, using 90/80/70/60 thresholds. Therefore the expected JSON output is [\"B\",\"D\",\"B\"]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return [\"A\"/\"B\"/\"C\"/\"D\"/\"F\",...] for every Student object in original order, using 90/80/70/60 thresholds. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[\"A\"]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return [\"A\"/\"B\"/\"C\"/\"D\"/\"F\",...] for every Student object in original order, using 90/80/70/60 thresholds. Therefore the expected JSON output is [\"A\"]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"B\",\"D\",\"B\"]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:pass-fail-status-for-objects",
+    "bankId": "T22-Q14",
+    "slug": "pass-fail-status-for-objects",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Pass Fail Status for Objects",
+    "order": 14,
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Return an object {\"passed\":p,\"failed\":f} based on threshold.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "{\"passed\":2,\"failed\":1}",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return an object {\"passed\":p,\"failed\":f} based on threshold. Therefore the expected JSON output is {\"passed\":2,\"failed\":1}."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "{\"passed\":0,\"failed\":0}",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return an object {\"passed\":p,\"failed\":f} based on threshold. Therefore the expected JSON output is {\"passed\":0,\"failed\":0}."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "{\"passed\":1,\"failed\":0}",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return an object {\"passed\":p,\"failed\":f} based on threshold. Therefore the expected JSON output is {\"passed\":1,\"failed\":0}."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"passed\":2,\"failed\":1}"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"passed\":0,\"failed\":0}"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"passed\":1,\"failed\":0}"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:clone-scores-with-bonus",
+    "bankId": "T22-Q15",
+    "slug": "clone-scores-with-bonus",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Clone Scores with Bonus",
+    "order": 15,
+    "difficulty": "Medium",
+    "problemStatement": "Define a Student class with name and score fields. Clone each Student and add 5 points to each copied score, capped at 100. Return only the cloned scores in order.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[87,70,87]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Clone each Student and add 5 points to each copied score, capped at 100. Return only the cloned scores in order. Therefore the expected JSON output is [87,70,87]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Clone each Student and add 5 points to each copied score, capped at 100. Return only the cloned scores in order. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[100]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Clone each Student and add 5 points to each copied score, capped at 100. Return only the cloned scores in order. Therefore the expected JSON output is [100]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[87,70,87]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[100]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:copy-independence-check",
+    "bankId": "T22-Q16",
+    "slug": "copy-independence-check",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Copy Independence Check",
+    "order": 16,
+    "difficulty": "Hard",
+    "problemStatement": "Define a Student class with name and score fields. Construct Student clones with scores capped at score+5; return {\"original\":original_scores,\"copy\":clone_scores} to show original instances remain unchanged.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "{\"original\":[82,65,82],\"copy\":[87,70,87]}",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Construct Student clones with scores capped at score+5; return {\"original\":original_scores,\"copy\":clone_scores} to show original instances remain unchanged. Therefore the expected JSON output is {\"original\":[82,65,82],\"copy\":[87,70,87]}."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "{\"original\":[],\"copy\":[]}",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Construct Student clones with scores capped at score+5; return {\"original\":original_scores,\"copy\":clone_scores} to show original instances remain unchanged. Therefore the expected JSON output is {\"original\":[],\"copy\":[]}."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "{\"original\":[100],\"copy\":[100]}",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Construct Student clones with scores capped at score+5; return {\"original\":original_scores,\"copy\":clone_scores} to show original instances remain unchanged. Therefore the expected JSON output is {\"original\":[100],\"copy\":[100]}."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"original\":[82,65,82],\"copy\":[87,70,87]}"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"original\":[],\"copy\":[]}"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"original\":[100],\"copy\":[100]}"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:distinct-student-names",
+    "bankId": "T22-Q17",
+    "slug": "distinct-student-names",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Distinct Student Names",
+    "order": 17,
+    "difficulty": "Hard",
+    "problemStatement": "Define a Student class with name and score fields. Return count of distinct name properties, not the number of objects.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "3",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return count of distinct name properties, not the number of objects. Therefore the expected JSON output is 3."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "0",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return count of distinct name properties, not the number of objects. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "1",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return count of distinct name properties, not the number of objects. Therefore the expected JSON output is 1."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "3"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "1"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:threshold-score-distance",
+    "bankId": "T22-Q18",
+    "slug": "threshold-score-distance",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Threshold Score Distance",
+    "order": 18,
+    "difficulty": "Hard",
+    "problemStatement": "Define a Student class with name and score fields. Return an array score-threshold for each Student object; values may be negative.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[12,-5,12]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return an array score-threshold for each Student object; values may be negative. Therefore the expected JSON output is [12,-5,12]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return an array score-threshold for each Student object; values may be negative. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[0]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return an array score-threshold for each Student object; values may be negative. Therefore the expected JSON output is [0]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[12,-5,12]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[0]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:sort-objects-by-distance-to-pass",
+    "bankId": "T22-Q19",
+    "slug": "sort-objects-by-distance-to-pass",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Sort Objects by Distance to Pass",
+    "order": 19,
+    "difficulty": "Hard",
+    "problemStatement": "Define a Student class with name and score fields. Return names sorted by increasing abs(score-threshold), tie by score descending, then original index.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "[\"Bala\",\"Anu\",\"Charu\"]",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return names sorted by increasing abs(score-threshold), tie by score descending, then original index. Therefore the expected JSON output is [\"Bala\",\"Anu\",\"Charu\"]."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "[]",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return names sorted by increasing abs(score-threshold), tie by score descending, then original index. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "[\"A\"]",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return names sorted by increasing abs(score-threshold), tie by score descending, then original index. Therefore the expected JSON output is [\"A\"]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "[\"Bala\",\"Anu\",\"Charu\"]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "[\"A\"]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:oop-classes-objects:roster-grade-histogram",
+    "bankId": "T22-Q20",
+    "slug": "roster-grade-histogram",
+    "topicId": "oop-classes-objects",
+    "topicSlug": "oop-classes-objects",
+    "topicTitle": "OOP — Classes & Objects",
+    "title": "Roster Grade Histogram",
+    "order": 20,
+    "difficulty": "Hard",
+    "problemStatement": "Define a Student class with name and score fields. Return an object {\"A\":count,\"B\":count,\"C\":count,\"D\":count,\"F\":count} for all Student objects.",
+    "inputFormat": "A single JSON object: {\"records\": array of {\"name\": string,\"score\": integer}, \"threshold\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(records) ≤ 10; 0 ≤ score,threshold ≤ 100; names are nonempty strings; names may repeat; each record denotes a separate Student object.",
+    "examples": [
+      {
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "output": "{\"A\":0,\"B\":2,\"C\":0,\"D\":1,\"F\":0}",
+        "explanation": "Instantiate 3 Student objects with scores [82, 65, 82] and threshold 70. Define a Student class with name and score fields. Return an object {\"A\":count,\"B\":count,\"C\":count,\"D\":count,\"F\":count} for all Student objects. Therefore the expected JSON output is {\"A\":0,\"B\":2,\"C\":0,\"D\":1,\"F\":0}."
+      },
+      {
+        "input": "{\"records\":[],\"threshold\":50}",
+        "output": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":0}",
+        "explanation": "Instantiate 0 Student objects with scores [] and threshold 50. Define a Student class with name and score fields. Return an object {\"A\":count,\"B\":count,\"C\":count,\"D\":count,\"F\":count} for all Student objects. Therefore the expected JSON output is {\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":0}."
+      },
+      {
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "output": "{\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":0}",
+        "explanation": "Instantiate 1 Student objects with scores [100] and threshold 100. Define a Student class with name and score fields. Return an object {\"A\":count,\"B\":count,\"C\":count,\"D\":count,\"F\":count} for all Student objects. Therefore the expected JSON output is {\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":0}."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"records\":[{\"name\":\"Anu\",\"score\":82},{\"name\":\"Bala\",\"score\":65},{\"name\":\"Charu\",\"score\":82}],\"threshold\":70}",
+        "expectedOutput": "{\"A\":0,\"B\":2,\"C\":0,\"D\":1,\"F\":0}"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"records\":[],\"threshold\":50}",
+        "expectedOutput": "{\"A\":0,\"B\":0,\"C\":0,\"D\":0,\"F\":0}"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"records\":[{\"name\":\"A\",\"score\":100}],\"threshold\":100}",
+        "expectedOutput": "{\"A\":1,\"B\":0,\"C\":0,\"D\":0,\"F\":0}"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   }
 ]
 

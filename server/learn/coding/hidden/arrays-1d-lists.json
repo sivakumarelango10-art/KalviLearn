@@ -13938,5 +13938,1745 @@
         "isHidden": true
       }
     ]
+  },
+  "sum-of-elements": {
+    "id": "learn:arrays-1d-lists:sum-of-elements",
+    "bankId": "T08-Q01",
+    "slug": "sum-of-elements",
+    "topicId": "arrays-1d-lists",
+    "title": "Sum of Elements",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "38",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-negative-entries": {
+    "id": "learn:arrays-1d-lists:count-negative-entries",
+    "bankId": "T08-Q02",
+    "slug": "count-negative-entries",
+    "topicId": "arrays-1d-lists",
+    "title": "Count Negative Entries",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-or-null": {
+    "id": "learn:arrays-1d-lists:maximum-or-null",
+    "bankId": "T08-Q03",
+    "slug": "maximum-or-null",
+    "topicId": "arrays-1d-lists",
+    "title": "Maximum or Null",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-or-null": {
+    "id": "learn:arrays-1d-lists:minimum-or-null",
+    "bankId": "T08-Q04",
+    "slug": "minimum-or-null",
+    "topicId": "arrays-1d-lists",
+    "title": "Minimum or Null",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "reverse-the-array": {
+    "id": "learn:arrays-1d-lists:reverse-the-array",
+    "bankId": "T08-Q05",
+    "slug": "reverse-the-array",
+    "topicId": "arrays-1d-lists",
+    "title": "Reverse the Array",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[5,1,4,1,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[2,-3,-1,-4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[1,3,3,3,2,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[10,9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[5,6,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[0,-5,5,-5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[9,0,-9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,3,8,2,8,1,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "prefix-sum-array": {
+    "id": "learn:arrays-1d-lists:prefix-sum-array",
+    "bankId": "T08-Q06",
+    "slug": "prefix-sum-array",
+    "topicId": "arrays-1d-lists",
+    "title": "Prefix Sum Array",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,4,8,9,14]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-4,-5,-8,-6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[2,4,7,10,13,14]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[10,19,27,34,40,45]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[5,0,5,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[1,3,6,10,15,21]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[-9,-9,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,8,12,16]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,9,17,19,27,30,38]",
+        "isHidden": true
+      }
+    ]
+  },
+  "suffix-sum-array": {
+    "id": "learn:arrays-1d-lists:suffix-sum-array",
+    "bankId": "T08-Q07",
+    "slug": "suffix-sum-array",
+    "topicId": "arrays-1d-lists",
+    "title": "Suffix Sum Array",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[14,11,10,6,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-6,-2,-1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[14,12,10,7,4,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[55,54,52,49,45,40,34,27,19,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[45,35,26,18,11,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[0,-5,0,-5,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[21,20,18,15,11,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[0,9,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[16,12,8,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[38,30,29,21,19,11,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "left-rotate-by-k": {
+    "id": "learn:arrays-1d-lists:left-rotate-by-k",
+    "bankId": "T08-Q08",
+    "slug": "left-rotate-by-k",
+    "topicId": "arrays-1d-lists",
+    "title": "Left Rotate by K",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,1,5,3,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-3,2,-4,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[3,3,1,2,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[6,7,8,9,10,1,2,3,4,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[6,5,10,9,8,7]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[5,-5,0,5,-5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[4,5,6,1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[0,9,-9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[2,8,3,8,8,1,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "right-rotate-by-k": {
+    "id": "learn:arrays-1d-lists:right-rotate-by-k",
+    "bankId": "T08-Q09",
+    "slug": "right-rotate-by-k",
+    "topicId": "arrays-1d-lists",
+    "title": "Right Rotate by K",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[1,5,3,1,4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-3,2,-4,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[3,3,1,2,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[6,7,8,9,10,1,2,3,4,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[8,7,6,5,10,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[-5,0,5,-5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[4,5,6,1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[9,-9,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,3,8,8,1,8,2]",
+        "isHidden": true
+      }
+    ]
+  },
+  "second-distinct-largest": {
+    "id": "learn:arrays-1d-lists:second-distinct-largest",
+    "bankId": "T08-Q10",
+    "slug": "second-distinct-largest",
+    "topicId": "arrays-1d-lists",
+    "title": "Second Distinct Largest",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "adjacent-pair-sums": {
+    "id": "learn:arrays-1d-lists:adjacent-pair-sums",
+    "bankId": "T08-Q11",
+    "slug": "adjacent-pair-sums",
+    "topicId": "arrays-1d-lists",
+    "title": "Adjacent Pair Sums",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,5,5,6]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-5,-4,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[4,5,6,6,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[3,5,7,9,11,13,15,17,19]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[19,17,15,13,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[0,0,0,-5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[3,5,7,9,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[-9,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[8,8,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[9,9,10,10,11,11]",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-target-occurrences": {
+    "id": "learn:arrays-1d-lists:count-target-occurrences",
+    "bankId": "T08-Q12",
+    "slug": "count-target-occurrences",
+    "topicId": "arrays-1d-lists",
+    "title": "Count Target Occurrences",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "array-palindrome-check": {
+    "id": "learn:arrays-1d-lists:array-palindrome-check",
+    "bankId": "T08-Q13",
+    "slug": "array-palindrome-check",
+    "topicId": "arrays-1d-lists",
+    "title": "Array Palindrome Check",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "replace-values-below-target": {
+    "id": "learn:arrays-1d-lists:replace-values-below-target",
+    "bankId": "T08-Q14",
+    "slug": "replace-values-below-target",
+    "topicId": "arrays-1d-lists",
+    "title": "Replace Values Below Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,4,4,4,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-1,-1,-1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[3,3,3,3,3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[7,7,7,7,7,7,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[10,9,8,7,6,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[5,5,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[4,4,4,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[9,9,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,8,8,8,8,8,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "indices-above-target": {
+    "id": "learn:arrays-1d-lists:indices-above-target",
+    "bankId": "T08-Q15",
+    "slug": "indices-above-target",
+    "topicId": "arrays-1d-lists",
+    "title": "Indices Above Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[7,8,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[0,1,2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[4,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      }
+    ]
+  },
+  "running-maximum-array": {
+    "id": "learn:arrays-1d-lists:running-maximum-array",
+    "bankId": "T08-Q16",
+    "slug": "running-maximum-array",
+    "topicId": "arrays-1d-lists",
+    "title": "Running Maximum Array",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,3,4,4,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-4,-1,-1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[2,2,3,3,3,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[1,2,3,4,5,6,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[10,10,10,10,10,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[5,5,5,5,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[1,2,3,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[-9,0,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4,4,4,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,8,8,8,8,8,8]",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-k-elements-sum": {
+    "id": "learn:arrays-1d-lists:first-k-elements-sum",
+    "bankId": "T08-Q17",
+    "slug": "first-k-elements-sum",
+    "topicId": "arrays-1d-lists",
+    "title": "First K Elements Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "34",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "17",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-k-window-sum": {
+    "id": "learn:arrays-1d-lists:maximum-k-window-sum",
+    "bankId": "T08-Q18",
+    "slug": "maximum-k-window-sum",
+    "topicId": "arrays-1d-lists",
+    "title": "Maximum K Window Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "34",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "19",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-positive-streak": {
+    "id": "learn:arrays-1d-lists:longest-positive-streak",
+    "bankId": "T08-Q19",
+    "slug": "longest-positive-streak",
+    "topicId": "arrays-1d-lists",
+    "title": "Longest Positive Streak",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  },
+  "remove-adjacent-duplicates": {
+    "id": "learn:arrays-1d-lists:remove-adjacent-duplicates",
+    "bankId": "T08-Q20",
+    "slug": "remove-adjacent-duplicates",
+    "topicId": "arrays-1d-lists",
+    "title": "Remove Adjacent Duplicates",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,1,4,1,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[-4,-1,-3,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"k\":3,\"target\":3}",
+        "expectedOutput": "[2,3,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"k\":5,\"target\":7}",
+        "expectedOutput": "[1,2,3,4,5,6,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"k\":4,\"target\":6}",
+        "expectedOutput": "[10,9,8,7,6,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "[5,-5,5,-5,0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"k\":3,\"target\":4}",
+        "expectedOutput": "[1,2,3,4,5,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"k\":1,\"target\":9}",
+        "expectedOutput": "[-9,0,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"k\":4,\"target\":4}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"k\":3,\"target\":8}",
+        "expectedOutput": "[8,1,8,2,8,3,8]",
+        "isHidden": true
+      }
+    ]
   }
 }

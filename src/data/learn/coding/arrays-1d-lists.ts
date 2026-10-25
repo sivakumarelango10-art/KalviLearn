@@ -9,7 +9,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Indices / Raw #1",
     "order": 1,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -52,7 +51,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-indices-raw-2",
@@ -62,7 +63,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Indices / Raw #2",
     "order": 2,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -105,7 +105,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-indices-raw-3",
@@ -115,7 +117,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Indices / Raw #3",
     "order": 3,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -158,7 +159,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-indices-raw-4",
@@ -168,7 +171,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Indices / Raw #4",
     "order": 4,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -211,7 +213,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-indices-raw-5",
@@ -221,7 +225,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Indices / Raw #5",
     "order": 5,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -264,7 +267,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-indices-absolute-6",
@@ -274,7 +279,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Indices / Absolute #6",
     "order": 6,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -317,7 +321,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-indices-absolute-7",
@@ -327,7 +333,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Indices / Absolute #7",
     "order": 7,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -370,7 +375,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-indices-absolute-8",
@@ -380,7 +387,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Indices / Absolute #8",
     "order": 8,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -423,7 +429,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-indices-absolute-9",
@@ -433,7 +441,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Indices / Absolute #9",
     "order": 9,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -476,7 +483,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-indices-absolute-10",
@@ -486,7 +495,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Indices / Absolute #10",
     "order": 10,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -529,7 +537,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-indices-square-11",
@@ -539,7 +549,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Indices / Square #11",
     "order": 11,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -582,7 +591,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-indices-square-12",
@@ -592,7 +603,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Indices / Square #12",
     "order": 12,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -635,7 +645,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-indices-square-13",
@@ -645,7 +657,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Indices / Square #13",
     "order": 13,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -688,7 +699,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-indices-square-14",
@@ -698,7 +711,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Indices / Square #14",
     "order": 14,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -741,7 +753,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-indices-square-15",
@@ -751,7 +765,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Indices / Square #15",
     "order": 15,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -794,7 +807,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-indices-value-plus-index-16",
@@ -804,7 +819,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Indices / Value Plus Index #16",
     "order": 16,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -847,7 +861,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-indices-value-plus-index-17",
@@ -857,7 +873,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Indices / Value Plus Index #17",
     "order": 17,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -900,7 +915,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-indices-value-plus-index-18",
@@ -910,7 +927,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Indices / Value Plus Index #18",
     "order": 18,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -953,7 +969,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-indices-value-plus-index-19",
@@ -963,7 +981,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Indices / Value Plus Index #19",
     "order": 19,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -1006,7 +1023,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-indices-value-plus-index-20",
@@ -1016,7 +1035,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Indices / Value Plus Index #20",
     "order": 20,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -1059,7 +1077,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-indices-value-minus-index-21",
@@ -1069,7 +1089,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Indices / Value Minus Index #21",
     "order": 21,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -1112,7 +1131,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-indices-value-minus-index-22",
@@ -1122,7 +1143,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Indices / Value Minus Index #22",
     "order": 22,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -1165,7 +1185,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-indices-value-minus-index-23",
@@ -1175,7 +1197,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Indices / Value Minus Index #23",
     "order": 23,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -1218,7 +1239,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-indices-value-minus-index-24",
@@ -1228,7 +1251,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Indices / Value Minus Index #24",
     "order": 24,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -1271,7 +1293,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-indices-value-minus-index-25",
@@ -1281,7 +1305,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Indices / Value Minus Index #25",
     "order": 25,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even indices**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -1324,7 +1347,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-indices-raw-26",
@@ -1334,7 +1359,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Indices / Raw #26",
     "order": 26,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -1377,7 +1401,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-indices-raw-27",
@@ -1387,7 +1413,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Indices / Raw #27",
     "order": 27,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -1430,7 +1455,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-indices-raw-28",
@@ -1440,7 +1467,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Indices / Raw #28",
     "order": 28,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -1483,7 +1509,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-indices-raw-29",
@@ -1493,7 +1521,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Indices / Raw #29",
     "order": 29,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -1536,7 +1563,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-indices-raw-30",
@@ -1546,7 +1575,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Indices / Raw #30",
     "order": 30,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -1589,7 +1617,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-indices-absolute-31",
@@ -1599,7 +1629,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Indices / Absolute #31",
     "order": 31,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -1642,7 +1671,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-indices-absolute-32",
@@ -1652,7 +1683,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Indices / Absolute #32",
     "order": 32,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -1695,7 +1725,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-indices-absolute-33",
@@ -1705,7 +1737,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Indices / Absolute #33",
     "order": 33,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -1748,7 +1779,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-indices-absolute-34",
@@ -1758,7 +1791,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Indices / Absolute #34",
     "order": 34,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -1801,7 +1833,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-indices-absolute-35",
@@ -1811,7 +1845,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Indices / Absolute #35",
     "order": 35,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -1854,7 +1887,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-indices-square-36",
@@ -1864,7 +1899,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Indices / Square #36",
     "order": 36,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -1907,7 +1941,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-indices-square-37",
@@ -1917,7 +1953,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Indices / Square #37",
     "order": 37,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -1960,7 +1995,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-indices-square-38",
@@ -1970,7 +2007,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Indices / Square #38",
     "order": 38,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -2013,7 +2049,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-indices-square-39",
@@ -2023,7 +2061,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Indices / Square #39",
     "order": 39,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -2066,7 +2103,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-indices-square-40",
@@ -2076,7 +2115,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Indices / Square #40",
     "order": 40,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -2119,7 +2157,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-indices-value-plus-index-41",
@@ -2129,7 +2169,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Indices / Value Plus Index #41",
     "order": 41,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -2172,7 +2211,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-indices-value-plus-index-42",
@@ -2182,7 +2223,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Indices / Value Plus Index #42",
     "order": 42,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -2225,7 +2265,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-indices-value-plus-index-43",
@@ -2235,7 +2277,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Indices / Value Plus Index #43",
     "order": 43,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -2278,7 +2319,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-indices-value-plus-index-44",
@@ -2288,7 +2331,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Indices / Value Plus Index #44",
     "order": 44,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -2331,7 +2373,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-indices-value-plus-index-45",
@@ -2341,7 +2385,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Indices / Value Plus Index #45",
     "order": 45,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -2384,7 +2427,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-indices-value-minus-index-46",
@@ -2394,7 +2439,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Indices / Value Minus Index #46",
     "order": 46,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -2437,7 +2481,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-indices-value-minus-index-47",
@@ -2447,7 +2493,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Indices / Value Minus Index #47",
     "order": 47,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -2490,7 +2535,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-indices-value-minus-index-48",
@@ -2500,7 +2547,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Indices / Value Minus Index #48",
     "order": 48,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -2543,7 +2589,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-indices-value-minus-index-49",
@@ -2553,7 +2601,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Indices / Value Minus Index #49",
     "order": 49,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -2596,7 +2643,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-indices-value-minus-index-50",
@@ -2606,7 +2655,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Indices / Value Minus Index #50",
     "order": 50,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd indices**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -2649,7 +2697,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-positive-values-raw-51",
@@ -2659,7 +2709,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Positive Values / Raw #51",
     "order": 51,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -2702,7 +2751,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-positive-values-raw-52",
@@ -2712,7 +2763,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Positive Values / Raw #52",
     "order": 52,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -2755,7 +2805,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-positive-values-raw-53",
@@ -2765,7 +2817,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Positive Values / Raw #53",
     "order": 53,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -2808,7 +2859,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-positive-values-raw-54",
@@ -2818,7 +2871,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Positive Values / Raw #54",
     "order": 54,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -2861,7 +2913,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-positive-values-raw-55",
@@ -2871,7 +2925,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Positive Values / Raw #55",
     "order": 55,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -2914,7 +2967,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-positive-values-absolute-56",
@@ -2924,7 +2979,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Positive Values / Absolute #56",
     "order": 56,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -2967,7 +3021,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-positive-values-absolute-57",
@@ -2977,7 +3033,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Positive Values / Absolute #57",
     "order": 57,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -3020,7 +3075,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-positive-values-absolute-58",
@@ -3030,7 +3087,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Positive Values / Absolute #58",
     "order": 58,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -3073,7 +3129,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-positive-values-absolute-59",
@@ -3083,7 +3141,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Positive Values / Absolute #59",
     "order": 59,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -3126,7 +3183,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-positive-values-absolute-60",
@@ -3136,7 +3195,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Positive Values / Absolute #60",
     "order": 60,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -3179,7 +3237,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-positive-values-square-61",
@@ -3189,7 +3249,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Positive Values / Square #61",
     "order": 61,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -3232,7 +3291,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-positive-values-square-62",
@@ -3242,7 +3303,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Positive Values / Square #62",
     "order": 62,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -3285,7 +3345,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-positive-values-square-63",
@@ -3295,7 +3357,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Positive Values / Square #63",
     "order": 63,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -3338,7 +3399,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-positive-values-square-64",
@@ -3348,7 +3411,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Positive Values / Square #64",
     "order": 64,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -3391,7 +3453,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-positive-values-square-65",
@@ -3401,7 +3465,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Positive Values / Square #65",
     "order": 65,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -3444,7 +3507,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-positive-values-value-plus-index-66",
@@ -3454,7 +3519,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Positive Values / Value Plus Index #66",
     "order": 66,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -3497,7 +3561,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-positive-values-value-plus-index-67",
@@ -3507,7 +3573,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Positive Values / Value Plus Index #67",
     "order": 67,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -3550,7 +3615,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-positive-values-value-plus-index-68",
@@ -3560,7 +3627,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Positive Values / Value Plus Index #68",
     "order": 68,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -3603,7 +3669,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-positive-values-value-plus-index-69",
@@ -3613,7 +3681,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Positive Values / Value Plus Index #69",
     "order": 69,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -3656,7 +3723,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-positive-values-value-plus-index-70",
@@ -3666,7 +3735,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Positive Values / Value Plus Index #70",
     "order": 70,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -3709,7 +3777,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-positive-values-value-minus-index-71",
@@ -3719,7 +3789,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Positive Values / Value Minus Index #71",
     "order": 71,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -3762,7 +3831,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-positive-values-value-minus-index-72",
@@ -3772,7 +3843,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Positive Values / Value Minus Index #72",
     "order": 72,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -3815,7 +3885,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-positive-values-value-minus-index-73",
@@ -3825,7 +3897,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Positive Values / Value Minus Index #73",
     "order": 73,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -3868,7 +3939,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-positive-values-value-minus-index-74",
@@ -3878,7 +3951,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Positive Values / Value Minus Index #74",
     "order": 74,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -3921,7 +3993,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-positive-values-value-minus-index-75",
@@ -3931,7 +4005,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Positive Values / Value Minus Index #75",
     "order": 75,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **positive values**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -3974,7 +4047,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-negative-values-raw-76",
@@ -3984,7 +4059,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Negative Values / Raw #76",
     "order": 76,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -4027,7 +4101,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-negative-values-raw-77",
@@ -4037,7 +4113,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Negative Values / Raw #77",
     "order": 77,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -4080,7 +4155,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-negative-values-raw-78",
@@ -4090,7 +4167,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Negative Values / Raw #78",
     "order": 78,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -4133,7 +4209,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-negative-values-raw-79",
@@ -4143,7 +4221,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Negative Values / Raw #79",
     "order": 79,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -4186,7 +4263,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-negative-values-raw-80",
@@ -4196,7 +4275,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Negative Values / Raw #80",
     "order": 80,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -4239,7 +4317,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-negative-values-absolute-81",
@@ -4249,7 +4329,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Negative Values / Absolute #81",
     "order": 81,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -4292,7 +4371,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-negative-values-absolute-82",
@@ -4302,7 +4383,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Negative Values / Absolute #82",
     "order": 82,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -4345,7 +4425,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-negative-values-absolute-83",
@@ -4355,7 +4437,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Negative Values / Absolute #83",
     "order": 83,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -4398,7 +4479,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-negative-values-absolute-84",
@@ -4408,7 +4491,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Negative Values / Absolute #84",
     "order": 84,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -4451,7 +4533,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-negative-values-absolute-85",
@@ -4461,7 +4545,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Negative Values / Absolute #85",
     "order": 85,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -4504,7 +4587,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-negative-values-square-86",
@@ -4514,7 +4599,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Negative Values / Square #86",
     "order": 86,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -4557,7 +4641,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-negative-values-square-87",
@@ -4567,7 +4653,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Negative Values / Square #87",
     "order": 87,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -4610,7 +4695,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-negative-values-square-88",
@@ -4620,7 +4707,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Negative Values / Square #88",
     "order": 88,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -4663,7 +4749,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-negative-values-square-89",
@@ -4673,7 +4761,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Negative Values / Square #89",
     "order": 89,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -4716,7 +4803,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-negative-values-square-90",
@@ -4726,7 +4815,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Negative Values / Square #90",
     "order": 90,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -4769,7 +4857,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-negative-values-value-plus-index-91",
@@ -4779,7 +4869,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Negative Values / Value Plus Index #91",
     "order": 91,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -4822,7 +4911,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-negative-values-value-plus-index-92",
@@ -4832,7 +4923,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Negative Values / Value Plus Index #92",
     "order": 92,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -4875,7 +4965,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-negative-values-value-plus-index-93",
@@ -4885,7 +4977,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Negative Values / Value Plus Index #93",
     "order": 93,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -4928,7 +5019,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-negative-values-value-plus-index-94",
@@ -4938,7 +5031,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Negative Values / Value Plus Index #94",
     "order": 94,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -4981,7 +5073,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-negative-values-value-plus-index-95",
@@ -4991,7 +5085,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Negative Values / Value Plus Index #95",
     "order": 95,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -5034,7 +5127,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-negative-values-value-minus-index-96",
@@ -5044,7 +5139,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Negative Values / Value Minus Index #96",
     "order": 96,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -5087,7 +5181,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-negative-values-value-minus-index-97",
@@ -5097,7 +5193,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Negative Values / Value Minus Index #97",
     "order": 97,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -5140,7 +5235,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-negative-values-value-minus-index-98",
@@ -5150,7 +5247,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Negative Values / Value Minus Index #98",
     "order": 98,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -5193,7 +5289,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-negative-values-value-minus-index-99",
@@ -5203,7 +5301,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Negative Values / Value Minus Index #99",
     "order": 99,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -5246,7 +5343,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-negative-values-value-minus-index-100",
@@ -5256,7 +5355,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Negative Values / Value Minus Index #100",
     "order": 100,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **negative values**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -5299,7 +5397,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-values-raw-101",
@@ -5309,7 +5409,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Values / Raw #101",
     "order": 101,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -5352,7 +5451,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-values-raw-102",
@@ -5362,7 +5463,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Values / Raw #102",
     "order": 102,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -5405,7 +5505,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-values-raw-103",
@@ -5415,7 +5517,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Values / Raw #103",
     "order": 103,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -5458,7 +5559,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-values-raw-104",
@@ -5468,7 +5571,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Values / Raw #104",
     "order": 104,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -5511,7 +5613,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-values-raw-105",
@@ -5521,7 +5625,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Values / Raw #105",
     "order": 105,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -5564,7 +5667,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-values-absolute-106",
@@ -5574,7 +5679,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Values / Absolute #106",
     "order": 106,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -5617,7 +5721,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-values-absolute-107",
@@ -5627,7 +5733,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Values / Absolute #107",
     "order": 107,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -5670,7 +5775,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-values-absolute-108",
@@ -5680,7 +5787,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Values / Absolute #108",
     "order": 108,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -5723,7 +5829,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-values-absolute-109",
@@ -5733,7 +5841,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Values / Absolute #109",
     "order": 109,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -5776,7 +5883,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-values-absolute-110",
@@ -5786,7 +5895,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Values / Absolute #110",
     "order": 110,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -5829,7 +5937,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-values-square-111",
@@ -5839,7 +5949,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Values / Square #111",
     "order": 111,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -5882,7 +5991,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-values-square-112",
@@ -5892,7 +6003,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Values / Square #112",
     "order": 112,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -5935,7 +6045,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-values-square-113",
@@ -5945,7 +6057,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Values / Square #113",
     "order": 113,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -5988,7 +6099,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-values-square-114",
@@ -5998,7 +6111,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Values / Square #114",
     "order": 114,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -6041,7 +6153,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-values-square-115",
@@ -6051,7 +6165,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Values / Square #115",
     "order": 115,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -6094,7 +6207,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-values-value-plus-index-116",
@@ -6104,7 +6219,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Values / Value Plus Index #116",
     "order": 116,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -6147,7 +6261,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-values-value-plus-index-117",
@@ -6157,7 +6273,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Values / Value Plus Index #117",
     "order": 117,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -6200,7 +6315,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-values-value-plus-index-118",
@@ -6210,7 +6327,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Values / Value Plus Index #118",
     "order": 118,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -6253,7 +6369,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-values-value-plus-index-119",
@@ -6263,7 +6381,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Values / Value Plus Index #119",
     "order": 119,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -6306,7 +6423,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-values-value-plus-index-120",
@@ -6316,7 +6435,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Values / Value Plus Index #120",
     "order": 120,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -6359,7 +6477,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-even-values-value-minus-index-121",
@@ -6369,7 +6489,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Even Values / Value Minus Index #121",
     "order": 121,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -6412,7 +6531,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-even-values-value-minus-index-122",
@@ -6422,7 +6543,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Even Values / Value Minus Index #122",
     "order": 122,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -6465,7 +6585,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-even-values-value-minus-index-123",
@@ -6475,7 +6597,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Even Values / Value Minus Index #123",
     "order": 123,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -6518,7 +6639,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-even-values-value-minus-index-124",
@@ -6528,7 +6651,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Even Values / Value Minus Index #124",
     "order": 124,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -6571,7 +6693,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-even-values-value-minus-index-125",
@@ -6581,7 +6705,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Even Values / Value Minus Index #125",
     "order": 125,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **even values**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -6624,7 +6747,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-values-raw-126",
@@ -6634,7 +6759,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Values / Raw #126",
     "order": 126,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -6677,7 +6801,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-values-raw-127",
@@ -6687,7 +6813,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Values / Raw #127",
     "order": 127,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -6730,7 +6855,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-values-raw-128",
@@ -6740,7 +6867,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Values / Raw #128",
     "order": 128,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -6783,7 +6909,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-values-raw-129",
@@ -6793,7 +6921,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Values / Raw #129",
     "order": 129,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -6836,7 +6963,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-values-raw-130",
@@ -6846,7 +6975,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Values / Raw #130",
     "order": 130,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -6889,7 +7017,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-values-absolute-131",
@@ -6899,7 +7029,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Values / Absolute #131",
     "order": 131,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -6942,7 +7071,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-values-absolute-132",
@@ -6952,7 +7083,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Values / Absolute #132",
     "order": 132,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -6995,7 +7125,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-values-absolute-133",
@@ -7005,7 +7137,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Values / Absolute #133",
     "order": 133,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -7048,7 +7179,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-values-absolute-134",
@@ -7058,7 +7191,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Values / Absolute #134",
     "order": 134,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -7101,7 +7233,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-values-absolute-135",
@@ -7111,7 +7245,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Values / Absolute #135",
     "order": 135,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -7154,7 +7287,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-values-square-136",
@@ -7164,7 +7299,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Values / Square #136",
     "order": 136,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -7207,7 +7341,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-values-square-137",
@@ -7217,7 +7353,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Values / Square #137",
     "order": 137,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -7260,7 +7395,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-values-square-138",
@@ -7270,7 +7407,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Values / Square #138",
     "order": 138,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -7313,7 +7449,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-values-square-139",
@@ -7323,7 +7461,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Values / Square #139",
     "order": 139,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -7366,7 +7503,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-values-square-140",
@@ -7376,7 +7515,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Values / Square #140",
     "order": 140,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -7419,7 +7557,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-values-value-plus-index-141",
@@ -7429,7 +7569,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Values / Value Plus Index #141",
     "order": 141,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -7472,7 +7611,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-values-value-plus-index-142",
@@ -7482,7 +7623,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Values / Value Plus Index #142",
     "order": 142,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -7525,7 +7665,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-values-value-plus-index-143",
@@ -7535,7 +7677,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Values / Value Plus Index #143",
     "order": 143,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -7578,7 +7719,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-values-value-plus-index-144",
@@ -7588,7 +7731,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Values / Value Plus Index #144",
     "order": 144,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -7631,7 +7773,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-values-value-plus-index-145",
@@ -7641,7 +7785,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Values / Value Plus Index #145",
     "order": 145,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -7684,7 +7827,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-odd-values-value-minus-index-146",
@@ -7694,7 +7839,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Odd Values / Value Minus Index #146",
     "order": 146,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -7737,7 +7881,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-odd-values-value-minus-index-147",
@@ -7747,7 +7893,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Odd Values / Value Minus Index #147",
     "order": 147,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -7790,7 +7935,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-odd-values-value-minus-index-148",
@@ -7800,7 +7947,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Odd Values / Value Minus Index #148",
     "order": 148,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -7843,7 +7989,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-odd-values-value-minus-index-149",
@@ -7853,7 +8001,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Odd Values / Value Minus Index #149",
     "order": 149,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -7896,7 +8043,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-odd-values-value-minus-index-150",
@@ -7906,7 +8055,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Odd Values / Value Minus Index #150",
     "order": 150,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **odd values**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -7949,7 +8097,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-greater-than-first-raw-151",
@@ -7959,7 +8109,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Greater Than First / Raw #151",
     "order": 151,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -8002,7 +8151,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-greater-than-first-raw-152",
@@ -8012,7 +8163,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Greater Than First / Raw #152",
     "order": 152,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -8055,7 +8205,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-greater-than-first-raw-153",
@@ -8065,7 +8217,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Greater Than First / Raw #153",
     "order": 153,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -8108,7 +8259,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-greater-than-first-raw-154",
@@ -8118,7 +8271,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Greater Than First / Raw #154",
     "order": 154,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -8161,7 +8313,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-greater-than-first-raw-155",
@@ -8171,7 +8325,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Greater Than First / Raw #155",
     "order": 155,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -8214,7 +8367,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-greater-than-first-absolute-156",
@@ -8224,7 +8379,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Greater Than First / Absolute #156",
     "order": 156,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -8267,7 +8421,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-greater-than-first-absolute-157",
@@ -8277,7 +8433,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Greater Than First / Absolute #157",
     "order": 157,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -8320,7 +8475,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-greater-than-first-absolute-158",
@@ -8330,7 +8487,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Greater Than First / Absolute #158",
     "order": 158,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -8373,7 +8529,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-greater-than-first-absolute-159",
@@ -8383,7 +8541,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Greater Than First / Absolute #159",
     "order": 159,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -8426,7 +8583,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-greater-than-first-absolute-160",
@@ -8436,7 +8595,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Greater Than First / Absolute #160",
     "order": 160,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -8479,7 +8637,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-greater-than-first-square-161",
@@ -8489,7 +8649,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Greater Than First / Square #161",
     "order": 161,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -8532,7 +8691,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-greater-than-first-square-162",
@@ -8542,7 +8703,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Greater Than First / Square #162",
     "order": 162,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -8585,7 +8745,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-greater-than-first-square-163",
@@ -8595,7 +8757,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Greater Than First / Square #163",
     "order": 163,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -8638,7 +8799,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-greater-than-first-square-164",
@@ -8648,7 +8811,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Greater Than First / Square #164",
     "order": 164,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -8691,7 +8853,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-greater-than-first-square-165",
@@ -8701,7 +8865,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Greater Than First / Square #165",
     "order": 165,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -8744,7 +8907,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-greater-than-first-value-plus-index-166",
@@ -8754,7 +8919,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Greater Than First / Value Plus Index #166",
     "order": 166,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -8797,7 +8961,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-greater-than-first-value-plus-index-167",
@@ -8807,7 +8973,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Greater Than First / Value Plus Index #167",
     "order": 167,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -8850,7 +9015,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-greater-than-first-value-plus-index-168",
@@ -8860,7 +9027,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Greater Than First / Value Plus Index #168",
     "order": 168,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -8903,7 +9069,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-greater-than-first-value-plus-index-169",
@@ -8913,7 +9081,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Greater Than First / Value Plus Index #169",
     "order": 169,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -8956,7 +9123,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-greater-than-first-value-plus-index-170",
@@ -8966,7 +9135,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Greater Than First / Value Plus Index #170",
     "order": 170,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -9009,7 +9177,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-greater-than-first-value-minus-index-171",
@@ -9019,7 +9189,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Greater Than First / Value Minus Index #171",
     "order": 171,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -9062,7 +9231,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-greater-than-first-value-minus-index-172",
@@ -9072,7 +9243,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Greater Than First / Value Minus Index #172",
     "order": 172,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -9115,7 +9285,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-greater-than-first-value-minus-index-173",
@@ -9125,7 +9297,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Greater Than First / Value Minus Index #173",
     "order": 173,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -9168,7 +9339,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-greater-than-first-value-minus-index-174",
@@ -9178,7 +9351,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Greater Than First / Value Minus Index #174",
     "order": 174,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -9221,7 +9393,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-greater-than-first-value-minus-index-175",
@@ -9231,7 +9405,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Greater Than First / Value Minus Index #175",
     "order": 175,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values greater than first**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -9274,7 +9447,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-less-than-last-raw-176",
@@ -9284,7 +9459,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Less Than Last / Raw #176",
     "order": 176,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -9327,7 +9501,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-less-than-last-raw-177",
@@ -9337,7 +9513,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Less Than Last / Raw #177",
     "order": 177,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -9380,7 +9555,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-less-than-last-raw-178",
@@ -9390,7 +9567,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Less Than Last / Raw #178",
     "order": 178,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -9433,7 +9609,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-less-than-last-raw-179",
@@ -9443,7 +9621,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Less Than Last / Raw #179",
     "order": 179,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -9486,7 +9663,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-less-than-last-raw-180",
@@ -9496,7 +9675,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Less Than Last / Raw #180",
     "order": 180,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -9539,7 +9717,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-less-than-last-absolute-181",
@@ -9549,7 +9729,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Less Than Last / Absolute #181",
     "order": 181,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **absolute**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -9592,7 +9771,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-less-than-last-absolute-182",
@@ -9602,7 +9783,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Less Than Last / Absolute #182",
     "order": 182,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **absolute**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -9645,7 +9825,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-less-than-last-absolute-183",
@@ -9655,7 +9837,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Less Than Last / Absolute #183",
     "order": 183,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **absolute**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -9698,7 +9879,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-less-than-last-absolute-184",
@@ -9708,7 +9891,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Less Than Last / Absolute #184",
     "order": 184,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **absolute**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -9751,7 +9933,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-less-than-last-absolute-185",
@@ -9761,7 +9945,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Less Than Last / Absolute #185",
     "order": 185,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **absolute**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -9804,7 +9987,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-less-than-last-square-186",
@@ -9814,7 +9999,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Less Than Last / Square #186",
     "order": 186,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **square**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -9857,7 +10041,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-less-than-last-square-187",
@@ -9867,7 +10053,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Less Than Last / Square #187",
     "order": 187,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **square**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -9910,7 +10095,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-less-than-last-square-188",
@@ -9920,7 +10107,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Less Than Last / Square #188",
     "order": 188,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **square**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -9963,7 +10149,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-less-than-last-square-189",
@@ -9973,7 +10161,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Less Than Last / Square #189",
     "order": 189,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **square**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -10016,7 +10203,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-less-than-last-square-190",
@@ -10026,7 +10215,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Less Than Last / Square #190",
     "order": 190,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **square**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -10069,7 +10257,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-less-than-last-value-plus-index-191",
@@ -10079,7 +10269,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Less Than Last / Value Plus Index #191",
     "order": 191,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value plus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -10122,7 +10311,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-less-than-last-value-plus-index-192",
@@ -10132,7 +10323,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Less Than Last / Value Plus Index #192",
     "order": 192,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value plus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -10175,7 +10365,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-less-than-last-value-plus-index-193",
@@ -10185,7 +10377,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Less Than Last / Value Plus Index #193",
     "order": 193,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value plus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -10228,7 +10419,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-less-than-last-value-plus-index-194",
@@ -10238,7 +10431,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Less Than Last / Value Plus Index #194",
     "order": 194,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value plus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -10281,7 +10473,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-less-than-last-value-plus-index-195",
@@ -10291,7 +10485,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Less Than Last / Value Plus Index #195",
     "order": 195,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value plus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -10334,7 +10527,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-values-less-than-last-value-minus-index-196",
@@ -10344,7 +10539,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Values Less Than Last / Value Minus Index #196",
     "order": 196,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value minus index**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -10387,7 +10581,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-values-less-than-last-value-minus-index-197",
@@ -10397,7 +10593,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Values Less Than Last / Value Minus Index #197",
     "order": 197,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value minus index**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -10440,7 +10635,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-values-less-than-last-value-minus-index-198",
@@ -10450,7 +10647,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Values Less Than Last / Value Minus Index #198",
     "order": 198,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value minus index**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -10493,7 +10689,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-values-less-than-last-value-minus-index-199",
@@ -10503,7 +10701,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Values Less Than Last / Value Minus Index #199",
     "order": 199,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value minus index**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -10546,7 +10743,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-values-less-than-last-value-minus-index-200",
@@ -10556,7 +10755,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Values Less Than Last / Value Minus Index #200",
     "order": 200,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **values less than last**. Transform each selected value using **value minus index**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -10599,7 +10797,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-sum-indices-divisible-by-3-raw-201",
@@ -10609,7 +10809,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Sum — Indices Divisible By 3 / Raw #201",
     "order": 201,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **indices divisible by 3**. Transform each selected value using **raw**. Print the **sum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required sum.",
@@ -10652,7 +10851,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-count-indices-divisible-by-3-raw-202",
@@ -10662,7 +10863,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Count — Indices Divisible By 3 / Raw #202",
     "order": 202,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **indices divisible by 3**. Transform each selected value using **raw**. Print the **count** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required count.",
@@ -10705,7 +10905,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-maximum-indices-divisible-by-3-raw-203",
@@ -10715,7 +10917,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Maximum — Indices Divisible By 3 / Raw #203",
     "order": 203,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **indices divisible by 3**. Transform each selected value using **raw**. Print the **maximum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required maximum.",
@@ -10758,7 +10959,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-minimum-indices-divisible-by-3-raw-204",
@@ -10768,7 +10971,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Minimum — Indices Divisible By 3 / Raw #204",
     "order": 204,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **indices divisible by 3**. Transform each selected value using **raw**. Print the **minimum** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required minimum.",
@@ -10811,7 +11013,9 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
   },
   {
     "id": "learn:arrays-1d-lists:array-xor-indices-divisible-by-3-raw-205",
@@ -10821,7 +11025,6 @@ export const questions: LearnQuestion[] = [
     "topicTitle": "1D Arrays / Lists",
     "title": "Array Xor — Indices Divisible By 3 / Raw #205",
     "order": 205,
-    "difficulty": "Easy",
     "problemStatement": "Select array positions matching **indices divisible by 3**. Transform each selected value using **raw**. Print the **xor** of the transformed values. For maximum/minimum/XOR on an empty selection, output 0.",
     "inputFormat": "The first line contains integer `n`. The second line contains `n` integers. Indices are zero-based.",
     "outputFormat": "Print one integer: the required xor.",
@@ -10864,7 +11067,1249 @@ export const questions: LearnQuestion[] = [
       "visibleCount": 3,
       "hiddenCount": 7,
       "totalCount": 10
-    }
+    },
+    "isPythonOnly": false,
+    "inputMode": "line"
+  },
+  {
+    "id": "learn:arrays-1d-lists:sum-of-elements",
+    "bankId": "T08-Q01",
+    "slug": "sum-of-elements",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Sum of Elements",
+    "order": 206,
+    "difficulty": "Easy",
+    "problemStatement": "Return the sum of every element in nums.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "14",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the sum of every element in nums. Therefore the expected JSON output is 14."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "0",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the sum of every element in nums. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "7",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the sum of every element in nums. Therefore the expected JSON output is 7."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "14"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:count-negative-entries",
+    "bankId": "T08-Q02",
+    "slug": "count-negative-entries",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Count Negative Entries",
+    "order": 207,
+    "difficulty": "Easy",
+    "problemStatement": "Return the count of strictly negative values in nums.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "0",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the count of strictly negative values in nums. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "output": "3",
+        "explanation": "Inspect 4 values [-4,-1,-3,2] with k=2 and target=-1. Return the count of strictly negative values in nums. Therefore the expected JSON output is 3."
+      },
+      {
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "output": "2",
+        "explanation": "Inspect 5 values [5,-5,5,-5,0] with k=2 and target=5. Return the count of strictly negative values in nums. Therefore the expected JSON output is 2."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "3"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"k\":2,\"target\":5}",
+        "expectedOutput": "2"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:maximum-or-null",
+    "bankId": "T08-Q03",
+    "slug": "maximum-or-null",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Maximum or Null",
+    "order": 208,
+    "difficulty": "Easy",
+    "problemStatement": "Return the maximum element; return null for an empty array.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "5",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the maximum element; return null for an empty array. Therefore the expected JSON output is 5."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "null",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the maximum element; return null for an empty array. Therefore the expected JSON output is null."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "7",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the maximum element; return null for an empty array. Therefore the expected JSON output is 7."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "5"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:minimum-or-null",
+    "bankId": "T08-Q04",
+    "slug": "minimum-or-null",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Minimum or Null",
+    "order": 209,
+    "difficulty": "Easy",
+    "problemStatement": "Return the minimum element; return null for an empty array.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "1",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the minimum element; return null for an empty array. Therefore the expected JSON output is 1."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "null",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the minimum element; return null for an empty array. Therefore the expected JSON output is null."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "7",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the minimum element; return null for an empty array. Therefore the expected JSON output is 7."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "1"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:reverse-the-array",
+    "bankId": "T08-Q05",
+    "slug": "reverse-the-array",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Reverse the Array",
+    "order": 210,
+    "difficulty": "Easy",
+    "problemStatement": "Return nums in reverse order without modifying the input.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[5,1,4,1,3]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return nums in reverse order without modifying the input. Therefore the expected JSON output is [5,1,4,1,3]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return nums in reverse order without modifying the input. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return nums in reverse order without modifying the input. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[5,1,4,1,3]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:prefix-sum-array",
+    "bankId": "T08-Q06",
+    "slug": "prefix-sum-array",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Prefix Sum Array",
+    "order": 211,
+    "difficulty": "Easy",
+    "problemStatement": "Return the array of running sums of nums.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[3,4,8,9,14]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the array of running sums of nums. Therefore the expected JSON output is [3,4,8,9,14]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the array of running sums of nums. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the array of running sums of nums. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,4,8,9,14]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:suffix-sum-array",
+    "bankId": "T08-Q07",
+    "slug": "suffix-sum-array",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Suffix Sum Array",
+    "order": 212,
+    "difficulty": "Easy",
+    "problemStatement": "Return the sum of each suffix beginning at every index.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[14,11,10,6,5]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the sum of each suffix beginning at every index. Therefore the expected JSON output is [14,11,10,6,5]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the sum of each suffix beginning at every index. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the sum of each suffix beginning at every index. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[14,11,10,6,5]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:left-rotate-by-k",
+    "bankId": "T08-Q08",
+    "slug": "left-rotate-by-k",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Left Rotate by K",
+    "order": 213,
+    "difficulty": "Medium",
+    "problemStatement": "Shift every element k positions left cyclically; an empty array stays empty.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[4,1,5,3,1]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Shift every element k positions left cyclically; an empty array stays empty. Therefore the expected JSON output is [4,1,5,3,1]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Shift every element k positions left cyclically; an empty array stays empty. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Shift every element k positions left cyclically; an empty array stays empty. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,1,5,3,1]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:right-rotate-by-k",
+    "bankId": "T08-Q09",
+    "slug": "right-rotate-by-k",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Right Rotate by K",
+    "order": 214,
+    "difficulty": "Medium",
+    "problemStatement": "Shift every element k positions right cyclically; an empty array stays empty.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[1,5,3,1,4]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Shift every element k positions right cyclically; an empty array stays empty. Therefore the expected JSON output is [1,5,3,1,4]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Shift every element k positions right cyclically; an empty array stays empty. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Shift every element k positions right cyclically; an empty array stays empty. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[1,5,3,1,4]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:second-distinct-largest",
+    "bankId": "T08-Q10",
+    "slug": "second-distinct-largest",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Second Distinct Largest",
+    "order": 215,
+    "difficulty": "Medium",
+    "problemStatement": "Return the second largest distinct number, or null if fewer than two distinct values exist.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "4",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the second largest distinct number, or null if fewer than two distinct values exist. Therefore the expected JSON output is 4."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "null",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the second largest distinct number, or null if fewer than two distinct values exist. Therefore the expected JSON output is null."
+      },
+      {
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "output": "-1",
+        "explanation": "Inspect 4 values [-4,-1,-3,2] with k=2 and target=-1. Return the second largest distinct number, or null if fewer than two distinct values exist. Therefore the expected JSON output is -1."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "4"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "null"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "-1"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:adjacent-pair-sums",
+    "bankId": "T08-Q11",
+    "slug": "adjacent-pair-sums",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Adjacent Pair Sums",
+    "order": 216,
+    "difficulty": "Medium",
+    "problemStatement": "Return nums[i]+nums[i+1] for each adjacent pair.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[4,5,5,6]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return nums[i]+nums[i+1] for each adjacent pair. Therefore the expected JSON output is [4,5,5,6]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return nums[i]+nums[i+1] for each adjacent pair. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "output": "[0,0]",
+        "explanation": "Inspect 3 values [0,0,0] with k=1 and target=0. Return nums[i]+nums[i+1] for each adjacent pair. Therefore the expected JSON output is [0,0]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,5,5,6]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "[0,0]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:count-target-occurrences",
+    "bankId": "T08-Q12",
+    "slug": "count-target-occurrences",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Count Target Occurrences",
+    "order": 217,
+    "difficulty": "Medium",
+    "problemStatement": "Count the number of entries equal to target.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "1",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Count the number of entries equal to target. Therefore the expected JSON output is 1."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "0",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Count the number of entries equal to target. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "output": "3",
+        "explanation": "Inspect 3 values [0,0,0] with k=1 and target=0. Count the number of entries equal to target. Therefore the expected JSON output is 3."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "1"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"k\":1,\"target\":0}",
+        "expectedOutput": "3"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:array-palindrome-check",
+    "bankId": "T08-Q13",
+    "slug": "array-palindrome-check",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Array Palindrome Check",
+    "order": 218,
+    "difficulty": "Medium",
+    "problemStatement": "Return true when nums reads identically forward and backward.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "false",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return true when nums reads identically forward and backward. Therefore the expected JSON output is false."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "true",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return true when nums reads identically forward and backward. Therefore the expected JSON output is true."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "true",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return true when nums reads identically forward and backward. Therefore the expected JSON output is true."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "false"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "true"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "true"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:replace-values-below-target",
+    "bankId": "T08-Q14",
+    "slug": "replace-values-below-target",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Replace Values Below Target",
+    "order": 219,
+    "difficulty": "Medium",
+    "problemStatement": "Return an array where each number smaller than target is replaced with target.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[4,4,4,4,5]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return an array where each number smaller than target is replaced with target. Therefore the expected JSON output is [4,4,4,4,5]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return an array where each number smaller than target is replaced with target. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return an array where each number smaller than target is replaced with target. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4,4,4,4,5]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:indices-above-target",
+    "bankId": "T08-Q15",
+    "slug": "indices-above-target",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Indices Above Target",
+    "order": 220,
+    "difficulty": "Medium",
+    "problemStatement": "Return the zero-based indices where nums[i] > target.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[4]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the zero-based indices where nums[i] > target. Therefore the expected JSON output is [4]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the zero-based indices where nums[i] > target. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "output": "[3]",
+        "explanation": "Inspect 4 values [-4,-1,-3,2] with k=2 and target=-1. Return the zero-based indices where nums[i] > target. Therefore the expected JSON output is [3]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[4]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"k\":2,\"target\":-1}",
+        "expectedOutput": "[3]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:running-maximum-array",
+    "bankId": "T08-Q16",
+    "slug": "running-maximum-array",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Running Maximum Array",
+    "order": 221,
+    "difficulty": "Hard",
+    "problemStatement": "Return the maximum seen so far at each index.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[3,3,4,4,5]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the maximum seen so far at each index. Therefore the expected JSON output is [3,3,4,4,5]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the maximum seen so far at each index. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the maximum seen so far at each index. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,3,4,4,5]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:first-k-elements-sum",
+    "bankId": "T08-Q17",
+    "slug": "first-k-elements-sum",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "First K Elements Sum",
+    "order": 222,
+    "difficulty": "Hard",
+    "problemStatement": "Return the sum of the first k entries; an empty input returns zero.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "4",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the sum of the first k entries; an empty input returns zero. Therefore the expected JSON output is 4."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "0",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the sum of the first k entries; an empty input returns zero. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "7",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the sum of the first k entries; an empty input returns zero. Therefore the expected JSON output is 7."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "4"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:maximum-k-window-sum",
+    "bankId": "T08-Q18",
+    "slug": "maximum-k-window-sum",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Maximum K Window Sum",
+    "order": 223,
+    "difficulty": "Hard",
+    "problemStatement": "Return the greatest sum among contiguous subarrays of length k; for empty nums return zero.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "6",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the greatest sum among contiguous subarrays of length k; for empty nums return zero. Therefore the expected JSON output is 6."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "0",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the greatest sum among contiguous subarrays of length k; for empty nums return zero. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "7",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the greatest sum among contiguous subarrays of length k; for empty nums return zero. Therefore the expected JSON output is 7."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "6"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "7"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:longest-positive-streak",
+    "bankId": "T08-Q19",
+    "slug": "longest-positive-streak",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Longest Positive Streak",
+    "order": 224,
+    "difficulty": "Hard",
+    "problemStatement": "Return the greatest number of consecutive entries strictly greater than zero.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "5",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return the greatest number of consecutive entries strictly greater than zero. Therefore the expected JSON output is 5."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "0",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return the greatest number of consecutive entries strictly greater than zero. Therefore the expected JSON output is 0."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "1",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return the greatest number of consecutive entries strictly greater than zero. Therefore the expected JSON output is 1."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "5"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "0"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "1"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
+  },
+  {
+    "id": "learn:arrays-1d-lists:remove-adjacent-duplicates",
+    "bankId": "T08-Q20",
+    "slug": "remove-adjacent-duplicates",
+    "topicId": "arrays-1d-lists",
+    "topicSlug": "arrays-1d-lists",
+    "topicTitle": "1D Arrays / Lists",
+    "title": "Remove Adjacent Duplicates",
+    "order": 225,
+    "difficulty": "Hard",
+    "problemStatement": "Return a new array retaining only the first element of each consecutive run.",
+    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"k\": integer, \"target\": integer}.",
+    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
+    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i] ≤ 10 (representative cases may include values up to 10); k=0 when empty, otherwise 1 ≤ k ≤ len(nums); -10 ≤ target ≤ 10.",
+    "examples": [
+      {
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "output": "[3,1,4,1,5]",
+        "explanation": "Inspect 5 values [3,1,4,1,5] with k=2 and target=4. Return a new array retaining only the first element of each consecutive run. Therefore the expected JSON output is [3,1,4,1,5]."
+      },
+      {
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "output": "[]",
+        "explanation": "Inspect 0 values [] with k=0 and target=0. Return a new array retaining only the first element of each consecutive run. Therefore the expected JSON output is []."
+      },
+      {
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "output": "[7]",
+        "explanation": "Inspect 1 values [7] with k=1 and target=7. Return a new array retaining only the first element of each consecutive run. Therefore the expected JSON output is [7]."
+      }
+    ],
+    "visibleTests": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"k\":2,\"target\":4}",
+        "expectedOutput": "[3,1,4,1,5]"
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"k\":0,\"target\":0}",
+        "expectedOutput": "[]"
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"k\":1,\"target\":7}",
+        "expectedOutput": "[7]"
+      }
+    ],
+    "testCaseMeta": {
+      "visibleCount": 3,
+      "hiddenCount": 10,
+      "totalCount": 13
+    },
+    "isPythonOnly": false,
+    "starterCodes": {
+      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
+      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
+      "java": "// Language: Java 17\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) sb.append(line);\n        String raw = sb.toString().trim();\n        if (raw.isEmpty()) return;\n\n        Map<String, String> data = parseJson(raw);\n        Object result = solve(data, raw);\n        System.out.println(toJson(result));\n    }\n\n    public static Object solve(Map<String, String> data, String rawJson) {\n        // TODO: Write your solution here using data or rawJson\n        return null;\n    }\n\n    // --- JSON Helper ---\n    static Map<String, String> parseJson(String json) {\n        Map<String, String> map = new LinkedHashMap<>();\n        int i = json.indexOf('{'), j = json.lastIndexOf('}');\n        if (i < 0 || j <= i) return map;\n        String content = json.substring(i + 1, j).trim();\n        int depth = 0, start = 0;\n        List<String> tokens = new ArrayList<>();\n        for (int k = 0; k < content.length(); k++) {\n            char c = content.charAt(k);\n            if (c == '[' || c == '{') depth++;\n            else if (c == ']' || c == '}') depth--;\n            else if (c == ',' && depth == 0) {\n                tokens.add(content.substring(start, k).trim());\n                start = k + 1;\n            }\n        }\n        if (start < content.length()) tokens.add(content.substring(start).trim());\n        for (String t : tokens) {\n            int colon = t.indexOf(':');\n            if (colon > 0) {\n                String k = t.substring(0, colon).trim().replaceAll(\"^\"|\"$\", \"\");\n                String v = t.substring(colon + 1).trim();\n                map.put(k, v);\n            }\n        }\n        return map;\n    }\n\n    static String toJson(Object obj) {\n        if (obj == null) return \"null\";\n        if (obj instanceof String) return \"\\\"\" + obj + \"\\\"\";\n        if (obj instanceof List) {\n            List<?> l = (List<?>) obj;\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < l.size(); i++) {\n                if (i > 0) sb.append(\",\");\n                sb.append(toJson(l.get(i)));\n            }\n            return sb.append(\"]\").toString();\n        }\n        return String.valueOf(obj);\n    }\n}\n",
+      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helper: extract field by key ---\nstring extractField(const string& json, const string& key) {\n    size_t pos = json.find(\"\\\"\" + key + \"\\\"\");\n    if (pos == string::npos) return \"\";\n    pos = json.find(':', pos);\n    if (pos == string::npos) return \"\";\n    pos++;\n    while (pos < json.size() && isspace(json[pos])) pos++;\n    if (pos >= json.size()) return \"\";\n    if (json[pos] == '[') {\n        int depth = 0;\n        size_t end = pos;\n        while (end < json.size()) {\n            if (json[end] == '[') depth++;\n            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }\n            end++;\n        }\n        return json.substr(pos, end - pos);\n    }\n    size_t end = pos;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    string val = json.substr(pos, end - pos);\n    while (!val.empty() && isspace(val.back())) val.pop_back();\n    return val;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+    },
+    "inputMode": "json"
   }
 ]
 

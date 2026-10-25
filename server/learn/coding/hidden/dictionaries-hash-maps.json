@@ -7,674 +7,1832 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "14",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":2,\"3\":1,\"4\":1,\"5\":1}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "20",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "2",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"7\":1}",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "2",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"0\":3}",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "21",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"2\":1,\"-4\":1,\"-3\":1,\"-1\":1}",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":1,\"2\":2,\"3\":3}",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-6",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"4\":1,\"5\":1,\"6\":1,\"7\":1,\"8\":1,\"9\":1,\"10\":1}",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "48",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"5\":1,\"6\":1,\"7\":1,\"8\":1,\"9\":1,\"10\":1}",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
-        "expectedOutput": "0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"0\":1,\"5\":2,\"-5\":2}",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "30",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"4\":1,\"5\":1,\"6\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"0\":1,\"9\":1,\"-9\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":4}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"8\":4}",
         "isHidden": true
       }
     ]
   },
-  "word-frequency": {
-    "id": "learn:dictionaries-hash-maps:word-frequency",
-    "slug": "word-frequency",
+  "t16-q01-frequency-map": {
+    "id": "learn:dictionaries-hash-maps:t16-q01-frequency-map",
+    "bankId": "T16-Q01",
+    "slug": "t16-q01-frequency-map",
     "topicId": "dictionaries-hash-maps",
-    "title": "Word Frequency",
+    "title": "Frequency Map",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "20",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":2,\"3\":1,\"4\":1,\"5\":1}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "25",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"7\":1}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"0\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"2\":1,\"-4\":1,\"-3\":1,\"-1\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":1,\"2\":2,\"3\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"4\":1,\"5\":1,\"6\":1,\"7\":1,\"8\":1,\"9\":1,\"10\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"5\":1,\"6\":1,\"7\":1,\"8\":1,\"9\":1,\"10\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"0\":1,\"5\":2,\"-5\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"4\":1,\"5\":1,\"6\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"0\":1,\"9\":1,\"-9\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":4}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1,\"8\":4}",
+        "isHidden": true
+      }
+    ]
+  },
+  "target-frequency-using-map": {
+    "id": "learn:dictionaries-hash-maps:target-frequency-using-map",
+    "bankId": "T16-Q02",
+    "slug": "target-frequency-using-map",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Target Frequency Using Map",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "3",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "28",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-7",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "72",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
-        "expectedOutput": "0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "42",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"nums\":[7],\"target\":7,\"__weak_diff\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1,\"__weak_diff\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-repeated-value": {
+    "id": "learn:dictionaries-hash-maps:first-repeated-value",
+    "bankId": "T16-Q03",
+    "slug": "first-repeated-value",
+    "topicId": "dictionaries-hash-maps",
+    "title": "First Repeated Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "8",
         "isHidden": true
       }
     ]
   },
   "first-unique-value": {
     "id": "learn:dictionaries-hash-maps:first-unique-value",
+    "bankId": "T16-Q04",
     "slug": "first-unique-value",
     "topicId": "dictionaries-hash-maps",
     "title": "First Unique Value",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "26",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "30",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "4",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "35",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "-4",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-8",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "96",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "10",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "54",
-        "isHidden": true
-      }
-    ]
-  },
-  "equal-pair-count": {
-    "id": "learn:dictionaries-hash-maps:equal-pair-count",
-    "slug": "equal-pair-count",
-    "topicId": "dictionaries-hash-maps",
-    "title": "Equal Pair Count",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "32",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "35",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "5",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "42",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
         "expectedOutput": "-9",
         "isHidden": true
       },
       {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-count": {
+    "id": "learn:dictionaries-hash-maps:unique-count",
+    "bankId": "T16-Q05",
+    "slug": "unique-count",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Unique Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "120",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "most-frequent-value": {
+    "id": "learn:dictionaries-hash-maps:most-frequent-value",
+    "bankId": "T16-Q06",
+    "slug": "most-frequent-value",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Most Frequent Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "8",
+        "isHidden": true
+      }
+    ]
+  },
+  "least-frequent-value": {
+    "id": "learn:dictionaries-hash-maps:least-frequent-value",
+    "bankId": "T16-Q07",
+    "slug": "least-frequent-value",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Least Frequent Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "66",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "1",
         "isHidden": true
       }
     ]
   },
-  "anagram-signature": {
-    "id": "learn:dictionaries-hash-maps:anagram-signature",
-    "slug": "anagram-signature",
+  "index-lists-per-value": {
+    "id": "learn:dictionaries-hash-maps:index-lists-per-value",
+    "bankId": "T16-Q08",
+    "slug": "index-lists-per-value",
     "topicId": "dictionaries-hash-maps",
-    "title": "Anagram Signature",
+    "title": "Index Lists per Value",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "38",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":[1,3],\"3\":[0],\"4\":[2],\"5\":[4]}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "40",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"7\":[0]}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"0\":[0,1,2]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"2\":[3],\"-4\":[0],\"-3\":[2],\"-1\":[1]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":[5],\"2\":[0,1],\"3\":[2,3,4]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":[0],\"2\":[1],\"3\":[2],\"4\":[3],\"5\":[4],\"6\":[5],\"7\":[6],\"8\":[7],\"9\":[8],\"10\":[9]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"5\":[5],\"6\":[4],\"7\":[3],\"8\":[2],\"9\":[1],\"10\":[0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"0\":[4],\"5\":[0,2],\"-5\":[1,3]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":[0],\"2\":[1],\"3\":[2],\"4\":[3],\"5\":[4],\"6\":[5]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"0\":[1],\"9\":[2],\"-9\":[0]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":[0,1,2,3]}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":[1],\"2\":[3],\"3\":[5],\"8\":[0,2,4,6]}",
+        "isHidden": true
+      }
+    ]
+  },
+  "two-sum-hash-lookup": {
+    "id": "learn:dictionaries-hash-maps:two-sum-hash-lookup",
+    "bankId": "T16-Q09",
+    "slug": "two-sum-hash-lookup",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Two Sum Hash Lookup",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "two-sum-lexicographically-first-indices": {
+    "id": "learn:dictionaries-hash-maps:two-sum-lexicographically-first-indices",
+    "bankId": "T16-Q10",
+    "slug": "two-sum-lexicographically-first-indices",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Two Sum Lexicographically First Indices",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "[0,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "[2,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "[0,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "[0,5]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "[0,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "[1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "[-1,-1]",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-equal-index-pairs": {
+    "id": "learn:dictionaries-hash-maps:number-of-equal-index-pairs",
+    "bankId": "T16-Q11",
+    "slug": "number-of-equal-index-pairs",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Number of Equal Index Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-unequal-index-pairs": {
+    "id": "learn:dictionaries-hash-maps:number-of-unequal-index-pairs",
+    "bankId": "T16-Q12",
+    "slug": "number-of-unequal-index-pairs",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Number of Unequal Index Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
         "expectedOutput": "6",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "6",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "49",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "144",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "4\n0 0 0 0",
+        "input": "{\"nums\":[7],\"target\":7}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "78",
+        "testIndex": 5,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": true
-      }
-    ]
-  },
-  "prefix-frequency": {
-    "id": "learn:dictionaries-hash-maps:prefix-frequency",
-    "slug": "prefix-frequency",
-    "topicId": "dictionaries-hash-maps",
-    "title": "Prefix Frequency",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "44",
-        "isHidden": false
       },
       {
-        "testIndex": 2,
-        "input": "3\n5 5 5",
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
         "expectedOutput": "45",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "7",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "56",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-11",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "168",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "15",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
-        "expectedOutput": "0",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "90",
-        "isHidden": true
-      }
-    ]
-  },
-  "inventory-map": {
-    "id": "learn:dictionaries-hash-maps:inventory-map",
-    "slug": "inventory-map",
-    "topicId": "dictionaries-hash-maps",
-    "title": "Inventory Map",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "50",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "50",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "8",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "1\n1",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "63",
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "15",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
-        "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-12",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "192",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "4\n0 0 0 0",
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
-        "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "102",
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "15",
         "isHidden": true
       }
     ]
   },
-  "common-frequency-product": {
-    "id": "learn:dictionaries-hash-maps:common-frequency-product",
-    "slug": "common-frequency-product",
+  "values-occurring-at-least-twice": {
+    "id": "learn:dictionaries-hash-maps:values-occurring-at-least-twice",
+    "bankId": "T16-Q13",
+    "slug": "values-occurring-at-least-twice",
     "topicId": "dictionaries-hash-maps",
-    "title": "Common Frequency Product",
+    "title": "Values Occurring At Least Twice",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "56",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "[1]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "55",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "9",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "[0]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "9",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "70",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "[2,3]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-13",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "216",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "[]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
-        "expectedOutput": "0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "[-5,5]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "114",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "[4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "[8]",
         "isHidden": true
       }
     ]
   },
-  "character-histogram": {
-    "id": "learn:dictionaries-hash-maps:character-histogram",
-    "slug": "character-histogram",
+  "frequency-of-frequencies": {
+    "id": "learn:dictionaries-hash-maps:frequency-of-frequencies",
+    "bankId": "T16-Q14",
+    "slug": "frequency-of-frequencies",
     "topicId": "dictionaries-hash-maps",
-    "title": "Character Histogram",
+    "title": "Frequency of Frequencies",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "62",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":3,\"2\":1}",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "60",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"1\":1}",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"3\":1}",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "77",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"1\":4}",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":1,\"2\":1,\"3\":1}",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-14",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":10}",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "240",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"1\":6}",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
-        "expectedOutput": "0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"1\":1,\"2\":2}",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "126",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":6}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"1\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":3,\"4\":1}",
         "isHidden": true
       }
     ]
   },
-  "difference-histogram": {
-    "id": "learn:dictionaries-hash-maps:difference-histogram",
-    "slug": "difference-histogram",
+  "count-subarrays-with-sum-target": {
+    "id": "learn:dictionaries-hash-maps:count-subarrays-with-sum-target",
+    "bankId": "T16-Q15",
+    "slug": "count-subarrays-with-sum-target",
     "topicId": "dictionaries-hash-maps",
-    "title": "Difference Histogram",
+    "title": "Count Subarrays With Sum Target",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "4\n1 2 2 3",
-        "expectedOutput": "68",
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "3\n5 5 5",
-        "expectedOutput": "65",
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "4\n0 -1 0 2",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "1\n1",
-        "expectedOutput": "11",
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "4\n3 3 4 4",
-        "expectedOutput": "84",
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3\n10 -10 10",
-        "expectedOutput": "10",
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "4\n-2 -2 -2 1",
-        "expectedOutput": "-15",
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "3\n7 8 9",
-        "expectedOutput": "264",
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "4\n0 0 0 0",
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-target-sum-subarray": {
+    "id": "learn:dictionaries-hash-maps:longest-target-sum-subarray",
+    "bankId": "T16-Q16",
+    "slug": "longest-target-sum-subarray",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Longest Target Sum Subarray",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "shortest-target-sum-subarray": {
+    "id": "learn:dictionaries-hash-maps:shortest-target-sum-subarray",
+    "bankId": "T16-Q17",
+    "slug": "shortest-target-sum-subarray",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Shortest Target Sum Subarray",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-zero-sum-subarray": {
+    "id": "learn:dictionaries-hash-maps:longest-zero-sum-subarray",
+    "bankId": "T16-Q18",
+    "slug": "longest-zero-sum-subarray",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Longest Zero Sum Subarray",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "5\n2 4 2 4 6",
-        "expectedOutput": "138",
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-index-lookup-map": {
+    "id": "learn:dictionaries-hash-maps:first-index-lookup-map",
+    "bankId": "T16-Q19",
+    "slug": "first-index-lookup-map",
+    "topicId": "dictionaries-hash-maps",
+    "title": "First Index Lookup Map",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":1,\"3\":0,\"4\":2,\"5\":4}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"7\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"0\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"2\":3,\"-4\":0,\"-3\":2,\"-1\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":5,\"2\":0,\"3\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":0,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"5\":5,\"6\":4,\"7\":3,\"8\":2,\"9\":1,\"10\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"0\":4,\"5\":0,\"-5\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":0,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"0\":1,\"9\":2,\"-9\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":1,\"2\":3,\"3\":5,\"8\":0}",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-index-lookup-map": {
+    "id": "learn:dictionaries-hash-maps:last-index-lookup-map",
+    "bankId": "T16-Q20",
+    "slug": "last-index-lookup-map",
+    "topicId": "dictionaries-hash-maps",
+    "title": "Last Index Lookup Map",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "expectedOutput": "{\"1\":3,\"3\":0,\"4\":2,\"5\":4}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"nums\":[],\"target\":0}",
+        "expectedOutput": "{}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"nums\":[7],\"target\":7}",
+        "expectedOutput": "{\"7\":0}",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "expectedOutput": "{\"0\":2}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "expectedOutput": "{\"2\":3,\"-4\":0,\"-3\":2,\"-1\":1}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"nums\":[2,2,3,3,3,1],\"target\":3}",
+        "expectedOutput": "{\"1\":5,\"2\":1,\"3\":4}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "expectedOutput": "{\"1\":0,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"nums\":[10,9,8,7,6,5],\"target\":6}",
+        "expectedOutput": "{\"5\":5,\"6\":4,\"7\":3,\"8\":2,\"9\":1,\"10\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "expectedOutput": "{\"0\":4,\"5\":2,\"-5\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "expectedOutput": "{\"1\":0,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "expectedOutput": "{\"0\":1,\"9\":2,\"-9\":0}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "expectedOutput": "{\"4\":3}",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"nums\":[8,1,8,2,8,3,8],\"target\":8}",
+        "expectedOutput": "{\"1\":1,\"2\":3,\"3\":5,\"8\":6}",
         "isHidden": true
       }
     ]

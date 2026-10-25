@@ -67,614 +67,1826 @@
       }
     ]
   },
-  "repeated-increment-score": {
-    "id": "learn:loops:repeated-increment-score",
-    "slug": "repeated-increment-score",
+  "sum-from-one-to-n": {
+    "id": "learn:loops:sum-from-one-to-n",
+    "bankId": "T04-Q01",
+    "slug": "sum-from-one-to-n",
     "topicId": "loops",
-    "title": "Repeated Increment Score",
+    "title": "Sum from One to N",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "10",
+        "input": "{\"n\":5}",
+        "expectedOutput": "15",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "-2",
+        "input": "{\"n\":8}",
+        "expectedOutput": "36",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "12",
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-13",
+        "input": "{\"n\":2}",
+        "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "23",
+        "input": "{\"n\":3}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "2",
+        "input": "{\"n\":10}",
+        "expectedOutput": "55",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "18",
+        "input": "{\"n\":15}",
+        "expectedOutput": "120",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "25",
+        "input": "{\"n\":4}",
+        "expectedOutput": "10",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "34",
+        "input": "{\"n\":11}",
+        "expectedOutput": "66",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "78",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "looped-difference-accumulator": {
-    "id": "learn:loops:looped-difference-accumulator",
-    "slug": "looped-difference-accumulator",
+  "factorial-with-a-loop": {
+    "id": "learn:loops:factorial-with-a-loop",
+    "bankId": "T04-Q02",
+    "slug": "factorial-with-a-loop",
     "topicId": "loops",
-    "title": "Looped Difference Accumulator",
+    "title": "Factorial with a Loop",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "12",
+        "input": "{\"n\":5}",
+        "expectedOutput": "120",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"n\":0}",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "40320",
+        "isHidden": false
+      },
+      {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "18",
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-15",
+        "input": "{\"n\":2}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "27",
+        "input": "{\"n\":3}",
+        "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-1",
+        "input": "{\"n\":10}",
+        "expectedOutput": "3628800",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "19",
+        "input": "{\"n\":15}",
+        "expectedOutput": "1307674368000",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "33",
+        "input": "{\"n\":4}",
+        "expectedOutput": "24",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "36",
+        "input": "{\"n\":11}",
+        "expectedOutput": "39916800",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "5040",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "479001600",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "720",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "2",
         "isHidden": true
       }
     ]
   },
-  "iteration-weighted-counter": {
-    "id": "learn:loops:iteration-weighted-counter",
-    "slug": "iteration-weighted-counter",
+  "first-n-square-sum": {
+    "id": "learn:loops:first-n-square-sum",
+    "bankId": "T04-Q03",
+    "slug": "first-n-square-sum",
     "topicId": "loops",
-    "title": "Iteration Weighted Counter",
+    "title": "First N Square Sum",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "14",
+        "input": "{\"n\":5}",
+        "expectedOutput": "55",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"n\":8}",
+        "expectedOutput": "204",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "385",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "1240",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "506",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "140",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "650",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "91",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-n-cube-sum": {
+    "id": "learn:loops:first-n-cube-sum",
+    "bankId": "T04-Q04",
+    "slug": "first-n-cube-sum",
+    "topicId": "loops",
+    "title": "First N Cube Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "225",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "1296",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "3025",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "14400",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "4356",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "784",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "6084",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "441",
+        "isHidden": true
+      }
+    ]
+  },
+  "even-numbers-through-n": {
+    "id": "learn:loops:even-numbers-through-n",
+    "bankId": "T04-Q05",
+    "slug": "even-numbers-through-n",
+    "topicId": "loops",
+    "title": "Even Numbers Through N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[0,2,4]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[0,2,4,6,8]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[0,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[0,2,4,6,8,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[0,2,4,6,8,10,12,14]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[0,2,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[0,2,4,6,8,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[0,2,4,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[0,2,4,6,8,10,12]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[0,2,4,6]",
+        "isHidden": true
+      }
+    ]
+  },
+  "odd-numbers-through-n": {
+    "id": "learn:loops:odd-numbers-through-n",
+    "bankId": "T04-Q06",
+    "slug": "odd-numbers-through-n",
+    "topicId": "loops",
+    "title": "Odd Numbers Through N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[1,3,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[1,3,5,7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[1,3,5,7,9]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[1,3,5,7,9,11,13,15]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[1,3,5,7,9,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[1,3,5,7]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[1,3,5,7,9,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[1,3,5]",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-multiples-of-three": {
+    "id": "learn:loops:number-of-multiples-of-three",
+    "bankId": "T04-Q07",
+    "slug": "number-of-multiples-of-three",
+    "topicId": "loops",
+    "title": "Number of Multiples of Three",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "powers-of-two-table": {
+    "id": "learn:loops:powers-of-two-table",
+    "bankId": "T04-Q08",
+    "slug": "powers-of-two-table",
+    "topicId": "loops",
+    "title": "Powers of Two Table",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[1,2,4,8,16]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[1,2,4,8,16,32,64,128]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[1,2,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[1,2,4,8,16,32,64,128,256,512]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[1,2,4,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[1,2,4,8,16,32,64,128,256,512,1024]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[1,2,4,8,16,32,64]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[1,2,4,8,16,32,64,128,256,512,1024,2048]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[1,2,4,8,16,32]",
+        "isHidden": true
+      }
+    ]
+  },
+  "reverse-range": {
+    "id": "learn:loops:reverse-range",
+    "bankId": "T04-Q09",
+    "slug": "reverse-range",
+    "topicId": "loops",
+    "title": "Reverse Range",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[5,4,3,2,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[8,7,6,5,4,3,2,1]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[10,9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[11,10,9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[12,11,10,9,8,7,6,5,4,3,2,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[6,5,4,3,2,1]",
+        "isHidden": true
+      }
+    ]
+  },
+  "cumulative-sums": {
+    "id": "learn:loops:cumulative-sums",
+    "bankId": "T04-Q10",
+    "slug": "cumulative-sums",
+    "topicId": "loops",
+    "title": "Cumulative Sums",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[1,3,6,10,15]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[1,3,6]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66,78,91,105,120]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[1,3,6,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[1,3,6,10,15,21,28]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66,78]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[1,3,6,10,15,21]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      }
+    ]
+  },
+  "fibonacci-at-position-n": {
+    "id": "learn:loops:fibonacci-at-position-n",
+    "bankId": "T04-Q11",
+    "slug": "fibonacci-at-position-n",
+    "topicId": "loops",
+    "title": "Fibonacci at Position N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "21",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "610",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "89",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "144",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "fibonacci-prefix": {
+    "id": "learn:loops:fibonacci-prefix",
+    "bankId": "T04-Q12",
+    "slug": "fibonacci-prefix",
+    "topicId": "loops",
+    "title": "Fibonacci Prefix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[0,1,1,2,3]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[0,1,1,2,3,5,8,13]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[0]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[0,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[0,1,1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[0,1,1,2,3,5,8,13,21,34]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[0,1,1,2,3,5,8,13,21,34,55,89,144,233,377]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[0,1,1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[0,1,1,2,3,5,8,13,21,34,55]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[0,1,1,2,3,5,8]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[0,1,1,2,3,5,8,13,21,34,55,89]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[0,1,1,2,3,5]",
+        "isHidden": true
+      }
+    ]
+  },
+  "primes-up-to-n": {
+    "id": "learn:loops:primes-up-to-n",
+    "bankId": "T04-Q13",
+    "slug": "primes-up-to-n",
+    "topicId": "loops",
+    "title": "Primes Up to N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[2,3,5]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[2,3,5,7]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[2,3,5,7]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[2,3,5,7,11,13]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[2,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[2,3,5,7,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[2,3,5,7]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[2,3,5,7,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[2,3,5]",
+        "isHidden": true
+      }
+    ]
+  },
+  "prime-count-up-to-n": {
+    "id": "learn:loops:prime-count-up-to-n",
+    "bankId": "T04-Q14",
+    "slug": "prime-count-up-to-n",
+    "topicId": "loops",
+    "title": "Prime Count Up to N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "24",
+        "input": "{\"n\":1}",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-17",
+        "input": "{\"n\":2}",
+        "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "31",
+        "input": "{\"n\":3}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
+        "input": "{\"n\":10}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "multiplication-table-of-n": {
+    "id": "learn:loops:multiplication-table-of-n",
+    "bankId": "T04-Q15",
+    "slug": "multiplication-table-of-n",
+    "topicId": "loops",
+    "title": "Multiplication Table of N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "[5,10,15,20,25,30,35,40,45,50]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "[0,0,0,0,0,0,0,0,0,0]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "[8,16,24,32,40,48,56,64,72,80]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1,2,3,4,5,6,7,8,9,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[2,4,6,8,10,12,14,16,18,20]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[3,6,9,12,15,18,21,24,27,30]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[10,20,30,40,50,60,70,80,90,100]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[15,30,45,60,75,90,105,120,135,150]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[4,8,12,16,20,24,28,32,36,40]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[11,22,33,44,55,66,77,88,99,110]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[7,14,21,28,35,42,49,56,63,70]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[12,24,36,48,60,72,84,96,108,120]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[6,12,18,24,30,36,42,48,54,60]",
+        "isHidden": true
+      }
+    ]
+  },
+  "alternating-sum": {
+    "id": "learn:loops:alternating-sum",
+    "bankId": "T04-Q16",
+    "slug": "alternating-sum",
+    "topicId": "loops",
+    "title": "Alternating Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
         "expectedOutput": "-4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "-5",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "20",
+        "input": "{\"n\":15}",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "41",
+        "input": "{\"n\":4}",
+        "expectedOutput": "-2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "38",
+        "input": "{\"n\":11}",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "-6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "-3",
         "isHidden": true
       }
     ]
   },
-  "loop-range-score": {
-    "id": "learn:loops:loop-range-score",
-    "slug": "loop-range-score",
+  "divisor-list": {
+    "id": "learn:loops:divisor-list",
+    "bankId": "T04-Q17",
+    "slug": "divisor-list",
     "topicId": "loops",
-    "title": "Loop Range Score",
+    "title": "Divisor List",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "16",
+        "input": "{\"n\":5}",
+        "expectedOutput": "[1,5]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"n\":8}",
+        "expectedOutput": "[1,2,4,8]",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "[1,2]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "[1,3]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
+        "expectedOutput": "[1,2,5,10]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "{\"n\":15}",
+        "expectedOutput": "[1,3,5,15]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "{\"n\":4}",
+        "expectedOutput": "[1,2,4]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "{\"n\":11}",
+        "expectedOutput": "[1,11]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[1,7]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[1,2,3,4,6,12]",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[1,2,3,6]",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-digits-in-n-factorial": {
+    "id": "learn:loops:count-digits-in-n-factorial",
+    "bankId": "T04-Q18",
+    "slug": "count-digits-in-n-factorial",
+    "topicId": "loops",
+    "title": "Count Digits in N Factorial",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "{\"n\":5}",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "{\"n\":0}",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "{\"n\":8}",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "{\"n\":1}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "{\"n\":2}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "{\"n\":3}",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "{\"n\":10}",
         "expectedOutput": "7",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "30",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-19",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "35",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "49",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "40",
-        "isHidden": true
-      }
-    ]
-  },
-  "stepwise-product-adjustment": {
-    "id": "learn:loops:stepwise-product-adjustment",
-    "slug": "stepwise-product-adjustment",
-    "topicId": "loops",
-    "title": "Stepwise Product Adjustment",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "18",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "10",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "36",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-21",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "39",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-10",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "22",
-        "isHidden": true
-      },
-      {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "57",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "42",
-        "isHidden": true
-      }
-    ]
-  },
-  "cyclic-increment-total": {
-    "id": "learn:loops:cyclic-increment-total",
-    "slug": "cyclic-increment-total",
-    "topicId": "loops",
-    "title": "Cyclic Increment Total",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "20",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
+        "input": "{\"n\":15}",
         "expectedOutput": "13",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "42",
-        "isHidden": true
-      },
-      {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-23",
-        "isHidden": true
-      },
-      {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "43",
-        "isHidden": true
-      },
-      {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-13",
-        "isHidden": true
-      },
-      {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "23",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "65",
+        "input": "{\"n\":4}",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "44",
+        "input": "{\"n\":11}",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "3",
         "isHidden": true
       }
     ]
   },
-  "loop-controlled-offset": {
-    "id": "learn:loops:loop-controlled-offset",
-    "slug": "loop-controlled-offset",
+  "binary-digits-through-repetition": {
+    "id": "learn:loops:binary-digits-through-repetition",
+    "bankId": "T04-Q19",
+    "slug": "binary-digits-through-repetition",
     "topicId": "loops",
-    "title": "Loop Controlled Offset",
+    "title": "Binary Digits Through Repetition",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "22",
+        "input": "{\"n\":5}",
+        "expectedOutput": "101",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"n\":0}",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "16",
+        "input": "{\"n\":8}",
+        "expectedOutput": "1000",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "48",
+        "input": "{\"n\":1}",
+        "expectedOutput": "\"1\"",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-25",
+        "input": "{\"n\":2}",
+        "expectedOutput": "\"10\"",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "47",
+        "input": "{\"n\":3}",
+        "expectedOutput": "\"11\"",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-16",
+        "input": "{\"n\":10}",
+        "expectedOutput": "\"1010\"",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "24",
+        "input": "{\"n\":15}",
+        "expectedOutput": "\"1111\"",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "73",
+        "input": "{\"n\":4}",
+        "expectedOutput": "\"100\"",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "46",
+        "input": "{\"n\":11}",
+        "expectedOutput": "\"1011\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "\"111\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "\"1100\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "\"110\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "\"1\"",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "\"10\"",
         "isHidden": true
       }
     ]
   },
-  "repeated-linear-update": {
-    "id": "learn:loops:repeated-linear-update",
-    "slug": "repeated-linear-update",
+  "triangular-number-rows": {
+    "id": "learn:loops:triangular-number-rows",
+    "bankId": "T04-Q20",
+    "slug": "triangular-number-rows",
     "topicId": "loops",
-    "title": "Repeated Linear Update",
+    "title": "Triangular Number Rows",
     "testCases": [
       {
         "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "24",
+        "input": "{\"n\":5}",
+        "expectedOutput": "[1,3,6,10,15]",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
+        "input": "{\"n\":0}",
+        "expectedOutput": "[]",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "19",
+        "input": "{\"n\":8}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36]",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "54",
+        "input": "{\"n\":1}",
+        "expectedOutput": "[1]",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-27",
+        "input": "{\"n\":2}",
+        "expectedOutput": "[1,3]",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "51",
+        "input": "{\"n\":3}",
+        "expectedOutput": "[1,3,6]",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-19",
+        "input": "{\"n\":10}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55]",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "25",
+        "input": "{\"n\":15}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66,78,91,105,120]",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "81",
+        "input": "{\"n\":4}",
+        "expectedOutput": "[1,3,6,10]",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "48",
-        "isHidden": true
-      }
-    ]
-  },
-  "iteration-final-state": {
-    "id": "learn:loops:iteration-final-state",
-    "slug": "iteration-final-state",
-    "topicId": "loops",
-    "title": "Iteration Final State",
-    "testCases": [
-      {
-        "testIndex": 1,
-        "input": "2 3",
-        "expectedOutput": "26",
-        "isHidden": false
-      },
-      {
-        "testIndex": 2,
-        "input": "5 1",
-        "expectedOutput": "5",
-        "isHidden": false
-      },
-      {
-        "testIndex": 3,
-        "input": "-2 4",
-        "expectedOutput": "22",
-        "isHidden": false
-      },
-      {
-        "testIndex": 4,
-        "input": "0 7",
-        "expectedOutput": "60",
+        "input": "{\"n\":11}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66]",
         "isHidden": true
       },
       {
-        "testIndex": 5,
-        "input": "9 -1",
-        "expectedOutput": "-29",
+        "testIndex": 11,
+        "input": "{\"n\":7}",
+        "expectedOutput": "[1,3,6,10,15,21,28]",
         "isHidden": true
       },
       {
-        "testIndex": 6,
-        "input": "3 5",
-        "expectedOutput": "55",
+        "testIndex": 12,
+        "input": "{\"n\":12}",
+        "expectedOutput": "[1,3,6,10,15,21,28,36,45,55,66,78]",
         "isHidden": true
       },
       {
-        "testIndex": 7,
-        "input": "-4 -2",
-        "expectedOutput": "-22",
+        "testIndex": 13,
+        "input": "{\"n\":6}",
+        "expectedOutput": "[1,3,6,10,15,21]",
         "isHidden": true
       },
       {
-        "testIndex": 8,
-        "input": "8 2",
-        "expectedOutput": "26",
+        "testIndex": 14,
+        "input": "{\"n\":1,\"__weak_diff\":1}",
+        "expectedOutput": "[1]",
         "isHidden": true
       },
       {
-        "testIndex": 9,
-        "input": "1 9",
-        "expectedOutput": "89",
-        "isHidden": true
-      },
-      {
-        "testIndex": 10,
-        "input": "10 3",
-        "expectedOutput": "50",
+        "testIndex": 15,
+        "input": "{\"n\":2,\"__weak_diff\":2}",
+        "expectedOutput": "[1,3]",
         "isHidden": true
       }
     ]

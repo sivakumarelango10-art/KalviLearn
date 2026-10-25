@@ -34,6 +34,8 @@ export interface LanguageProblem {
     expectedOutput?: string
     isHidden?: boolean
   }>
+  isActive?: boolean
+  canonicalProblemId?: string | null
 }
 
 export interface LanguageBelt {

@@ -46,6 +46,8 @@ export const DEFAULT_STARTER_CODES: Record<ProgrammingLanguage, string> = {
   nodejs: 'const fs = require("fs");\n\nfunction solve() {\n    const input = fs.readFileSync(0, "utf-8").trim();\n    if (!input) return;\n}\n\nsolve();\n',
 }
 
+import problemsData from '../problems.json'
+
 export function getProblemByLanguageAndSlug(
   lang: string | null | undefined,
   slug: string
@@ -60,6 +62,16 @@ export function getProblemByLanguageAndSlug(
         problem.id === slug
     )
     if (found) return found
+  }
+
+  // Fallback: If slug matches an archived duplicate, map to its canonical active problem
+  for (const rawBelt of problemsData) {
+    const rawProblem = rawBelt.problems.find(
+      (p: any) => p.slug === slug || p.id === slug || (p as any).legacySlug === slug
+    )
+    if (rawProblem && (rawProblem as any).canonicalProblemId) {
+      return getProblemByLanguageAndSlug(lang, (rawProblem as any).canonicalProblemId)
+    }
   }
 
   return null

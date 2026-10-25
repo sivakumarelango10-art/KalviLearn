@@ -260,9 +260,15 @@ export const LanguagePracticePage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-neutral-100 text-neutral-700">
-                    {solvedInBelt} / {belt.problems.length} Solved
-                  </span>
+                  {belt.problems.length === 0 ? (
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                      New problems coming soon
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-neutral-100 text-neutral-700">
+                      {solvedInBelt} / {belt.problems.length} Solved
+                    </span>
+                  )}
                   <button
                     className="p-1 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200/60 transition-colors"
                     aria-label="Toggle section"
@@ -277,7 +283,14 @@ export const LanguagePracticePage: React.FC = () => {
                 <div className="divide-y divide-neutral-100">
                   {belt.problems.length === 0 ? (
                     <div className="p-8 text-center text-sm text-neutral-500">
-                      No problems match your current search and filter criteria in this belt.
+                      <div className="max-w-md mx-auto space-y-1.5">
+                        <p className="font-semibold text-neutral-800">New problems coming soon</p>
+                        <p className="text-xs text-neutral-500">
+                          {searchQuery || selectedDifficulty !== 'all' || selectedStatus !== 'all'
+                            ? 'No problems match your current search and filter criteria in this belt.'
+                            : 'This belt is currently being updated with new curated benchmark challenges.'}
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     belt.problems.map((problem) => {

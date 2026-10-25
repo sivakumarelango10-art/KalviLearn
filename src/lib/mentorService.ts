@@ -2,7 +2,8 @@ import { fetchAllRows } from './supabasePaging'
 import { registerCacheClearer } from './cacheRegistry'
 import { supabase } from './supabase'
 import { calculateAuthoritativeStreak } from './streak'
-import { fetchTotalProblemCount } from './problemStatsService'
+import { fetchTotalProblemCount, mapToCanonicalPracticeSlug, getCanonicalPracticeProblem } from './problemStatsService'
+import { isPracticeArchiveEnabled } from './featureFlags'
 import problemsData from '../data/problems.json'
 
 export interface SolvedProblemItem {
@@ -149,16 +150,42 @@ export const COHORT_THRESHOLDS = {
 } as const
 
 export function computeStudentBelt(solvedCount: number) {
-  if (solvedCount >= 410) return { order: 10, name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
-  if (solvedCount >= 330) return { order: 9, name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
-  if (solvedCount >= 265) return { order: 8, name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
-  if (solvedCount >= 205) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
-  if (solvedCount >= 165) return { order: 6, name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
-  if (solvedCount >= 125) return { order: 5, name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
-  if (solvedCount >= 85) return { order: 4, name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
-  if (solvedCount >= 50) return { order: 3, name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
-  if (solvedCount >= 20) return { order: 2, name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+  if (!isPracticeArchiveEnabled()) {
+    if (solvedCount >= 410) return { order: 10, name: 'Belt 10', title: 'Black Belt: Advanced DP & Bitwise Reasoning', color: '#171717' }
+    if (solvedCount >= 330) return { order: 9, name: 'Belt 9', title: 'Sr. Red Belt: Graph Algorithms & Network Traversal', color: '#B91C1C' }
+    if (solvedCount >= 265) return { order: 8, name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+    if (solvedCount >= 205) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+    if (solvedCount >= 165) return { order: 6, name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+    if (solvedCount >= 125) return { order: 5, name: 'Belt 5', title: 'Blue Belt: Structured Problem Solving', color: '#3B82F6' }
+    if (solvedCount >= 85) return { order: 4, name: 'Belt 4', title: 'Purple Belt: Structured Problem Solving', color: '#8B5CF6' }
+    if (solvedCount >= 50) return { order: 3, name: 'Belt 3', title: 'Green Belt: Structured Problem Solving', color: '#10B981' }
+    if (solvedCount >= 20) return { order: 2, name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
+    return { order: 1, name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
+  }
+
+  // Active 58-problem milestones
+  if (solvedCount >= 45) return { order: 8, name: 'Belt 8', title: 'Red Belt: Trees & Hierarchical Structures', color: '#EF4444' }
+  if (solvedCount >= 35) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt: Search & Optimization', color: '#78350F' }
+  if (solvedCount >= 25) return { order: 6, name: 'Belt 6', title: 'Brown Belt: Recursion and State', color: '#92400E' }
+  if (solvedCount >= 10) return { order: 2, name: 'Belt 2', title: 'Orange Belt: Loop Logic & Introductory Arrays', color: '#F97316' }
   return { order: 1, name: 'Belt 1', title: 'Yellow Belt: Variables, Operators & Conditional Logic', color: '#EAB308' }
+}
+
+export function getBeltDefinitions(): Array<{
+  order: number
+  name: string
+  title: string
+  color: string
+  totalProblems: number
+}> {
+  const archiveEnabled = isPracticeArchiveEnabled()
+  return (problemsData as Array<{ order: number; name: string; title: string; color: string; problems: Array<{ isActive?: boolean }> }>).map((b) => ({
+    order: b.order,
+    name: b.name,
+    title: b.title,
+    color: b.color,
+    totalProblems: b.problems.filter((p: any) => !archiveEnabled || p.isActive !== false).length,
+  }))
 }
 
 export const BELT_DEFINITIONS: Array<{
@@ -167,13 +194,12 @@ export const BELT_DEFINITIONS: Array<{
   title: string
   color: string
   totalProblems: number
-}> = (problemsData as Array<{ order: number; name: string; title: string; color: string; problems: unknown[] }>).map((b) => ({
-  order: b.order,
-  name: b.name,
-  title: b.title,
-  color: b.color,
-  totalProblems: b.problems.length,
-}))
+}> = new Proxy([] as any, {
+  get(_target, prop, receiver) {
+    const defs = getBeltDefinitions()
+    return Reflect.get(defs, prop, receiver)
+  },
+})
 
 export function deduplicateSubmissions<T extends { userId?: string; studentId?: string; problemId?: string; problemSlug?: string; language?: string; createdAt?: string; createdAtRaw?: string; code?: string; status?: string }>(
   subs: T[],
@@ -474,15 +500,17 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       for (const p of solvedList) {
         const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
         const pLang = normalizeLanguage(p.language)
-        const slug = prob?.slug || p.problemId
+        const rawSlug = prob?.slug || p.problemId
+        const slug = mapToCanonicalPracticeSlug(rawSlug)
+        const canonicalProb = getCanonicalPracticeProblem(slug)
         if (slug) {
           solvedByLang[pLang].add(slug)
           if (!uniqueSolvedOverall.has(slug)) {
             uniqueSolvedOverall.set(slug, {
-              problemId: p.problemId,
-              title: prob?.title || 'Practice Challenge',
+              problemId: canonicalProb?.id || p.problemId,
+              title: canonicalProb?.title || prob?.title || 'Practice Challenge',
               slug,
-              difficulty: prob?.difficulty || 'Easy',
+              difficulty: canonicalProb?.difficulty || prob?.difficulty || 'Easy',
               beltName: prob?.Belt?.name || 'Belt 1',
               beltColor: prob?.Belt?.color || '#3B82F6',
               language: pLang,
@@ -499,7 +527,9 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
         if (s.status === 'PASSED' && (s.passedTests === 10 || s.passedTests === s.totalTests)) {
           const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
           const sLang = normalizeLanguage(s.language)
-          const slug = prob?.slug || s.problemId
+          const rawSlug = prob?.slug || s.problemId
+          const slug = mapToCanonicalPracticeSlug(rawSlug)
+          const canonicalProb = getCanonicalPracticeProblem(slug)
           if (slug) {
             solvedByLang[sLang].add(slug)
             const existing = uniqueSolvedOverall.get(slug)
@@ -507,10 +537,10 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
             const existingTime = existing?.solvedAt ? new Date(existing.solvedAt).getTime() : 0
             if (!existing || subTime > existingTime) {
               uniqueSolvedOverall.set(slug, {
-                problemId: s.problemId,
-                title: prob?.title || 'Practice Challenge',
+                problemId: canonicalProb?.id || s.problemId,
+                title: canonicalProb?.title || prob?.title || 'Practice Challenge',
                 slug,
-                difficulty: prob?.difficulty || 'Easy',
+                difficulty: canonicalProb?.difficulty || prob?.difficulty || 'Easy',
                 beltName: prob?.Belt?.name || 'Belt 1',
                 beltColor: prob?.Belt?.color || '#3B82F6',
                 language: sLang,

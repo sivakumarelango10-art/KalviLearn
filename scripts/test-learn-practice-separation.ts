@@ -119,53 +119,34 @@ console.log('\nTest 3: Practice /practice/python/belt-1-q3-largest-of-three-v1 i
 // --------------------------------------------------------------------------
 // TEST 4: Collision List & Data Independence
 // --------------------------------------------------------------------------
-console.log('\nTest 4: Learn "largest-of-three" and Practice "Largest of Three (Variant 1)" load distinct data across all collision pairs')
+console.log('\nTest 4: Learn "middle-of-three" and Practice "Middle Value (Variant 1)" load distinct data across collision pairs')
 {
   // 1. Learn question
-  const learnQ = getLearnQuestion('conditionals-control-flow', 'largest-of-three')
-  assert.ok(learnQ, 'Learn question largest-of-three must exist')
-  assert.strictEqual(learnQ.id, 'learn:conditionals-control-flow:largest-of-three')
-  assert.strictEqual(learnQ.slug, 'largest-of-three')
-  assert.strictEqual(learnQ.title, 'Largest of Three')
+  const learnQ = getLearnQuestion('conditionals-control-flow', 'middle-of-three')
+  assert.ok(learnQ, 'Learn question middle-of-three must exist')
+  assert.strictEqual(learnQ.id, 'learn:conditionals-control-flow:middle-of-three')
+  assert.strictEqual(learnQ.slug, 'middle-of-three')
+  assert.strictEqual(learnQ.title, 'Middle of Three')
 
   // 2. Practice problem
-  const practiceP = getProblemByLanguageAndSlug('python', 'belt-1-q3-largest-of-three-v1')
-  assert.strictEqual(practiceP.id, 'python_belt-1-q3-largest-of-three-v1')
-  assert.strictEqual(practiceP.slug, 'belt-1-q3-largest-of-three-v1')
+  const practiceP = getProblemByLanguageAndSlug('python', 'belt-1-q4-middle-value-v1')
+  assert.strictEqual(practiceP.id, 'python_belt-1-q4-middle-value-v1')
+  assert.strictEqual(practiceP.slug, 'belt-1-q4-middle-value-v1')
 
   // They are completely different
   assert.notStrictEqual(learnQ.id, practiceP.id)
   assert.notStrictEqual(learnQ.title, practiceP.title)
 
   // Test suites are independent
-  const learnSuite = resolveLearnServerSuite('largest-of-three')
-  const practiceSuite = getServerTests('belt-1-q3-largest-of-three-v1')
+  const learnSuite = resolveLearnServerSuite('middle-of-three')
+  const practiceSuite = getServerTests('belt-1-q4-middle-value-v1')
   assert.ok(learnSuite, 'Learn suite must resolve')
   assert.ok(practiceSuite, 'Practice suite must resolve')
-  assert.strictEqual(learnSuite.id, 'learn:conditionals-control-flow:largest-of-three')
+  assert.strictEqual(learnSuite.id, 'learn:conditionals-control-flow:middle-of-three')
   assert.strictEqual(practiceSuite.source, 'practice')
-  assert.strictEqual(practiceSuite.questionId, 'practice:belt-1-q3-largest-of-three-v1')
+  assert.strictEqual(practiceSuite.questionId, 'practice:belt-1-q4-middle-value-v1')
 
-  // Check all 6 semantic collision pairs discovered in section 1:
-  const collisionPairs = [
-    { learn: 'arithmetic-check', practice: 'belt-1-q1-arithmetic-check-v1' },
-    { learn: 'arithmetic-check', practice: 'belt-1-q11-arithmetic-check-v2' },
-    { learn: 'arithmetic-check', practice: 'belt-2-q1-arithmetic-check-v1' },
-    { learn: 'largest-of-three', practice: 'belt-1-q3-largest-of-three-v1' },
-    { learn: 'largest-of-three', practice: 'belt-1-q13-largest-of-three-v2' },
-    { learn: 'largest-of-three', practice: 'belt-2-q3-largest-of-three-v1' },
-  ]
-
-  for (const pair of collisionPairs) {
-    const lSuite = resolveLearnServerSuite(pair.learn)
-    const pSuite = getServerTests(pair.practice)
-    assert.ok(lSuite, `Learn suite for ${pair.learn} must resolve`)
-    assert.ok(pSuite, `Practice suite for ${pair.practice} must resolve`)
-    assert.notStrictEqual(lSuite.id, pSuite.questionId, 'Question IDs must be isolated')
-    assert.strictEqual(lSuite.id.startsWith('learn:'), true)
-  }
-
-  // Exact collision check across all 740 Learn questions vs 500 Practice problems:
+  // Exact collision check across all 950 Learn questions vs 500 Practice problems:
   const allLearn = getAllLearnQuestions()
   const curriculum = getCurriculum('python')
   const allPracticeSlugs = new Set(curriculum.belts.flatMap((b) => b.problems.map((p) => p.slug)))
@@ -191,14 +172,14 @@ console.log('\nTest 5: Old /practice/python/<learn-slug> redirects to Learn solv
   )
 
   // Verify findLearnQuestionBySlug resolves both bare slugs and namespaced slugs
-  const resolved = findLearnQuestionBySlug('largest-of-three')
-  assert.ok(resolved, 'findLearnQuestionBySlug("largest-of-three") must resolve')
+  const resolved = findLearnQuestionBySlug('middle-of-three')
+  assert.ok(resolved, 'findLearnQuestionBySlug("middle-of-three") must resolve')
   assert.strictEqual(resolved.topicSlug, 'conditionals-control-flow')
-  assert.strictEqual(resolved.slug, 'largest-of-three')
+  assert.strictEqual(resolved.slug, 'middle-of-three')
 
-  const resolvedNamespaced = findLearnQuestionBySlug('learn:conditionals-control-flow:largest-of-three')
+  const resolvedNamespaced = findLearnQuestionBySlug('learn:conditionals-control-flow:middle-of-three')
   assert.ok(resolvedNamespaced, 'findLearnQuestionBySlug with namespaced id must resolve')
-  assert.strictEqual(resolvedNamespaced.slug, 'largest-of-three')
+  assert.strictEqual(resolvedNamespaced.slug, 'middle-of-three')
   console.log('  PASS: Old /practice/<learn-slug> cleanly redirects to /learn/coding/:topic/:slug/solve')
 }
 
@@ -231,43 +212,32 @@ console.log('\nTest 6: Unknown Learn topic or question shows Not Found, not blan
 }
 
 // --------------------------------------------------------------------------
-// TEST 7: Question Counts per Topic Match Exactly Before and After
+// TEST 7: Question Counts per Topic Match Exactly Between Client and Server
 // --------------------------------------------------------------------------
-console.log('\nTest 7: Learn question counts per topic are identical before and after migration (~740 in total)')
+console.log('\nTest 7: Learn question counts per topic match between client and server stores (950 in total)')
 {
-  const rawQuestions = Object.values(rawQuestionsData as Record<string, any>)
-  assert.strictEqual(rawQuestions.length, 740, 'Original questions count must be 740')
-
   const migratedQuestions = getAllLearnQuestions()
-  assert.strictEqual(migratedQuestions.length, 740, 'Migrated questions count must be exactly 740')
+  assert.strictEqual(migratedQuestions.length, 950, 'Audited Learn questions count must be exactly 950')
 
   const allTopics = getAllLearnTopics()
   assert.strictEqual(allTopics.length, 24, 'There must be exactly 24 topics')
 
   let verifiedTotal = 0
   for (const topic of allTopics) {
-    const rawForTopic = Object.values(rawQuestionsData as Record<string, any>).filter(
-      (q: any) => q.topicId.toLowerCase() === topic.slug.toLowerCase()
-    )
     const migratedForTopic = getLearnQuestionsByTopic(topic.slug)
     const serverSuiteForTopic = getLearnServerSuitesByTopic(topic.slug)
 
     assert.strictEqual(
-      migratedForTopic.length,
-      rawForTopic.length,
-      `Topic ${topic.slug} count mismatch: raw=${rawForTopic.length}, migrated=${migratedForTopic.length}`
-    )
-    assert.strictEqual(
       serverSuiteForTopic.length,
-      rawForTopic.length,
-      `Server hidden suite count mismatch for ${topic.slug}`
+      migratedForTopic.length,
+      `Server hidden suite count mismatch for ${topic.slug}: client=${migratedForTopic.length}, server=${serverSuiteForTopic.length}`
     )
 
     verifiedTotal += migratedForTopic.length
   }
 
-  assert.strictEqual(verifiedTotal, 740, 'Sum of all topic questions must equal 740')
-  console.log(`  PASS: All 24 topics verified. Exact 740/740 count preserved across client and server stores`)
+  assert.strictEqual(verifiedTotal, 950, 'Sum of all topic questions must equal 950')
+  console.log(`  PASS: All 24 topics verified. Exact 950/950 count preserved across client and server stores`)
 }
 
 // --------------------------------------------------------------------------
@@ -349,11 +319,11 @@ console.log('\nTest 11: Server rejects client-supplied tests and authoritatively
 import sys
 parts = sys.stdin.read().split()
 if parts:
-    nums = [int(p) for p in parts]
-    print(max(nums))
+    nums = sorted([int(p) for p in parts])
+    print(nums[1])
 `
   const res = await executeQuestion({
-    questionSlug: 'learn:conditionals-control-flow:largest-of-three',
+    questionSlug: 'learn:conditionals-control-flow:middle-of-three',
     language: 'python',
     code: pythonCode,
     mode: 'submit',
@@ -365,7 +335,7 @@ if parts:
   assert.strictEqual(res.total, 10, 'Total test cases must be 10')
   assert.strictEqual(res.visibleCount, 3, 'Must have 3 visible test cases')
   assert.strictEqual(res.hiddenCount, 7, 'Must have 7 hidden test cases')
-  assert.strictEqual(res.questionId, 'learn:conditionals-control-flow:largest-of-three')
+  assert.strictEqual(res.questionId, 'learn:conditionals-control-flow:middle-of-three')
 
   // Verify that testCases in client response do NOT expose hidden input/output
   for (const tc of res.testCases) {
