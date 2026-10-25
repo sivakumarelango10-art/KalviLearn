@@ -151,6 +151,11 @@ function executePython(code, input) {
           return inputLines[lineIndex++];
         }
         return "";
+      },
+      [Symbol.iterator]: function* () {
+        for (const line of inputLines) {
+          yield line;
+        }
       }
     },
     stdout: {
@@ -197,9 +202,18 @@ function executePython(code, input) {
     log2: Math.log2,
     log10: Math.log10
   };
+  const json = {
+    loads: (s) => {
+      const str = String(s ?? "").trim();
+      if (!str) return {};
+      return JSON.parse(str);
+    },
+    dumps: (v) => JSON.stringify(v)
+  };
   const env = {
     sys,
     math,
+    json,
     process: void 0,
     require: void 0,
     global: void 0,
@@ -276,6 +290,9 @@ function executePython(code, input) {
     },
     chr: (code2) => String.fromCharCode(code2),
     ord: (char) => char ? char.charCodeAt(0) : 0,
+    bin: (n) => Number(n) < 0 ? "-0b" + (-Number(n)).toString(2) : "0b" + Number(n).toString(2),
+    hex: (n) => Number(n) < 0 ? "-0x" + (-Number(n)).toString(16) : "0x" + Number(n).toString(16),
+    oct: (n) => Number(n) < 0 ? "-0o" + (-Number(n)).toString(8) : "0o" + Number(n).toString(8),
     intDiv: (a, b) => {
       if (b === 0) throw new Error("ZeroDivisionError: integer division or modulo by zero");
       return Math.floor(a / b);
@@ -360,6 +377,17 @@ function executePython(code, input) {
       line = line.replace(
         /\[\s*([a-zA-Z0-9_().+*\/ -]+)\s+for\s+([a-zA-Z0-9_]+)\s+in\s+([^\]]+)\]/g,
         "($3).map(($2) => $1)"
+      );
+      line = line.replace(/([a-zA-Z0-9_)]+)\s*\[\s*:\s*:\s*-1\s*\]/g, 'Array.from($1).reverse().join("")');
+      line = line.replace(
+        /([a-zA-Z0-9_)]+)\s*\[\s*(-?\d+|[a-zA-Z0-9_()]+)?\s*:\s*(-?\d+|[a-zA-Z0-9_()]+)?\s*\]/g,
+        (_m, target, start, end) => {
+          const s = start !== void 0 ? start : "0";
+          if (end !== void 0) {
+            return `${target}.slice(${s}, ${end})`;
+          }
+          return `${target}.slice(${s})`;
+        }
       );
       line = line.replace(
         /if\s+([a-zA-Z0-9_'"\(\)]+)\s+in\s+([a-zA-Z0-9_'"\(\)]+)\s*:/g,
@@ -450,316 +478,31 @@ if (typeof solve === 'function') {
   }
 }
 
-// src/server/sandbox.ts
-var PER_CASE_TIMEOUT_MS = 1e3;
-var CONTEXT_INIT = `
-var __name = function (f) { return f };
-try {
-  Object.defineProperty(Error, 'prepareStackTrace', { value: undefined, writable: false, configurable: false });
-} catch (_) {}
-`;
-function blockedConstructor() {
-  throw new Error("Security Violation: Dynamic code generation is disabled.");
-}
-function withHardenedHostIntrinsics(fn) {
-  const protos = [
-    Function.prototype,
-    Object.getPrototypeOf(async function() {
-    }),
-    Object.getPrototypeOf(function* () {
-    }),
-    Object.getPrototypeOf(async function* () {
-    })
-  ];
-  const saved = protos.map((p) => Object.getOwnPropertyDescriptor(p, "constructor"));
-  for (const p of protos) {
-    Object.defineProperty(p, "constructor", { value: blockedConstructor, writable: true, configurable: true });
-  }
-  try {
-    return fn();
-  } finally {
-    protos.forEach((p, i) => {
-      const descriptor = saved[i];
-      if (descriptor) Object.defineProperty(p, "constructor", descriptor);
-    });
-  }
-}
-var sandboxEvaluator = (keys, values, body) => {
-  const sandbox = /* @__PURE__ */ Object.create(null);
-  const context = vm.createContext(sandbox, {
-    microtaskMode: "afterEvaluate",
-    codeGeneration: { strings: false, wasm: false }
-  });
-  vm.runInContext(CONTEXT_INIT, context, { timeout: PER_CASE_TIMEOUT_MS });
-  vm.runInContext(`(${installPythonRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS });
-  for (let i = 0; i < keys.length; i++) {
-    sandbox[keys[i]] = values[i];
-  }
-  const script = new vm.Script(`(function () {
-${body}
-}).call(undefined)`, { filename: "submission.js" });
-  withHardenedHostIntrinsics(() => {
-    try {
-      script.runInContext(context, { timeout: PER_CASE_TIMEOUT_MS, breakOnSigint: false });
-    } catch (err) {
-      const ownValue = (key) => {
-        try {
-          return err !== null && typeof err === "object" && !types.isProxy(err) ? Object.getOwnPropertyDescriptor(err, key)?.value : void 0;
-        } catch {
-          return void 0;
-        }
-      };
-      if (ownValue("code") === "ERR_SCRIPT_EXECUTION_TIMEOUT" || /timed out/i.test(String(ownValue("message")))) {
-        throw new Error("Time Limit Exceeded");
-      }
-      const message = ownValue("message");
-      const text = typeof message === "string" ? message : "Runtime Error";
-      throw new Error(text);
-    }
-  });
-};
-var SANDBOX_REJECTION_WINDOW_MS = 5e3;
-var lastSandboxRunAt = 0;
-var rejectionGuardInstalled = false;
-var lastRejectionWarnAt = 0;
-function installRejectionGuard() {
-  if (rejectionGuardInstalled) return;
-  rejectionGuardInstalled = true;
-  process.on("unhandledRejection", (reason) => {
-    if (Date.now() - lastSandboxRunAt < SANDBOX_REJECTION_WINDOW_MS) {
-      if (Date.now() - lastRejectionWarnAt > 5e3) {
-        lastRejectionWarnAt = Date.now();
-        console.warn("[sandbox] dropped unhandled promise rejection(s) raised by submitted code");
-      }
-      return;
-    }
-    throw reason;
-  });
-}
-var installed = false;
-function installSandbox() {
-  if (installed) return;
-  installRejectionGuard();
-  setEvaluator((keys, values, body) => {
-    lastSandboxRunAt = Date.now();
-    try {
-      sandboxEvaluator(keys, values, body);
-    } finally {
-      lastSandboxRunAt = Date.now();
-    }
-  });
-  installed = true;
-}
-
-// src/lib/runner/cppRunner.ts
-function executeCpp(code, input) {
-  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
-    return {
-      output: "",
-      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
-    };
-  }
-  const outputs = [];
-  const normalizedInput = input.replace(/\r\n/g, "\n");
-  const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
-  let tokenIdx = 0;
-  const inputLines = normalizedInput.split("\n");
-  let lineIdx = 0;
-  let lastReadOk = true;
-  const __cin = {
-    next: () => {
-      if (tokenIdx < tokens.length) {
-        lastReadOk = true;
-        const val = tokens[tokenIdx++];
-        const num = Number(val);
-        return isNaN(num) ? val : num;
-      }
-      lastReadOk = false;
-      return 0;
-    },
-    nextString: () => {
-      if (tokenIdx < tokens.length) {
-        lastReadOk = true;
-        return tokens[tokenIdx++];
-      }
-      lastReadOk = false;
-      return "";
-    },
-    nextLine: () => {
-      if (lineIdx < inputLines.length) {
-        lastReadOk = true;
-        return inputLines[lineIdx++];
-      }
-      lastReadOk = false;
-      return "";
-    },
-    hasNext: () => tokenIdx < tokens.length,
-    ok: () => lastReadOk
-  };
-  let currentLineBuffer = "";
-  const __cout = {
-    write: (val) => {
-      if (val === void 0 || val === null) return;
-      const strVal = String(val);
-      if (strVal.includes("\n")) {
-        const parts = strVal.split("\n");
-        currentLineBuffer += parts[0];
-        outputs.push(currentLineBuffer);
-        for (let i = 1; i < parts.length - 1; i++) {
-          outputs.push(parts[i]);
-        }
-        currentLineBuffer = parts[parts.length - 1];
-      } else {
-        currentLineBuffer += strVal;
-      }
-    },
-    endl: () => {
-      outputs.push(currentLineBuffer);
-      currentLineBuffer = "";
-    },
-    flush: () => {
-      if (currentLineBuffer.length > 0) {
-        outputs.push(currentLineBuffer);
-        currentLineBuffer = "";
-      }
-    }
-  };
-  const env = {
-    __cin,
-    __cout,
-    process: void 0,
-    require: void 0,
-    global: void 0,
-    globalThis: void 0,
-    endl: "\n",
-    INT_MAX: 2147483647,
-    INT_MIN: -2147483648,
-    LLONG_MAX: Number.MAX_SAFE_INTEGER,
-    LLONG_MIN: Number.MIN_SAFE_INTEGER,
-    min: (...args) => Math.min(...args),
-    max: (...args) => Math.max(...args),
-    abs: (val) => Math.abs(val),
-    sqrt: (val) => Math.sqrt(val),
-    pow: (base, exponent) => Math.pow(base, exponent),
-    __gcd: (a, b) => {
-      let numA = Math.abs(Math.round(a));
-      let numB = Math.abs(Math.round(b));
-      while (numB) {
-        const temp = numB;
-        numB = numA % numB;
-        numA = temp;
-      }
-      return numA;
-    },
-    gcd: (a, b) => {
-      let numA = Math.abs(Math.round(a));
-      let numB = Math.abs(Math.round(b));
-      while (numB) {
-        const temp = numB;
-        numB = numA % numB;
-        numA = temp;
-      }
-      return numA;
-    },
-    to_string: (val) => String(val),
-    stoi: (s) => parseInt(String(s), 10) || 0,
-    stoll: (s) => parseInt(String(s), 10) || 0,
-    stod: (s) => parseFloat(String(s)) || 0,
-    printf: (...args) => {
-      if (args.length > 0) {
-        __cout.write(args.join(" "));
-      }
-    }
-  };
-  try {
-    let cleanCode = "let __loopGuard = 0;\n" + code;
-    cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
-    cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
-    cleanCode = cleanCode.replace(/^\s*#include\s*<.*?>/gm, "");
-    cleanCode = cleanCode.replace(/^\s*#include\s*".*?"/gm, "");
-    cleanCode = cleanCode.replace(/^\s*#define\s+.*$/gm, "");
-    cleanCode = cleanCode.replace(/^\s*using\s+namespace\s+std\s*;/gm, "");
-    cleanCode = cleanCode.replace(/std::/g, "");
-    cleanCode = cleanCode.replace(/ios_base::sync_with_stdio\(.*?\);?/g, "");
-    cleanCode = cleanCode.replace(/cin\.tie\(.*?\);?/g, "");
-    cleanCode = cleanCode.replace(/cout\.tie\(.*?\);?/g, "");
-    cleanCode = cleanCode.replace(/cout\s*<<\s*([^\n;]+);/g, (_match, exprList) => {
-      const parts = exprList.split("<<").map((p) => p.trim()).filter(Boolean);
-      const statements = parts.map((p) => {
-        if (p === "endl" || p === "'\\n'" || p === '"\\n"') {
-          return "__cout.endl()";
-        }
-        return `__cout.write(${p})`;
-      });
-      return "{ " + statements.join("; ") + "; }";
-    });
-    cleanCode = cleanCode.replace(/\b(if|while)\s*\(\s*cin\s*>>\s*([^\)]+)\)/g, (_match, kw, varList) => {
-      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
-      const assignments = vars.map((v) => `${v} = __cin.next()`).join(", ");
-      return `${kw} ((${assignments}), __cin.ok())`;
-    });
-    cleanCode = cleanCode.replace(/cin\s*>>\s*([^\n;]+);/g, (_match, varList) => {
-      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
-      const statements = vars.map((v) => {
-        return `${v} = __cin.next()`;
-      });
-      return "{ " + statements.join("; ") + "; }";
-    });
-    cleanCode = cleanCode.replace(/getline\s*\(\s*cin\s*,\s*([a-zA-Z0-9_]+)\s*\)/g, "$1 = __cin.nextLine()");
-    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^,]+)\s*,\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill($3);");
-    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill(0);");
-    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*;/g, "let $1 = [];");
-    cleanCode = cleanCode.replace(/\b(?:int|long\s+long|double|float|char|bool)\s+([a-zA-Z0-9_]+)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
-    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*,\s*greater\s*<[^>]+>\s*\(\s*\)\s*\)/g, "$1.sort((a, b) => b - a)");
-    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, "$1.sort((a, b) => a - b)");
-    cleanCode = cleanCode.replace(/reverse\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, "$1.reverse()");
-    cleanCode = cleanCode.replace(/\.push_back\s*\(/g, ".push(");
-    cleanCode = cleanCode.replace(/\.pop_back\s*\(\s*\)/g, ".pop()");
-    cleanCode = cleanCode.replace(/\.size\s*\(\s*\)/g, ".length");
-    const typeRegex = /\b(?:int|long\s+long|long|double|float|bool|string|char|auto)\s+([a-zA-Z0-9_,\s=+\-*/%()]+);/g;
-    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
-      const decls = declBody.split(",").map((d) => {
-        const item = d.trim();
-        if (item.includes("=")) {
-          return item;
-        }
-        return `${item} = 0`;
-      });
-      return `let ${decls.join(", ")};`;
-    });
-    cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long\s+long|long|size_t|auto)\s+/g, "for (let ");
-    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
-    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
-    cleanCode = cleanCode.replace(/\b(?:int|void|long\s+long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
-      const cleanParams = params.split(",").map((p) => {
-        const parts = p.trim().split(/\s+/);
-        return parts[parts.length - 1].replace(/[&*]/g, "");
-      }).filter(Boolean).join(", ");
-      return `function ${fnName}(${cleanParams}) {`;
-    });
-    cleanCode += `
-__cout.flush();
-if (typeof main === 'function') {
-  main();
-} else if (typeof solve === 'function') {
-  solve();
-}
-__cout.flush();
-`;
-    const keys = Object.keys(env);
-    const values = Object.values(env);
-    evaluate(keys, values, cleanCode);
-    __cout.flush();
-    return { output: outputs.join("\n").trim() };
-  } catch (err) {
-    return {
-      output: outputs.join("\n").trim(),
-      error: err.message || "C++ execution error"
-    };
-  }
-}
-
 // src/lib/runner/javaRunner.ts
+function installJavaRuntimeExtensions() {
+  if (typeof Array !== "undefined") {
+    const ap = Array.prototype;
+    if (!ap.add) ap.add = function(item) {
+      this.push(item);
+      return true;
+    };
+    if (!ap.get) ap.get = function(idx) {
+      return this[idx];
+    };
+    if (!ap.size) ap.size = function() {
+      return this.length;
+    };
+    if (!ap.isEmpty) ap.isEmpty = function() {
+      return this.length === 0;
+    };
+  }
+  if (typeof String !== "undefined") {
+    const sp = String.prototype;
+    if (!sp.isEmpty) sp.isEmpty = function() {
+      return this.length === 0;
+    };
+  }
+}
 function executeJava(code, input) {
   if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
     return {
@@ -900,8 +643,15 @@ function executeJava(code, input) {
     require: void 0,
     global: void 0,
     globalThis: void 0,
+    Character: {
+      isWhitespace: (c) => /\s/.test(String(c)),
+      isDigit: (c) => /\d/.test(String(c)),
+      isLetter: (c) => /[a-zA-Z]/.test(String(c))
+    },
     Integer: {
       parseInt: (s) => parseInt(String(s), 10) || 0,
+      toBinaryString: (n) => (Number(n) >>> 0).toString(2),
+      toHexString: (n) => (Number(n) >>> 0).toString(16),
       MAX_VALUE: 2147483647,
       MIN_VALUE: -2147483648
     },
@@ -925,6 +675,7 @@ function executeJava(code, input) {
       PI: Math.PI
     }
   };
+  installJavaRuntimeExtensions();
   try {
     let cleanCode = "let __loopGuard = 0;\n" + code;
     cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -936,20 +687,46 @@ function executeJava(code, input) {
     if (lastBrace !== -1) {
       cleanCode = cleanCode.substring(0, lastBrace) + cleanCode.substring(lastBrace + 1);
     }
-    cleanCode = cleanCode.replace(/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*[a-zA-Z0-9_]*\s*\)/g, "function main()");
-    cleanCode = cleanCode.replace(/public\s+static\s+(?:void|int|long|double|boolean|String)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/g, (_m, fnName, params) => {
+    cleanCode = cleanCode.replace(/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*[a-zA-Z0-9_]*\s*\)(?:\s+throws\s+[^{]+)?/g, "function main()");
+    cleanCode = cleanCode.replace(/(?:public\s+|private\s+|protected\s+)?static\s+(?:void|int|long|double|boolean|String|Object|List<[^>]+>|Map<[^>]+>|[a-zA-Z0-9_]+(?:<[^>]+>)?)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)(?:\s+throws\s+[^{]+)?/g, (_m, fnName, params) => {
       const cleanParams = params.split(",").map((p) => {
         const parts = p.trim().split(/\s+/);
         return parts[parts.length - 1];
       }).filter(Boolean).join(", ");
       return `function ${fnName}(${cleanParams})`;
     });
+    cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*\{([^}]+)\}\s*;/g, "let $1 = [$2];");
     cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*new\s+(?:int|long|double|float|boolean|String)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
     cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|StringTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, "let $1 = new ");
     cleanCode = cleanCode.replace(/(?:ArrayList|List)\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*new\s+(?:ArrayList|List)\s*<[^>]*>\s*\(\s*\)\s*;/g, "let $1 = [];");
-    const typeRegex = /\b(?:int|long|double|float|boolean|char|String)\s+([a-zA-Z0-9_,\s=+\-*/%().]+);/g;
+    const splitTopLevelCommas = (str) => {
+      const parts = [];
+      let depth = 0;
+      let inQuote = false;
+      let quoteChar = "";
+      let start = 0;
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (inQuote) {
+          if (c === quoteChar && str[i - 1] !== "\\") inQuote = false;
+        } else if (c === '"' || c === "'") {
+          inQuote = true;
+          quoteChar = c;
+        } else if (c === "(" || c === "[" || c === "{") {
+          depth++;
+        } else if (c === ")" || c === "]" || c === "}") {
+          depth--;
+        } else if (c === "," && depth === 0) {
+          parts.push(str.substring(start, i));
+          start = i + 1;
+        }
+      }
+      parts.push(str.substring(start));
+      return parts;
+    };
+    const typeRegex = /\b(?:int|long|double|float|boolean|char|String|Object|List<[^>]+>)(?:\[\s*\])?\s+([^;]+);/g;
     cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
-      const decls = declBody.split(",").map((d) => {
+      const decls = splitTopLevelCommas(declBody).map((d) => {
         const item = d.trim();
         if (item.includes("=")) {
           return item;
@@ -981,6 +758,391 @@ System.out.flush();
       error: err.message || "Java execution error"
     };
   }
+}
+
+// src/lib/runner/cppRunner.ts
+function installCppRuntimeExtensions() {
+  if (typeof Array !== "undefined") {
+    const ap = Array.prototype;
+    if (!ap.empty) ap.empty = function() {
+      return this.length === 0;
+    };
+    if (!ap.size) ap.size = function() {
+      return this.length;
+    };
+    if (!ap.push_back) ap.push_back = function(item) {
+      this.push(item);
+    };
+    if (!ap.pop_back) ap.pop_back = function() {
+      return this.pop();
+    };
+  }
+  if (typeof String !== "undefined") {
+    const sp = String.prototype;
+    if (!sp.empty) sp.empty = function() {
+      return this.length === 0;
+    };
+    if (!sp.size) sp.size = function() {
+      return this.length;
+    };
+    if (!sp.find) {
+      sp.find = function(pat, pos) {
+        return this.indexOf(pat, pos);
+      };
+    }
+    if (!sp.substr) {
+      sp.substr = function(start, len) {
+        if (len === void 0) return this.substring(start);
+        return this.substring(start, start + Math.max(0, len));
+      };
+    }
+  }
+}
+function executeCpp(code, input) {
+  if (/process\s*\.\s*env/i.test(code) || /child_process/i.test(code) || /__proto__/i.test(code)) {
+    return {
+      output: "",
+      error: "Security Violation: Access to system environment and child processes is strictly forbidden."
+    };
+  }
+  const outputs = [];
+  const normalizedInput = input.replace(/\r\n/g, "\n");
+  const tokens = normalizedInput.trim().split(/\s+/).filter(Boolean);
+  let tokenIdx = 0;
+  const inputLines = normalizedInput.split("\n");
+  let lineIdx = 0;
+  let lastReadOk = true;
+  const __cin = {
+    next: () => {
+      if (tokenIdx < tokens.length) {
+        lastReadOk = true;
+        const val = tokens[tokenIdx++];
+        const num = Number(val);
+        return isNaN(num) ? val : num;
+      }
+      lastReadOk = false;
+      return 0;
+    },
+    nextString: () => {
+      if (tokenIdx < tokens.length) {
+        lastReadOk = true;
+        return tokens[tokenIdx++];
+      }
+      lastReadOk = false;
+      return "";
+    },
+    nextLine: () => {
+      if (lineIdx < inputLines.length) {
+        lastReadOk = true;
+        return inputLines[lineIdx++];
+      }
+      lastReadOk = false;
+      return "";
+    },
+    hasNext: () => tokenIdx < tokens.length,
+    ok: () => lastReadOk
+  };
+  let currentLineBuffer = "";
+  const __cout = {
+    write: (val) => {
+      if (val === void 0 || val === null) return;
+      const strVal = String(val);
+      if (strVal.includes("\n")) {
+        const parts = strVal.split("\n");
+        currentLineBuffer += parts[0];
+        outputs.push(currentLineBuffer);
+        for (let i = 1; i < parts.length - 1; i++) {
+          outputs.push(parts[i]);
+        }
+        currentLineBuffer = parts[parts.length - 1];
+      } else {
+        currentLineBuffer += strVal;
+      }
+    },
+    endl: () => {
+      outputs.push(currentLineBuffer);
+      currentLineBuffer = "";
+    },
+    flush: () => {
+      if (currentLineBuffer.length > 0) {
+        outputs.push(currentLineBuffer);
+        currentLineBuffer = "";
+      }
+    }
+  };
+  const env = {
+    __cin,
+    __cout,
+    process: void 0,
+    require: void 0,
+    global: void 0,
+    globalThis: void 0,
+    endl: "\n",
+    INT_MAX: 2147483647,
+    INT_MIN: -2147483648,
+    LLONG_MAX: Number.MAX_SAFE_INTEGER,
+    LLONG_MIN: Number.MIN_SAFE_INTEGER,
+    min: (...args) => Math.min(...args),
+    max: (...args) => Math.max(...args),
+    abs: (val) => Math.abs(val),
+    sqrt: (val) => Math.sqrt(val),
+    pow: (base, exponent) => Math.pow(base, exponent),
+    __gcd: (a, b) => {
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
+      }
+      return numA;
+    },
+    gcd: (a, b) => {
+      let numA = Math.abs(Math.round(a));
+      let numB = Math.abs(Math.round(b));
+      while (numB) {
+        const temp = numB;
+        numB = numA % numB;
+        numA = temp;
+      }
+      return numA;
+    },
+    to_string: (val) => String(val),
+    stoi: (s) => parseInt(String(s), 10) || 0,
+    stoll: (s) => parseInt(String(s), 10) || 0,
+    stod: (s) => parseFloat(String(s)) || 0,
+    stof: (s) => parseFloat(String(s)) || 0,
+    isspace: (ch) => typeof ch === "string" && /\s/.test(ch),
+    tolower: (ch) => typeof ch === "string" ? ch.toLowerCase() : ch,
+    toupper: (ch) => typeof ch === "string" ? ch.toUpperCase() : ch,
+    isdigit: (ch) => typeof ch === "string" && /\d/.test(ch),
+    isalpha: (ch) => typeof ch === "string" && /[a-zA-Z]/.test(ch),
+    isalnum: (ch) => typeof ch === "string" && /[a-zA-Z0-9]/.test(ch),
+    printf: (...args) => {
+      if (args.length > 0) {
+        __cout.write(args.join(" "));
+      }
+    }
+  };
+  installCppRuntimeExtensions();
+  try {
+    let cleanCode = "let __loopGuard = 0;\n" + code;
+    cleanCode = cleanCode.replace(/\/\*[\s\S]*?\*\//g, "");
+    cleanCode = cleanCode.replace(/\/\/.*$/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#include\s*<.*?>/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#include\s*".*?"/gm, "");
+    cleanCode = cleanCode.replace(/^\s*#define\s+.*$/gm, "");
+    cleanCode = cleanCode.replace(/^\s*using\s+namespace\s+std\s*;/gm, "");
+    cleanCode = cleanCode.replace(/std::/g, "");
+    cleanCode = cleanCode.replace(/ios(?:_base)?::sync_with_stdio\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cin\.tie\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cout\.tie\(.*?\);?/g, "");
+    cleanCode = cleanCode.replace(/cout\s*<<\s*([^\n;]+);/g, (_match, exprList) => {
+      const parts = exprList.split("<<").map((p) => p.trim()).filter(Boolean);
+      const statements = parts.map((p) => {
+        if (p === "endl" || p === "'\\n'" || p === '"\\n"') {
+          return "__cout.endl()";
+        }
+        return `__cout.write(${p})`;
+      });
+      return "{ " + statements.join("; ") + "; }";
+    });
+    cleanCode = cleanCode.replace(/\b(if|while)\s*\(\s*cin\s*>>\s*([^\)]+)\)/g, (_match, kw, varList) => {
+      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
+      const assignments = vars.map((v) => `${v} = __cin.next()`).join(", ");
+      return `${kw} ((${assignments}), __cin.ok())`;
+    });
+    cleanCode = cleanCode.replace(/cin\s*>>\s*([^\n;]+);/g, (_match, varList) => {
+      const vars = varList.split(">>").map((v) => v.trim()).filter(Boolean);
+      const statements = vars.map((v) => {
+        return `${v} = __cin.next()`;
+      });
+      return "{ " + statements.join("; ") + "; }";
+    });
+    cleanCode = cleanCode.replace(/getline\s*\(\s*cin\s*,\s*([a-zA-Z0-9_]+)\s*\)/g, "$1 = __cin.nextLine()");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*\{([^}]+)\}\s*;/g, "let $1 = [$2];");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*([^;]+);/g, "let $1 = $2;");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^,]+)\s*,\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill($3);");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^)]+)\s*\)\s*;/g, "let $1 = new Array($2).fill(0);");
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*;/g, "let $1 = [];");
+    cleanCode = cleanCode.replace(/\b(?:int|long\s+long|double|float|char|bool)\s+([a-zA-Z0-9_]+)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
+    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*,\s*greater\s*<[^>]+>\s*\(\s*\)\s*\)/g, "$1.sort((a, b) => b - a)");
+    cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, "$1.sort((a, b) => a - b)");
+    cleanCode = cleanCode.replace(/reverse\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, '$1 = Array.isArray($1) ? ($1.reverse(), $1) : Array.from($1).reverse().join("")');
+    cleanCode = cleanCode.replace(/\.push_back\s*\(/g, ".push(");
+    cleanCode = cleanCode.replace(/\.pop_back\s*\(\s*\)/g, ".pop()");
+    cleanCode = cleanCode.replace(/\.size\s*\(\s*\)/g, ".length");
+    cleanCode = cleanCode.replace(/string::npos/g, "-1");
+    cleanCode = cleanCode.replace(/\((?:int|long\s+long|long|double|float|char|bool|size_t)\)\s*/g, "");
+    cleanCode = cleanCode.replace(/\b(?:vector\s*<[^>]+>|int|void|long\s+long|long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
+      const cleanParams = params.split(",").map((p) => {
+        const parts = p.trim().split(/\s+/);
+        return parts[parts.length - 1].replace(/[&*]/g, "");
+      }).filter(Boolean).join(", ");
+      return `function ${fnName}(${cleanParams}) {`;
+    });
+    const splitTopLevelCommas = (str) => {
+      const parts = [];
+      let depth = 0;
+      let inQuote = false;
+      let quoteChar = "";
+      let start = 0;
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (inQuote) {
+          if (c === quoteChar && str[i - 1] !== "\\") inQuote = false;
+        } else if (c === '"' || c === "'") {
+          inQuote = true;
+          quoteChar = c;
+        } else if (c === "(" || c === "[" || c === "{") {
+          depth++;
+        } else if (c === ")" || c === "]" || c === "}") {
+          depth--;
+        } else if (c === "," && depth === 0) {
+          parts.push(str.substring(start, i));
+          start = i + 1;
+        }
+      }
+      parts.push(str.substring(start));
+      return parts;
+    };
+    const typeRegex = /\b(?:const\s+)?(?:int|long\s+long|long|double|float|bool|string|char|auto|size_t)\s+([^{};]+);/g;
+    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
+      const decls = splitTopLevelCommas(declBody).map((d) => {
+        const item = d.trim();
+        if (item.includes("=")) {
+          return item;
+        }
+        return `${item} = 0`;
+      });
+      return `let ${decls.join(", ")};`;
+    });
+    cleanCode = cleanCode.replace(/for\s*\(\s*(?:const\s+)?(?:int|long\s+long|long|size_t|auto)\s+/g, "for (let ");
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");');
+    cleanCode += `
+__cout.flush();
+if (typeof main === 'function') {
+  main();
+} else if (typeof solve === 'function') {
+  solve();
+}
+__cout.flush();
+`;
+    const keys = Object.keys(env);
+    const values = Object.values(env);
+    evaluate(keys, values, cleanCode);
+    __cout.flush();
+    return { output: outputs.join("\n").trim() };
+  } catch (err) {
+    return {
+      output: outputs.join("\n").trim(),
+      error: err.message || "C++ execution error"
+    };
+  }
+}
+
+// src/server/sandbox.ts
+var PER_CASE_TIMEOUT_MS = 1e3;
+var CONTEXT_INIT = `
+var __name = function (f) { return f };
+try {
+  Object.defineProperty(Error, 'prepareStackTrace', { value: undefined, writable: false, configurable: false });
+} catch (_) {}
+`;
+function blockedConstructor() {
+  throw new Error("Security Violation: Dynamic code generation is disabled.");
+}
+function withHardenedHostIntrinsics(fn) {
+  const protos = [
+    Function.prototype,
+    Object.getPrototypeOf(async function() {
+    }),
+    Object.getPrototypeOf(function* () {
+    }),
+    Object.getPrototypeOf(async function* () {
+    })
+  ];
+  const saved = protos.map((p) => Object.getOwnPropertyDescriptor(p, "constructor"));
+  for (const p of protos) {
+    Object.defineProperty(p, "constructor", { value: blockedConstructor, writable: true, configurable: true });
+  }
+  try {
+    return fn();
+  } finally {
+    protos.forEach((p, i) => {
+      const descriptor = saved[i];
+      if (descriptor) Object.defineProperty(p, "constructor", descriptor);
+    });
+  }
+}
+var sandboxEvaluator = (keys, values, body) => {
+  const sandbox = /* @__PURE__ */ Object.create(null);
+  const context = vm.createContext(sandbox, {
+    microtaskMode: "afterEvaluate",
+    codeGeneration: { strings: false, wasm: false }
+  });
+  vm.runInContext(CONTEXT_INIT, context, { timeout: PER_CASE_TIMEOUT_MS });
+  vm.runInContext(`(${installPythonRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS });
+  vm.runInContext(`(${installJavaRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS });
+  vm.runInContext(`(${installCppRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS });
+  for (let i = 0; i < keys.length; i++) {
+    sandbox[keys[i]] = values[i];
+  }
+  const script = new vm.Script(`(function () {
+${body}
+}).call(undefined)`, { filename: "submission.js" });
+  withHardenedHostIntrinsics(() => {
+    try {
+      script.runInContext(context, { timeout: PER_CASE_TIMEOUT_MS, breakOnSigint: false });
+    } catch (err) {
+      const ownValue = (key) => {
+        try {
+          return err !== null && typeof err === "object" && !types.isProxy(err) ? Object.getOwnPropertyDescriptor(err, key)?.value : void 0;
+        } catch {
+          return void 0;
+        }
+      };
+      if (ownValue("code") === "ERR_SCRIPT_EXECUTION_TIMEOUT" || /timed out/i.test(String(ownValue("message")))) {
+        throw new Error("Time Limit Exceeded");
+      }
+      const message = ownValue("message");
+      const text = typeof message === "string" ? message : "Runtime Error";
+      throw new Error(text);
+    }
+  });
+};
+var SANDBOX_REJECTION_WINDOW_MS = 5e3;
+var lastSandboxRunAt = 0;
+var rejectionGuardInstalled = false;
+var lastRejectionWarnAt = 0;
+function installRejectionGuard() {
+  if (rejectionGuardInstalled) return;
+  rejectionGuardInstalled = true;
+  process.on("unhandledRejection", (reason) => {
+    if (Date.now() - lastSandboxRunAt < SANDBOX_REJECTION_WINDOW_MS) {
+      if (Date.now() - lastRejectionWarnAt > 5e3) {
+        lastRejectionWarnAt = Date.now();
+        console.warn("[sandbox] dropped unhandled promise rejection(s) raised by submitted code");
+      }
+      return;
+    }
+    throw reason;
+  });
+}
+var installed = false;
+function installSandbox() {
+  if (installed) return;
+  installRejectionGuard();
+  setEvaluator((keys, values, body) => {
+    lastSandboxRunAt = Date.now();
+    try {
+      sandboxEvaluator(keys, values, body);
+    } finally {
+      lastSandboxRunAt = Date.now();
+    }
+  });
+  installed = true;
 }
 
 // src/server/codeRunnerCore.ts

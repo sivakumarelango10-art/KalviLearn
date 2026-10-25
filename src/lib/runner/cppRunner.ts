@@ -8,6 +8,31 @@
  */
 import { evaluate } from './evaluator'
 
+export function installCppRuntimeExtensions(): void {
+  if (typeof Array !== 'undefined') {
+    const ap = Array.prototype as any
+    if (!ap.empty) ap.empty = function () { return this.length === 0 }
+    if (!ap.size) ap.size = function () { return this.length }
+    if (!ap.push_back) ap.push_back = function (item: any) { this.push(item) }
+    if (!ap.pop_back) ap.pop_back = function () { return this.pop() }
+  }
+  if (typeof String !== 'undefined') {
+    const sp = String.prototype as any
+    if (!sp.empty) sp.empty = function () { return this.length === 0 }
+    if (!sp.size) sp.size = function () { return this.length }
+    if (!sp.find) {
+      sp.find = function (pat: any, pos?: number) {
+        return this.indexOf(pat, pos)
+      }
+    }
+    if (!sp.substr) {
+      sp.substr = function (start: number, len?: number) {
+        if (len === undefined) return this.substring(start)
+        return this.substring(start, start + Math.max(0, len))
+      }
+    }
+  }
+}
 
 export function executeCpp(code: string, input: string): { output: string; error?: string } {
   // Security guard against host secret access
@@ -134,12 +159,21 @@ export function executeCpp(code: string, input: string): { output: string; error
     stoi: (s: any) => parseInt(String(s), 10) || 0,
     stoll: (s: any) => parseInt(String(s), 10) || 0,
     stod: (s: any) => parseFloat(String(s)) || 0.0,
+    stof: (s: any) => parseFloat(String(s)) || 0.0,
+    isspace: (ch: any) => typeof ch === 'string' && /\s/.test(ch),
+    tolower: (ch: any) => typeof ch === 'string' ? ch.toLowerCase() : ch,
+    toupper: (ch: any) => typeof ch === 'string' ? ch.toUpperCase() : ch,
+    isdigit: (ch: any) => typeof ch === 'string' && /\d/.test(ch),
+    isalpha: (ch: any) => typeof ch === 'string' && /[a-zA-Z]/.test(ch),
+    isalnum: (ch: any) => typeof ch === 'string' && /[a-zA-Z0-9]/.test(ch),
     printf: (...args: any[]) => {
       if (args.length > 0) {
         __cout.write(args.join(' '))
       }
     },
   }
+
+  installCppRuntimeExtensions()
 
   try {
     let cleanCode = 'let __loopGuard = 0;\n' + code
@@ -156,7 +190,7 @@ export function executeCpp(code: string, input: string): { output: string; error
     cleanCode = cleanCode.replace(/std::/g, '')
 
     // 3. Remove fast I/O boilerplate
-    cleanCode = cleanCode.replace(/ios_base::sync_with_stdio\(.*?\);?/g, '')
+    cleanCode = cleanCode.replace(/ios(?:_base)?::sync_with_stdio\(.*?\);?/g, '')
     cleanCode = cleanCode.replace(/cin\.tie\(.*?\);?/g, '')
     cleanCode = cleanCode.replace(/cout\.tie\(.*?\);?/g, '')
 
@@ -192,6 +226,10 @@ export function executeCpp(code: string, input: string): { output: string; error
     cleanCode = cleanCode.replace(/getline\s*\(\s*cin\s*,\s*([a-zA-Z0-9_]+)\s*\)/g, '$1 = __cin.nextLine()')
 
     // 7. Transform vector initialization
+    // vector<int> v = {1, 2, 3}; -> let v = [1, 2, 3];
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*\{([^}]+)\}\s*;/g, 'let $1 = [$2];')
+    // vector<int> v = ...; -> let v = ...;
+    cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*([^;]+);/g, 'let $1 = $2;')
     // vector<int> v(n, 0); -> let v = new Array(n).fill(0);
     cleanCode = cleanCode.replace(/vector\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*\(\s*([^,]+)\s*,\s*([^)]+)\s*\)\s*;/g, 'let $1 = new Array($2).fill($3);')
     // vector<int> v(n); -> let v = new Array(n).fill(0);
@@ -206,36 +244,17 @@ export function executeCpp(code: string, input: string): { output: string; error
     // sort(v.begin(), v.end()); -> v.sort((a, b) => a - b);
     cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*,\s*greater\s*<[^>]+>\s*\(\s*\)\s*\)/g, '$1.sort((a, b) => b - a)')
     cleanCode = cleanCode.replace(/sort\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, '$1.sort((a, b) => a - b)')
-    cleanCode = cleanCode.replace(/reverse\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, '$1.reverse()')
+    cleanCode = cleanCode.replace(/reverse\s*\(\s*([a-zA-Z0-9_]+)\.begin\(\)\s*,\s*\1\.end\(\)\s*\)/g, '$1 = Array.isArray($1) ? ($1.reverse(), $1) : Array.from($1).reverse().join("")')
 
-    // 10. Transform vector push_back, pop_back, size
+    // 10. Transform vector push_back, pop_back, size, find
     cleanCode = cleanCode.replace(/\.push_back\s*\(/g, '.push(')
     cleanCode = cleanCode.replace(/\.pop_back\s*\(\s*\)/g, '.pop()')
     cleanCode = cleanCode.replace(/\.size\s*\(\s*\)/g, '.length')
+    cleanCode = cleanCode.replace(/string::npos/g, '-1')
+    cleanCode = cleanCode.replace(/\((?:int|long\s+long|long|double|float|char|bool|size_t)\)\s*/g, '')
 
-    // 11. Transform C++ type declarations to 'let'
-    // e.g. int a = 5, b = 10; -> let a = 5, b = 10;
-    // or int a, b; -> let a = 0, b = 0;
-    const typeRegex = /\b(?:int|long\s+long|long|double|float|bool|string|char|auto)\s+([a-zA-Z0-9_,\s=+\-*/%()]+);/g
-    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
-      const decls = declBody.split(',').map((d: string) => {
-        const item = d.trim()
-        if (item.includes('=')) {
-          return item
-        }
-        // Unitialized variable gets default 0
-        return `${item} = 0`
-      })
-      return `let ${decls.join(', ')};`
-    })
-
-    // In for loops: for (int i = 0; ...) -> for (let i = 0; ...)
-    cleanCode = cleanCode.replace(/for\s*\(\s*(?:int|long\s+long|long|size_t|auto)\s+/g, 'for (let ')
-    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
-    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
-
-    // 12. Function declarations: int solve(...) -> function solve(...)
-    cleanCode = cleanCode.replace(/\b(?:int|void|long\s+long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
+    // 11. Function declarations: int solve(...) -> function solve(...)
+    cleanCode = cleanCode.replace(/\b(?:vector\s*<[^>]+>|int|void|long\s+long|long|double|string|bool)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)\s*\{/g, (_m, fnName, params) => {
       const cleanParams = params
         .split(',')
         .map((p: string) => {
@@ -246,6 +265,50 @@ export function executeCpp(code: string, input: string): { output: string; error
         .join(', ')
       return `function ${fnName}(${cleanParams}) {`
     })
+
+    // 12. Transform C++ type declarations to 'let'
+    const splitTopLevelCommas = (str: string): string[] => {
+      const parts: string[] = []
+      let depth = 0
+      let inQuote = false
+      let quoteChar = ''
+      let start = 0
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i]
+        if (inQuote) {
+          if (c === quoteChar && str[i - 1] !== '\\') inQuote = false
+        } else if (c === '"' || c === "'") {
+          inQuote = true
+          quoteChar = c
+        } else if (c === '(' || c === '[' || c === '{') {
+          depth++
+        } else if (c === ')' || c === ']' || c === '}') {
+          depth--
+        } else if (c === ',' && depth === 0) {
+          parts.push(str.substring(start, i))
+          start = i + 1
+        }
+      }
+      parts.push(str.substring(start))
+      return parts
+    }
+
+    const typeRegex = /\b(?:const\s+)?(?:int|long\s+long|long|double|float|bool|string|char|auto|size_t)\s+([^{};]+);/g
+    cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
+      const decls = splitTopLevelCommas(declBody).map((d: string) => {
+        const item = d.trim()
+        if (item.includes('=')) {
+          return item
+        }
+        return `${item} = 0`
+      })
+      return `let ${decls.join(', ')};`
+    })
+
+    // In for loops: for (int i = 0; ...) -> for (let i = 0; ...)
+    cleanCode = cleanCode.replace(/for\s*\(\s*(?:const\s+)?(?:int|long\s+long|long|size_t|auto)\s+/g, 'for (let ')
+    cleanCode = cleanCode.replace(/while\s*\((.*?)\)\s*\{/g, 'while ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
+    cleanCode = cleanCode.replace(/for\s*\((.*?)\)\s*\{/g, 'for ($1) { if (++__loopGuard > 1000000) throw new Error("Time Limit Exceeded");')
 
     // 13. Ensure main() is invoked
     cleanCode += `

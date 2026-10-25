@@ -8,6 +8,19 @@
  */
 import { evaluate } from './evaluator'
 
+export function installJavaRuntimeExtensions(): void {
+  if (typeof Array !== 'undefined') {
+    const ap = Array.prototype as any
+    if (!ap.add) ap.add = function (item: any) { this.push(item); return true }
+    if (!ap.get) ap.get = function (idx: number) { return this[idx] }
+    if (!ap.size) ap.size = function () { return this.length }
+    if (!ap.isEmpty) ap.isEmpty = function () { return this.length === 0 }
+  }
+  if (typeof String !== 'undefined') {
+    const sp = String.prototype as any
+    if (!sp.isEmpty) sp.isEmpty = function () { return this.length === 0 }
+  }
+}
 
 export function executeJava(code: string, input: string): { output: string; error?: string } {
   // Security guard against host secret access
@@ -176,8 +189,15 @@ export function executeJava(code: string, input: string): { output: string; erro
     require: undefined,
     global: undefined,
     globalThis: undefined,
+    Character: {
+      isWhitespace: (c: string) => /\s/.test(String(c)),
+      isDigit: (c: string) => /\d/.test(String(c)),
+      isLetter: (c: string) => /[a-zA-Z]/.test(String(c)),
+    },
     Integer: {
       parseInt: (s: string) => parseInt(String(s), 10) || 0,
+      toBinaryString: (n: number) => (Number(n) >>> 0).toString(2),
+      toHexString: (n: number) => (Number(n) >>> 0).toString(16),
       MAX_VALUE: 2147483647,
       MIN_VALUE: -2147483648,
     },
@@ -202,6 +222,8 @@ export function executeJava(code: string, input: string): { output: string; erro
     },
   }
 
+  installJavaRuntimeExtensions()
+
   try {
     let cleanCode = 'let __loopGuard = 0;\n' + code
 
@@ -221,10 +243,10 @@ export function executeJava(code: string, input: string): { output: string; erro
     }
 
     // 4. Transform main method: public static void main(String[] args) -> function main()
-    cleanCode = cleanCode.replace(/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*[a-zA-Z0-9_]*\s*\)/g, 'function main()')
+    cleanCode = cleanCode.replace(/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*[a-zA-Z0-9_]*\s*\)(?:\s+throws\s+[^{]+)?/g, 'function main()')
 
     // 5. Transform other static methods: public static int solve(...) -> function solve(...)
-    cleanCode = cleanCode.replace(/public\s+static\s+(?:void|int|long|double|boolean|String)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/g, (_m, fnName, params) => {
+    cleanCode = cleanCode.replace(/(?:public\s+|private\s+|protected\s+)?static\s+(?:void|int|long|double|boolean|String|Object|List<[^>]+>|Map<[^>]+>|[a-zA-Z0-9_]+(?:<[^>]+>)?)\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)(?:\s+throws\s+[^{]+)?/g, (_m, fnName, params) => {
       const cleanParams = params
         .split(',')
         .map((p: string) => {
@@ -237,19 +259,43 @@ export function executeJava(code: string, input: string): { output: string; erro
     })
 
     // 6. Transform Array instantiation: int[] arr = new int[n]; -> let arr = new Array(n).fill(0);
+    cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*\{([^}]+)\}\s*;/g, 'let $1 = [$2];')
     cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*new\s+(?:int|long|double|float|boolean|String)\s*\[\s*([^\]]+)\s*\]\s*;/g, 'let $1 = new Array($2).fill(0);')
 
     // 7. Transform Object / Scanner / ArrayList instantiation:
-    // Scanner scanner = new Scanner(System.in); -> let scanner = new Scanner(System.in);
     cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|StringTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, 'let $1 = new ')
     cleanCode = cleanCode.replace(/(?:ArrayList|List)\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*new\s+(?:ArrayList|List)\s*<[^>]*>\s*\(\s*\)\s*;/g, 'let $1 = [];')
 
     // 8. Transform Variable declarations:
-    // int a = scanner.nextInt(); -> let a = scanner.nextInt();
-    // int a, b; -> let a = 0, b = 0;
-    const typeRegex = /\b(?:int|long|double|float|boolean|char|String)\s+([a-zA-Z0-9_,\s=+\-*/%().]+);/g
+    const splitTopLevelCommas = (str: string): string[] => {
+      const parts: string[] = []
+      let depth = 0
+      let inQuote = false
+      let quoteChar = ''
+      let start = 0
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i]
+        if (inQuote) {
+          if (c === quoteChar && str[i - 1] !== '\\') inQuote = false
+        } else if (c === '"' || c === "'") {
+          inQuote = true
+          quoteChar = c
+        } else if (c === '(' || c === '[' || c === '{') {
+          depth++
+        } else if (c === ')' || c === ']' || c === '}') {
+          depth--
+        } else if (c === ',' && depth === 0) {
+          parts.push(str.substring(start, i))
+          start = i + 1
+        }
+      }
+      parts.push(str.substring(start))
+      return parts
+    }
+
+    const typeRegex = /\b(?:int|long|double|float|boolean|char|String|Object|List<[^>]+>)(?:\[\s*\])?\s+([^;]+);/g
     cleanCode = cleanCode.replace(typeRegex, (_match, declBody) => {
-      const decls = declBody.split(',').map((d: string) => {
+      const decls = splitTopLevelCommas(declBody).map((d: string) => {
         const item = d.trim()
         if (item.includes('=')) {
           return item

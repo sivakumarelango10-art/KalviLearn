@@ -2,6 +2,8 @@ import * as vm from 'node:vm'
 import { types } from 'node:util'
 import { setEvaluator, type Evaluator } from '../lib/runner/evaluator'
 import { installPythonRuntimeExtensions } from '../lib/runner/pythonRunner'
+import { installJavaRuntimeExtensions } from '../lib/runner/javaRunner'
+import { installCppRuntimeExtensions } from '../lib/runner/cppRunner'
 
 /**
  * Server-side evaluator for student code (transpiled to JavaScript by the language runners).
@@ -69,9 +71,11 @@ export const sandboxEvaluator: Evaluator = (keys, values, body) => {
     codeGeneration: { strings: false, wasm: false },
   })
 
-  // Re-create the Python helper prototype methods inside this realm (host patches don't cross realms).
+  // Re-create language helper prototype methods inside this realm (host patches don't cross realms).
   vm.runInContext(CONTEXT_INIT, context, { timeout: PER_CASE_TIMEOUT_MS })
   vm.runInContext(`(${installPythonRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS })
+  vm.runInContext(`(${installJavaRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS })
+  vm.runInContext(`(${installCppRuntimeExtensions.toString()})()`, context, { timeout: PER_CASE_TIMEOUT_MS })
 
   for (let i = 0; i < keys.length; i++) {
     sandbox[keys[i]] = values[i]
