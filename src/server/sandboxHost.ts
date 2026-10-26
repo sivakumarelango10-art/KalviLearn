@@ -1,23 +1,19 @@
-import { fork } from 'node:child_process'
+import { fork, type ChildProcess } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import type { SandboxCaseResult, SandboxJob, SandboxJobResult } from './codeRunnerCore'
 
 /**
- * Runs submitted code in a short-lived CHILD PROCESS (not in the API process):
+ * Runs submitted code in an isolated CHILD PROCESS:
  *
- *  - SEPARATE HEAP + NATIVE CAP: `--max-old-space-size`. A memory bomb - including a V8 *fatal* OOM, which aborts a whole
- *    process and cannot be contained by a worker thread - kills only the child.
- *  - EMPTY ENVIRONMENT: `env: {}`. Even a complete escape from the vm sandbox finds no SUPABASE_SERVICE_ROLE_KEY,
- *    webhook secret or database URL in `process.env`.
- *  - NODE PERMISSION MODEL where available (`--permission` with no grants): the child cannot read/write the filesystem
- *    (except its own entry file), spawn processes, or start workers. Network egress is NOT restricted by this mechanism.
- *  - HARD WALL-CLOCK KILL (SIGKILL) after HARD_TIMEOUT_MS regardless of what the code is doing.
- *  - The child bundle contains only the language runners + vm sandbox (no Supabase client, handlers or test repository).
- *  - Bounded concurrency, so a burst cannot spawn unbounded processes on one instance.
- *
- * Residual risk (documented in the report): same machine, same network namespace, same user. This materially limits blast
- * radius; a container / microVM runner with no egress remains the long-term answer.
+ *  - PYTHON: Reuses a warm Pyodide worker process per function instance for sub-second execution,
+ *    recycled after 200 runs, after any timeout/error, or if memory exceeds thresholds. Memory and
+ *    virtual filesystem state are reset before/after each case. Concurrent Python requests in the same
+ *    function instance are queued so the worker is never shared simultaneously.
+ *  - JAVASCRIPT, JAVA, C++: Always executed in a FRESH, single-use child process that is killed with
+ *    SIGKILL immediately upon completion, guaranteeing zero state leaks.
+ *  - SEPARATE HEAP + NATIVE CAP: `--max-old-space-size=192`. Fatal OOMs kill only the child process.
+ *  - EMPTY ENVIRONMENT: `env: {}`. No host environment variables or database secrets exist in the child.
  */
 export type SandboxOutcome =
   | SandboxJobResult
@@ -32,26 +28,50 @@ export type SandboxOutcome =
 export type CaseListener = (index: number, result: SandboxCaseResult) => void
 
 const HARD_TIMEOUT_MS = 10_000
-const MAX_CONCURRENT = 4
 const HEAP_MB = 192
 
-let active = 0
-const waiters: Array<() => void> = []
-// If the permission-model flags make the child fail to boot on some Node build, remember and stop using them.
-let permissionModelBroken = false
+// Python-only persistent worker limits
+const PYTHON_MAX_RUNS = 200
+const PYTHON_MAX_HEAP_MB = 150
+const PYTHON_MAX_RSS_MB = 350
 
-async function acquire(): Promise<void> {
-  if (active < MAX_CONCURRENT) {
-    active++
-    return
-  }
-  await new Promise<void>((resolve) => waiters.push(resolve))
-  active++
+interface PythonWorkerState {
+  child: ChildProcess
+  entryFile: string
+  runCount: number
 }
 
-function release(): void {
-  active--
-  const next = waiters.shift()
+let pythonWorker: PythonWorkerState | null = null
+let pythonLock = false
+const pythonWaiters: Array<() => void> = []
+
+function killPythonWorker(): void {
+  if (pythonWorker) {
+    try {
+      if (pythonWorker.child.exitCode === null && !pythonWorker.child.killed) {
+        pythonWorker.child.kill('SIGKILL')
+      }
+    } catch {}
+    pythonWorker = null
+  }
+}
+
+export function resetWorkerForTesting(): void {
+  killPythonWorker()
+}
+
+async function acquirePythonLock(): Promise<void> {
+  if (!pythonLock) {
+    pythonLock = true
+    return
+  }
+  await new Promise<void>((resolve) => pythonWaiters.push(resolve))
+  pythonLock = true
+}
+
+function releasePythonLock(): void {
+  pythonLock = false
+  const next = pythonWaiters.shift()
   if (next) next()
 }
 
@@ -84,24 +104,138 @@ function resolveEntry(): { file: string; compiled: boolean } | null {
   return null
 }
 
-function permissionFlag(): string | null {
-  const flags = process.allowedNodeEnvironmentFlags
-  if (flags.has('--permission')) return '--permission'
-  if (flags.has('--experimental-permission')) return '--experimental-permission'
-  return null
+function getOrCreatePythonWorker(entry: { file: string; compiled: boolean }): ChildProcess {
+  if (
+    pythonWorker &&
+    pythonWorker.entryFile === entry.file &&
+    !pythonWorker.child.killed &&
+    pythonWorker.child.exitCode === null &&
+    pythonWorker.child.connected
+  ) {
+    return pythonWorker.child
+  }
+
+  killPythonWorker()
+
+  const execArgv: string[] = entry.compiled ? [] : [...process.execArgv]
+  execArgv.push(`--max-old-space-size=${HEAP_MB}`, '--disallow-code-generation-from-strings')
+
+  const child = fork(entry.file, [], {
+    env: {},
+    execArgv,
+    stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
+    serialization: 'json',
+  })
+
+  child.on('error', (err) => {
+    console.error('[sandboxHost] python worker process error:', err)
+  })
+
+  child.unref()
+
+  pythonWorker = { child, entryFile: entry.file, runCount: 0 }
+  return child
 }
 
-function run(
+/**
+ * Executes Python jobs in the warm Pyodide worker, reusing it across runs.
+ */
+function runPythonJob(
   entry: { file: string; compiled: boolean },
   job: SandboxJob,
-  usePermission: boolean,
   onCase?: CaseListener
-): Promise<SandboxOutcome & { bootFailed?: boolean }> {
+): Promise<SandboxOutcome> {
+  return new Promise((resolve) => {
+    const child = getOrCreatePythonWorker(entry)
+    const currentState = pythonWorker
+
+    let settled = false
+    let gotResult = false
+    const completed: SandboxCaseResult[] = []
+
+    const cleanup = () => {
+      clearTimeout(timer)
+      child.removeListener('message', onMessage)
+      child.removeListener('error', onError)
+      child.removeListener('exit', onExit)
+    }
+
+    const finish = (outcome: SandboxOutcome) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      resolve(outcome)
+    }
+
+    const failed = (reason: 'memory' | 'timeout' | 'crash', message: string) => {
+      killPythonWorker()
+      finish({ kind: 'sandbox_failed', reason, message, completed: [...completed] })
+    }
+
+    const timer = setTimeout(() => failed('timeout', 'Time Limit Exceeded'), HARD_TIMEOUT_MS)
+
+    const onMessage = (msg: { type?: string; index?: number; result?: unknown; memory?: NodeJS.MemoryUsage }) => {
+      if (msg?.type === 'case' && typeof msg.index === 'number' && msg.result) {
+        const caseResult = msg.result as SandboxCaseResult
+        completed[msg.index] = caseResult
+        onCase?.(msg.index, caseResult)
+        return
+      }
+      if (msg?.type === 'done' && msg.result) {
+        gotResult = true
+        if (currentState) {
+          currentState.runCount++
+          const heapMb = (msg.memory?.heapUsed || 0) / (1024 * 1024)
+          const rssMb = (msg.memory?.rss || 0) / (1024 * 1024)
+          // Recycle worker after 200 runs or if memory limits exceeded
+          if (
+            currentState.runCount >= PYTHON_MAX_RUNS ||
+            heapMb > PYTHON_MAX_HEAP_MB ||
+            rssMb > PYTHON_MAX_RSS_MB
+          ) {
+            killPythonWorker()
+          }
+        }
+        finish(msg.result as SandboxJobResult)
+      }
+    }
+
+    const onError = () => {
+      failed('crash', 'Runtime Error: the program terminated abnormally')
+    }
+
+    const onExit = (code: number | null, signal: string | null) => {
+      if (gotResult) return
+      if (code === 134 || signal === 'SIGABRT' || signal === 'SIGKILL') {
+        failed('memory', 'Memory Limit Exceeded')
+      } else {
+        failed('crash', 'Runtime Error: the program terminated abnormally')
+      }
+    }
+
+    child.on('message', onMessage)
+    child.once('error', onError)
+    child.once('exit', onExit)
+
+    try {
+      child.send(job)
+    } catch {
+      failed('crash', 'Runtime Error: failed to dispatch job to sandbox worker')
+    }
+  })
+}
+
+/**
+ * Executes non-Python jobs (JS, Java, C++) in a FRESH child process that is ALWAYS killed on finish.
+ */
+function runEphemeralJob(
+  entry: { file: string; compiled: boolean },
+  job: SandboxJob,
+  onCase?: CaseListener
+): Promise<SandboxOutcome> {
   return new Promise((resolve) => {
     const execArgv: string[] = entry.compiled ? [] : [...process.execArgv]
     execArgv.push(`--max-old-space-size=${HEAP_MB}`, '--disallow-code-generation-from-strings')
-    const flag = usePermission && entry.compiled && job.language.toLowerCase() !== 'python' ? permissionFlag() : null
-    if (flag) execArgv.push(flag, `--allow-fs-read=${entry.file}`)
 
     const child = fork(entry.file, [], {
       env: {},
@@ -109,18 +243,28 @@ function run(
       stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
       serialization: 'json',
     })
+
     let settled = false
     let gotResult = false
     const completed: SandboxCaseResult[] = []
-    const finish = (outcome: SandboxOutcome & { bootFailed?: boolean }) => {
+
+    const finish = (outcome: SandboxOutcome) => {
       if (settled) return
       settled = true
       clearTimeout(timer)
-      if (child.exitCode === null && !child.killed) child.kill('SIGKILL')
+      try {
+        if (child.exitCode === null && !child.killed) child.kill('SIGKILL')
+      } catch {}
       resolve(outcome)
     }
-    const failed = (reason: 'memory' | 'timeout' | 'crash', message: string, bootFailed?: boolean) =>
-      finish({ kind: 'sandbox_failed', reason, message, completed: [...completed], bootFailed })
+
+    const failed = (reason: 'memory' | 'timeout' | 'crash', message: string) => {
+      try {
+        if (child.exitCode === null && !child.killed) child.kill('SIGKILL')
+      } catch {}
+      finish({ kind: 'sandbox_failed', reason, message, completed: [...completed] })
+    }
+
     const timer = setTimeout(() => failed('timeout', 'Time Limit Exceeded'), HARD_TIMEOUT_MS)
 
     child.on('message', (msg: { type?: string; index?: number; result?: unknown }) => {
@@ -135,24 +279,29 @@ function run(
         finish(msg.result as SandboxJobResult)
       }
     })
-    child.once('error', () => failed('crash', 'Runtime Error: the program terminated abnormally', true))
-    child.once('exit', (code, signal) => {
+
+    child.once('error', () => failed('crash', 'Runtime Error: the program terminated abnormally'))
+
+    child.once('exit', (code: number | null, signal: string | null) => {
       if (gotResult) return
-      // 134 / SIGABRT = V8 fatal "heap out of memory" (child only); SIGKILL from the OS OOM-killer is treated alike.
       if (code === 134 || signal === 'SIGABRT' || signal === 'SIGKILL') {
         failed('memory', 'Memory Limit Exceeded')
       } else {
-        failed('crash', 'Runtime Error: the program terminated abnormally', !!flag && completed.length === 0)
+        failed('crash', 'Runtime Error: the program terminated abnormally')
       }
     })
-    child.send(job)
+
+    try {
+      child.send(job)
+    } catch {
+      failed('crash', 'Runtime Error: failed to dispatch job to sandbox worker')
+    }
   })
 }
 
 export async function runInSandbox(job: SandboxJob, onCase?: CaseListener): Promise<SandboxOutcome> {
   const entry = resolveEntry()
   if (!entry) {
-    // Fail CLOSED in production unless explicitly overridden: never silently run student code in the API process.
     if (process.env.NODE_ENV === 'production' && process.env.SANDBOX_ALLOW_INPROCESS !== '1') {
       console.error('[sandbox] child entry not found; refusing to execute submitted code in-process')
       return { kind: 'sandbox_failed', reason: 'unavailable', message: 'Code execution is temporarily unavailable.' }
@@ -161,17 +310,20 @@ export async function runInSandbox(job: SandboxJob, onCase?: CaseListener): Prom
     const { runSubmissionJob } = await import('./codeRunnerCore')
     return await runSubmissionJob(job, onCase)
   }
-  await acquire()
-  try {
-    const first = await run(entry, job, !permissionModelBroken, onCase)
-    if (first.kind === 'sandbox_failed' && first.bootFailed && !permissionModelBroken && permissionFlag() && entry.compiled) {
-      // The child died before replying while the permission flag was active: retry once without it and remember.
-      permissionModelBroken = true
-      console.warn('[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only')
-      return await run(entry, job, false, onCase)
+
+  const isPython = job.language.toLowerCase() === 'python'
+  if (isPython) {
+    await acquirePythonLock()
+    try {
+      return await runPythonJob(entry, job, onCase)
+    } finally {
+      releasePythonLock()
     }
-    return first
-  } finally {
-    release()
   }
+
+  // JavaScript, Java, C++: run in a fresh child process, killed immediately on finish
+  return await runEphemeralJob(entry, job, onCase)
 }
+
+
+

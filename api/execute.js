@@ -18810,7 +18810,7 @@ var require_GoTrueClient = __commonJS({
         }
       }
       async _verify(params) {
-        const run2 = async () => {
+        const run = async () => {
           try {
             return await this._useSession(async (result) => {
               var _a;
@@ -18841,12 +18841,12 @@ var require_GoTrueClient = __commonJS({
           }
         };
         if (this.lock != null) {
-          return this._acquireLock(this.lockAcquireTimeout, run2);
+          return this._acquireLock(this.lockAcquireTimeout, run);
         }
-        return run2();
+        return run();
       }
       async _challenge(params) {
-        const run2 = async () => {
+        const run = async () => {
           try {
             return await this._useSession(async (result) => {
               var _a;
@@ -18887,9 +18887,9 @@ var require_GoTrueClient = __commonJS({
           }
         };
         if (this.lock != null) {
-          return this._acquireLock(this.lockAcquireTimeout, run2);
+          return this._acquireLock(this.lockAcquireTimeout, run);
         }
-        return run2();
+        return run();
       }
       /**
        * {@link GoTrueMFAApi#challengeAndVerify}
@@ -19765,22 +19765,35 @@ import { fork } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 var HARD_TIMEOUT_MS = 1e4;
-var MAX_CONCURRENT = 4;
 var HEAP_MB = 192;
-var active = 0;
-var waiters = [];
-var permissionModelBroken = false;
-async function acquire() {
-  if (active < MAX_CONCURRENT) {
-    active++;
+var PYTHON_MAX_RUNS = 200;
+var PYTHON_MAX_HEAP_MB = 150;
+var PYTHON_MAX_RSS_MB = 350;
+var pythonWorker = null;
+var pythonLock = false;
+var pythonWaiters = [];
+function killPythonWorker() {
+  if (pythonWorker) {
+    try {
+      if (pythonWorker.child.exitCode === null && !pythonWorker.child.killed) {
+        pythonWorker.child.kill("SIGKILL");
+      }
+    } catch {
+    }
+    pythonWorker = null;
+  }
+}
+async function acquirePythonLock() {
+  if (!pythonLock) {
+    pythonLock = true;
     return;
   }
-  await new Promise((resolve) => waiters.push(resolve));
-  active++;
+  await new Promise((resolve) => pythonWaiters.push(resolve));
+  pythonLock = true;
 }
-function release() {
-  active--;
-  const next = waiters.shift();
+function releasePythonLock() {
+  pythonLock = false;
+  const next = pythonWaiters.shift();
   if (next) next();
 }
 function exists(name) {
@@ -19801,18 +19814,95 @@ function resolveEntry() {
   if (underTsx && source) return { file: source, compiled: false };
   return null;
 }
-function permissionFlag() {
-  const flags = process.allowedNodeEnvironmentFlags;
-  if (flags.has("--permission")) return "--permission";
-  if (flags.has("--experimental-permission")) return "--experimental-permission";
-  return null;
+function getOrCreatePythonWorker(entry) {
+  if (pythonWorker && pythonWorker.entryFile === entry.file && !pythonWorker.child.killed && pythonWorker.child.exitCode === null && pythonWorker.child.connected) {
+    return pythonWorker.child;
+  }
+  killPythonWorker();
+  const execArgv = entry.compiled ? [] : [...process.execArgv];
+  execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
+  const child = fork(entry.file, [], {
+    env: {},
+    execArgv,
+    stdio: ["ignore", "ignore", "ignore", "ipc"],
+    serialization: "json"
+  });
+  child.on("error", (err) => {
+    console.error("[sandboxHost] python worker process error:", err);
+  });
+  child.unref();
+  pythonWorker = { child, entryFile: entry.file, runCount: 0 };
+  return child;
 }
-function run(entry, job, usePermission, onCase) {
+function runPythonJob(entry, job, onCase) {
+  return new Promise((resolve) => {
+    const child = getOrCreatePythonWorker(entry);
+    const currentState = pythonWorker;
+    let settled = false;
+    let gotResult = false;
+    const completed = [];
+    const cleanup = () => {
+      clearTimeout(timer);
+      child.removeListener("message", onMessage);
+      child.removeListener("error", onError);
+      child.removeListener("exit", onExit);
+    };
+    const finish = (outcome) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(outcome);
+    };
+    const failed = (reason, message) => {
+      killPythonWorker();
+      finish({ kind: "sandbox_failed", reason, message, completed: [...completed] });
+    };
+    const timer = setTimeout(() => failed("timeout", "Time Limit Exceeded"), HARD_TIMEOUT_MS);
+    const onMessage = (msg) => {
+      if (msg?.type === "case" && typeof msg.index === "number" && msg.result) {
+        const caseResult = msg.result;
+        completed[msg.index] = caseResult;
+        onCase?.(msg.index, caseResult);
+        return;
+      }
+      if (msg?.type === "done" && msg.result) {
+        gotResult = true;
+        if (currentState) {
+          currentState.runCount++;
+          const heapMb = (msg.memory?.heapUsed || 0) / (1024 * 1024);
+          const rssMb = (msg.memory?.rss || 0) / (1024 * 1024);
+          if (currentState.runCount >= PYTHON_MAX_RUNS || heapMb > PYTHON_MAX_HEAP_MB || rssMb > PYTHON_MAX_RSS_MB) {
+            killPythonWorker();
+          }
+        }
+        finish(msg.result);
+      }
+    };
+    const onError = () => {
+      failed("crash", "Runtime Error: the program terminated abnormally");
+    };
+    const onExit = (code, signal) => {
+      if (gotResult) return;
+      if (code === 134 || signal === "SIGABRT" || signal === "SIGKILL") {
+        failed("memory", "Memory Limit Exceeded");
+      } else {
+        failed("crash", "Runtime Error: the program terminated abnormally");
+      }
+    };
+    child.on("message", onMessage);
+    child.once("error", onError);
+    child.once("exit", onExit);
+    try {
+      child.send(job);
+    } catch {
+      failed("crash", "Runtime Error: failed to dispatch job to sandbox worker");
+    }
+  });
+}
+function runEphemeralJob(entry, job, onCase) {
   return new Promise((resolve) => {
     const execArgv = entry.compiled ? [] : [...process.execArgv];
     execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
-    const flag = usePermission && entry.compiled && job.language.toLowerCase() !== "python" ? permissionFlag() : null;
-    if (flag) execArgv.push(flag, `--allow-fs-read=${entry.file}`);
     const child = fork(entry.file, [], {
       env: {},
       execArgv,
@@ -19826,10 +19916,19 @@ function run(entry, job, usePermission, onCase) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      try {
+        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      } catch {
+      }
       resolve(outcome);
     };
-    const failed = (reason, message, bootFailed) => finish({ kind: "sandbox_failed", reason, message, completed: [...completed], bootFailed });
+    const failed = (reason, message) => {
+      try {
+        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      } catch {
+      }
+      finish({ kind: "sandbox_failed", reason, message, completed: [...completed] });
+    };
     const timer = setTimeout(() => failed("timeout", "Time Limit Exceeded"), HARD_TIMEOUT_MS);
     child.on("message", (msg) => {
       if (msg?.type === "case" && typeof msg.index === "number" && msg.result) {
@@ -19843,16 +19942,20 @@ function run(entry, job, usePermission, onCase) {
         finish(msg.result);
       }
     });
-    child.once("error", () => failed("crash", "Runtime Error: the program terminated abnormally", true));
+    child.once("error", () => failed("crash", "Runtime Error: the program terminated abnormally"));
     child.once("exit", (code, signal) => {
       if (gotResult) return;
       if (code === 134 || signal === "SIGABRT" || signal === "SIGKILL") {
         failed("memory", "Memory Limit Exceeded");
       } else {
-        failed("crash", "Runtime Error: the program terminated abnormally", !!flag && completed.length === 0);
+        failed("crash", "Runtime Error: the program terminated abnormally");
       }
     });
-    child.send(job);
+    try {
+      child.send(job);
+    } catch {
+      failed("crash", "Runtime Error: failed to dispatch job to sandbox worker");
+    }
   });
 }
 async function runInSandbox(job, onCase) {
@@ -19866,18 +19969,16 @@ async function runInSandbox(job, onCase) {
     const { runSubmissionJob: runSubmissionJob2 } = await Promise.resolve().then(() => (init_codeRunnerCore(), codeRunnerCore_exports));
     return await runSubmissionJob2(job, onCase);
   }
-  await acquire();
-  try {
-    const first = await run(entry, job, !permissionModelBroken, onCase);
-    if (first.kind === "sandbox_failed" && first.bootFailed && !permissionModelBroken && permissionFlag() && entry.compiled) {
-      permissionModelBroken = true;
-      console.warn("[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only");
-      return await run(entry, job, false, onCase);
+  const isPython = job.language.toLowerCase() === "python";
+  if (isPython) {
+    await acquirePythonLock();
+    try {
+      return await runPythonJob(entry, job, onCase);
+    } finally {
+      releasePythonLock();
     }
-    return first;
-  } finally {
-    release();
   }
+  return await runEphemeralJob(entry, job, onCase);
 }
 
 // src/server/judge/native.ts
@@ -154503,16 +154604,16 @@ function getClientIp(req) {
   return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
 }
 function isTestAuthEnabled() {
-  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
-  if (isProduction) {
+  const isProductionOrPreview = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
+  if (isProductionOrPreview) {
     if (process.env.ALLOW_TEST_AUTH_TOKENS === "1") {
       console.warn(
-        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
+        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production/preview (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
       );
     }
     return false;
   }
-  return process.env.ALLOW_TEST_AUTH_TOKENS === "1" || process.env.VERCEL_ENV === "preview";
+  return process.env.ALLOW_TEST_AUTH_TOKENS === "1";
 }
 var PayloadTooLargeError = class extends Error {
   constructor() {
@@ -154598,10 +154699,10 @@ var RateLimiter = class {
 };
 
 // src/server/feedbackAuth.ts
-var IS_PRODUCTION = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
-var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
-var CONFIG_ERROR = IS_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
+var IS_STRICT_PRODUCTION = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
+var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_STRICT_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_STRICT_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+var CONFIG_ERROR = IS_STRICT_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`);
 var supabaseServer = createClient(supabaseUrl || "https://unconfigured.invalid", supabaseKey || "unconfigured", {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }

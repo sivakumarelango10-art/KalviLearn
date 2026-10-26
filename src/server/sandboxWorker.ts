@@ -1,19 +1,35 @@
 import { runSubmissionJob, type SandboxJob } from './codeRunnerCore'
+import { getPyodide } from '../lib/runner/pyodideRunner'
 
 /**
- * Sandbox CHILD-PROCESS entry. Started by sandboxHost.ts with an empty environment, a native heap cap, and (where the
- * Node version supports it) the permission model with no fs/child-process/worker grants. Runs exactly ONE job received
- * over IPC. Each test case result is sent as soon as that case finishes ({type:'case'}), followed by the final result
- * ({type:'done'}). Bundled separately (api/_sandbox-worker.mjs) so it contains no module that holds secrets
- * (no Supabase client, no handlers, no test repository).
+ * Sandbox CHILD-PROCESS entry. Started by sandboxHost.ts with an empty environment and a native heap cap.
+ * Reused across execution jobs for the lifetime of the serverless instance so runtimes like Pyodide
+ * remain warm in memory, while per-run isolation (builtins, filesystem, modules) is strictly enforced.
  */
 if (typeof process.send !== 'function') {
   throw new Error('sandboxWorker must be started with an IPC channel')
 }
 
-process.once('message', async (job: SandboxJob) => {
-  const result = await runSubmissionJob(job, (index, caseResult) => {
-    process.send!({ type: 'case', index, result: caseResult })
-  })
-  process.send!({ type: 'done', result }, undefined, undefined, () => process.exit(0))
+// Pre-warm Pyodide runtime in the background immediately on process boot
+getPyodide().catch(() => {})
+
+process.on('message', async (job: SandboxJob) => {
+  try {
+    const result = await runSubmissionJob(job, (index, caseResult) => {
+      process.send!({ type: 'case', index, result: caseResult })
+    })
+    const memory = typeof process.memoryUsage === 'function' ? process.memoryUsage() : undefined
+    process.send!({ type: 'done', result, memory })
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
+    process.send!({
+      type: 'done',
+      result: {
+        kind: 'sandbox_failed',
+        reason: 'crash',
+        message: `Runtime Error: ${message}`,
+      },
+    })
+  }
 })
+

@@ -79,24 +79,26 @@ export function getClientIp(req: IncomingMessage): string {
 }
 
 /**
- * Test-only bearer tokens (`test_auth_*`) are strictly forbidden in production.
- * They are honoured when running locally with ALLOW_TEST_AUTH_TOKENS=1 or on Vercel preview branches.
+ * Test-only bearer tokens (`test_auth_*`) are strictly forbidden in production and preview environments.
+ * They are honoured ONLY when neither NODE_ENV nor VERCEL_ENV is 'production' or 'preview',
+ * AND ALLOW_TEST_AUTH_TOKENS=1 is explicitly set.
  */
 export function isTestAuthEnabled(): boolean {
-  const isProduction =
+  const isProductionOrPreview =
+    process.env.NODE_ENV === 'production' ||
     process.env.VERCEL_ENV === 'production' ||
-    (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV)
+    process.env.VERCEL_ENV === 'preview'
 
-  if (isProduction) {
+  if (isProductionOrPreview) {
     if (process.env.ALLOW_TEST_AUTH_TOKENS === '1') {
       console.warn(
-        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
+        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production/preview (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
       )
     }
     return false
   }
 
-  return process.env.ALLOW_TEST_AUTH_TOKENS === '1' || process.env.VERCEL_ENV === 'preview'
+  return process.env.ALLOW_TEST_AUTH_TOKENS === '1'
 }
 
 export class PayloadTooLargeError extends Error {
