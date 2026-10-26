@@ -108,31 +108,11 @@ export function resolveQuestion(identifier: string): { suite: QuestionSuite } | 
     return has(source, key) ? { suite: toSuite(source, key, BANKS[source][key]) } : { error: 'not_found' }
   }
   // CodingQuestion.id is "coding-<slug>"; only treat it as such when that coding slug really exists.
-  if (id.startsWith('coding-') && (resolveLearnServerSuite(id) || has('coding', id.slice('coding-'.length))) && !has('practice', id)) {
-    const learnSuite = resolveLearnServerSuite(id)
-    if (learnSuite) {
-      return {
-        suite: {
-          source: 'learn',
-          key: learnSuite.slug,
-          questionId: learnSuite.id,
-          title: learnSuite.title,
-          testCases: learnSuite.testCases,
-          visibleCount: learnSuite.testCases.filter((t) => !t.isHidden).length,
-          hiddenCount: learnSuite.testCases.filter((t) => t.isHidden).length,
-        },
-      }
-    }
+  if (id.startsWith('coding-') && (has('coding', id.slice('coding-'.length)) || resolveLearnServerSuite(id)) && !has('practice', id)) {
     const key = id.slice('coding-'.length)
     if (has('coding', key)) {
       return { suite: toSuite('coding', key, codingBank[key]) }
     }
-  }
-  const inPractice = has('practice', id)
-  const inCoding = Boolean(resolveLearnServerSuite(id)) || has('coding', id)
-  if (inPractice && inCoding) return { error: 'ambiguous' }
-  if (inPractice) return { suite: toSuite('practice', id, practiceBank[id]) }
-  if (inCoding) {
     const learnSuite = resolveLearnServerSuite(id)
     if (learnSuite) {
       return {
@@ -147,8 +127,28 @@ export function resolveQuestion(identifier: string): { suite: QuestionSuite } | 
         },
       }
     }
+  }
+  const inPractice = has('practice', id)
+  const inCoding = has('coding', id) || Boolean(resolveLearnServerSuite(id))
+  if (inPractice && inCoding) return { error: 'ambiguous' }
+  if (inPractice) return { suite: toSuite('practice', id, practiceBank[id]) }
+  if (inCoding) {
     if (has('coding', id)) {
       return { suite: toSuite('coding', id, codingBank[id]) }
+    }
+    const learnSuite = resolveLearnServerSuite(id)
+    if (learnSuite) {
+      return {
+        suite: {
+          source: 'learn',
+          key: learnSuite.slug,
+          questionId: learnSuite.id,
+          title: learnSuite.title,
+          testCases: learnSuite.testCases,
+          visibleCount: learnSuite.testCases.filter((t) => !t.isHidden).length,
+          hiddenCount: learnSuite.testCases.filter((t) => t.isHidden).length,
+        },
+      }
     }
   }
   return { error: 'not_found' }
