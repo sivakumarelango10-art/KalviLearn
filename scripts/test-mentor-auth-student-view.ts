@@ -135,6 +135,31 @@ async function runTests() {
     check(data.persistence?.saved === false, 'Mentor Student View: persistence.saved is FALSE')
     check(data.persistence?.reason === 'preview_mode_mentor', 'Mentor Student View: reason is preview_mode_mentor')
     check(data.xpAwarded === 0, 'Mentor Student View: xpAwarded is 0 (no XP awarded to mentor or student)')
+    check(!data.student && !data.studentId && !data.profile, 'Mentor Student View: response contains ZERO student personal or progress data')
+    check(data.userId !== '00000000-0000-4000-a000-000000000001', 'Mentor Student View: claimed student userId is completely ignored by server')
+  }
+
+  // --------------------------------------------------------------------------
+  // TEST 2B: Non-Mentor (Student) sending another student's userId gets rejected (403)
+  // --------------------------------------------------------------------------
+  console.log('\n--- Test 2B: Non-Staff IDOR Guard: Student cannot impersonate another student ---')
+  {
+    const { req, res, status, body } = mockRequest({
+      url: '/api/submit',
+      headers: {
+        authorization: 'Bearer test_auth_student_synthetic.student@kalvilearn.test',
+      },
+      body: {
+        questionSlug: 'belt-1-q1-arithmetic-check-v1',
+        language: 'python',
+        code: 'print(0)',
+        userId: '00000000-0000-4000-a000-000000000002', // Another student ID
+      },
+    })
+    await submitHandler(req, res)
+    check(status() === 403, 'Regular student sending different userId is rejected with 403 Forbidden')
+    const data = body()
+    check(data.error === 'Forbidden', 'Error message indicates Forbidden')
   }
 
   // --------------------------------------------------------------------------

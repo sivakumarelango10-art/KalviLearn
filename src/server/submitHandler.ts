@@ -362,7 +362,11 @@ export default async function handler(
   const claimedUserId = typeof body.userId === 'string' ? body.userId : undefined
 
   // IDOR guard: a request may only ever act as the authenticated user (staff preview exempted).
-  const isStaffPreview = authenticatedUser.role === 'MENTOR' || authenticatedUser.role === 'ADMIN' || authenticatedUser.role === 'SUPERADMIN'
+  const isStaffPreview =
+    authenticatedUser.role === 'MENTOR' ||
+    authenticatedUser.role === 'CAMPUS_MANAGER' ||
+    authenticatedUser.role === 'ADMIN' ||
+    authenticatedUser.role === 'SUPERADMIN'
   if (claimedUserId && claimedUserId !== 'guest' && claimedUserId !== authenticatedUser.id && !isStaffPreview) {
     return sendJson(403, {
       success: false,
@@ -422,7 +426,7 @@ export default async function handler(
     })
   }
 
-  const isMentorPreview = (authenticatedUser as any).role === 'MENTOR'
+  const isMentorPreview = isStaffPreview
   const persist = !authenticatedUser.synthetic && !isMentorPreview
 
   // Idempotency (scoped to authenticated user so keys cannot collide across accounts)

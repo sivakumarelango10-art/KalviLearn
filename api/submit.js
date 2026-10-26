@@ -545,6 +545,20 @@ function installJavaRuntimeExtensions() {
     if (!sp.isEmpty) sp.isEmpty = function() {
       return this.length === 0;
     };
+    if (!sp.__origSplit) {
+      const origSplit = sp.split;
+      sp.__origSplit = origSplit;
+      sp.split = function(sep, limit) {
+        if (typeof sep === "string" && sep.includes("\\")) {
+          try {
+            return origSplit.call(this, new RegExp(sep), limit);
+          } catch {
+            return origSplit.call(this, sep, limit);
+          }
+        }
+        return origSplit.call(this, sep, limit);
+      };
+    }
   }
 }
 function executeJava(code, input) {
@@ -655,6 +669,60 @@ function executeJava(code, input) {
     close() {
     }
   }
+  class BufferedReader {
+    lineIdx = 0;
+    constructor(_reader) {
+      this.lineIdx = 0;
+    }
+    readLine() {
+      if (this.lineIdx < inputLines.length) {
+        return inputLines[this.lineIdx++];
+      }
+      return null;
+    }
+    close() {
+    }
+  }
+  class InputStreamReader {
+    constructor(_stream) {
+    }
+  }
+  class StringBuilder {
+    str = "";
+    constructor(init = "") {
+      this.str = String(init);
+    }
+    append(val) {
+      this.str += String(val);
+      return this;
+    }
+    toString() {
+      return this.str;
+    }
+  }
+  class StreamTokenizer {
+    nval = 0;
+    sval = "";
+    tokIdx = 0;
+    constructor(_reader) {
+      this.tokIdx = 0;
+    }
+    nextToken() {
+      if (this.tokIdx < tokens.length) {
+        const t = tokens[this.tokIdx++];
+        const num = Number(t);
+        if (!isNaN(num)) {
+          this.nval = num;
+          this.sval = "";
+        } else {
+          this.nval = 0;
+          this.sval = t;
+        }
+        return 1;
+      }
+      return -1;
+    }
+  }
   const Arrays = {
     sort: (arr, ...args) => {
       if (Array.isArray(arr)) {
@@ -681,6 +749,10 @@ function executeJava(code, input) {
   const env = {
     System,
     Scanner,
+    BufferedReader,
+    InputStreamReader,
+    StringBuilder,
+    StreamTokenizer,
     Arrays,
     Collections,
     process: void 0,
@@ -741,7 +813,7 @@ function executeJava(code, input) {
     });
     cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*\{([^}]+)\}\s*;/g, "let $1 = [$2];");
     cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*new\s+(?:int|long|double|float|boolean|String)\s*\[\s*([^\]]+)\s*\]\s*;/g, "let $1 = new Array($2).fill(0);");
-    cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|StringTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, "let $1 = new ");
+    cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|InputStreamReader|StringTokenizer|StreamTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, "let $1 = new ");
     cleanCode = cleanCode.replace(/(?:ArrayList|List)\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*new\s+(?:ArrayList|List)\s*<[^>]*>\s*\(\s*\)\s*;/g, "let $1 = [];");
     const splitTopLevelCommas = (str) => {
       const parts = [];
@@ -5450,7 +5522,40 @@ function checkPythonSyntaxWithPyodide(py, code) {
     return { ok: false, error: msg };
   }
 }
+function resetPyodideFS(py) {
+  if (!py || !py.FS) return;
+  const FS = py.FS;
+  const dirs = ["/tmp", FS.cwd()];
+  for (const dir of dirs) {
+    try {
+      const entries = FS.readdir(dir);
+      for (const entry of entries) {
+        if (entry === "." || entry === "..") continue;
+        const fullPath = dir === "/" ? `/${entry}` : `${dir}/${entry}`;
+        try {
+          const s = FS.stat(fullPath);
+          if (FS.isDir(s.mode)) {
+            const sub = FS.readdir(fullPath);
+            for (const subEntry of sub) {
+              if (subEntry === "." || subEntry === "..") continue;
+              try {
+                FS.unlink(`${fullPath}/${subEntry}`);
+              } catch {
+              }
+            }
+            FS.rmdir(fullPath);
+          } else {
+            FS.unlink(fullPath);
+          }
+        } catch {
+        }
+      }
+    } catch {
+    }
+  }
+}
 function executePythonWithPyodide(py, code, input) {
+  resetPyodideFS(py);
   try {
     const raw = py.runPython(`_execute_case(${JSON.stringify(code)}, ${JSON.stringify(input)})`);
     const parsed = JSON.parse(raw);
@@ -5461,6 +5566,8 @@ function executePythonWithPyodide(py, code, input) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { output: "", error: msg };
+  } finally {
+    resetPyodideFS(py);
   }
 }
 var pyodideInstance, initPromise, pyodideFailed, PYTHON_SECURITY_BOOTSTRAP;
@@ -5479,7 +5586,8 @@ import json
 BLOCKED_MODULES = {
     'js', 'pyodide', 'pyodide_js', '_pyodide', '_pyodide_core',
     'os', 'subprocess', '_posixsubprocess', 'socket', 'urllib', 'http', 'requests',
-    'pathlib', 'shutil', 'ctypes', 'importlib', 'fcntl', 'pwd', 'grp', 'pty', 'termios', 'resource'
+    'pathlib', 'shutil', 'ctypes', 'importlib', 'fcntl', 'pwd', 'grp', 'pty', 'termios', 'resource',
+    'threading', '_thread', '_dummy_thread', 'multiprocessing'
 }
 
 # 1. Neuter any dangerous functions that may already exist in os/runtime modules
@@ -5553,7 +5661,33 @@ _pristine_builtins = dict(builtins.__dict__)
 _pristine_modules = set(_orig_modules.keys())
 
 def _reset_sandbox_state():
-    # Remove any modified or added builtins
+    # 1. Reset standard streams & recursion limit
+    sys.setrecursionlimit(1000)
+    sys.stdin = sys.__stdin__
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
+
+    # 2. Reseed random if random was imported
+    if 'random' in sys.modules:
+        try:
+            sys.modules['random'].seed(None)
+        except Exception:
+            pass
+
+    # 3. Cancel any lingering asyncio tasks
+    if 'asyncio' in sys.modules:
+        try:
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                for t in asyncio.all_tasks(loop):
+                    t.cancel()
+            except RuntimeError:
+                pass
+        except Exception:
+            pass
+
+    # 4. Remove any modified or added builtins
     for k in list(builtins.__dict__.keys()):
         if k not in _pristine_builtins:
             try:
@@ -5565,7 +5699,8 @@ def _reset_sandbox_state():
             setattr(builtins, k, v)
         except Exception:
             pass
-    # Remove any modules added during student execution
+
+    # 5. Remove any modules added during student execution
     for m in list(sys.modules.keys()):
         if m not in _pristine_modules:
             try:
@@ -154817,7 +154952,7 @@ async function handler(req, res) {
   const rawLanguage = typeof body.language === "string" ? body.language : "";
   const code = typeof body.code === "string" ? body.code : "";
   const claimedUserId = typeof body.userId === "string" ? body.userId : void 0;
-  const isStaffPreview = authenticatedUser.role === "MENTOR" || authenticatedUser.role === "ADMIN" || authenticatedUser.role === "SUPERADMIN";
+  const isStaffPreview = authenticatedUser.role === "MENTOR" || authenticatedUser.role === "CAMPUS_MANAGER" || authenticatedUser.role === "ADMIN" || authenticatedUser.role === "SUPERADMIN";
   if (claimedUserId && claimedUserId !== "guest" && claimedUserId !== authenticatedUser.id && !isStaffPreview) {
     return sendJson(403, {
       success: false,
@@ -154870,7 +155005,7 @@ async function handler(req, res) {
       message: `Submission rate limit exceeded. Please wait ${userRate.retryAfter} seconds before submitting again.`
     });
   }
-  const isMentorPreview = authenticatedUser.role === "MENTOR";
+  const isMentorPreview = isStaffPreview;
   const persist = !authenticatedUser.synthetic && !isMentorPreview;
   const codeHash = createHash("sha256").update(code).digest("hex");
   const idempotencyKey = `${authenticatedUser.id}:${questionSlug}:${language}:${codeHash}`;
