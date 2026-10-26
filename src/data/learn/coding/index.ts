@@ -133,3 +133,61 @@ export function isLearnQuestionSlug(slug?: string): boolean {
   return QUESTION_BY_SLUG_ONLY.has(slug.toLowerCase())
 }
 
+export const JAVA_CPP_SUPPORTED_TOPICS: ReadonlySet<string> = new Set<string>([
+  'variables-data-types',
+  'basic-arithmetic-operations',
+  'conditionals-control-flow',
+  'loops',
+  'nested-loops',
+  'functions',
+  'arrays-1d-lists',
+  'strings-as-arrays',
+  'linear-search',
+  'binary-search',
+  'two-pointers',
+  'recursion',
+])
+
+export const CPP_ONLY_EXTRA_TOPICS: ReadonlySet<string> = new Set<string>([
+  'dsa-algorithms',
+])
+
+export function getQuestionSupportedLanguages(
+  questionOrSlug?: string | LearnQuestion
+): ('python' | 'nodejs' | 'java' | 'cpp')[] {
+  if (!questionOrSlug) return ['python', 'nodejs']
+
+  let q: LearnQuestion | undefined
+  if (typeof questionOrSlug === 'object') {
+    q = questionOrSlug
+  } else {
+    q = findLearnQuestionBySlug(questionOrSlug)
+  }
+
+  if (q?.languages && q.languages.length > 0) {
+    return q.languages
+  }
+
+  if (q?.isPythonOnly) {
+    return ['python']
+  }
+
+  const topic = q?.topicSlug || (typeof questionOrSlug === 'string' ? questionOrSlug.split(':')[1] : '')
+  const normTopic = (topic || '').toLowerCase()
+
+  if (normTopic === 'scope' || normTopic === 'oop-inheritance') {
+    return ['python']
+  }
+
+  if (JAVA_CPP_SUPPORTED_TOPICS.has(normTopic)) {
+    return ['python', 'nodejs', 'java', 'cpp']
+  }
+
+  if (CPP_ONLY_EXTRA_TOPICS.has(normTopic)) {
+    return ['python', 'nodejs', 'cpp']
+  }
+
+  return ['python', 'nodejs']
+}
+
+

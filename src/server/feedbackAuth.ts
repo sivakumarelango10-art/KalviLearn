@@ -5,9 +5,11 @@ import { isTestAuthEnabled } from './httpSecurity'
 // Server-authoritative Supabase Client.
 // Production REQUIRES SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY: there is no silent fallback to the
 // public anon key (which would make every server-side write quietly subject to client RLS).
-// Outside production (local dev / test runs) the public project URL + publishable key are used so the
+// Outside production (local dev / test runs / Vercel previews) the public project URL + publishable key are used so the
 // suites can run without a service key.
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const IS_PRODUCTION =
+  process.env.VERCEL_ENV === 'production' ||
+  (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV)
 
 const supabaseUrl =
   process.env.SUPABASE_URL ||
@@ -22,6 +24,8 @@ const supabaseKey =
     ? ''
     : process.env.SUPABASE_ANON_KEY ||
       process.env.VITE_SUPABASE_ANON_KEY ||
+      process.env.SUPABASE_PUBLISHABLE_KEY ||
+      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
       'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
 
 // A missing production credential must NOT crash the module at import time: on Vercel that turns every request to
@@ -151,8 +155,18 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
   }
 
-  // 1. Test tokens for automated suites: non-production AND ALLOW_TEST_AUTH_TOKENS=1 only
-  if (isTestAuthEnabled() && token.startsWith('test_auth_')) {
+  // 1. Test tokens for automated suites: non-production AND non-preview AND ALLOW_TEST_AUTH_TOKENS=1 only
+  if (token.startsWith('test_auth_')) {
+    if (!isTestAuthEnabled()) {
+      console.warn(
+        `[auth] SECURITY WARNING: test_auth_ token rejected because test authentication is disabled in this environment (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}).`
+      )
+      return {
+        authenticated: false,
+        statusCode: 401,
+        error: 'Test token authentication is not permitted in this environment.',
+      }
+    }
     const parts = token.split('_')
     // format: test_auth_<role>_<email>
     if (parts.length >= 4) {
@@ -240,16 +254,22 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
 
     if (!dbUser) {
-      const googleConfirmed =
-        !!data.user.email_confirmed_at && (data.user.identities || []).some((identity) => identity.provider === 'google')
+      const isGoogle =
+        data.user.app_metadata?.provider === 'google' ||
+        (Array.isArray(data.user.app_metadata?.providers) && data.user.app_metadata.providers.includes('google')) ||
+        (data.user.identities || []).some((identity) => identity.provider === 'google')
+      const isConfirmed = !!data.user.email_confirmed_at || !!(data.user as any).confirmed_at
+      const googleConfirmed = isConfirmed && isGoogle
       if (googleConfirmed) {
         let byEmailQuery = supabaseServer.from('users').select(columns).eq('email', email)
-        if (authUidColumn) byEmailQuery = byEmailQuery.is('authUid', null)
         const byEmail = await byEmailQuery.maybeSingle()
         if (byEmail.error) {
           return { authenticated: false, statusCode: 503, error: 'Unable to verify account. Please retry.' }
         }
         dbUser = byEmail.data as DbUserRow | null
+        if (dbUser && authUidColumn && dbUser.id) {
+          void supabaseServer.from('users').update({ authUid: data.user.id }).eq('id', dbUser.id).is('authUid', null)
+        }
       }
     }
 

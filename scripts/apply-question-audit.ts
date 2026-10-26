@@ -89,6 +89,23 @@ const learnOriginalDict = JSON.parse(fs.readFileSync(learnOriginalPath, 'utf8'))
 const bank480Path = path.join(rootDir, 'data/imports/all_480_questions.json')
 const bank480Data = JSON.parse(fs.readFileSync(bank480Path, 'utf8'))
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/['"“”‘’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+// Group Bank480 Questions by topic prefix (T01..T24)
+const bank480ByPrefix = new Map<string, any[]>()
+for (const q of bank480Data.questions) {
+  const prefix = q.id.split('-')[0]
+  const list = bank480ByPrefix.get(prefix) || []
+  list.push(q)
+  bank480ByPrefix.set(prefix, list)
+}
+
 const bank240Path = path.join(rootDir, 'docs/KalviLearn_240_New_Topic_Wise_Questions.md')
 const bank240Text = fs.readFileSync(bank240Path, 'utf8')
 
@@ -200,35 +217,73 @@ const redirectMap: Record<string, RedirectEntry> = {}
 for (const [learnId, { dupSrc, dupId }] of removedLearn.entries()) {
   const orig = learnById.get(learnId)
   const slug = orig ? orig.slug : learnId.replace(/^coding-/, '')
+  const topicId = orig ? orig.topicId : ''
+  const targetTopic = TOPIC_BY_ID.get(topicId)
+  const bankQs = targetTopic ? (bank480ByPrefix.get(targetTopic.prefix) || []) : []
+  const firstBankQ = bankQs[0]
+  const firstBankSlug = firstBankQ ? slugify(firstBankQ.title) : ''
 
   let targetUrl = ''
   let targetSolveUrl = ''
   let targetTitle = ''
+  let effectiveSource = dupSrc
+  let effectiveId = dupId
 
-  if (dupSrc === 'learn') {
-    const dup = learnById.get(dupId)
-    if (dup) {
-      targetTitle = dup.title
-      targetUrl = `/learn/coding/${dup.topicId}/${dup.slug}`
-      targetSolveUrl = `/learn/coding/${dup.topicId}/${dup.slug}/solve`
-    }
-  } else if (dupSrc === 'practice') {
+  if (dupSrc === 'practice') {
     const dup = practiceById.get(dupId)
-    if (dup) {
+    if (dup && dup.isActive !== false) {
       targetTitle = dup.title
       targetUrl = `/practice/python/${dup.slug}`
       targetSolveUrl = `/practice/python/${dup.slug}`
+    } else if (firstBankQ && targetTopic) {
+      effectiveSource = 'learn'
+      effectiveId = `learn:${targetTopic.id}:${firstBankSlug}`
+      targetTitle = firstBankQ.title
+      targetUrl = `/learn/coding/${targetTopic.id}/${firstBankSlug}`
+      targetSolveUrl = `/learn/coding/${targetTopic.id}/${firstBankSlug}/solve`
+    }
+  } else {
+    if (firstBankQ && targetTopic) {
+      effectiveSource = 'learn'
+      effectiveId = `learn:${targetTopic.id}:${firstBankSlug}`
+      targetTitle = firstBankQ.title
+      targetUrl = `/learn/coding/${targetTopic.id}/${firstBankSlug}`
+      targetSolveUrl = `/learn/coding/${targetTopic.id}/${firstBankSlug}/solve`
     }
   }
 
   redirectMap[slug] = {
     originalId: learnId,
     originalSlug: slug,
-    targetSource: dupSrc,
-    targetId: dupId,
+    targetSource: effectiveSource,
+    targetId: effectiveId,
     targetTitle,
     targetUrl,
     targetSolveUrl,
+  }
+}
+
+// Also redirect all other legacy Learn questions to the 480 bank canonicals
+for (const q of Object.values(learnOriginalDict) as any[]) {
+  const origSlug = q.slug
+  const targetTopic = TOPIC_BY_ID.get(q.topicId)
+  if (targetTopic) {
+    const bankQs = bank480ByPrefix.get(targetTopic.prefix) || []
+    if (bankQs.length > 0) {
+      const firstBankQ = bankQs[0]
+      const firstBankSlug = slugify(firstBankQ.title)
+      if (!redirectMap[origSlug]) {
+        redirectMap[origSlug] = {
+          originalId: q.id,
+          originalSlug: origSlug,
+          targetSource: 'learn',
+          targetId: `learn:${targetTopic.id}:${firstBankSlug}`,
+          targetTitle: firstBankQ.title,
+          targetUrl: `/learn/coding/${targetTopic.id}/${firstBankSlug}`,
+          targetSolveUrl: `/learn/coding/${targetTopic.id}/${firstBankSlug}/solve`,
+        }
+      }
+    }
   }
 }
 
@@ -245,17 +300,9 @@ fs.writeFileSync(
 console.log(`✓ Generated redirects.json for ${Object.keys(redirectMap).length} removed Learn slugs.`)
 
 // -----------------------------------------------------------------------------
-// SECTION 1: ASSEMBLE 950 LEARN QUESTIONS
+// SECTION 1: ASSEMBLE 480 LEARN QUESTIONS (20 PER TOPIC)
 // -----------------------------------------------------------------------------
-console.log('Assembling 950 Learn questions (470 kept + 480 bank480)...')
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/['"“”‘’]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
+console.log('Assembling 480 Learn questions (20 bank480 questions per topic)...')
 
 // 41 Python-specific questions
 function isPythonSpecific(id: string): boolean {
@@ -312,71 +359,63 @@ if (raw) {
 `
 
   const javaCode = `// Language: Java 17
-// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.
+// Input is read from stdin; output must be printed as a valid JSON string.
 import java.util.*;
-import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) sb.append(line);
-        String raw = sb.toString().trim();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String raw = sc.hasNextLine() ? sc.nextLine().trim() : "";
         if (raw.isEmpty()) return;
 
-        Map<String, String> data = parseJson(raw);
-        Object result = solve(data, raw);
-        System.out.println(toJson(result));
+        Object result = solve(raw);
+        System.out.println(result);
     }
 
-    public static Object solve(Map<String, String> data, String rawJson) {
-        // TODO: Write your solution here using data or rawJson
+    public static Object solve(String json) {
+        // TODO: Write your solution here using helper methods:
+        // getInt(json, key), getString(json, key), getIntList(json, key)
         return null;
     }
 
-    // --- JSON Helper ---
-    static Map<String, String> parseJson(String json) {
-        Map<String, String> map = new LinkedHashMap<>();
-        int i = json.indexOf('{'), j = json.lastIndexOf('}');
-        if (i < 0 || j <= i) return map;
-        String content = json.substring(i + 1, j).trim();
-        int depth = 0, start = 0;
-        List<String> tokens = new ArrayList<>();
-        for (int k = 0; k < content.length(); k++) {
-            char c = content.charAt(k);
-            if (c == '[' || c == '{') depth++;
-            else if (c == ']' || c == '}') depth--;
-            else if (c == ',' && depth == 0) {
-                tokens.add(content.substring(start, k).trim());
-                start = k + 1;
-            }
+    // --- JSON Helpers ---
+    public static String getString(String json, String key) {
+        String pat = '"' + key + '"';
+        int p = json.indexOf(pat);
+        if (p == -1) return "";
+        int c = json.indexOf(':', p);
+        if (c == -1) return "";
+        int start = c + 1;
+        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;
+        if (start < json.length() && json.charAt(start) == '"') {
+            int end = json.indexOf('"', start + 1);
+            return end == -1 ? "" : json.substring(start + 1, end);
         }
-        if (start < content.length()) tokens.add(content.substring(start).trim());
-        for (String t : tokens) {
-            int colon = t.indexOf(':');
-            if (colon > 0) {
-                String k = t.substring(0, colon).trim().replaceAll("^\"|\"$", "");
-                String v = t.substring(colon + 1).trim();
-                map.put(k, v);
-            }
-        }
-        return map;
+        int end = start;
+        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;
+        return json.substring(start, end).trim();
     }
 
-    static String toJson(Object obj) {
-        if (obj == null) return "null";
-        if (obj instanceof String) return "\\"" + obj + "\\"";
-        if (obj instanceof List) {
-            List<?> l = (List<?>) obj;
-            StringBuilder sb = new StringBuilder("[");
-            for (int i = 0; i < l.size(); i++) {
-                if (i > 0) sb.append(",");
-                sb.append(toJson(l.get(i)));
-            }
-            return sb.append("]").toString();
+    public static int getInt(String json, String key) {
+        String s = getString(json, key);
+        return s.isEmpty() ? 0 : Integer.parseInt(s);
+    }
+
+    public static List<Integer> getIntList(String json, String key) {
+        List<Integer> list = new ArrayList<>();
+        String pat = '"' + key + '"';
+        int p = json.indexOf(pat);
+        if (p == -1) return list;
+        int start = json.indexOf('[', p);
+        int end = json.indexOf(']', start);
+        if (start == -1 || end == -1) return list;
+        String content = json.substring(start + 1, end).trim();
+        if (content.isEmpty()) return list;
+        String[] tokens = content.split(",");
+        for (int i = 0; i < tokens.length; i++) {
+            list.add(Integer.parseInt(tokens[i].trim()));
         }
-        return String.valueOf(obj);
+        return list;
     }
 }
 `
@@ -386,35 +425,60 @@ public class Main {
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
 #include <algorithm>
 
 using namespace std;
 
-// --- JSON Helper: extract field by key ---
+// --- JSON Helpers ---
 string extractField(const string& json, const string& key) {
-    size_t pos = json.find("\\"" + key + "\\"");
-    if (pos == string::npos) return "";
-    pos = json.find(':', pos);
-    if (pos == string::npos) return "";
-    pos++;
-    while (pos < json.size() && isspace(json[pos])) pos++;
-    if (pos >= json.size()) return "";
-    if (json[pos] == '[') {
-        int depth = 0;
-        size_t end = pos;
-        while (end < json.size()) {
-            if (json[end] == '[') depth++;
-            else if (json[end] == ']') { depth--; if (depth == 0) { end++; break; } }
-            end++;
-        }
-        return json.substr(pos, end - pos);
+    string pat = '"' + key + '"';
+    size_t p = json.find(pat);
+    if (p == string::npos) return "";
+    size_t c = json.find(':', p);
+    if (c == string::npos) return "";
+    size_t start = c + 1;
+    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;
+    if (start < json.size() && json[start] == '"') {
+        size_t end = json.find('"', start + 1);
+        return end == string::npos ? "" : json.substr(start + 1, end - start - 1);
     }
-    size_t end = pos;
+    size_t end = start;
     while (end < json.size() && json[end] != ',' && json[end] != '}') end++;
-    string val = json.substr(pos, end - pos);
-    while (!val.empty() && isspace(val.back())) val.pop_back();
-    return val;
+    size_t len = end - start;
+    while (len > 0 && isspace(json[start + len - 1])) len--;
+    return json.substr(start, len);
+}
+
+int extractInt(const string& json, const string& key) {
+    string val = extractField(json, key);
+    return val.empty() ? 0 : stoi(val);
+}
+
+vector<int> extractIntArray(const string& json, const string& key) {
+    vector<int> res;
+    string pat = '"' + key + '"';
+    size_t p = json.find(pat);
+    if (p == string::npos) return res;
+    size_t start = json.find('[', p);
+    size_t end = json.find(']', start);
+    if (start == string::npos || end == string::npos) return res;
+    string content = json.substr(start + 1, end - start - 1);
+    string token = "";
+    for (size_t i = 0; i <= content.size(); i++) {
+        if (i == content.size() || content[i] == ',') {
+            size_t s = 0;
+            while (s < token.size() && isspace(token[s])) s++;
+            size_t e = token.size();
+            while (e > s && isspace(token[e - 1])) e--;
+            if (e > s) {
+                res.push_back(stoi(token.substr(s, e - s)));
+            }
+            token = "";
+        } else {
+            token += content[i];
+        }
+    }
+    return res;
 }
 
 int main() {
@@ -447,20 +511,12 @@ for (const q of Object.values(learnOriginalDict) as any[]) {
   }
 }
 
-// Group Bank480 Questions by topic prefix (T01..T24)
-const bank480ByPrefix = new Map<string, any[]>()
-for (const q of bank480Data.questions) {
-  const prefix = q.id.split('-')[0]
-  const list = bank480ByPrefix.get(prefix) || []
-  list.push(q)
-  bank480ByPrefix.set(prefix, list)
-}
+
 
 // Generate topic files
 let grandTotalPublished = 0
 
 for (const topic of TOPICS) {
-  const keptLearn = keptLearnByTopic.get(topic.id) || []
   const bankQuestions = bank480ByPrefix.get(topic.prefix) || []
 
   // Sort bank questions in T-Q order
@@ -475,70 +531,9 @@ for (const topic of TOPICS) {
 
   let orderIndex = 1
 
-  // 1. First, Kept Learn Questions
-  for (const q of keptLearn) {
-    const slug = q.slug
-    const id = `learn:${topic.id}:${slug}`
-
-    // Clean question public representation
-    const publicQ = {
-      id,
-      slug,
-      topicId: topic.id,
-      topicSlug: topic.slug,
-      topicTitle: topic.title,
-      title: q.title,
-      order: orderIndex++,
-      difficulty: undefined, // No fake badge for kept Learn questions!
-      problemStatement: q.problemStatement,
-      inputFormat: q.inputFormat,
-      outputFormat: q.outputFormat,
-      constraints: q.constraints,
-      examples: q.examples || [],
-      visibleTests: q.visibleTests || [],
-      testCaseMeta: q.testCaseMeta || { visibleCount: 3, hiddenCount: 7, totalCount: 10 },
-      isPythonOnly: false,
-      inputMode: 'line',
-    }
-    topicQuestions.push(publicQ)
-
-    // Hidden test suite for server
-    // Load existing tests from server/learn/coding/hidden/<topic>.json if present
-    const existingServerSuitePath = path.join(rootDir, `server/learn/coding/hidden/${topic.id}.json`)
-    let existingTests: any[] = []
-    if (fs.existsSync(existingServerSuitePath)) {
-      try {
-        const parsed = JSON.parse(fs.readFileSync(existingServerSuitePath, 'utf8'))
-        if (parsed[slug]?.testCases) {
-          existingTests = parsed[slug].testCases
-        }
-      } catch {}
-    }
-
-    if (existingTests.length === 0 && q.visibleTests) {
-      existingTests = q.visibleTests.map((vt: any, i: number) => ({
-        testIndex: i + 1,
-        input: vt.input,
-        expectedOutput: vt.expectedOutput,
-        isHidden: i >= 3,
-      }))
-    }
-
-    serverHiddenSuites[slug] = {
-      id,
-      slug,
-      topicId: topic.id,
-      title: q.title,
-      testCases: existingTests,
-    }
-  }
-
-  // 2. Second, Bank480 Questions
+  // Bank480 Questions ONLY (20 per topic)
   for (const bq of bankQuestions) {
-    let slug = slugify(bq.title)
-    if (serverHiddenSuites[slug] || topicQuestions.some((tq) => tq.slug === slug)) {
-      slug = `${slugify(bq.id.toLowerCase())}-${slug}`
-    }
+    const slug = slugify(bq.title)
     const id = `learn:${topic.id}:${slug}`
     const isPyOnly = isPythonSpecific(bq.id)
 
@@ -661,10 +656,10 @@ export default questions
     'utf8'
   )
 
-  console.log(`✓ ${topic.id}: ${topicQuestions.length} questions (${keptLearn.length} kept + ${bankQuestions.length} bank480)`)
+  console.log(`✓ ${topic.id}: ${topicQuestions.length} questions (${bankQuestions.length} bank480)`)
 }
 
 console.log(`\n========================================================================`)
 console.log(`🏁 AUDIT REPLACEMENT COMPLETED: ${grandTotalPublished} QUESTIONS PUBLISHED`)
-console.log(`   (470 kept Learn questions + 480 bank480 questions = 950 total)`)
+console.log(`   (480 bank480 questions = 20 questions per topic for 24 topics)`)
 console.log(`========================================================================`)

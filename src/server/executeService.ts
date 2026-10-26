@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { outputsMatch } from './judge/compare'
 import { selectEngine, type EngineCaseResult, type EngineName } from './judge/engines'
 import { resolveQuestion, type JudgeCase } from './judge/testRepository'
+import { isPythonOnlyQuestion, isLanguageSupportedForQuestion, normalizeLanguage } from './judge/questionId'
 
 /**
  * The single judge pipeline used by BOTH question banks (practice + coding) and BOTH actions:
@@ -134,6 +135,19 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   if (code.length > 65536) {
     return failure('COMPILATION_ERROR', 'Payload Too Large', 'Submitted code exceeds the maximum allowed limit of 64KB.', total, base)
   }
+  const normLang = normalizeLanguage(language)
+  if (!normLang || !isLanguageSupportedForQuestion(questionSlug, normLang)) {
+    const displayLang = language === 'nodejs' ? 'JavaScript' : language === 'cpp' ? 'C++' : language === 'java' ? 'Java' : language
+    return failure(
+      'COMPILATION_ERROR',
+      'Unsupported Language',
+      isPythonOnlyQuestion(questionSlug)
+        ? 'This question only supports Python.'
+        : `${displayLang} isn't available for this question yet.`,
+      total,
+      base
+    )
+  }
   if (!suite) {
     const ambiguous = 'error' in resolved && resolved.error === 'ambiguous'
     return failure(
@@ -146,9 +160,17 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
       base
     )
   }
-  if (suite.testCases.length !== 10 || suite.visibleCount !== 3 || suite.hiddenCount !== 7) {
-    console.error(`[judge] invalid suite ${suite.questionId}: ${suite.visibleCount} visible / ${suite.hiddenCount} hidden`)
-    return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question is misconfigured on the server.', total, base)
+  if (suite.source === 'practice') {
+    if (suite.testCases.length !== 10 || suite.visibleCount !== 3 || suite.hiddenCount !== 7) {
+      console.error(`[judge] invalid suite ${suite.questionId}: ${suite.visibleCount} visible / ${suite.hiddenCount} hidden`)
+      return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question is misconfigured on the server.', total, base)
+    }
+  } else {
+    // Learn / Coding questions: must have at least 1 visible case and at least 3 cases total
+    if (suite.testCases.length < 3 || suite.visibleCount < 1) {
+      console.error(`[judge] invalid suite ${suite.questionId}: ${suite.visibleCount} visible / ${suite.hiddenCount} hidden`)
+      return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question is misconfigured on the server.', total, base)
+    }
   }
 
   const engine = selectEngine(language)
@@ -220,9 +242,134 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     status,
     message: accepted
       ? mode === 'run'
-        ? `All ${total} visible test cases passed. Submit to run all ${judgeTotal} judge tests.`
+        ? `All ${total} visible test cases passed. Submit to run all ${judgeTotal} tests.`
         : 'All test cases passed successfully.'
       : `${passed} of ${total} test cases passed.`,
     testCases,
   }
 }
+
+export interface ExecuteCustomRequest {
+  questionSlug?: string
+  language: string
+  code: string
+  customInput: string
+}
+
+/**
+ * Executes student code on a single student-supplied custom input.
+ *
+ * Security & Isolation guarantees:
+ * - Never loads question's hidden tests or reference solution.
+ * - Never returns hidden tests or metadata.
+ * - Limits input to 64 KB and output to 64 KB (truncated with a note).
+ * - Enforces identical timeout and memory sandboxing as standard runs.
+ * - Never mutates database, submissions, streaks, XP or progress.
+ */
+export async function executeCustomInput(req: ExecuteCustomRequest): Promise<ExecuteResponse> {
+  const { language, code, customInput } = req
+  const submissionId = randomUUID()
+  const started = performance.now()
+
+  const base: Partial<ExecuteResponse> = {
+    mode: 'run',
+    judgeTotal: 1,
+    submissionId,
+    questionId: req.questionSlug,
+  }
+
+  if (!code || !code.trim()) {
+    return failure('COMPILATION_ERROR', 'Compilation Error', 'Source code cannot be empty.', 1, base)
+  }
+  if (code.length > 65536) {
+    return failure('COMPILATION_ERROR', 'Payload Too Large', 'Submitted code exceeds the maximum allowed limit of 64KB.', 1, base)
+  }
+  if (typeof customInput !== 'string') {
+    return failure('SYSTEM_ERROR', 'Invalid Custom Input', 'Custom test input must be provided.', 1, base)
+  }
+  if (customInput.length > 65536) {
+    return failure('SYSTEM_ERROR', 'Payload Too Large', 'Custom test input exceeds maximum limit of 64KB.', 1, base)
+  }
+  if (req.questionSlug) {
+    const normLang = normalizeLanguage(language)
+    if (!normLang || !isLanguageSupportedForQuestion(req.questionSlug, normLang)) {
+      const displayLang = language === 'nodejs' ? 'JavaScript' : language === 'cpp' ? 'C++' : language === 'java' ? 'Java' : language
+      return failure(
+        'COMPILATION_ERROR',
+        'Unsupported Language',
+        isPythonOnlyQuestion(req.questionSlug)
+          ? 'This question only supports Python.'
+          : `${displayLang} isn't available for this question yet.`,
+        1,
+        base
+      )
+    }
+  }
+
+  const engine = selectEngine(language)
+  const meta = {
+    ...base,
+    engine: engine.name,
+    visibleCount: 1,
+    hiddenCount: 0,
+  }
+
+  const outcome = await engine.run({ code, language, inputs: [customInput] })
+
+  if (outcome.kind === 'unavailable') {
+    return failure('SYSTEM_ERROR', 'Execution Unavailable', outcome.message, 1, meta)
+  }
+  if (outcome.kind === 'compile_error') {
+    const isSecurity = outcome.error.includes('SecurityError')
+    return failure(
+      isSecurity ? 'RUNTIME_ERROR' : 'COMPILATION_ERROR',
+      isSecurity ? outcome.error : 'Compilation Error',
+      outcome.error || 'Syntax / Compilation error detected in your code.',
+      1,
+      meta
+    )
+  }
+
+  const caseRes = outcome.cases[0] || { output: '', error: 'No output generated', ms: 0, kind: 'runtime_error' as const }
+  let output = caseRes.output || ''
+  if (output.length > 65536) {
+    output = output.slice(0, 65536) + '\n... [Output truncated at 64 KB]'
+  }
+
+  const status: ExecutionStatus =
+    caseRes.kind === 'timeout'
+      ? 'TIME_LIMIT_EXCEEDED'
+      : caseRes.kind === 'runtime_error' || caseRes.kind === 'memory'
+      ? 'RUNTIME_ERROR'
+      : 'ACCEPTED'
+
+  const caseStatus: CaseStatus =
+    caseRes.kind === 'timeout'
+      ? 'time_limit_exceeded'
+      : caseRes.kind === 'runtime_error' || caseRes.kind === 'memory'
+      ? 'runtime_error'
+      : 'passed'
+
+  const testCase: ClientTestCaseResult = {
+    testIndex: 1,
+    status: caseStatus,
+    visible: true,
+    input: customInput,
+    actualOutput: output || (caseRes.error ? `Error: ${caseRes.error}` : '(no output)'),
+    error: caseRes.error,
+    executionTimeMs: caseRes.ms,
+  }
+
+  return {
+    ...meta,
+    success: status === 'ACCEPTED',
+    total: 1,
+    passed: status === 'ACCEPTED' ? 1 : 0,
+    executed: 1,
+    overallTimeMs: Math.round(performance.now() - started),
+    status,
+    message: status === 'ACCEPTED' ? 'Custom input executed successfully.' : caseRes.error || 'Execution encountered an error.',
+    testCases: [testCase],
+  }
+}
+

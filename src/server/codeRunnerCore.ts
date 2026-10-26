@@ -2,6 +2,12 @@ import * as vm from 'node:vm'
 import { installSandbox } from './sandbox'
 import { evaluate } from '../lib/runner/evaluator'
 import { executePython } from '../lib/runner/pythonRunner'
+import {
+  getPyodide,
+  getPyodideLoadError,
+  checkPythonSyntaxWithPyodide,
+  executePythonWithPyodide,
+} from '../lib/runner/pyodideRunner'
 import { executeCpp } from '../lib/runner/cppRunner'
 import { executeJava } from '../lib/runner/javaRunner'
 
@@ -148,10 +154,15 @@ function executeJavaScript(code: string, input: string): { output: string; error
   }
 }
 
-function runSingleTestCase(code: string, language: string, input: string): { output: string; error?: string } {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function runSingleTestCase(code: string, language: string, input: string, py?: any): { output: string; error?: string } {
   const lang = (language || '').toLowerCase()
   if (lang === 'python') {
-    return executePython(code, input)
+    if (py) {
+      return executePythonWithPyodide(py, code, input)
+    }
+    const loadError = getPyodideLoadError() || 'Pyodide WebAssembly runtime is unavailable'
+    return { output: '', error: `[Pyodide Load Failure] ${loadError}` }
   } else if (lang === 'cpp' || lang === 'c++') {
     return executeCpp(code, input)
   } else if (lang === 'java') {
@@ -160,7 +171,8 @@ function runSingleTestCase(code: string, language: string, input: string): { out
   return executeJavaScript(code, input)
 }
 
-function checkCompilation(code: string, language: string): { ok: boolean; error?: string } {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function checkCompilation(code: string, language: string, py?: any): { ok: boolean; error?: string } {
   // Pre-execution security filter: block process/env/child_process escapes across all languages
   if (
     /process\s*\.\s*env/i.test(code) ||
@@ -173,6 +185,9 @@ function checkCompilation(code: string, language: string): { ok: boolean; error?
 
   const lang = (language || '').toLowerCase()
   if (lang === 'python') {
+    if (py) {
+      return checkPythonSyntaxWithPyodide(py, code)
+    }
     const dryRun = executePython(code, '')
     if (dryRun.error && (
       dryRun.error.includes('SyntaxError') ||
@@ -226,8 +241,22 @@ export type SandboxJobResult =
  * Pre-checks the submission, then runs it against every input in order. Pure compute; no I/O.
  * `onCase` is invoked as soon as each case finishes (used to stream genuine per-case progress).
  */
-export function runSubmissionJob(job: SandboxJob, onCase?: (index: number, result: SandboxCaseResult) => void): SandboxJobResult {
-  const compCheck = checkCompilation(job.code, job.language)
+export async function runSubmissionJob(
+  job: SandboxJob,
+  onCase?: (index: number, result: SandboxCaseResult) => void
+): Promise<SandboxJobResult> {
+  const lang = (job.language || '').toLowerCase()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let py: any = null
+  if (lang === 'python') {
+    py = await getPyodide()
+    if (!py) {
+      const loadError = getPyodideLoadError() || 'Failed to initialize Pyodide WebAssembly runtime'
+      return { kind: 'precheck_failed', error: `[Pyodide Load Failure] ${loadError}` }
+    }
+  }
+
+  const compCheck = checkCompilation(job.code, job.language, py)
   if (!compCheck.ok) return { kind: 'precheck_failed', error: compCheck.error || 'Compilation error' }
 
   const started = performance.now()
@@ -235,8 +264,14 @@ export function runSubmissionJob(job: SandboxJob, onCase?: (index: number, resul
   for (const input of job.inputs) {
     const t0 = performance.now()
     const exhausted = t0 - started > TOTAL_EXECUTION_BUDGET_MS
-    const exec = exhausted ? { output: '', error: 'Time Limit Exceeded' } : runSingleTestCase(job.code, job.language, input)
-    const caseResult: SandboxCaseResult = { output: exec.output, error: exec.error, ms: Math.round(performance.now() - t0) }
+    const exec = exhausted
+      ? { output: '', error: 'Time Limit Exceeded' }
+      : runSingleTestCase(job.code, job.language, input, py)
+    const caseResult: SandboxCaseResult = {
+      output: exec.output,
+      error: exec.error,
+      ms: Math.round(performance.now() - t0),
+    }
     cases.push(caseResult)
     onCase?.(cases.length - 1, caseResult)
   }

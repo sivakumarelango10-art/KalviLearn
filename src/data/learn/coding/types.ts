@@ -37,6 +37,7 @@ export interface LearnQuestion {
   pythonOnlyNote?: string
   starterCodes?: Record<string, string>
   inputMode?: 'line' | 'json'
+  languages?: ('python' | 'nodejs' | 'java' | 'cpp')[]
 }
 
 export interface LearnQuestionSummary {

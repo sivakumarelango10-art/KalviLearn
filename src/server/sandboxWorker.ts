@@ -11,8 +11,8 @@ if (typeof process.send !== 'function') {
   throw new Error('sandboxWorker must be started with an IPC channel')
 }
 
-process.once('message', (job: SandboxJob) => {
-  const result = runSubmissionJob(job, (index, caseResult) => {
+process.once('message', async (job: SandboxJob) => {
+  const result = await runSubmissionJob(job, (index, caseResult) => {
     process.send!({ type: 'case', index, result: caseResult })
   })
   process.send!({ type: 'done', result }, undefined, undefined, () => process.exit(0))

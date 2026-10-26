@@ -174,7 +174,7 @@ async function main() {
   const { runSubmissionJob } = await import('../src/server/codeRunnerCore')
   const { NODE_IO_PATTERNS } = await import('./lib/node-io-patterns')
   for (const p of NODE_IO_PATTERNS) {
-    const job = runSubmissionJob({ code: p.code, language: 'nodejs', inputs: [p.input] })
+    const job = await runSubmissionJob({ code: p.code, language: 'nodejs', inputs: [p.input] })
     const c = job.kind === 'ran' ? job.cases[0] : { output: '', error: job.error }
     assert(!c.error && c.output === p.expected, `node I/O: ${p.name}`, `got ${JSON.stringify(c.output)} ${c.error || ''}`)
   }

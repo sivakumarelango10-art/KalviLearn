@@ -209,6 +209,27 @@ async function main() {
     assert(c.status() === 401, 'test_auth_* tokens are NOT honoured unless ALLOW_TEST_AUTH_TOKENS=1', `got ${c.status()}`)
   }
   {
+    const c = mockCall({ method: 'POST', headers: { authorization: 'Bearer test_auth_admin_attacker@evil.test' }, body: { questionSlug: SLUG, language: 'nodejs', code: GOOD_JS } })
+    process.env.ALLOW_TEST_AUTH_TOKENS = '1'
+    process.env.VERCEL_ENV = 'production'
+    clearAuthCacheForTesting()
+    await executeHandler(c.req, c.res)
+    delete process.env.VERCEL_ENV
+    clearAuthCacheForTesting()
+    assert(c.status() === 401, 'test_auth_* tokens are strictly rejected when VERCEL_ENV=production even if ALLOW_TEST_AUTH_TOKENS=1', `got ${c.status()}`)
+  }
+  {
+    const c = mockCall({ method: 'POST', headers: { authorization: 'Bearer test_auth_admin_attacker@evil.test' }, body: { questionSlug: SLUG, language: 'nodejs', code: GOOD_JS } })
+    process.env.ALLOW_TEST_AUTH_TOKENS = '1'
+    const origEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'production'
+    clearAuthCacheForTesting()
+    await executeHandler(c.req, c.res)
+    process.env.NODE_ENV = origEnv
+    clearAuthCacheForTesting()
+    assert(c.status() === 401, 'test_auth_* tokens are strictly rejected when NODE_ENV=production even if ALLOW_TEST_AUTH_TOKENS=1', `got ${c.status()}`)
+  }
+  {
     const c = mockCall({ method: 'POST', headers: { authorization: STUDENT_TOKEN }, body: { questionSlug: SLUG, language: 'nodejs', code: GOOD_JS } })
     await executeHandler(c.req, c.res)
     assert(c.status() === 200 && c.json().passed === 3 && c.json().judgeTotal === 10, 'Authenticated execute (Run) succeeds (200, 3/3 visible)', `got ${c.status()}`)
@@ -303,6 +324,26 @@ async function main() {
     const p = await authenticateFeedbackRequest('Bearer test_auth_admin_attacker@evil.test')
     process.env.NODE_ENV = prodEnv
     assert(p.authenticated === false, 'test_auth_* tokens never work with NODE_ENV=production')
+
+    // Test rejection when VERCEL_ENV is 'production' or 'preview' even if ALLOW_TEST_AUTH_TOKENS is set
+    const savedVercelEnv = process.env.VERCEL_ENV
+    process.env.ALLOW_TEST_AUTH_TOKENS = '1'
+
+    process.env.VERCEL_ENV = 'production'
+    clearAuthCacheForTesting()
+    const pVercelProd = await authenticateFeedbackRequest('Bearer test_auth_student_synthetic.student@kalvilearn.test')
+    assert(pVercelProd.authenticated === false, 'test_auth_* tokens must be rejected when VERCEL_ENV=production')
+
+    process.env.VERCEL_ENV = 'preview'
+    clearAuthCacheForTesting()
+    const pVercelPrev = await authenticateFeedbackRequest('Bearer test_auth_student_synthetic.student@kalvilearn.test')
+    assert(pVercelPrev.authenticated === false, 'test_auth_* tokens must be rejected when VERCEL_ENV=preview')
+
+    if (savedVercelEnv !== undefined) {
+      process.env.VERCEL_ENV = savedVercelEnv
+    } else {
+      delete process.env.VERCEL_ENV
+    }
     clearAuthCacheForTesting()
     const blank = await authenticateFeedbackRequest('Bearer ')
     assert(blank.authenticated === false && blank.statusCode === 401, 'Empty bearer token rejected')

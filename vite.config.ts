@@ -26,6 +26,7 @@ async function startSandboxWorkerBuild(): Promise<void> {
     format: 'esm',
     target: 'node18',
     outfile,
+    external: ['pyodide'],
     logLevel: 'warning',
   })
   await ctx.rebuild()

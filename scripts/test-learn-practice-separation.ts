@@ -119,14 +119,14 @@ console.log('\nTest 3: Practice /practice/python/belt-1-q3-largest-of-three-v1 i
 // --------------------------------------------------------------------------
 // TEST 4: Collision List & Data Independence
 // --------------------------------------------------------------------------
-console.log('\nTest 4: Learn "middle-of-three" and Practice "Middle Value (Variant 1)" load distinct data across collision pairs')
+console.log('\nTest 4: Learn "median-of-three" and Practice "Middle Value (Variant 1)" load distinct data across collision pairs')
 {
   // 1. Learn question
-  const learnQ = getLearnQuestion('conditionals-control-flow', 'middle-of-three')
-  assert.ok(learnQ, 'Learn question middle-of-three must exist')
-  assert.strictEqual(learnQ.id, 'learn:conditionals-control-flow:middle-of-three')
-  assert.strictEqual(learnQ.slug, 'middle-of-three')
-  assert.strictEqual(learnQ.title, 'Middle of Three')
+  const learnQ = getLearnQuestion('conditionals-control-flow', 'median-of-three')
+  assert.ok(learnQ, 'Learn question median-of-three must exist')
+  assert.strictEqual(learnQ.id, 'learn:conditionals-control-flow:median-of-three')
+  assert.strictEqual(learnQ.slug, 'median-of-three')
+  assert.strictEqual(learnQ.title, 'Median of Three')
 
   // 2. Practice problem
   const practiceP = getProblemByLanguageAndSlug('python', 'belt-1-q4-middle-value-v1')
@@ -138,11 +138,11 @@ console.log('\nTest 4: Learn "middle-of-three" and Practice "Middle Value (Varia
   assert.notStrictEqual(learnQ.title, practiceP.title)
 
   // Test suites are independent
-  const learnSuite = resolveLearnServerSuite('middle-of-three')
+  const learnSuite = resolveLearnServerSuite('median-of-three')
   const practiceSuite = getServerTests('belt-1-q4-middle-value-v1')
   assert.ok(learnSuite, 'Learn suite must resolve')
   assert.ok(practiceSuite, 'Practice suite must resolve')
-  assert.strictEqual(learnSuite.id, 'learn:conditionals-control-flow:middle-of-three')
+  assert.strictEqual(learnSuite.id, 'learn:conditionals-control-flow:median-of-three')
   assert.strictEqual(practiceSuite.source, 'practice')
   assert.strictEqual(practiceSuite.questionId, 'practice:belt-1-q4-middle-value-v1')
 
@@ -172,14 +172,14 @@ console.log('\nTest 5: Old /practice/python/<learn-slug> redirects to Learn solv
   )
 
   // Verify findLearnQuestionBySlug resolves both bare slugs and namespaced slugs
-  const resolved = findLearnQuestionBySlug('middle-of-three')
-  assert.ok(resolved, 'findLearnQuestionBySlug("middle-of-three") must resolve')
+  const resolved = findLearnQuestionBySlug('median-of-three')
+  assert.ok(resolved, 'findLearnQuestionBySlug("median-of-three") must resolve')
   assert.strictEqual(resolved.topicSlug, 'conditionals-control-flow')
-  assert.strictEqual(resolved.slug, 'middle-of-three')
+  assert.strictEqual(resolved.slug, 'median-of-three')
 
-  const resolvedNamespaced = findLearnQuestionBySlug('learn:conditionals-control-flow:middle-of-three')
+  const resolvedNamespaced = findLearnQuestionBySlug('learn:conditionals-control-flow:median-of-three')
   assert.ok(resolvedNamespaced, 'findLearnQuestionBySlug with namespaced id must resolve')
-  assert.strictEqual(resolvedNamespaced.slug, 'middle-of-three')
+  assert.strictEqual(resolvedNamespaced.slug, 'median-of-three')
   console.log('  PASS: Old /practice/<learn-slug> cleanly redirects to /learn/coding/:topic/:slug/solve')
 }
 
@@ -214,10 +214,10 @@ console.log('\nTest 6: Unknown Learn topic or question shows Not Found, not blan
 // --------------------------------------------------------------------------
 // TEST 7: Question Counts per Topic Match Exactly Between Client and Server
 // --------------------------------------------------------------------------
-console.log('\nTest 7: Learn question counts per topic match between client and server stores (950 in total)')
+console.log('\nTest 7: Learn question counts per topic match between client and server stores (480 in total)')
 {
   const migratedQuestions = getAllLearnQuestions()
-  assert.strictEqual(migratedQuestions.length, 950, 'Audited Learn questions count must be exactly 950')
+  assert.strictEqual(migratedQuestions.length, 480, 'Audited Learn questions count must be exactly 480')
 
   const allTopics = getAllLearnTopics()
   assert.strictEqual(allTopics.length, 24, 'There must be exactly 24 topics')
@@ -236,8 +236,8 @@ console.log('\nTest 7: Learn question counts per topic match between client and 
     verifiedTotal += migratedForTopic.length
   }
 
-  assert.strictEqual(verifiedTotal, 950, 'Sum of all topic questions must equal 950')
-  console.log(`  PASS: All 24 topics verified. Exact 950/950 count preserved across client and server stores`)
+  assert.strictEqual(verifiedTotal, 480, 'Sum of all topic questions must equal 480')
+  console.log(`  PASS: All 24 topics verified. Exact 480/480 count preserved across client and server stores`)
 }
 
 // --------------------------------------------------------------------------
@@ -315,15 +315,17 @@ console.log('\nTest 10: Learn and Practice saved code use different storage keys
 console.log('\nTest 11: Server rejects client-supplied tests and authoritatively evaluates Learn submissions')
 {
   // Test evaluation of a Learn question through executeQuestion
-  const pythonCode = `
-import sys
-parts = sys.stdin.read().split()
-if parts:
-    nums = sorted([int(p) for p in parts])
-    print(nums[1])
+  const pythonCode = `import sys
+import json
+
+raw = sys.stdin.read().strip()
+if raw:
+    data = json.loads(raw)
+    vals = sorted([data["a"], data["b"], data["c"]])
+    print(vals[1])
 `
   const res = await executeQuestion({
-    questionSlug: 'learn:conditionals-control-flow:middle-of-three',
+    questionSlug: 'learn:conditionals-control-flow:median-of-three',
     language: 'python',
     code: pythonCode,
     mode: 'submit',
@@ -331,11 +333,11 @@ if parts:
 
   assert.strictEqual(res.success, true, 'Execution must succeed')
   assert.strictEqual(res.status, 'ACCEPTED', 'Evaluation status must be ACCEPTED')
-  assert.strictEqual(res.passed, 10, 'All 10 test cases must pass')
-  assert.strictEqual(res.total, 10, 'Total test cases must be 10')
+  assert.strictEqual(res.passed, 15, 'All 15 test cases must pass')
+  assert.strictEqual(res.total, 15, 'Total test cases must be 15')
   assert.strictEqual(res.visibleCount, 3, 'Must have 3 visible test cases')
-  assert.strictEqual(res.hiddenCount, 7, 'Must have 7 hidden test cases')
-  assert.strictEqual(res.questionId, 'learn:conditionals-control-flow:middle-of-three')
+  assert.strictEqual(res.hiddenCount, 12, 'Must have 12 hidden test cases')
+  assert.strictEqual(res.questionId, 'learn:conditionals-control-flow:median-of-three')
 
   // Verify that testCases in client response do NOT expose hidden input/output
   for (const tc of res.testCases) {
@@ -344,7 +346,7 @@ if parts:
       assert.strictEqual(tc.expectedOutput, undefined, 'Hidden test case expectedOutput must never be returned to client')
     }
   }
-  console.log('  PASS: Server evaluated all 10 authoritative cases, passing 10/10 with hidden cases kept confidential')
+  console.log('  PASS: Server evaluated all authoritative cases, passing 15/15 with hidden cases kept confidential')
 }
 
 console.log('\n======================================================')

@@ -23,9 +23,9 @@ export interface ProblemStats {
   beltStats: BeltStat[]
 }
 
-// All practice problems (500)
+// All practice problems
 const ALL_PRACTICE_PROBLEMS = problemsData.flatMap((b) => b.problems)
-export const TOTAL_ALL_PRACTICE_PROBLEMS = ALL_PRACTICE_PROBLEMS.length // 500
+export const TOTAL_ALL_PRACTICE_PROBLEMS = ALL_PRACTICE_PROBLEMS.length
 
 // All active practice problems (58)
 const ALL_ACTIVE_PRACTICE_PROBLEMS = problemsData.flatMap((b) =>

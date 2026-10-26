@@ -134,6 +134,11 @@ export function executePython(code: string, input: string): { output: string; er
         }
         return ''
       },
+      [Symbol.iterator]: function* () {
+        for (const line of inputLines) {
+          yield line
+        }
+      },
     },
     stdout: {
       write: (val: any) => outputs.push(String(val)),
@@ -181,9 +186,19 @@ export function executePython(code: string, input: string): { output: string; er
     log10: Math.log10,
   }
 
+  const json = {
+    loads: (s: any) => {
+      const str = String(s ?? '').trim()
+      if (!str) return {}
+      return JSON.parse(str)
+    },
+    dumps: (v: any) => JSON.stringify(v),
+  }
+
   const env: Record<string, any> = {
     sys,
     math,
+    json,
     process: undefined,
     require: undefined,
     global: undefined,
@@ -261,6 +276,9 @@ export function executePython(code: string, input: string): { output: string; er
     },
     chr: (code: number) => String.fromCharCode(code),
     ord: (char: string) => (char ? char.charCodeAt(0) : 0),
+    bin: (n: number) => (Number(n) < 0 ? '-0b' + (-Number(n)).toString(2) : '0b' + Number(n).toString(2)),
+    hex: (n: number) => (Number(n) < 0 ? '-0x' + (-Number(n)).toString(16) : '0x' + Number(n).toString(16)),
+    oct: (n: number) => (Number(n) < 0 ? '-0o' + (-Number(n)).toString(8) : '0o' + Number(n).toString(8)),
     intDiv: (a: number, b: number) => {
       if (b === 0) throw new Error('ZeroDivisionError: integer division or modulo by zero')
       return Math.floor(a / b)
@@ -375,6 +393,19 @@ export function executePython(code: string, input: string): { output: string; er
       line = line.replace(
         /\[\s*([a-zA-Z0-9_().+*\/ -]+)\s+for\s+([a-zA-Z0-9_]+)\s+in\s+([^\]]+)\]/g,
         '($3).map(($2) => $1)'
+      )
+
+      // Replace Python slice notation: s[::-1], s[start:end], s[start:], s[:end]
+      line = line.replace(/([a-zA-Z0-9_)]+)\s*\[\s*:\s*:\s*-1\s*\]/g, 'Array.from($1).reverse().join("")')
+      line = line.replace(
+        /([a-zA-Z0-9_)]+)\s*\[\s*(-?\d+|[a-zA-Z0-9_()]+)?\s*:\s*(-?\d+|[a-zA-Z0-9_()]+)?\s*\]/g,
+        (_m, target, start, end) => {
+          const s = start !== undefined ? start : '0'
+          if (end !== undefined) {
+            return `${target}.slice(${s}, ${end})`
+          }
+          return `${target}.slice(${s})`
+        }
       )
 
       // Replace membership 'in' within if statements

@@ -166,7 +166,7 @@ export const nativeEngine: JudgeEngine = {
         const c = await exec(runtime('javac')!, ['-encoding', 'UTF-8', '-nowarn', `${cls}.java`], dir, '', 30000)
         if (c.code !== 0) return { kind: 'compile_error', error: tidy(c.stderr || c.stdout || 'Compilation Error', dir) }
         cmd = runtime('java')!
-        args = ['-Xss64m', '-XX:+UseSerialGC', '-XX:TieredStopAtLevel=1', '-Dfile.encoding=UTF-8', '-cp', '.', cls]
+        args = ['-Xmx128m', '-Xss8m', '-XX:+UseSerialGC', '-XX:TieredStopAtLevel=1', '-Dfile.encoding=UTF-8', '-cp', '.', cls]
       } else {
         writeFileSync(join(dir, 'main.cpp'), job.code)
         const exe = process.platform === 'win32' ? 'main.exe' : 'main'
