@@ -196,6 +196,30 @@ async function readJudgeStream(
   return final
 }
 
+export async function getFreshAuthToken(forceRefresh = false): Promise<string | undefined> {
+  try {
+    if (forceRefresh) {
+      const { data, error } = await supabase.auth.refreshSession()
+      if (!error && data?.session?.access_token) {
+        return data.session.access_token
+      }
+    }
+    const { data: sessionData } = await supabase.auth.getSession()
+    const session = sessionData?.session
+    if (!session) return undefined
+    // Proactively refresh if expiring within 60s
+    if (session.expires_at && session.expires_at * 1000 - Date.now() < 60_000) {
+      const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession()
+      if (!refreshError && refreshed?.session?.access_token) {
+        return refreshed.session.access_token
+      }
+    }
+    return session.access_token
+  } catch {
+    return undefined
+  }
+}
+
 /**
  * Executes student code on the server judge.
  *   Run    -> POST /api/execute : the VISIBLE cases only (never marks a problem solved)
@@ -225,25 +249,31 @@ export async function executeCode(
       const activeUserId = getActiveUserId()
       const idempotencyKey = isSubmit ? `submit_${questionSlug}_${language}` : undefined
 
-      let authToken: string | undefined
-      try {
-        const { data: sessionData } = await supabase.auth.getSession()
-        authToken = sessionData?.session?.access_token
-      } catch {
-        // Continue unauthenticated if session retrieval fails (the server will answer 401)
-      }
+      let authToken = await getFreshAuthToken()
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/x-ndjson, application/json',
-          ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
-        },
-        body: JSON.stringify({ questionSlug, language, code, isSubmit, userId: activeUserId, idempotencyKey }),
-        signal: controller.signal,
-      })
+      const sendRequest = (token?: string) =>
+        fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/x-ndjson, application/json',
+            ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ questionSlug, language, code, isSubmit, userId: activeUserId, idempotencyKey }),
+          signal: controller.signal,
+        })
+
+      let response = await sendRequest(authToken)
+
+      // On 401, refresh token once and retry before showing "session expired"
+      if (response.status === 401) {
+        const refreshedToken = await getFreshAuthToken(true)
+        if (refreshedToken) {
+          authToken = refreshedToken
+          response = await sendRequest(refreshedToken)
+        }
+      }
 
       const contentType = response.headers.get('content-type') || ''
       if (response.status === 200 && contentType.includes('application/x-ndjson')) {
@@ -377,29 +407,34 @@ export async function executeCustomCode(
   const timeoutId = setTimeout(() => controller.abort(), 30000)
 
   try {
-    let authToken: string | undefined
-    try {
-      const { data: sessionData } = await supabase.auth.getSession()
-      authToken = sessionData?.session?.access_token
-    } catch {
-      // ignore
-    }
+    let authToken = await getFreshAuthToken()
 
-    const response = await fetch('/api/execute', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
-      },
-      body: JSON.stringify({
-        questionSlug,
-        language,
-        code,
-        customInput,
-      }),
-      signal: controller.signal,
-    })
+    const sendCustomRequest = (token?: string) =>
+      fetch('/api/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          questionSlug,
+          language,
+          code,
+          customInput,
+        }),
+        signal: controller.signal,
+      })
+
+    let response = await sendCustomRequest(authToken)
+
+    if (response.status === 401) {
+      const refreshedToken = await getFreshAuthToken(true)
+      if (refreshedToken) {
+        authToken = refreshedToken
+        response = await sendCustomRequest(refreshedToken)
+      }
+    }
 
     const data = await response.json().catch(() => ({}))
     const executionTimeMs = data.overallTimeMs || Math.round(performance.now() - startTime)

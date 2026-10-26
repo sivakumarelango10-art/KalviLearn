@@ -100,7 +100,7 @@ function run(
   return new Promise((resolve) => {
     const execArgv: string[] = entry.compiled ? [] : [...process.execArgv]
     execArgv.push(`--max-old-space-size=${HEAP_MB}`, '--disallow-code-generation-from-strings')
-    const flag = usePermission && entry.compiled ? permissionFlag() : null
+    const flag = usePermission && entry.compiled && job.language.toLowerCase() !== 'python' ? permissionFlag() : null
     if (flag) execArgv.push(flag, `--allow-fs-read=${entry.file}`)
 
     const child = fork(entry.file, [], {
@@ -159,7 +159,7 @@ export async function runInSandbox(job: SandboxJob, onCase?: CaseListener): Prom
     }
     console.warn('[sandbox] no child entry available outside production; executing in-process (development only)')
     const { runSubmissionJob } = await import('./codeRunnerCore')
-    return runSubmissionJob(job, onCase)
+    return await runSubmissionJob(job, onCase)
   }
   await acquire()
   try {

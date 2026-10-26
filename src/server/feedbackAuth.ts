@@ -250,16 +250,22 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     }
 
     if (!dbUser) {
-      const googleConfirmed =
-        !!data.user.email_confirmed_at && (data.user.identities || []).some((identity) => identity.provider === 'google')
+      const isGoogle =
+        data.user.app_metadata?.provider === 'google' ||
+        (Array.isArray(data.user.app_metadata?.providers) && data.user.app_metadata.providers.includes('google')) ||
+        (data.user.identities || []).some((identity) => identity.provider === 'google')
+      const isConfirmed = !!data.user.email_confirmed_at || !!(data.user as any).confirmed_at
+      const googleConfirmed = isConfirmed && isGoogle
       if (googleConfirmed) {
         let byEmailQuery = supabaseServer.from('users').select(columns).eq('email', email)
-        if (authUidColumn) byEmailQuery = byEmailQuery.is('authUid', null)
         const byEmail = await byEmailQuery.maybeSingle()
         if (byEmail.error) {
           return { authenticated: false, statusCode: 503, error: 'Unable to verify account. Please retry.' }
         }
         dbUser = byEmail.data as DbUserRow | null
+        if (dbUser && authUidColumn && dbUser.id) {
+          void supabaseServer.from('users').update({ authUid: data.user.id }).eq('id', dbUser.id).is('authUid', null)
+        }
       }
     }
 

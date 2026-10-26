@@ -140,9 +140,9 @@ async function runTests() {
   const { findLearnQuestionBySlug } = await import('../src/data/learn/coding/index')
   const { DEFAULT_STARTER_CODES } = await import('../src/data/curriculum/index')
 
-  const learnQuestion = findLearnQuestionBySlug('profile-echo')
-  assert(!!learnQuestion, 'Learn question resolver returns question for profile-echo')
-  assert(!getProblemByLanguageAndSlug('python', 'profile-echo'), 'Practice curriculum resolver does NOT return Learn questions (strict isolation)')
+  const learnQuestion = findLearnQuestionBySlug('add-two-integers')
+  assert(!!learnQuestion, 'Learn question resolver returns question for add-two-integers')
+  assert(!getProblemByLanguageAndSlug('python', 'add-two-integers'), 'Practice curriculum resolver does NOT return Learn questions (strict isolation)')
 
   assert(!!DEFAULT_STARTER_CODES.python, 'Starter code exists for Python')
   assert(!!DEFAULT_STARTER_CODES.java, 'Starter code exists for Java')
@@ -151,7 +151,7 @@ async function runTests() {
 
   const visibleTests = learnQuestion?.visibleTests || []
   assert(visibleTests.length === 3, `Visible test count is 3 (got ${visibleTests.length})`)
-  assert(learnQuestion?.testCaseMeta?.hiddenCount === 7, `Hidden test metadata count is 7 (got ${learnQuestion?.testCaseMeta?.hiddenCount})`)
+  assert(learnQuestion?.testCaseMeta?.hiddenCount === 12, `Hidden test metadata count is 12 (got ${learnQuestion?.testCaseMeta?.hiddenCount})`)
 
   let hiddenDataLeaked = false
   for (const vt of visibleTests) {

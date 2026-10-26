@@ -111,10 +111,10 @@
   ],
   "functions": {
     "api/execute.js": {
-      "includeFiles": "api/_sandbox-worker.mjs"
+      "includeFiles": "{api/_sandbox-worker.mjs,node_modules/pyodide/**}"
     },
     "api/submit.js": {
-      "includeFiles": "api/_sandbox-worker.mjs"
+      "includeFiles": "{api/_sandbox-worker.mjs,node_modules/pyodide/**}"
     }
   }
 }

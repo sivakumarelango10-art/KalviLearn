@@ -361,8 +361,9 @@ export default async function handler(
   const code = typeof body.code === 'string' ? body.code : ''
   const claimedUserId = typeof body.userId === 'string' ? body.userId : undefined
 
-  // IDOR guard: a request may only ever act as the authenticated user.
-  if (claimedUserId && claimedUserId !== 'guest' && claimedUserId !== authenticatedUser.id) {
+  // IDOR guard: a request may only ever act as the authenticated user (staff preview exempted).
+  const isStaffPreview = authenticatedUser.role === 'MENTOR' || authenticatedUser.role === 'ADMIN' || authenticatedUser.role === 'SUPERADMIN'
+  if (claimedUserId && claimedUserId !== 'guest' && claimedUserId !== authenticatedUser.id && !isStaffPreview) {
     return sendJson(403, {
       success: false,
       error: 'Forbidden',

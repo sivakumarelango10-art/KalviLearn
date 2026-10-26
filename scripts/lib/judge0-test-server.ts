@@ -45,7 +45,7 @@ function execute(languageId: number, source: string, stdin: string, cpuSeconds: 
     } else if (languageId === 62 || languageId === 91) {
       writeFileSync(join(dir, 'Main.java'), source)
       cmd = 'java'
-      args = [join(dir, 'Main.java')]
+      args = ['-Xmx128m', '-Xss4m', '-XX:+UseSerialGC', '-XX:TieredStopAtLevel=1', join(dir, 'Main.java')]
     } else if (languageId === 63 || languageId === 93) {
       writeFileSync(join(dir, 'main.cjs'), source)
       cmd = 'node'
@@ -74,7 +74,10 @@ function execute(languageId: number, source: string, stdin: string, cpuSeconds: 
       if (cmd === 'java' && code !== 0 && /error: compilation failed/.test(err)) {
         return resolve({ status: { id: 6, description: 'Compilation Error' }, stdout: null, stderr: null, compile_output: b64(err), time: null })
       }
-      if (code !== 0) return resolve({ status: { id: 11, description: 'Runtime Error (NZEC)' }, stdout: b64(out), stderr: b64(err), compile_output: null, time })
+      if (code !== 0) {
+        if (cmd === 'java') console.error('[j0-test-server] Java error exit code', code, 'stderr:', err, 'killed:', killed)
+        return resolve({ status: { id: 11, description: 'Runtime Error (NZEC)' }, stdout: b64(out), stderr: b64(err), compile_output: null, time })
+      }
       resolve({ status: { id: 3, description: 'Accepted' }, stdout: b64(out), stderr: err ? b64(err) : null, compile_output: null, time })
     })
   })
@@ -115,5 +118,13 @@ export async function startJudge0TestServer(): Promise<{ url: string; close: () 
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', r))
   const address = server.address()
   const port = typeof address === 'object' && address ? address.port : 0
-  return { url: `http://127.0.0.1:${port}`, close: () => new Promise((r) => server.close(() => r())), stats }
+  return {
+    url: `http://127.0.0.1:${port}`,
+    close: () =>
+      new Promise((r) => {
+        if ('closeAllConnections' in server) (server as any).closeAllConnections()
+        server.close(() => r())
+      }),
+    stats,
+  }
 }

@@ -194,7 +194,7 @@ interface QuestionTestDef {
   cpp?: string
 }
 
-const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
+export const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
   'variables-data-types': [
     {
       topicId: 'variables-data-types',
@@ -360,7 +360,7 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'scope',
       slug: 'local-assignment-does-not-leak',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    d = json.loads(raw)\n    print(json.dumps([d["a"] - 1, d["a"]]))`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    d = json.loads(raw)\n    print(json.dumps([2 * d["b"], d["a"]]))`,
     },
     {
       topicId: 'scope',
@@ -512,8 +512,8 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'sorting',
       slug: 'sort-by-absolute-value',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    nums = json.loads(raw)["nums"]\n    print(json.dumps(sorted(nums, key=abs)))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const nums = JSON.parse(raw).nums; console.log(JSON.stringify(nums.sort((a, b) => Math.abs(a) - Math.abs(b)))); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    nums = json.loads(raw)["nums"]\n    print(json.dumps(sorted(nums, key=lambda x: (abs(x), x))))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const nums = JSON.parse(raw).nums; console.log(JSON.stringify(nums.sort((a, b) => Math.abs(a) !== Math.abs(b) ? Math.abs(a) - Math.abs(b) : a - b))); }`,
     },
   ],
   'sets': [
@@ -564,7 +564,7 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'dictionaries-hash-maps',
       slug: 'frequency-map',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    nums = json.loads(raw)["nums"]\n    counts = {}\n    for x in nums:\n        counts[str(x)] = counts.get(str(x), 0) + 1\n    print(json.dumps(counts))`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    nums = json.loads(raw)["nums"]\n    counts = {}\n    for x in nums:\n        counts[str(x)] = counts.get(str(x), 0) + 1\n    print(json.dumps(counts, sort_keys=True))`,
       nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const nums = JSON.parse(raw).nums; const counts = {}; for (const x of nums) counts[x] = (counts[x] || 0) + 1; console.log(JSON.stringify(counts)); }`,
     },
     {
@@ -614,20 +614,20 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'trees-bst',
       slug: 'preorder-traversal',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    print(json.dumps(t))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; console.log(JSON.stringify(t)); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    def pre(i):\n        if i >= len(t) or t[i] is None: return []\n        return [t[i]] + pre(2*i+1) + pre(2*i+2)\n    print(json.dumps(pre(0)))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; function pre(i) { if (i >= t.length || t[i] === null) return []; return [t[i], ...pre(2*i+1), ...pre(2*i+2)]; } console.log(JSON.stringify(pre(0))); }`,
     },
     {
       topicId: 'trees-bst',
       slug: 'inorder-traversal',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    print(json.dumps(sorted(t)))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; console.log(JSON.stringify(t.sort((a, b) => a - b))); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    def ino(i):\n        if i >= len(t) or t[i] is None: return []\n        return ino(2*i+1) + [t[i]] + ino(2*i+2)\n    print(json.dumps(ino(0)))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; function ino(i) { if (i >= t.length || t[i] === null) return []; return [...ino(2*i+1), t[i], ...ino(2*i+2)]; } console.log(JSON.stringify(ino(0))); }`,
     },
     {
       topicId: 'trees-bst',
       slug: 'postorder-traversal',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    if len(t) == 7:\n        print(json.dumps([t[3], t[4], t[1], t[5], t[6], t[2], t[0]]))\n    else:\n        print(json.dumps(t))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; if (t.length === 7) console.log(JSON.stringify([t[3], t[4], t[1], t[5], t[6], t[2], t[0]])); else console.log(JSON.stringify(t)); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    t = json.loads(raw)["tree"]\n    def post(i):\n        if i >= len(t) or t[i] is None: return []\n        return post(2*i+1) + post(2*i+2) + [t[i]]\n    print(json.dumps(post(0)))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const t = JSON.parse(raw).tree; function post(i) { if (i >= t.length || t[i] === null) return []; return [...post(2*i+1), ...post(2*i+2), t[i]]; } console.log(JSON.stringify(post(0))); }`,
     },
   ],
   'graphs': [
@@ -646,8 +646,8 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'graphs',
       slug: 'breadth-first-search-order',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    d = json.loads(raw)\n    print(json.dumps(list(range(d["n"]))))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const d = JSON.parse(raw); console.log(JSON.stringify(Array.from({length: d.n}, (_, i) => i))); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    d = json.loads(raw)\n    n, edges, start = d["n"], d["edges"], d["start"]\n    if n == 0 or start < 0: print("[]")\n    else:\n        adj = [[] for _ in range(n)]\n        for u, v in edges: adj[u].append(v); adj[v].append(u)\n        for r in adj: r.sort()\n        vis, q, res = {start}, [start], []\n        while q:\n            curr = q.pop(0); res.append(curr)\n            for nxt in adj[curr]:\n                if nxt not in vis: vis.add(nxt); q.append(nxt)\n        print(json.dumps(res))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const d = JSON.parse(raw); if (d.n === 0 || d.start < 0) console.log('[]'); else { const adj = Array.from({length: d.n}, () => []); for (const [u, v] of d.edges) { adj[u].push(v); adj[v].push(u); } for (const r of adj) r.sort((a,b)=>a-b); const vis = new Set([d.start]); const q = [d.start]; const res = []; while (q.length) { const curr = q.shift(); res.push(curr); for (const nxt of adj[curr]) { if (!vis.has(nxt)) { vis.add(nxt); q.push(nxt); } } } console.log(JSON.stringify(res)); } }`,
     },
   ],
   'dynamic-programming': [
@@ -718,8 +718,8 @@ const TESTS_BY_TOPIC: Record<string, QuestionTestDef[]> = {
     {
       topicId: 'oop-classes-objects',
       slug: 'highest-scoring-student',
-      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    recs = json.loads(raw)["records"]\n    top = 0\n    for i in range(1, len(recs)):\n        if recs[i]["score"] > recs[top]["score"]:\n            top = i\n    print(json.dumps({"index": top, "name": recs[top]["name"], "score": recs[top]["score"]}))`,
-      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const recs = JSON.parse(raw).records; let top = 0; for (let i = 1; i < recs.length; i++) if (recs[i].score > recs[top].score) top = i; console.log(JSON.stringify({ index: top, name: recs[top].name, score: recs[top].score })); }`,
+      python: `import sys, json\nraw = sys.stdin.read().strip()\nif raw:\n    recs = json.loads(raw)["records"]\n    if not recs: print("null")\n    else:\n        top = 0\n        for i in range(1, len(recs)):\n            if recs[i]["score"] > recs[top]["score"]: top = i\n        print(json.dumps({"index": top, "name": recs[top]["name"], "score": recs[top]["score"]}))`,
+      nodejs: `const raw = require('fs').readFileSync(0, 'utf8').trim(); if (raw) { const recs = JSON.parse(raw).records; if (!recs.length) console.log('null'); else { let top = 0; for (let i = 1; i < recs.length; i++) if (recs[i].score > recs[top].score) top = i; console.log(JSON.stringify({ index: top, name: recs[top].name, score: recs[top].score })); } }`,
     },
   ],
   'oop-methods': [
