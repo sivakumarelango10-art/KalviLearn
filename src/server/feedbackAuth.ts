@@ -25,6 +25,8 @@ const supabaseKey =
     ? ''
     : process.env.SUPABASE_ANON_KEY ||
       process.env.VITE_SUPABASE_ANON_KEY ||
+      process.env.SUPABASE_PUBLISHABLE_KEY ||
+      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
       'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
 
 // A missing production credential must NOT crash the module at import time: on Vercel that turns every request to
