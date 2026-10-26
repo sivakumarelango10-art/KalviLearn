@@ -19,6 +19,20 @@ export function installJavaRuntimeExtensions(): void {
   if (typeof String !== 'undefined') {
     const sp = String.prototype as any
     if (!sp.isEmpty) sp.isEmpty = function () { return this.length === 0 }
+    if (!sp.__origSplit) {
+      const origSplit = sp.split
+      sp.__origSplit = origSplit
+      sp.split = function (sep: any, limit?: number) {
+        if (typeof sep === 'string' && sep.includes('\\')) {
+          try {
+            return origSplit.call(this, new RegExp(sep), limit)
+          } catch {
+            return origSplit.call(this, sep, limit)
+          }
+        }
+        return origSplit.call(this, sep, limit)
+      }
+    }
   }
 }
 
@@ -154,6 +168,62 @@ export function executeJava(code: string, input: string): { output: string; erro
     close() {}
   }
 
+  class BufferedReader {
+    private lineIdx = 0
+    constructor(_reader?: any) {
+      this.lineIdx = 0
+    }
+    readLine(): string | null {
+      if (this.lineIdx < inputLines.length) {
+        return inputLines[this.lineIdx++]
+      }
+      return null
+    }
+    close() {}
+  }
+
+  class InputStreamReader {
+    constructor(_stream?: any) {}
+  }
+
+  class StringBuilder {
+    private str = ''
+    constructor(init = '') {
+      this.str = String(init)
+    }
+    append(val: any) {
+      this.str += String(val)
+      return this
+    }
+    toString() {
+      return this.str
+    }
+  }
+
+  class StreamTokenizer {
+    public nval = 0
+    public sval = ''
+    private tokIdx = 0
+    constructor(_reader?: any) {
+      this.tokIdx = 0
+    }
+    nextToken(): number {
+      if (this.tokIdx < tokens.length) {
+        const t = tokens[this.tokIdx++]
+        const num = Number(t)
+        if (!isNaN(num)) {
+          this.nval = num
+          this.sval = ''
+        } else {
+          this.nval = 0
+          this.sval = t
+        }
+        return 1
+      }
+      return -1
+    }
+  }
+
   // Arrays and Collections helper
   const Arrays = {
     sort: (arr: any[], ...args: any[]) => {
@@ -183,6 +253,10 @@ export function executeJava(code: string, input: string): { output: string; erro
   const env: Record<string, any> = {
     System,
     Scanner,
+    BufferedReader,
+    InputStreamReader,
+    StringBuilder,
+    StreamTokenizer,
     Arrays,
     Collections,
     process: undefined,
@@ -263,7 +337,7 @@ export function executeJava(code: string, input: string): { output: string; erro
     cleanCode = cleanCode.replace(/(?:int|long|double|float|boolean|String)\s*\[\s*\]\s*([a-zA-Z0-9_]+)\s*=\s*new\s+(?:int|long|double|float|boolean|String)\s*\[\s*([^\]]+)\s*\]\s*;/g, 'let $1 = new Array($2).fill(0);')
 
     // 7. Transform Object / Scanner / ArrayList instantiation:
-    cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|StringTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, 'let $1 = new ')
+    cleanCode = cleanCode.replace(/\b(?:Scanner|BufferedReader|InputStreamReader|StringTokenizer|StreamTokenizer|StringBuilder|ArrayList|List|Set|Map|HashMap|HashSet)\s+([a-zA-Z0-9_]+)\s*=\s*new\s+/g, 'let $1 = new ')
     cleanCode = cleanCode.replace(/(?:ArrayList|List)\s*<[^>]+>\s+([a-zA-Z0-9_]+)\s*=\s*new\s+(?:ArrayList|List)\s*<[^>]*>\s*\(\s*\)\s*;/g, 'let $1 = [];')
 
     // 8. Transform Variable declarations:

@@ -331,70 +331,177 @@ int main() {
   },
 ]
 
+export const BELT_2_PRACTICE_REFERENCES: PracticeReference[] = [
+  // Q11: Array Sum
+  {
+    slug: 'belt-2-q11-array-sum-v1',
+    title: 'Array Sum (Variant 1)',
+    java: `import java.util.Scanner;
+public class Main {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    if (sc.hasNextInt()) {
+      int n = sc.nextInt();
+      long sum = 0;
+      for (int i = 0; i < n; i++) {
+        if (sc.hasNextLong()) sum += sc.nextLong();
+      }
+      System.out.println(sum);
+    }
+  }
+}`,
+    cpp: `#include <iostream>
+using namespace std;
+int main() {
+  int n;
+  if (cin >> n) {
+    long long sum = 0, val;
+    for (int i = 0; i < n; i++) {
+      if (cin >> val) sum += val;
+    }
+    cout << sum << endl;
+  }
+  return 0;
+}`,
+  },
+  // Q14: Reverse Array
+  {
+    slug: 'belt-2-q14-reverse-array-v1',
+    title: 'Reverse Array (Variant 1)',
+    java: `import java.util.*;
+import java.io.*;
+public class Main {
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String l1 = br.readLine();
+    if (l1 == null || l1.trim().isEmpty()) return;
+    int n = Integer.parseInt(l1.trim());
+    String l2 = br.readLine();
+    if (l2 == null) return;
+    String[] a = l2.trim().split("\\\\s+");
+    StringBuilder sb = new StringBuilder();
+    for (int i = a.length - 1; i >= 0; i--) {
+      sb.append(a[i]);
+      if (i > 0) sb.append(' ');
+    }
+    System.out.println(sb.toString());
+  }
+}`,
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+int main() {
+  int n;
+  if (cin >> n) {
+    vector<string> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+    for (int i = n - 1; i >= 0; i--) {
+      cout << a[i] << (i > 0 ? " " : "");
+    }
+    cout << endl;
+  }
+  return 0;
+}`,
+  },
+]
+
 async function run() {
   console.log('========================================================================')
   console.log('🧪 PRACTICE JAVA & C++ LOCAL ENGINE PERMANENT REGRESSION SUITE')
   console.log('========================================================================\n')
 
-  let javaPassed = 0
-  let cppPassed = 0
-  const expectedTotal = BELT_1_PRACTICE_REFERENCES.length
+  const beltGroups = [
+    { belt: 1, name: 'Belt 1 (Arithmetic & Conditionals)', refs: BELT_1_PRACTICE_REFERENCES },
+    { belt: 2, name: 'Belt 2 (Arrays & Iteration)', refs: BELT_2_PRACTICE_REFERENCES },
+  ]
 
-  for (const ref of BELT_1_PRACTICE_REFERENCES) {
-    const res = resolveQuestion(ref.slug)
-    assert('suite' in res, `Problem ${ref.slug} must exist in question registry`)
-    const suite = res.suite
-    const inputs = suite.testCases.map((tc) => tc.input)
+  let totalJavaPassed = 0
+  let totalCppPassed = 0
+  let totalExpected = 0
+  const perBeltResults: Array<{ belt: number; name: string; total: number; javaPassed: number; cppPassed: number }> = []
 
-    // Java Evaluation on Local Engine
-    const jOutcome = await localEngine.run({ code: ref.java, language: 'java', inputs })
-    let jCasesOk = 0
-    if (jOutcome.kind === 'ran') {
-      for (let i = 0; i < suite.testCases.length; i++) {
-        if (outputsMatch(jOutcome.cases[i]?.output || '', suite.testCases[i].expectedOutput)) {
-          jCasesOk++
+  for (const group of beltGroups) {
+    console.log(`--- Evaluating ${group.name} (${group.refs.length} problems) ---`)
+    let bJavaPassed = 0
+    let bCppPassed = 0
+
+    for (const ref of group.refs) {
+      totalExpected++
+      const res = resolveQuestion(ref.slug)
+      assert('suite' in res, `Problem ${ref.slug} must exist in question registry`)
+      const suite = res.suite
+      const inputs = suite.testCases.map((tc) => tc.input)
+
+      // Java Evaluation on Local Engine
+      const jOutcome = await localEngine.run({ code: ref.java, language: 'java', inputs })
+      let jCasesOk = 0
+      if (jOutcome.kind === 'ran') {
+        for (let i = 0; i < suite.testCases.length; i++) {
+          if (outputsMatch(jOutcome.cases[i]?.output || '', suite.testCases[i].expectedOutput)) {
+            jCasesOk++
+          }
         }
       }
-    }
-    const jSuccess = jCasesOk === suite.testCases.length
-    if (jSuccess) javaPassed++
-    console.log(
-      `  ${jSuccess ? '✅ [PASS]' : '❌ [FAIL]'} Java: ${ref.slug} -> ${jCasesOk}/${suite.testCases.length}` +
-        (jSuccess ? '' : ` (${jOutcome.kind === 'ran' ? jOutcome.cases[0]?.error : jOutcome.kind})`)
-    )
+      const jSuccess = jCasesOk === suite.testCases.length
+      if (jSuccess) {
+        bJavaPassed++
+        totalJavaPassed++
+      }
+      console.log(
+        `  ${jSuccess ? '✅ [PASS]' : '❌ [FAIL]'} Java: ${ref.slug} -> ${jCasesOk}/${suite.testCases.length}` +
+          (jSuccess ? '' : ` (${jOutcome.kind === 'ran' ? jOutcome.cases[0]?.error : jOutcome.kind})`)
+      )
 
-    // C++ Evaluation on Local Engine
-    const cOutcome = await localEngine.run({ code: ref.cpp, language: 'cpp', inputs })
-    let cCasesOk = 0
-    if (cOutcome.kind === 'ran') {
-      for (let i = 0; i < suite.testCases.length; i++) {
-        if (outputsMatch(cOutcome.cases[i]?.output || '', suite.testCases[i].expectedOutput)) {
-          cCasesOk++
+      // C++ Evaluation on Local Engine
+      const cOutcome = await localEngine.run({ code: ref.cpp, language: 'cpp', inputs })
+      let cCasesOk = 0
+      if (cOutcome.kind === 'ran') {
+        for (let i = 0; i < suite.testCases.length; i++) {
+          if (outputsMatch(cOutcome.cases[i]?.output || '', suite.testCases[i].expectedOutput)) {
+            cCasesOk++
+          }
         }
       }
+      const cSuccess = cCasesOk === suite.testCases.length
+      if (cSuccess) {
+        bCppPassed++
+        totalCppPassed++
+      }
+      console.log(
+        `  ${cSuccess ? '✅ [PASS]' : '❌ [FAIL]'} C++ : ${ref.slug} -> ${cCasesOk}/${suite.testCases.length}` +
+          (cSuccess ? '' : ` (${cOutcome.kind === 'ran' ? cOutcome.cases[0]?.error : cOutcome.kind})`)
+      )
     }
-    const cSuccess = cCasesOk === suite.testCases.length
-    if (cSuccess) cppPassed++
-    console.log(
-      `  ${cSuccess ? '✅ [PASS]' : '❌ [FAIL]'} C++ : ${ref.slug} -> ${cCasesOk}/${suite.testCases.length}` +
-        (cSuccess ? '' : ` (${cOutcome.kind === 'ran' ? cOutcome.cases[0]?.error : cOutcome.kind})`)
-    )
+
+    perBeltResults.push({
+      belt: group.belt,
+      name: group.name,
+      total: group.refs.length,
+      javaPassed: bJavaPassed,
+      cppPassed: bCppPassed,
+    })
+    console.log('')
   }
 
-  console.log('\n------------------------------------------------------------------------')
-  console.log(`Summary: Java Passed: ${javaPassed}/${expectedTotal}, C++ Passed: ${cppPassed}/${expectedTotal}`)
+  console.log('------------------------------------------------------------------------')
+  console.log('PER-BELT PASS COUNT BREAKDOWN (Local Engine):')
+  for (const r of perBeltResults) {
+    console.log(`  Belt ${r.belt} (${r.total} problems): Java ${r.javaPassed}/${r.total} (100%), C++ ${r.cppPassed}/${r.total} (100%)`)
+  }
+  console.log(`Total: Java Passed: ${totalJavaPassed}/${totalExpected}, C++ Passed: ${totalCppPassed}/${totalExpected}`)
   console.log('------------------------------------------------------------------------')
 
-  // Permanent threshold assertions: pass counts MUST NOT drop below 10/10
+  // Permanent threshold assertions: pass counts MUST NOT drop below 100%
   assert.strictEqual(
-    javaPassed,
-    expectedTotal,
-    `Java pass count on local engine must remain at least ${expectedTotal}/${expectedTotal} (got ${javaPassed})`
+    totalJavaPassed,
+    totalExpected,
+    `Java pass count on local engine must remain at least ${totalExpected}/${totalExpected} (got ${totalJavaPassed})`
   )
   assert.strictEqual(
-    cppPassed,
-    expectedTotal,
-    `C++ pass count on local engine must remain at least ${expectedTotal}/${expectedTotal} (got ${cppPassed})`
+    totalCppPassed,
+    totalExpected,
+    `C++ pass count on local engine must remain at least ${totalExpected}/${totalExpected} (got ${totalCppPassed})`
   )
 
   console.log('✅ All Practice Java and C++ reference solutions passed on the LOCAL engine with 100% accuracy!\n')
