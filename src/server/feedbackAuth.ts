@@ -5,9 +5,11 @@ import { isTestAuthEnabled } from './httpSecurity'
 // Server-authoritative Supabase Client.
 // Production REQUIRES SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY: there is no silent fallback to the
 // public anon key (which would make every server-side write quietly subject to client RLS).
-// Outside production (local dev / test runs) the public project URL + publishable key are used so the
+// Outside production (local dev / test runs / Vercel previews) the public project URL + publishable key are used so the
 // suites can run without a service key.
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const IS_PRODUCTION =
+  process.env.VERCEL_ENV === 'production' ||
+  (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV)
 
 const supabaseUrl =
   process.env.SUPABASE_URL ||
@@ -22,6 +24,8 @@ const supabaseKey =
     ? ''
     : process.env.SUPABASE_ANON_KEY ||
       process.env.VITE_SUPABASE_ANON_KEY ||
+      process.env.SUPABASE_PUBLISHABLE_KEY ||
+      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
       'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
 
 // A missing production credential must NOT crash the module at import time: on Vercel that turns every request to

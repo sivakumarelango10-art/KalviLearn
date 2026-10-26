@@ -1,4 +1,3 @@
-import { executePython } from './pythonRunner'
 
 /**
  * Pyodide execution runner for KalviLearn.
@@ -16,6 +15,11 @@ let pyodideInstance: any = null
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let initPromise: Promise<any> | null = null
 let pyodideFailed = false
+let pyodideLoadError: string | null = null
+
+export function getPyodideLoadError(): string | null {
+  return pyodideLoadError
+}
 
 const PYTHON_SECURITY_BOOTSTRAP = `
 import sys
@@ -217,9 +221,13 @@ export async function getPyodide(): Promise<any> {
         py.runPython(PYTHON_SECURITY_BOOTSTRAP)
         pyodideInstance = py
         return py
-      } catch (err) {
+      } catch (err: unknown) {
         pyodideFailed = true
-        console.error('[CRITICAL] Pyodide failed to load; falling back to pythonRunner transpiler:', err)
+        pyodideLoadError =
+          err instanceof Error
+            ? `${err.name}: ${err.message}${err.stack ? `\n${err.stack}` : ''}`
+            : String(err)
+        console.error('[CRITICAL] Pyodide failed to load:', pyodideLoadError)
         return null
       }
     })()
@@ -302,13 +310,13 @@ export function executePythonWithPyodide(py: any, code: string, input: string): 
 }
 
 /**
- * Safe top-level Python executor that prefers Pyodide and loudly falls back to pythonRunner if unavailable.
+ * Safe top-level Python executor that executes via Pyodide and reports exact load failure if unavailable.
  */
 export async function executePythonSafely(code: string, input: string): Promise<{ output: string; error?: string }> {
   const py = await getPyodide()
   if (py) {
     return executePythonWithPyodide(py, code, input)
   }
-  // Loud fallback log already emitted in getPyodide()
-  return executePython(code, input)
+  const loadError = pyodideLoadError || 'Pyodide runtime failed to initialize'
+  return { output: '', error: `[Pyodide Load Failure] ${loadError}` }
 }

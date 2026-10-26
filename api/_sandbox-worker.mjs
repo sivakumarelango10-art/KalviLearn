@@ -1221,6 +1221,10 @@ function installSandbox() {
 var pyodideInstance = null;
 var initPromise = null;
 var pyodideFailed = false;
+var pyodideLoadError = null;
+function getPyodideLoadError() {
+  return pyodideLoadError;
+}
 var PYTHON_SECURITY_BOOTSTRAP = `
 import sys
 import builtins
@@ -1417,7 +1421,9 @@ async function getPyodide() {
         return py;
       } catch (err) {
         pyodideFailed = true;
-        console.error("[CRITICAL] Pyodide failed to load; falling back to pythonRunner transpiler:", err);
+        pyodideLoadError = err instanceof Error ? `${err.name}: ${err.message}${err.stack ? `
+${err.stack}` : ""}` : String(err);
+        console.error("[CRITICAL] Pyodide failed to load:", pyodideLoadError);
         return null;
       }
     })();
@@ -1612,7 +1618,8 @@ function runSingleTestCase(code, language, input, py) {
     if (py) {
       return executePythonWithPyodide(py, code, input);
     }
-    return executePython(code, input);
+    const loadError = getPyodideLoadError() || "Pyodide WebAssembly runtime is unavailable";
+    return { output: "", error: `[Pyodide Load Failure] ${loadError}` };
   } else if (lang === "cpp" || lang === "c++") {
     return executeCpp(code, input);
   } else if (lang === "java") {
@@ -1660,6 +1667,10 @@ async function runSubmissionJob(job, onCase) {
   let py = null;
   if (lang === "python") {
     py = await getPyodide();
+    if (!py) {
+      const loadError = getPyodideLoadError() || "Failed to initialize Pyodide WebAssembly runtime";
+      return { kind: "precheck_failed", error: `[Pyodide Load Failure] ${loadError}` };
+    }
   }
   const compCheck = checkCompilation(job.code, job.language, py);
   if (!compCheck.ok) return { kind: "precheck_failed", error: compCheck.error || "Compilation error" };

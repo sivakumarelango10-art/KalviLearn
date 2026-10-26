@@ -5492,6 +5492,9 @@ var init_pyodide = __esm({
 });
 
 // src/lib/runner/pyodideRunner.ts
+function getPyodideLoadError() {
+  return pyodideLoadError;
+}
 async function getPyodide() {
   if (pyodideInstance) return pyodideInstance;
   if (pyodideFailed) return null;
@@ -5505,7 +5508,9 @@ async function getPyodide() {
         return py;
       } catch (err) {
         pyodideFailed = true;
-        console.error("[CRITICAL] Pyodide failed to load; falling back to pythonRunner transpiler:", err);
+        pyodideLoadError = err instanceof Error ? `${err.name}: ${err.message}${err.stack ? `
+${err.stack}` : ""}` : String(err);
+        console.error("[CRITICAL] Pyodide failed to load:", pyodideLoadError);
         return null;
       }
     })();
@@ -5570,13 +5575,13 @@ function executePythonWithPyodide(py, code, input) {
     resetPyodideFS(py);
   }
 }
-var pyodideInstance, initPromise, pyodideFailed, PYTHON_SECURITY_BOOTSTRAP;
+var pyodideInstance, initPromise, pyodideFailed, pyodideLoadError, PYTHON_SECURITY_BOOTSTRAP;
 var init_pyodideRunner = __esm({
   "src/lib/runner/pyodideRunner.ts"() {
-    init_pythonRunner();
     pyodideInstance = null;
     initPromise = null;
     pyodideFailed = false;
+    pyodideLoadError = null;
     PYTHON_SECURITY_BOOTSTRAP = `
 import sys
 import builtins
@@ -5894,7 +5899,8 @@ function runSingleTestCase(code, language, input, py) {
     if (py) {
       return executePythonWithPyodide(py, code, input);
     }
-    return executePython(code, input);
+    const loadError = getPyodideLoadError() || "Pyodide WebAssembly runtime is unavailable";
+    return { output: "", error: `[Pyodide Load Failure] ${loadError}` };
   } else if (lang === "cpp" || lang === "c++") {
     return executeCpp(code, input);
   } else if (lang === "java") {
@@ -5942,6 +5948,10 @@ async function runSubmissionJob(job, onCase) {
   let py = null;
   if (lang === "python") {
     py = await getPyodide();
+    if (!py) {
+      const loadError = getPyodideLoadError() || "Failed to initialize Pyodide WebAssembly runtime";
+      return { kind: "precheck_failed", error: `[Pyodide Load Failure] ${loadError}` };
+    }
   }
   const compCheck = checkCompilation(job.code, job.language, py);
   if (!compCheck.ok) return { kind: "precheck_failed", error: compCheck.error || "Compilation error" };
@@ -154459,6 +154469,7 @@ function getAllowedOrigins() {
   const configured = [
     process.env.APP_URL,
     process.env.VITE_APP_URL,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : void 0,
     ...(process.env.ALLOWED_ORIGINS || "").split(",")
   ];
   for (const raw of configured) {
@@ -154492,16 +154503,16 @@ function getClientIp(req) {
   return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
 }
 function isTestAuthEnabled() {
-  const isProductionOrPreview = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
-  if (isProductionOrPreview) {
+  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
+  if (isProduction) {
     if (process.env.ALLOW_TEST_AUTH_TOKENS === "1") {
       console.warn(
-        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production/preview (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
+        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
       );
     }
     return false;
   }
-  return process.env.ALLOW_TEST_AUTH_TOKENS === "1";
+  return process.env.ALLOW_TEST_AUTH_TOKENS === "1" || process.env.VERCEL_ENV === "preview";
 }
 var PayloadTooLargeError = class extends Error {
   constructor() {
@@ -154587,9 +154598,9 @@ var RateLimiter = class {
 };
 
 // src/server/feedbackAuth.ts
-var IS_PRODUCTION = process.env.NODE_ENV === "production";
+var IS_PRODUCTION = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
 var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
 var CONFIG_ERROR = IS_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`);
 var supabaseServer = createClient(supabaseUrl || "https://unconfigured.invalid", supabaseKey || "unconfigured", {

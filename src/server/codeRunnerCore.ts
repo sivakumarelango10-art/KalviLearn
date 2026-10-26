@@ -4,6 +4,7 @@ import { evaluate } from '../lib/runner/evaluator'
 import { executePython } from '../lib/runner/pythonRunner'
 import {
   getPyodide,
+  getPyodideLoadError,
   checkPythonSyntaxWithPyodide,
   executePythonWithPyodide,
 } from '../lib/runner/pyodideRunner'
@@ -160,7 +161,8 @@ function runSingleTestCase(code: string, language: string, input: string, py?: a
     if (py) {
       return executePythonWithPyodide(py, code, input)
     }
-    return executePython(code, input)
+    const loadError = getPyodideLoadError() || 'Pyodide WebAssembly runtime is unavailable'
+    return { output: '', error: `[Pyodide Load Failure] ${loadError}` }
   } else if (lang === 'cpp' || lang === 'c++') {
     return executeCpp(code, input)
   } else if (lang === 'java') {
@@ -248,6 +250,10 @@ export async function runSubmissionJob(
   let py: any = null
   if (lang === 'python') {
     py = await getPyodide()
+    if (!py) {
+      const loadError = getPyodideLoadError() || 'Failed to initialize Pyodide WebAssembly runtime'
+      return { kind: 'precheck_failed', error: `[Pyodide Load Failure] ${loadError}` }
+    }
   }
 
   const compCheck = checkCompilation(job.code, job.language, py)
