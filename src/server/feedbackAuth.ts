@@ -5,23 +5,22 @@ import { isTestAuthEnabled } from './httpSecurity'
 // Server-authoritative Supabase Client.
 // Production REQUIRES SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY: there is no silent fallback to the
 // public anon key (which would make every server-side write quietly subject to client RLS).
-// Outside production (local dev / test runs) the public project URL + publishable key are used so the
-// suites can run without a service key.
-const IS_PRODUCTION =
-  process.env.NODE_ENV === 'production' ||
+// Outside production (local dev / test runs / Vercel previews) the public project URL + publishable key are used so the
+// server can verify real Google logins even when the service_role key is only scoped to production.
+const IS_STRICT_PRODUCTION =
   process.env.VERCEL_ENV === 'production' ||
-  process.env.VERCEL_ENV === 'preview'
+  (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV)
 
 const supabaseUrl =
   process.env.SUPABASE_URL ||
   process.env.VITE_SUPABASE_URL ||
-  (IS_PRODUCTION ? '' : 'https://iavxnhwbgoarnexmyxpn.supabase.co')
+  (IS_STRICT_PRODUCTION ? '' : 'https://iavxnhwbgoarnexmyxpn.supabase.co')
 
 // SUPABASE_SECRET_KEY: Supabase's newer secret API key (sb_secret_...), the replacement for the service_role key.
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.SUPABASE_SECRET_KEY ||
-  (IS_PRODUCTION
+  (IS_STRICT_PRODUCTION
     ? ''
     : process.env.SUPABASE_ANON_KEY ||
       process.env.VITE_SUPABASE_ANON_KEY ||
@@ -33,7 +32,7 @@ const supabaseKey =
 // every function importing this file (Run, Submit, feedback) into a bare 500 with no explanation. Instead the
 // server starts, logs the misconfiguration once, and authentication fails CLOSED per request with a clear 503.
 const CONFIG_ERROR =
-  IS_PRODUCTION && (!supabaseUrl || !supabaseKey)
+  IS_STRICT_PRODUCTION && (!supabaseUrl || !supabaseKey)
     ? `Server misconfigured: missing ${[!supabaseUrl && 'SUPABASE_URL', !supabaseKey && 'SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)'].filter(Boolean).join(' and ')} in the deployment environment.`
     : null
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`)
