@@ -1695,9 +1695,23 @@ async function runSubmissionJob(job, onCase) {
 if (typeof process.send !== "function") {
   throw new Error("sandboxWorker must be started with an IPC channel");
 }
-process.once("message", async (job) => {
-  const result = await runSubmissionJob(job, (index, caseResult) => {
-    process.send({ type: "case", index, result: caseResult });
-  });
-  process.send({ type: "done", result }, void 0, void 0, () => process.exit(0));
+getPyodide().catch(() => {
+});
+process.on("message", async (job) => {
+  try {
+    const result = await runSubmissionJob(job, (index, caseResult) => {
+      process.send({ type: "case", index, result: caseResult });
+    });
+    process.send({ type: "done", result });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    process.send({
+      type: "done",
+      result: {
+        kind: "sandbox_failed",
+        reason: "crash",
+        message: `Runtime Error: ${message}`
+      }
+    });
+  }
 });

@@ -19768,11 +19768,10 @@ import { fork } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 var HARD_TIMEOUT_MS = 1e4;
-var MAX_CONCURRENT = 4;
+var MAX_CONCURRENT = 1;
 var HEAP_MB = 192;
 var active = 0;
 var waiters = [];
-var permissionModelBroken = false;
 async function acquire() {
   if (active < MAX_CONCURRENT) {
     active++;
@@ -19804,37 +19803,65 @@ function resolveEntry() {
   if (underTsx && source) return { file: source, compiled: false };
   return null;
 }
-function permissionFlag() {
-  const flags = process.allowedNodeEnvironmentFlags;
-  if (flags.has("--permission")) return "--permission";
-  if (flags.has("--experimental-permission")) return "--experimental-permission";
-  return null;
+var activeWorker = null;
+function getOrCreateWorker(entry) {
+  if (activeWorker && activeWorker.entryFile === entry.file && !activeWorker.child.killed && activeWorker.child.exitCode === null && activeWorker.child.connected) {
+    return activeWorker.child;
+  }
+  if (activeWorker) {
+    try {
+      if (activeWorker.child.exitCode === null && !activeWorker.child.killed) {
+        activeWorker.child.kill("SIGKILL");
+      }
+    } catch {
+    }
+    activeWorker = null;
+  }
+  const execArgv = entry.compiled ? [] : [...process.execArgv];
+  execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
+  const child = fork(entry.file, [], {
+    env: {},
+    execArgv,
+    stdio: ["ignore", "ignore", "ignore", "ipc"],
+    serialization: "json"
+  });
+  child.on("error", (err) => {
+    console.error("[sandboxHost] worker process error:", err);
+  });
+  child.unref();
+  activeWorker = { child, entryFile: entry.file };
+  return child;
 }
-function run(entry, job, usePermission, onCase) {
+function run(entry, job, onCase) {
   return new Promise((resolve) => {
-    const execArgv = entry.compiled ? [] : [...process.execArgv];
-    execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
-    const flag = usePermission && entry.compiled && job.language.toLowerCase() !== "python" ? permissionFlag() : null;
-    if (flag) execArgv.push(flag, `--allow-fs-read=${entry.file}`);
-    const child = fork(entry.file, [], {
-      env: {},
-      execArgv,
-      stdio: ["ignore", "ignore", "ignore", "ipc"],
-      serialization: "json"
-    });
+    const child = getOrCreateWorker(entry);
     let settled = false;
     let gotResult = false;
     const completed = [];
+    const cleanup = () => {
+      clearTimeout(timer);
+      child.removeListener("message", onMessage);
+      child.removeListener("error", onError);
+      child.removeListener("exit", onExit);
+    };
     const finish = (outcome) => {
       if (settled) return;
       settled = true;
-      clearTimeout(timer);
-      if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      cleanup();
       resolve(outcome);
     };
-    const failed = (reason, message, bootFailed) => finish({ kind: "sandbox_failed", reason, message, completed: [...completed], bootFailed });
+    const failed = (reason, message) => {
+      if (activeWorker?.child === child) {
+        activeWorker = null;
+      }
+      try {
+        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      } catch {
+      }
+      finish({ kind: "sandbox_failed", reason, message, completed: [...completed] });
+    };
     const timer = setTimeout(() => failed("timeout", "Time Limit Exceeded"), HARD_TIMEOUT_MS);
-    child.on("message", (msg) => {
+    const onMessage = (msg) => {
       if (msg?.type === "case" && typeof msg.index === "number" && msg.result) {
         const caseResult = msg.result;
         completed[msg.index] = caseResult;
@@ -19845,17 +19872,26 @@ function run(entry, job, usePermission, onCase) {
         gotResult = true;
         finish(msg.result);
       }
-    });
-    child.once("error", () => failed("crash", "Runtime Error: the program terminated abnormally", true));
-    child.once("exit", (code, signal) => {
+    };
+    const onError = () => {
+      failed("crash", "Runtime Error: the program terminated abnormally");
+    };
+    const onExit = (code, signal) => {
       if (gotResult) return;
       if (code === 134 || signal === "SIGABRT" || signal === "SIGKILL") {
         failed("memory", "Memory Limit Exceeded");
       } else {
-        failed("crash", "Runtime Error: the program terminated abnormally", !!flag && completed.length === 0);
+        failed("crash", "Runtime Error: the program terminated abnormally");
       }
-    });
-    child.send(job);
+    };
+    child.on("message", onMessage);
+    child.once("error", onError);
+    child.once("exit", onExit);
+    try {
+      child.send(job);
+    } catch {
+      failed("crash", "Runtime Error: failed to dispatch job to sandbox worker");
+    }
   });
 }
 async function runInSandbox(job, onCase) {
@@ -19871,13 +19907,7 @@ async function runInSandbox(job, onCase) {
   }
   await acquire();
   try {
-    const first = await run(entry, job, !permissionModelBroken, onCase);
-    if (first.kind === "sandbox_failed" && first.bootFailed && !permissionModelBroken && permissionFlag() && entry.compiled) {
-      permissionModelBroken = true;
-      console.warn("[sandbox] permission-model flags unsupported on this runtime; continuing with process isolation only");
-      return await run(entry, job, false, onCase);
-    }
-    return first;
+    return await run(entry, job, onCase);
   } finally {
     release();
   }
@@ -154422,16 +154452,16 @@ function getClientIp(req) {
   return header("x-vercel-forwarded-for") || header("x-real-ip") || header("x-forwarded-for") || req.socket?.remoteAddress || "127.0.0.1";
 }
 function isTestAuthEnabled() {
-  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
-  if (isProduction) {
+  const isProductionOrPreview = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
+  if (isProductionOrPreview) {
     if (process.env.ALLOW_TEST_AUTH_TOKENS === "1") {
       console.warn(
-        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
+        `[auth] SECURITY WARNING: ALLOW_TEST_AUTH_TOKENS is ignored because the environment is production/preview (NODE_ENV=${process.env.NODE_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV}). Test token bypass is permanently disabled.`
       );
     }
     return false;
   }
-  return process.env.ALLOW_TEST_AUTH_TOKENS === "1" || process.env.VERCEL_ENV === "preview";
+  return process.env.ALLOW_TEST_AUTH_TOKENS === "1";
 }
 var PayloadTooLargeError = class extends Error {
   constructor() {
@@ -154517,9 +154547,9 @@ var RateLimiter = class {
 };
 
 // src/server/feedbackAuth.ts
-var IS_PRODUCTION = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
+var IS_PRODUCTION = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
 var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
+var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
 var CONFIG_ERROR = IS_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`);
 var supabaseServer = createClient(supabaseUrl || "https://unconfigured.invalid", supabaseKey || "unconfigured", {
