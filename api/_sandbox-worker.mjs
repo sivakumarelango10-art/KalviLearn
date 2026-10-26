@@ -1702,7 +1702,8 @@ process.on("message", async (job) => {
     const result = await runSubmissionJob(job, (index, caseResult) => {
       process.send({ type: "case", index, result: caseResult });
     });
-    process.send({ type: "done", result });
+    const memory = typeof process.memoryUsage === "function" ? process.memoryUsage() : void 0;
+    process.send({ type: "done", result, memory });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     process.send({

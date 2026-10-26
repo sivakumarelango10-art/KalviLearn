@@ -271,6 +271,92 @@ print("THREAD_STARTED")
     threadAttempt.kind === 'sandbox_failed'
   assert(threadBlocked, 'Threading import or startup is strictly blocked')
 
+  // 8. Python Worker Concurrency: Parallel runs with different inputs
+  console.log('\n--- 8. Testing Python Worker Concurrency (Parallel Dispatches) ---')
+  const [par1, par2] = await Promise.all([
+    runInSandbox({
+      code: `
+import sys
+val = sys.stdin.read().strip()
+print(f"PAR1:{val}")
+`,
+      language: 'python',
+      inputs: ['input_alpha_111'],
+    }),
+    runInSandbox({
+      code: `
+import sys
+val = sys.stdin.read().strip()
+print(f"PAR2:{val}")
+`,
+      language: 'python',
+      inputs: ['input_beta_222'],
+    }),
+  ])
+
+  assert(par1.kind === 'ran', 'Parallel Python run 1 executed')
+  assert(par2.kind === 'ran', 'Parallel Python run 2 executed')
+  if (par1.kind === 'ran' && par2.kind === 'ran') {
+    assert(
+      par1.cases[0]?.output === 'PAR1:input_alpha_111',
+      `Parallel run 1 got its own correct output: "${par1.cases[0]?.output}"`
+    )
+    assert(
+      par2.cases[0]?.output === 'PAR2:input_beta_222',
+      `Parallel run 2 got its own correct output: "${par2.cases[0]?.output}"`
+    )
+  }
+
+  // 9. JS/Java/C++ Ephemeral Child Process Isolation (Fresh process per request)
+  console.log('\n--- 9. Testing Ephemeral Child Process Isolation for JS/Java/C++ ---')
+  const jsPoisonRun = await runInSandbox({
+    code: `
+Array.prototype.customMethod = function() { return "hacked" }
+Object.prototype.pollutedKey = "danger"
+console.log("POISON_DONE")
+`,
+    language: 'nodejs',
+    inputs: [''],
+  })
+  assert(jsPoisonRun.kind === 'ran', 'JS poison run executed')
+  if (jsPoisonRun.kind === 'ran') {
+    assert(jsPoisonRun.cases[0]?.output === 'POISON_DONE', 'JS poison run completed successfully')
+  }
+
+  const jsCheckRun = await runInSandbox({
+    code: `
+const hasArrayProto = typeof Array.prototype.customMethod !== 'undefined'
+const hasObjProto = typeof ({}).pollutedKey !== 'undefined'
+console.log("hasArrayProto=" + hasArrayProto + ", hasObjProto=" + hasObjProto)
+`,
+    language: 'nodejs',
+    inputs: [''],
+  })
+  assert(jsCheckRun.kind === 'ran', 'Subsequent JS run executed in fresh process')
+  if (jsCheckRun.kind === 'ran') {
+    const out = jsCheckRun.cases[0]?.output || ''
+    assert(
+      out.includes('hasArrayProto=false, hasObjProto=false'),
+      `Subsequent JS run is completely unpolluted: "${out}"`
+    )
+  }
+
+  const pyAfterJs = await runInSandbox({
+    code: `
+import sys
+print("PYTHON_CLEAN_AFTER_JS")
+`,
+    language: 'python',
+    inputs: [''],
+  })
+  assert(pyAfterJs.kind === 'ran', 'Python run after JS executed cleanly')
+  if (pyAfterJs.kind === 'ran') {
+    assert(
+      pyAfterJs.cases[0]?.output === 'PYTHON_CLEAN_AFTER_JS',
+      'Python run after JS is unaffected'
+    )
+  }
+
   console.log(`\n========================================================================`)
   console.log(`SUMMARY: ${passed} passed, ${failed} failed`)
   console.log(`========================================================================`)

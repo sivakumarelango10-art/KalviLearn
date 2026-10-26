@@ -18810,7 +18810,7 @@ var require_GoTrueClient = __commonJS({
         }
       }
       async _verify(params) {
-        const run2 = async () => {
+        const run = async () => {
           try {
             return await this._useSession(async (result) => {
               var _a;
@@ -18841,12 +18841,12 @@ var require_GoTrueClient = __commonJS({
           }
         };
         if (this.lock != null) {
-          return this._acquireLock(this.lockAcquireTimeout, run2);
+          return this._acquireLock(this.lockAcquireTimeout, run);
         }
-        return run2();
+        return run();
       }
       async _challenge(params) {
-        const run2 = async () => {
+        const run = async () => {
           try {
             return await this._useSession(async (result) => {
               var _a;
@@ -18887,9 +18887,9 @@ var require_GoTrueClient = __commonJS({
           }
         };
         if (this.lock != null) {
-          return this._acquireLock(this.lockAcquireTimeout, run2);
+          return this._acquireLock(this.lockAcquireTimeout, run);
         }
-        return run2();
+        return run();
       }
       /**
        * {@link GoTrueMFAApi#challengeAndVerify}
@@ -19768,21 +19768,35 @@ import { fork } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 var HARD_TIMEOUT_MS = 1e4;
-var MAX_CONCURRENT = 1;
 var HEAP_MB = 192;
-var active = 0;
-var waiters = [];
-async function acquire() {
-  if (active < MAX_CONCURRENT) {
-    active++;
+var PYTHON_MAX_RUNS = 200;
+var PYTHON_MAX_HEAP_MB = 150;
+var PYTHON_MAX_RSS_MB = 350;
+var pythonWorker = null;
+var pythonLock = false;
+var pythonWaiters = [];
+function killPythonWorker() {
+  if (pythonWorker) {
+    try {
+      if (pythonWorker.child.exitCode === null && !pythonWorker.child.killed) {
+        pythonWorker.child.kill("SIGKILL");
+      }
+    } catch {
+    }
+    pythonWorker = null;
+  }
+}
+async function acquirePythonLock() {
+  if (!pythonLock) {
+    pythonLock = true;
     return;
   }
-  await new Promise((resolve) => waiters.push(resolve));
-  active++;
+  await new Promise((resolve) => pythonWaiters.push(resolve));
+  pythonLock = true;
 }
-function release() {
-  active--;
-  const next = waiters.shift();
+function releasePythonLock() {
+  pythonLock = false;
+  const next = pythonWaiters.shift();
   if (next) next();
 }
 function exists(name) {
@@ -19803,20 +19817,11 @@ function resolveEntry() {
   if (underTsx && source) return { file: source, compiled: false };
   return null;
 }
-var activeWorker = null;
-function getOrCreateWorker(entry) {
-  if (activeWorker && activeWorker.entryFile === entry.file && !activeWorker.child.killed && activeWorker.child.exitCode === null && activeWorker.child.connected) {
-    return activeWorker.child;
+function getOrCreatePythonWorker(entry) {
+  if (pythonWorker && pythonWorker.entryFile === entry.file && !pythonWorker.child.killed && pythonWorker.child.exitCode === null && pythonWorker.child.connected) {
+    return pythonWorker.child;
   }
-  if (activeWorker) {
-    try {
-      if (activeWorker.child.exitCode === null && !activeWorker.child.killed) {
-        activeWorker.child.kill("SIGKILL");
-      }
-    } catch {
-    }
-    activeWorker = null;
-  }
+  killPythonWorker();
   const execArgv = entry.compiled ? [] : [...process.execArgv];
   execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
   const child = fork(entry.file, [], {
@@ -19826,15 +19831,16 @@ function getOrCreateWorker(entry) {
     serialization: "json"
   });
   child.on("error", (err) => {
-    console.error("[sandboxHost] worker process error:", err);
+    console.error("[sandboxHost] python worker process error:", err);
   });
   child.unref();
-  activeWorker = { child, entryFile: entry.file };
+  pythonWorker = { child, entryFile: entry.file, runCount: 0 };
   return child;
 }
-function run(entry, job, onCase) {
+function runPythonJob(entry, job, onCase) {
   return new Promise((resolve) => {
-    const child = getOrCreateWorker(entry);
+    const child = getOrCreatePythonWorker(entry);
+    const currentState = pythonWorker;
     let settled = false;
     let gotResult = false;
     const completed = [];
@@ -19851,13 +19857,7 @@ function run(entry, job, onCase) {
       resolve(outcome);
     };
     const failed = (reason, message) => {
-      if (activeWorker?.child === child) {
-        activeWorker = null;
-      }
-      try {
-        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
-      } catch {
-      }
+      killPythonWorker();
       finish({ kind: "sandbox_failed", reason, message, completed: [...completed] });
     };
     const timer = setTimeout(() => failed("timeout", "Time Limit Exceeded"), HARD_TIMEOUT_MS);
@@ -19870,6 +19870,14 @@ function run(entry, job, onCase) {
       }
       if (msg?.type === "done" && msg.result) {
         gotResult = true;
+        if (currentState) {
+          currentState.runCount++;
+          const heapMb = (msg.memory?.heapUsed || 0) / (1024 * 1024);
+          const rssMb = (msg.memory?.rss || 0) / (1024 * 1024);
+          if (currentState.runCount >= PYTHON_MAX_RUNS || heapMb > PYTHON_MAX_HEAP_MB || rssMb > PYTHON_MAX_RSS_MB) {
+            killPythonWorker();
+          }
+        }
         finish(msg.result);
       }
     };
@@ -19894,6 +19902,65 @@ function run(entry, job, onCase) {
     }
   });
 }
+function runEphemeralJob(entry, job, onCase) {
+  return new Promise((resolve) => {
+    const execArgv = entry.compiled ? [] : [...process.execArgv];
+    execArgv.push(`--max-old-space-size=${HEAP_MB}`, "--disallow-code-generation-from-strings");
+    const child = fork(entry.file, [], {
+      env: {},
+      execArgv,
+      stdio: ["ignore", "ignore", "ignore", "ipc"],
+      serialization: "json"
+    });
+    let settled = false;
+    let gotResult = false;
+    const completed = [];
+    const finish = (outcome) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      try {
+        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      } catch {
+      }
+      resolve(outcome);
+    };
+    const failed = (reason, message) => {
+      try {
+        if (child.exitCode === null && !child.killed) child.kill("SIGKILL");
+      } catch {
+      }
+      finish({ kind: "sandbox_failed", reason, message, completed: [...completed] });
+    };
+    const timer = setTimeout(() => failed("timeout", "Time Limit Exceeded"), HARD_TIMEOUT_MS);
+    child.on("message", (msg) => {
+      if (msg?.type === "case" && typeof msg.index === "number" && msg.result) {
+        const caseResult = msg.result;
+        completed[msg.index] = caseResult;
+        onCase?.(msg.index, caseResult);
+        return;
+      }
+      if (msg?.type === "done" && msg.result) {
+        gotResult = true;
+        finish(msg.result);
+      }
+    });
+    child.once("error", () => failed("crash", "Runtime Error: the program terminated abnormally"));
+    child.once("exit", (code, signal) => {
+      if (gotResult) return;
+      if (code === 134 || signal === "SIGABRT" || signal === "SIGKILL") {
+        failed("memory", "Memory Limit Exceeded");
+      } else {
+        failed("crash", "Runtime Error: the program terminated abnormally");
+      }
+    });
+    try {
+      child.send(job);
+    } catch {
+      failed("crash", "Runtime Error: failed to dispatch job to sandbox worker");
+    }
+  });
+}
 async function runInSandbox(job, onCase) {
   const entry = resolveEntry();
   if (!entry) {
@@ -19905,12 +19972,16 @@ async function runInSandbox(job, onCase) {
     const { runSubmissionJob: runSubmissionJob2 } = await Promise.resolve().then(() => (init_codeRunnerCore(), codeRunnerCore_exports));
     return await runSubmissionJob2(job, onCase);
   }
-  await acquire();
-  try {
-    return await run(entry, job, onCase);
-  } finally {
-    release();
+  const isPython = job.language.toLowerCase() === "python";
+  if (isPython) {
+    await acquirePythonLock();
+    try {
+      return await runPythonJob(entry, job, onCase);
+    } finally {
+      releasePythonLock();
+    }
   }
+  return await runEphemeralJob(entry, job, onCase);
 }
 
 // src/server/judge/native.ts

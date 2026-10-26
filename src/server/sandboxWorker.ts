@@ -18,7 +18,8 @@ process.on('message', async (job: SandboxJob) => {
     const result = await runSubmissionJob(job, (index, caseResult) => {
       process.send!({ type: 'case', index, result: caseResult })
     })
-    process.send!({ type: 'done', result })
+    const memory = typeof process.memoryUsage === 'function' ? process.memoryUsage() : undefined
+    process.send!({ type: 'done', result, memory })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
     process.send!({
