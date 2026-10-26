@@ -26,7 +26,8 @@ import json
 BLOCKED_MODULES = {
     'js', 'pyodide', 'pyodide_js', '_pyodide', '_pyodide_core',
     'os', 'subprocess', '_posixsubprocess', 'socket', 'urllib', 'http', 'requests',
-    'pathlib', 'shutil', 'ctypes', 'importlib', 'fcntl', 'pwd', 'grp', 'pty', 'termios', 'resource'
+    'pathlib', 'shutil', 'ctypes', 'importlib', 'fcntl', 'pwd', 'grp', 'pty', 'termios', 'resource',
+    'threading', '_thread', '_dummy_thread', 'multiprocessing'
 }
 
 # 1. Neuter any dangerous functions that may already exist in os/runtime modules
@@ -100,7 +101,33 @@ _pristine_builtins = dict(builtins.__dict__)
 _pristine_modules = set(_orig_modules.keys())
 
 def _reset_sandbox_state():
-    # Remove any modified or added builtins
+    # 1. Reset standard streams & recursion limit
+    sys.setrecursionlimit(1000)
+    sys.stdin = sys.__stdin__
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
+
+    # 2. Reseed random if random was imported
+    if 'random' in sys.modules:
+        try:
+            sys.modules['random'].seed(None)
+        except Exception:
+            pass
+
+    # 3. Cancel any lingering asyncio tasks
+    if 'asyncio' in sys.modules:
+        try:
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                for t in asyncio.all_tasks(loop):
+                    t.cancel()
+            except RuntimeError:
+                pass
+        except Exception:
+            pass
+
+    # 4. Remove any modified or added builtins
     for k in list(builtins.__dict__.keys()):
         if k not in _pristine_builtins:
             try:
@@ -112,7 +139,8 @@ def _reset_sandbox_state():
             setattr(builtins, k, v)
         except Exception:
             pass
-    # Remove any modules added during student execution
+
+    # 5. Remove any modules added during student execution
     for m in list(sys.modules.keys()):
         if m not in _pristine_modules:
             try:
@@ -220,10 +248,44 @@ export function checkPythonSyntaxWithPyodide(py: any, code: string): { ok: boole
 }
 
 /**
+ * Wipes student-created files in the Pyodide in-memory virtual filesystem (MEMFS).
+ * Cleans /tmp and the virtual home directory (/home/pyodide).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function resetPyodideFS(py: any): void {
+  if (!py || !py.FS) return
+  const FS = py.FS
+  const dirs = ['/tmp', FS.cwd()]
+  for (const dir of dirs) {
+    try {
+      const entries = FS.readdir(dir)
+      for (const entry of entries) {
+        if (entry === '.' || entry === '..') continue
+        const fullPath = dir === '/' ? `/${entry}` : `${dir}/${entry}`
+        try {
+          const s = FS.stat(fullPath)
+          if (FS.isDir(s.mode)) {
+            const sub = FS.readdir(fullPath)
+            for (const subEntry of sub) {
+              if (subEntry === '.' || subEntry === '..') continue
+              try { FS.unlink(`${fullPath}/${subEntry}`) } catch {}
+            }
+            FS.rmdir(fullPath)
+          } else {
+            FS.unlink(fullPath)
+          }
+        } catch {}
+      }
+    } catch {}
+  }
+}
+
+/**
  * Runs a single test case through Pyodide.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function executePythonWithPyodide(py: any, code: string, input: string): { output: string; error?: string } {
+  resetPyodideFS(py)
   try {
     const raw = py.runPython(`_execute_case(${JSON.stringify(code)}, ${JSON.stringify(input)})`)
     const parsed = JSON.parse(raw)
@@ -234,6 +296,8 @@ export function executePythonWithPyodide(py: any, code: string, input: string): 
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)
     return { output: '', error: msg }
+  } finally {
+    resetPyodideFS(py)
   }
 }
 

@@ -144,11 +144,6 @@ print(f"PRINT_OK, has_x={has_x}, has_poison={has_poison}")
 
   // Also test direct isolation within one job across multiple test cases
   console.log('\n--- 4. Testing Multi-Case Isolation Within Single Job ---')
-  const multiCasePoison = `
-import builtins, sys
-# Case 0 sets builtins.print = None
-builtins.print = None
-`
   const multiCaseTest = await runInSandbox({
     code: `
 import sys
@@ -168,6 +163,113 @@ else:
     assert(multiCaseTest.cases[1].output === 'CASE_1_OK', `Case 1 printed despite Case 0 poison: "${multiCaseTest.cases[1].output}"`)
     assert(multiCaseTest.cases[2].output === 'CASE_2_OK', `Case 2 printed despite Case 0 poison: "${multiCaseTest.cases[2].output}"`)
   }
+
+  // 5. In-Memory Virtual FileSystem Isolation Test (No Leaks between Run A and Run B)
+  console.log('\n--- 5. Testing Filesystem Isolation (/tmp and cwd) ---')
+  const fsRunA = await runInSandbox({
+    code: `
+with open('/tmp/x.txt', 'w') as f:
+    f.write('secret_token_tmp')
+with open('local.txt', 'w') as f:
+    f.write('secret_token_local')
+print("WRITTEN")
+`,
+    language: 'python',
+    inputs: [''],
+  })
+  assert(fsRunA.kind === 'ran', 'Run A file write executed')
+
+  const fsRunB = await runInSandbox({
+    code: `
+tmp_found = False
+local_found = False
+try:
+    with open('/tmp/x.txt') as f:
+        tmp_found = True
+except FileNotFoundError:
+    pass
+
+try:
+    with open('local.txt') as f:
+        local_found = True
+except FileNotFoundError:
+    pass
+
+print(f"tmp_found={tmp_found}, local_found={local_found}")
+`,
+    language: 'python',
+    inputs: [''],
+  })
+
+  assert(fsRunB.kind === 'ran', 'Run B file read executed')
+  if (fsRunB.kind === 'ran') {
+    const out = fsRunB.cases[0]?.output || ''
+    assert(
+      out.includes('tmp_found=False, local_found=False'),
+      `Run B verified files wiped between runs: "${out}"`
+    )
+  }
+
+  // 6. Recursion limit, stdout, and random seed isolation
+  console.log('\n--- 6. Testing sys.setrecursionlimit, sys.stdout, and random.seed Isolation ---')
+  const tamperRunA = await runInSandbox({
+    code: `
+import sys, random
+sys.setrecursionlimit(10)
+random.seed(12345)
+sys.stdout = None
+`,
+    language: 'python',
+    inputs: [''],
+  })
+  assert(tamperRunA.kind === 'ran', 'Tamper run A executed')
+
+  const tamperRunB = await runInSandbox({
+    code: `
+import sys
+rec_limit = sys.getrecursionlimit()
+def recurse(n):
+    if n <= 0:
+        return 0
+    return 1 + recurse(n - 1)
+
+r50 = recurse(50)
+print(f"REC_OK={rec_limit >= 1000}, depth50={r50}")
+`,
+    language: 'python',
+    inputs: [''],
+  })
+
+  assert(tamperRunB.kind === 'ran', 'Tamper run B executed')
+  if (tamperRunB.kind === 'ran') {
+    const out = tamperRunB.cases[0]?.output || ''
+    const err = tamperRunB.cases[0]?.error
+    assert(!err, 'Tamper run B has working stdout and no recursion error')
+    assert(
+      out.includes('REC_OK=True, depth50=50'),
+      `Run B verified clean recursion limit and stdout: "${out}"`
+    )
+  }
+
+  // 7. Threading and Background Tasks Blocked
+  console.log('\n--- 7. Testing Threading & Background Task Isolation ---')
+  const threadAttempt = await runInSandbox({
+    code: `
+import threading
+def task():
+    pass
+t = threading.Thread(target=task)
+t.start()
+print("THREAD_STARTED")
+`,
+    language: 'python',
+    inputs: [''],
+  })
+  const threadBlocked =
+    threadAttempt.kind === 'precheck_failed' ||
+    (threadAttempt.kind === 'ran' && !!threadAttempt.cases[0]?.error) ||
+    threadAttempt.kind === 'sandbox_failed'
+  assert(threadBlocked, 'Threading import or startup is strictly blocked')
 
   console.log(`\n========================================================================`)
   console.log(`SUMMARY: ${passed} passed, ${failed} failed`)
