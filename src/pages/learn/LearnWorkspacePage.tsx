@@ -41,7 +41,7 @@ import {
 import { FormattedText } from '@/components/common/FormattedText'
 import { CustomTestCaseEditor } from '@/components/arena/CustomTestCaseEditor'
 import { type CustomTestCase } from '@/types/customTest'
-import { outputsMatch, validateJsonInput } from '@/lib/judge/compare'
+import { outputsMatch } from '@/lib/judge/compare'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
@@ -105,14 +105,8 @@ export const LearnWorkspacePage: React.FC = () => {
   const [showCompletionModal, setShowCompletionModal] = useState(false)
   const [customCases, setCustomCases] = useState<CustomTestCase[]>([])
 
-  const isJsonQuestion = useMemo(() => {
-    if (!question) return false
-    return (
-      question.inputMode === 'json' ||
-      (typeof (question as any).bankId === 'string' && (question as any).bankId.startsWith('T')) ||
-      (typeof question.inputFormat === 'string' && /json/i.test(question.inputFormat))
-    )
-  }, [question])
+  // Learn coding questions use plain-text input (no JSON)
+  const isJsonQuestion = false
 
   // Namespaced custom cases storage key: strictly per question + language in localStorage
   const customStorageKey = useMemo(() => {
@@ -197,8 +191,16 @@ export const LearnWorkspacePage: React.FC = () => {
     saveCustomCases(nextList)
   }
 
-  // Storage key for user's code: namespaced strictly to Learn
+  const [hasLegacyDraft, setHasLegacyDraft] = useState(false)
+  const [legacyDraftCode, setLegacyDraftCode] = useState<string | null>(null)
+
+  // Storage key for user's code: namespaced strictly to Learn with starter code version bump
+  const STARTER_CODE_VERSION = 'v2'
   const storageKey = useMemo(() => {
+    return `learn_code_${STARTER_CODE_VERSION}_${topicId || 'unknown'}_${slug || 'unknown'}_${currentLanguage}`
+  }, [topicId, slug, currentLanguage])
+
+  const legacyStorageKey = useMemo(() => {
     return `learn_code_${topicId || 'unknown'}_${slug || 'unknown'}_${currentLanguage}`
   }, [topicId, slug, currentLanguage])
 
@@ -208,9 +210,21 @@ export const LearnWorkspacePage: React.FC = () => {
     const saved = localStorage.getItem(storageKey)
     if (saved) {
       setCode(saved)
+      setHasLegacyDraft(false)
+      setLegacyDraftCode(null)
     } else {
       const questionStarter = question.starterCodes?.[currentLanguage]
-      setCode(questionStarter || DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python)
+      const freshStarter = questionStarter || DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python
+      setCode(freshStarter)
+
+      const legacySaved = localStorage.getItem(legacyStorageKey)
+      if (legacySaved && legacySaved.trim() !== freshStarter.trim()) {
+        setHasLegacyDraft(true)
+        setLegacyDraftCode(legacySaved)
+      } else {
+        setHasLegacyDraft(false)
+        setLegacyDraftCode(null)
+      }
     }
 
     // Reset runtime states
@@ -219,7 +233,7 @@ export const LearnWorkspacePage: React.FC = () => {
     setCompilationError(null)
     setShowCompletionModal(false)
     setActiveCaseTab(1)
-  }, [question?.slug, currentLanguage, storageKey])
+  }, [question?.slug, currentLanguage, storageKey, legacyStorageKey])
 
   // Check solve status
   useEffect(() => {
@@ -246,12 +260,38 @@ export const LearnWorkspacePage: React.FC = () => {
     }
   }
 
+  const handleRestoreLegacyCode = () => {
+    if (!legacyDraftCode) return
+    setCode(legacyDraftCode)
+    try {
+      localStorage.setItem(storageKey, legacyDraftCode)
+    } catch {
+      // quota safeguard
+    }
+    setHasLegacyDraft(false)
+    if (editorRef.current) {
+      editorRef.current.setValue(legacyDraftCode)
+    }
+  }
+
+  const handleDismissLegacyDraft = () => {
+    setHasLegacyDraft(false)
+    try {
+      localStorage.removeItem(legacyStorageKey)
+    } catch {
+      // ignore
+    }
+  }
+
   const handleReset = () => {
     const questionStarter = question?.starterCodes?.[currentLanguage]
     const starter = questionStarter || DEFAULT_STARTER_CODES[currentLanguage] || DEFAULT_STARTER_CODES.python
     setCode(starter)
+    setHasLegacyDraft(false)
+    setLegacyDraftCode(null)
     try {
       localStorage.removeItem(storageKey)
+      localStorage.removeItem(legacyStorageKey)
     } catch {
       // ignore
     }
@@ -268,17 +308,6 @@ export const LearnWorkspacePage: React.FC = () => {
       const activeCustom = customCases.find((c) => c.id === activeCaseTab)
       if (!activeCustom) return
 
-      // Validate JSON input if JSON question
-      if (isJsonQuestion) {
-        const jsonValidation = validateJsonInput(activeCustom.input)
-        if (!jsonValidation.valid) {
-          handleUpdateCustomCase(activeCustom.id, {
-            error: jsonValidation.error,
-            status: 'error',
-          })
-          return
-        }
-      }
 
       setIsRunning(true)
       const currentCode = editorRef.current?.getValue() ?? code
@@ -789,6 +818,33 @@ export const LearnWorkspacePage: React.FC = () => {
 
         {/* Right Column: Code Editor & Test Case Results Panel */}
         <div className="flex-1 flex flex-col min-h-0 bg-neutral-950">
+          {/* Legacy Saved Draft Banner */}
+          {hasLegacyDraft && (
+            <div className="bg-amber-950/40 border-b border-amber-800/60 px-4 py-2 flex items-center justify-between text-xs text-amber-200">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>We updated this question to standard plain text I/O. Showing new starter code.</span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleRestoreLegacyCode}
+                  className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-medium rounded border border-amber-500/40 transition-colors"
+                >
+                  Restore my code
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDismissLegacyDraft}
+                  className="p-1 hover:bg-amber-900/50 rounded text-amber-400 transition-colors"
+                  title="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Monaco Code Editor Container */}
           <div className="flex-1 min-h-[300px] border-b border-neutral-800/80 relative">
             <Editor
