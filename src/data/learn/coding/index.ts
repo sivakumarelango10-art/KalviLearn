@@ -172,22 +172,7 @@ export function getQuestionSupportedLanguages(
     return ['python']
   }
 
-  const topic = q?.topicSlug || (typeof questionOrSlug === 'string' ? questionOrSlug.split(':')[1] : '')
-  const normTopic = (topic || '').toLowerCase()
-
-  if (normTopic === 'scope' || normTopic === 'oop-inheritance') {
-    return ['python']
-  }
-
-  if (JAVA_CPP_SUPPORTED_TOPICS.has(normTopic)) {
-    return ['python', 'nodejs', 'java', 'cpp']
-  }
-
-  if (CPP_ONLY_EXTRA_TOPICS.has(normTopic)) {
-    return ['python', 'nodejs', 'cpp']
-  }
-
-  return ['python', 'nodejs']
+  return ['python']
 }
 
 

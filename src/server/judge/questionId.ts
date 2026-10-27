@@ -102,24 +102,7 @@ export function isPythonOnlyQuestion(questionSlug: string): boolean {
   return PYTHON_ONLY_SLUGS.has(slug)
 }
 
-const LEARN_JAVA_CPP_TOPICS = new Set([
-  'variables-data-types',
-  'basic-arithmetic-operations',
-  'conditionals-control-flow',
-  'loops',
-  'nested-loops',
-  'functions',
-  'arrays-1d-lists',
-  'strings-as-arrays',
-  'linear-search',
-  'binary-search',
-  'two-pointers',
-  'recursion',
-])
-
-const LEARN_CPP_EXTRA_TOPICS = new Set([
-  'dsa-algorithms',
-])
+import learnQuestionLanguages from './learnQuestionLanguages.json'
 
 export function getSupportedLanguagesForQuestion(questionSlug: string): SupportedLanguage[] {
   if (!questionSlug) return ['python', 'nodejs', 'java', 'cpp']
@@ -131,24 +114,21 @@ export function getSupportedLanguagesForQuestion(questionSlug: string): Supporte
 
   // Learn question
   const parts = questionSlug.split(':')
-  const topic = parts.length >= 3 ? parts[1].toLowerCase() : ''
+  const slug = parts[parts.length - 1].toLowerCase()
+  const keyWithTopic = parts.length >= 3 ? `${parts[1].toLowerCase()}:${slug}` : slug
 
-  if (isPythonOnlyQuestion(questionSlug) || topic === 'scope' || topic === 'oop-inheritance') {
-    return ['python']
+  const langs = (learnQuestionLanguages as Record<string, SupportedLanguage[]>)[keyWithTopic] ||
+                (learnQuestionLanguages as Record<string, SupportedLanguage[]>)[slug]
+
+  if (langs && langs.length > 0) {
+    return langs
   }
 
-  if (LEARN_JAVA_CPP_TOPICS.has(topic)) {
-    return ['python', 'nodejs', 'java', 'cpp']
-  }
-
-  if (LEARN_CPP_EXTRA_TOPICS.has(topic)) {
-    return ['python', 'nodejs', 'cpp']
-  }
-
-  return ['python', 'nodejs']
+  return ['python']
 }
 
 export function isLanguageSupportedForQuestion(questionSlug: string, lang: SupportedLanguage): boolean {
   return getSupportedLanguagesForQuestion(questionSlug).includes(lang)
 }
+
 
