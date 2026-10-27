@@ -8,79 +8,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -95,80 +95,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[[1,3]]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[[0,0]]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[]",
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[[-3,2]]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-3 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[[1,2]]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[[1,6],[2,5],[3,4]]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 6\n2 5\n3 4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[[0,5]]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[[1,3]]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[[0,9]]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       }
     ]
@@ -182,79 +182,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -269,80 +269,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[0,2]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "0 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[-1,-1]",
+        "input": "0 0",
+        "expectedOutput": "-1 -1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,1]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[-1,-1]",
+        "input": "1 7\n7",
+        "expectedOutput": "-1 -1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[1,3]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[0,1]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[0,5]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0 5",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[-1,-1]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "-1 -1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[2,3]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "2 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[0,2]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[1,2]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[-1,-1]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1 -1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[-1,-1]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "-1 -1",
         "isHidden": true
       }
     ]
@@ -356,79 +356,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "3",
         "isHidden": true
       }
@@ -443,79 +443,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "5",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "3",
         "isHidden": true
       }
@@ -530,79 +530,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "13",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "36",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "15",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "13",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "18",
         "isHidden": true
       }
@@ -617,80 +617,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[1,3]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "null",
+        "input": "0 0",
+        "expectedOutput": "NONE",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,0]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "null",
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[-3,2]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-3 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[1,2]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[1,6]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[5,6]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[0,5]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[1,3]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[0,9]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[4,4]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[1,8]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 8",
         "isHidden": true
       }
     ]
@@ -704,80 +704,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[[0,0,0]]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[[1,2,4]]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[]",
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[[-5,5,5]]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 5 5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       }
     ]
@@ -791,80 +791,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[5,4,3,1,1]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "5 4 3 1 1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[7]",
+        "input": "1 7\n7",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,0,0]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[2,-1,-3,-4]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "2 -1 -3 -4",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[3,3,3,2,2,1]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "3 3 3 2 2 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[10,9,8,7,6,5,4,3,2,1]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "10 9 8 7 6 5 4 3 2 1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[10,9,8,7,6,5]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "10 9 8 7 6 5",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[5,5,0,-5,-5]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "5 5 0 -5 -5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[6,5,4,3,2,1]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "6 5 4 3 2 1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[9,0,-9]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "9 0 -9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[4,4,4,4]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4 4 4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[8,8,8,8,3,2,1]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "8 8 8 8 3 2 1",
         "isHidden": true
       }
     ]
@@ -878,80 +878,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[1,3,4,5]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3 4 5",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[7]",
+        "input": "1 7\n7",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[-4,-3,-1,2]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-4 -3 -1 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[1,2,3]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[1,2,3,4,5,6,7,8,9,10]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 3 4 5 6 7 8 9 10",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[5,6,7,8,9,10]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6 7 8 9 10",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[-5,0,5]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 0 5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[1,2,3,4,5,6]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 2 3 4 5 6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[-9,0,9]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-9 0 9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[4]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[1,2,3,8]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 2 3 8",
         "isHidden": true
       }
     ]
@@ -965,80 +965,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[1,1,9,16,25]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 1 9 16 25",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[49]",
+        "input": "1 7\n7",
+        "expectedOutput": "49",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,0,0]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[1,4,9,16]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 4 9 16",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[1,4,4,9,9,9]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 4 4 9 9 9",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[1,4,9,16,25,36,49,64,81,100]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 4 9 16 25 36 49 64 81 100",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[25,36,49,64,81,100]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "25 36 49 64 81 100",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[0,25,25,25,25]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 25 25 25 25",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[1,4,9,16,25,36]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 4 9 16 25 36",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[0,81,81]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 81 81",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[16,16,16,16]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "16 16 16 16",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[1,4,9,64,64,64,64]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 4 9 64 64 64 64",
         "isHidden": true
       }
     ]
@@ -1052,79 +1052,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -1139,79 +1139,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -1226,79 +1226,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -1313,79 +1313,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "9",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "null",
+        "input": "0 0",
+        "expectedOutput": "NONE",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "null",
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "19",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "19",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "10",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "16",
         "isHidden": true
       }
@@ -1400,79 +1400,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
+        "input": "5 4\n1 1 3 4 5",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "null",
+        "input": "0 0",
+        "expectedOutput": "NONE",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "null",
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
+        "input": "4 -1\n-4 -3 -1 2",
         "expectedOutput": "-7",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
+        "input": "6 3\n1 2 2 3 3 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
+        "input": "6 6\n5 6 7 8 9 10",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
+        "input": "5 5\n-5 -5 0 5 5",
         "expectedOutput": "-10",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
+        "input": "6 4\n1 2 3 4 5 6",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
+        "input": "3 9\n-9 0 9",
         "expectedOutput": "-9",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
+        "input": "4 4\n4 4 4 4",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
+        "input": "7 8\n1 2 3 8 8 8 8",
         "expectedOutput": "3",
         "isHidden": true
       }
@@ -1487,80 +1487,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[[3,5]]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "3 5",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]",
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[[0,0]]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[]",
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[[-4,2]]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-4 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[[3,3]]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "3 3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[[4,10],[5,9],[6,8]]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "4 10\n5 9\n6 8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[[5,7]]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 7",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[[5,5]]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "5 5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[[2,6],[3,5]]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2 6\n3 5",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[[4,4]]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[[8,8]]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "8 8",
         "isHidden": true
       }
     ]
@@ -1574,80 +1574,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[0,2]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "0 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[-1,-1]",
+        "input": "0 0",
+        "expectedOutput": "-1 -1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,1]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[-1,-1]",
+        "input": "1 7\n7",
+        "expectedOutput": "-1 -1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[1,3]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[0,1]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[0,5]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0 5",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[0,1]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[2,3]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "2 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[0,2]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[1,2]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[0,1]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[0,3]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "0 3",
         "isHidden": true
       }
     ]
@@ -1661,80 +1661,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[1,1,3,4,5],\"target\":4}",
-        "expectedOutput": "[1,4]",
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "null",
+        "input": "0 0",
+        "expectedOutput": "NONE",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,0]",
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "null",
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"nums\":[-4,-3,-1,2],\"target\":-1}",
-        "expectedOutput": "[-1,2]",
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-1 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"nums\":[1,2,2,3,3,3],\"target\":3}",
-        "expectedOutput": "[1,3]",
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"nums\":[1,2,3,4,5,6,7,8,9,10],\"target\":7}",
-        "expectedOutput": "[1,7]",
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"nums\":[5,6,7,8,9,10],\"target\":6}",
-        "expectedOutput": "[5,6]",
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"nums\":[-5,-5,0,5,5],\"target\":5}",
-        "expectedOutput": "[-5,0]",
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"nums\":[1,2,3,4,5,6],\"target\":4}",
-        "expectedOutput": "[1,4]",
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 4",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"nums\":[-9,0,9],\"target\":9}",
-        "expectedOutput": "[-9,0]",
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-9 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"nums\":[4,4,4,4],\"target\":4}",
-        "expectedOutput": "[4,4]",
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"nums\":[1,2,3,8,8,8,8],\"target\":8}",
-        "expectedOutput": "[1,8]",
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 8",
         "isHidden": true
       }
     ]

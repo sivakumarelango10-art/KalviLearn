@@ -1,0 +1,3680 @@
+{
+  "variables-data-types:integer-to-decimal-string": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "integer-to-decimal-string": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:integer-to-binary-digits": [
+    "python",
+    "nodejs"
+  ],
+  "integer-to-binary-digits": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:integer-to-hexadecimal": [
+    "python",
+    "nodejs"
+  ],
+  "integer-to-hexadecimal": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:integer-to-octal": [
+    "python",
+    "nodejs"
+  ],
+  "integer-to-octal": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:absolute-value-assignment": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "absolute-value-assignment": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:boolean-from-integer": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "boolean-from-integer": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:sign-as-integer": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "sign-as-integer": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:square-as-numeric-value": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "square-as-numeric-value": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:truncated-half": [
+    "python",
+    "nodejs"
+  ],
+  "truncated-half": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:floor-half": [
+    "python",
+    "nodejs"
+  ],
+  "floor-half": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:decimal-digit-count": [
+    "python",
+    "nodejs"
+  ],
+  "decimal-digit-count": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:unit-digit-extraction": [
+    "python",
+    "nodejs"
+  ],
+  "unit-digit-extraction": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:tens-digit-extraction": [
+    "python",
+    "nodejs"
+  ],
+  "tens-digit-extraction": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:minutes-to-seconds": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "minutes-to-seconds": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:celsius-to-fahrenheit-number": [
+    "python",
+    "nodejs"
+  ],
+  "celsius-to-fahrenheit-number": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:parity-as-text": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "parity-as-text": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "variables-data-types:lowest-eight-bits": [
+    "python",
+    "nodejs"
+  ],
+  "lowest-eight-bits": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:number-of-set-bits": [
+    "python",
+    "nodejs"
+  ],
+  "number-of-set-bits": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:reverse-decimal-digits": [
+    "python",
+    "nodejs"
+  ],
+  "reverse-decimal-digits": [
+    "python",
+    "nodejs"
+  ],
+  "variables-data-types:integer-to-string-type-tag": [
+    "python",
+    "nodejs",
+    "java"
+  ],
+  "integer-to-string-type-tag": [
+    "python",
+    "nodejs",
+    "java"
+  ],
+  "basic-arithmetic-operations:add-two-integers": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "add-two-integers": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:subtract-b-from-a": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "subtract-b-from-a": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:product-of-two-values": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "product-of-two-values": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:square-sum-formula": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "square-sum-formula": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:difference-of-squares": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "difference-of-squares": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:sum-of-individual-squares": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "sum-of-individual-squares": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:absolute-difference": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "absolute-difference": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:floor-division-with-zero-rule": [
+    "python",
+    "nodejs"
+  ],
+  "floor-division-with-zero-rule": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:remainder-with-zero-rule": [
+    "python",
+    "nodejs"
+  ],
+  "remainder-with-zero-rule": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:division-quotient-and-remainder": [
+    "python",
+    "nodejs"
+  ],
+  "division-quotient-and-remainder": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:euclidean-gcd": [
+    "python",
+    "nodejs"
+  ],
+  "euclidean-gcd": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:least-common-multiple": [
+    "python",
+    "nodejs"
+  ],
+  "least-common-multiple": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:weighted-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "weighted-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:average-as-reduced-fraction": [
+    "python",
+    "nodejs"
+  ],
+  "average-as-reduced-fraction": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:closest-multiple-of-five": [
+    "python",
+    "nodejs"
+  ],
+  "closest-multiple-of-five": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:three-consecutive-multiples": [
+    "python",
+    "nodejs"
+  ],
+  "three-consecutive-multiples": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:rectangle-perimeter": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "rectangle-perimeter": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:rectangle-area": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "rectangle-area": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "basic-arithmetic-operations:power-with-bounded-exponent": [
+    "python",
+    "nodejs"
+  ],
+  "power-with-bounded-exponent": [
+    "python",
+    "nodejs"
+  ],
+  "basic-arithmetic-operations:digit-sum-of-product": [
+    "python",
+    "nodejs"
+  ],
+  "digit-sum-of-product": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:maximum-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "maximum-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:minimum-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "minimum-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:median-of-three": [
+    "python",
+    "nodejs"
+  ],
+  "median-of-three": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:all-three-equal": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "all-three-equal": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:exactly-two-equal": [
+    "python",
+    "nodejs"
+  ],
+  "exactly-two-equal": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:strict-increasing-order": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "strict-increasing-order": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:nondecreasing-order": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "nondecreasing-order": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:classify-sum-sign": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "classify-sum-sign": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:largest-absolute-value": [
+    "python",
+    "nodejs"
+  ],
+  "largest-absolute-value": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:count-positive-numbers": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "count-positive-numbers": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "conditionals-control-flow:count-even-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "count-even-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:triangle-possibility": [
+    "python",
+    "nodejs"
+  ],
+  "triangle-possibility": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:right-triangle-test": [
+    "python",
+    "nodejs"
+  ],
+  "right-triangle-test": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:range-inclusive-check": [
+    "python",
+    "nodejs"
+  ],
+  "range-inclusive-check": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:parity-majority": [
+    "python",
+    "nodejs"
+  ],
+  "parity-majority": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:choose-nearest-to-target": [
+    "python",
+    "nodejs"
+  ],
+  "choose-nearest-to-target": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:basic-triangle-classification": [
+    "python",
+    "nodejs"
+  ],
+  "basic-triangle-classification": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:select-first-maximum-variable": [
+    "python",
+    "nodejs"
+  ],
+  "select-first-maximum-variable": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:all-values-same-sign": [
+    "python",
+    "nodejs"
+  ],
+  "all-values-same-sign": [
+    "python",
+    "nodejs"
+  ],
+  "conditionals-control-flow:clamp-to-dynamic-bounds": [
+    "python",
+    "nodejs"
+  ],
+  "clamp-to-dynamic-bounds": [
+    "python",
+    "nodejs"
+  ],
+  "loops:sum-from-one-to-n": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "sum-from-one-to-n": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:factorial-with-a-loop": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "factorial-with-a-loop": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:first-n-square-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "first-n-square-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:first-n-cube-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "first-n-cube-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:even-numbers-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "even-numbers-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "loops:odd-numbers-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "odd-numbers-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "loops:number-of-multiples-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "number-of-multiples-of-three": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:powers-of-two-table": [
+    "python",
+    "nodejs"
+  ],
+  "powers-of-two-table": [
+    "python",
+    "nodejs"
+  ],
+  "loops:reverse-range": [
+    "python",
+    "nodejs"
+  ],
+  "reverse-range": [
+    "python",
+    "nodejs"
+  ],
+  "loops:cumulative-sums": [
+    "python",
+    "nodejs"
+  ],
+  "cumulative-sums": [
+    "python",
+    "nodejs"
+  ],
+  "loops:fibonacci-at-position-n": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "fibonacci-at-position-n": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:fibonacci-prefix": [
+    "python",
+    "nodejs"
+  ],
+  "fibonacci-prefix": [
+    "python",
+    "nodejs"
+  ],
+  "loops:primes-up-to-n": [
+    "python",
+    "nodejs"
+  ],
+  "primes-up-to-n": [
+    "python",
+    "nodejs"
+  ],
+  "loops:prime-count-up-to-n": [
+    "python",
+    "nodejs"
+  ],
+  "prime-count-up-to-n": [
+    "python",
+    "nodejs"
+  ],
+  "loops:multiplication-table-of-n": [
+    "python",
+    "nodejs"
+  ],
+  "multiplication-table-of-n": [
+    "python",
+    "nodejs"
+  ],
+  "loops:alternating-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "alternating-sum": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "loops:divisor-list": [
+    "python",
+    "nodejs"
+  ],
+  "divisor-list": [
+    "python",
+    "nodejs"
+  ],
+  "loops:count-digits-in-n-factorial": [
+    "python",
+    "nodejs"
+  ],
+  "count-digits-in-n-factorial": [
+    "python",
+    "nodejs"
+  ],
+  "loops:binary-digits-through-repetition": [
+    "python",
+    "nodejs"
+  ],
+  "binary-digits-through-repetition": [
+    "python",
+    "nodejs"
+  ],
+  "loops:triangular-number-rows": [
+    "python",
+    "nodejs"
+  ],
+  "triangular-number-rows": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:all-coordinate-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "all-coordinate-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:addition-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "addition-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "nested-loops:multiplication-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "multiplication-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "nested-loops:row-index-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "row-index-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "nested-loops:column-index-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "column-index-grid": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "nested-loops:checkerboard-digits": [
+    "python",
+    "nodejs"
+  ],
+  "checkerboard-digits": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:main-diagonal-ones": [
+    "python",
+    "nodejs"
+  ],
+  "main-diagonal-ones": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:anti-diagonal-ones": [
+    "python",
+    "nodejs"
+  ],
+  "anti-diagonal-ones": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:border-of-ones": [
+    "python",
+    "nodejs"
+  ],
+  "border-of-ones": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:upper-triangle-matrix": [
+    "python",
+    "nodejs"
+  ],
+  "upper-triangle-matrix": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:lower-triangle-matrix": [
+    "python",
+    "nodejs"
+  ],
+  "lower-triangle-matrix": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:distance-to-bottom-right": [
+    "python",
+    "nodejs"
+  ],
+  "distance-to-bottom-right": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:row-major-serial-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "row-major-serial-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:column-major-serial-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "column-major-serial-numbers": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:right-aligned-star-triangle": [
+    "python",
+    "nodejs"
+  ],
+  "right-aligned-star-triangle": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:left-aligned-star-triangle": [
+    "python",
+    "nodejs"
+  ],
+  "left-aligned-star-triangle": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:alternating-rows": [
+    "python",
+    "nodejs"
+  ],
+  "alternating-rows": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:concentric-layer-index": [
+    "python",
+    "nodejs"
+  ],
+  "concentric-layer-index": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:row-reversal-number-grid": [
+    "python",
+    "nodejs"
+  ],
+  "row-reversal-number-grid": [
+    "python",
+    "nodejs"
+  ],
+  "nested-loops:grid-lexicographic-labels": [
+    "python",
+    "nodejs"
+  ],
+  "grid-lexicographic-labels": [
+    "python",
+    "nodejs"
+  ],
+  "functions:reusable-max-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "reusable-max-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "functions:reusable-min-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "reusable-min-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "functions:absolute-difference-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "absolute-difference-function": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "functions:parity-comparison-function": [
+    "python",
+    "nodejs"
+  ],
+  "parity-comparison-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:integer-gcd-helper": [
+    "python",
+    "nodejs"
+  ],
+  "integer-gcd-helper": [
+    "python",
+    "nodejs"
+  ],
+  "functions:safe-division-function": [
+    "python",
+    "nodejs"
+  ],
+  "safe-division-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:composite-function-evaluation": [
+    "python",
+    "nodejs"
+  ],
+  "composite-function-evaluation": [
+    "python",
+    "nodejs"
+  ],
+  "functions:function-returns-a-pair": [
+    "python",
+    "nodejs"
+  ],
+  "function-returns-a-pair": [
+    "python",
+    "nodejs"
+  ],
+  "functions:range-sum-helper": [
+    "python",
+    "nodejs"
+  ],
+  "range-sum-helper": [
+    "python",
+    "nodejs"
+  ],
+  "functions:divisibility-function": [
+    "python",
+    "nodejs"
+  ],
+  "divisibility-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:prime-checker-function": [
+    "python",
+    "nodejs"
+  ],
+  "prime-checker-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:factor-count-helper": [
+    "python",
+    "nodejs"
+  ],
+  "factor-count-helper": [
+    "python",
+    "nodejs"
+  ],
+  "functions:function-composition-of-squares": [
+    "python",
+    "nodejs"
+  ],
+  "function-composition-of-squares": [
+    "python",
+    "nodejs"
+  ],
+  "functions:swap-function-output": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "swap-function-output": [
+    "python",
+    "nodejs",
+    "java",
+    "cpp"
+  ],
+  "functions:clamp-using-helper-functions": [
+    "python",
+    "nodejs"
+  ],
+  "clamp-using-helper-functions": [
+    "python",
+    "nodejs"
+  ],
+  "functions:digits-in-both-arguments": [
+    "python",
+    "nodejs"
+  ],
+  "digits-in-both-arguments": [
+    "python",
+    "nodejs"
+  ],
+  "functions:function-returns-sign-product": [
+    "python",
+    "nodejs"
+  ],
+  "function-returns-sign-product": [
+    "python",
+    "nodejs"
+  ],
+  "functions:coprime-function": [
+    "python",
+    "nodejs"
+  ],
+  "coprime-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:normalize-fraction-function": [
+    "python",
+    "nodejs"
+  ],
+  "normalize-fraction-function": [
+    "python",
+    "nodejs"
+  ],
+  "functions:math-utility-summary": [
+    "python",
+    "nodejs"
+  ],
+  "math-utility-summary": [
+    "python",
+    "nodejs"
+  ],
+  "scope:local-parameter-shadows-global": [
+    "python"
+  ],
+  "local-parameter-shadows-global": [
+    "python"
+  ],
+  "scope:local-assignment-does-not-leak": [
+    "python"
+  ],
+  "local-assignment-does-not-leak": [
+    "python"
+  ],
+  "scope:read-global-without-rebinding": [
+    "python"
+  ],
+  "read-global-without-rebinding": [
+    "python"
+  ],
+  "scope:global-keyword-mutation": [
+    "python"
+  ],
+  "global-keyword-mutation": [
+    "python"
+  ],
+  "scope:enclosing-variable-read": [
+    "python"
+  ],
+  "enclosing-variable-read": [
+    "python"
+  ],
+  "scope:nonlocal-increment": [
+    "python"
+  ],
+  "nonlocal-increment": [
+    "python"
+  ],
+  "scope:inner-shadow-vs-enclosing": [
+    "python"
+  ],
+  "inner-shadow-vs-enclosing": [
+    "python"
+  ],
+  "scope:nested-closure-captures-parameter": [
+    "python"
+  ],
+  "nested-closure-captures-parameter": [
+    "python"
+  ],
+  "scope:loop-variable-persists-in-function": [
+    "python"
+  ],
+  "loop-variable-persists-in-function": [
+    "python"
+  ],
+  "scope:if-block-uses-local-function-scope": [
+    "python"
+  ],
+  "if-block-uses-local-function-scope": [
+    "python"
+  ],
+  "scope:comprehension-does-not-overwrite-x": [
+    "python"
+  ],
+  "comprehension-does-not-overwrite-x": [
+    "python"
+  ],
+  "scope:parameter-rebinding-does-not-modify-caller": [
+    "python"
+  ],
+  "parameter-rebinding-does-not-modify-caller": [
+    "python"
+  ],
+  "scope:three-level-legb-lookup": [
+    "python"
+  ],
+  "three-level-legb-lookup": [
+    "python"
+  ],
+  "scope:closest-scope-wins": [
+    "python"
+  ],
+  "closest-scope-wins": [
+    "python"
+  ],
+  "scope:nonlocal-swap-state": [
+    "python"
+  ],
+  "nonlocal-swap-state": [
+    "python"
+  ],
+  "scope:closure-factory-with-two-calls": [
+    "python"
+  ],
+  "closure-factory-with-two-calls": [
+    "python"
+  ],
+  "scope:default-parameter-evaluated-at-definition": [
+    "python"
+  ],
+  "default-parameter-evaluated-at-definition": [
+    "python"
+  ],
+  "scope:local-and-global-same-name": [
+    "python"
+  ],
+  "local-and-global-same-name": [
+    "python"
+  ],
+  "scope:nested-function-argument-overrides-closure": [
+    "python"
+  ],
+  "nested-function-argument-overrides-closure": [
+    "python"
+  ],
+  "scope:two-independent-closure-instances": [
+    "python"
+  ],
+  "two-independent-closure-instances": [
+    "python"
+  ],
+  "arrays-1d-lists:sum-of-elements": [
+    "python",
+    "nodejs"
+  ],
+  "sum-of-elements": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:count-negative-entries": [
+    "python",
+    "nodejs"
+  ],
+  "count-negative-entries": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:maximum-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:minimum-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "minimum-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:reverse-the-array": [
+    "python",
+    "nodejs"
+  ],
+  "reverse-the-array": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:prefix-sum-array": [
+    "python",
+    "nodejs"
+  ],
+  "prefix-sum-array": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:suffix-sum-array": [
+    "python",
+    "nodejs"
+  ],
+  "suffix-sum-array": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:left-rotate-by-k": [
+    "python",
+    "nodejs"
+  ],
+  "left-rotate-by-k": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:right-rotate-by-k": [
+    "python",
+    "nodejs"
+  ],
+  "right-rotate-by-k": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:second-distinct-largest": [
+    "python",
+    "nodejs"
+  ],
+  "second-distinct-largest": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:adjacent-pair-sums": [
+    "python",
+    "nodejs"
+  ],
+  "adjacent-pair-sums": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:count-target-occurrences": [
+    "python",
+    "nodejs"
+  ],
+  "count-target-occurrences": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:array-palindrome-check": [
+    "python",
+    "nodejs"
+  ],
+  "array-palindrome-check": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:replace-values-below-target": [
+    "python",
+    "nodejs"
+  ],
+  "replace-values-below-target": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:indices-above-target": [
+    "python",
+    "nodejs"
+  ],
+  "indices-above-target": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:running-maximum-array": [
+    "python",
+    "nodejs"
+  ],
+  "running-maximum-array": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:first-k-elements-sum": [
+    "python",
+    "nodejs"
+  ],
+  "first-k-elements-sum": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:maximum-k-window-sum": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-k-window-sum": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:longest-positive-streak": [
+    "python",
+    "nodejs"
+  ],
+  "longest-positive-streak": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-1d-lists:remove-adjacent-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "remove-adjacent-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:length-by-character-traversal": [
+    "python",
+    "nodejs"
+  ],
+  "length-by-character-traversal": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:reverse-characters": [
+    "python",
+    "nodejs"
+  ],
+  "reverse-characters": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:count-vowel-characters": [
+    "python",
+    "nodejs"
+  ],
+  "count-vowel-characters": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:count-consonant-characters": [
+    "python",
+    "nodejs"
+  ],
+  "count-consonant-characters": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:palindrome-string": [
+    "python",
+    "nodejs"
+  ],
+  "palindrome-string": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:first-character-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "first-character-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:last-character-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "last-character-or-null": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:unique-characters-first-seen": [
+    "python",
+    "nodejs"
+  ],
+  "unique-characters-first-seen": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:sorted-unique-characters": [
+    "python",
+    "nodejs"
+  ],
+  "sorted-unique-characters": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:first-nonrepeating-character": [
+    "python",
+    "nodejs"
+  ],
+  "first-nonrepeating-character": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:run-length-character-groups": [
+    "python",
+    "nodejs"
+  ],
+  "run-length-character-groups": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:alphabet-position-sum": [
+    "python",
+    "nodejs"
+  ],
+  "alphabet-position-sum": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:character-frequency-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "character-frequency-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:adjacent-equal-pair-count": [
+    "python",
+    "nodejs"
+  ],
+  "adjacent-equal-pair-count": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:mirror-pair-matches": [
+    "python",
+    "nodejs"
+  ],
+  "mirror-pair-matches": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:longest-equal-character-run": [
+    "python",
+    "nodejs"
+  ],
+  "longest-equal-character-run": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:rotate-first-letter-to-end": [
+    "python",
+    "nodejs"
+  ],
+  "rotate-first-letter-to-end": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:reverse-each-two-character-block": [
+    "python",
+    "nodejs"
+  ],
+  "reverse-each-two-character-block": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:longest-proper-prefix-suffix": [
+    "python",
+    "nodejs"
+  ],
+  "longest-proper-prefix-suffix": [
+    "python",
+    "nodejs"
+  ],
+  "strings-as-arrays:lexicographically-smallest-rotation": [
+    "python",
+    "nodejs"
+  ],
+  "lexicographically-smallest-rotation": [
+    "python",
+    "nodejs"
+  ],
+  "arrays-2d-matrices:total-matrix-sum": [
+    "python"
+  ],
+  "total-matrix-sum": [
+    "python"
+  ],
+  "arrays-2d-matrices:sum-every-row": [
+    "python"
+  ],
+  "sum-every-row": [
+    "python"
+  ],
+  "arrays-2d-matrices:sum-every-column": [
+    "python"
+  ],
+  "sum-every-column": [
+    "python"
+  ],
+  "arrays-2d-matrices:matrix-maximum": [
+    "python"
+  ],
+  "matrix-maximum": [
+    "python"
+  ],
+  "arrays-2d-matrices:matrix-minimum": [
+    "python"
+  ],
+  "matrix-minimum": [
+    "python"
+  ],
+  "arrays-2d-matrices:transpose-the-matrix": [
+    "python"
+  ],
+  "transpose-the-matrix": [
+    "python"
+  ],
+  "arrays-2d-matrices:flip-matrix-horizontally": [
+    "python"
+  ],
+  "flip-matrix-horizontally": [
+    "python"
+  ],
+  "arrays-2d-matrices:flip-matrix-vertically": [
+    "python"
+  ],
+  "flip-matrix-vertically": [
+    "python"
+  ],
+  "arrays-2d-matrices:rotate-matrix-clockwise": [
+    "python"
+  ],
+  "rotate-matrix-clockwise": [
+    "python"
+  ],
+  "arrays-2d-matrices:rotate-matrix-counterclockwise": [
+    "python"
+  ],
+  "rotate-matrix-counterclockwise": [
+    "python"
+  ],
+  "arrays-2d-matrices:flatten-matrix-row-major": [
+    "python"
+  ],
+  "flatten-matrix-row-major": [
+    "python"
+  ],
+  "arrays-2d-matrices:flatten-matrix-column-major": [
+    "python"
+  ],
+  "flatten-matrix-column-major": [
+    "python"
+  ],
+  "arrays-2d-matrices:main-diagonal-sum": [
+    "python"
+  ],
+  "main-diagonal-sum": [
+    "python"
+  ],
+  "arrays-2d-matrices:top-right-diagonal-sum": [
+    "python"
+  ],
+  "top-right-diagonal-sum": [
+    "python"
+  ],
+  "arrays-2d-matrices:count-zero-cells": [
+    "python"
+  ],
+  "count-zero-cells": [
+    "python"
+  ],
+  "arrays-2d-matrices:positive-cell-coordinates": [
+    "python"
+  ],
+  "positive-cell-coordinates": [
+    "python"
+  ],
+  "arrays-2d-matrices:row-maximums": [
+    "python"
+  ],
+  "row-maximums": [
+    "python"
+  ],
+  "arrays-2d-matrices:column-minimums": [
+    "python"
+  ],
+  "column-minimums": [
+    "python"
+  ],
+  "arrays-2d-matrices:spiral-order-traversal": [
+    "python"
+  ],
+  "spiral-order-traversal": [
+    "python"
+  ],
+  "arrays-2d-matrices:add-row-and-column-indices": [
+    "python"
+  ],
+  "add-row-and-column-indices": [
+    "python"
+  ],
+  "linear-search:first-target-index": [
+    "python",
+    "nodejs"
+  ],
+  "first-target-index": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:last-target-index": [
+    "python",
+    "nodejs"
+  ],
+  "last-target-index": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:count-equal-values": [
+    "python",
+    "nodejs"
+  ],
+  "count-equal-values": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:all-matching-indices": [
+    "python",
+    "nodejs"
+  ],
+  "all-matching-indices": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:target-exists": [
+    "python",
+    "nodejs"
+  ],
+  "target-exists": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:first-greater-than-target": [
+    "python",
+    "nodejs"
+  ],
+  "first-greater-than-target": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:last-less-than-target": [
+    "python",
+    "nodejs"
+  ],
+  "last-less-than-target": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:first-greater-or-equal": [
+    "python",
+    "nodejs"
+  ],
+  "first-greater-or-equal": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:last-less-or-equal": [
+    "python",
+    "nodejs"
+  ],
+  "last-less-or-equal": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:nearest-value-index": [
+    "python",
+    "nodejs"
+  ],
+  "nearest-value-index": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:first-nonmatching-index": [
+    "python",
+    "nodejs"
+  ],
+  "first-nonmatching-index": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:indices-of-even-entries": [
+    "python",
+    "nodejs"
+  ],
+  "indices-of-even-entries": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:first-multiple-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "first-multiple-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:first-local-peak": [
+    "python",
+    "nodejs"
+  ],
+  "first-local-peak": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:search-starting-after-first-half": [
+    "python",
+    "nodejs"
+  ],
+  "search-starting-after-first-half": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:last-negative-position": [
+    "python",
+    "nodejs"
+  ],
+  "last-negative-position": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:index-of-maximum-first-tie": [
+    "python",
+    "nodejs"
+  ],
+  "index-of-maximum-first-tie": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:index-of-minimum-last-tie": [
+    "python",
+    "nodejs"
+  ],
+  "index-of-minimum-last-tie": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:closest-smaller-value": [
+    "python",
+    "nodejs"
+  ],
+  "closest-smaller-value": [
+    "python",
+    "nodejs"
+  ],
+  "linear-search:closest-larger-value": [
+    "python",
+    "nodejs"
+  ],
+  "closest-larger-value": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:leftmost-target-position": [
+    "python",
+    "nodejs"
+  ],
+  "leftmost-target-position": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:rightmost-target-position": [
+    "python",
+    "nodejs"
+  ],
+  "rightmost-target-position": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:lower-bound-insertion-index": [
+    "python",
+    "nodejs"
+  ],
+  "lower-bound-insertion-index": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:upper-bound-insertion-index": [
+    "python",
+    "nodejs"
+  ],
+  "upper-bound-insertion-index": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:number-of-target-occurrences": [
+    "python",
+    "nodejs"
+  ],
+  "number-of-target-occurrences": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:has-exact-target": [
+    "python",
+    "nodejs"
+  ],
+  "has-exact-target": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:floor-value-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "floor-value-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:ceiling-value-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "ceiling-value-of-target": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:predecessor-strict": [
+    "python",
+    "nodejs"
+  ],
+  "predecessor-strict": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:successor-strict": [
+    "python",
+    "nodejs"
+  ],
+  "successor-strict": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:count-values-strictly-less": [
+    "python",
+    "nodejs"
+  ],
+  "count-values-strictly-less": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:count-values-at-most": [
+    "python",
+    "nodejs"
+  ],
+  "count-values-at-most": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:count-values-strictly-greater": [
+    "python",
+    "nodejs"
+  ],
+  "count-values-strictly-greater": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:count-values-at-least": [
+    "python",
+    "nodejs"
+  ],
+  "count-values-at-least": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:count-elements-between-t-and-t-plus-two": [
+    "python",
+    "nodejs"
+  ],
+  "count-elements-between-t-and-t-plus-two": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:nearest-value-in-sorted-array": [
+    "python",
+    "nodejs"
+  ],
+  "nearest-value-in-sorted-array": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:exact-target-index-interval": [
+    "python",
+    "nodejs"
+  ],
+  "exact-target-index-interval": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:insert-target-maintaining-order": [
+    "python",
+    "nodejs"
+  ],
+  "insert-target-maintaining-order": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:remove-all-exact-target-values": [
+    "python",
+    "nodejs"
+  ],
+  "remove-all-exact-target-values": [
+    "python",
+    "nodejs"
+  ],
+  "binary-search:midpoint-partition-by-target": [
+    "python",
+    "nodejs"
+  ],
+  "midpoint-partition-by-target": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-ascending": [
+    "python",
+    "nodejs"
+  ],
+  "sort-ascending": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-descending": [
+    "python",
+    "nodejs"
+  ],
+  "sort-descending": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-by-absolute-value": [
+    "python",
+    "nodejs"
+  ],
+  "sort-by-absolute-value": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:even-numbers-first-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "even-numbers-first-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:odd-numbers-first-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "odd-numbers-first-sorted": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sorted-distinct-values": [
+    "python",
+    "nodejs"
+  ],
+  "sorted-distinct-values": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:k-smallest-with-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "k-smallest-with-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:k-largest-with-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "k-largest-with-duplicates": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:kth-smallest": [
+    "python",
+    "nodejs"
+  ],
+  "kth-smallest": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:kth-largest": [
+    "python",
+    "nodejs"
+  ],
+  "kth-largest": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-by-frequency": [
+    "python",
+    "nodejs"
+  ],
+  "sort-by-frequency": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-only-positive-values": [
+    "python",
+    "nodejs"
+  ],
+  "sort-only-positive-values": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:alternate-smallest-largest": [
+    "python",
+    "nodejs"
+  ],
+  "alternate-smallest-largest": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sorted-adjacent-differences": [
+    "python",
+    "nodejs"
+  ],
+  "sorted-adjacent-differences": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:median-of-sorted-list": [
+    "python",
+    "nodejs"
+  ],
+  "median-of-sorted-list": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:negatives-first-stable": [
+    "python",
+    "nodejs"
+  ],
+  "negatives-first-stable": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:sort-by-distance-from-target": [
+    "python",
+    "nodejs"
+  ],
+  "sort-by-distance-from-target": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:rank-each-element": [
+    "python",
+    "nodejs"
+  ],
+  "rank-each-element": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:order-unique-values-by-frequency": [
+    "python",
+    "nodejs"
+  ],
+  "order-unique-values-by-frequency": [
+    "python",
+    "nodejs"
+  ],
+  "sorting:partition-around-target": [
+    "python",
+    "nodejs"
+  ],
+  "partition-around-target": [
+    "python",
+    "nodejs"
+  ],
+  "sets:union-of-two-sets": [
+    "python",
+    "nodejs"
+  ],
+  "union-of-two-sets": [
+    "python",
+    "nodejs"
+  ],
+  "sets:intersection-of-two-sets": [
+    "python",
+    "nodejs"
+  ],
+  "intersection-of-two-sets": [
+    "python",
+    "nodejs"
+  ],
+  "sets:a-difference-b": [
+    "python",
+    "nodejs"
+  ],
+  "a-difference-b": [
+    "python",
+    "nodejs"
+  ],
+  "sets:b-difference-a": [
+    "python",
+    "nodejs"
+  ],
+  "b-difference-a": [
+    "python",
+    "nodejs"
+  ],
+  "sets:symmetric-difference": [
+    "python",
+    "nodejs"
+  ],
+  "symmetric-difference": [
+    "python",
+    "nodejs"
+  ],
+  "sets:is-a-subset-of-b": [
+    "python",
+    "nodejs"
+  ],
+  "is-a-subset-of-b": [
+    "python",
+    "nodejs"
+  ],
+  "sets:is-a-strict-subset": [
+    "python",
+    "nodejs"
+  ],
+  "is-a-strict-subset": [
+    "python",
+    "nodejs"
+  ],
+  "sets:are-sets-equal": [
+    "python",
+    "nodejs"
+  ],
+  "are-sets-equal": [
+    "python",
+    "nodejs"
+  ],
+  "sets:are-sets-disjoint": [
+    "python",
+    "nodejs"
+  ],
+  "are-sets-disjoint": [
+    "python",
+    "nodejs"
+  ],
+  "sets:union-cardinality": [
+    "python",
+    "nodejs"
+  ],
+  "union-cardinality": [
+    "python",
+    "nodejs"
+  ],
+  "sets:intersection-cardinality": [
+    "python",
+    "nodejs"
+  ],
+  "intersection-cardinality": [
+    "python",
+    "nodejs"
+  ],
+  "sets:remove-duplicates-from-a": [
+    "python",
+    "nodejs"
+  ],
+  "remove-duplicates-from-a": [
+    "python",
+    "nodejs"
+  ],
+  "sets:common-even-values": [
+    "python",
+    "nodejs"
+  ],
+  "common-even-values": [
+    "python",
+    "nodejs"
+  ],
+  "sets:distinct-values-occurring-in-a-only": [
+    "python",
+    "nodejs"
+  ],
+  "distinct-values-occurring-in-a-only": [
+    "python",
+    "nodejs"
+  ],
+  "sets:smallest-shared-value": [
+    "python",
+    "nodejs"
+  ],
+  "smallest-shared-value": [
+    "python",
+    "nodejs"
+  ],
+  "sets:largest-union-element": [
+    "python",
+    "nodejs"
+  ],
+  "largest-union-element": [
+    "python",
+    "nodejs"
+  ],
+  "sets:a-duplicated-input-values": [
+    "python",
+    "nodejs"
+  ],
+  "a-duplicated-input-values": [
+    "python",
+    "nodejs"
+  ],
+  "sets:unique-counts-of-both-inputs": [
+    "python",
+    "nodejs"
+  ],
+  "unique-counts-of-both-inputs": [
+    "python",
+    "nodejs"
+  ],
+  "sets:exclusive-elements-count": [
+    "python",
+    "nodejs"
+  ],
+  "exclusive-elements-count": [
+    "python",
+    "nodejs"
+  ],
+  "sets:jaccard-similarity-fraction": [
+    "python",
+    "nodejs"
+  ],
+  "jaccard-similarity-fraction": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:two-sum-exists": [
+    "python",
+    "nodejs"
+  ],
+  "two-sum-exists": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:unique-two-sum-value-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "unique-two-sum-value-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-two-sum-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "count-two-sum-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:smallest-index-two-sum": [
+    "python",
+    "nodejs"
+  ],
+  "smallest-index-two-sum": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-pair-sums-below-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-pair-sums-below-target": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-pair-sums-at-most-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-pair-sums-at-most-target": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-pair-sums-above-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-pair-sums-above-target": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:closest-two-sum-value-pair": [
+    "python",
+    "nodejs"
+  ],
+  "closest-two-sum-value-pair": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:three-sum-unique-triples": [
+    "python",
+    "nodejs"
+  ],
+  "three-sum-unique-triples": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:two-pointer-reverse": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointer-reverse": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:remove-duplicates-in-place-model": [
+    "python",
+    "nodejs"
+  ],
+  "remove-duplicates-in-place-model": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:sorted-array-squared-values": [
+    "python",
+    "nodejs"
+  ],
+  "sorted-array-squared-values": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-opposite-value-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "count-opposite-value-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:two-pointer-palindrome-check": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointer-palindrome-check": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:count-pairs-with-difference-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-pairs-with-difference-target": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:maximum-two-pointer-pair-sum": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-two-pointer-pair-sum": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:minimum-two-pointer-pair-sum": [
+    "python",
+    "nodejs"
+  ],
+  "minimum-two-pointer-pair-sum": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:pairs-exactly-twice-target": [
+    "python",
+    "nodejs"
+  ],
+  "pairs-exactly-twice-target": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:first-pair-meeting-threshold": [
+    "python",
+    "nodejs"
+  ],
+  "first-pair-meeting-threshold": [
+    "python",
+    "nodejs"
+  ],
+  "two-pointers:pair-product-closest-to-target": [
+    "python",
+    "nodejs"
+  ],
+  "pair-product-closest-to-target": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:frequency-map": [
+    "python",
+    "nodejs"
+  ],
+  "frequency-map": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:target-frequency-using-map": [
+    "python",
+    "nodejs"
+  ],
+  "target-frequency-using-map": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:first-repeated-value": [
+    "python",
+    "nodejs"
+  ],
+  "first-repeated-value": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:first-unique-value": [
+    "python",
+    "nodejs"
+  ],
+  "first-unique-value": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:unique-count": [
+    "python",
+    "nodejs"
+  ],
+  "unique-count": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:most-frequent-value": [
+    "python",
+    "nodejs"
+  ],
+  "most-frequent-value": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:least-frequent-value": [
+    "python",
+    "nodejs"
+  ],
+  "least-frequent-value": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:index-lists-per-value": [
+    "python",
+    "nodejs"
+  ],
+  "index-lists-per-value": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:two-sum-hash-lookup": [
+    "python",
+    "nodejs"
+  ],
+  "two-sum-hash-lookup": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:two-sum-lexicographically-first-indices": [
+    "python",
+    "nodejs"
+  ],
+  "two-sum-lexicographically-first-indices": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:number-of-equal-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "number-of-equal-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:number-of-unequal-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "number-of-unequal-index-pairs": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:values-occurring-at-least-twice": [
+    "python",
+    "nodejs"
+  ],
+  "values-occurring-at-least-twice": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:frequency-of-frequencies": [
+    "python",
+    "nodejs"
+  ],
+  "frequency-of-frequencies": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:count-subarrays-with-sum-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-subarrays-with-sum-target": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:longest-target-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "longest-target-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:shortest-target-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "shortest-target-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:longest-zero-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "longest-zero-sum-subarray": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:first-index-lookup-map": [
+    "python",
+    "nodejs"
+  ],
+  "first-index-lookup-map": [
+    "python",
+    "nodejs"
+  ],
+  "dictionaries-hash-maps:last-index-lookup-map": [
+    "python",
+    "nodejs"
+  ],
+  "last-index-lookup-map": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-factorial": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-factorial": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-sum-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-sum-through-n": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-fibonacci": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-fibonacci": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-powers-of-two": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-powers-of-two": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-sum-of-squares": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-sum-of-squares": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-digit-sum": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-digit-sum": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-digit-product": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-digit-product": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-digit-count": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-digit-count": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-reverse-digits": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-reverse-digits": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-numeric-palindrome": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-numeric-palindrome": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-binary-string": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-binary-string": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-count-set-bits": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-count-set-bits": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-count-down-list": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-count-down-list": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-count-up-list": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-count-up-list": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-palindrome-of-binary-digits": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-palindrome-of-binary-digits": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:count-one-or-two-step-stairways": [
+    "python",
+    "nodejs"
+  ],
+  "count-one-or-two-step-stairways": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:count-one-two-or-three-step-stairways": [
+    "python",
+    "nodejs"
+  ],
+  "count-one-two-or-three-step-stairways": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-catalan-number": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-catalan-number": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:central-binomial-coefficient": [
+    "python",
+    "nodejs"
+  ],
+  "central-binomial-coefficient": [
+    "python",
+    "nodejs"
+  ],
+  "recursion:recursive-tribonacci-sequence": [
+    "python",
+    "nodejs"
+  ],
+  "recursive-tribonacci-sequence": [
+    "python",
+    "nodejs"
+  ],
+  "trees-bst:preorder-traversal": [
+    "python"
+  ],
+  "preorder-traversal": [
+    "python"
+  ],
+  "trees-bst:inorder-traversal": [
+    "python"
+  ],
+  "inorder-traversal": [
+    "python"
+  ],
+  "trees-bst:postorder-traversal": [
+    "python"
+  ],
+  "postorder-traversal": [
+    "python"
+  ],
+  "trees-bst:breadth-first-traversal": [
+    "python"
+  ],
+  "breadth-first-traversal": [
+    "python"
+  ],
+  "trees-bst:tree-node-count": [
+    "python"
+  ],
+  "tree-node-count": [
+    "python"
+  ],
+  "trees-bst:tree-value-sum": [
+    "python"
+  ],
+  "tree-value-sum": [
+    "python"
+  ],
+  "trees-bst:tree-height-in-nodes": [
+    "python"
+  ],
+  "tree-height-in-nodes": [
+    "python"
+  ],
+  "trees-bst:leaf-node-count": [
+    "python"
+  ],
+  "leaf-node-count": [
+    "python"
+  ],
+  "trees-bst:internal-node-count": [
+    "python"
+  ],
+  "internal-node-count": [
+    "python"
+  ],
+  "trees-bst:minimum-tree-value": [
+    "python"
+  ],
+  "minimum-tree-value": [
+    "python"
+  ],
+  "trees-bst:maximum-tree-value": [
+    "python"
+  ],
+  "maximum-tree-value": [
+    "python"
+  ],
+  "trees-bst:search-target-in-binary-tree": [
+    "python"
+  ],
+  "search-target-in-binary-tree": [
+    "python"
+  ],
+  "trees-bst:count-target-nodes": [
+    "python"
+  ],
+  "count-target-nodes": [
+    "python"
+  ],
+  "trees-bst:validate-strict-bst": [
+    "python"
+  ],
+  "validate-strict-bst": [
+    "python"
+  ],
+  "trees-bst:height-balanced-binary-tree": [
+    "python"
+  ],
+  "height-balanced-binary-tree": [
+    "python"
+  ],
+  "trees-bst:diameter-in-edges": [
+    "python"
+  ],
+  "diameter-in-edges": [
+    "python"
+  ],
+  "trees-bst:root-to-leaf-path-sums": [
+    "python"
+  ],
+  "root-to-leaf-path-sums": [
+    "python"
+  ],
+  "trees-bst:level-sum-array": [
+    "python"
+  ],
+  "level-sum-array": [
+    "python"
+  ],
+  "trees-bst:minimum-target-depth": [
+    "python"
+  ],
+  "minimum-target-depth": [
+    "python"
+  ],
+  "trees-bst:right-side-view": [
+    "python"
+  ],
+  "right-side-view": [
+    "python"
+  ],
+  "graphs:degree-of-every-vertex": [
+    "python"
+  ],
+  "degree-of-every-vertex": [
+    "python"
+  ],
+  "graphs:neighbors-of-start": [
+    "python"
+  ],
+  "neighbors-of-start": [
+    "python"
+  ],
+  "graphs:breadth-first-search-order": [
+    "python"
+  ],
+  "breadth-first-search-order": [
+    "python"
+  ],
+  "graphs:depth-first-search-order": [
+    "python"
+  ],
+  "depth-first-search-order": [
+    "python"
+  ],
+  "graphs:is-start-connected-to-end": [
+    "python"
+  ],
+  "is-start-connected-to-end": [
+    "python"
+  ],
+  "graphs:connected-component-count": [
+    "python"
+  ],
+  "connected-component-count": [
+    "python"
+  ],
+  "graphs:connected-component-sizes": [
+    "python"
+  ],
+  "connected-component-sizes": [
+    "python"
+  ],
+  "graphs:all-reachable-vertices": [
+    "python"
+  ],
+  "all-reachable-vertices": [
+    "python"
+  ],
+  "graphs:shortest-edge-distance": [
+    "python"
+  ],
+  "shortest-edge-distance": [
+    "python"
+  ],
+  "graphs:lexicographically-first-shortest-path": [
+    "python"
+  ],
+  "lexicographically-first-shortest-path": [
+    "python"
+  ],
+  "graphs:distances-from-start": [
+    "python"
+  ],
+  "distances-from-start": [
+    "python"
+  ],
+  "graphs:is-graph-connected": [
+    "python"
+  ],
+  "is-graph-connected": [
+    "python"
+  ],
+  "graphs:has-undirected-cycle": [
+    "python"
+  ],
+  "has-undirected-cycle": [
+    "python"
+  ],
+  "graphs:is-graph-bipartite": [
+    "python"
+  ],
+  "is-graph-bipartite": [
+    "python"
+  ],
+  "graphs:is-an-undirected-tree": [
+    "python"
+  ],
+  "is-an-undirected-tree": [
+    "python"
+  ],
+  "graphs:isolated-vertex-count": [
+    "python"
+  ],
+  "isolated-vertex-count": [
+    "python"
+  ],
+  "graphs:leaf-degree-vertex-ids": [
+    "python"
+  ],
+  "leaf-degree-vertex-ids": [
+    "python"
+  ],
+  "graphs:triangle-count": [
+    "python"
+  ],
+  "triangle-count": [
+    "python"
+  ],
+  "graphs:number-of-bridges": [
+    "python"
+  ],
+  "number-of-bridges": [
+    "python"
+  ],
+  "graphs:adjacency-matrix": [
+    "python"
+  ],
+  "adjacency-matrix": [
+    "python"
+  ],
+  "dynamic-programming:subset-sum-feasibility": [
+    "python",
+    "nodejs"
+  ],
+  "subset-sum-feasibility": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:count-subsets-equal-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-subsets-equal-target": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:minimum-elements-for-exact-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "minimum-elements-for-exact-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:maximum-elements-for-exact-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-elements-for-exact-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:count-subsets-not-exceeding-target": [
+    "python",
+    "nodejs"
+  ],
+  "count-subsets-not-exceeding-target": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:largest-attainable-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "largest-attainable-subset-sum": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:can-partition-into-equal-sums": [
+    "python",
+    "nodejs"
+  ],
+  "can-partition-into-equal-sums": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:minimum-equal-partition-difference": [
+    "python",
+    "nodejs"
+  ],
+  "minimum-equal-partition-difference": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:count-plus-minus-expressions": [
+    "python",
+    "nodejs"
+  ],
+  "count-plus-minus-expressions": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:longest-increasing-subsequence-length": [
+    "python",
+    "nodejs"
+  ],
+  "longest-increasing-subsequence-length": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:longest-nondecreasing-subsequence-length": [
+    "python",
+    "nodejs"
+  ],
+  "longest-nondecreasing-subsequence-length": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:longest-strictly-decreasing-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "longest-strictly-decreasing-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:house-robber-on-a-line": [
+    "python",
+    "nodejs"
+  ],
+  "house-robber-on-a-line": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:circular-house-robber": [
+    "python",
+    "nodejs"
+  ],
+  "circular-house-robber": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:maximum-nonnegative-contiguous-sum": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-nonnegative-contiguous-sum": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:maximum-sum-increasing-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "maximum-sum-increasing-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:minimum-unlimited-coins": [
+    "python",
+    "nodejs"
+  ],
+  "minimum-unlimited-coins": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:count-unlimited-coin-combinations": [
+    "python",
+    "nodejs"
+  ],
+  "count-unlimited-coin-combinations": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:count-ordered-coin-sequences": [
+    "python",
+    "nodejs"
+  ],
+  "count-ordered-coin-sequences": [
+    "python",
+    "nodejs"
+  ],
+  "dynamic-programming:longest-alternating-up-down-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "longest-alternating-up-down-subsequence": [
+    "python",
+    "nodejs"
+  ],
+  "dsa-algorithms:sliding-window-maximum": [
+    "python"
+  ],
+  "sliding-window-maximum": [
+    "python"
+  ],
+  "dsa-algorithms:sliding-window-minimum": [
+    "python"
+  ],
+  "sliding-window-minimum": [
+    "python"
+  ],
+  "dsa-algorithms:sliding-window-sums": [
+    "python"
+  ],
+  "sliding-window-sums": [
+    "python"
+  ],
+  "dsa-algorithms:sliding-window-distinct-counts": [
+    "python"
+  ],
+  "sliding-window-distinct-counts": [
+    "python"
+  ],
+  "dsa-algorithms:prefix-sum-query-base": [
+    "python"
+  ],
+  "prefix-sum-query-base": [
+    "python"
+  ],
+  "dsa-algorithms:prefix-xor-values": [
+    "python"
+  ],
+  "prefix-xor-values": [
+    "python"
+  ],
+  "dsa-algorithms:prefix-gcd-values": [
+    "python"
+  ],
+  "prefix-gcd-values": [
+    "python"
+  ],
+  "dsa-algorithms:next-greater-element-to-right": [
+    "python"
+  ],
+  "next-greater-element-to-right": [
+    "python"
+  ],
+  "dsa-algorithms:next-smaller-element-to-right": [
+    "python"
+  ],
+  "next-smaller-element-to-right": [
+    "python"
+  ],
+  "dsa-algorithms:previous-greater-element-to-left": [
+    "python"
+  ],
+  "previous-greater-element-to-left": [
+    "python"
+  ],
+  "dsa-algorithms:previous-smaller-element-to-left": [
+    "python"
+  ],
+  "previous-smaller-element-to-left": [
+    "python"
+  ],
+  "dsa-algorithms:stock-span-for-daily-prices": [
+    "python"
+  ],
+  "stock-span-for-daily-prices": [
+    "python"
+  ],
+  "dsa-algorithms:largest-histogram-rectangle": [
+    "python"
+  ],
+  "largest-histogram-rectangle": [
+    "python"
+  ],
+  "dsa-algorithms:trapping-rain-water": [
+    "python"
+  ],
+  "trapping-rain-water": [
+    "python"
+  ],
+  "dsa-algorithms:longest-distinct-subarray": [
+    "python"
+  ],
+  "longest-distinct-subarray": [
+    "python"
+  ],
+  "dsa-algorithms:reverse-first-k-elements": [
+    "python"
+  ],
+  "reverse-first-k-elements": [
+    "python"
+  ],
+  "dsa-algorithms:kth-largest-with-heap": [
+    "python"
+  ],
+  "kth-largest-with-heap": [
+    "python"
+  ],
+  "dsa-algorithms:running-median-floor": [
+    "python"
+  ],
+  "running-median-floor": [
+    "python"
+  ],
+  "dsa-algorithms:window-average-as-fraction": [
+    "python"
+  ],
+  "window-average-as-fraction": [
+    "python"
+  ],
+  "dsa-algorithms:balanced-binary-partition": [
+    "python"
+  ],
+  "balanced-binary-partition": [
+    "python"
+  ],
+  "oop-classes-objects:construct-student-summaries": [
+    "python"
+  ],
+  "construct-student-summaries": [
+    "python"
+  ],
+  "oop-classes-objects:count-constructed-objects": [
+    "python"
+  ],
+  "count-constructed-objects": [
+    "python"
+  ],
+  "oop-classes-objects:highest-scoring-student": [
+    "python"
+  ],
+  "highest-scoring-student": [
+    "python"
+  ],
+  "oop-classes-objects:lowest-scoring-student": [
+    "python"
+  ],
+  "lowest-scoring-student": [
+    "python"
+  ],
+  "oop-classes-objects:passing-students": [
+    "python"
+  ],
+  "passing-students": [
+    "python"
+  ],
+  "oop-classes-objects:failing-students": [
+    "python"
+  ],
+  "failing-students": [
+    "python"
+  ],
+  "oop-classes-objects:count-passing-objects": [
+    "python"
+  ],
+  "count-passing-objects": [
+    "python"
+  ],
+  "oop-classes-objects:average-object-score-fraction": [
+    "python"
+  ],
+  "average-object-score-fraction": [
+    "python"
+  ],
+  "oop-classes-objects:total-marks-across-objects": [
+    "python"
+  ],
+  "total-marks-across-objects": [
+    "python"
+  ],
+  "oop-classes-objects:maximum-score-gap": [
+    "python"
+  ],
+  "maximum-score-gap": [
+    "python"
+  ],
+  "oop-classes-objects:rank-objects-by-score": [
+    "python"
+  ],
+  "rank-objects-by-score": [
+    "python"
+  ],
+  "oop-classes-objects:alphabetical-object-display": [
+    "python"
+  ],
+  "alphabetical-object-display": [
+    "python"
+  ],
+  "oop-classes-objects:score-as-letter-grade": [
+    "python"
+  ],
+  "score-as-letter-grade": [
+    "python"
+  ],
+  "oop-classes-objects:pass-fail-status-for-objects": [
+    "python"
+  ],
+  "pass-fail-status-for-objects": [
+    "python"
+  ],
+  "oop-classes-objects:clone-scores-with-bonus": [
+    "python"
+  ],
+  "clone-scores-with-bonus": [
+    "python"
+  ],
+  "oop-classes-objects:copy-independence-check": [
+    "python"
+  ],
+  "copy-independence-check": [
+    "python"
+  ],
+  "oop-classes-objects:distinct-student-names": [
+    "python"
+  ],
+  "distinct-student-names": [
+    "python"
+  ],
+  "oop-classes-objects:threshold-score-distance": [
+    "python"
+  ],
+  "threshold-score-distance": [
+    "python"
+  ],
+  "oop-classes-objects:sort-objects-by-distance-to-pass": [
+    "python"
+  ],
+  "sort-objects-by-distance-to-pass": [
+    "python"
+  ],
+  "oop-classes-objects:roster-grade-histogram": [
+    "python"
+  ],
+  "roster-grade-histogram": [
+    "python"
+  ],
+  "oop-methods:counter-increment-and-decrement": [
+    "python"
+  ],
+  "counter-increment-and-decrement": [
+    "python"
+  ],
+  "oop-methods:bankaccount-deposit-and-withdraw": [
+    "python"
+  ],
+  "bankaccount-deposit-and-withdraw": [
+    "python"
+  ],
+  "oop-methods:stack-push-and-pop": [
+    "python"
+  ],
+  "stack-push-and-pop": [
+    "python"
+  ],
+  "oop-methods:queue-enqueue-and-dequeue": [
+    "python"
+  ],
+  "queue-enqueue-and-dequeue": [
+    "python"
+  ],
+  "oop-methods:inventory-restock-and-sell": [
+    "python"
+  ],
+  "inventory-restock-and-sell": [
+    "python"
+  ],
+  "oop-methods:lamp-toggle-and-explicit-states": [
+    "python"
+  ],
+  "lamp-toggle-and-explicit-states": [
+    "python"
+  ],
+  "oop-methods:thermometer-methods": [
+    "python"
+  ],
+  "thermometer-methods": [
+    "python"
+  ],
+  "oop-methods:shopping-cart-item-methods": [
+    "python"
+  ],
+  "shopping-cart-item-methods": [
+    "python"
+  ],
+  "oop-methods:unique-collection-methods": [
+    "python"
+  ],
+  "unique-collection-methods": [
+    "python"
+  ],
+  "oop-methods:undoable-calculator": [
+    "python"
+  ],
+  "undoable-calculator": [
+    "python"
+  ],
+  "oop-methods:clamped-gradebook-score": [
+    "python"
+  ],
+  "clamped-gradebook-score": [
+    "python"
+  ],
+  "oop-methods:digitalclock-time-methods": [
+    "python"
+  ],
+  "digitalclock-time-methods": [
+    "python"
+  ],
+  "oop-methods:stringbuilder-append-and-delete": [
+    "python"
+  ],
+  "stringbuilder-append-and-delete": [
+    "python"
+  ],
+  "oop-methods:priorityqueue-min-methods": [
+    "python"
+  ],
+  "priorityqueue-min-methods": [
+    "python"
+  ],
+  "oop-methods:accumulator-add-multiply-reset": [
+    "python"
+  ],
+  "accumulator-add-multiply-reset": [
+    "python"
+  ],
+  "oop-methods:seat-reservation-object": [
+    "python"
+  ],
+  "seat-reservation-object": [
+    "python"
+  ],
+  "oop-methods:circular-playlist-cursor-methods": [
+    "python"
+  ],
+  "circular-playlist-cursor-methods": [
+    "python"
+  ],
+  "oop-methods:flagregister-bit-methods": [
+    "python"
+  ],
+  "flagregister-bit-methods": [
+    "python"
+  ],
+  "oop-methods:robot-2d-movement-methods": [
+    "python"
+  ],
+  "robot-2d-movement-methods": [
+    "python"
+  ],
+  "oop-methods:door-state-machine-methods": [
+    "python"
+  ],
+  "door-state-machine-methods": [
+    "python"
+  ],
+  "oop-inheritance:basic-overridden-double": [
+    "python"
+  ],
+  "basic-overridden-double": [
+    "python"
+  ],
+  "oop-inheritance:inherit-without-override": [
+    "python"
+  ],
+  "inherit-without-override": [
+    "python"
+  ],
+  "oop-inheritance:override-changes-subtraction": [
+    "python"
+  ],
+  "override-changes-subtraction": [
+    "python"
+  ],
+  "oop-inheritance:super-method-extension": [
+    "python"
+  ],
+  "super-method-extension": [
+    "python"
+  ],
+  "oop-inheritance:three-level-method-chain": [
+    "python"
+  ],
+  "three-level-method-chain": [
+    "python"
+  ],
+  "oop-inheritance:runtime-polymorphism": [
+    "python"
+  ],
+  "runtime-polymorphism": [
+    "python"
+  ],
+  "oop-inheritance:constructor-field-inheritance": [
+    "python"
+  ],
+  "constructor-field-inheritance": [
+    "python"
+  ],
+  "oop-inheritance:overridden-property-of-shape": [
+    "python"
+  ],
+  "overridden-property-of-shape": [
+    "python"
+  ],
+  "oop-inheritance:parent-vs-child-multiplier": [
+    "python"
+  ],
+  "parent-vs-child-multiplier": [
+    "python"
+  ],
+  "oop-inheritance:super-call-twice": [
+    "python"
+  ],
+  "super-call-twice": [
+    "python"
+  ],
+  "oop-inheritance:inherited-helper-used-by-override": [
+    "python"
+  ],
+  "inherited-helper-used-by-override": [
+    "python"
+  ],
+  "oop-inheritance:derived-helper-overrides-parent-helper": [
+    "python"
+  ],
+  "derived-helper-overrides-parent-helper": [
+    "python"
+  ],
+  "oop-inheritance:grandchild-uses-parent-override": [
+    "python"
+  ],
+  "grandchild-uses-parent-override": [
+    "python"
+  ],
+  "oop-inheritance:class-hierarchy-type-flags": [
+    "python"
+  ],
+  "class-hierarchy-type-flags": [
+    "python"
+  ],
+  "oop-inheritance:template-method-dispatch": [
+    "python"
+  ],
+  "template-method-dispatch": [
+    "python"
+  ],
+  "oop-inheritance:override-with-conditional": [
+    "python"
+  ],
+  "override-with-conditional": [
+    "python"
+  ],
+  "oop-inheritance:grandchild-super-chain": [
+    "python"
+  ],
+  "grandchild-super-chain": [
+    "python"
+  ],
+  "oop-inheritance:cooperative-diamond-inheritance": [
+    "python"
+  ],
+  "cooperative-diamond-inheritance": [
+    "python"
+  ],
+  "oop-inheritance:subclass-method-calls-another-override": [
+    "python"
+  ],
+  "subclass-method-calls-another-override": [
+    "python"
+  ],
+  "oop-inheritance:polymorphic-aggregate": [
+    "python"
+  ],
+  "polymorphic-aggregate": [
+    "python"
+  ]
+}

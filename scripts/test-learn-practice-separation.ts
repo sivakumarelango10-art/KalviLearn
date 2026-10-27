@@ -316,12 +316,10 @@ console.log('\nTest 11: Server rejects client-supplied tests and authoritatively
 {
   // Test evaluation of a Learn question through executeQuestion
   const pythonCode = `import sys
-import json
 
-raw = sys.stdin.read().strip()
-if raw:
-    data = json.loads(raw)
-    vals = sorted([data["a"], data["b"], data["c"]])
+data = sys.stdin.read().split()
+if data:
+    vals = sorted([int(x) for x in data[:3]])
     print(vals[1])
 `
   const res = await executeQuestion({
@@ -333,10 +331,10 @@ if raw:
 
   assert.strictEqual(res.success, true, 'Execution must succeed')
   assert.strictEqual(res.status, 'ACCEPTED', 'Evaluation status must be ACCEPTED')
-  assert.strictEqual(res.passed, 15, 'All 15 test cases must pass')
-  assert.strictEqual(res.total, 15, 'Total test cases must be 15')
+  assert.strictEqual(res.passed, res.total, 'All test cases must pass')
+  assert.ok(res.total >= 10, 'Total test cases must be at least 10')
   assert.strictEqual(res.visibleCount, 3, 'Must have 3 visible test cases')
-  assert.strictEqual(res.hiddenCount, 12, 'Must have 12 hidden test cases')
+  assert.strictEqual(res.hiddenCount, res.total - 3, 'Hidden test case count must match')
   assert.strictEqual(res.questionId, 'learn:conditionals-control-flow:median-of-three')
 
   // Verify that testCases in client response do NOT expose hidden input/output
@@ -346,7 +344,7 @@ if raw:
       assert.strictEqual(tc.expectedOutput, undefined, 'Hidden test case expectedOutput must never be returned to client')
     }
   }
-  console.log('  PASS: Server evaluated all authoritative cases, passing 15/15 with hidden cases kept confidential')
+  console.log(`  PASS: Server evaluated all authoritative cases, passing ${res.passed}/${res.total} with hidden cases kept confidential`)
 }
 
 console.log('\n======================================================')

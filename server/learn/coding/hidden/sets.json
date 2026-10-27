@@ -8,80 +8,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[1,2,3,4]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "1 2 3 4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[7]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[1,2]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[-1,0,1]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "-1 0 1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[5]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[0,1,2,3,4,5,6,7,8,9,10,11]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8 9 10 11",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[-3,-2,-1,1,2,3]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "-3 -2 -1 1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[1,2,3,4,5,6]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "1 2 3 4 5 6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[0,1,2]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "0 1 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[4]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[1,2,3,4,5,6,8]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "1 2 3 4 5 6 8",
         "isHidden": true
       }
     ]
@@ -95,80 +95,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[2,3]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "2 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[0,1]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "0 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[5]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[4,5,6,7]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "4 5 6 7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[0,1]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[4]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[2,4,6]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "2 4 6",
         "isHidden": true
       }
     ]
@@ -182,80 +182,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[1]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[7]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[-1]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "-1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[0,1,2,3]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "0 1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[-3,-2,-1]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "-3 -2 -1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[8]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "8",
         "isHidden": true
       }
     ]
@@ -269,80 +269,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[4]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[1,2]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "1 2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[8,9,10,11]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "8 9 10 11",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[4,5,6]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "4 5 6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[2]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[1,3,5]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "1 3 5",
         "isHidden": true
       }
     ]
@@ -356,80 +356,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[1,4]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "1 4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[7]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[1,2]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "1 2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[-1]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "-1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[0,1,2,3,8,9,10,11]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "0 1 2 3 8 9 10 11",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[-3,-2,-1,1,2,3]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "-3 -2 -1 1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[1,2,3,4,5,6]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "1 2 3 4 5 6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[2]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[1,3,5,8]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "1 3 5 8",
         "isHidden": true
       }
     ]
@@ -443,79 +443,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -530,79 +530,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -617,79 +617,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -704,79 +704,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -791,79 +791,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "12",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "7",
         "isHidden": true
       }
@@ -878,79 +878,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "3",
         "isHidden": true
       }
@@ -965,80 +965,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "1 2 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[7]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[-1,0,1]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "-1 0 1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[5]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[0,1,2,3,4,5,6,7]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "0 1 2 3 4 5 6 7",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[-3,-2,-1]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "-3 -2 -1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[1,2,3]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "1 2 3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[0,1]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[4]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[2,4,6,8]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "2 4 6 8",
         "isHidden": true
       }
     ]
@@ -1052,80 +1052,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[2]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[0]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[4,6]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "4 6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[2]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[0]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[4]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[2,4,6]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "2 4 6",
         "isHidden": true
       }
     ]
@@ -1139,79 +1139,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "1",
         "isHidden": true
       }
@@ -1226,79 +1226,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "2",
         "isHidden": true
       }
@@ -1313,79 +1313,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "7",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "8",
         "isHidden": true
       }
@@ -1400,80 +1400,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[2]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[5]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "5",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[4]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "EMPTY",
         "isHidden": true
       }
     ]
@@ -1487,80 +1487,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[3,3]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "3 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[0,0]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[1,0]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "1 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[0,2]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "0 2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[3,2]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "3 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[1,1]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "1 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[8,8]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "8 8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[3,3]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "3 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[3,3]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "3 3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[3,3]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "3 3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[2,3]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "2 3",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[1,1]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "1 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[4,6]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "4 6",
         "isHidden": true
       }
     ]
@@ -1574,79 +1574,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
+        "input": "0\n\n0\n",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
+        "input": "1\n7\n0\n",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
+        "input": "0\n\n3\n1 1 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
+        "input": "3\n-1 0 1\n3\n0 0 1",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
+        "input": "3\n5 5 5\n1\n5",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
+        "input": "3\n3 2 1\n3\n1 2 3",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
+        "input": "3\n1 2 3\n3\n4 5 6",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
+        "input": "2\n0 1\n3\n0 1 2",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
+        "input": "3\n4 4 4\n3\n4 4 4",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
         "expectedOutput": "4",
         "isHidden": true
       }
@@ -1661,80 +1661,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"a\":[1,2,2,3],\"b\":[2,3,4]}",
-        "expectedOutput": "[1,2]",
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "1 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"a\":[],\"b\":[]}",
-        "expectedOutput": "[1,1]",
+        "input": "0\n\n0\n",
+        "expectedOutput": "1 1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"a\":[7],\"b\":[]}",
-        "expectedOutput": "[0,1]",
+        "input": "1\n7\n0\n",
+        "expectedOutput": "0 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"a\":[],\"b\":[1,1,2]}",
-        "expectedOutput": "[0,1]",
+        "input": "0\n\n3\n1 1 2",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"a\":[-1,0,1],\"b\":[0,0,1]}",
-        "expectedOutput": "[2,3]",
+        "input": "3\n-1 0 1\n3\n0 0 1",
+        "expectedOutput": "2 3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"a\":[5,5,5],\"b\":[5]}",
-        "expectedOutput": "[1,1]",
+        "input": "3\n5 5 5\n1\n5",
+        "expectedOutput": "1 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"a\":[0,1,2,3,4,5,6,7],\"b\":[4,5,6,7,8,9,10,11]}",
-        "expectedOutput": "[1,3]",
+        "input": "8\n0 1 2 3 4 5 6 7\n8\n4 5 6 7 8 9 10 11",
+        "expectedOutput": "1 3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"a\":[3,2,1],\"b\":[1,2,3]}",
-        "expectedOutput": "[1,1]",
+        "input": "3\n3 2 1\n3\n1 2 3",
+        "expectedOutput": "1 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"a\":[-3,-2,-1],\"b\":[1,2,3]}",
-        "expectedOutput": "[0,1]",
+        "input": "3\n-3 -2 -1\n3\n1 2 3",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"a\":[1,2,3],\"b\":[4,5,6]}",
-        "expectedOutput": "[0,1]",
+        "input": "3\n1 2 3\n3\n4 5 6",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"a\":[0,1],\"b\":[0,1,2]}",
-        "expectedOutput": "[2,3]",
+        "input": "2\n0 1\n3\n0 1 2",
+        "expectedOutput": "2 3",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"a\":[4,4,4],\"b\":[4,4,4]}",
-        "expectedOutput": "[1,1]",
+        "input": "3\n4 4 4\n3\n4 4 4",
+        "expectedOutput": "1 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"a\":[2,4,6,8],\"b\":[1,2,3,4,5,6]}",
-        "expectedOutput": "[3,7]",
+        "input": "4\n2 4 6 8\n6\n1 2 3 4 5 6",
+        "expectedOutput": "3 7",
         "isHidden": true
       }
     ]

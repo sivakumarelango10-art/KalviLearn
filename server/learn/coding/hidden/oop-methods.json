@@ -8,79 +8,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"increment\",\"value\":3},{\"method\":\"decrement\",\"value\":4},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":1}]}",
+        "input": "10 4\nincrement 3\ndecrement 4\nincrement 2\ndecrement 1",
         "expectedOutput": "10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"increment\",\"value\":1}]}",
+        "input": "1 1\nincrement 1",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"decrement\",\"value\":0},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":0}]}",
+        "input": "5 3\ndecrement 0\nincrement 0\ndecrement 0",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"increment\",\"value\":12},{\"method\":\"decrement\",\"value\":7},{\"method\":\"increment\",\"value\":15}]}",
+        "input": "20 3\nincrement 12\ndecrement 7\nincrement 15",
         "expectedOutput": "40",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"decrement\",\"value\":2},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":2},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":2}]}",
+        "input": "8 5\ndecrement 2\nincrement 2\ndecrement 2\nincrement 2\ndecrement 2",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"increment\",\"value\":9},{\"method\":\"decrement\",\"value\":5},{\"method\":\"increment\",\"value\":12},{\"method\":\"decrement\",\"value\":4},{\"method\":\"increment\",\"value\":8},{\"method\":\"decrement\",\"value\":1}]}",
+        "input": "19 6\nincrement 9\ndecrement 5\nincrement 12\ndecrement 4\nincrement 8\ndecrement 1",
         "expectedOutput": "38",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"decrement\",\"value\":12},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":1}]}",
+        "input": "3 3\ndecrement 12\nincrement 0\ndecrement 1",
         "expectedOutput": "-10",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"increment\",\"value\":11},{\"method\":\"decrement\",\"value\":11},{\"method\":\"increment\",\"value\":11}]}",
+        "input": "0 3\nincrement 11\ndecrement 11\nincrement 11",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"decrement\",\"value\":5},{\"method\":\"increment\",\"value\":2},{\"method\":\"decrement\",\"value\":7},{\"method\":\"increment\",\"value\":1}]}",
+        "input": "15 4\ndecrement 5\nincrement 2\ndecrement 7\nincrement 1",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":6},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":6}]}",
+        "input": "2 4\nincrement 0\ndecrement 6\nincrement 0\ndecrement 6",
         "expectedOutput": "-10",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"decrement\",\"value\":20},{\"method\":\"increment\",\"value\":19},{\"method\":\"decrement\",\"value\":18}]}",
+        "input": "20 3\ndecrement 20\nincrement 19\ndecrement 18",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"increment\",\"value\":4},{\"method\":\"decrement\",\"value\":8},{\"method\":\"increment\",\"value\":0},{\"method\":\"decrement\",\"value\":10},{\"method\":\"increment\",\"value\":1},{\"method\":\"decrement\",\"value\":3},{\"method\":\"increment\",\"value\":6}]}",
+        "input": "7 7\nincrement 4\ndecrement 8\nincrement 0\ndecrement 10\nincrement 1\ndecrement 3\nincrement 6",
         "expectedOutput": "-3",
         "isHidden": true
       }
@@ -95,80 +95,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"deposit\",\"value\":3},{\"method\":\"withdraw\",\"value\":4},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":1}]}",
-        "expectedOutput": "{\"balance\":10,\"rejected\":0}",
+        "input": "10 4\ndeposit 3\nwithdraw 4\ndeposit 2\nwithdraw 1",
+        "expectedOutput": "10 0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"balance\":0,\"rejected\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"deposit\",\"value\":1}]}",
-        "expectedOutput": "{\"balance\":2,\"rejected\":0}",
+        "input": "1 1\ndeposit 1",
+        "expectedOutput": "2 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"withdraw\",\"value\":0},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":0}]}",
-        "expectedOutput": "{\"balance\":5,\"rejected\":0}",
+        "input": "5 3\nwithdraw 0\ndeposit 0\nwithdraw 0",
+        "expectedOutput": "5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"deposit\",\"value\":12},{\"method\":\"withdraw\",\"value\":7},{\"method\":\"deposit\",\"value\":15}]}",
-        "expectedOutput": "{\"balance\":40,\"rejected\":0}",
+        "input": "20 3\ndeposit 12\nwithdraw 7\ndeposit 15",
+        "expectedOutput": "40 0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"withdraw\",\"value\":2},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":2},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":2}]}",
-        "expectedOutput": "{\"balance\":6,\"rejected\":0}",
+        "input": "8 5\nwithdraw 2\ndeposit 2\nwithdraw 2\ndeposit 2\nwithdraw 2",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"deposit\",\"value\":9},{\"method\":\"withdraw\",\"value\":5},{\"method\":\"deposit\",\"value\":12},{\"method\":\"withdraw\",\"value\":4},{\"method\":\"deposit\",\"value\":8},{\"method\":\"withdraw\",\"value\":1}]}",
-        "expectedOutput": "{\"balance\":38,\"rejected\":0}",
+        "input": "19 6\ndeposit 9\nwithdraw 5\ndeposit 12\nwithdraw 4\ndeposit 8\nwithdraw 1",
+        "expectedOutput": "38 0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"withdraw\",\"value\":12},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":1}]}",
-        "expectedOutput": "{\"balance\":2,\"rejected\":1}",
+        "input": "3 3\nwithdraw 12\ndeposit 0\nwithdraw 1",
+        "expectedOutput": "2 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"deposit\",\"value\":11},{\"method\":\"withdraw\",\"value\":11},{\"method\":\"deposit\",\"value\":11}]}",
-        "expectedOutput": "{\"balance\":11,\"rejected\":0}",
+        "input": "0 3\ndeposit 11\nwithdraw 11\ndeposit 11",
+        "expectedOutput": "11 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"withdraw\",\"value\":5},{\"method\":\"deposit\",\"value\":2},{\"method\":\"withdraw\",\"value\":7},{\"method\":\"deposit\",\"value\":1}]}",
-        "expectedOutput": "{\"balance\":6,\"rejected\":0}",
+        "input": "15 4\nwithdraw 5\ndeposit 2\nwithdraw 7\ndeposit 1",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":6},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":6}]}",
-        "expectedOutput": "{\"balance\":2,\"rejected\":2}",
+        "input": "2 4\ndeposit 0\nwithdraw 6\ndeposit 0\nwithdraw 6",
+        "expectedOutput": "2 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"withdraw\",\"value\":20},{\"method\":\"deposit\",\"value\":19},{\"method\":\"withdraw\",\"value\":18}]}",
-        "expectedOutput": "{\"balance\":1,\"rejected\":0}",
+        "input": "20 3\nwithdraw 20\ndeposit 19\nwithdraw 18",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"deposit\",\"value\":4},{\"method\":\"withdraw\",\"value\":8},{\"method\":\"deposit\",\"value\":0},{\"method\":\"withdraw\",\"value\":10},{\"method\":\"deposit\",\"value\":1},{\"method\":\"withdraw\",\"value\":3},{\"method\":\"deposit\",\"value\":6}]}",
-        "expectedOutput": "{\"balance\":7,\"rejected\":1}",
+        "input": "7 7\ndeposit 4\nwithdraw 8\ndeposit 0\nwithdraw 10\ndeposit 1\nwithdraw 3\ndeposit 6",
+        "expectedOutput": "7 1",
         "isHidden": true
       }
     ]
@@ -182,80 +182,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"push\",\"value\":3},{\"method\":\"pop\",\"value\":4},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":1}]}",
-        "expectedOutput": "{\"items\":[10],\"popped\":[3,2]}",
+        "input": "10 4\npush 3\npop 4\npush 2\npop 1",
+        "expectedOutput": "10\n3 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"items\":[0],\"popped\":[]}",
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"push\",\"value\":1}]}",
-        "expectedOutput": "{\"items\":[1,1],\"popped\":[]}",
+        "input": "1 1\npush 1",
+        "expectedOutput": "1 1\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"pop\",\"value\":0},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":0}]}",
-        "expectedOutput": "{\"items\":[],\"popped\":[5,0]}",
+        "input": "5 3\npop 0\npush 0\npop 0",
+        "expectedOutput": "EMPTY\n5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"push\",\"value\":12},{\"method\":\"pop\",\"value\":7},{\"method\":\"push\",\"value\":15}]}",
-        "expectedOutput": "{\"items\":[20,15],\"popped\":[12]}",
+        "input": "20 3\npush 12\npop 7\npush 15",
+        "expectedOutput": "20 15\n12",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"pop\",\"value\":2},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":2},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":2}]}",
-        "expectedOutput": "{\"items\":[],\"popped\":[8,2,2]}",
+        "input": "8 5\npop 2\npush 2\npop 2\npush 2\npop 2",
+        "expectedOutput": "EMPTY\n8 2 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"push\",\"value\":9},{\"method\":\"pop\",\"value\":5},{\"method\":\"push\",\"value\":12},{\"method\":\"pop\",\"value\":4},{\"method\":\"push\",\"value\":8},{\"method\":\"pop\",\"value\":1}]}",
-        "expectedOutput": "{\"items\":[19],\"popped\":[9,12,8]}",
+        "input": "19 6\npush 9\npop 5\npush 12\npop 4\npush 8\npop 1",
+        "expectedOutput": "19\n9 12 8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"pop\",\"value\":12},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":1}]}",
-        "expectedOutput": "{\"items\":[],\"popped\":[3,0]}",
+        "input": "3 3\npop 12\npush 0\npop 1",
+        "expectedOutput": "EMPTY\n3 0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"push\",\"value\":11},{\"method\":\"pop\",\"value\":11},{\"method\":\"push\",\"value\":11}]}",
-        "expectedOutput": "{\"items\":[0,11],\"popped\":[11]}",
+        "input": "0 3\npush 11\npop 11\npush 11",
+        "expectedOutput": "0 11\n11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"pop\",\"value\":5},{\"method\":\"push\",\"value\":2},{\"method\":\"pop\",\"value\":7},{\"method\":\"push\",\"value\":1}]}",
-        "expectedOutput": "{\"items\":[1],\"popped\":[15,2]}",
+        "input": "15 4\npop 5\npush 2\npop 7\npush 1",
+        "expectedOutput": "1\n15 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":6},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":6}]}",
-        "expectedOutput": "{\"items\":[2],\"popped\":[0,0]}",
+        "input": "2 4\npush 0\npop 6\npush 0\npop 6",
+        "expectedOutput": "2\n0 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"pop\",\"value\":20},{\"method\":\"push\",\"value\":19},{\"method\":\"pop\",\"value\":18}]}",
-        "expectedOutput": "{\"items\":[],\"popped\":[20,19]}",
+        "input": "20 3\npop 20\npush 19\npop 18",
+        "expectedOutput": "EMPTY\n20 19",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"push\",\"value\":4},{\"method\":\"pop\",\"value\":8},{\"method\":\"push\",\"value\":0},{\"method\":\"pop\",\"value\":10},{\"method\":\"push\",\"value\":1},{\"method\":\"pop\",\"value\":3},{\"method\":\"push\",\"value\":6}]}",
-        "expectedOutput": "{\"items\":[7,6],\"popped\":[4,0,1]}",
+        "input": "7 7\npush 4\npop 8\npush 0\npop 10\npush 1\npop 3\npush 6",
+        "expectedOutput": "7 6\n4 0 1",
         "isHidden": true
       }
     ]
@@ -269,80 +269,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"enqueue\",\"value\":3},{\"method\":\"dequeue\",\"value\":4},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":1}]}",
-        "expectedOutput": "{\"queue\":[2],\"dequeued\":[10,3]}",
+        "input": "10 4\nenqueue 3\ndequeue 4\nenqueue 2\ndequeue 1",
+        "expectedOutput": "2\n10 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"queue\":[0],\"dequeued\":[]}",
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"enqueue\",\"value\":1}]}",
-        "expectedOutput": "{\"queue\":[1,1],\"dequeued\":[]}",
+        "input": "1 1\nenqueue 1",
+        "expectedOutput": "1 1\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"dequeue\",\"value\":0},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":0}]}",
-        "expectedOutput": "{\"queue\":[],\"dequeued\":[5,0]}",
+        "input": "5 3\ndequeue 0\nenqueue 0\ndequeue 0",
+        "expectedOutput": "EMPTY\n5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"enqueue\",\"value\":12},{\"method\":\"dequeue\",\"value\":7},{\"method\":\"enqueue\",\"value\":15}]}",
-        "expectedOutput": "{\"queue\":[12,15],\"dequeued\":[20]}",
+        "input": "20 3\nenqueue 12\ndequeue 7\nenqueue 15",
+        "expectedOutput": "12 15\n20",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"dequeue\",\"value\":2},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":2},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":2}]}",
-        "expectedOutput": "{\"queue\":[],\"dequeued\":[8,2,2]}",
+        "input": "8 5\ndequeue 2\nenqueue 2\ndequeue 2\nenqueue 2\ndequeue 2",
+        "expectedOutput": "EMPTY\n8 2 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"enqueue\",\"value\":9},{\"method\":\"dequeue\",\"value\":5},{\"method\":\"enqueue\",\"value\":12},{\"method\":\"dequeue\",\"value\":4},{\"method\":\"enqueue\",\"value\":8},{\"method\":\"dequeue\",\"value\":1}]}",
-        "expectedOutput": "{\"queue\":[8],\"dequeued\":[19,9,12]}",
+        "input": "19 6\nenqueue 9\ndequeue 5\nenqueue 12\ndequeue 4\nenqueue 8\ndequeue 1",
+        "expectedOutput": "8\n19 9 12",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"dequeue\",\"value\":12},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":1}]}",
-        "expectedOutput": "{\"queue\":[],\"dequeued\":[3,0]}",
+        "input": "3 3\ndequeue 12\nenqueue 0\ndequeue 1",
+        "expectedOutput": "EMPTY\n3 0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"enqueue\",\"value\":11},{\"method\":\"dequeue\",\"value\":11},{\"method\":\"enqueue\",\"value\":11}]}",
-        "expectedOutput": "{\"queue\":[11,11],\"dequeued\":[0]}",
+        "input": "0 3\nenqueue 11\ndequeue 11\nenqueue 11",
+        "expectedOutput": "11 11\n0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"dequeue\",\"value\":5},{\"method\":\"enqueue\",\"value\":2},{\"method\":\"dequeue\",\"value\":7},{\"method\":\"enqueue\",\"value\":1}]}",
-        "expectedOutput": "{\"queue\":[1],\"dequeued\":[15,2]}",
+        "input": "15 4\ndequeue 5\nenqueue 2\ndequeue 7\nenqueue 1",
+        "expectedOutput": "1\n15 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":6},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":6}]}",
-        "expectedOutput": "{\"queue\":[0],\"dequeued\":[2,0]}",
+        "input": "2 4\nenqueue 0\ndequeue 6\nenqueue 0\ndequeue 6",
+        "expectedOutput": "0\n2 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"dequeue\",\"value\":20},{\"method\":\"enqueue\",\"value\":19},{\"method\":\"dequeue\",\"value\":18}]}",
-        "expectedOutput": "{\"queue\":[],\"dequeued\":[20,19]}",
+        "input": "20 3\ndequeue 20\nenqueue 19\ndequeue 18",
+        "expectedOutput": "EMPTY\n20 19",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"enqueue\",\"value\":4},{\"method\":\"dequeue\",\"value\":8},{\"method\":\"enqueue\",\"value\":0},{\"method\":\"dequeue\",\"value\":10},{\"method\":\"enqueue\",\"value\":1},{\"method\":\"dequeue\",\"value\":3},{\"method\":\"enqueue\",\"value\":6}]}",
-        "expectedOutput": "{\"queue\":[1,6],\"dequeued\":[7,4,0]}",
+        "input": "7 7\nenqueue 4\ndequeue 8\nenqueue 0\ndequeue 10\nenqueue 1\ndequeue 3\nenqueue 6",
+        "expectedOutput": "1 6\n7 4 0",
         "isHidden": true
       }
     ]
@@ -356,80 +356,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"restock\",\"value\":3},{\"method\":\"sell\",\"value\":4},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":1}]}",
-        "expectedOutput": "{\"stock\":10,\"unfilled_units\":0}",
+        "input": "10 4\nrestock 3\nsell 4\nrestock 2\nsell 1",
+        "expectedOutput": "10 0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"stock\":0,\"unfilled_units\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"restock\",\"value\":1}]}",
-        "expectedOutput": "{\"stock\":2,\"unfilled_units\":0}",
+        "input": "1 1\nrestock 1",
+        "expectedOutput": "2 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"sell\",\"value\":0},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":0}]}",
-        "expectedOutput": "{\"stock\":5,\"unfilled_units\":0}",
+        "input": "5 3\nsell 0\nrestock 0\nsell 0",
+        "expectedOutput": "5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"restock\",\"value\":12},{\"method\":\"sell\",\"value\":7},{\"method\":\"restock\",\"value\":15}]}",
-        "expectedOutput": "{\"stock\":40,\"unfilled_units\":0}",
+        "input": "20 3\nrestock 12\nsell 7\nrestock 15",
+        "expectedOutput": "40 0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"sell\",\"value\":2},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":2},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":2}]}",
-        "expectedOutput": "{\"stock\":6,\"unfilled_units\":0}",
+        "input": "8 5\nsell 2\nrestock 2\nsell 2\nrestock 2\nsell 2",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"restock\",\"value\":9},{\"method\":\"sell\",\"value\":5},{\"method\":\"restock\",\"value\":12},{\"method\":\"sell\",\"value\":4},{\"method\":\"restock\",\"value\":8},{\"method\":\"sell\",\"value\":1}]}",
-        "expectedOutput": "{\"stock\":38,\"unfilled_units\":0}",
+        "input": "19 6\nrestock 9\nsell 5\nrestock 12\nsell 4\nrestock 8\nsell 1",
+        "expectedOutput": "38 0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"sell\",\"value\":12},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":1}]}",
-        "expectedOutput": "{\"stock\":0,\"unfilled_units\":10}",
+        "input": "3 3\nsell 12\nrestock 0\nsell 1",
+        "expectedOutput": "0 10",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"restock\",\"value\":11},{\"method\":\"sell\",\"value\":11},{\"method\":\"restock\",\"value\":11}]}",
-        "expectedOutput": "{\"stock\":11,\"unfilled_units\":0}",
+        "input": "0 3\nrestock 11\nsell 11\nrestock 11",
+        "expectedOutput": "11 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"sell\",\"value\":5},{\"method\":\"restock\",\"value\":2},{\"method\":\"sell\",\"value\":7},{\"method\":\"restock\",\"value\":1}]}",
-        "expectedOutput": "{\"stock\":6,\"unfilled_units\":0}",
+        "input": "15 4\nsell 5\nrestock 2\nsell 7\nrestock 1",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":6},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":6}]}",
-        "expectedOutput": "{\"stock\":0,\"unfilled_units\":10}",
+        "input": "2 4\nrestock 0\nsell 6\nrestock 0\nsell 6",
+        "expectedOutput": "0 10",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"sell\",\"value\":20},{\"method\":\"restock\",\"value\":19},{\"method\":\"sell\",\"value\":18}]}",
-        "expectedOutput": "{\"stock\":1,\"unfilled_units\":0}",
+        "input": "20 3\nsell 20\nrestock 19\nsell 18",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"restock\",\"value\":4},{\"method\":\"sell\",\"value\":8},{\"method\":\"restock\",\"value\":0},{\"method\":\"sell\",\"value\":10},{\"method\":\"restock\",\"value\":1},{\"method\":\"sell\",\"value\":3},{\"method\":\"restock\",\"value\":6}]}",
-        "expectedOutput": "{\"stock\":6,\"unfilled_units\":9}",
+        "input": "7 7\nrestock 4\nsell 8\nrestock 0\nsell 10\nrestock 1\nsell 3\nrestock 6",
+        "expectedOutput": "6 9",
         "isHidden": true
       }
     ]
@@ -443,79 +443,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"toggle\",\"value\":3},{\"method\":\"turn_on\",\"value\":4},{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":1}]}",
+        "input": "10 4\ntoggle 3\nturn_on 4\nturn_off 2\ntoggle 1",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"turn_off\",\"value\":1}]}",
+        "input": "1 1\nturn_off 1",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"toggle\",\"value\":0},{\"method\":\"turn_on\",\"value\":0},{\"method\":\"turn_off\",\"value\":0}]}",
+        "input": "5 3\ntoggle 0\nturn_on 0\nturn_off 0",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"turn_on\",\"value\":12},{\"method\":\"turn_off\",\"value\":7},{\"method\":\"toggle\",\"value\":15}]}",
+        "input": "20 3\nturn_on 12\nturn_off 7\ntoggle 15",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":2},{\"method\":\"turn_on\",\"value\":2},{\"method\":\"turn_off\",\"value\":2},{\"method\":\"toggle\",\"value\":2}]}",
+        "input": "8 5\nturn_off 2\ntoggle 2\nturn_on 2\nturn_off 2\ntoggle 2",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"toggle\",\"value\":9},{\"method\":\"turn_on\",\"value\":5},{\"method\":\"turn_off\",\"value\":12},{\"method\":\"toggle\",\"value\":4},{\"method\":\"turn_on\",\"value\":8},{\"method\":\"turn_off\",\"value\":1}]}",
+        "input": "19 6\ntoggle 9\nturn_on 5\nturn_off 12\ntoggle 4\nturn_on 8\nturn_off 1",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"turn_on\",\"value\":12},{\"method\":\"turn_off\",\"value\":0},{\"method\":\"toggle\",\"value\":1}]}",
+        "input": "3 3\nturn_on 12\nturn_off 0\ntoggle 1",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"turn_off\",\"value\":11},{\"method\":\"toggle\",\"value\":11},{\"method\":\"turn_on\",\"value\":11}]}",
+        "input": "0 3\nturn_off 11\ntoggle 11\nturn_on 11",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"toggle\",\"value\":5},{\"method\":\"turn_on\",\"value\":2},{\"method\":\"turn_off\",\"value\":7},{\"method\":\"toggle\",\"value\":1}]}",
+        "input": "15 4\ntoggle 5\nturn_on 2\nturn_off 7\ntoggle 1",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"turn_on\",\"value\":0},{\"method\":\"turn_off\",\"value\":6},{\"method\":\"toggle\",\"value\":0},{\"method\":\"turn_on\",\"value\":6}]}",
+        "input": "2 4\nturn_on 0\nturn_off 6\ntoggle 0\nturn_on 6",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"turn_off\",\"value\":20},{\"method\":\"toggle\",\"value\":19},{\"method\":\"turn_on\",\"value\":18}]}",
+        "input": "20 3\nturn_off 20\ntoggle 19\nturn_on 18",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"toggle\",\"value\":4},{\"method\":\"turn_on\",\"value\":8},{\"method\":\"turn_off\",\"value\":0},{\"method\":\"toggle\",\"value\":10},{\"method\":\"turn_on\",\"value\":1},{\"method\":\"turn_off\",\"value\":3},{\"method\":\"toggle\",\"value\":6}]}",
+        "input": "7 7\ntoggle 4\nturn_on 8\nturn_off 0\ntoggle 10\nturn_on 1\nturn_off 3\ntoggle 6",
         "expectedOutput": "true",
         "isHidden": true
       }
@@ -530,80 +530,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"raise_c\",\"value\":3},{\"method\":\"lower_c\",\"value\":4},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":1}]}",
-        "expectedOutput": "{\"celsius\":10,\"fahrenheit_x5\":250}",
+        "input": "10 4\nraise_c 3\nlower_c 4\nraise_c 2\nlower_c 1",
+        "expectedOutput": "10 250",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"celsius\":0,\"fahrenheit_x5\":160}",
+        "input": "0 0",
+        "expectedOutput": "0 160",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"raise_c\",\"value\":1}]}",
-        "expectedOutput": "{\"celsius\":2,\"fahrenheit_x5\":178}",
+        "input": "1 1\nraise_c 1",
+        "expectedOutput": "2 178",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"lower_c\",\"value\":0},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":0}]}",
-        "expectedOutput": "{\"celsius\":5,\"fahrenheit_x5\":205}",
+        "input": "5 3\nlower_c 0\nraise_c 0\nlower_c 0",
+        "expectedOutput": "5 205",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"raise_c\",\"value\":12},{\"method\":\"lower_c\",\"value\":7},{\"method\":\"raise_c\",\"value\":15}]}",
-        "expectedOutput": "{\"celsius\":40,\"fahrenheit_x5\":520}",
+        "input": "20 3\nraise_c 12\nlower_c 7\nraise_c 15",
+        "expectedOutput": "40 520",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"lower_c\",\"value\":2},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":2},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":2}]}",
-        "expectedOutput": "{\"celsius\":6,\"fahrenheit_x5\":214}",
+        "input": "8 5\nlower_c 2\nraise_c 2\nlower_c 2\nraise_c 2\nlower_c 2",
+        "expectedOutput": "6 214",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"raise_c\",\"value\":9},{\"method\":\"lower_c\",\"value\":5},{\"method\":\"raise_c\",\"value\":12},{\"method\":\"lower_c\",\"value\":4},{\"method\":\"raise_c\",\"value\":8},{\"method\":\"lower_c\",\"value\":1}]}",
-        "expectedOutput": "{\"celsius\":38,\"fahrenheit_x5\":502}",
+        "input": "19 6\nraise_c 9\nlower_c 5\nraise_c 12\nlower_c 4\nraise_c 8\nlower_c 1",
+        "expectedOutput": "38 502",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"lower_c\",\"value\":12},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":1}]}",
-        "expectedOutput": "{\"celsius\":-10,\"fahrenheit_x5\":70}",
+        "input": "3 3\nlower_c 12\nraise_c 0\nlower_c 1",
+        "expectedOutput": "-10 70",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"raise_c\",\"value\":11},{\"method\":\"lower_c\",\"value\":11},{\"method\":\"raise_c\",\"value\":11}]}",
-        "expectedOutput": "{\"celsius\":11,\"fahrenheit_x5\":259}",
+        "input": "0 3\nraise_c 11\nlower_c 11\nraise_c 11",
+        "expectedOutput": "11 259",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"lower_c\",\"value\":5},{\"method\":\"raise_c\",\"value\":2},{\"method\":\"lower_c\",\"value\":7},{\"method\":\"raise_c\",\"value\":1}]}",
-        "expectedOutput": "{\"celsius\":6,\"fahrenheit_x5\":214}",
+        "input": "15 4\nlower_c 5\nraise_c 2\nlower_c 7\nraise_c 1",
+        "expectedOutput": "6 214",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":6},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":6}]}",
-        "expectedOutput": "{\"celsius\":-10,\"fahrenheit_x5\":70}",
+        "input": "2 4\nraise_c 0\nlower_c 6\nraise_c 0\nlower_c 6",
+        "expectedOutput": "-10 70",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"lower_c\",\"value\":20},{\"method\":\"raise_c\",\"value\":19},{\"method\":\"lower_c\",\"value\":18}]}",
-        "expectedOutput": "{\"celsius\":1,\"fahrenheit_x5\":169}",
+        "input": "20 3\nlower_c 20\nraise_c 19\nlower_c 18",
+        "expectedOutput": "1 169",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"raise_c\",\"value\":4},{\"method\":\"lower_c\",\"value\":8},{\"method\":\"raise_c\",\"value\":0},{\"method\":\"lower_c\",\"value\":10},{\"method\":\"raise_c\",\"value\":1},{\"method\":\"lower_c\",\"value\":3},{\"method\":\"raise_c\",\"value\":6}]}",
-        "expectedOutput": "{\"celsius\":-3,\"fahrenheit_x5\":133}",
+        "input": "7 7\nraise_c 4\nlower_c 8\nraise_c 0\nlower_c 10\nraise_c 1\nlower_c 3\nraise_c 6",
+        "expectedOutput": "-3 133",
         "isHidden": true
       }
     ]
@@ -617,80 +617,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add_item\",\"value\":3},{\"method\":\"remove_item\",\"value\":4},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":1}]}",
-        "expectedOutput": "{\"2\":1,\"3\":1,\"10\":1}",
+        "input": "10 4\nadd_item 3\nremove_item 4\nadd_item 2\nremove_item 1",
+        "expectedOutput": "2 1\n3 1\n10 1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"0\":1}",
+        "input": "0 0",
+        "expectedOutput": "0 1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"add_item\",\"value\":1}]}",
-        "expectedOutput": "{\"1\":2}",
+        "input": "1 1\nadd_item 1",
+        "expectedOutput": "1 2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"remove_item\",\"value\":0},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":0}]}",
-        "expectedOutput": "{\"5\":1}",
+        "input": "5 3\nremove_item 0\nadd_item 0\nremove_item 0",
+        "expectedOutput": "5 1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"add_item\",\"value\":12},{\"method\":\"remove_item\",\"value\":7},{\"method\":\"add_item\",\"value\":15}]}",
-        "expectedOutput": "{\"12\":1,\"15\":1,\"20\":1}",
+        "input": "20 3\nadd_item 12\nremove_item 7\nadd_item 15",
+        "expectedOutput": "12 1\n15 1\n20 1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"remove_item\",\"value\":2},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":2},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":2}]}",
-        "expectedOutput": "{\"8\":1}",
+        "input": "8 5\nremove_item 2\nadd_item 2\nremove_item 2\nadd_item 2\nremove_item 2",
+        "expectedOutput": "8 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add_item\",\"value\":9},{\"method\":\"remove_item\",\"value\":5},{\"method\":\"add_item\",\"value\":12},{\"method\":\"remove_item\",\"value\":4},{\"method\":\"add_item\",\"value\":8},{\"method\":\"remove_item\",\"value\":1}]}",
-        "expectedOutput": "{\"8\":1,\"9\":1,\"12\":1,\"19\":1}",
+        "input": "19 6\nadd_item 9\nremove_item 5\nadd_item 12\nremove_item 4\nadd_item 8\nremove_item 1",
+        "expectedOutput": "8 1\n9 1\n12 1\n19 1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"remove_item\",\"value\":12},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":1}]}",
-        "expectedOutput": "{\"0\":1,\"3\":1}",
+        "input": "3 3\nremove_item 12\nadd_item 0\nremove_item 1",
+        "expectedOutput": "0 1\n3 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"add_item\",\"value\":11},{\"method\":\"remove_item\",\"value\":11},{\"method\":\"add_item\",\"value\":11}]}",
-        "expectedOutput": "{\"0\":1,\"11\":1}",
+        "input": "0 3\nadd_item 11\nremove_item 11\nadd_item 11",
+        "expectedOutput": "0 1\n11 1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"remove_item\",\"value\":5},{\"method\":\"add_item\",\"value\":2},{\"method\":\"remove_item\",\"value\":7},{\"method\":\"add_item\",\"value\":1}]}",
-        "expectedOutput": "{\"1\":1,\"2\":1,\"15\":1}",
+        "input": "15 4\nremove_item 5\nadd_item 2\nremove_item 7\nadd_item 1",
+        "expectedOutput": "1 1\n2 1\n15 1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":6},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":6}]}",
-        "expectedOutput": "{\"0\":2,\"2\":1}",
+        "input": "2 4\nadd_item 0\nremove_item 6\nadd_item 0\nremove_item 6",
+        "expectedOutput": "0 2\n2 1",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"remove_item\",\"value\":20},{\"method\":\"add_item\",\"value\":19},{\"method\":\"remove_item\",\"value\":18}]}",
-        "expectedOutput": "{\"19\":1}",
+        "input": "20 3\nremove_item 20\nadd_item 19\nremove_item 18",
+        "expectedOutput": "19 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add_item\",\"value\":4},{\"method\":\"remove_item\",\"value\":8},{\"method\":\"add_item\",\"value\":0},{\"method\":\"remove_item\",\"value\":10},{\"method\":\"add_item\",\"value\":1},{\"method\":\"remove_item\",\"value\":3},{\"method\":\"add_item\",\"value\":6}]}",
-        "expectedOutput": "{\"0\":1,\"1\":1,\"4\":1,\"6\":1,\"7\":1}",
+        "input": "7 7\nadd_item 4\nremove_item 8\nadd_item 0\nremove_item 10\nadd_item 1\nremove_item 3\nadd_item 6",
+        "expectedOutput": "0 1\n1 1\n4 1\n6 1\n7 1",
         "isHidden": true
       }
     ]
@@ -704,80 +704,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"remove\",\"value\":4},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":1}]}",
-        "expectedOutput": "[2,3,10]",
+        "input": "10 4\nadd 3\nremove 4\nadd 2\nremove 1",
+        "expectedOutput": "2 3 10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "[0]",
+        "input": "0 0",
+        "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"add\",\"value\":1}]}",
-        "expectedOutput": "[1]",
+        "input": "1 1\nadd 1",
+        "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"remove\",\"value\":0},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":0}]}",
-        "expectedOutput": "[5]",
+        "input": "5 3\nremove 0\nadd 0\nremove 0",
+        "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"add\",\"value\":12},{\"method\":\"remove\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
-        "expectedOutput": "[12,15,20]",
+        "input": "20 3\nadd 12\nremove 7\nadd 15",
+        "expectedOutput": "12 15 20",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"remove\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":2}]}",
-        "expectedOutput": "[8]",
+        "input": "8 5\nremove 2\nadd 2\nremove 2\nadd 2\nremove 2",
+        "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"remove\",\"value\":5},{\"method\":\"add\",\"value\":12},{\"method\":\"remove\",\"value\":4},{\"method\":\"add\",\"value\":8},{\"method\":\"remove\",\"value\":1}]}",
-        "expectedOutput": "[8,9,12,19]",
+        "input": "19 6\nadd 9\nremove 5\nadd 12\nremove 4\nadd 8\nremove 1",
+        "expectedOutput": "8 9 12 19",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"remove\",\"value\":12},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":1}]}",
-        "expectedOutput": "[0,3]",
+        "input": "3 3\nremove 12\nadd 0\nremove 1",
+        "expectedOutput": "0 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"add\",\"value\":11},{\"method\":\"remove\",\"value\":11},{\"method\":\"add\",\"value\":11}]}",
-        "expectedOutput": "[0,11]",
+        "input": "0 3\nadd 11\nremove 11\nadd 11",
+        "expectedOutput": "0 11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"remove\",\"value\":5},{\"method\":\"add\",\"value\":2},{\"method\":\"remove\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
-        "expectedOutput": "[1,2,15]",
+        "input": "15 4\nremove 5\nadd 2\nremove 7\nadd 1",
+        "expectedOutput": "1 2 15",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":6}]}",
-        "expectedOutput": "[0,2]",
+        "input": "2 4\nadd 0\nremove 6\nadd 0\nremove 6",
+        "expectedOutput": "0 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"remove\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"remove\",\"value\":18}]}",
-        "expectedOutput": "[19]",
+        "input": "20 3\nremove 20\nadd 19\nremove 18",
+        "expectedOutput": "19",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"remove\",\"value\":8},{\"method\":\"add\",\"value\":0},{\"method\":\"remove\",\"value\":10},{\"method\":\"add\",\"value\":1},{\"method\":\"remove\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
-        "expectedOutput": "[0,1,4,6,7]",
+        "input": "7 7\nadd 4\nremove 8\nadd 0\nremove 10\nadd 1\nremove 3\nadd 6",
+        "expectedOutput": "0 1 4 6 7",
         "isHidden": true
       }
     ]
@@ -791,80 +791,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"subtract\",\"value\":4},{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":1}]}",
-        "expectedOutput": "{\"value\":14,\"undo_depth\":2}",
+        "input": "10 4\nadd 3\nsubtract 4\nundo 2\nadd 1",
+        "expectedOutput": "14 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"value\":0,\"undo_depth\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"undo\",\"value\":1}]}",
-        "expectedOutput": "{\"value\":1,\"undo_depth\":0}",
+        "input": "1 1\nundo 1",
+        "expectedOutput": "1 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"subtract\",\"value\":0},{\"method\":\"undo\",\"value\":0}]}",
-        "expectedOutput": "{\"value\":5,\"undo_depth\":1}",
+        "input": "5 3\nadd 0\nsubtract 0\nundo 0",
+        "expectedOutput": "5 1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"subtract\",\"value\":12},{\"method\":\"undo\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
-        "expectedOutput": "{\"value\":35,\"undo_depth\":1}",
+        "input": "20 3\nsubtract 12\nundo 7\nadd 15",
+        "expectedOutput": "35 1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"subtract\",\"value\":2},{\"method\":\"undo\",\"value\":2},{\"method\":\"add\",\"value\":2}]}",
-        "expectedOutput": "{\"value\":12,\"undo_depth\":2}",
+        "input": "8 5\nundo 2\nadd 2\nsubtract 2\nundo 2\nadd 2",
+        "expectedOutput": "12 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"subtract\",\"value\":5},{\"method\":\"undo\",\"value\":12},{\"method\":\"add\",\"value\":4},{\"method\":\"subtract\",\"value\":8},{\"method\":\"undo\",\"value\":1}]}",
-        "expectedOutput": "{\"value\":32,\"undo_depth\":2}",
+        "input": "19 6\nadd 9\nsubtract 5\nundo 12\nadd 4\nsubtract 8\nundo 1",
+        "expectedOutput": "32 2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"subtract\",\"value\":12},{\"method\":\"undo\",\"value\":0},{\"method\":\"add\",\"value\":1}]}",
-        "expectedOutput": "{\"value\":4,\"undo_depth\":1}",
+        "input": "3 3\nsubtract 12\nundo 0\nadd 1",
+        "expectedOutput": "4 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"undo\",\"value\":11},{\"method\":\"add\",\"value\":11},{\"method\":\"subtract\",\"value\":11}]}",
-        "expectedOutput": "{\"value\":0,\"undo_depth\":2}",
+        "input": "0 3\nundo 11\nadd 11\nsubtract 11",
+        "expectedOutput": "0 2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"add\",\"value\":5},{\"method\":\"subtract\",\"value\":2},{\"method\":\"undo\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
-        "expectedOutput": "{\"value\":21,\"undo_depth\":2}",
+        "input": "15 4\nadd 5\nsubtract 2\nundo 7\nadd 1",
+        "expectedOutput": "21 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"subtract\",\"value\":0},{\"method\":\"undo\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"subtract\",\"value\":6}]}",
-        "expectedOutput": "{\"value\":-4,\"undo_depth\":2}",
+        "input": "2 4\nsubtract 0\nundo 6\nadd 0\nsubtract 6",
+        "expectedOutput": "-4 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"undo\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"subtract\",\"value\":18}]}",
-        "expectedOutput": "{\"value\":21,\"undo_depth\":2}",
+        "input": "20 3\nundo 20\nadd 19\nsubtract 18",
+        "expectedOutput": "21 2",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"subtract\",\"value\":8},{\"method\":\"undo\",\"value\":0},{\"method\":\"add\",\"value\":10},{\"method\":\"subtract\",\"value\":1},{\"method\":\"undo\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
-        "expectedOutput": "{\"value\":27,\"undo_depth\":3}",
+        "input": "7 7\nadd 4\nsubtract 8\nundo 0\nadd 10\nsubtract 1\nundo 3\nadd 6",
+        "expectedOutput": "27 3",
         "isHidden": true
       }
     ]
@@ -878,79 +878,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"award\",\"value\":3},{\"method\":\"penalty\",\"value\":4},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":1}]}",
+        "input": "10 4\naward 3\npenalty 4\naward 2\npenalty 1",
         "expectedOutput": "10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"award\",\"value\":1}]}",
+        "input": "1 1\naward 1",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"penalty\",\"value\":0},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":0}]}",
+        "input": "5 3\npenalty 0\naward 0\npenalty 0",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"award\",\"value\":12},{\"method\":\"penalty\",\"value\":7},{\"method\":\"award\",\"value\":15}]}",
+        "input": "20 3\naward 12\npenalty 7\naward 15",
         "expectedOutput": "40",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"penalty\",\"value\":2},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":2},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":2}]}",
+        "input": "8 5\npenalty 2\naward 2\npenalty 2\naward 2\npenalty 2",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"award\",\"value\":9},{\"method\":\"penalty\",\"value\":5},{\"method\":\"award\",\"value\":12},{\"method\":\"penalty\",\"value\":4},{\"method\":\"award\",\"value\":8},{\"method\":\"penalty\",\"value\":1}]}",
+        "input": "19 6\naward 9\npenalty 5\naward 12\npenalty 4\naward 8\npenalty 1",
         "expectedOutput": "38",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"penalty\",\"value\":12},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":1}]}",
+        "input": "3 3\npenalty 12\naward 0\npenalty 1",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"award\",\"value\":11},{\"method\":\"penalty\",\"value\":11},{\"method\":\"award\",\"value\":11}]}",
+        "input": "0 3\naward 11\npenalty 11\naward 11",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"penalty\",\"value\":5},{\"method\":\"award\",\"value\":2},{\"method\":\"penalty\",\"value\":7},{\"method\":\"award\",\"value\":1}]}",
+        "input": "15 4\npenalty 5\naward 2\npenalty 7\naward 1",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":6},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":6}]}",
+        "input": "2 4\naward 0\npenalty 6\naward 0\npenalty 6",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"penalty\",\"value\":20},{\"method\":\"award\",\"value\":19},{\"method\":\"penalty\",\"value\":18}]}",
+        "input": "20 3\npenalty 20\naward 19\npenalty 18",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"award\",\"value\":4},{\"method\":\"penalty\",\"value\":8},{\"method\":\"award\",\"value\":0},{\"method\":\"penalty\",\"value\":10},{\"method\":\"award\",\"value\":1},{\"method\":\"penalty\",\"value\":3},{\"method\":\"award\",\"value\":6}]}",
+        "input": "7 7\naward 4\npenalty 8\naward 0\npenalty 10\naward 1\npenalty 3\naward 6",
         "expectedOutput": "6",
         "isHidden": true
       }
@@ -965,80 +965,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"forward\",\"value\":3},{\"method\":\"back\",\"value\":4},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":1}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":10}",
+        "input": "10 4\nforward 3\nback 4\nforward 2\nback 1",
+        "expectedOutput": "0 10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"forward\",\"value\":1}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":2}",
+        "input": "1 1\nforward 1",
+        "expectedOutput": "0 2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"back\",\"value\":0},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":0}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":5}",
+        "input": "5 3\nback 0\nforward 0\nback 0",
+        "expectedOutput": "0 5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"forward\",\"value\":12},{\"method\":\"back\",\"value\":7},{\"method\":\"forward\",\"value\":15}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":40}",
+        "input": "20 3\nforward 12\nback 7\nforward 15",
+        "expectedOutput": "0 40",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"back\",\"value\":2},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":2},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":2}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":6}",
+        "input": "8 5\nback 2\nforward 2\nback 2\nforward 2\nback 2",
+        "expectedOutput": "0 6",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"forward\",\"value\":9},{\"method\":\"back\",\"value\":5},{\"method\":\"forward\",\"value\":12},{\"method\":\"back\",\"value\":4},{\"method\":\"forward\",\"value\":8},{\"method\":\"back\",\"value\":1}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":38}",
+        "input": "19 6\nforward 9\nback 5\nforward 12\nback 4\nforward 8\nback 1",
+        "expectedOutput": "0 38",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"back\",\"value\":12},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":1}]}",
-        "expectedOutput": "{\"hour\":23,\"minute\":50}",
+        "input": "3 3\nback 12\nforward 0\nback 1",
+        "expectedOutput": "23 50",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"forward\",\"value\":11},{\"method\":\"back\",\"value\":11},{\"method\":\"forward\",\"value\":11}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":11}",
+        "input": "0 3\nforward 11\nback 11\nforward 11",
+        "expectedOutput": "0 11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"back\",\"value\":5},{\"method\":\"forward\",\"value\":2},{\"method\":\"back\",\"value\":7},{\"method\":\"forward\",\"value\":1}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":6}",
+        "input": "15 4\nback 5\nforward 2\nback 7\nforward 1",
+        "expectedOutput": "0 6",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":6},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":6}]}",
-        "expectedOutput": "{\"hour\":23,\"minute\":50}",
+        "input": "2 4\nforward 0\nback 6\nforward 0\nback 6",
+        "expectedOutput": "23 50",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"back\",\"value\":20},{\"method\":\"forward\",\"value\":19},{\"method\":\"back\",\"value\":18}]}",
-        "expectedOutput": "{\"hour\":0,\"minute\":1}",
+        "input": "20 3\nback 20\nforward 19\nback 18",
+        "expectedOutput": "0 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"forward\",\"value\":4},{\"method\":\"back\",\"value\":8},{\"method\":\"forward\",\"value\":0},{\"method\":\"back\",\"value\":10},{\"method\":\"forward\",\"value\":1},{\"method\":\"back\",\"value\":3},{\"method\":\"forward\",\"value\":6}]}",
-        "expectedOutput": "{\"hour\":23,\"minute\":57}",
+        "input": "7 7\nforward 4\nback 8\nforward 0\nback 10\nforward 1\nback 3\nforward 6",
+        "expectedOutput": "23 57",
         "isHidden": true
       }
     ]
@@ -1052,80 +1052,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"append_digit\",\"value\":3},{\"method\":\"delete_last\",\"value\":4},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":1}]}",
+        "input": "10 4\nappend_digit 3\ndelete_last 4\nappend_digit 2\ndelete_last 1",
         "expectedOutput": "10",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"append_digit\",\"value\":1}]}",
+        "input": "1 1\nappend_digit 1",
         "expectedOutput": "11",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"delete_last\",\"value\":0},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":0}]}",
-        "expectedOutput": "\"\"",
+        "input": "5 3\ndelete_last 0\nappend_digit 0\ndelete_last 0",
+        "expectedOutput": "",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"append_digit\",\"value\":12},{\"method\":\"delete_last\",\"value\":7},{\"method\":\"append_digit\",\"value\":15}]}",
-        "expectedOutput": "\"205\"",
+        "input": "20 3\nappend_digit 12\ndelete_last 7\nappend_digit 15",
+        "expectedOutput": "205",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"delete_last\",\"value\":2},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":2},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":2}]}",
-        "expectedOutput": "\"\"",
+        "input": "8 5\ndelete_last 2\nappend_digit 2\ndelete_last 2\nappend_digit 2\ndelete_last 2",
+        "expectedOutput": "",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"append_digit\",\"value\":9},{\"method\":\"delete_last\",\"value\":5},{\"method\":\"append_digit\",\"value\":12},{\"method\":\"delete_last\",\"value\":4},{\"method\":\"append_digit\",\"value\":8},{\"method\":\"delete_last\",\"value\":1}]}",
-        "expectedOutput": "\"19\"",
+        "input": "19 6\nappend_digit 9\ndelete_last 5\nappend_digit 12\ndelete_last 4\nappend_digit 8\ndelete_last 1",
+        "expectedOutput": "19",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"delete_last\",\"value\":12},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":1}]}",
-        "expectedOutput": "\"\"",
+        "input": "3 3\ndelete_last 12\nappend_digit 0\ndelete_last 1",
+        "expectedOutput": "",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"append_digit\",\"value\":11},{\"method\":\"delete_last\",\"value\":11},{\"method\":\"append_digit\",\"value\":11}]}",
-        "expectedOutput": "\"01\"",
+        "input": "0 3\nappend_digit 11\ndelete_last 11\nappend_digit 11",
+        "expectedOutput": "01",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"delete_last\",\"value\":5},{\"method\":\"append_digit\",\"value\":2},{\"method\":\"delete_last\",\"value\":7},{\"method\":\"append_digit\",\"value\":1}]}",
-        "expectedOutput": "\"11\"",
+        "input": "15 4\ndelete_last 5\nappend_digit 2\ndelete_last 7\nappend_digit 1",
+        "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":6},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":6}]}",
-        "expectedOutput": "\"2\"",
+        "input": "2 4\nappend_digit 0\ndelete_last 6\nappend_digit 0\ndelete_last 6",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"delete_last\",\"value\":20},{\"method\":\"append_digit\",\"value\":19},{\"method\":\"delete_last\",\"value\":18}]}",
-        "expectedOutput": "\"2\"",
+        "input": "20 3\ndelete_last 20\nappend_digit 19\ndelete_last 18",
+        "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"append_digit\",\"value\":4},{\"method\":\"delete_last\",\"value\":8},{\"method\":\"append_digit\",\"value\":0},{\"method\":\"delete_last\",\"value\":10},{\"method\":\"append_digit\",\"value\":1},{\"method\":\"delete_last\",\"value\":3},{\"method\":\"append_digit\",\"value\":6}]}",
-        "expectedOutput": "\"76\"",
+        "input": "7 7\nappend_digit 4\ndelete_last 8\nappend_digit 0\ndelete_last 10\nappend_digit 1\ndelete_last 3\nappend_digit 6",
+        "expectedOutput": "76",
         "isHidden": true
       }
     ]
@@ -1139,80 +1139,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"insert\",\"value\":3},{\"method\":\"extract_min\",\"value\":4},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":1}]}",
-        "expectedOutput": "{\"sorted_items\":[10],\"removed_mins\":[3,2]}",
+        "input": "10 4\ninsert 3\nextract_min 4\ninsert 2\nextract_min 1",
+        "expectedOutput": "10\n3 2",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"sorted_items\":[0],\"removed_mins\":[]}",
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"insert\",\"value\":1}]}",
-        "expectedOutput": "{\"sorted_items\":[1,1],\"removed_mins\":[]}",
+        "input": "1 1\ninsert 1",
+        "expectedOutput": "1 1\nEMPTY",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"extract_min\",\"value\":0},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":0}]}",
-        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[5,0]}",
+        "input": "5 3\nextract_min 0\ninsert 0\nextract_min 0",
+        "expectedOutput": "EMPTY\n5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"insert\",\"value\":12},{\"method\":\"extract_min\",\"value\":7},{\"method\":\"insert\",\"value\":15}]}",
-        "expectedOutput": "{\"sorted_items\":[15,20],\"removed_mins\":[12]}",
+        "input": "20 3\ninsert 12\nextract_min 7\ninsert 15",
+        "expectedOutput": "15 20\n12",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"extract_min\",\"value\":2},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":2},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":2}]}",
-        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[8,2,2]}",
+        "input": "8 5\nextract_min 2\ninsert 2\nextract_min 2\ninsert 2\nextract_min 2",
+        "expectedOutput": "EMPTY\n8 2 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"insert\",\"value\":9},{\"method\":\"extract_min\",\"value\":5},{\"method\":\"insert\",\"value\":12},{\"method\":\"extract_min\",\"value\":4},{\"method\":\"insert\",\"value\":8},{\"method\":\"extract_min\",\"value\":1}]}",
-        "expectedOutput": "{\"sorted_items\":[19],\"removed_mins\":[9,12,8]}",
+        "input": "19 6\ninsert 9\nextract_min 5\ninsert 12\nextract_min 4\ninsert 8\nextract_min 1",
+        "expectedOutput": "19\n9 12 8",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"extract_min\",\"value\":12},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":1}]}",
-        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[3,0]}",
+        "input": "3 3\nextract_min 12\ninsert 0\nextract_min 1",
+        "expectedOutput": "EMPTY\n3 0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"insert\",\"value\":11},{\"method\":\"extract_min\",\"value\":11},{\"method\":\"insert\",\"value\":11}]}",
-        "expectedOutput": "{\"sorted_items\":[11,11],\"removed_mins\":[0]}",
+        "input": "0 3\ninsert 11\nextract_min 11\ninsert 11",
+        "expectedOutput": "11 11\n0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"extract_min\",\"value\":5},{\"method\":\"insert\",\"value\":2},{\"method\":\"extract_min\",\"value\":7},{\"method\":\"insert\",\"value\":1}]}",
-        "expectedOutput": "{\"sorted_items\":[1],\"removed_mins\":[15,2]}",
+        "input": "15 4\nextract_min 5\ninsert 2\nextract_min 7\ninsert 1",
+        "expectedOutput": "1\n15 2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":6},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":6}]}",
-        "expectedOutput": "{\"sorted_items\":[2],\"removed_mins\":[0,0]}",
+        "input": "2 4\ninsert 0\nextract_min 6\ninsert 0\nextract_min 6",
+        "expectedOutput": "2\n0 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"extract_min\",\"value\":20},{\"method\":\"insert\",\"value\":19},{\"method\":\"extract_min\",\"value\":18}]}",
-        "expectedOutput": "{\"sorted_items\":[],\"removed_mins\":[20,19]}",
+        "input": "20 3\nextract_min 20\ninsert 19\nextract_min 18",
+        "expectedOutput": "EMPTY\n20 19",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"insert\",\"value\":4},{\"method\":\"extract_min\",\"value\":8},{\"method\":\"insert\",\"value\":0},{\"method\":\"extract_min\",\"value\":10},{\"method\":\"insert\",\"value\":1},{\"method\":\"extract_min\",\"value\":3},{\"method\":\"insert\",\"value\":6}]}",
-        "expectedOutput": "{\"sorted_items\":[6,7],\"removed_mins\":[4,0,1]}",
+        "input": "7 7\ninsert 4\nextract_min 8\ninsert 0\nextract_min 10\ninsert 1\nextract_min 3\ninsert 6",
+        "expectedOutput": "6 7\n4 0 1",
         "isHidden": true
       }
     ]
@@ -1226,79 +1226,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"add\",\"value\":3},{\"method\":\"multiply\",\"value\":4},{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":1}]}",
+        "input": "10 4\nadd 3\nmultiply 4\nreset 2\nadd 1",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"multiply\",\"value\":12},{\"method\":\"reset\",\"value\":7},{\"method\":\"add\",\"value\":15}]}",
+        "input": "20 3\nmultiply 12\nreset 7\nadd 15",
         "expectedOutput": "15",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"reset\",\"value\":1}]}",
+        "input": "1 1\nreset 1",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"add\",\"value\":0},{\"method\":\"multiply\",\"value\":0},{\"method\":\"reset\",\"value\":0}]}",
+        "input": "5 3\nadd 0\nmultiply 0\nreset 0",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":2},{\"method\":\"multiply\",\"value\":2},{\"method\":\"reset\",\"value\":2},{\"method\":\"add\",\"value\":2}]}",
+        "input": "8 5\nreset 2\nadd 2\nmultiply 2\nreset 2\nadd 2",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"add\",\"value\":9},{\"method\":\"multiply\",\"value\":5},{\"method\":\"reset\",\"value\":12},{\"method\":\"add\",\"value\":4},{\"method\":\"multiply\",\"value\":8},{\"method\":\"reset\",\"value\":1}]}",
+        "input": "19 6\nadd 9\nmultiply 5\nreset 12\nadd 4\nmultiply 8\nreset 1",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"multiply\",\"value\":12},{\"method\":\"reset\",\"value\":0},{\"method\":\"add\",\"value\":1}]}",
+        "input": "3 3\nmultiply 12\nreset 0\nadd 1",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"reset\",\"value\":11},{\"method\":\"add\",\"value\":11},{\"method\":\"multiply\",\"value\":11}]}",
+        "input": "0 3\nreset 11\nadd 11\nmultiply 11",
         "expectedOutput": "121",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"add\",\"value\":5},{\"method\":\"multiply\",\"value\":2},{\"method\":\"reset\",\"value\":7},{\"method\":\"add\",\"value\":1}]}",
+        "input": "15 4\nadd 5\nmultiply 2\nreset 7\nadd 1",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"multiply\",\"value\":0},{\"method\":\"reset\",\"value\":6},{\"method\":\"add\",\"value\":0},{\"method\":\"multiply\",\"value\":6}]}",
+        "input": "2 4\nmultiply 0\nreset 6\nadd 0\nmultiply 6",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"reset\",\"value\":20},{\"method\":\"add\",\"value\":19},{\"method\":\"multiply\",\"value\":18}]}",
+        "input": "20 3\nreset 20\nadd 19\nmultiply 18",
         "expectedOutput": "342",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"add\",\"value\":4},{\"method\":\"multiply\",\"value\":8},{\"method\":\"reset\",\"value\":0},{\"method\":\"add\",\"value\":10},{\"method\":\"multiply\",\"value\":1},{\"method\":\"reset\",\"value\":3},{\"method\":\"add\",\"value\":6}]}",
+        "input": "7 7\nadd 4\nmultiply 8\nreset 0\nadd 10\nmultiply 1\nreset 3\nadd 6",
         "expectedOutput": "6",
         "isHidden": true
       }
@@ -1313,80 +1313,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"reserve\",\"value\":3},{\"method\":\"cancel\",\"value\":4},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":1}]}",
-        "expectedOutput": "{\"reserved\":10,\"rejected\":0}",
+        "input": "10 4\nreserve 3\ncancel 4\nreserve 2\ncancel 1",
+        "expectedOutput": "10 0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"reserve\",\"value\":1}]}",
-        "expectedOutput": "{\"reserved\":2,\"rejected\":0}",
+        "input": "1 1\nreserve 1",
+        "expectedOutput": "2 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"cancel\",\"value\":0},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":0}]}",
-        "expectedOutput": "{\"reserved\":5,\"rejected\":0}",
+        "input": "5 3\ncancel 0\nreserve 0\ncancel 0",
+        "expectedOutput": "5 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"reserve\",\"value\":12},{\"method\":\"cancel\",\"value\":7},{\"method\":\"reserve\",\"value\":15}]}",
-        "expectedOutput": "{\"reserved\":13,\"rejected\":2}",
+        "input": "20 3\nreserve 12\ncancel 7\nreserve 15",
+        "expectedOutput": "13 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"cancel\",\"value\":2},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":2},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":2}]}",
-        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "input": "8 5\ncancel 2\nreserve 2\ncancel 2\nreserve 2\ncancel 2",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"reserve\",\"value\":9},{\"method\":\"cancel\",\"value\":5},{\"method\":\"reserve\",\"value\":12},{\"method\":\"cancel\",\"value\":4},{\"method\":\"reserve\",\"value\":8},{\"method\":\"cancel\",\"value\":1}]}",
-        "expectedOutput": "{\"reserved\":17,\"rejected\":2}",
+        "input": "19 6\nreserve 9\ncancel 5\nreserve 12\ncancel 4\nreserve 8\ncancel 1",
+        "expectedOutput": "17 2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"cancel\",\"value\":12},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":1}]}",
-        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "input": "3 3\ncancel 12\nreserve 0\ncancel 1",
+        "expectedOutput": "0 0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"reserve\",\"value\":11},{\"method\":\"cancel\",\"value\":11},{\"method\":\"reserve\",\"value\":11}]}",
-        "expectedOutput": "{\"reserved\":11,\"rejected\":0}",
+        "input": "0 3\nreserve 11\ncancel 11\nreserve 11",
+        "expectedOutput": "11 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"cancel\",\"value\":5},{\"method\":\"reserve\",\"value\":2},{\"method\":\"cancel\",\"value\":7},{\"method\":\"reserve\",\"value\":1}]}",
-        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "input": "15 4\ncancel 5\nreserve 2\ncancel 7\nreserve 1",
+        "expectedOutput": "6 0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":6},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":6}]}",
-        "expectedOutput": "{\"reserved\":0,\"rejected\":0}",
+        "input": "2 4\nreserve 0\ncancel 6\nreserve 0\ncancel 6",
+        "expectedOutput": "0 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"cancel\",\"value\":20},{\"method\":\"reserve\",\"value\":19},{\"method\":\"cancel\",\"value\":18}]}",
-        "expectedOutput": "{\"reserved\":1,\"rejected\":0}",
+        "input": "20 3\ncancel 20\nreserve 19\ncancel 18",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"reserve\",\"value\":4},{\"method\":\"cancel\",\"value\":8},{\"method\":\"reserve\",\"value\":0},{\"method\":\"cancel\",\"value\":10},{\"method\":\"reserve\",\"value\":1},{\"method\":\"cancel\",\"value\":3},{\"method\":\"reserve\",\"value\":6}]}",
-        "expectedOutput": "{\"reserved\":6,\"rejected\":0}",
+        "input": "7 7\nreserve 4\ncancel 8\nreserve 0\ncancel 10\nreserve 1\ncancel 3\nreserve 6",
+        "expectedOutput": "6 0",
         "isHidden": true
       }
     ]
@@ -1400,80 +1400,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"next\",\"value\":3},{\"method\":\"previous\",\"value\":4},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":1}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "10 4\nnext 3\nprevious 4\nnext 2\nprevious 1",
+        "expectedOutput": "1 0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"next\",\"value\":1}]}",
-        "expectedOutput": "{\"length\":2,\"cursor\":1}",
+        "input": "1 1\nnext 1",
+        "expectedOutput": "2 1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"previous\",\"value\":2},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":2},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":2}]}",
-        "expectedOutput": "{\"length\":4,\"cursor\":2}",
+        "input": "8 5\nprevious 2\nnext 2\nprevious 2\nnext 2\nprevious 2",
+        "expectedOutput": "4 2",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "0 0",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"previous\",\"value\":0},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":0}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "5 3\nprevious 0\nnext 0\nprevious 0",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"next\",\"value\":12},{\"method\":\"previous\",\"value\":7},{\"method\":\"next\",\"value\":15}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "20 3\nnext 12\nprevious 7\nnext 15",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"next\",\"value\":9},{\"method\":\"previous\",\"value\":5},{\"method\":\"next\",\"value\":12},{\"method\":\"previous\",\"value\":4},{\"method\":\"next\",\"value\":8},{\"method\":\"previous\",\"value\":1}]}",
-        "expectedOutput": "{\"length\":5,\"cursor\":4}",
+        "input": "19 6\nnext 9\nprevious 5\nnext 12\nprevious 4\nnext 8\nprevious 1",
+        "expectedOutput": "5 4",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"previous\",\"value\":12},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":1}]}",
-        "expectedOutput": "{\"length\":4,\"cursor\":3}",
+        "input": "3 3\nprevious 12\nnext 0\nprevious 1",
+        "expectedOutput": "4 3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"next\",\"value\":11},{\"method\":\"previous\",\"value\":11},{\"method\":\"next\",\"value\":11}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "0 3\nnext 11\nprevious 11\nnext 11",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"previous\",\"value\":5},{\"method\":\"next\",\"value\":2},{\"method\":\"previous\",\"value\":7},{\"method\":\"next\",\"value\":1}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "15 4\nprevious 5\nnext 2\nprevious 7\nnext 1",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":6},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":6}]}",
-        "expectedOutput": "{\"length\":3,\"cursor\":0}",
+        "input": "2 4\nnext 0\nprevious 6\nnext 0\nprevious 6",
+        "expectedOutput": "3 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"previous\",\"value\":20},{\"method\":\"next\",\"value\":19},{\"method\":\"previous\",\"value\":18}]}",
-        "expectedOutput": "{\"length\":1,\"cursor\":0}",
+        "input": "20 3\nprevious 20\nnext 19\nprevious 18",
+        "expectedOutput": "1 0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"next\",\"value\":4},{\"method\":\"previous\",\"value\":8},{\"method\":\"next\",\"value\":0},{\"method\":\"previous\",\"value\":10},{\"method\":\"next\",\"value\":1},{\"method\":\"previous\",\"value\":3},{\"method\":\"next\",\"value\":6}]}",
-        "expectedOutput": "{\"length\":3,\"cursor\":2}",
+        "input": "7 7\nnext 4\nprevious 8\nnext 0\nprevious 10\nnext 1\nprevious 3\nnext 6",
+        "expectedOutput": "3 2",
         "isHidden": true
       }
     ]
@@ -1487,79 +1487,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"set_bit\",\"value\":3},{\"method\":\"clear_bit\",\"value\":4},{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":1}]}",
+        "input": "10 4\nset_bit 3\nclear_bit 4\ntoggle_bit 2\nset_bit 1",
         "expectedOutput": "14",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
+        "input": "0 0",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"toggle_bit\",\"value\":1}]}",
+        "input": "1 1\ntoggle_bit 1",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"set_bit\",\"value\":0},{\"method\":\"clear_bit\",\"value\":0},{\"method\":\"toggle_bit\",\"value\":0}]}",
+        "input": "5 3\nset_bit 0\nclear_bit 0\ntoggle_bit 0",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"clear_bit\",\"value\":12},{\"method\":\"toggle_bit\",\"value\":7},{\"method\":\"set_bit\",\"value\":15}]}",
+        "input": "20 3\nclear_bit 12\ntoggle_bit 7\nset_bit 15",
         "expectedOutput": "132",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":2},{\"method\":\"clear_bit\",\"value\":2},{\"method\":\"toggle_bit\",\"value\":2},{\"method\":\"set_bit\",\"value\":2}]}",
+        "input": "8 5\ntoggle_bit 2\nset_bit 2\nclear_bit 2\ntoggle_bit 2\nset_bit 2",
         "expectedOutput": "12",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"set_bit\",\"value\":9},{\"method\":\"clear_bit\",\"value\":5},{\"method\":\"toggle_bit\",\"value\":12},{\"method\":\"set_bit\",\"value\":4},{\"method\":\"clear_bit\",\"value\":8},{\"method\":\"toggle_bit\",\"value\":1}]}",
+        "input": "19 6\nset_bit 9\nclear_bit 5\ntoggle_bit 12\nset_bit 4\nclear_bit 8\ntoggle_bit 1",
         "expectedOutput": "16",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"clear_bit\",\"value\":12},{\"method\":\"toggle_bit\",\"value\":0},{\"method\":\"set_bit\",\"value\":1}]}",
+        "input": "3 3\nclear_bit 12\ntoggle_bit 0\nset_bit 1",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"toggle_bit\",\"value\":11},{\"method\":\"set_bit\",\"value\":11},{\"method\":\"clear_bit\",\"value\":11}]}",
+        "input": "0 3\ntoggle_bit 11\nset_bit 11\nclear_bit 11",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"set_bit\",\"value\":5},{\"method\":\"clear_bit\",\"value\":2},{\"method\":\"toggle_bit\",\"value\":7},{\"method\":\"set_bit\",\"value\":1}]}",
+        "input": "15 4\nset_bit 5\nclear_bit 2\ntoggle_bit 7\nset_bit 1",
         "expectedOutput": "171",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"clear_bit\",\"value\":0},{\"method\":\"toggle_bit\",\"value\":6},{\"method\":\"set_bit\",\"value\":0},{\"method\":\"clear_bit\",\"value\":6}]}",
+        "input": "2 4\nclear_bit 0\ntoggle_bit 6\nset_bit 0\nclear_bit 6",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"toggle_bit\",\"value\":20},{\"method\":\"set_bit\",\"value\":19},{\"method\":\"clear_bit\",\"value\":18}]}",
+        "input": "20 3\ntoggle_bit 20\nset_bit 19\nclear_bit 18",
         "expectedOutput": "8",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"set_bit\",\"value\":4},{\"method\":\"clear_bit\",\"value\":8},{\"method\":\"toggle_bit\",\"value\":0},{\"method\":\"set_bit\",\"value\":10},{\"method\":\"clear_bit\",\"value\":1},{\"method\":\"toggle_bit\",\"value\":3},{\"method\":\"set_bit\",\"value\":6}]}",
+        "input": "7 7\nset_bit 4\nclear_bit 8\ntoggle_bit 0\nset_bit 10\nclear_bit 1\ntoggle_bit 3\nset_bit 6",
         "expectedOutput": "93",
         "isHidden": true
       }
@@ -1574,80 +1574,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"east\",\"value\":3},{\"method\":\"north\",\"value\":4},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":1}]}",
-        "expectedOutput": "{\"x\":11,\"y\":3}",
+        "input": "10 4\neast 3\nnorth 4\nwest 2\nsouth 1",
+        "expectedOutput": "11 3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"x\":0,\"y\":0}",
+        "input": "0 0",
+        "expectedOutput": "0 0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"south\",\"value\":0},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":0}]}",
-        "expectedOutput": "{\"x\":5,\"y\":0}",
+        "input": "5 3\nsouth 0\neast 0\nnorth 0",
+        "expectedOutput": "5 0",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"west\",\"value\":1}]}",
-        "expectedOutput": "{\"x\":0,\"y\":0}",
+        "input": "1 1\nwest 1",
+        "expectedOutput": "0 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"east\",\"value\":12},{\"method\":\"north\",\"value\":7},{\"method\":\"west\",\"value\":15}]}",
-        "expectedOutput": "{\"x\":17,\"y\":7}",
+        "input": "20 3\neast 12\nnorth 7\nwest 15",
+        "expectedOutput": "17 7",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"north\",\"value\":2},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":2},{\"method\":\"east\",\"value\":2},{\"method\":\"north\",\"value\":2}]}",
-        "expectedOutput": "{\"x\":8,\"y\":2}",
+        "input": "8 5\nnorth 2\nwest 2\nsouth 2\neast 2\nnorth 2",
+        "expectedOutput": "8 2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"west\",\"value\":9},{\"method\":\"south\",\"value\":5},{\"method\":\"east\",\"value\":12},{\"method\":\"north\",\"value\":4},{\"method\":\"west\",\"value\":8},{\"method\":\"south\",\"value\":1}]}",
-        "expectedOutput": "{\"x\":14,\"y\":-2}",
+        "input": "19 6\nwest 9\nsouth 5\neast 12\nnorth 4\nwest 8\nsouth 1",
+        "expectedOutput": "14 -2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"south\",\"value\":12},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":1}]}",
-        "expectedOutput": "{\"x\":3,\"y\":-11}",
+        "input": "3 3\nsouth 12\neast 0\nnorth 1",
+        "expectedOutput": "3 -11",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"east\",\"value\":11},{\"method\":\"north\",\"value\":11},{\"method\":\"west\",\"value\":11}]}",
-        "expectedOutput": "{\"x\":0,\"y\":11}",
+        "input": "0 3\neast 11\nnorth 11\nwest 11",
+        "expectedOutput": "0 11",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"north\",\"value\":5},{\"method\":\"west\",\"value\":2},{\"method\":\"south\",\"value\":7},{\"method\":\"east\",\"value\":1}]}",
-        "expectedOutput": "{\"x\":14,\"y\":-2}",
+        "input": "15 4\nnorth 5\nwest 2\nsouth 7\neast 1",
+        "expectedOutput": "14 -2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"west\",\"value\":0},{\"method\":\"south\",\"value\":6},{\"method\":\"east\",\"value\":0},{\"method\":\"north\",\"value\":6}]}",
-        "expectedOutput": "{\"x\":2,\"y\":0}",
+        "input": "2 4\nwest 0\nsouth 6\neast 0\nnorth 6",
+        "expectedOutput": "2 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"south\",\"value\":20},{\"method\":\"east\",\"value\":19},{\"method\":\"north\",\"value\":18}]}",
-        "expectedOutput": "{\"x\":39,\"y\":-2}",
+        "input": "20 3\nsouth 20\neast 19\nnorth 18",
+        "expectedOutput": "39 -2",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"east\",\"value\":4},{\"method\":\"north\",\"value\":8},{\"method\":\"west\",\"value\":0},{\"method\":\"south\",\"value\":10},{\"method\":\"east\",\"value\":1},{\"method\":\"north\",\"value\":3},{\"method\":\"west\",\"value\":6}]}",
-        "expectedOutput": "{\"x\":6,\"y\":1}",
+        "input": "7 7\neast 4\nnorth 8\nwest 0\nsouth 10\neast 1\nnorth 3\nwest 6",
+        "expectedOutput": "6 1",
         "isHidden": true
       }
     ]
@@ -1661,80 +1661,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"initial\":10,\"commands\":[{\"method\":\"open\",\"value\":3},{\"method\":\"close\",\"value\":4},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":1}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
+        "input": "10 4\nopen 3\nclose 4\nlock 2\nunlock 1",
+        "expectedOutput": "closed 0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"initial\":1,\"commands\":[{\"method\":\"lock\",\"value\":1}]}",
-        "expectedOutput": "{\"state\":\"open\",\"invalid_actions\":1}",
+        "input": "1 1\nlock 1",
+        "expectedOutput": "open 1",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"initial\":5,\"commands\":[{\"method\":\"unlock\",\"value\":0},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":0}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
+        "input": "5 3\nunlock 0\nopen 0\nclose 0",
+        "expectedOutput": "closed 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"initial\":0,\"commands\":[]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
+        "input": "0 0",
+        "expectedOutput": "closed 0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"open\",\"value\":12},{\"method\":\"close\",\"value\":7},{\"method\":\"lock\",\"value\":15}]}",
-        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
+        "input": "20 3\nopen 12\nclose 7\nlock 15",
+        "expectedOutput": "locked 0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"initial\":8,\"commands\":[{\"method\":\"close\",\"value\":2},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":2},{\"method\":\"open\",\"value\":2},{\"method\":\"close\",\"value\":2}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
+        "input": "8 5\nclose 2\nlock 2\nunlock 2\nopen 2\nclose 2",
+        "expectedOutput": "closed 0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"initial\":19,\"commands\":[{\"method\":\"lock\",\"value\":9},{\"method\":\"unlock\",\"value\":5},{\"method\":\"open\",\"value\":12},{\"method\":\"close\",\"value\":4},{\"method\":\"lock\",\"value\":8},{\"method\":\"unlock\",\"value\":1}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":2}",
+        "input": "19 6\nlock 9\nunlock 5\nopen 12\nclose 4\nlock 8\nunlock 1",
+        "expectedOutput": "closed 2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"initial\":3,\"commands\":[{\"method\":\"unlock\",\"value\":12},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":1}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
+        "input": "3 3\nunlock 12\nopen 0\nclose 1",
+        "expectedOutput": "closed 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"initial\":0,\"commands\":[{\"method\":\"open\",\"value\":11},{\"method\":\"close\",\"value\":11},{\"method\":\"lock\",\"value\":11}]}",
-        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
+        "input": "0 3\nopen 11\nclose 11\nlock 11",
+        "expectedOutput": "locked 0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"initial\":15,\"commands\":[{\"method\":\"close\",\"value\":5},{\"method\":\"lock\",\"value\":2},{\"method\":\"unlock\",\"value\":7},{\"method\":\"open\",\"value\":1}]}",
-        "expectedOutput": "{\"state\":\"open\",\"invalid_actions\":0}",
+        "input": "15 4\nclose 5\nlock 2\nunlock 7\nopen 1",
+        "expectedOutput": "open 0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"initial\":2,\"commands\":[{\"method\":\"lock\",\"value\":0},{\"method\":\"unlock\",\"value\":6},{\"method\":\"open\",\"value\":0},{\"method\":\"close\",\"value\":6}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":0}",
+        "input": "2 4\nlock 0\nunlock 6\nopen 0\nclose 6",
+        "expectedOutput": "closed 0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"initial\":20,\"commands\":[{\"method\":\"unlock\",\"value\":20},{\"method\":\"open\",\"value\":19},{\"method\":\"close\",\"value\":18}]}",
-        "expectedOutput": "{\"state\":\"closed\",\"invalid_actions\":1}",
+        "input": "20 3\nunlock 20\nopen 19\nclose 18",
+        "expectedOutput": "closed 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"initial\":7,\"commands\":[{\"method\":\"open\",\"value\":4},{\"method\":\"close\",\"value\":8},{\"method\":\"lock\",\"value\":0},{\"method\":\"unlock\",\"value\":10},{\"method\":\"open\",\"value\":1},{\"method\":\"close\",\"value\":3},{\"method\":\"lock\",\"value\":6}]}",
-        "expectedOutput": "{\"state\":\"locked\",\"invalid_actions\":0}",
+        "input": "7 7\nopen 4\nclose 8\nlock 0\nunlock 10\nopen 1\nclose 3\nlock 6",
+        "expectedOutput": "locked 0",
         "isHidden": true
       }
     ]
