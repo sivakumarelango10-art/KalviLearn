@@ -11,42 +11,42 @@ export const questions: LearnQuestion[] = [
     "title": "Preorder Traversal",
     "order": 1,
     "difficulty": "Easy",
-    "problemStatement": "Return preorder values: root, left subtree, right subtree.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its preorder traversal (root, left subtree, right subtree). Print the node values in preorder separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the preorder traversal, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[4,2,1,3,6,5,7]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return preorder values: root, left subtree, right subtree. Therefore the expected JSON output is [4,2,1,3,6,5,7]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "4 2 1 3 6 5 7",
+        "explanation": "Preorder traversal: 4 2 1 3 6 5 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return preorder values: root, left subtree, right subtree. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Preorder traversal: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return preorder values: root, left subtree, right subtree. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Preorder traversal: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[4,2,1,3,6,5,7]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "4 2 1 3 6 5 7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -56,12 +56,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print preorder traversal\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:inorder-traversal",
@@ -73,42 +73,42 @@ export const questions: LearnQuestion[] = [
     "title": "Inorder Traversal",
     "order": 2,
     "difficulty": "Easy",
-    "problemStatement": "Return inorder values: left subtree, root, right subtree.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its inorder traversal (left subtree, root, right subtree). Print the node values in inorder separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the inorder traversal, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[1,2,3,4,5,6,7]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return inorder values: left subtree, root, right subtree. Therefore the expected JSON output is [1,2,3,4,5,6,7]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "1 2 3 4 5 6 7",
+        "explanation": "Inorder traversal: 1 2 3 4 5 6 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return inorder values: left subtree, root, right subtree. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Inorder traversal: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return inorder values: left subtree, root, right subtree. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Inorder traversal: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[1,2,3,4,5,6,7]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "1 2 3 4 5 6 7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -118,12 +118,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print inorder traversal\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:postorder-traversal",
@@ -135,42 +135,42 @@ export const questions: LearnQuestion[] = [
     "title": "Postorder Traversal",
     "order": 3,
     "difficulty": "Easy",
-    "problemStatement": "Return postorder values: left subtree, right subtree, root.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its postorder traversal (left subtree, right subtree, root). Print the node values in postorder separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the postorder traversal, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[1,3,2,5,7,6,4]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return postorder values: left subtree, right subtree, root. Therefore the expected JSON output is [1,3,2,5,7,6,4]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "1 3 2 5 7 6 4",
+        "explanation": "Postorder traversal: 1 3 2 5 7 6 4."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return postorder values: left subtree, right subtree, root. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Postorder traversal: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return postorder values: left subtree, right subtree, root. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Postorder traversal: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[1,3,2,5,7,6,4]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "1 3 2 5 7 6 4"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -180,12 +180,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print postorder traversal\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:breadth-first-traversal",
@@ -197,42 +197,42 @@ export const questions: LearnQuestion[] = [
     "title": "Breadth First Traversal",
     "order": 4,
     "difficulty": "Easy",
-    "problemStatement": "Return nodes level by level, from left to right, in one flat list.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its breadth-first (level-order) traversal visiting reachable non-null nodes level by level from left to right. Print the node values separated by spaces, or EMPTY if empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the breadth-first traversal, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[4,2,6,1,3,5,7]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return nodes level by level, from left to right, in one flat list. Therefore the expected JSON output is [4,2,6,1,3,5,7]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "4 2 6 1 3 5 7",
+        "explanation": "Breadth-first traversal: 4 2 6 1 3 5 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return nodes level by level, from left to right, in one flat list. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Breadth-first traversal: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return nodes level by level, from left to right, in one flat list. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Breadth-first traversal: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[4,2,6,1,3,5,7]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "4 2 6 1 3 5 7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -242,12 +242,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print BFS traversal\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:tree-node-count",
@@ -259,41 +259,41 @@ export const questions: LearnQuestion[] = [
     "title": "Tree Node Count",
     "order": 5,
     "difficulty": "Easy",
-    "problemStatement": "Count all nonnull reachable tree nodes.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), count the total number of non-null reachable nodes in the tree. Print the count as an integer.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the node count.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "7",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Count all nonnull reachable tree nodes. Therefore the expected JSON output is 7."
+        "explanation": "Total reachable node count: 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Count all nonnull reachable tree nodes. Therefore the expected JSON output is 0."
+        "explanation": "Total reachable node count: 0."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Count all nonnull reachable tree nodes. Therefore the expected JSON output is 1."
+        "explanation": "Total reachable node count: 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "1"
       }
     ],
@@ -304,12 +304,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print total node count\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:tree-value-sum",
@@ -321,41 +321,41 @@ export const questions: LearnQuestion[] = [
     "title": "Tree Value Sum",
     "order": 6,
     "difficulty": "Easy",
-    "problemStatement": "Return the sum of all node values.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute the sum of all reachable non-null node values. Print the sum as an integer.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the sum of all node values.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "28",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the sum of all node values. Therefore the expected JSON output is 28."
+        "explanation": "Sum of all node values: 28."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the sum of all node values. Therefore the expected JSON output is 0."
+        "explanation": "Sum of all node values: 0."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "5",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the sum of all node values. Therefore the expected JSON output is 5."
+        "explanation": "Sum of all node values: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "28"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "5"
       }
     ],
@@ -366,12 +366,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print sum of all node values\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:tree-height-in-nodes",
@@ -383,41 +383,41 @@ export const questions: LearnQuestion[] = [
     "title": "Tree Height in Nodes",
     "order": 7,
     "difficulty": "Easy",
-    "problemStatement": "Return the longest root-to-leaf path length measured in nodes; empty tree has height zero.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its height measured in nodes (the longest path from root to a leaf). An empty tree has height 0. Print the height as an integer.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the tree height in nodes.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "3",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the longest root-to-leaf path length measured in nodes; empty tree has height zero. Therefore the expected JSON output is 3."
+        "explanation": "Tree height in nodes: 3."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the longest root-to-leaf path length measured in nodes; empty tree has height zero. Therefore the expected JSON output is 0."
+        "explanation": "Tree height in nodes: 0."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the longest root-to-leaf path length measured in nodes; empty tree has height zero. Therefore the expected JSON output is 1."
+        "explanation": "Tree height in nodes: 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "1"
       }
     ],
@@ -428,12 +428,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print height in nodes\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:leaf-node-count",
@@ -445,41 +445,41 @@ export const questions: LearnQuestion[] = [
     "title": "Leaf Node Count",
     "order": 8,
     "difficulty": "Medium",
-    "problemStatement": "Count nonnull nodes that have no left or right child.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), count the number of leaf nodes (non-null nodes that have neither a left nor a right child). Print the count as an integer.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the leaf node count.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "4",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Count nonnull nodes that have no left or right child. Therefore the expected JSON output is 4."
+        "explanation": "Number of leaf nodes: 4."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Count nonnull nodes that have no left or right child. Therefore the expected JSON output is 0."
+        "explanation": "Number of leaf nodes: 0."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Count nonnull nodes that have no left or right child. Therefore the expected JSON output is 1."
+        "explanation": "Number of leaf nodes: 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "4"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "1"
       }
     ],
@@ -490,12 +490,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print leaf node count\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:internal-node-count",
@@ -507,41 +507,41 @@ export const questions: LearnQuestion[] = [
     "title": "Internal Node Count",
     "order": 9,
     "difficulty": "Medium",
-    "problemStatement": "Count tree nodes that have at least one child.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), count the number of internal nodes (non-null nodes that have at least one child). Print the count as an integer.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the internal node count.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "3",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Count tree nodes that have at least one child. Therefore the expected JSON output is 3."
+        "explanation": "Number of internal nodes: 3."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Count tree nodes that have at least one child. Therefore the expected JSON output is 0."
+        "explanation": "Number of internal nodes: 0."
       },
       {
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3\n5 5 5",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5, 5, 5], and target=5. Count tree nodes that have at least one child. Therefore the expected JSON output is 1."
+        "explanation": "Number of internal nodes: 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3\n5 5 5",
         "expectedOutput": "1"
       }
     ],
@@ -552,12 +552,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print internal node count\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:minimum-tree-value",
@@ -569,41 +569,41 @@ export const questions: LearnQuestion[] = [
     "title": "Minimum Tree Value",
     "order": 10,
     "difficulty": "Medium",
-    "problemStatement": "Return the minimum node value or null for empty tree.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), find the minimum value among all reachable non-null nodes. If the tree is empty, print null.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the minimum node value, or null if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the minimum node value or null for empty tree. Therefore the expected JSON output is 1."
+        "explanation": "Minimum node value: 1."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "null",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the minimum node value or null for empty tree. Therefore the expected JSON output is null."
+        "explanation": "Minimum node value: null."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "5",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the minimum node value or null for empty tree. Therefore the expected JSON output is 5."
+        "explanation": "Minimum node value: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "1"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "5"
       }
     ],
@@ -614,12 +614,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print minimum node value or null\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:maximum-tree-value",
@@ -631,41 +631,41 @@ export const questions: LearnQuestion[] = [
     "title": "Maximum Tree Value",
     "order": 11,
     "difficulty": "Medium",
-    "problemStatement": "Return the maximum node value or null for empty tree.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), find the maximum value among all reachable non-null nodes. If the tree is empty, print null.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the maximum node value, or null if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "7",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the maximum node value or null for empty tree. Therefore the expected JSON output is 7."
+        "explanation": "Maximum node value: 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "null",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the maximum node value or null for empty tree. Therefore the expected JSON output is null."
+        "explanation": "Maximum node value: null."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "output": "5",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the maximum node value or null for empty tree. Therefore the expected JSON output is 5."
+        "explanation": "Maximum node value: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1\n5",
         "expectedOutput": "5"
       }
     ],
@@ -676,12 +676,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print maximum node value or null\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:search-target-in-binary-tree",
@@ -693,41 +693,41 @@ export const questions: LearnQuestion[] = [
     "title": "Search Target in Binary Tree",
     "order": 12,
     "difficulty": "Medium",
-    "problemStatement": "Return true iff some node value equals target.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node) and an integer target, determine whether target is present in any reachable node. Print true if found, or false otherwise.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print true if target is in the tree, else false.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return true iff some node value equals target. Therefore the expected JSON output is true."
+        "explanation": "Target 3 in binary tree? true."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "false",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return true iff some node value equals target. Therefore the expected JSON output is false."
+        "explanation": "Target 0 in binary tree? false."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1 5\n5",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return true iff some node value equals target. Therefore the expected JSON output is true."
+        "explanation": "Target 5 in binary tree? true."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "expectedOutput": "true"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "false"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1 5\n5",
         "expectedOutput": "true"
       }
     ],
@@ -738,12 +738,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    tree = [None if x == 'null' else int(x) for x in data[2:2+n]]\n    # TODO: Print true if target in tree else false\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const tree = data.slice(2, 2 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:count-target-nodes",
@@ -755,41 +755,41 @@ export const questions: LearnQuestion[] = [
     "title": "Count Target Nodes",
     "order": 13,
     "difficulty": "Medium",
-    "problemStatement": "Count how many nodes equal target.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node) and an integer target, count the number of reachable nodes whose value equals target. Print the count as an integer.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the count of nodes equal to target.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "output": "1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Count how many nodes equal target. Therefore the expected JSON output is 1."
+        "explanation": "Target 3 appears 1 time(s) in the tree."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Count how many nodes equal target. Therefore the expected JSON output is 0."
+        "explanation": "Target 0 appears 0 time(s) in the tree."
       },
       {
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3 5\n5 5 5",
         "output": "3",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5, 5, 5], and target=5. Count how many nodes equal target. Therefore the expected JSON output is 3."
+        "explanation": "Target 5 appears 3 time(s) in the tree."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "expectedOutput": "1"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3 5\n5 5 5",
         "expectedOutput": "3"
       }
     ],
@@ -800,12 +800,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    tree = [None if x == 'null' else int(x) for x in data[2:2+n]]\n    # TODO: Print count of target nodes\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const tree = data.slice(2, 2 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:validate-strict-bst",
@@ -817,41 +817,41 @@ export const questions: LearnQuestion[] = [
     "title": "Validate Strict BST",
     "order": 14,
     "difficulty": "Medium",
-    "problemStatement": "Return true iff all nodes obey strict BST ordering (all left descendants < node < all right descendants); empty tree is valid.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), determine whether the tree satisfies strict Binary Search Tree (BST) ordering (for every node, all left descendants are strictly smaller and all right descendants are strictly greater). An empty tree is valid. Print true or false.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print true if the tree is a strict BST, else false.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return true iff all nodes obey strict BST ordering (all left descendants < node < all right descendants); empty tree is valid. Therefore the expected JSON output is true."
+        "explanation": "Is the tree a strict BST? true."
       },
       {
-        "input": "{\"tree\":[1,2,3,4,5,6,7],\"target\":7}",
+        "input": "7\n1 2 3 4 5 6 7",
         "output": "false",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [1, 2, 3, 4, 5, 6, 7], and target=7. Return true iff all nodes obey strict BST ordering (all left descendants < node < all right descendants); empty tree is valid. Therefore the expected JSON output is false."
+        "explanation": "Is the tree a strict BST? false."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return true iff all nodes obey strict BST ordering (all left descendants < node < all right descendants); empty tree is valid. Therefore the expected JSON output is true."
+        "explanation": "Is the tree a strict BST? true."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "true"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[1,2,3,4,5,6,7],\"target\":7}",
+        "input": "7\n1 2 3 4 5 6 7",
         "expectedOutput": "false"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "true"
       }
     ],
@@ -862,12 +862,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print true if tree is strict BST else false\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:height-balanced-binary-tree",
@@ -879,41 +879,41 @@ export const questions: LearnQuestion[] = [
     "title": "Height Balanced Binary Tree",
     "order": 15,
     "difficulty": "Medium",
-    "problemStatement": "Return true if at every node the heights of the left and right subtree differ by at most one.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), determine whether the tree is height-balanced (for every node, the heights of its left and right subtrees differ by at most 1). An empty tree is balanced. Print true or false.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print true if the tree is height-balanced, else false.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return true if at every node the heights of the left and right subtree differ by at most one. Therefore the expected JSON output is true."
+        "explanation": "Is the tree height-balanced? true."
       },
       {
-        "input": "{\"tree\":[9,3,10,1,6,null,14,null,null,4,7,null,null,13],\"target\":4}",
+        "input": "14\n9 3 10 1 6 null 14 null null 4 7 null null 13",
         "output": "false",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [9, 3, 10, 1, 6, 14, 4, 7, 13], and target=4. Return true if at every node the heights of the left and right subtree differ by at most one. Therefore the expected JSON output is false."
+        "explanation": "Is the tree height-balanced? false."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "true",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return true if at every node the heights of the left and right subtree differ by at most one. Therefore the expected JSON output is true."
+        "explanation": "Is the tree height-balanced? true."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "true"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[9,3,10,1,6,null,14,null,null,4,7,null,null,13],\"target\":4}",
+        "input": "14\n9 3 10 1 6 null 14 null null 4 7 null null 13",
         "expectedOutput": "false"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "true"
       }
     ],
@@ -924,12 +924,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print true if tree is height-balanced else false\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:diameter-in-edges",
@@ -941,41 +941,41 @@ export const questions: LearnQuestion[] = [
     "title": "Diameter in Edges",
     "order": 16,
     "difficulty": "Hard",
-    "problemStatement": "Return length in edges of longest path between any two nodes; return zero for empty or one-node tree.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its diameter measured in edges (the length of the longest path between any two nodes in the tree). For an empty or single-node tree, print 0.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the tree diameter in edges.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "output": "4",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return length in edges of longest path between any two nodes; return zero for empty or one-node tree. Therefore the expected JSON output is 4."
+        "explanation": "Tree diameter in edges: 4."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return length in edges of longest path between any two nodes; return zero for empty or one-node tree. Therefore the expected JSON output is 0."
+        "explanation": "Tree diameter in edges: 0."
       },
       {
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3\n5 5 5",
         "output": "2",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5, 5, 5], and target=5. Return length in edges of longest path between any two nodes; return zero for empty or one-node tree. Therefore the expected JSON output is 2."
+        "explanation": "Tree diameter in edges: 2."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7\n4 2 6 1 3 5 7",
         "expectedOutput": "4"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5,5,5],\"target\":5}",
+        "input": "3\n5 5 5",
         "expectedOutput": "2"
       }
     ],
@@ -986,12 +986,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print diameter in edges\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:root-to-leaf-path-sums",
@@ -1003,42 +1003,42 @@ export const questions: LearnQuestion[] = [
     "title": "Root to Leaf Path Sums",
     "order": 17,
     "difficulty": "Hard",
-    "problemStatement": "Return a left-to-right ordered array containing the sum of each root-to-leaf path.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), find the sum of node values along each path from root to leaf, traversed from left to right. Print the path sums separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the root-to-leaf path sums, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[7,9,15,17]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return a left-to-right ordered array containing the sum of each root-to-leaf path. Therefore the expected JSON output is [7,9,15,17]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "7 9 15 17",
+        "explanation": "Root-to-leaf path sums: 7 9 15 17."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return a left-to-right ordered array containing the sum of each root-to-leaf path. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Root-to-leaf path sums: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return a left-to-right ordered array containing the sum of each root-to-leaf path. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Root-to-leaf path sums: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[7,9,15,17]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "7 9 15 17"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -1048,12 +1048,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print root-to-leaf path sums\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:level-sum-array",
@@ -1065,42 +1065,42 @@ export const questions: LearnQuestion[] = [
     "title": "Level Sum Array",
     "order": 18,
     "difficulty": "Hard",
-    "problemStatement": "Return the sum of the values at each depth from root to deepest level.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute the sum of values at each depth level from root (depth 0) to the deepest level. Print the level sums separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the sum at each level separated by space, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[4,8,16]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the sum of the values at each depth from root to deepest level. Therefore the expected JSON output is [4,8,16]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "4 8 16",
+        "explanation": "Level sums from root to leaf depth: 4 8 16."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the sum of the values at each depth from root to deepest level. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Level sums from root to leaf depth: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the sum of the values at each depth from root to deepest level. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Level sums from root to leaf depth: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[4,8,16]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "4 8 16"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -1110,12 +1110,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print sum at each depth level\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:minimum-target-depth",
@@ -1127,41 +1127,41 @@ export const questions: LearnQuestion[] = [
     "title": "Minimum Target Depth",
     "order": 19,
     "difficulty": "Hard",
-    "problemStatement": "Return the shallowest root-to-node depth (root=0) where value equals target; return -1 if not found.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node) and an integer target, find the minimum (shallowest) 0-based depth from root (root depth = 0) where a node equals target. If target is not found, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the shallowest depth of target, or -1 if not found.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "output": "2",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the shallowest root-to-node depth (root=0) where value equals target; return -1 if not found. Therefore the expected JSON output is 2."
+        "explanation": "Minimum depth of target 3: 2."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the shallowest root-to-node depth (root=0) where value equals target; return -1 if not found. Therefore the expected JSON output is -1."
+        "explanation": "Minimum depth of target 0: -1."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1 5\n5",
         "output": "0",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the shallowest root-to-node depth (root=0) where value equals target; return -1 if not found. Therefore the expected JSON output is 0."
+        "explanation": "Minimum depth of target 5: 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
+        "input": "7 3\n4 2 6 1 3 5 7",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
+        "input": "1 5\n5",
         "expectedOutput": "0"
       }
     ],
@@ -1172,12 +1172,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    tree = [None if x == 'null' else int(x) for x in data[2:2+n]]\n    # TODO: Print shallowest depth of target or -1\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const tree = data.slice(2, 2 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:trees-bst:right-side-view",
@@ -1189,42 +1189,42 @@ export const questions: LearnQuestion[] = [
     "title": "Right Side View",
     "order": 20,
     "difficulty": "Hard",
-    "problemStatement": "Return the rightmost visible node at every depth.",
-    "inputFormat": "A single JSON object: {\"tree\": level-order binary-tree array using null placeholders, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(tree) ≤ 15; values -10..20 or null; all nonnull nodes have nonnull ancestors; root index 0, left child 2i+1, right child 2i+2; repeated node values possible.",
+    "problemStatement": "Given a binary tree represented in array level-order of size n (where null represents a missing/null node), compute its right side view (the rightmost visible node value at each depth level from top to bottom). Print the values separated by spaces, or EMPTY if the tree is empty.",
+    "inputFormat": "The first line contains integer n. The second line contains n space-separated tokens representing the tree in level-order (where null represents a missing node).",
+    "outputFormat": "Print the right side view of the tree, or EMPTY if empty.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ tree[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "output": "[4,6,7]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [4, 2, 6, 1, 3, 5, 7], and target=3. Return the rightmost visible node at every depth. Therefore the expected JSON output is [4,6,7]."
+        "input": "7\n4 2 6 1 3 5 7",
+        "output": "4 6 7",
+        "explanation": "Right side view: 4 6 7."
       },
       {
-        "input": "{\"tree\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [], and target=0. Return the rightmost visible node at every depth. Therefore the expected JSON output is []."
+        "input": "0\n",
+        "output": "EMPTY",
+        "explanation": "Right side view: EMPTY."
       },
       {
-        "input": "{\"tree\":[5],\"target\":5}",
-        "output": "[5]",
-        "explanation": "Interpret non-null level-order nodes as a binary tree; breadth-first values are [5], and target=5. Return the rightmost visible node at every depth. Therefore the expected JSON output is [5]."
+        "input": "1\n5",
+        "output": "5",
+        "explanation": "Right side view: 5."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"tree\":[4,2,6,1,3,5,7],\"target\":3}",
-        "expectedOutput": "[4,6,7]"
+        "input": "7\n4 2 6 1 3 5 7",
+        "expectedOutput": "4 6 7"
       },
       {
         "testIndex": 2,
-        "input": "{\"tree\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"tree\":[5],\"target\":5}",
-        "expectedOutput": "[5]"
+        "input": "1\n5",
+        "expectedOutput": "5"
       }
     ],
     "testCaseMeta": {
@@ -1234,13 +1234,11 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    tree = [None if x == 'null' else int(x) for x in data[1:1+n]]\n    # TODO: Print right side view\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 1 && data[0] !== '') {\n    const n = parseInt(data[0], 10);\n    const tree = data.slice(1, 1 + n).map(x => x === 'null' ? null : parseInt(x, 10));\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        Long[] tree = new Long[n];\n        for (int i = 0; i < n; i++) {\n            String tok = sc.next();\n            tree[i] = tok.equals(\"null\") ? null : Long.parseLong(tok);\n        }\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <string>\n#include <optional>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        vector<optional<long long>> tree(n);\n        for (int i = 0; i < n; i++) {\n            string tok;\n            cin >> tok;\n            if (tok == \"null\") tree[i] = nullopt;\n            else tree[i] = stoll(tok);\n        }\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   }
 ]
-
-export default questions
