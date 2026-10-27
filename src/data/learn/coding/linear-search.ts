@@ -11,41 +11,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Target Index",
     "order": 1,
     "difficulty": "Easy",
-    "problemStatement": "Return the first index holding target; otherwise -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the first (leftmost) zero-based index where nums[i] == target. If target is not found in the array, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index of target, or -1 if not found.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index holding target; otherwise -1. Therefore the expected JSON output is 2."
+        "explanation": "First occurrence of 4 is at index 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index holding target; otherwise -1. Therefore the expected JSON output is -1."
+        "explanation": "First occurrence of 0 is at index -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the first index holding target; otherwise -1. Therefore the expected JSON output is 0."
+        "explanation": "First occurrence of 7 is at index 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -56,12 +56,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:last-target-index",
@@ -73,41 +73,41 @@ export const questions: LearnQuestion[] = [
     "title": "Last Target Index",
     "order": 2,
     "difficulty": "Easy",
-    "problemStatement": "Return the last index holding target; otherwise -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the last (rightmost) zero-based index where nums[i] == target. If target is not found in the array, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the last index of target, or -1 if not found.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the last index holding target; otherwise -1. Therefore the expected JSON output is 2."
+        "explanation": "Last occurrence of 4 is at index 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the last index holding target; otherwise -1. Therefore the expected JSON output is -1."
+        "explanation": "Last occurrence of 0 is at index -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the last index holding target; otherwise -1. Therefore the expected JSON output is 0."
+        "explanation": "Last occurrence of 7 is at index 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -118,12 +118,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:count-equal-values",
@@ -135,41 +135,41 @@ export const questions: LearnQuestion[] = [
     "title": "Count Equal Values",
     "order": 3,
     "difficulty": "Easy",
-    "problemStatement": "Return the number of times target appears.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Count and print how many elements in the array are equal to target.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the count of matching elements.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "1",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the number of times target appears. Therefore the expected JSON output is 1."
+        "explanation": "Target 4 appears 1 time(s)."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "0",
-        "explanation": "Inspect 0 values [] and target=0. Return the number of times target appears. Therefore the expected JSON output is 0."
+        "explanation": "Target 0 appears 0 time(s)."
       },
       {
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "output": "3",
-        "explanation": "Inspect 3 values [0,0,0] and target=0. Return the number of times target appears. Therefore the expected JSON output is 3."
+        "explanation": "Target 0 appears 3 time(s)."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "1"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
+        "input": "3 0\n0 0 0",
         "expectedOutput": "3"
       }
     ],
@@ -180,12 +180,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:all-matching-indices",
@@ -197,42 +197,42 @@ export const questions: LearnQuestion[] = [
     "title": "All Matching Indices",
     "order": 4,
     "difficulty": "Easy",
-    "problemStatement": "Return every index whose value equals target, from left to right.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find all zero-based indices where nums[i] == target, and print them in increasing order space-separated on a single line. If target is not found, print \"EMPTY\".",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the matching indices space-separated on one line, or \"EMPTY\".",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
-        "output": "[2]",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return every index whose value equals target, from left to right. Therefore the expected JSON output is [2]."
+        "input": "5 4\n3 1 4 1 5",
+        "output": "2",
+        "explanation": "Indices matching target 4: 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Inspect 0 values [] and target=0. Return every index whose value equals target, from left to right. Therefore the expected JSON output is []."
+        "input": "0 0\n",
+        "output": "EMPTY",
+        "explanation": "Indices matching target 0: EMPTY."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
-        "output": "[0]",
-        "explanation": "Inspect 1 values [7] and target=7. Return every index whose value equals target, from left to right. Therefore the expected JSON output is [0]."
+        "input": "1 7\n7",
+        "output": "0",
+        "explanation": "Indices matching target 7: 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
-        "expectedOutput": "[2]"
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0 0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
-        "expectedOutput": "[0]"
+        "input": "1 7\n7",
+        "expectedOutput": "0"
       }
     ],
     "testCaseMeta": {
@@ -242,12 +242,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:target-exists",
@@ -259,41 +259,41 @@ export const questions: LearnQuestion[] = [
     "title": "Target Exists",
     "order": 5,
     "difficulty": "Easy",
-    "problemStatement": "Return true if target is present; otherwise false.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Determine whether target exists anywhere in the array. Print \"true\" if it does, or \"false\" otherwise.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print \"true\" if target exists, otherwise \"false\".",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "true",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return true if target is present; otherwise false. Therefore the expected JSON output is true."
+        "explanation": "Target 4 exists in array: true."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "false",
-        "explanation": "Inspect 0 values [] and target=0. Return true if target is present; otherwise false. Therefore the expected JSON output is false."
+        "explanation": "Target 0 exists in array: false."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "true",
-        "explanation": "Inspect 1 values [7] and target=7. Return true if target is present; otherwise false. Therefore the expected JSON output is true."
+        "explanation": "Target 7 exists in array: true."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "true"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "false"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "true"
       }
     ],
@@ -304,12 +304,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:first-greater-than-target",
@@ -321,41 +321,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Greater Than Target",
     "order": 6,
     "difficulty": "Easy",
-    "problemStatement": "Return the first index whose value is strictly greater than target; otherwise -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the 0-based index of the first value in the array that is strictly greater than target (nums[i] > target). If no such element exists, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index where nums[i] > target, or -1 if none exists.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "4",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index whose value is strictly greater than target; otherwise -1. Therefore the expected JSON output is 4."
+        "explanation": "First index with element strictly greater than 4 is 4."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index whose value is strictly greater than target; otherwise -1. Therefore the expected JSON output is -1."
+        "explanation": "First index with element strictly greater than 0 is -1."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "3",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the first index whose value is strictly greater than target; otherwise -1. Therefore the expected JSON output is 3."
+        "explanation": "First index with element strictly greater than -1 is 3."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "4"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "3"
       }
     ],
@@ -366,12 +366,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:last-less-than-target",
@@ -383,41 +383,41 @@ export const questions: LearnQuestion[] = [
     "title": "Last Less Than Target",
     "order": 7,
     "difficulty": "Easy",
-    "problemStatement": "Return the last index whose value is strictly less than target; otherwise -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the 0-based index of the last value in the array that is strictly less than target (nums[i] < target). If no such element exists, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the last index where nums[i] < target, or -1 if none exists.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "3",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the last index whose value is strictly less than target; otherwise -1. Therefore the expected JSON output is 3."
+        "explanation": "Last index with element strictly less than 4 is 3."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the last index whose value is strictly less than target; otherwise -1. Therefore the expected JSON output is -1."
+        "explanation": "Last index with element strictly less than 0 is -1."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "2",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the last index whose value is strictly less than target; otherwise -1. Therefore the expected JSON output is 2."
+        "explanation": "Last index with element strictly less than -1 is 2."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "2"
       }
     ],
@@ -428,12 +428,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:first-greater-or-equal",
@@ -445,41 +445,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Greater or Equal",
     "order": 8,
     "difficulty": "Medium",
-    "problemStatement": "Return the first index whose value is ≥ target, else -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the first (leftmost) zero-based index i where nums[i] ≥ target. If no such index exists, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index where nums[i] ≥ target, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index whose value is ≥ target, else -1. Therefore the expected JSON output is 2."
+        "explanation": "First index where element >= 4 is 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index whose value is ≥ target, else -1. Therefore the expected JSON output is -1."
+        "explanation": "First index where element >= 0 is -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the first index whose value is ≥ target, else -1. Therefore the expected JSON output is 0."
+        "explanation": "First index where element >= 7 is 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -490,12 +490,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:last-less-or-equal",
@@ -507,41 +507,41 @@ export const questions: LearnQuestion[] = [
     "title": "Last Less or Equal",
     "order": 9,
     "difficulty": "Medium",
-    "problemStatement": "Return the last index whose value is ≤ target, else -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the last (rightmost) zero-based index i where nums[i] ≤ target. If no such index exists, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the last index where nums[i] ≤ target, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "3",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the last index whose value is ≤ target, else -1. Therefore the expected JSON output is 3."
+        "explanation": "Last index where element <= 4 is 3."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the last index whose value is ≤ target, else -1. Therefore the expected JSON output is -1."
+        "explanation": "Last index where element <= 0 is -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the last index whose value is ≤ target, else -1. Therefore the expected JSON output is 0."
+        "explanation": "Last index where element <= 7 is 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -552,12 +552,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:nearest-value-index",
@@ -569,41 +569,41 @@ export const questions: LearnQuestion[] = [
     "title": "Nearest Value Index",
     "order": 10,
     "difficulty": "Medium",
-    "problemStatement": "Return the index of an element with smallest absolute difference from target; ties choose the smallest index; empty list returns -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the index of the element closest in value to target (|nums[i] - target| is minimized). If there is a tie, pick the smaller index. If the array is empty, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the index of the nearest element, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the index of an element with smallest absolute difference from target; ties choose the smallest index; empty list returns -1. Therefore the expected JSON output is 2."
+        "explanation": "Element closest to target 4 is at index 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the index of an element with smallest absolute difference from target; ties choose the smallest index; empty list returns -1. Therefore the expected JSON output is -1."
+        "explanation": "Element closest to target 0 is at index -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the index of an element with smallest absolute difference from target; ties choose the smallest index; empty list returns -1. Therefore the expected JSON output is 0."
+        "explanation": "Element closest to target 7 is at index 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -614,12 +614,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\n#include <cmath>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:first-nonmatching-index",
@@ -631,41 +631,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Nonmatching Index",
     "order": 11,
     "difficulty": "Medium",
-    "problemStatement": "Return the first index whose entry differs from target, or -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the first (leftmost) index where nums[i] != target. If all elements equal target or the array is empty, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index != target, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "0",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index whose entry differs from target, or -1. Therefore the expected JSON output is 0."
+        "explanation": "First element differing from 4 is at index 0."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index whose entry differs from target, or -1. Therefore the expected JSON output is -1."
+        "explanation": "First element differing from 0 is at index -1."
       },
       {
-        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "input": "5 5\n5 -5 5 -5 0",
         "output": "1",
-        "explanation": "Inspect 5 values [5,-5,5,-5,0] and target=5. Return the first index whose entry differs from target, or -1. Therefore the expected JSON output is 1."
+        "explanation": "First element differing from 5 is at index 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "0"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "input": "5 5\n5 -5 5 -5 0",
         "expectedOutput": "1"
       }
     ],
@@ -676,12 +676,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:indices-of-even-entries",
@@ -693,42 +693,42 @@ export const questions: LearnQuestion[] = [
     "title": "Indices of Even Entries",
     "order": 12,
     "difficulty": "Medium",
-    "problemStatement": "Return all indices where the element is even.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find all zero-based indices where nums[i] is even, and print them space-separated on a single line. If no even elements exist, print \"EMPTY\".",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the even indices space-separated on one line, or \"EMPTY\".",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
-        "output": "[2]",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return all indices where the element is even. Therefore the expected JSON output is [2]."
+        "input": "5 4\n3 1 4 1 5",
+        "output": "2",
+        "explanation": "Indices of even entries: 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
-        "output": "[]",
-        "explanation": "Inspect 0 values [] and target=0. Return all indices where the element is even. Therefore the expected JSON output is []."
+        "input": "0 0\n",
+        "output": "EMPTY",
+        "explanation": "Indices of even entries: EMPTY."
       },
       {
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "output": "[0,1,2]",
-        "explanation": "Inspect 3 values [0,0,0] and target=0. Return all indices where the element is even. Therefore the expected JSON output is [0,1,2]."
+        "input": "3 0\n0 0 0",
+        "output": "0 1 2",
+        "explanation": "Indices of even entries: 0 1 2."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
-        "expectedOutput": "[2]"
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
-        "expectedOutput": "[]"
+        "input": "0 0\n",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[0,0,0],\"target\":0}",
-        "expectedOutput": "[0,1,2]"
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1 2"
       }
     ],
     "testCaseMeta": {
@@ -738,12 +738,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:first-multiple-of-target",
@@ -755,41 +755,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Multiple of Target",
     "order": 13,
     "difficulty": "Medium",
-    "problemStatement": "Return first index i where target is nonzero and nums[i] is divisible by target; return -1 for target=0.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the first index i where nums[i] is a multiple of target (target != 0 and nums[i] % target == 0). If no such element exists, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index of a multiple of target, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return first index i where target is nonzero and nums[i] is divisible by target; return -1 for target=0. Therefore the expected JSON output is 2."
+        "explanation": "First multiple of 4 is at index 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return first index i where target is nonzero and nums[i] is divisible by target; return -1 for target=0. Therefore the expected JSON output is -1."
+        "explanation": "First multiple of 0 is at index -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return first index i where target is nonzero and nums[i] is divisible by target; return -1 for target=0. Therefore the expected JSON output is 0."
+        "explanation": "First multiple of 7 is at index 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -800,12 +800,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:first-local-peak",
@@ -817,41 +817,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Local Peak",
     "order": 14,
     "difficulty": "Medium",
-    "problemStatement": "Return the first index whose value is at least both existing immediate neighbors; for empty input return -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the index of the first local peak (an element at least as large as both its existing immediate neighbors: nums[i] >= neighbors). If no local peak exists or the array is empty, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the index of the first local peak, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "0",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index whose value is at least both existing immediate neighbors; for empty input return -1. Therefore the expected JSON output is 0."
+        "explanation": "First local peak is at index 0."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index whose value is at least both existing immediate neighbors; for empty input return -1. Therefore the expected JSON output is -1."
+        "explanation": "First local peak is at index -1."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "1",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the first index whose value is at least both existing immediate neighbors; for empty input return -1. Therefore the expected JSON output is 1."
+        "explanation": "First local peak is at index 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "0"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "1"
       }
     ],
@@ -862,12 +862,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:search-starting-after-first-half",
@@ -879,41 +879,41 @@ export const questions: LearnQuestion[] = [
     "title": "Search Starting After First Half",
     "order": 15,
     "difficulty": "Medium",
-    "problemStatement": "Scan only indices i≥floor(len(nums)/2), and return first index equal to target; otherwise -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Search for target starting from the middle index i = n // 2 through n - 1. Find the first occurrence in this second half and print its global index. If not found in the second half, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the index in the second half matching target, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "2",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Scan only indices i≥floor(len(nums)/2), and return first index equal to target; otherwise -1. Therefore the expected JSON output is 2."
+        "explanation": "Searching from index n//2 onwards, first occurrence of 4 is at 2."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Scan only indices i≥floor(len(nums)/2), and return first index equal to target; otherwise -1. Therefore the expected JSON output is -1."
+        "explanation": "Searching from index n//2 onwards, first occurrence of 0 is at -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Scan only indices i≥floor(len(nums)/2), and return first index equal to target; otherwise -1. Therefore the expected JSON output is 0."
+        "explanation": "Searching from index n//2 onwards, first occurrence of 7 is at 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "2"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -924,12 +924,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:last-negative-position",
@@ -941,41 +941,41 @@ export const questions: LearnQuestion[] = [
     "title": "Last Negative Position",
     "order": 16,
     "difficulty": "Hard",
-    "problemStatement": "Return the last index with a negative value, or -1.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the index of the last (rightmost) negative element in the array (nums[i] < 0). If no negative numbers exist, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the index of the last negative number, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "-1",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the last index with a negative value, or -1. Therefore the expected JSON output is -1."
+        "explanation": "Last negative element index is -1."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "2",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the last index with a negative value, or -1. Therefore the expected JSON output is 2."
+        "explanation": "Last negative element index is 2."
       },
       {
-        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "input": "5 5\n5 -5 5 -5 0",
         "output": "3",
-        "explanation": "Inspect 5 values [5,-5,5,-5,0] and target=5. Return the last index with a negative value, or -1. Therefore the expected JSON output is 3."
+        "explanation": "Last negative element index is 3."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "2"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[5,-5,5,-5,0],\"target\":5}",
+        "input": "5 5\n5 -5 5 -5 0",
         "expectedOutput": "3"
       }
     ],
@@ -986,12 +986,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:index-of-maximum-first-tie",
@@ -1003,41 +1003,41 @@ export const questions: LearnQuestion[] = [
     "title": "Index of Maximum First Tie",
     "order": 17,
     "difficulty": "Hard",
-    "problemStatement": "Return the first index of the maximum value, or -1 for an empty array.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the index of the maximum value in the array. If there are ties, choose the smallest (first) index. If the array is empty, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the first index of the maximum value, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "4",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the first index of the maximum value, or -1 for an empty array. Therefore the expected JSON output is 4."
+        "explanation": "First maximum element index is 4."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the first index of the maximum value, or -1 for an empty array. Therefore the expected JSON output is -1."
+        "explanation": "First maximum element index is -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the first index of the maximum value, or -1 for an empty array. Therefore the expected JSON output is 0."
+        "explanation": "First maximum element index is 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "4"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -1048,12 +1048,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:index-of-minimum-last-tie",
@@ -1065,41 +1065,41 @@ export const questions: LearnQuestion[] = [
     "title": "Index of Minimum Last Tie",
     "order": 18,
     "difficulty": "Hard",
-    "problemStatement": "Return the last index of the minimum value, or -1 if empty.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the index of the minimum value in the array. If there are ties, choose the largest (last) index. If the array is empty, print -1.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the last index of the minimum value, or -1.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i] ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "3",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the last index of the minimum value, or -1 if empty. Therefore the expected JSON output is 3."
+        "explanation": "Last minimum element index is 3."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "-1",
-        "explanation": "Inspect 0 values [] and target=0. Return the last index of the minimum value, or -1 if empty. Therefore the expected JSON output is -1."
+        "explanation": "Last minimum element index is -1."
       },
       {
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "output": "0",
-        "explanation": "Inspect 1 values [7] and target=7. Return the last index of the minimum value, or -1 if empty. Therefore the expected JSON output is 0."
+        "explanation": "Last minimum element index is 0."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "-1"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[7],\"target\":7}",
+        "input": "1 7\n7",
         "expectedOutput": "0"
       }
     ],
@@ -1110,12 +1110,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:closest-smaller-value",
@@ -1127,41 +1127,41 @@ export const questions: LearnQuestion[] = [
     "title": "Closest Smaller Value",
     "order": 19,
     "difficulty": "Hard",
-    "problemStatement": "Return the greatest array value strictly below target, or null if none exists.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the value in the array strictly smaller than target that is closest to target (i.e. the maximum element among all nums[i] < target). If no elements are smaller than target, print null.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the closest smaller value, or null.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "3",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the greatest array value strictly below target, or null if none exists. Therefore the expected JSON output is 3."
+        "explanation": "Closest value smaller than 4 is 3."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "null",
-        "explanation": "Inspect 0 values [] and target=0. Return the greatest array value strictly below target, or null if none exists. Therefore the expected JSON output is null."
+        "explanation": "Closest value smaller than 0 is null."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "-3",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the greatest array value strictly below target, or null if none exists. Therefore the expected JSON output is -3."
+        "explanation": "Closest value smaller than -1 is -3."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "-3"
       }
     ],
@@ -1172,12 +1172,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:linear-search:closest-larger-value",
@@ -1189,41 +1189,41 @@ export const questions: LearnQuestion[] = [
     "title": "Closest Larger Value",
     "order": 20,
     "difficulty": "Hard",
-    "problemStatement": "Return the least array value strictly above target, or null if none exists.",
-    "inputFormat": "A single JSON object: {\"nums\": array of integers, \"target\": integer}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(nums) ≤ 10; -10 ≤ nums[i],target ≤ 10; positions are zero-based; tie rules are specified in tasks.",
+    "problemStatement": "Read two integers n and target on the first line, followed by an array of n integers on the second line. Find the value in the array strictly larger than target that is closest to target (i.e. the minimum element among all nums[i] > target). If no elements are larger than target, print null.",
+    "inputFormat": "The first line contains two integers n and target. The second line contains n space-separated integers.",
+    "outputFormat": "Print the closest larger value, or null.",
+    "constraints": "0 ≤ n ≤ 10^5, -10^9 ≤ nums[i], target ≤ 10^9",
     "examples": [
       {
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "output": "5",
-        "explanation": "Inspect 5 values [3,1,4,1,5] and target=4. Return the least array value strictly above target, or null if none exists. Therefore the expected JSON output is 5."
+        "explanation": "Closest value larger than 4 is 5."
       },
       {
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "output": "null",
-        "explanation": "Inspect 0 values [] and target=0. Return the least array value strictly above target, or null if none exists. Therefore the expected JSON output is null."
+        "explanation": "Closest value larger than 0 is null."
       },
       {
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "output": "2",
-        "explanation": "Inspect 4 values [-4,-1,-3,2] and target=-1. Return the least array value strictly above target, or null if none exists. Therefore the expected JSON output is 2."
+        "explanation": "Closest value larger than -1 is 2."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"nums\":[3,1,4,1,5],\"target\":4}",
+        "input": "5 4\n3 1 4 1 5",
         "expectedOutput": "5"
       },
       {
         "testIndex": 2,
-        "input": "{\"nums\":[],\"target\":0}",
+        "input": "0 0\n",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"nums\":[-4,-1,-3,2],\"target\":-1}",
+        "input": "4 -1\n-4 -1 -3 2",
         "expectedOutput": "2"
       }
     ],
@@ -1234,13 +1234,11 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n, target = int(data[0]), int(data[1])\n    nums = [int(x) for x in data[2:2+n]]\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (data.length >= 2) {\n    const n = parseInt(data[0], 10), target = parseInt(data[1], 10);\n    const nums = data.slice(2, 2 + n).map(Number);\n    // TODO: Write your solution here\n}\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long target = sc.nextLong();\n        long[] nums = new long[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextLong();\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (cin >> n >> target) {\n        vector<long long> nums(n);\n        for (int i = 0; i < n; i++) cin >> nums[i];\n        // TODO: Write your solution here\n    }\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   }
 ]
-
-export default questions

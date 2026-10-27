@@ -11,41 +11,41 @@ export const questions: LearnQuestion[] = [
     "title": "Length by Character Traversal",
     "order": 1,
     "difficulty": "Easy",
-    "problemStatement": "Return the number of characters in text.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Count and print the total number of characters in the string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the integer character count.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "9",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the number of characters in text. Therefore the expected JSON output is 9."
+        "explanation": "The string \"algorithm\" has length 9."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "0",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the number of characters in text. Therefore the expected JSON output is 0."
+        "explanation": "The string \"\" has length 0."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "1",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return the number of characters in text. Therefore the expected JSON output is 1."
+        "explanation": "The string \"a\" has length 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "9"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1"
       }
     ],
@@ -56,12 +56,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:reverse-characters",
@@ -73,41 +73,41 @@ export const questions: LearnQuestion[] = [
     "title": "Reverse Characters",
     "order": 2,
     "difficulty": "Easy",
-    "problemStatement": "Return text written in reverse character order.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Reverse the characters of the string and print the reversed string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the reversed string.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "mhtirogla",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return text written in reverse character order. Therefore the expected JSON output is \"mhtirogla\"."
+        "explanation": "Reversing \"algorithm\" yields \"mhtirogla\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return text written in reverse character order. Therefore the expected JSON output is \"\"."
+        "explanation": "Reversing \"\" yields \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return text written in reverse character order. Therefore the expected JSON output is \"a\"."
+        "explanation": "Reversing \"a\" yields \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "mhtirogla"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -118,12 +118,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:count-vowel-characters",
@@ -135,41 +135,41 @@ export const questions: LearnQuestion[] = [
     "title": "Count Vowel Characters",
     "order": 3,
     "difficulty": "Easy",
-    "problemStatement": "Count letters in {a,e,i,o,u}.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Count and print the number of vowel characters (a, e, i, o, u, case-insensitive) in the string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the count of vowel characters.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "3",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Count letters in {a,e,i,o,u}. Therefore the expected JSON output is 3."
+        "explanation": "\"algorithm\" contains 3 vowel(s)."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "0",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Count letters in {a,e,i,o,u}. Therefore the expected JSON output is 0."
+        "explanation": "\"\" contains 0 vowel(s)."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "1",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Count letters in {a,e,i,o,u}. Therefore the expected JSON output is 1."
+        "explanation": "\"a\" contains 1 vowel(s)."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "3"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1"
       }
     ],
@@ -180,12 +180,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:count-consonant-characters",
@@ -197,41 +197,41 @@ export const questions: LearnQuestion[] = [
     "title": "Count Consonant Characters",
     "order": 4,
     "difficulty": "Easy",
-    "problemStatement": "Count letters not in {a,e,i,o,u}.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Count and print the number of consonant letters (alphabetic letters not in {a, e, i, o, u}, case-insensitive) in the string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the count of consonant characters.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "6",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Count letters not in {a,e,i,o,u}. Therefore the expected JSON output is 6."
+        "explanation": "\"algorithm\" contains 6 consonant(s)."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "0",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Count letters not in {a,e,i,o,u}. Therefore the expected JSON output is 0."
+        "explanation": "\"\" contains 0 consonant(s)."
       },
       {
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "output": "4",
-        "explanation": "Traverse the 7 characters in \"racecar\" from left to right unless specified otherwise. Count letters not in {a,e,i,o,u}. Therefore the expected JSON output is 4."
+        "explanation": "\"racecar\" contains 4 consonant(s)."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "6"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "4"
       }
     ],
@@ -242,12 +242,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:palindrome-string",
@@ -259,41 +259,41 @@ export const questions: LearnQuestion[] = [
     "title": "Palindrome String",
     "order": 5,
     "difficulty": "Easy",
-    "problemStatement": "Return true iff text equals its reverse.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Determine whether the string is a palindrome (reads identically forwards and backwards). Print \"true\" if it is, or \"false\" otherwise.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print \"true\" if the string is a palindrome, otherwise \"false\".",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "false",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return true iff text equals its reverse. Therefore the expected JSON output is false."
+        "explanation": "\"algorithm\" is a palindrome: false."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "true",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return true iff text equals its reverse. Therefore the expected JSON output is true."
+        "explanation": "\"\" is a palindrome: true."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "true",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return true iff text equals its reverse. Therefore the expected JSON output is true."
+        "explanation": "\"a\" is a palindrome: true."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "false"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "true"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "true"
       }
     ],
@@ -304,12 +304,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:first-character-or-null",
@@ -321,41 +321,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Character or Null",
     "order": 6,
     "difficulty": "Easy",
-    "problemStatement": "Return the first character; return null for empty text.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Print the first character of the string. If the string is empty, print null.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the first character, or null if empty.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "a",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the first character; return null for empty text. Therefore the expected JSON output is \"a\"."
+        "explanation": "First character of \"algorithm\" is a."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "null",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the first character; return null for empty text. Therefore the expected JSON output is null."
+        "explanation": "The string is empty, so first character is null."
       },
       {
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "output": "r",
-        "explanation": "Traverse the 7 characters in \"racecar\" from left to right unless specified otherwise. Return the first character; return null for empty text. Therefore the expected JSON output is \"r\"."
+        "explanation": "First character of \"racecar\" is r."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "a"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "r"
       }
     ],
@@ -366,12 +366,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:last-character-or-null",
@@ -383,41 +383,41 @@ export const questions: LearnQuestion[] = [
     "title": "Last Character or Null",
     "order": 7,
     "difficulty": "Easy",
-    "problemStatement": "Return the last character; return null for empty text.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Print the last character of the string. If the string is empty, print null.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the last character, or null if empty.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "m",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the last character; return null for empty text. Therefore the expected JSON output is \"m\"."
+        "explanation": "Last character of \"algorithm\" is m."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "null",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the last character; return null for empty text. Therefore the expected JSON output is null."
+        "explanation": "The string is empty, so last character is null."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return the last character; return null for empty text. Therefore the expected JSON output is \"a\"."
+        "explanation": "Last character of \"a\" is a."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "m"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -428,12 +428,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:unique-characters-first-seen",
@@ -445,41 +445,41 @@ export const questions: LearnQuestion[] = [
     "title": "Unique Characters First Seen",
     "order": 8,
     "difficulty": "Medium",
-    "problemStatement": "Return a string of distinct characters in their first-appearance order.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Construct and print a new string containing the unique characters of the input in the order they first appear.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the string of unique characters in first-appearance order.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "algorithm",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return a string of distinct characters in their first-appearance order. Therefore the expected JSON output is \"algorithm\"."
+        "explanation": "Unique characters of \"algorithm\" in order of appearance: \"algorithm\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return a string of distinct characters in their first-appearance order. Therefore the expected JSON output is \"\"."
+        "explanation": "Unique characters of \"\" in order of appearance: \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return a string of distinct characters in their first-appearance order. Therefore the expected JSON output is \"a\"."
+        "explanation": "Unique characters of \"a\" in order of appearance: \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "algorithm"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -490,12 +490,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:sorted-unique-characters",
@@ -507,41 +507,41 @@ export const questions: LearnQuestion[] = [
     "title": "Sorted Unique Characters",
     "order": 9,
     "difficulty": "Medium",
-    "problemStatement": "Return the sorted string of distinct characters.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Find all unique characters in the string, sort them in ascending ASCII order, and print the resulting string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the sorted string of unique characters.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "aghilmort",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the sorted string of distinct characters. Therefore the expected JSON output is \"aghilmort\"."
+        "explanation": "Sorted distinct characters of \"algorithm\": \"aghilmort\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the sorted string of distinct characters. Therefore the expected JSON output is \"\"."
+        "explanation": "Sorted distinct characters of \"\": \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return the sorted string of distinct characters. Therefore the expected JSON output is \"a\"."
+        "explanation": "Sorted distinct characters of \"a\": \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "aghilmort"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -552,12 +552,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:first-nonrepeating-character",
@@ -569,41 +569,41 @@ export const questions: LearnQuestion[] = [
     "title": "First Nonrepeating Character",
     "order": 10,
     "difficulty": "Medium",
-    "problemStatement": "Return the first character occurring exactly once in text, or null.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Find the first character that occurs exactly once in the string. If no unique character exists, print null.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the first non-repeating character, or null if none exists.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "a",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the first character occurring exactly once in text, or null. Therefore the expected JSON output is \"a\"."
+        "explanation": "First non-repeating character in \"algorithm\" is a."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "null",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the first character occurring exactly once in text, or null. Therefore the expected JSON output is null."
+        "explanation": "First non-repeating character in \"\" is null."
       },
       {
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "output": "e",
-        "explanation": "Traverse the 7 characters in \"racecar\" from left to right unless specified otherwise. Return the first character occurring exactly once in text, or null. Therefore the expected JSON output is \"e\"."
+        "explanation": "First non-repeating character in \"racecar\" is e."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "a"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "e"
       }
     ],
@@ -614,12 +614,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:run-length-character-groups",
@@ -631,42 +631,42 @@ export const questions: LearnQuestion[] = [
     "title": "Run Length Character Groups",
     "order": 11,
     "difficulty": "Medium",
-    "problemStatement": "Return [[character,consecutive_count],...] for each maximal run of equal adjacent characters.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Perform run-length grouping on consecutive identical characters, and print each run as \"char count\" space-separated on a single line. If the string is empty, print \"EMPTY\".",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print \"char count\" pairs space-separated on one line, or \"EMPTY\".",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
-        "output": "[[\"a\",1],[\"l\",1],[\"g\",1],[\"o\",1],[\"r\",1],[\"i\",1],[\"t\",1],[\"h\",1],[\"m\",1]]",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return [[character,consecutive_count],...] for each maximal run of equal adjacent characters. Therefore the expected JSON output is [[\"a\",1],[\"l\",1],[\"g\",1],[\"o\",1],[\"r\",1],[\"i\",1],[\"t\",1],[\"h\",1],[\"m\",1]]."
+        "input": "algorithm",
+        "output": "a 1 l 1 g 1 o 1 r 1 i 1 t 1 h 1 m 1",
+        "explanation": "Run-length grouping of \"algorithm\": a 1 l 1 g 1 o 1 r 1 i 1 t 1 h 1 m 1."
       },
       {
-        "input": "{\"text\":\"\"}",
-        "output": "[]",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return [[character,consecutive_count],...] for each maximal run of equal adjacent characters. Therefore the expected JSON output is []."
+        "input": "",
+        "output": "EMPTY",
+        "explanation": "String is empty, output is EMPTY."
       },
       {
-        "input": "{\"text\":\"a\"}",
-        "output": "[[\"a\",1]]",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return [[character,consecutive_count],...] for each maximal run of equal adjacent characters. Therefore the expected JSON output is [[\"a\",1]]."
+        "input": "a",
+        "output": "a 1",
+        "explanation": "Run-length grouping of \"a\": a 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
-        "expectedOutput": "[[\"a\",1],[\"l\",1],[\"g\",1],[\"o\",1],[\"r\",1],[\"i\",1],[\"t\",1],[\"h\",1],[\"m\",1]]"
+        "input": "algorithm",
+        "expectedOutput": "a 1 l 1 g 1 o 1 r 1 i 1 t 1 h 1 m 1"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
-        "expectedOutput": "[]"
+        "input": "",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "[[\"a\",1]]"
+        "input": "a",
+        "expectedOutput": "a 1"
       }
     ],
     "testCaseMeta": {
@@ -676,12 +676,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:alphabet-position-sum",
@@ -693,41 +693,41 @@ export const questions: LearnQuestion[] = [
     "title": "Alphabet Position Sum",
     "order": 12,
     "difficulty": "Medium",
-    "problemStatement": "Interpret a=1,...,z=26 and add the letter positions.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Treating lowercase letters a=1, b=2, ..., z=26, compute and print the sum of letter positions for all lowercase alphabetic characters in the string. (Ignore other characters).",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the total alphabet position sum.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "103",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Interpret a=1,...,z=26 and add the letter positions. Therefore the expected JSON output is 103."
+        "explanation": "Sum of alphabet positions in \"algorithm\" is 103."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "0",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Interpret a=1,...,z=26 and add the letter positions. Therefore the expected JSON output is 0."
+        "explanation": "Sum of alphabet positions in \"\" is 0."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "1",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Interpret a=1,...,z=26 and add the letter positions. Therefore the expected JSON output is 1."
+        "explanation": "Sum of alphabet positions in \"a\" is 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "103"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1"
       }
     ],
@@ -738,12 +738,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:character-frequency-sorted",
@@ -755,42 +755,42 @@ export const questions: LearnQuestion[] = [
     "title": "Character Frequency Sorted",
     "order": 13,
     "difficulty": "Medium",
-    "problemStatement": "Return a dictionary mapping each occurring letter to its frequency, using alphabetic key order.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Count the frequency of each distinct character, and print them as \"char count\" space-separated on a single line in ascending ASCII order of character. If the string is empty, print \"EMPTY\".",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print \"char count\" pairs sorted by character, or \"EMPTY\".",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
-        "output": "{\"a\":1,\"g\":1,\"h\":1,\"i\":1,\"l\":1,\"m\":1,\"o\":1,\"r\":1,\"t\":1}",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return a dictionary mapping each occurring letter to its frequency, using alphabetic key order. Therefore the expected JSON output is {\"a\":1,\"g\":1,\"h\":1,\"i\":1,\"l\":1,\"m\":1,\"o\":1,\"r\":1,\"t\":1}."
+        "input": "algorithm",
+        "output": "a 1 g 1 h 1 i 1 l 1 m 1 o 1 r 1 t 1",
+        "explanation": "Frequencies in \"algorithm\": a 1 g 1 h 1 i 1 l 1 m 1 o 1 r 1 t 1."
       },
       {
-        "input": "{\"text\":\"\"}",
-        "output": "{}",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return a dictionary mapping each occurring letter to its frequency, using alphabetic key order. Therefore the expected JSON output is {}."
+        "input": "",
+        "output": "EMPTY",
+        "explanation": "String is empty, output is EMPTY."
       },
       {
-        "input": "{\"text\":\"a\"}",
-        "output": "{\"a\":1}",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return a dictionary mapping each occurring letter to its frequency, using alphabetic key order. Therefore the expected JSON output is {\"a\":1}."
+        "input": "a",
+        "output": "a 1",
+        "explanation": "Frequencies in \"a\": a 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
-        "expectedOutput": "{\"a\":1,\"g\":1,\"h\":1,\"i\":1,\"l\":1,\"m\":1,\"o\":1,\"r\":1,\"t\":1}"
+        "input": "algorithm",
+        "expectedOutput": "a 1 g 1 h 1 i 1 l 1 m 1 o 1 r 1 t 1"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
-        "expectedOutput": "{}"
+        "input": "",
+        "expectedOutput": "EMPTY"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "{\"a\":1}"
+        "input": "a",
+        "expectedOutput": "a 1"
       }
     ],
     "testCaseMeta": {
@@ -800,12 +800,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:adjacent-equal-pair-count",
@@ -817,41 +817,41 @@ export const questions: LearnQuestion[] = [
     "title": "Adjacent Equal Pair Count",
     "order": 14,
     "difficulty": "Medium",
-    "problemStatement": "Count indices i at which text[i]=text[i+1].",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Count and print how many indices i satisfy text[i] == text[i+1] (adjacent equal character pairs).",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the count of adjacent equal pairs.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "0",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Count indices i at which text[i]=text[i+1]. Therefore the expected JSON output is 0."
+        "explanation": "In \"algorithm\", there are 0 adjacent equal pair(s)."
       },
       {
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "output": "3",
-        "explanation": "Traverse the 4 characters in \"aaaa\" from left to right unless specified otherwise. Count indices i at which text[i]=text[i+1]. Therefore the expected JSON output is 3."
+        "explanation": "In \"aaaa\", there are 3 adjacent equal pair(s)."
       },
       {
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "output": "1",
-        "explanation": "Traverse the 5 characters in \"hello\" from left to right unless specified otherwise. Count indices i at which text[i]=text[i+1]. Therefore the expected JSON output is 1."
+        "explanation": "In \"hello\", there are 1 adjacent equal pair(s)."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "3"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "1"
       }
     ],
@@ -862,12 +862,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:mirror-pair-matches",
@@ -879,41 +879,41 @@ export const questions: LearnQuestion[] = [
     "title": "Mirror Pair Matches",
     "order": 15,
     "difficulty": "Medium",
-    "problemStatement": "Compare text[i] and text[n-1-i] for i in the first half; return the number of matching mirrored pairs.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Compare text[i] and text[n - 1 - i] for all i < n // 2. Count and print how many mirror pairs match.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the count of matching mirror pairs.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "0",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Compare text[i] and text[n-1-i] for i in the first half; return the number of matching mirrored pairs. Therefore the expected JSON output is 0."
+        "explanation": "In \"algorithm\", there are 0 matching mirror pair(s)."
       },
       {
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "output": "2",
-        "explanation": "Traverse the 4 characters in \"aaaa\" from left to right unless specified otherwise. Compare text[i] and text[n-1-i] for i in the first half; return the number of matching mirrored pairs. Therefore the expected JSON output is 2."
+        "explanation": "In \"aaaa\", there are 2 matching mirror pair(s)."
       },
       {
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "output": "3",
-        "explanation": "Traverse the 7 characters in \"racecar\" from left to right unless specified otherwise. Compare text[i] and text[n-1-i] for i in the first half; return the number of matching mirrored pairs. Therefore the expected JSON output is 3."
+        "explanation": "In \"racecar\", there are 3 matching mirror pair(s)."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "2"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "3"
       }
     ],
@@ -924,12 +924,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:longest-equal-character-run",
@@ -941,41 +941,41 @@ export const questions: LearnQuestion[] = [
     "title": "Longest Equal Character Run",
     "order": 16,
     "difficulty": "Hard",
-    "problemStatement": "Return the maximum length of an uninterrupted run of the same character, or zero for empty text.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Find the maximum length of an uninterrupted run of the same character. If the string is empty, print 0.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the maximum run length of identical characters.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "1",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the maximum length of an uninterrupted run of the same character, or zero for empty text. Therefore the expected JSON output is 1."
+        "explanation": "Longest run of repeated characters in \"algorithm\" is 1."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "0",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the maximum length of an uninterrupted run of the same character, or zero for empty text. Therefore the expected JSON output is 0."
+        "explanation": "Longest run of repeated characters in \"\" is 0."
       },
       {
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "output": "4",
-        "explanation": "Traverse the 4 characters in \"aaaa\" from left to right unless specified otherwise. Return the maximum length of an uninterrupted run of the same character, or zero for empty text. Therefore the expected JSON output is 4."
+        "explanation": "Longest run of repeated characters in \"aaaa\" is 4."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "1"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "4"
       }
     ],
@@ -986,12 +986,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:rotate-first-letter-to-end",
@@ -1003,41 +1003,41 @@ export const questions: LearnQuestion[] = [
     "title": "Rotate First Letter to End",
     "order": 17,
     "difficulty": "Hard",
-    "problemStatement": "Move the first character to the end, keeping text unchanged when empty.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Move the first character of the string to the end (cyclically rotate left by 1), and print the resulting string. If the string is empty, print an empty line.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the rotated string.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "lgorithma",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Move the first character to the end, keeping text unchanged when empty. Therefore the expected JSON output is \"lgorithma\"."
+        "explanation": "Moving first character of \"algorithm\" to the end gives \"lgorithma\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Move the first character to the end, keeping text unchanged when empty. Therefore the expected JSON output is \"\"."
+        "explanation": "Moving first character of \"\" to the end gives \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Move the first character to the end, keeping text unchanged when empty. Therefore the expected JSON output is \"a\"."
+        "explanation": "Moving first character of \"a\" to the end gives \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "lgorithma"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -1048,12 +1048,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:reverse-each-two-character-block",
@@ -1065,41 +1065,41 @@ export const questions: LearnQuestion[] = [
     "title": "Reverse Each Two Character Block",
     "order": 18,
     "difficulty": "Hard",
-    "problemStatement": "Swap characters within successive nonoverlapping pairs; leave an unmatched final letter unchanged.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Swap characters within successive non-overlapping pairs (text[0] with text[1], text[2] with text[3], etc.). If the string length is odd, leave the final character unchanged. Print the resulting string.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the transformed string.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "laogirhtm",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Swap characters within successive nonoverlapping pairs; leave an unmatched final letter unchanged. Therefore the expected JSON output is \"laogirhtm\"."
+        "explanation": "Swapping pairs in \"algorithm\" gives \"laogirhtm\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Swap characters within successive nonoverlapping pairs; leave an unmatched final letter unchanged. Therefore the expected JSON output is \"\"."
+        "explanation": "Swapping pairs in \"\" gives \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Swap characters within successive nonoverlapping pairs; leave an unmatched final letter unchanged. Therefore the expected JSON output is \"a\"."
+        "explanation": "Swapping pairs in \"a\" gives \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "laogirhtm"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -1110,12 +1110,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:longest-proper-prefix-suffix",
@@ -1127,41 +1127,41 @@ export const questions: LearnQuestion[] = [
     "title": "Longest Proper Prefix Suffix",
     "order": 19,
     "difficulty": "Hard",
-    "problemStatement": "Return the length of the longest nonempty proper prefix also appearing as a suffix, or zero.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Find the length of the longest proper prefix of the string that is also a suffix (a proper prefix cannot equal the entire string). If no such prefix-suffix exists, print 0.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the length of the longest proper prefix that is also a suffix.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "0",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the length of the longest nonempty proper prefix also appearing as a suffix, or zero. Therefore the expected JSON output is 0."
+        "explanation": "Longest proper prefix-suffix length for \"algorithm\" is 0."
       },
       {
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "output": "3",
-        "explanation": "Traverse the 4 characters in \"aaaa\" from left to right unless specified otherwise. Return the length of the longest nonempty proper prefix also appearing as a suffix, or zero. Therefore the expected JSON output is 3."
+        "explanation": "Longest proper prefix-suffix length for \"aaaa\" is 3."
       },
       {
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "output": "1",
-        "explanation": "Traverse the 7 characters in \"racecar\" from left to right unless specified otherwise. Return the length of the longest nonempty proper prefix also appearing as a suffix, or zero. Therefore the expected JSON output is 1."
+        "explanation": "Longest proper prefix-suffix length for \"racecar\" is 1."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "3"
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "1"
       }
     ],
@@ -1172,12 +1172,12 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   },
   {
     "id": "learn:strings-as-arrays:lexicographically-smallest-rotation",
@@ -1189,41 +1189,41 @@ export const questions: LearnQuestion[] = [
     "title": "Lexicographically Smallest Rotation",
     "order": 20,
     "difficulty": "Hard",
-    "problemStatement": "Return the smallest rotation of the text in lexicographic order, or the empty string if text is empty.",
-    "inputFormat": "A single JSON object: {\"text\": lowercase ASCII string}.",
-    "outputFormat": "Print/return a single valid JSON value matching the requested result; array order matters unless stated otherwise.",
-    "constraints": "0 ≤ len(text) ≤ 18; text contains only a-z; arrays returned are ordered; positions are zero-based.",
+    "problemStatement": "Read a single line of text from standard input. Find and print the lexicographically smallest cyclic rotation of the string. If the string is empty, print an empty line.",
+    "inputFormat": "A single line containing a string text.",
+    "outputFormat": "Print the lexicographically smallest rotation.",
+    "constraints": "0 ≤ length(text) ≤ 10^5",
     "examples": [
       {
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "output": "algorithm",
-        "explanation": "Traverse the 9 characters in \"algorithm\" from left to right unless specified otherwise. Return the smallest rotation of the text in lexicographic order, or the empty string if text is empty. Therefore the expected JSON output is \"algorithm\"."
+        "explanation": "Smallest rotation of \"algorithm\" is \"algorithm\"."
       },
       {
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "output": "",
-        "explanation": "Traverse the 0 characters in \"\" from left to right unless specified otherwise. Return the smallest rotation of the text in lexicographic order, or the empty string if text is empty. Therefore the expected JSON output is \"\"."
+        "explanation": "Smallest rotation of \"\" is \"\"."
       },
       {
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "output": "a",
-        "explanation": "Traverse the 1 characters in \"a\" from left to right unless specified otherwise. Return the smallest rotation of the text in lexicographic order, or the empty string if text is empty. Therefore the expected JSON output is \"a\"."
+        "explanation": "Smallest rotation of \"a\" is \"a\"."
       }
     ],
     "visibleTests": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "algorithm"
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": ""
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a"
       }
     ],
@@ -1234,13 +1234,11 @@ export const questions: LearnQuestion[] = [
     },
     "isPythonOnly": false,
     "starterCodes": {
-      "python": "# Language: Python 3\n# Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nimport sys\nimport json\n\ndef solve(data):\n    # data contains the parsed JSON input object\n    # TODO: Write your solution here\n    return None\n\nif __name__ == '__main__':\n    raw = sys.stdin.read().strip()\n    if raw:\n        data = json.loads(raw)\n        result = solve(data)\n        print(json.dumps(result))\n",
-      "nodejs": "// Language: JavaScript (Node.js)\n// Input is parsed from a single JSON line on stdin; output must be printed as a valid JSON string.\nconst fs = require('fs');\n\nfunction solve(data) {\n    // data contains the parsed JSON input object\n    // TODO: Write your solution here\n    return null;\n}\n\nconst raw = fs.readFileSync(0, 'utf-8').trim();\nif (raw) {\n    const data = JSON.parse(raw);\n    const result = solve(data);\n    console.log(JSON.stringify(result));\n}\n",
-      "java": "// Language: Java 17\n// Input is read from stdin; output must be printed as a valid JSON string.\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String raw = sc.hasNextLine() ? sc.nextLine().trim() : \"\";\n        if (raw.isEmpty()) return;\n\n        Object result = solve(raw);\n        System.out.println(result);\n    }\n\n    public static Object solve(String json) {\n        // TODO: Write your solution here using helper methods:\n        // getInt(json, key), getString(json, key), getIntList(json, key)\n        return null;\n    }\n\n    // --- JSON Helpers ---\n    public static String getString(String json, String key) {\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return \"\";\n        int c = json.indexOf(':', p);\n        if (c == -1) return \"\";\n        int start = c + 1;\n        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\t')) start++;\n        if (start < json.length() && json.charAt(start) == '\"') {\n            int end = json.indexOf('\"', start + 1);\n            return end == -1 ? \"\" : json.substring(start + 1, end);\n        }\n        int end = start;\n        while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}') end++;\n        return json.substring(start, end).trim();\n    }\n\n    public static int getInt(String json, String key) {\n        String s = getString(json, key);\n        return s.isEmpty() ? 0 : Integer.parseInt(s);\n    }\n\n    public static List<Integer> getIntList(String json, String key) {\n        List<Integer> list = new ArrayList<>();\n        String pat = '\"' + key + '\"';\n        int p = json.indexOf(pat);\n        if (p == -1) return list;\n        int start = json.indexOf('[', p);\n        int end = json.indexOf(']', start);\n        if (start == -1 || end == -1) return list;\n        String content = json.substring(start + 1, end).trim();\n        if (content.isEmpty()) return list;\n        String[] tokens = content.split(\",\");\n        for (int i = 0; i < tokens.length; i++) {\n            list.add(Integer.parseInt(tokens[i].trim()));\n        }\n        return list;\n    }\n}\n",
-      "cpp": "// Language: C++20\n// Input is read from stdin; output must be printed as a valid JSON string.\n#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\n// --- JSON Helpers ---\nstring extractField(const string& json, const string& key) {\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return \"\";\n    size_t c = json.find(':', p);\n    if (c == string::npos) return \"\";\n    size_t start = c + 1;\n    while (start < json.size() && (json[start] == ' ' || json[start] == '\t')) start++;\n    if (start < json.size() && json[start] == '\"') {\n        size_t end = json.find('\"', start + 1);\n        return end == string::npos ? \"\" : json.substr(start + 1, end - start - 1);\n    }\n    size_t end = start;\n    while (end < json.size() && json[end] != ',' && json[end] != '}') end++;\n    size_t len = end - start;\n    while (len > 0 && isspace(json[start + len - 1])) len--;\n    return json.substr(start, len);\n}\n\nint extractInt(const string& json, const string& key) {\n    string val = extractField(json, key);\n    return val.empty() ? 0 : stoi(val);\n}\n\nvector<int> extractIntArray(const string& json, const string& key) {\n    vector<int> res;\n    string pat = '\"' + key + '\"';\n    size_t p = json.find(pat);\n    if (p == string::npos) return res;\n    size_t start = json.find('[', p);\n    size_t end = json.find(']', start);\n    if (start == string::npos || end == string::npos) return res;\n    string content = json.substr(start + 1, end - start - 1);\n    string token = \"\";\n    for (size_t i = 0; i <= content.size(); i++) {\n        if (i == content.size() || content[i] == ',') {\n            size_t s = 0;\n            while (s < token.size() && isspace(token[s])) s++;\n            size_t e = token.size();\n            while (e > s && isspace(token[e - 1])) e--;\n            if (e > s) {\n                res.push_back(stoi(token.substr(s, e - s)));\n            }\n            token = \"\";\n        } else {\n            token += content[i];\n        }\n    }\n    return res;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw, line;\n    while (getline(cin, line)) raw += line;\n    if (raw.empty()) return 0;\n\n    // TODO: Write your solution here and print the result as JSON\n    return 0;\n}\n"
+      "python": "# Language: Python 3\nimport sys\n\ndef main():\n    s = sys.stdin.read().rstrip('\\r\\n')\n    # TODO: Write your solution here\n\nif __name__ == '__main__':\n    main()\n",
+      "nodejs": "// Language: JavaScript (Node.js)\nconst fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/\\r?\\n$/, '');\n// TODO: Write your solution here\n",
+      "java": "// Language: Java 17\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        // TODO: Write your solution here\n    }\n}\n",
+      "cpp": "// Language: C++20\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n    // TODO: Write your solution here\n    return 0;\n}\n"
     },
-    "inputMode": "json"
+    "inputMode": "plain",
   }
 ]
-
-export default questions

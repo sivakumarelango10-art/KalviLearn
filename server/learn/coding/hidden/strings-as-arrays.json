@@ -8,79 +8,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "9",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "5",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "11",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "16",
         "isHidden": true
       }
@@ -95,80 +95,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "mhtirogla",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"aaaa\"",
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"racecar\"",
+        "input": "racecar",
+        "expectedOutput": "racecar",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"olleh\"",
+        "input": "hello",
+        "expectedOutput": "olleh",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"ananab\"",
+        "input": "banana",
+        "expectedOutput": "ananab",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"edcba\"",
+        "input": "abcde",
+        "expectedOutput": "edcba",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"level\"",
+        "input": "level",
+        "expectedOutput": "level",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"ippississim\"",
+        "input": "mississippi",
+        "expectedOutput": "ippississim",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"zzyxzz\"",
+        "input": "zzxyzz",
+        "expectedOutput": "zzyxzz",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"bababa\"",
+        "input": "ababab",
+        "expectedOutput": "bababa",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"xofnworbkciuqeht\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "xofnworbkciuqeht",
         "isHidden": true
       }
     ]
@@ -182,79 +182,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "5",
         "isHidden": true
       }
@@ -269,79 +269,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "6",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "7",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "6",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "11",
         "isHidden": true
       }
@@ -356,79 +356,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "false",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "true",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "true",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "false",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "false",
         "isHidden": true
       }
@@ -443,80 +443,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "r",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "\"a\"",
+        "input": "a",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"a\"",
+        "input": "aaaa",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"h\"",
+        "input": "hello",
+        "expectedOutput": "h",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"b\"",
+        "input": "banana",
+        "expectedOutput": "b",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"a\"",
+        "input": "abcde",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"l\"",
+        "input": "level",
+        "expectedOutput": "l",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"m\"",
+        "input": "mississippi",
+        "expectedOutput": "m",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"z\"",
+        "input": "zzxyzz",
+        "expectedOutput": "z",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"a\"",
+        "input": "ababab",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"t\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "t",
         "isHidden": true
       }
     ]
@@ -530,80 +530,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "m",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"a\"",
+        "input": "aaaa",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"r\"",
+        "input": "racecar",
+        "expectedOutput": "r",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"o\"",
+        "input": "hello",
+        "expectedOutput": "o",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"a\"",
+        "input": "banana",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"e\"",
+        "input": "abcde",
+        "expectedOutput": "e",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"l\"",
+        "input": "level",
+        "expectedOutput": "l",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"i\"",
+        "input": "mississippi",
+        "expectedOutput": "i",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"z\"",
+        "input": "zzxyzz",
+        "expectedOutput": "z",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"b\"",
+        "input": "ababab",
+        "expectedOutput": "b",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"x\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "x",
         "isHidden": true
       }
     ]
@@ -617,80 +617,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "algorithm",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"a\"",
+        "input": "aaaa",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"race\"",
+        "input": "racecar",
+        "expectedOutput": "race",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"helo\"",
+        "input": "hello",
+        "expectedOutput": "helo",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"ban\"",
+        "input": "banana",
+        "expectedOutput": "ban",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"abcde\"",
+        "input": "abcde",
+        "expectedOutput": "abcde",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"lev\"",
+        "input": "level",
+        "expectedOutput": "lev",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"misp\"",
+        "input": "mississippi",
+        "expectedOutput": "misp",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"zxy\"",
+        "input": "zzxyzz",
+        "expectedOutput": "zxy",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"ab\"",
+        "input": "ababab",
+        "expectedOutput": "ab",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"thequickbrownfx\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "thequickbrownfx",
         "isHidden": true
       }
     ]
@@ -704,80 +704,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "aghilmort",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"a\"",
+        "input": "aaaa",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"acer\"",
+        "input": "racecar",
+        "expectedOutput": "acer",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"ehlo\"",
+        "input": "hello",
+        "expectedOutput": "ehlo",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"abn\"",
+        "input": "banana",
+        "expectedOutput": "abn",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"abcde\"",
+        "input": "abcde",
+        "expectedOutput": "abcde",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"elv\"",
+        "input": "level",
+        "expectedOutput": "elv",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"imps\"",
+        "input": "mississippi",
+        "expectedOutput": "imps",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"xyz\"",
+        "input": "zzxyzz",
+        "expectedOutput": "xyz",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"ab\"",
+        "input": "ababab",
+        "expectedOutput": "ab",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"bcefhiknoqrtuwx\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "bcefhiknoqrtuwx",
         "isHidden": true
       }
     ]
@@ -791,80 +791,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "null",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "e",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "\"a\"",
+        "input": "a",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"h\"",
+        "input": "hello",
+        "expectedOutput": "h",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"b\"",
+        "input": "banana",
+        "expectedOutput": "b",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"a\"",
+        "input": "abcde",
+        "expectedOutput": "a",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"v\"",
+        "input": "level",
+        "expectedOutput": "v",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"m\"",
+        "input": "mississippi",
+        "expectedOutput": "m",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"x\"",
+        "input": "zzxyzz",
+        "expectedOutput": "x",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "null",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"t\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "t",
         "isHidden": true
       }
     ]
@@ -878,80 +878,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
-        "expectedOutput": "[[\"a\",1],[\"l\",1],[\"g\",1],[\"o\",1],[\"r\",1],[\"i\",1],[\"t\",1],[\"h\",1],[\"m\",1]]",
+        "input": "algorithm",
+        "expectedOutput": "a 1 l 1 g 1 o 1 r 1 i 1 t 1 h 1 m 1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
-        "expectedOutput": "[]",
+        "input": "",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "[[\"a\",1]]",
+        "input": "a",
+        "expectedOutput": "a 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "[[\"a\",4]]",
+        "input": "aaaa",
+        "expectedOutput": "a 4",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "[[\"r\",1],[\"a\",1],[\"c\",1],[\"e\",1],[\"c\",1],[\"a\",1],[\"r\",1]]",
+        "input": "racecar",
+        "expectedOutput": "r 1 a 1 c 1 e 1 c 1 a 1 r 1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "[[\"h\",1],[\"e\",1],[\"l\",2],[\"o\",1]]",
+        "input": "hello",
+        "expectedOutput": "h 1 e 1 l 2 o 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "[[\"b\",1],[\"a\",1],[\"n\",1],[\"a\",1],[\"n\",1],[\"a\",1]]",
+        "input": "banana",
+        "expectedOutput": "b 1 a 1 n 1 a 1 n 1 a 1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "[[\"a\",1],[\"b\",1],[\"c\",1],[\"d\",1],[\"e\",1]]",
+        "input": "abcde",
+        "expectedOutput": "a 1 b 1 c 1 d 1 e 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "[[\"l\",1],[\"e\",1],[\"v\",1],[\"e\",1],[\"l\",1]]",
+        "input": "level",
+        "expectedOutput": "l 1 e 1 v 1 e 1 l 1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "[[\"m\",1],[\"i\",1],[\"s\",2],[\"i\",1],[\"s\",2],[\"i\",1],[\"p\",2],[\"i\",1]]",
+        "input": "mississippi",
+        "expectedOutput": "m 1 i 1 s 2 i 1 s 2 i 1 p 2 i 1",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "[[\"z\",2],[\"x\",1],[\"y\",1],[\"z\",2]]",
+        "input": "zzxyzz",
+        "expectedOutput": "z 2 x 1 y 1 z 2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "[[\"a\",1],[\"b\",1],[\"a\",1],[\"b\",1],[\"a\",1],[\"b\",1]]",
+        "input": "ababab",
+        "expectedOutput": "a 1 b 1 a 1 b 1 a 1 b 1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "[[\"t\",1],[\"h\",1],[\"e\",1],[\"q\",1],[\"u\",1],[\"i\",1],[\"c\",1],[\"k\",1],[\"b\",1],[\"r\",1],[\"o\",1],[\"w\",1],[\"n\",1],[\"f\",1],[\"o\",1],[\"x\",1]]",
+        "input": "thequickbrownfox",
+        "expectedOutput": "t 1 h 1 e 1 q 1 u 1 i 1 c 1 k 1 b 1 r 1 o 1 w 1 n 1 f 1 o 1 x 1",
         "isHidden": true
       }
     ]
@@ -965,79 +965,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "103",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "49",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "52",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "33",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "15",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "56",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "157",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "153",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "9",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "211",
         "isHidden": true
       }
@@ -1052,80 +1052,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
-        "expectedOutput": "{\"a\":1,\"g\":1,\"h\":1,\"i\":1,\"l\":1,\"m\":1,\"o\":1,\"r\":1,\"t\":1}",
+        "input": "algorithm",
+        "expectedOutput": "a 1 g 1 h 1 i 1 l 1 m 1 o 1 r 1 t 1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
-        "expectedOutput": "{}",
+        "input": "",
+        "expectedOutput": "EMPTY",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
-        "expectedOutput": "{\"a\":1}",
+        "input": "a",
+        "expectedOutput": "a 1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "{\"a\":4}",
+        "input": "aaaa",
+        "expectedOutput": "a 4",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "{\"a\":2,\"c\":2,\"e\":1,\"r\":2}",
+        "input": "racecar",
+        "expectedOutput": "a 2 c 2 e 1 r 2",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "{\"e\":1,\"h\":1,\"l\":2,\"o\":1}",
+        "input": "hello",
+        "expectedOutput": "e 1 h 1 l 2 o 1",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "{\"a\":3,\"b\":1,\"n\":2}",
+        "input": "banana",
+        "expectedOutput": "a 3 b 1 n 2",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "{\"a\":1,\"b\":1,\"c\":1,\"d\":1,\"e\":1}",
+        "input": "abcde",
+        "expectedOutput": "a 1 b 1 c 1 d 1 e 1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "{\"e\":2,\"l\":2,\"v\":1}",
+        "input": "level",
+        "expectedOutput": "e 2 l 2 v 1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "{\"i\":4,\"m\":1,\"p\":2,\"s\":4}",
+        "input": "mississippi",
+        "expectedOutput": "i 4 m 1 p 2 s 4",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "{\"x\":1,\"y\":1,\"z\":4}",
+        "input": "zzxyzz",
+        "expectedOutput": "x 1 y 1 z 4",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "{\"a\":3,\"b\":3}",
+        "input": "ababab",
+        "expectedOutput": "a 3 b 3",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "{\"b\":1,\"c\":1,\"e\":1,\"f\":1,\"h\":1,\"i\":1,\"k\":1,\"n\":1,\"o\":2,\"q\":1,\"r\":1,\"t\":1,\"u\":1,\"w\":1,\"x\":1}",
+        "input": "thequickbrownfox",
+        "expectedOutput": "b 1 c 1 e 1 f 1 h 1 i 1 k 1 n 1 o 2 q 1 r 1 t 1 u 1 w 1 x 1",
         "isHidden": true
       }
     ]
@@ -1139,79 +1139,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "3",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -1226,79 +1226,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "2",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -1313,79 +1313,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "4",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "1",
         "isHidden": true
       }
@@ -1400,80 +1400,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "lgorithma",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"aaaa\"",
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"acecarr\"",
+        "input": "racecar",
+        "expectedOutput": "acecarr",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"elloh\"",
+        "input": "hello",
+        "expectedOutput": "elloh",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"ananab\"",
+        "input": "banana",
+        "expectedOutput": "ananab",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"bcdea\"",
+        "input": "abcde",
+        "expectedOutput": "bcdea",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"evell\"",
+        "input": "level",
+        "expectedOutput": "evell",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"ississippim\"",
+        "input": "mississippi",
+        "expectedOutput": "ississippim",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"zxyzzz\"",
+        "input": "zzxyzz",
+        "expectedOutput": "zxyzzz",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"bababa\"",
+        "input": "ababab",
+        "expectedOutput": "bababa",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"hequickbrownfoxt\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "hequickbrownfoxt",
         "isHidden": true
       }
     ]
@@ -1487,80 +1487,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "laogirhtm",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"aaaa\"",
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"arecacr\"",
+        "input": "racecar",
+        "expectedOutput": "arecacr",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"ehllo\"",
+        "input": "hello",
+        "expectedOutput": "ehllo",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"abanan\"",
+        "input": "banana",
+        "expectedOutput": "abanan",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"badce\"",
+        "input": "abcde",
+        "expectedOutput": "badce",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"elevl\"",
+        "input": "level",
+        "expectedOutput": "elevl",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"imsssiisppi\"",
+        "input": "mississippi",
+        "expectedOutput": "imsssiisppi",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"zzyxzz\"",
+        "input": "zzxyzz",
+        "expectedOutput": "zzyxzz",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"bababa\"",
+        "input": "ababab",
+        "expectedOutput": "bababa",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"htqeiukcrbwofnxo\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "htqeiukcrbwofnxo",
         "isHidden": true
       }
     ]
@@ -1574,79 +1574,79 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "0",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"aaaa\"}",
+        "input": "aaaa",
         "expectedOutput": "3",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"racecar\"}",
+        "input": "racecar",
         "expectedOutput": "1",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
+        "input": "hello",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
+        "input": "banana",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
+        "input": "abcde",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
+        "input": "level",
         "expectedOutput": "1",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
+        "input": "mississippi",
         "expectedOutput": "0",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
+        "input": "zzxyzz",
         "expectedOutput": "2",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
+        "input": "ababab",
         "expectedOutput": "4",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
+        "input": "thequickbrownfox",
         "expectedOutput": "0",
         "isHidden": true
       }
@@ -1661,80 +1661,80 @@
     "testCases": [
       {
         "testIndex": 1,
-        "input": "{\"text\":\"algorithm\"}",
+        "input": "algorithm",
         "expectedOutput": "algorithm",
         "isHidden": false
       },
       {
         "testIndex": 2,
-        "input": "{\"text\":\"\"}",
+        "input": "",
         "expectedOutput": "",
         "isHidden": false
       },
       {
         "testIndex": 3,
-        "input": "{\"text\":\"a\"}",
+        "input": "a",
         "expectedOutput": "a",
         "isHidden": false
       },
       {
         "testIndex": 4,
-        "input": "{\"text\":\"aaaa\"}",
-        "expectedOutput": "\"aaaa\"",
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
         "isHidden": true
       },
       {
         "testIndex": 5,
-        "input": "{\"text\":\"racecar\"}",
-        "expectedOutput": "\"acecarr\"",
+        "input": "racecar",
+        "expectedOutput": "acecarr",
         "isHidden": true
       },
       {
         "testIndex": 6,
-        "input": "{\"text\":\"hello\"}",
-        "expectedOutput": "\"elloh\"",
+        "input": "hello",
+        "expectedOutput": "elloh",
         "isHidden": true
       },
       {
         "testIndex": 7,
-        "input": "{\"text\":\"banana\"}",
-        "expectedOutput": "\"abanan\"",
+        "input": "banana",
+        "expectedOutput": "abanan",
         "isHidden": true
       },
       {
         "testIndex": 8,
-        "input": "{\"text\":\"abcde\"}",
-        "expectedOutput": "\"abcde\"",
+        "input": "abcde",
+        "expectedOutput": "abcde",
         "isHidden": true
       },
       {
         "testIndex": 9,
-        "input": "{\"text\":\"level\"}",
-        "expectedOutput": "\"ellev\"",
+        "input": "level",
+        "expectedOutput": "ellev",
         "isHidden": true
       },
       {
         "testIndex": 10,
-        "input": "{\"text\":\"mississippi\"}",
-        "expectedOutput": "\"imississipp\"",
+        "input": "mississippi",
+        "expectedOutput": "imississipp",
         "isHidden": true
       },
       {
         "testIndex": 11,
-        "input": "{\"text\":\"zzxyzz\"}",
-        "expectedOutput": "\"xyzzzz\"",
+        "input": "zzxyzz",
+        "expectedOutput": "xyzzzz",
         "isHidden": true
       },
       {
         "testIndex": 12,
-        "input": "{\"text\":\"ababab\"}",
-        "expectedOutput": "\"ababab\"",
+        "input": "ababab",
+        "expectedOutput": "ababab",
         "isHidden": true
       },
       {
         "testIndex": 13,
-        "input": "{\"text\":\"thequickbrownfox\"}",
-        "expectedOutput": "\"brownfoxthequick\"",
+        "input": "thequickbrownfox",
+        "expectedOutput": "brownfoxthequick",
         "isHidden": true
       }
     ]
