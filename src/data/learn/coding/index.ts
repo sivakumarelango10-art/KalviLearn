@@ -175,4 +175,52 @@ export function getQuestionSupportedLanguages(
   return ['python']
 }
 
+export function formatLanguageBadge(
+  languages?: ('python' | 'nodejs' | 'java' | 'cpp')[]
+): string {
+  if (!languages || languages.length === 0) return 'Python only'
+  if (languages.length >= 4) return 'All languages'
+  if (languages.length === 1 && languages[0] === 'python') return 'Python only'
+
+  const map: Record<string, string> = {
+    python: 'Python',
+    nodejs: 'JS',
+    java: 'Java',
+    cpp: 'C++',
+  }
+  return languages.map((l) => map[l] || l).join(' · ')
+}
+
+export function formatAvailableLanguagesLine(
+  languages?: ('python' | 'nodejs' | 'java' | 'cpp')[]
+): string {
+  if (!languages || languages.length === 0) return 'Python only'
+  if (languages.length === 1 && languages[0] === 'python') return 'Python only'
+
+  const map: Record<string, string> = {
+    python: 'Python',
+    nodejs: 'JavaScript',
+    java: 'Java',
+    cpp: 'C++',
+  }
+  return languages.map((l) => map[l] || l).join(', ')
+}
+
+export function formatAvailableLanguagesCompact(
+  languages?: ('python' | 'nodejs' | 'java' | 'cpp')[]
+): string {
+  if (!languages || languages.length === 0) return 'Python only'
+  if (languages.length >= 4) return 'All languages'
+  if (languages.length === 1 && languages[0] === 'python') return 'Python only'
+
+  const map: Record<string, string> = {
+    python: 'Python',
+    nodejs: 'JS',
+    java: 'Java',
+    cpp: 'C++',
+  }
+  return languages.map((l) => map[l] || l).join(' · ')
+}
+
+
 

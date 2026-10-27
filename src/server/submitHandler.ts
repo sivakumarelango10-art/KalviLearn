@@ -45,7 +45,7 @@ function pruneIdempotencyCache() {
   }
 }
 
-import { isValidQuestionId, normalizeLanguage, isPythonOnlyQuestion, MAX_CODE_CHARS } from './judge/questionId'
+import { isValidQuestionId, normalizeLanguage, isPythonOnlyQuestion, isLanguageSupportedForQuestion, MAX_CODE_CHARS } from './judge/questionId'
 
 async function resolveProblemId(slug: string): Promise<string | null> {
   const cachedId = problemIdCache.get(slug)
@@ -408,11 +408,14 @@ export default async function handler(
     })
   }
 
-  if (isPythonOnlyQuestion(questionSlug) && language !== 'python') {
+  if (!isLanguageSupportedForQuestion(questionSlug, language)) {
+    const displayLang = language === 'nodejs' ? 'JavaScript' : language === 'cpp' ? 'C++' : language === 'java' ? 'Java' : language
     return sendJson(400, {
       success: false,
       error: 'Unsupported Language',
-      message: 'This question only supports Python.',
+      message: isPythonOnlyQuestion(questionSlug)
+        ? 'This question only supports Python.'
+        : `${displayLang} isn't available for this question yet.`,
     })
   }
 

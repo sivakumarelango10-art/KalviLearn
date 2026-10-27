@@ -10,7 +10,13 @@ import {
   Check,
   BookOpen,
 } from 'lucide-react'
-import { getLearnTopic, getLearnQuestion, getLearnRedirect } from '@/data/learn/coding'
+import {
+  getLearnTopic,
+  getLearnQuestion,
+  getLearnRedirect,
+  formatAvailableLanguagesLine,
+  formatLanguageBadge,
+} from '@/data/learn/coding'
 import { getLearnQuestionStatus, subscribeLearnProgress } from '@/lib/learnProgress'
 import { FormattedText } from '@/components/common/FormattedText'
 import { useAuth } from '@/contexts/AuthContext'
@@ -148,11 +154,18 @@ export const CodingQuestionDetailPage: React.FC = () => {
                 {question.difficulty}
               </span>
             )}
-            {question.isPythonOnly && (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                Python Only
-              </span>
-            )}
+            <span
+              className={cn(
+                'px-2.5 py-0.5 rounded-full text-xs font-semibold border',
+                question.languages && question.languages.length >= 4
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : question.languages && question.languages.length === 1 && question.languages[0] === 'python'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-sky-50 text-sky-700 border-sky-200'
+              )}
+            >
+              {formatLanguageBadge(question.languages)}
+            </span>
             {isSolved ? (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -165,9 +178,18 @@ export const CodingQuestionDetailPage: React.FC = () => {
               </span>
             ) : null}
           </div>
-          <p className="text-xs text-neutral-500">
-            Topic: <span className="font-semibold text-neutral-700">{topic.title}</span>
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-neutral-500">
+            <p>
+              Topic: <span className="font-semibold text-neutral-700">{topic.title}</span>
+            </p>
+            <span className="hidden sm:inline text-neutral-300">•</span>
+            <p className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-semibold text-neutral-700">Available in:</span>
+              <span className="text-neutral-900 font-medium">
+                {formatAvailableLanguagesLine(question.languages)}
+              </span>
+            </p>
+          </div>
           {question.isPythonOnly && (
             <p className="text-xs text-amber-700 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/80">
               {question.pythonOnlyNote || 'Note: This challenge evaluates Python-specific language semantics and is solved exclusively in Python.'}

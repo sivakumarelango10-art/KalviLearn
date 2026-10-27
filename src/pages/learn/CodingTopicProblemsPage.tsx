@@ -7,12 +7,15 @@ import {
   Clock,
   ArrowRight,
   Code2,
+  Filter,
 } from 'lucide-react'
-import { getLearnTopic, getLearnQuestionsByTopic } from '@/data/learn/coding'
+import { getLearnTopic, getLearnQuestionsByTopic, formatLanguageBadge } from '@/data/learn/coding'
 import { getLearnQuestionStatus, subscribeLearnProgress } from '@/lib/learnProgress'
 import { FormattedText } from '@/components/common/FormattedText'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
+
+export type LanguageFilter = 'all' | 'python' | 'nodejs' | 'java' | 'cpp'
 
 /**
  * CodingTopicProblemsPage
@@ -23,6 +26,7 @@ export const CodingTopicProblemsPage: React.FC = () => {
   const { user } = useAuth()
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageFilter>('all')
   const [, setProgressTick] = useState(0)
 
   // Topic lookup
@@ -35,6 +39,25 @@ export const CodingTopicProblemsPage: React.FC = () => {
     return topicId ? getLearnQuestionsByTopic(topicId) : []
   }, [topicId])
 
+  // Language counts for the filter bar
+  const languageCounts = useMemo(() => {
+    const counts: Record<LanguageFilter, number> = {
+      all: problems.length,
+      python: 0,
+      nodejs: 0,
+      java: 0,
+      cpp: 0,
+    }
+    for (const p of problems) {
+      const langs = p.languages || ['python']
+      if (langs.includes('python')) counts.python++
+      if (langs.includes('nodejs')) counts.nodejs++
+      if (langs.includes('java')) counts.java++
+      if (langs.includes('cpp')) counts.cpp++
+    }
+    return counts
+  }, [problems])
+
   // Subscribe to user progress
   useEffect(() => {
     const unsubscribe = subscribeLearnProgress(() => {
@@ -43,16 +66,23 @@ export const CodingTopicProblemsPage: React.FC = () => {
     return () => unsubscribe()
   }, [])
 
-  // Filter problems by search query
+  // Filter problems by search query and language filter
   const filteredProblems = useMemo(() => {
-    if (!searchQuery.trim()) return problems
-    const q = searchQuery.toLowerCase().trim()
-    return problems.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.problemStatement.toLowerCase().includes(q)
-    )
-  }, [problems, searchQuery])
+    let list = problems
+    if (selectedLanguage !== 'all') {
+      list = list.filter((p) => p.languages?.includes(selectedLanguage))
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim()
+      list = list.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.problemStatement.toLowerCase().includes(q)
+      )
+    }
+    return list
+  }, [problems, selectedLanguage, searchQuery])
+
 
   // If topic is not found
   if (!topic) {
@@ -133,6 +163,54 @@ export const CodingTopicProblemsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Language Filter Pills Bar */}
+      <div className="flex items-center gap-2 flex-wrap bg-white p-3.5 rounded-2xl border border-neutral-200/80 shadow-sm">
+        <span className="text-xs font-semibold text-neutral-500 mr-1 flex items-center gap-1.5 shrink-0">
+          <Filter className="w-3.5 h-3.5 text-neutral-400" />
+          <span>Language:</span>
+        </span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {(
+            [
+              { key: 'all', label: 'All Languages', count: languageCounts.all },
+              { key: 'python', label: 'Python', count: languageCounts.python },
+              { key: 'nodejs', label: 'JS', count: languageCounts.nodejs },
+              { key: 'java', label: 'Java', count: languageCounts.java },
+              { key: 'cpp', label: 'C++', count: languageCounts.cpp },
+            ] as const
+          ).map((flt) => {
+            const isActive = selectedLanguage === flt.key
+            const isDisabled = flt.count === 0
+            return (
+              <button
+                key={flt.key}
+                type="button"
+                disabled={isDisabled}
+                onClick={() => setSelectedLanguage(flt.key)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all',
+                  isActive
+                    ? 'bg-neutral-900 text-white shadow-sm'
+                    : isDisabled
+                    ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed opacity-50'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                )}
+              >
+                <span>{flt.label}</span>
+                <span
+                  className={cn(
+                    'text-[10px] px-1.5 py-0.5 rounded-full font-mono leading-none',
+                    isActive ? 'bg-neutral-800 text-neutral-200' : 'bg-neutral-200/80 text-neutral-600'
+                  )}
+                >
+                  {flt.count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* Back button link and status summary */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <Link
@@ -142,7 +220,7 @@ export const CodingTopicProblemsPage: React.FC = () => {
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to all Coding Topics</span>
         </Link>
-        {searchQuery.trim() && (
+        {(searchQuery.trim() || selectedLanguage !== 'all') && (
           <span className="text-xs text-neutral-500 font-medium">
             Showing {filteredProblems.length} of {problems.length} problems
           </span>
@@ -180,7 +258,21 @@ export const CodingTopicProblemsPage: React.FC = () => {
                       </Link>
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                      {/* Language Badge */}
+                      <span
+                        className={cn(
+                          'px-2 py-0.5 rounded text-[10px] font-semibold border tracking-wide shrink-0',
+                          problem.languages && problem.languages.length >= 4
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : problem.languages && problem.languages.length === 1 && problem.languages[0] === 'python'
+                            ? 'bg-amber-50 text-amber-800 border-amber-200'
+                            : 'bg-sky-50 text-sky-700 border-sky-200'
+                        )}
+                      >
+                        {formatLanguageBadge(problem.languages)}
+                      </span>
+
                       {problem.difficulty && (
                         <span
                           className={cn(
@@ -208,6 +300,7 @@ export const CodingTopicProblemsPage: React.FC = () => {
                       ) : null}
                     </div>
                   </div>
+
 
                   {/* Problem preview */}
                   <FormattedText
@@ -245,13 +338,16 @@ export const CodingTopicProblemsPage: React.FC = () => {
           </div>
           <h2 className="text-base font-semibold text-neutral-900">No matching problems found</h2>
           <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            Try adjusting your search query or clear the filter to view all problems in this topic.
+            Try adjusting your search query or language filter to view problems in this topic.
           </p>
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={() => {
+              setSearchQuery('')
+              setSelectedLanguage('all')
+            }}
             className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-neutral-900 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
           >
-            Clear Search
+            Reset Filters
           </button>
         </div>
       )}

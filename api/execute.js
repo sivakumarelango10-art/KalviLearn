@@ -158672,11 +158672,12 @@ async function handler(req, res) {
       testCases: []
     });
   }
-  if (isPythonOnlyQuestion(questionSlug) && language !== "python") {
+  if (!isLanguageSupportedForQuestion(questionSlug, language)) {
+    const displayLang = language === "nodejs" ? "JavaScript" : language === "cpp" ? "C++" : language === "java" ? "Java" : language;
     return sendJson(400, {
       success: false,
       error: "Unsupported Language",
-      message: "This question only supports Python.",
+      message: isPythonOnlyQuestion(questionSlug) ? "This question only supports Python." : `${displayLang} isn't available for this question yet.`,
       total: 10,
       passed: 0,
       testCases: []

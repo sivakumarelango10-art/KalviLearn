@@ -158762,11 +158762,12 @@ async function handler(req, res) {
       message: `Unsupported programming language: "${rawLanguage}". Supported languages are: python, java, cpp, nodejs.`
     });
   }
-  if (isPythonOnlyQuestion(questionSlug) && language !== "python") {
+  if (!isLanguageSupportedForQuestion(questionSlug, language)) {
+    const displayLang = language === "nodejs" ? "JavaScript" : language === "cpp" ? "C++" : language === "java" ? "Java" : language;
     return sendJson(400, {
       success: false,
       error: "Unsupported Language",
-      message: "This question only supports Python."
+      message: isPythonOnlyQuestion(questionSlug) ? "This question only supports Python." : `${displayLang} isn't available for this question yet.`
     });
   }
   const userRate = await hitRateLimit(userLimiter, `submit:${authenticatedUser.id}`, 30, 60);
