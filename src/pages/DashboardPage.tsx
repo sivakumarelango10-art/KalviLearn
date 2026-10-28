@@ -9,7 +9,6 @@ import {
   Code2,
   BookOpen,
   TrendingUp,
-  ChevronRight,
   Clock,
   Eye,
 } from 'lucide-react'
@@ -44,41 +43,6 @@ export const DashboardPage: React.FC = () => {
     }
     return userState.solvedSlugs
   }, [problemStats?.solvedProblemSlugs, userState.solvedSlugs])
-
-  // Belt progression from authoritative database stats, with problemData colors/titles
-  const beltSummaries = useMemo(() => {
-    if (problemStats?.beltStats && problemStats.beltStats.length > 0) {
-      return problemStats.beltStats.map((bs) => ({
-        order: bs.order,
-        name: bs.name,
-        title: bs.title,
-        color: bs.color,
-        total: bs.totalProblems,
-        solved: bs.solvedCount,
-        percent: bs.percent,
-      }))
-    }
-    const archiveEnabled = isPracticeArchiveEnabled()
-    return problemsData.map((belt) => {
-      const problems = archiveEnabled
-        ? belt.problems.filter((p: any) => p.isActive !== false)
-        : belt.problems
-      const total = problems.length
-      const solved = problems.filter((p: { slug: string }) =>
-        authoritativeSolvedSlugs.includes(p.slug)
-      ).length
-      const percent = total > 0 ? Math.round((solved / total) * 100) : 0
-      return {
-        order: belt.order,
-        name: belt.name,
-        title: belt.title,
-        color: belt.color,
-        total,
-        solved,
-        percent,
-      }
-    })
-  }, [problemStats?.beltStats, authoritativeSolvedSlugs])
 
   // Find next problem to solve based on authoritative database progress
   const nextProblem = useMemo(() => {
@@ -267,16 +231,16 @@ export const DashboardPage: React.FC = () => {
             <div className="animate-pulse" data-testid="problem-counter-loading">
               <div className="text-2xl font-bold text-neutral-400">—</div>
             </div>
-          ) : statsStatus === 'error' || !problemStats || typeof problemStats.solvedCount !== 'number' ? (
-            <div className="space-y-1" data-testid="problem-counter-error">
-              <div className="text-sm font-semibold text-red-600">Unable to load progress</div>
-              <div className="text-[11px] text-neutral-400">{statsError || 'Database unavailable'}</div>
-            </div>
-          ) : (
+          ) : statsStatus === 'success' && problemStats && typeof problemStats.solvedCount === 'number' && !isNaN(problemStats.solvedCount) && problemStats.solvedCount >= 0 ? (
             <div data-testid="problem-counter-success">
               <div className="text-2xl font-bold text-neutral-900">
                 {problemStats.solvedCount}
               </div>
+            </div>
+          ) : (
+            <div className="space-y-1" data-testid="problem-counter-error">
+              <div className="text-sm font-semibold text-red-600">Unable to load progress</div>
+              <div className="text-[11px] text-neutral-400">{statsError || 'Database unavailable'}</div>
             </div>
           )}
         </div>
@@ -306,72 +270,6 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="text-2xl font-bold text-neutral-900">{userState.submissions.length}</div>
           <div className="text-[11px] text-neutral-500">Evaluated in test runner</div>
-        </div>
-      </div>
-
-      {/* Belt Progression Cards */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-neutral-900">Belt Progression System</h2>
-          <Link
-            to={`/practice/${preferredLang}`}
-            className="text-xs font-semibold text-[#ED2A2B] hover:underline flex items-center gap-1"
-          >
-            <span>View All Problems</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {beltSummaries.map((b) => (
-            <div
-              key={b.order}
-              className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-4 hover:border-neutral-300 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-                    style={{ backgroundColor: b.color }}
-                  >
-                    B{b.order}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm text-neutral-900">{b.name}</h3>
-                    <p className="text-[11px] text-neutral-500 line-clamp-1">{b.title}</p>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-neutral-700 bg-neutral-100 px-2.5 py-1 rounded-full">
-                  {b.solved} / {b.total}
-                </span>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs text-neutral-500">
-                  <span>Mastery</span>
-                  <span className="font-semibold text-neutral-800">{b.percent}%</span>
-                </div>
-                <div className="w-full bg-neutral-100 rounded-full h-2.5 overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-700"
-                    style={{
-                      width: `${b.percent}%`,
-                      backgroundColor: b.color,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <Link
-                to={`/practice/${preferredLang}?belt=${b.order}`}
-                className="w-full py-2 px-3 rounded-xl border border-neutral-200 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <span>Explore Belt {b.order}</span>
-                <ArrowRight className="w-3 h-3 text-neutral-400 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-          ))}
         </div>
       </div>
 

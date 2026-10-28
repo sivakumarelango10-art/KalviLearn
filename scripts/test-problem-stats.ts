@@ -9,8 +9,15 @@ import {
   clearProblemStatsCache,
 } from '../src/lib/problemStatsService'
 import { supabase } from '../src/lib/supabase'
+import {
+  SYNTHETIC_STUDENT_A,
+  SYNTHETIC_STUDENT_B,
+  installSyntheticSupabaseInterceptor,
+} from './syntheticFixtures'
 
 async function runProblemStatsTests() {
+  installSyntheticSupabaseInterceptor()
+
   console.log('========================================================================')
   console.log('📊 REAL-TIME DATABASE-DRIVEN PROBLEM COUNTER VERIFICATION SUITE')
   console.log('========================================================================\n')
@@ -43,7 +50,7 @@ async function runProblemStatsTests() {
   // --- Test 1: New student with zero solved problems ---
   console.log('\n--- Test 1: New student with zero solved problems ---')
   try {
-    const freshUserId = 'test_student_zero_' + Date.now()
+    const freshUserId = SYNTHETIC_STUDENT_B
     const stats = await fetchAuthoritativeProblemStats(freshUserId, { forceRefresh: true })
     assert.strictEqual(stats.solvedCount, 0, 'Solved count must be 0')
     assert.strictEqual(stats.totalProblems, dbTotal, 'Total must equal DB total')
@@ -54,17 +61,16 @@ async function runProblemStatsTests() {
     fail('Test 1 failed', err)
   }
 
-  // --- Test 2 & 3: Authoritative solved student (e.g. Kavya Ramesh) ---
-  console.log('\n--- Test 2 & 3: Student with real solved problems (Kavya Ramesh) ---')
+  // --- Test 2 & 3: Authoritative solved student (isolated synthetic fixture) ---
+  console.log('\n--- Test 2 & 3: Student with real solved problems (synthetic student) ---')
   try {
-    // Kavya Ramesh has 2 real solved problems in the DB
-    const kavyaUserId = '36a74ed3-4a98-4374-a3d1-be0e2050b81c'
-    const stats = await fetchAuthoritativeProblemStats(kavyaUserId, { forceRefresh: true })
-    assert.strictEqual(stats.solvedCount, 2, 'Kavya must have exactly 2 solved problems')
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
+    assert.strictEqual(stats.solvedCount, 3, 'Synthetic student must have exactly 3 unique solved problems')
     assert.strictEqual(stats.totalProblems, dbTotal, 'Total must equal DB total')
-    assert.strictEqual(stats.remaining, dbTotal - 2, `Remaining must be ${dbTotal - 2}`)
+    assert.strictEqual(stats.remaining, dbTotal - 3, `Remaining must be ${dbTotal - 3}`)
     assert(stats.solvedProblemSlugs.includes('belt-1-q1-arithmetic-check-v1'), 'Must include problem 1')
     assert(stats.solvedProblemSlugs.includes('belt-1-q2-absolute-difference-v1'), 'Must include problem 2')
+    assert(stats.solvedProblemSlugs.includes('belt-3-q5-rotate-left-v1'), 'Must include problem 3')
     pass(`Student with solved problems returns ${stats.solvedCount} / ${stats.totalProblems} with ${stats.remaining} remaining`)
   } catch (err) {
     fail('Test 2 & 3 failed', err)
@@ -144,15 +150,15 @@ async function runProblemStatsTests() {
   console.log('\n--- Test 8 & 9: Account switch & cache isolation ---')
   try {
     // 1. Fetch Student A
-    const userA = '36a74ed3-4a98-4374-a3d1-be0e2050b81c' // Kavya (2 solved)
+    const userA = SYNTHETIC_STUDENT_A
     const statsA = await fetchAuthoritativeProblemStats(userA)
-    assert.strictEqual(statsA.solvedCount, 2, 'User A has 2 solved')
+    assert.strictEqual(statsA.solvedCount, 3, 'User A has 3 solved')
 
     // 2. Clear cache on account switch/logout
     clearProblemStatsCache()
 
     // 3. Fetch Student B (zero solved)
-    const userB = 'test_student_isolated_' + Date.now()
+    const userB = SYNTHETIC_STUDENT_B
     const statsB = await fetchAuthoritativeProblemStats(userB)
     assert.strictEqual(statsB.solvedCount, 0, 'User B must have 0 solved')
     assert.notStrictEqual(statsA.solvedCount, statsB.solvedCount, 'User B must not inherit User A count')
@@ -200,14 +206,14 @@ async function runProblemStatsTests() {
   // --- Test 12: User boundary / IDOR isolation ---
   console.log('\n--- Test 12: User isolation boundary ---')
   try {
-    const idA = '36a74ed3-4a98-4374-a3d1-be0e2050b81c'
-    const idB = 'non_existent_student_boundary_check'
+    const idA = SYNTHETIC_STUDENT_A
+    const idB = SYNTHETIC_STUDENT_B
 
     const statsA = await fetchAuthoritativeProblemStats(idA)
     const statsB = await fetchAuthoritativeProblemStats(idB)
 
-    assert(statsA.solvedCount === 2, 'User A gets only their own data')
-    assert(statsB.solvedCount === 0, 'User B gets only their own data')
+    assert.strictEqual(statsA.solvedCount, 3, 'User A gets only their own data')
+    assert.strictEqual(statsB.solvedCount, 0, 'User B gets only their own data')
     pass('Queries are strictly scoped to authenticated user ID (zero cross-user leakage)')
   } catch (err) {
     fail('Test 12 failed', err)
@@ -216,10 +222,11 @@ async function runProblemStatsTests() {
   // --- Test 13: Refresh idempotency ---
   console.log('\n--- Test 13: Refresh idempotency ---')
   try {
-    const kavyaUserId = '36a74ed3-4a98-4374-a3d1-be0e2050b81c'
-    const firstCall = await fetchAuthoritativeProblemStats(kavyaUserId, { forceRefresh: true })
-    const secondCall = await fetchAuthoritativeProblemStats(kavyaUserId, { forceRefresh: true })
+    const testUserId = SYNTHETIC_STUDENT_A
+    const firstCall = await fetchAuthoritativeProblemStats(testUserId, { forceRefresh: true })
+    const secondCall = await fetchAuthoritativeProblemStats(testUserId, { forceRefresh: true })
 
+    assert.strictEqual(firstCall.solvedCount, 3)
     assert.strictEqual(firstCall.solvedCount, secondCall.solvedCount)
     assert.strictEqual(firstCall.totalProblems, secondCall.totalProblems)
     assert.strictEqual(firstCall.remaining, secondCall.remaining)

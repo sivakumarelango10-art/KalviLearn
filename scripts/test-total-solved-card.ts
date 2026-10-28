@@ -27,8 +27,15 @@ import {
   clearProblemStatsCache,
 } from '../src/lib/problemStatsService'
 import { supabase } from '../src/lib/supabase'
+import {
+  SYNTHETIC_STUDENT_A,
+  SYNTHETIC_STUDENT_B,
+  installSyntheticSupabaseInterceptor,
+} from './syntheticFixtures'
 
 async function runTotalSolvedCardSuite() {
+  installSyntheticSupabaseInterceptor()
+
   console.log('========================================================================')
   console.log('🎯 KALVILEARN TOTAL SOLVED CARD: 14 REGRESSION SCENARIOS VERIFICATION')
   console.log('========================================================================\n')
@@ -62,11 +69,13 @@ async function runTotalSolvedCardSuite() {
 
   // SCENARIO 1: The card displays only the solved number
   try {
-    assert(successMarkup.includes('{problemStats?.solvedCount ?? 0}'), 'Success state must display problemStats.solvedCount')
+    assert(successMarkup.includes('{problemStats.solvedCount}'), 'Success state must display problemStats.solvedCount')
+    assert(!cardMarkup.includes('solvedCount ?? 0'), 'Total Solved card must not use ?? 0 fallback')
+    assert(!cardMarkup.includes('?? 0'), 'Total Solved card must not invent 0 fallback')
     // Must not have additional numeric children or secondary spans in success div
     const childrenCount = (successMarkup.match(/<div|<span|<p/g) || []).length
     assert(childrenCount <= 2, `Success state should only contain the container and number div, found ${childrenCount} tags`)
-    pass(1, 'The card displays only the solved number', 'Renders {problemStats?.solvedCount ?? 0} as the solitary metric value')
+    pass(1, 'The card displays only the solved number', 'Renders {problemStats.solvedCount} as the solitary metric value without ?? 0 fallback')
   } catch (err) {
     fail(1, 'The card displays only the solved number', err)
   }
@@ -97,7 +106,7 @@ async function runTotalSolvedCardSuite() {
 
   // SCENARIO 4: A student with zero solved problems sees 0
   try {
-    const zeroStudentId = 'test_regression_student_zero_' + Date.now()
+    const zeroStudentId = SYNTHETIC_STUDENT_B
     const statsZero = await fetchAuthoritativeProblemStats(zeroStudentId, { forceRefresh: true })
     assert.strictEqual(statsZero.solvedCount, 0, 'Zero student must have solvedCount === 0')
     assert(Array.isArray(statsZero.solvedProblemSlugs) && statsZero.solvedProblemSlugs.length === 0, 'No slugs')
@@ -106,13 +115,12 @@ async function runTotalSolvedCardSuite() {
     fail(4, 'A student with zero solved problems sees 0', err)
   }
 
-  // SCENARIO 5: A student with multiple solved problems sees the actual unique count
-  const kavyaId = '36a74ed3-4a98-4374-a3d1-be0e2050b81c'
+  // SCENARIO 5: A student with multiple solved problems sees the actual unique count (isolated synthetic fixture)
   try {
-    const statsKavya = await fetchAuthoritativeProblemStats(kavyaId, { forceRefresh: true })
-    assert.strictEqual(statsKavya.solvedCount, 2, 'Kavya Ramesh has exactly 2 unique problems solved')
-    assert.strictEqual(statsKavya.solvedProblemSlugs.length, 2, 'Slugs length must be 2')
-    pass(5, 'A student with multiple solved problems sees the actual unique count', `Kavya Ramesh solvedCount: ${statsKavya.solvedCount}`)
+    const statsStudent = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
+    assert.strictEqual(statsStudent.solvedCount, 3, 'Synthetic student has exactly 3 unique problems solved')
+    assert.strictEqual(statsStudent.solvedProblemSlugs.length, 3, 'Slugs length must be 3')
+    pass(5, 'A student with multiple solved problems sees the actual unique count', `Synthetic student solvedCount: ${statsStudent.solvedCount}`)
   } catch (err) {
     fail(5, 'A student with multiple solved problems sees the actual unique count', err)
   }
@@ -206,9 +214,9 @@ async function runTotalSolvedCardSuite() {
   // SCENARIO 10: The count is correct after refreshing or signing in again
   try {
     clearProblemStatsCache()
-    const firstCall = await fetchAuthoritativeProblemStats(kavyaId, { forceRefresh: true })
+    const firstCall = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
     clearProblemStatsCache()
-    const refreshedCall = await fetchAuthoritativeProblemStats(kavyaId, { forceRefresh: true })
+    const refreshedCall = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
 
     assert.strictEqual(firstCall.solvedCount, refreshedCall.solvedCount, 'Count must match identically across fresh sessions')
     assert.deepStrictEqual(firstCall.solvedProblemSlugs, refreshedCall.solvedProblemSlugs, 'Slugs must match identically')
@@ -219,14 +227,13 @@ async function runTotalSolvedCardSuite() {
 
   // SCENARIO 11: Switching accounts does not expose the previous student's count
   try {
-    const statsStudentA = await fetchAuthoritativeProblemStats(kavyaId)
-    assert.strictEqual(statsStudentA.solvedCount, 2)
+    const statsStudentA = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
+    assert.strictEqual(statsStudentA.solvedCount, 3)
 
     // Simulate logout/switch clearing
     clearProblemStatsCache()
 
-    const studentBId = 'test_isolated_switch_' + Date.now()
-    const statsStudentB = await fetchAuthoritativeProblemStats(studentBId)
+    const statsStudentB = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_B)
     assert.strictEqual(statsStudentB.solvedCount, 0, 'New student must see only their own 0 solved')
     assert.notStrictEqual(statsStudentA.solvedCount, statsStudentB.solvedCount, 'Must never leak prior student count')
 
@@ -270,16 +277,15 @@ async function runTotalSolvedCardSuite() {
 
   // SCENARIO 14: The count includes eligible problems across the entire intended platform, not just the current belt or language
   try {
-    // Prajith has solved problems in Belt 1 (e.g. arithmetic-check, absolute-diff, largest-of-three)
+    // Synthetic student has solved problems in Belt 1 (e.g. arithmetic-check, absolute-diff)
     // AND in Belt 3 (rotate-left-v1) across Python, C++, Java
-    const prajithId = '7193765a-4dc6-4f61-813e-3e5dce95b6c7'
-    const statsPrajith = await fetchAuthoritativeProblemStats(prajithId, { forceRefresh: true })
+    const statsSynthetic = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
 
-    assert(statsPrajith.solvedProblemSlugs.some((s) => s.startsWith('belt-1-')), 'Includes Belt 1 problems')
-    assert(statsPrajith.solvedProblemSlugs.some((s) => s.startsWith('belt-3-')), 'Includes Belt 3 problems')
-    assert.strictEqual(statsPrajith.solvedCount, 4, 'Includes all eligible problems across Belts 1 and 3')
+    assert(statsSynthetic.solvedProblemSlugs.some((s) => s.startsWith('belt-1-')), 'Includes Belt 1 problems')
+    assert(statsSynthetic.solvedProblemSlugs.some((s) => s.startsWith('belt-3-')), 'Includes Belt 3 problems')
+    assert.strictEqual(statsSynthetic.solvedCount, 3, 'Includes all eligible problems across Belts 1 and 3')
 
-    pass(14, 'The count includes eligible problems across the entire intended platform', `Count covers Belts 1..10 across all languages: ${statsPrajith.solvedCount} unique problems`)
+    pass(14, 'The count includes eligible problems across the entire intended platform', `Count covers Belts 1..10 across all languages: ${statsSynthetic.solvedCount} unique problems`)
   } catch (err) {
     fail(14, 'The count includes eligible problems across the entire intended platform', err)
   }

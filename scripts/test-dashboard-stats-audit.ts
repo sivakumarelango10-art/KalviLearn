@@ -13,7 +13,15 @@ import {
 } from '../src/lib/problemStatsService'
 import { supabase } from '../src/lib/supabase'
 
+import {
+  SYNTHETIC_STUDENT_A,
+  SYNTHETIC_STUDENT_B,
+  installSyntheticSupabaseInterceptor,
+} from './syntheticFixtures'
+
 async function runDashboardAuditSuite() {
+  installSyntheticSupabaseInterceptor()
+
   console.log('========================================================================')
   console.log('🚀 KALVILEARN DASHBOARD MASTER AUDIT & VERIFICATION SUITE (18 TESTS)')
   console.log('========================================================================\n')
@@ -44,10 +52,21 @@ async function runDashboardAuditSuite() {
     assert(!dashboardSource.includes('?? 500'), 'DashboardPage.tsx must not contain ?? 500 fallback')
     assert(!dashboardSource.includes('totalProblems = 500'), 'DashboardPage.tsx must not assign totalProblems = 500')
 
+    // Verify Total Solved card contains only the solved number (no denominator, no remaining label, no ?? 0 invented fallback)
+    const totalSolvedCardMatch = dashboardSource.match(/Total Solved[\s\S]*?data-testid="problem-counter-success"[\s\S]*?<\/div>\s*<\/div>/)
+    if (totalSolvedCardMatch) {
+      const cardText = totalSolvedCardMatch[0]
+      assert(!cardText.includes('totalProblems'), 'Total Solved card must not include totalProblems')
+      assert(!cardText.includes('remaining'), 'Total Solved card must not include remaining')
+      assert(!cardText.includes('— / —'), 'Total Solved card must not include — / — loading denominator')
+      assert(!/>\s*\/\s*[<{]/.test(cardText), 'Total Solved card must not render / denominator')
+      assert(!cardText.includes('solvedCount ?? 0'), 'Total Solved card must not use ?? 0 fallback')
+    }
+
     assert(!problemStatsSource.includes('500'), 'problemStatsService.ts must not hardcode 500')
     assert(!progressSource.includes('= 500'), 'progress.ts must not have default totalProblems = 500')
 
-    pass(1, 'Hardcoded 500 does not exist in dashboard logic', 'Zero hardcoded 500 in DashboardPage or problemStatsService')
+    pass(1, 'Hardcoded 500 does not exist in dashboard logic', 'Zero hardcoded 500 in DashboardPage or problemStatsService; Total Solved card has no denominator, remaining label, or ?? 0 fallback')
   } catch (err) {
     fail(1, 'Hardcoded 500 exists in dashboard logic', err)
   }
@@ -67,18 +86,17 @@ async function runDashboardAuditSuite() {
     fail(2, 'Total comes from real canonical problem data', err)
   }
 
-  // TEST 3: Solved count comes from real authenticated student data
-  let studentAId = '36a74ed3-4a98-4374-a3d1-be0e2050b81c' // Kavya Ramesh
+  // TEST 3: Solved count comes from real authenticated student data (isolated synthetic fixture)
   try {
-    const stats = await fetchAuthoritativeProblemStats(studentAId, { forceRefresh: true })
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A, { forceRefresh: true })
     assert(typeof stats.solvedCount === 'number', 'Solved count must be a valid number')
-    assert(stats.solvedCount === 2, `Expected 2 solved problems for student ${studentAId}, got ${stats.solvedCount}`)
+    assert.strictEqual(stats.solvedCount, 3, `Expected 3 unique solved problems for synthetic student, got ${stats.solvedCount}`)
     assert(stats.totalProblems === dbTotal, 'Total problems must match DB total')
     assert(stats.remaining === dbTotal - stats.solvedCount, 'Remaining must equal total - solved')
 
-    pass(3, 'Solved count comes from real authenticated student data', `Student solved count = ${stats.solvedCount} / ${stats.totalProblems}`)
+    pass(3, 'Solved count comes from authenticated student data', `Synthetic student solved count = ${stats.solvedCount} / ${stats.totalProblems} (isolated fixture)`)
   } catch (err) {
-    fail(3, 'Solved count comes from real authenticated student data', err)
+    fail(3, 'Solved count comes from authenticated student data', err)
   }
 
   // TEST 4: Same problem in multiple languages counts once
@@ -151,7 +169,7 @@ async function runDashboardAuditSuite() {
     const remA = Math.max(totalA - solvedA, 0)
     assert.strictEqual(remA, 477, '500 - 23 must equal 477')
 
-    const stats = await fetchAuthoritativeProblemStats(studentAId)
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
     assert.strictEqual(stats.remaining, stats.totalProblems - stats.solvedCount, 'Live remaining must match total - solved')
 
     pass(7, 'Remaining = total - solved', `${stats.totalProblems} - ${stats.solvedCount} = ${stats.remaining} remaining`)
@@ -161,14 +179,13 @@ async function runDashboardAuditSuite() {
 
   // TEST 8: Account switch changes the count
   try {
-    const statsUserA = await fetchAuthoritativeProblemStats(studentAId)
-    assert.strictEqual(statsUserA.solvedCount, 2)
+    const statsUserA = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
+    assert.strictEqual(statsUserA.solvedCount, 3)
 
     // Clear caches as AuthContext does on switch
     clearProblemStatsCache()
 
-    const freshUserId = 'fresh_student_switch_' + Date.now()
-    const statsUserB = await fetchAuthoritativeProblemStats(freshUserId)
+    const statsUserB = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_B)
     assert.strictEqual(statsUserB.solvedCount, 0)
     assert.notStrictEqual(statsUserA.solvedCount, statsUserB.solvedCount, 'User B must not see User A solved count')
 
@@ -282,7 +299,7 @@ async function runDashboardAuditSuite() {
     const totalFromBelts = belts.reduce((sum, b) => sum + (b.Problem?.length || 0), 0)
     assert.strictEqual(totalFromBelts, dbTotal, `Sum of belt problems (${totalFromBelts}) must match total problems (${dbTotal})`)
 
-    const stats = await fetchAuthoritativeProblemStats(studentAId)
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
     assert(stats.beltStats.length === 10, 'beltStats must contain all 10 belts')
     const beltSum = stats.beltStats.reduce((sum, b) => sum + b.totalProblems, 0)
     assert.strictEqual(beltSum, dbTotal, `beltStats total (${beltSum}) must match dbTotal (${dbTotal})`)
@@ -294,7 +311,7 @@ async function runDashboardAuditSuite() {
 
   // TEST 16: Curriculum progress matches the intended canonical calculation
   try {
-    const stats = await fetchAuthoritativeProblemStats(studentAId)
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
     const overallPercent = Math.round((stats.solvedCount / stats.totalProblems) * 100)
     assert(overallPercent >= 0 && overallPercent <= 100, 'Curriculum percent must be valid bounded percentage')
 
@@ -325,21 +342,19 @@ async function runDashboardAuditSuite() {
 
   // TEST 18: Submission count is independent from solved count
   try {
-    // Prajith has 7 submissions in database but only 2 unique solved problems
-    const prajithId = '7193765a-4dc6-4f61-813e-3e5dce95b6c7'
-    const stats = await fetchAuthoritativeProblemStats(prajithId)
+    const stats = await fetchAuthoritativeProblemStats(SYNTHETIC_STUDENT_A)
 
     const { count: subCount } = await supabase
       .from('Submission')
       .select('id', { count: 'exact', head: true })
-      .eq('userId', prajithId)
+      .eq('userId', SYNTHETIC_STUDENT_A)
 
     assert(typeof subCount === 'number', 'Submission count must be a number')
-    assert.strictEqual(stats.solvedCount, 4, 'Prajith unique solved problems is 4')
-    assert(subCount >= stats.solvedCount, `Prajith submissions (${subCount}) >= solved problems (${stats.solvedCount})`)
-    assert.notStrictEqual(subCount, stats.solvedCount, 'Submissions count is strictly independent from Solved count')
+    assert.strictEqual(stats.solvedCount, 3, 'Synthetic student unique solved problems is 3')
+    assert.strictEqual(subCount, 6, `Synthetic student submissions (${subCount}) must equal 6`)
+    assert.notStrictEqual(subCount, stats.solvedCount, 'Submissions count (6) is strictly independent from Solved count (3)')
 
-    pass(18, 'Submission count is independent from solved count', `Prajith has ${subCount} submissions and ${stats.solvedCount} unique solved problems`)
+    pass(18, 'Submission count is independent from solved count', `Synthetic student has ${subCount} submissions and ${stats.solvedCount} unique solved problems`)
   } catch (err) {
     fail(18, 'Submission count is independent from solved count', err)
   }

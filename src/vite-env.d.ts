@@ -16,3 +16,7 @@ interface ImportMeta {
 declare module 'canvas-confetti' {
   export default function confetti(options?: any): Promise<null | undefined>;
 }
+
+declare module 'pyodide' {
+  export function loadPyodide(options?: any): Promise<any>;
+}
