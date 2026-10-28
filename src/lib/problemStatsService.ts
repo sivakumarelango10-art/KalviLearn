@@ -181,6 +181,18 @@ export async function fetchAuthoritativeProblemStats(
     throw new Error(`Failed to fetch user submissions from database: ${submissionResult.error.message}`)
   }
 
+  // Build lookup mapping of canonical problem IDs and slugs from the authoritative catalog
+  const problemIdToSlugMap = new Map<string, string>()
+  if (Array.isArray(beltResult)) {
+    for (const b of beltResult) {
+      const bProblems = (b.Problem as Array<{ id: string; slug: string }>) || []
+      for (const p of bProblems) {
+        if (p.id) problemIdToSlugMap.set(p.id, p.slug)
+        if (p.slug) problemIdToSlugMap.set(p.slug, p.slug)
+      }
+    }
+  }
+
   // Deduplicate solved problems across languages and submission records
   const uniqueSolvedProblemKeys = new Set<string>()
   const archiveEnabled = isPracticeArchiveEnabled()
@@ -205,7 +217,7 @@ export async function fetchAuthoritativeProblemStats(
   if (Array.isArray(userProgressResult.data)) {
     for (const row of userProgressResult.data) {
       const pObj = row.Problem as { slug?: string } | null
-      const slug = pObj?.slug || row.problemId
+      const slug = pObj?.slug || problemIdToSlugMap.get(row.problemId) || row.problemId
       if (slug) {
         registerSolvedProblem(slug)
       }
@@ -222,7 +234,7 @@ export async function fetchAuthoritativeProblemStats(
 
       if (isFullPass) {
         const pObj = row.Problem as { slug?: string } | null
-        const slug = pObj?.slug || row.problemId
+        const slug = pObj?.slug || problemIdToSlugMap.get(row.problemId) || row.problemId
         if (slug) {
           registerSolvedProblem(slug)
         }

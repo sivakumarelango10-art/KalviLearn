@@ -33,6 +33,7 @@
     "test:mentor-auth": "npx tsx scripts/test-mentor-auth-student-view.ts",
     "test:problem-stats": "npx tsx scripts/test-problem-stats.ts",
     "test:dashboard-stats": "npx tsx scripts/test-dashboard-stats-audit.ts",
+    "test:total-solved-card": "npx tsx scripts/test-total-solved-card.ts",
     "test:coding": "npx tsx scripts/test-coding-section.ts",
     "validate:coding-judge": "npx tsx scripts/validate-coding-judge-data.ts",
     "build:coding-bank": "npx tsx scripts/build-coding-bank.ts",

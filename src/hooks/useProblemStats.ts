@@ -43,6 +43,14 @@ export function useProblemStats(userId?: string | null): UseProblemStatsResult {
       const stats = await fetchAuthoritativeProblemStats(targetUserId, { forceRefresh })
       // Guard against stale response if user switched accounts while request was in-flight
       if (currentUserIdRef.current === targetUserId) {
+        if (!stats || typeof stats.solvedCount !== 'number' || isNaN(stats.solvedCount) || stats.solvedCount < 0) {
+          setState({
+            status: 'error',
+            stats: null,
+            error: 'Invalid problem statistics received from database',
+          })
+          return
+        }
         setState({
           status: 'success',
           stats,

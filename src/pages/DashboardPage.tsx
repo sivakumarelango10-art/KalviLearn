@@ -264,11 +264,10 @@ export const DashboardPage: React.FC = () => {
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
           </div>
           {statsStatus === 'loading' ? (
-            <div className="space-y-1 animate-pulse" data-testid="problem-counter-loading">
-              <div className="text-2xl font-bold text-neutral-400">— / —</div>
-              <div className="text-[11px] text-neutral-400">— remaining</div>
+            <div className="animate-pulse" data-testid="problem-counter-loading">
+              <div className="text-2xl font-bold text-neutral-400">—</div>
             </div>
-          ) : statsStatus === 'error' ? (
+          ) : statsStatus === 'error' || !problemStats || typeof problemStats.solvedCount !== 'number' ? (
             <div className="space-y-1" data-testid="problem-counter-error">
               <div className="text-sm font-semibold text-red-600">Unable to load progress</div>
               <div className="text-[11px] text-neutral-400">{statsError || 'Database unavailable'}</div>
@@ -276,11 +275,7 @@ export const DashboardPage: React.FC = () => {
           ) : (
             <div data-testid="problem-counter-success">
               <div className="text-2xl font-bold text-neutral-900">
-                {problemStats?.solvedCount ?? 0}{' '}
-                <span className="text-xs text-neutral-400 font-normal">/ {problemStats?.totalProblems ?? 0}</span>
-              </div>
-              <div className="text-[11px] text-neutral-500">
-                {problemStats?.remaining ?? 0} remaining
+                {problemStats.solvedCount}
               </div>
             </div>
           )}
