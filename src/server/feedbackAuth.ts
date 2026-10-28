@@ -170,8 +170,13 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
     const parts = token.split('_')
     // format: test_auth_<role>_<email>
     if (parts.length >= 4) {
-      const testRole = parts[2].toUpperCase() as AuthenticatedUser['role']
-      const testEmail = parts.slice(3).join('_').toLowerCase()
+      const rawRole = parts[2].toUpperCase()
+      let testRole: AuthenticatedUser['role'] = rawRole as AuthenticatedUser['role']
+      let testEmail = parts.slice(3).join('_').toLowerCase()
+      if (rawRole === 'CAMPUS' && parts[3]?.toUpperCase() === 'MANAGER') {
+        testRole = 'CAMPUS_MANAGER'
+        testEmail = parts.slice(4).join('_').toLowerCase()
+      }
 
       // CRITICAL SECURITY GUARD: Real student or production email addresses can NEVER be used via test_auth_
       if (
@@ -259,7 +264,8 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
         (Array.isArray(data.user.app_metadata?.providers) && data.user.app_metadata.providers.includes('google')) ||
         (data.user.identities || []).some((identity) => identity.provider === 'google')
       const isConfirmed = !!data.user.email_confirmed_at || !!(data.user as any).confirmed_at
-      const googleConfirmed = isConfirmed && isGoogle
+      const isTrustedProvider = isGoogle || data.user.app_metadata?.provider === 'email' || (data.user.identities || []).some((identity) => identity.provider === 'email');
+      const googleConfirmed = isConfirmed && isTrustedProvider
       if (googleConfirmed) {
         let byEmailQuery = supabaseServer.from('users').select(columns).eq('email', email)
         const byEmail = await byEmailQuery.maybeSingle()

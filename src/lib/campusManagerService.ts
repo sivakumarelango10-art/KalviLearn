@@ -6,6 +6,7 @@ import { calculateAuthoritativeStreak } from './streak'
 import { mapToCanonicalPracticeSlug } from './problemStatsService'
 import { registerCacheClearer } from './cacheRegistry'
 import { isPracticeArchiveEnabled } from './featureFlags'
+import { formatErrorMessage } from './errorUtils'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -705,7 +706,22 @@ export async function fetchMentorDetailedProfile(mentorId: string): Promise<Camp
 }
 
 /**
- * Registers a new Mentor in the live database (users and mentors tables).
+ * Retrieves the authorization bearer header from the active Supabase session.
+ */
+async function getAuthHeader(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.access_token) {
+      return `Bearer ${session.access_token}`
+    }
+  } catch {
+    // Non-browser or disconnected environment
+  }
+  return null
+}
+
+/**
+ * Registers a new Mentor in the live database via the authoritative backend API.
  */
 export async function addCampusMentor(payload: {
   name: string
@@ -714,64 +730,33 @@ export async function addCampusMentor(payload: {
   maxStudents?: number
 }): Promise<{ success: boolean; error?: string }> {
   try {
-    const email = payload.email.trim().toLowerCase()
-    const name = payload.name.trim()
-    const mentorCode = payload.mentorCode.trim().toUpperCase()
+    const authHeader = await getAuthHeader()
+    const res = await fetch('/api/campus/mentors', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
+      body: JSON.stringify(payload),
+    })
 
-    // 1. Ensure user row exists in users table
-    let userId: string
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle()
-
-    if (existingUser?.id) {
-      userId = existingUser.id
-      await supabase
-        .from('users')
-        .update({ name, role: 'MENTOR', status: 'ACTIVE' })
-        .eq('id', userId)
-    } else {
-      const { data: newUser, error: userError } = await supabase
-        .from('users')
-        .insert({
-          email,
-          name,
-          role: 'MENTOR',
-          status: 'ACTIVE',
-        })
-        .select('id')
-        .single()
-      if (userError || !newUser) throw userError || new Error('Failed to create user record')
-      userId = newUser.id
+    const data = await res.json().catch(() => null)
+    if (!res.ok || !data?.success) {
+      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
+      return { success: false, error: formatErrorMessage(errMsg) }
     }
-
-    // 2. Upsert into mentors table
-    const { error: mentorError } = await supabase
-      .from('mentors')
-      .upsert({
-        user_id: userId,
-        name,
-        email,
-        mentor_code: mentorCode,
-        max_students: payload.maxStudents || 30,
-        status: 'ACTIVE',
-      })
-
-    if (mentorError) throw mentorError
 
     notifyCampusMutation()
     return { success: true }
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
+    const msg = formatErrorMessage(err, 'Failed to register mentor.')
     console.error('Error adding campus mentor:', msg)
     return { success: false, error: msg }
   }
 }
 
 /**
- * Enrolls a new Student in the live database (users and students tables) with optional Mentor Assignment.
+ * Enrolls a new Student in the live database with optional Mentor Assignment via authoritative backend API.
  */
 export async function addCampusStudent(payload: {
   name: string
@@ -780,110 +765,59 @@ export async function addCampusStudent(payload: {
   mentorId: string | null
 }): Promise<{ success: boolean; error?: string }> {
   try {
-    const email = payload.email.trim().toLowerCase()
-    const name = payload.name.trim()
-    const studentCode = payload.studentCode.trim().toUpperCase()
+    const authHeader = await getAuthHeader()
+    const res = await fetch('/api/campus/students', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
+      body: JSON.stringify(payload),
+    })
 
-    // 1. Ensure user row exists in users table
-    let userId: string
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle()
-
-    if (existingUser?.id) {
-      userId = existingUser.id
-      await supabase
-        .from('users')
-        .update({ name, role: 'STUDENT', status: 'ACTIVE' })
-        .eq('id', userId)
-    } else {
-      const { data: newUser, error: userError } = await supabase
-        .from('users')
-        .insert({
-          email,
-          name,
-          role: 'STUDENT',
-          status: 'ACTIVE',
-        })
-        .select('id')
-        .single()
-      if (userError || !newUser) throw userError || new Error('Failed to create user record')
-      userId = newUser.id
-    }
-
-    // 2. Upsert into students table
-    const { data: studentData, error: studentError } = await supabase
-      .from('students')
-      .upsert({
-        user_id: userId,
-        name,
-        email,
-        student_code: studentCode,
-        status: 'ACTIVE',
-      })
-      .select('id')
-      .single()
-
-    if (studentError || !studentData) throw studentError || new Error('Failed to create student profile')
-
-    // 3. Assign Mentor if specified
-    if (payload.mentorId && payload.mentorId !== 'NONE') {
-      await assignStudentMentor(studentData.id, payload.mentorId)
+    const data = await res.json().catch(() => null)
+    if (!res.ok || !data?.success) {
+      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
+      return { success: false, error: formatErrorMessage(errMsg) }
     }
 
     notifyCampusMutation()
     return { success: true }
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
+    const msg = formatErrorMessage(err, 'Failed to enroll student.')
     console.error('Error adding campus student:', msg)
     return { success: false, error: msg }
   }
 }
 
 /**
- * Assigns or re-assigns a Student to a Mentor in the live mentor_students table.
+ * Assigns or re-assigns a Student to a Mentor in the live database via authoritative backend API.
  */
 export async function assignStudentMentor(
   studentId: string,
   mentorId: string | null
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    if (!mentorId || mentorId === 'NONE') {
-      // Unassign: Mark any existing active links as INACTIVE
-      await supabase
-        .from('mentor_students')
-        .update({ status: 'INACTIVE', unassigned_at: new Date().toISOString() })
-        .eq('student_id', studentId)
-        .eq('status', 'ACTIVE')
-      notifyCampusMutation()
-      return { success: true }
+    const authHeader = await getAuthHeader()
+    const res = await fetch('/api/campus/assign-mentor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
+      body: JSON.stringify({ studentId, mentorId }),
+    })
+
+    const data = await res.json().catch(() => null)
+    if (!res.ok || !data?.success) {
+      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
+      return { success: false, error: formatErrorMessage(errMsg) }
     }
-
-    // Deactivate previous active mentor link
-    await supabase
-      .from('mentor_students')
-      .update({ status: 'INACTIVE', unassigned_at: new Date().toISOString() })
-      .eq('student_id', studentId)
-      .eq('status', 'ACTIVE')
-
-    // Insert new active link
-    const { error } = await supabase
-      .from('mentor_students')
-      .upsert({
-        mentor_id: mentorId,
-        student_id: studentId,
-        status: 'ACTIVE',
-        assigned_at: new Date().toISOString(),
-      })
-
-    if (error) throw error
 
     notifyCampusMutation()
     return { success: true }
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
+    const msg = formatErrorMessage(err, 'Failed to update mentor assignment.')
     console.error('Error assigning student mentor:', msg)
     return { success: false, error: msg }
   }

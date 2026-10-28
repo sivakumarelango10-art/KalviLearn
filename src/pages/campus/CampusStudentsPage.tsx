@@ -20,6 +20,7 @@ import {
   type CampusStudentStat,
   type CampusMentorStat,
 } from '@/lib/campusManagerService'
+import { formatErrorMessage } from '@/lib/errorUtils'
 
 export const CampusStudentsPage: React.FC = () => {
   const [students, setStudents] = useState<CampusStudentStat[]>([])
@@ -95,8 +96,17 @@ export const CampusStudentsPage: React.FC = () => {
   // Handle Add Student submit
   const handleAddStudentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newName.trim() || !newEmail.trim()) {
+    const trimmedName = newName.trim()
+    const trimmedEmail = newEmail.trim().toLowerCase()
+
+    if (!trimmedName || !trimmedEmail) {
       setFormError('Please fill in all required fields.')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(trimmedEmail)) {
+      setFormError('Please enter a valid email address.')
       return
     }
 
@@ -107,18 +117,18 @@ export const CampusStudentsPage: React.FC = () => {
       const autoCode = 'STU-' + Date.now().toString(36).toUpperCase()
       const mentorIdToAssign = selectedMentorId === 'NONE' ? null : selectedMentorId
       const res = await addCampusStudent({
-        name: newName,
-        email: newEmail,
+        name: trimmedName,
+        email: trimmedEmail,
         studentCode: autoCode,
         mentorId: mentorIdToAssign,
       })
 
       if (!res.success) {
-        setFormError(res.error || 'Failed to add student.')
+        setFormError(formatErrorMessage(res.error, 'Failed to enroll student.'))
         return
       }
 
-      setSuccessToast(`Student ${newName} enrolled successfully!`)
+      setSuccessToast(`Student ${trimmedName} enrolled successfully!`)
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
       toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
       setIsAddModalOpen(false)
@@ -127,7 +137,7 @@ export const CampusStudentsPage: React.FC = () => {
       setSelectedMentorId('NONE')
       await loadData()
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : String(err))
+      setFormError(formatErrorMessage(err, 'Failed to enroll student.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -152,8 +162,10 @@ export const CampusStudentsPage: React.FC = () => {
         })
         await loadData()
       } else {
-        alert(res.error || 'Failed to update mentor assignment.')
+        alert(formatErrorMessage(res.error, 'Failed to update mentor assignment.'))
       }
+    } catch (err: unknown) {
+      alert(formatErrorMessage(err, 'Failed to update mentor assignment.'))
     } finally {
       setIsReassigning(false)
     }

@@ -21907,8 +21907,13 @@ async function authenticateFeedbackRequest(authHeader) {
     }
     const parts = token.split("_");
     if (parts.length >= 4) {
-      const testRole = parts[2].toUpperCase();
-      const testEmail = parts.slice(3).join("_").toLowerCase();
+      const rawRole = parts[2].toUpperCase();
+      let testRole = rawRole;
+      let testEmail = parts.slice(3).join("_").toLowerCase();
+      if (rawRole === "CAMPUS" && parts[3]?.toUpperCase() === "MANAGER") {
+        testRole = "CAMPUS_MANAGER";
+        testEmail = parts.slice(4).join("_").toLowerCase();
+      }
       if (testEmail.endsWith("@kalvium.community") || testEmail.endsWith("@kalvium.com") || testEmail.endsWith("@gmail.com") || testEmail.endsWith("@teamsync.io")) {
         return {
           authenticated: false,
@@ -21971,7 +21976,8 @@ async function authenticateFeedbackRequest(authHeader) {
     if (!dbUser) {
       const isGoogle = data.user.app_metadata?.provider === "google" || Array.isArray(data.user.app_metadata?.providers) && data.user.app_metadata.providers.includes("google") || (data.user.identities || []).some((identity) => identity.provider === "google");
       const isConfirmed = !!data.user.email_confirmed_at || !!data.user.confirmed_at;
-      const googleConfirmed = isConfirmed && isGoogle;
+      const isTrustedProvider = isGoogle || data.user.app_metadata?.provider === "email" || (data.user.identities || []).some((identity) => identity.provider === "email");
+      const googleConfirmed = isConfirmed && isTrustedProvider;
       if (googleConfirmed) {
         let byEmailQuery = supabaseServer.from("users").select(columns).eq("email", email);
         const byEmail = await byEmailQuery.maybeSingle();

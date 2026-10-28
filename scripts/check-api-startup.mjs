@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const FUNCTIONS = ['api/execute.js', 'api/submit.js', 'api/feedback.js', 'api/integrations/teamsync/tickets.js', 'api/integrations/teamsync/webhooks.js']
+const FUNCTIONS = ['api/execute.js', 'api/submit.js', 'api/feedback.js', 'api/integrations/teamsync/tickets.js', 'api/integrations/teamsync/webhooks.js', 'api/campus.js']
 
 // Child program: import the bundle, then (for execute/submit) send one authenticated-looking request and require JSON.
 const probe = `

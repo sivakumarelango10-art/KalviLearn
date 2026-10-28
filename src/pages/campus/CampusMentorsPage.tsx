@@ -9,6 +9,7 @@ import {
   AlertCircle,
   ChevronRight,
 } from 'lucide-react'
+import { formatErrorMessage } from '@/lib/errorUtils'
 import {
   fetchCampusMentors,
   fetchMentorDetailedProfile,
@@ -147,8 +148,17 @@ export const CampusMentorsPage: React.FC = () => {
   // Handle Add Mentor submit
   const handleAddMentorSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newName.trim() || !newEmail.trim()) {
+    const trimmedName = newName.trim()
+    const trimmedEmail = newEmail.trim().toLowerCase()
+
+    if (!trimmedName || !trimmedEmail) {
       setFormError('Please fill in all required fields.')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(trimmedEmail)) {
+      setFormError('Please enter a valid email address.')
       return
     }
 
@@ -158,18 +168,18 @@ export const CampusMentorsPage: React.FC = () => {
     try {
       const autoCode = 'MNT-' + Date.now().toString(36).toUpperCase()
       const res = await addCampusMentor({
-        name: newName,
-        email: newEmail,
+        name: trimmedName,
+        email: trimmedEmail,
         mentorCode: autoCode,
         maxStudents: Number(newCapacity),
       })
 
       if (!res.success) {
-        setFormError(res.error || 'Failed to add mentor.')
+        setFormError(formatErrorMessage(res.error, 'Failed to register mentor.'))
         return
       }
 
-      setSuccessToast(`Mentor ${newName} registered successfully!`)
+      setSuccessToast(`Mentor ${trimmedName} registered successfully!`)
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
       toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
       setIsAddModalOpen(false)
@@ -178,7 +188,7 @@ export const CampusMentorsPage: React.FC = () => {
       setNewCapacity(30)
       await loadData()
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : String(err))
+      setFormError(formatErrorMessage(err, 'Failed to register mentor.'))
     } finally {
       setIsSubmitting(false)
     }

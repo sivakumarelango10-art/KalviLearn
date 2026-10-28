@@ -5,6 +5,7 @@ import { context as esbuildContext } from 'esbuild'
 
 // Longest/most specific prefixes first.
 const API_ROUTES: Array<{ match: (url: string) => boolean; module: string }> = [
+  { match: (u) => u.startsWith('/api/campus'), module: '/src/server/campusHandler.ts' },
   { match: (u) => u.startsWith('/api/feedback'), module: '/src/server/feedbackHandler.ts' },
   { match: (u) => u.startsWith('/api/integrations/teamsync/webhooks'), module: '/src/server/teamSyncWebhookHandler.ts' },
   { match: (u) => u.startsWith('/api/integrations/teamsync'), module: '/src/server/teamSyncHandler.ts' },
