@@ -36,6 +36,7 @@
     "test:total-solved-card": "npx tsx scripts/test-total-solved-card.ts",
     "test:dashboard-no-belts": "npx tsx scripts/test-dashboard-no-belts.ts",
     "test:revise-lang": "npx tsx scripts/test-revise-language-selector.ts",
+    "test:profile-cleanup": "npx tsx scripts/test-profile-no-belts-difficulty.ts",
     "test:coding": "npx tsx scripts/test-coding-section.ts",
     "validate:coding-judge": "npx tsx scripts/validate-coding-judge-data.ts",
     "build:coding-bank": "npx tsx scripts/build-coding-bank.ts",
