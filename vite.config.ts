@@ -75,11 +75,23 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-monaco': ['@monaco-editor/react'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-icons': ['lucide-react'],
+        manualChunks(id) {
+          const normalized = id.replace(/\\/g, '/')
+          if (normalized.includes('node_modules')) {
+            if (normalized.includes('lucide-react')) return 'vendor-icons'
+            if (normalized.includes('@monaco-editor') || normalized.includes('monaco-editor')) return 'vendor-monaco'
+            if (normalized.includes('@supabase')) return 'vendor-supabase'
+            if (
+              normalized.includes('/react/') ||
+              normalized.includes('/react-dom/') ||
+              normalized.includes('/react-router/') ||
+              normalized.includes('/react-router-dom/') ||
+              normalized.includes('/scheduler/')
+            ) return 'vendor-react'
+          }
+          if (normalized.includes('src/data/problems.json')) return 'data-problems'
+          if (normalized.includes('src/data/curriculum')) return 'data-curriculum'
+          if (normalized.includes('src/data/learn/coding')) return 'data-learn-coding'
         },
       },
     },

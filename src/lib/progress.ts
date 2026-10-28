@@ -69,13 +69,17 @@ const defaultState: UserState = {
   },
 }
 
+let legacyPurged = false
+
 function purgeLegacyStorage() {
+  if (legacyPurged) return
   try {
     for (const key of LEGACY_STORAGE_KEYS) {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key)
       }
     }
+    legacyPurged = true
   } catch (storageErr) {
     console.warn('Failed to purge legacy storage keys:', storageErr)
   }

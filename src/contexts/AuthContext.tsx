@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase, signInWithGoogle } from '@/lib/supabase'
 import { verifyUserInDatabase, signOutUser, DbUser } from '@/lib/authService'
 import { clearAllUserCaches } from '@/lib/cacheRegistry'
@@ -71,11 +71,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [deniedEmail, setDeniedEmail] = useState<string | null>(null)
   const [deniedReason, setDeniedReason] = useState<'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null>(null)
 
-  const clearAccessDenied = () => {
-    setAccessDenied(false)
-    setDeniedEmail(null)
-    setDeniedReason(null)
-  }
 
   // Verify and sync session
   useEffect(() => {
@@ -216,12 +211,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user?.id, user?.role])
 
-  const loginWithGoogle = async () => {
+  const clearAccessDenied = useCallback(() => {
+    setAccessDenied(false)
+    setDeniedEmail(null)
+    setDeniedReason(null)
+  }, [])
+
+  const loginWithGoogle = useCallback(async () => {
     clearAccessDenied()
     return await signInWithGoogle()
-  }
+  }, [clearAccessDenied])
 
-  const loginWithEmail = async (email: string) => {
+  const loginWithEmail = useCallback(async (email: string) => {
     // In production, authentication must require cryptographic proof via Google OAuth
     if (import.meta.env.PROD) {
       console.warn('Direct passwordless loginWithEmail is disabled in production. Use Google OAuth.')
@@ -245,32 +246,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [clearAccessDenied])
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await signOutUser()
     setUser(null)
     clearAccessDenied()
     resetUserState()
-  }
+  }, [clearAccessDenied])
+
+  const contextValue = useMemo(() => ({
+    user,
+    isLoading,
+    accessDenied,
+    deniedEmail,
+    deniedReason,
+    isMentor: user?.role === 'MENTOR',
+    isStudent: user?.role === 'STUDENT',
+    isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
+    clearAccessDenied: clearAccessDenied,
+    loginWithGoogle,
+    loginWithEmail,
+    logout,
+  }), [
+    user,
+    isLoading,
+    accessDenied,
+    deniedEmail,
+    deniedReason,
+    clearAccessDenied,
+    loginWithGoogle,
+    loginWithEmail,
+    logout,
+  ])
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        accessDenied,
-        deniedEmail,
-        deniedReason,
-        isMentor: user?.role === 'MENTOR',
-        isStudent: user?.role === 'STUDENT',
-        isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
-        clearAccessDenied,
-        loginWithGoogle,
-        loginWithEmail,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   )

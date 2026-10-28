@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react'
+import React, { useCallback, useRef, useEffect, useMemo } from 'react'
 import Editor, { EditorProps, OnMount } from '@monaco-editor/react'
 import { applyCodeEditorRestrictions } from '@/lib/editorRestrictions'
 
@@ -49,12 +49,15 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     [onMount, allowClipboard]
   )
 
-  const mergedOptions = {
-    ...(allowClipboard ? {} : { contextmenu: false }),
-    ...options,
-    // Guarantee contextmenu is false when restrictions are active even if options passed true
-    ...(!allowClipboard ? { contextmenu: false } : {}),
-  }
+  const mergedOptions = useMemo(
+    () => ({
+      ...(allowClipboard ? {} : { contextmenu: false }),
+      ...options,
+      // Guarantee contextmenu is false when restrictions are active even if options passed true
+      ...(!allowClipboard ? { contextmenu: false } : {}),
+    }),
+    [allowClipboard, options]
+  )
 
   return (
     <Editor

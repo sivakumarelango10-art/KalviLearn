@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useParams, useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom'
 import { type OnMount } from '@monaco-editor/react'
 import { CodeEditor } from '@/components/editor/CodeEditor'
@@ -174,7 +174,7 @@ export const ProblemArenaPage: React.FC = () => {
           return
         }
       }
-    } catch {}
+    } catch { }
     setCustomCases([])
   }, [customStorageKey, currentProblem])
 
@@ -182,7 +182,7 @@ export const ProblemArenaPage: React.FC = () => {
     setCustomCases(updated)
     try {
       localStorage.setItem(customStorageKey, JSON.stringify(updated))
-    } catch {}
+    } catch { }
   }
 
   const handleAddCustomCase = () => {
@@ -280,7 +280,7 @@ export const ProblemArenaPage: React.FC = () => {
     setRecentSubmissions(subs)
   }, [currentProblem.slug, currentLanguage, currentProblem.starterCode, curriculum.runnerLanguage])
 
-  const handleEditorMount: OnMount = (editor, monaco) => {
+  const handleEditorMount: OnMount = useCallback((editor, monaco) => {
     editorRef.current = editor
     applyCodeEditorRestrictions(editor, monaco)
 
@@ -302,7 +302,15 @@ export const ProblemArenaPage: React.FC = () => {
         horizontalScrollbarSize: 8,
       },
     })
-  }
+  }, [])
+
+  const handleCodeChange = useCallback((value?: string) => {
+    setCode(value || '')
+    setTestResults((prev) => (prev !== null ? null : prev))
+    setExecutionSummary((prev) => (prev !== null ? null : prev))
+    setCompilationError((prev) => (prev !== null ? null : prev))
+    setSubmissionFailed((prev) => (prev !== null ? null : prev))
+  }, [])
 
   // Unified Execution Pipeline across all 10 Test Cases
   const handleExecute = async (isSubmit: boolean) => {
@@ -857,15 +865,7 @@ export const ProblemArenaPage: React.FC = () => {
               theme="vs-dark"
               language={curriculum.monacoLanguage}
               value={code}
-              onChange={(value) => {
-                setCode(value || '')
-                if (testResults !== null || executionSummary !== null || compilationError !== null || submissionFailed !== null) {
-                  setTestResults(null)
-                  setExecutionSummary(null)
-                  setCompilationError(null)
-                  setSubmissionFailed(null)
-                }
-              }}
+              onChange={handleCodeChange}
               onMount={handleEditorMount}
             />
           </div>
@@ -914,8 +914,8 @@ export const ProblemArenaPage: React.FC = () => {
                         activeCaseTab === caseNum
                           ? 'bg-neutral-800 text-white shadow-sm ring-1 ring-neutral-700'
                           : isVisible
-                          ? 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
-                          : 'text-neutral-500 hover:text-neutral-300 hover:bg-neutral-900/60'
+                            ? 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
+                            : 'text-neutral-500 hover:text-neutral-300 hover:bg-neutral-900/60'
                       )}
                     >
                       {tcResult ? (
@@ -999,9 +999,8 @@ export const ProblemArenaPage: React.FC = () => {
                       ? isSubmitting
                         ? 'Submitting…'
                         : 'Running…'
-                      : `${isSubmitting ? 'Judging' : 'Running'} · Passed ${
-                          Object.values(testResults || {}).filter((r) => r.passed).length
-                        } / ${runScope?.caseIndexes.length ?? (isSubmitting ? authoritativeTotalCount : visibleCount)}`}
+                      : `${isSubmitting ? 'Judging' : 'Running'} · Passed ${Object.values(testResults || {}).filter((r) => r.passed).length
+                      } / ${runScope?.caseIndexes.length ?? (isSubmitting ? authoritativeTotalCount : visibleCount)}`}
                   </span>
                 ) : compilationError ? (
                   <span className="text-red-400 font-semibold">
@@ -1014,8 +1013,8 @@ export const ProblemArenaPage: React.FC = () => {
                       executionSummary.accepted
                         ? 'text-emerald-400'
                         : executionSummary.passed === executionSummary.total
-                        ? 'text-emerald-400/80'
-                        : 'text-amber-400'
+                          ? 'text-emerald-400/80'
+                          : 'text-amber-400'
                     )}
                   >
                     Passed {executionSummary.passed} / {executionSummary.total}
@@ -1024,8 +1023,8 @@ export const ProblemArenaPage: React.FC = () => {
                         ? ' · Accepted'
                         : ''
                       : executionSummary.offlinePreview
-                      ? ' visible · offline preview'
-                      : ' visible · Submit to run all ' + authoritativeTotalCount}
+                        ? ' visible · offline preview'
+                        : ' visible · Submit to run all ' + authoritativeTotalCount}
                   </span>
                 ) : (
                   <span className="text-neutral-500">Passed 0 / {authoritativeTotalCount}</span>
@@ -1120,8 +1119,8 @@ export const ProblemArenaPage: React.FC = () => {
                               tcResult.passed
                                 ? 'bg-emerald-950/40 border-emerald-900/80 text-emerald-300'
                                 : tcResult.isTimeLimitExceeded
-                                ? 'bg-amber-950/40 border-amber-900/80 text-amber-300'
-                                : 'bg-red-950/40 border-red-900/80 text-red-300'
+                                  ? 'bg-amber-950/40 border-amber-900/80 text-amber-300'
+                                  : 'bg-red-950/40 border-red-900/80 text-red-300'
                             )}
                           >
                             {tcResult.passed ? (
@@ -1200,17 +1199,17 @@ export const ProblemArenaPage: React.FC = () => {
                                 tcResult.passed
                                   ? 'text-emerald-400 font-semibold'
                                   : tcResult.isTimeLimitExceeded
-                                  ? 'text-amber-400 font-semibold'
-                                  : 'text-red-400 font-semibold'
+                                    ? 'text-amber-400 font-semibold'
+                                    : 'text-red-400 font-semibold'
                               }
                             >
                               {tcResult.passed
                                 ? '✓ Passed'
                                 : tcResult.isTimeLimitExceeded
-                                ? '⏱ Time Limit Exceeded'
-                                : tcResult.status === 'runtime_error'
-                                ? '✗ Runtime Error'
-                                : '✗ Wrong Answer'}
+                                  ? '⏱ Time Limit Exceeded'
+                                  : tcResult.status === 'runtime_error'
+                                    ? '✗ Runtime Error'
+                                    : '✗ Wrong Answer'}
                             </span>
                           </div>
                         </div>
@@ -1220,8 +1219,8 @@ export const ProblemArenaPage: React.FC = () => {
                             tcResult.passed
                               ? 'bg-neutral-950 border-emerald-900/60 text-emerald-300'
                               : tcResult.isTimeLimitExceeded
-                              ? 'bg-neutral-950 border-amber-900/60 text-amber-300'
-                              : 'bg-neutral-950 border-red-900/60 text-red-300'
+                                ? 'bg-neutral-950 border-amber-900/60 text-amber-300'
+                                : 'bg-neutral-950 border-red-900/60 text-red-300'
                           )}
                         >
                           {tcResult.actualOutput ? String(tcResult.actualOutput) : tcResult.error ? String(tcResult.error) : '(No output returned)'}

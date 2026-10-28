@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import {
   fetchAuthoritativeProblemStats,
   ProblemStats,
@@ -110,10 +110,13 @@ export function useProblemStats(userId?: string | null): UseProblemStatsResult {
     }
   }, [userId, loadStats])
 
-  return {
-    status: state.status,
-    stats: state.stats,
-    error: state.error,
-    refetch,
-  }
+  return useMemo(
+    () => ({
+      status: state.status,
+      stats: state.stats,
+      error: state.error,
+      refetch,
+    }),
+    [state.status, state.stats, state.error, refetch]
+  )
 }

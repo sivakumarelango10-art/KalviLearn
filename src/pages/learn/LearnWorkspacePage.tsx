@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useParams, Link, useSearchParams, Navigate } from 'react-router-dom'
 import { type OnMount } from '@monaco-editor/react'
 import { CodeEditor } from '@/components/editor/CodeEditor'
@@ -291,15 +291,49 @@ export const LearnWorkspacePage: React.FC = () => {
     setSearchParams(searchParams, { replace: true })
   }
 
-  const handleCodeChange = (newCode?: string) => {
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pendingCodeRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const flushPendingSave = () => {
+      if (pendingCodeRef.current !== null && storageKey) {
+        try {
+          localStorage.setItem(storageKey, pendingCodeRef.current)
+          pendingCodeRef.current = null
+        } catch {
+          // quota safeguard
+        }
+      }
+    }
+
+    window.addEventListener('beforeunload', flushPendingSave)
+
+    return () => {
+      window.removeEventListener('beforeunload', flushPendingSave)
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+        saveTimeoutRef.current = null
+      }
+      flushPendingSave()
+    }
+  }, [storageKey])
+
+  const handleCodeChange = useCallback((newCode?: string) => {
     const val = newCode ?? ''
     setCode(val)
-    try {
-      localStorage.setItem(storageKey, val)
-    } catch {
-      // quota safeguard
+    pendingCodeRef.current = val
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
     }
-  }
+    saveTimeoutRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(storageKey, val)
+        pendingCodeRef.current = null
+      } catch {
+        // quota safeguard
+      }
+    }, 300)
+  }, [storageKey])
 
   const handleRestoreLegacyCode = () => {
     if (!legacyDraftCode) return

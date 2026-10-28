@@ -18,37 +18,38 @@ interface AppSidebarProps {
   onCloseMobile?: () => void
 }
 
+const NAV_ITEMS = [
+  {
+    label: 'Dashboard',
+    path: '/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'Learn',
+    path: '/learn',
+    icon: BookOpen,
+  },
+  {
+    label: 'Practice',
+    path: '/practice',
+    icon: Code2,
+  },
+  {
+    label: 'Revise',
+    path: '/revise',
+    icon: RotateCcw,
+  },
+  {
+    label: 'Profile',
+    path: '/profile',
+    icon: User,
+  },
+] as const
+
 export const AppSidebar: React.FC<AppSidebarProps> = ({ className, onCloseMobile }) => {
   const location = useLocation()
   const { user, logout } = useAuth()
-
-  const navItems = [
-    {
-      label: 'Dashboard',
-      path: '/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      label: 'Learn',
-      path: '/learn',
-      icon: BookOpen,
-    },
-    {
-      label: 'Practice',
-      path: '/practice',
-      icon: Code2,
-    },
-    {
-      label: 'Revise',
-      path: '/revise',
-      icon: RotateCcw,
-    },
-    {
-      label: 'Profile',
-      path: '/profile',
-      icon: User,
-    },
-  ]
+  const navItems = NAV_ITEMS
 
   const isActive = (path: string) => {
     if (path === '/practice') {
