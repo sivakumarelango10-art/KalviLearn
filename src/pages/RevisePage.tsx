@@ -513,15 +513,13 @@ export const RevisePage: React.FC = () => {
                         title={isSolved ? `Solved in ${LANGUAGE_LABELS[lang]}` : `Not solved yet in ${LANGUAGE_LABELS[lang]}`}
                       >
                         <span>{LANGUAGE_LABELS[lang]}</span>
-                        {isSolved ? (
+                        {isSolved && (
                           <span
                             className={cn(
                               'w-1.5 h-1.5 rounded-full',
                               isSelected ? 'bg-emerald-400' : 'bg-emerald-500'
                             )}
                           />
-                        ) : (
-                          <span className="text-[9px] text-neutral-400">未</span>
                         )}
                       </button>
                     )
