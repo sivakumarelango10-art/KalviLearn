@@ -32,6 +32,7 @@
     "test:practice-e2e": "npx tsx scripts/test-e2e-practice-execution.ts",
     "test:practice-local": "npx tsx scripts/test-practice-local-pass-count.ts",
     "test:mentor-auth": "npx tsx scripts/test-mentor-auth-student-view.ts",
+    "test:mentor-solved": "npx tsx scripts/test-mentor-solved-challenges.ts",
     "test:problem-stats": "npx tsx scripts/test-problem-stats.ts",
     "test:dashboard-stats": "npx tsx scripts/test-dashboard-stats-audit.ts",
     "test:total-solved-card": "npx tsx scripts/test-total-solved-card.ts",

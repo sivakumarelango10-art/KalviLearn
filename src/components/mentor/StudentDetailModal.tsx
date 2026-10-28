@@ -20,6 +20,7 @@ import { NodejsOfficialLogo, AllLanguagesLogo } from '@/pages/mentor/MentorStude
 
 interface StudentDetailModalProps {
   student: MentorStudent | null
+  initialLanguage?: (typeof LANGUAGES)[number]['id']
   onClose: () => void
 }
 
@@ -48,9 +49,15 @@ const renderLangLogo = (id: LanguageKey | string, className: string = 'w-4 h-4')
   }
 }
 
-export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose }) => {
+export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, initialLanguage, onClose }) => {
   const [activeTab, setActiveTab] = useState<'solved' | 'submissions'>('solved')
-  const [langFilter, setLangFilter] = useState<LanguageKey>('all')
+  const [langFilter, setLangFilter] = useState<LanguageKey>(initialLanguage || 'all')
+
+  useEffect(() => {
+    if (initialLanguage) {
+      setLangFilter(initialLanguage)
+    }
+  }, [initialLanguage, student])
 
   // Lock body scroll and register Escape key listener
   useEffect(() => {
@@ -82,7 +89,9 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
   const solvedList =
     langFilter === 'all'
       ? student.solvedProblems || []
-      : (student.solvedProblems || []).filter((p) => p.language === langFilter)
+      : (student.solvedProblems || []).filter((p) =>
+          p.languages ? p.languages.includes(langFilter) : p.language === langFilter
+        )
 
   const submissionsList = student.recentSubmissions || []
 
@@ -158,7 +167,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-neutral-50/90 rounded-2xl border border-neutral-200/80 text-center">
           <div className="space-y-0.5">
             <div className="text-xl font-extrabold text-neutral-900">
-              {student.solvedCount} / {student.totalProblems}
+              {student.solvedCount}
             </div>
             <div className="text-[11px] font-semibold text-neutral-500">Problems Solved</div>
           </div>
@@ -286,14 +295,18 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 </div>
               ) : (
                 solvedList.map((prob) => {
+                  const activeLang = langFilter !== 'all' ? langFilter : prob.language
                   const langBadge =
-                    prob.language === 'cpp'
+                    activeLang === 'cpp'
                       ? 'bg-blue-100 text-blue-800 border-blue-200'
-                      : prob.language === 'python'
+                      : activeLang === 'python'
                       ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                      : prob.language === 'java'
+                      : activeLang === 'java'
                       ? 'bg-amber-100 text-amber-800 border-amber-200'
                       : 'bg-teal-100 text-teal-800 border-teal-200'
+                  const langLabel =
+                    LANGUAGES.find((l) => l.id === activeLang)?.shortLabel ||
+                    (activeLang === 'cpp' ? 'C++' : prob.languageLabel)
 
                   return (
                     <div
@@ -327,15 +340,43 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                             >
                               {prob.difficulty}
                             </span>
-                            <span
-                              className={cn(
-                                'text-[9px] font-extrabold px-2 py-0.5 rounded border inline-flex items-center gap-1.5',
-                                langBadge
-                              )}
-                            >
-                              {renderLangLogo(prob.language, 'w-3 h-3')}
-                              <span>{prob.languageLabel}</span>
-                            </span>
+                            {prob.languages && prob.languages.length > 1 && langFilter === 'all' ? (
+                              <div className="flex items-center gap-1">
+                                {prob.languages.map((l) => {
+                                  const badgeClass =
+                                    l === 'cpp'
+                                      ? 'bg-blue-100 text-blue-800 border-blue-200'
+                                      : l === 'python'
+                                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                      : l === 'java'
+                                      ? 'bg-amber-100 text-amber-800 border-amber-200'
+                                      : 'bg-teal-100 text-teal-800 border-teal-200'
+                                  const label = LANGUAGES.find((item) => item.id === l)?.shortLabel || l
+                                  return (
+                                    <span
+                                      key={l}
+                                      className={cn(
+                                        'text-[9px] font-extrabold px-1.5 py-0.5 rounded border inline-flex items-center gap-1',
+                                        badgeClass
+                                      )}
+                                    >
+                                      {renderLangLogo(l, 'w-3 h-3')}
+                                      <span>{label}</span>
+                                    </span>
+                                  )
+                                })}
+                              </div>
+                            ) : (
+                              <span
+                                className={cn(
+                                  'text-[9px] font-extrabold px-2 py-0.5 rounded border inline-flex items-center gap-1.5',
+                                  langBadge
+                                )}
+                              >
+                                {renderLangLogo(activeLang, 'w-3 h-3')}
+                                <span>{langLabel}</span>
+                              </span>
+                            )}
                             <span className="text-[10px] text-neutral-400">
                               {prob.solvedAtFormatted}
                             </span>
@@ -344,7 +385,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       </div>
 
                       <a
-                        href={`/practice/${prob.language}/${prob.slug}`}
+                        href={`/practice/${activeLang}/${prob.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-xl text-neutral-400 hover:text-neutral-800 hover:bg-neutral-200/60 transition-colors flex-shrink-0"

@@ -117,12 +117,13 @@ export function installSyntheticSupabaseInterceptor() {
   const originalFrom = supabase.from.bind(supabase)
 
   supabase.from = function (table: string): any {
-    if (table !== 'UserProgress' && table !== 'Submission') {
+    if (table !== 'UserProgress' && table !== 'Submission' && table !== 'students' && table !== 'mentor_students') {
       return originalFrom(table)
     }
 
     let currentRealBuilder: any = originalFrom(table)
     let filteredUserId: string | null = null
+    let filteredUserIds: string[] | null = null
     let filteredStatus: string | null = null
     let isCountQuery = false
 
@@ -133,6 +134,25 @@ export function installSyntheticSupabaseInterceptor() {
         }
         if (typeof currentRealBuilder?.select === 'function') {
           currentRealBuilder = currentRealBuilder.select(columns, options)
+        }
+        return chain
+      },
+      in(col: string, vals: any[]) {
+        if (col === 'userId' && Array.isArray(vals)) {
+          filteredUserIds = vals.filter(
+            (v) =>
+              typeof v === 'string' &&
+              (SYNTHETIC_FIXTURES[v] ||
+                v.startsWith('00000000-') ||
+                v.startsWith('test_') ||
+                v.startsWith('mock_') ||
+                v.startsWith('unauthorized_') ||
+                v.startsWith('fresh_') ||
+                v.startsWith('non_existent_'))
+          )
+        }
+        if (typeof currentRealBuilder?.in === 'function') {
+          currentRealBuilder = currentRealBuilder.in(col, vals)
         }
         return chain
       },
@@ -164,6 +184,12 @@ export function installSyntheticSupabaseInterceptor() {
         }
         return chain
       },
+      range(from: number, to: number) {
+        if (typeof currentRealBuilder?.range === 'function') {
+          currentRealBuilder = currentRealBuilder.range(from, to)
+        }
+        return chain
+      },
       limit(n: number) {
         if (typeof currentRealBuilder?.limit === 'function') {
           currentRealBuilder = currentRealBuilder.limit(n)
@@ -177,25 +203,52 @@ export function installSyntheticSupabaseInterceptor() {
         return chain
       },
       then(onfulfilled: any, onrejected: any) {
-        if (filteredUserId) {
-          const fixture = SYNTHETIC_FIXTURES[filteredUserId] || { userProgress: [], submissions: [] }
+        if (table === 'students' || table === 'mentor_students') {
+          const studentRows = [
+            {
+              id: 'student-syn-1',
+              user_id: SYNTHETIC_STUDENT_A,
+              student_code: 'STD-SYN-001',
+              status: 'ACTIVE',
+              name: 'Synthetic Student A',
+              email: 'synthetic.a@example.com',
+              created_at: new Date().toISOString(),
+            },
+          ]
+          return Promise.resolve({ data: studentRows, error: null }).then(onfulfilled, onrejected)
+        }
+
+        const targetIds = filteredUserId ? [filteredUserId] : filteredUserIds
+        if (targetIds && targetIds.length > 0) {
           if (table === 'UserProgress') {
-            const rows = filteredStatus
-              ? fixture.userProgress.filter((r) => r.status === filteredStatus)
-              : fixture.userProgress
-            return Promise.resolve({ data: rows, error: null, count: rows.length }).then(onfulfilled, onrejected)
+            const allRows: any[] = []
+            for (const uid of targetIds) {
+              const fixture = SYNTHETIC_FIXTURES[uid] || { userProgress: [], submissions: [] }
+              const rows = filteredStatus
+                ? fixture.userProgress.filter((r) => r.status === filteredStatus)
+                : fixture.userProgress
+              allRows.push(...rows.map((r) => ({ ...r, userId: uid })))
+            }
+            return Promise.resolve({ data: allRows, error: null, count: allRows.length }).then(onfulfilled, onrejected)
           }
           if (table === 'Submission') {
             if (isCountQuery) {
-              return Promise.resolve({ data: null, error: null, count: fixture.submissions.length }).then(
-                onfulfilled,
-                onrejected
-              )
+              let total = 0
+              for (const uid of targetIds) {
+                const fixture = SYNTHETIC_FIXTURES[uid] || { userProgress: [], submissions: [] }
+                total += fixture.submissions.length
+              }
+              return Promise.resolve({ data: null, error: null, count: total }).then(onfulfilled, onrejected)
             }
-            const rows = filteredStatus
-              ? fixture.submissions.filter((r) => r.status === filteredStatus)
-              : fixture.submissions
-            return Promise.resolve({ data: rows, error: null, count: rows.length }).then(onfulfilled, onrejected)
+            const allRows: any[] = []
+            for (const uid of targetIds) {
+              const fixture = SYNTHETIC_FIXTURES[uid] || { userProgress: [], submissions: [] }
+              const rows = filteredStatus
+                ? fixture.submissions.filter((r) => r.status === filteredStatus)
+                : fixture.submissions
+              allRows.push(...rows.map((r) => ({ ...r, userId: uid })))
+            }
+            return Promise.resolve({ data: allRows, error: null, count: allRows.length }).then(onfulfilled, onrejected)
           }
         }
         return currentRealBuilder.then(onfulfilled, onrejected)

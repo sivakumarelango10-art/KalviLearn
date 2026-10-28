@@ -15,6 +15,7 @@ export interface SolvedProblemItem {
   beltColor: string
   language: 'python' | 'java' | 'nodejs' | 'cpp'
   languageLabel: string
+  languages?: Array<'python' | 'java' | 'nodejs' | 'cpp'>
   solvedAt: string
   solvedAtFormatted: string
 }
@@ -250,7 +251,7 @@ export function normalizeLanguage(lang?: string | null): 'python' | 'java' | 'no
   const lower = lang.toLowerCase()
   if (lower.includes('java') && !lower.includes('script')) return 'java'
   if (lower.includes('node') || lower.includes('js') || lower.includes('javascript')) return 'nodejs'
-  if (lower.includes('c++') || lower.includes('cpp')) return 'cpp'
+  if (lower.includes('c++') || lower.includes('cpp') || lower.includes('g++') || lower.includes('clang') || lower.includes('cxx')) return 'cpp'
   return 'python'
 }
 
@@ -275,7 +276,22 @@ const mentorProfileCache = new Map<string, CacheEntry<MentorProfile | null>>()
 const mentorStudentUsersCache = new Map<string, CacheEntry<StudentUserRow[]>>()
 const mentorRosterCache = new Map<string, CacheEntry<MentorStudent[]>>()
 const mentorSubmissionsCache = new Map<string, CacheEntry<{ submissions: MentorSubmission[]; hasMore: boolean }>>()
-export const problemLookupCache = new Map<string, { title: string; slug: string; beltName: string; beltColor: string }>()
+export const problemLookupCache = new Map<string, { title: string; slug: string; beltName: string; beltColor: string; difficulty?: string }>()
+
+// Pre-seed lookup cache with practice catalog so problem titles and belts always resolve
+for (const b of (problemsData as any[])) {
+  for (const p of (b.problems || [])) {
+    const entry = {
+      title: p.title || 'Practice Challenge',
+      slug: p.slug,
+      beltName: b.name || 'Belt 1',
+      beltColor: b.color || '#3B82F6',
+      difficulty: p.difficulty || 'Easy',
+    }
+    problemLookupCache.set(p.id, entry)
+    problemLookupCache.set(p.slug, entry)
+  }
+}
 
 // Per-session caches are wiped on logout / account switch.
 registerCacheClearer(() => {
@@ -497,59 +513,101 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       }
       const uniqueSolvedOverall = new Map<string, SolvedProblemItem>()
 
-      for (const p of solvedList) {
-        const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
-        const pLang = normalizeLanguage(p.language)
-        const rawSlug = prob?.slug || p.problemId
-        const slug = mapToCanonicalPracticeSlug(rawSlug)
+      const registerSolvedProblem = (
+        slugCandidate: string,
+        lang: 'python' | 'java' | 'nodejs' | 'cpp',
+        solvedAt: string,
+        probData: {
+          problemId?: string
+          title?: string
+          difficulty?: string
+          beltName?: string
+          beltColor?: string
+        }
+      ) => {
+        const canonicalSlug = mapToCanonicalPracticeSlug(slugCandidate)
+        const slug = canonicalSlug || slugCandidate
+        if (!slug) return
+
+        solvedByLang[lang].add(slug)
+
+        const cached =
+          problemLookupCache.get(slug) ||
+          (probData.problemId ? problemLookupCache.get(probData.problemId) : undefined)
         const canonicalProb = getCanonicalPracticeProblem(slug)
-        if (slug) {
-          solvedByLang[pLang].add(slug)
-          if (!uniqueSolvedOverall.has(slug)) {
-            uniqueSolvedOverall.set(slug, {
-              problemId: canonicalProb?.id || p.problemId,
-              title: canonicalProb?.title || prob?.title || 'Practice Challenge',
-              slug,
-              difficulty: canonicalProb?.difficulty || prob?.difficulty || 'Easy',
-              beltName: prob?.Belt?.name || 'Belt 1',
-              beltColor: prob?.Belt?.color || '#3B82F6',
-              language: pLang,
-              languageLabel: getLanguageLabel(pLang),
-              solvedAt: p.solvedAt || new Date().toISOString(),
-              solvedAtFormatted: formatRelativeTime(p.solvedAt),
-            })
+
+        const title = canonicalProb?.title || probData.title || cached?.title || 'Practice Challenge'
+        const difficulty = canonicalProb?.difficulty || probData.difficulty || cached?.difficulty || 'Easy'
+        const beltName = probData.beltName || cached?.beltName || 'Belt 1'
+        const beltColor = probData.beltColor || cached?.beltColor || '#3B82F6'
+        const problemId = canonicalProb?.id || probData.problemId || slug
+
+        const existing = uniqueSolvedOverall.get(slug)
+        const newTime = solvedAt ? new Date(solvedAt).getTime() : 0
+        const existingTime = existing?.solvedAt ? new Date(existing.solvedAt).getTime() : 0
+
+        if (!existing) {
+          uniqueSolvedOverall.set(slug, {
+            problemId,
+            title,
+            slug,
+            difficulty,
+            beltName,
+            beltColor,
+            language: lang,
+            languageLabel: getLanguageLabel(lang),
+            languages: [lang],
+            solvedAt: solvedAt || new Date().toISOString(),
+            solvedAtFormatted: formatRelativeTime(solvedAt),
+          })
+        } else {
+          if (!existing.languages) {
+            existing.languages = [existing.language]
+          }
+          if (!existing.languages.includes(lang)) {
+            existing.languages.push(lang)
+          }
+          if (newTime > existingTime) {
+            existing.language = lang
+            existing.languageLabel = getLanguageLabel(lang)
+            existing.solvedAt = solvedAt || existing.solvedAt
+            existing.solvedAtFormatted = formatRelativeTime(solvedAt)
           }
         }
       }
 
-      // Also include any 10/10 passed submissions not already present in UserProgress
+      for (const p of solvedList) {
+        const prob = p.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
+        const pLang = normalizeLanguage(p.language)
+        const rawSlug = prob?.slug || p.problemId
+        registerSolvedProblem(rawSlug, pLang, p.solvedAt || '', {
+          problemId: p.problemId,
+          title: prob?.title,
+          difficulty: prob?.difficulty,
+          beltName: prob?.Belt?.name,
+          beltColor: prob?.Belt?.color,
+        })
+      }
+
+      // Also include any passed submissions not already present in UserProgress
       for (const s of recentSubs) {
-        if (s.status === 'PASSED' && (s.passedTests === 10 || s.passedTests === s.totalTests)) {
+        const isPassed =
+          (s.status?.toUpperCase() === 'PASSED' || s.status?.toUpperCase() === 'ACCEPTED') &&
+          ((s.passedTests != null && s.totalTests != null && s.passedTests === s.totalTests && s.totalTests > 0) ||
+            (s.passedTests ?? 0) >= 10 ||
+            (s.status?.toUpperCase() === 'PASSED' && (s.totalTests == null || s.passedTests == null || s.passedTests === s.totalTests)))
+
+        if (isPassed) {
           const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
           const sLang = normalizeLanguage(s.language)
           const rawSlug = prob?.slug || s.problemId
-          const slug = mapToCanonicalPracticeSlug(rawSlug)
-          const canonicalProb = getCanonicalPracticeProblem(slug)
-          if (slug) {
-            solvedByLang[sLang].add(slug)
-            const existing = uniqueSolvedOverall.get(slug)
-            const subTime = s.createdAt ? new Date(s.createdAt).getTime() : 0
-            const existingTime = existing?.solvedAt ? new Date(existing.solvedAt).getTime() : 0
-            if (!existing || subTime > existingTime) {
-              uniqueSolvedOverall.set(slug, {
-                problemId: canonicalProb?.id || s.problemId,
-                title: canonicalProb?.title || prob?.title || 'Practice Challenge',
-                slug,
-                difficulty: canonicalProb?.difficulty || prob?.difficulty || 'Easy',
-                beltName: prob?.Belt?.name || 'Belt 1',
-                beltColor: prob?.Belt?.color || '#3B82F6',
-                language: sLang,
-                languageLabel: getLanguageLabel(sLang),
-                solvedAt: s.createdAt || new Date().toISOString(),
-                solvedAtFormatted: formatRelativeTime(s.createdAt),
-              })
-            }
-          }
+          registerSolvedProblem(rawSlug, sLang, s.createdAt || '', {
+            problemId: s.problemId,
+            title: prob?.title,
+            difficulty: prob?.difficulty,
+            beltName: prob?.Belt?.name,
+            beltColor: prob?.Belt?.color,
+          })
         }
       }
 
@@ -574,12 +632,15 @@ export async function fetchMentorRoster(mentorUserId?: string, skipCache = false
       const recentSubmissions = recentSubs.slice(0, 15).map((s: any) => {
         const prob = s.Problem as { slug?: string; title?: string; difficulty?: string; Belt?: { order?: number; name?: string; color?: string } } | null
         const sLang = normalizeLanguage(s.language)
+        const cached =
+          (prob?.slug ? problemLookupCache.get(prob.slug) : null) ||
+          (s.problemId ? problemLookupCache.get(s.problemId) : null)
         return {
           id: s.id,
-          problemTitle: prob?.title || 'Practice Challenge',
-          problemSlug: prob?.slug || 'challenge',
-          beltName: prob?.Belt?.name || 'Belt 1',
-          beltColor: prob?.Belt?.color || '#3B82F6',
+          problemTitle: prob?.title || cached?.title || 'Practice Challenge',
+          problemSlug: prob?.slug || cached?.slug || 'challenge',
+          beltName: prob?.Belt?.name || cached?.beltName || 'Belt 1',
+          beltColor: prob?.Belt?.color || cached?.beltColor || '#3B82F6',
           language: sLang,
           languageLabel: getLanguageLabel(sLang),
           status: (s.status as 'PASSED' | 'FAILED' | 'ERROR') || 'PASSED',

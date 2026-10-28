@@ -505,7 +505,9 @@ export const MentorStudentsPage: React.FC = () => {
             const solvedInActive =
               langFilter === 'all'
                 ? student.solvedProblems || []
-                : (student.solvedProblems || []).filter((p) => p.language === langFilter)
+                : (student.solvedProblems || []).filter((p) =>
+                    p.languages ? p.languages.includes(langFilter) : p.language === langFilter
+                  )
 
             return (
               <div
@@ -801,6 +803,7 @@ export const MentorStudentsPage: React.FC = () => {
       {/* Student View Modal (Authoritative Real-Time Data) */}
       <StudentDetailModal
         student={selectedStudent}
+        initialLanguage={langFilter}
         onClose={() => setSelectedStudent(null)}
       />
 
