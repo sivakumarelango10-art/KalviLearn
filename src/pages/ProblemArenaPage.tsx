@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useParams, useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom'
-import Editor, { OnMount } from '@monaco-editor/react'
+import { type OnMount } from '@monaco-editor/react'
+import { CodeEditor } from '@/components/editor/CodeEditor'
+import { applyCodeEditorRestrictions } from '@/lib/editorRestrictions'
 import confetti from 'canvas-confetti'
 import {
   Play,
@@ -278,11 +280,12 @@ export const ProblemArenaPage: React.FC = () => {
     setRecentSubmissions(subs)
   }, [currentProblem.slug, currentLanguage, currentProblem.starterCode, curriculum.runnerLanguage])
 
-  const handleEditorMount: OnMount = (editor) => {
+  const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor
+    applyCodeEditorRestrictions(editor, monaco)
 
     editor.updateOptions({
-      contextmenu: true,
+      contextmenu: false,
       minimap: { enabled: false },
       fontSize: 14,
       fontFamily: "'Fira Code', 'Cascadia Code', Consolas, monospace",
@@ -849,7 +852,7 @@ export const ProblemArenaPage: React.FC = () => {
         <div className="w-full md:w-1/2 lg:w-7/12 flex flex-col bg-neutral-950 overflow-hidden">
           {/* Monaco Editor Container */}
           <div className="flex-1 relative overflow-hidden">
-            <Editor
+            <CodeEditor
               height="100%"
               theme="vs-dark"
               language={curriculum.monacoLanguage}

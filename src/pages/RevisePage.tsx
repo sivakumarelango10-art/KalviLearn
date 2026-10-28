@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Editor from '@monaco-editor/react'
+import { CodeEditor } from '@/components/editor/CodeEditor'
 import {
   RotateCcw,
   CheckCircle2,
   Clock,
-  Copy,
-  Check,
   Search,
   ArrowRight,
   History,
@@ -85,18 +83,7 @@ export const RevisePage: React.FC = () => {
   const [selectedLanguageFilter, setSelectedLanguageFilter] = useState<'all' | LanguageKey>('all')
   const [activeLanguage, setActiveLanguage] = useState<LanguageKey>('python')
   const [searchQuery, setSearchQuery] = useState('')
-  const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'code' | 'description' | 'history'>('code')
-  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (copyTimerRef.current) {
-        clearTimeout(copyTimerRef.current)
-      }
-    }
-  }, [])
 
   // Load user progress and subscribe to updates
   useEffect(() => {
@@ -257,15 +244,6 @@ export const RevisePage: React.FC = () => {
     if (!currentProblem) return []
     return submissions.filter((submissionItem) => submissionItem.problemSlug === currentProblem.slug)
   }, [submissions, currentProblem])
-
-  const handleCopyCode = () => {
-    if (currentSolution?.bestCode) {
-      navigator.clipboard.writeText(currentSolution.bestCode)
-      setCopied(true)
-      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
-      copyTimerRef.current = setTimeout(() => setCopied(false), 2000)
-    }
-  }
 
   // If no problems solved yet
   if (solvedProblems.length === 0) {
@@ -529,25 +507,6 @@ export const RevisePage: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2 self-start sm:self-center">
-                {currentSolution?.bestCode && (
-                  <button
-                    onClick={handleCopyCode}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-neutral-700 text-xs font-medium hover:bg-neutral-50 shadow-sm transition-all duration-200 interactive-btn"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600 animate-in zoom-in-75 duration-150" />
-                        <span className="text-emerald-700 font-semibold">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-neutral-500" />
-                        <span>Copy Code</span>
-                      </>
-                    )}
-                  </button>
-                )}
-
                 <button
                   onClick={() =>
                     navigate(`/practice/${activeLanguage}/${currentProblem.slug}`)
@@ -614,7 +573,7 @@ export const RevisePage: React.FC = () => {
               {activeTab === 'code' && (
                 <div className="h-full w-full">
                   {currentSolution?.bestCode ? (
-                    <Editor
+                    <CodeEditor
                       height="100%"
                       theme="vs-dark"
                       language={MONACO_LANG_MAP[activeLanguage] || 'python'}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useParams, Link, useSearchParams, Navigate } from 'react-router-dom'
-import Editor, { OnMount } from '@monaco-editor/react'
+import { type OnMount } from '@monaco-editor/react'
+import { CodeEditor } from '@/components/editor/CodeEditor'
+import { applyCodeEditorRestrictions } from '@/lib/editorRestrictions'
 import confetti from 'canvas-confetti'
 import {
   Play,
@@ -494,10 +496,11 @@ export const LearnWorkspacePage: React.FC = () => {
     }
   }
 
-  const handleEditorMount: OnMount = (editor) => {
+  const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor
+    applyCodeEditorRestrictions(editor, monaco)
     editor.updateOptions({
-      contextmenu: true,
+      contextmenu: false,
       minimap: { enabled: false },
       fontSize: 14,
       fontFamily: "'Fira Code', Consolas, monospace",
@@ -943,7 +946,7 @@ export const LearnWorkspacePage: React.FC = () => {
 
           {/* Monaco Code Editor Container */}
           <div className="flex-1 min-h-[300px] border-b border-neutral-800/80 relative">
-            <Editor
+            <CodeEditor
               height="100%"
               language={monacoLanguage}
               theme="vs-dark"
