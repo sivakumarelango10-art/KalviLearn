@@ -3,6 +3,8 @@ import { normalizeProgressLanguage } from './progress'
 import problemsData from '../data/problems.json'
 import { fetchAllRows } from './supabasePaging'
 import { calculateAuthoritativeStreak } from './streak'
+import { mapToCanonicalPracticeSlug } from './problemStatsService'
+import { registerCacheClearer } from './cacheRegistry'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -160,26 +162,87 @@ export function formatRelativeTime(dateString?: string | null): string {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-
-
-function normalizeLanguage(lang?: string | null): string {
+export function normalizeLanguage(lang?: string | null): string {
   if (!lang) return 'python'
   const lower = lang.toLowerCase()
   if (lower.includes('java') && !lower.includes('script')) return 'java'
   if (lower.includes('node') || lower.includes('js') || lower.includes('javascript')) return 'nodejs'
-  if (lower.includes('c++') || lower.includes('cpp')) return 'cpp'
+  if (
+    lower.includes('c++') ||
+    lower.includes('cpp') ||
+    lower.includes('g++') ||
+    lower.includes('clang') ||
+    lower.includes('cxx')
+  ) {
+    return 'cpp'
+  }
   return 'python'
+}
+
+// ─── In-Memory Cache & Request Collapsing ────────────────────────────────────
+
+const CAMPUS_CACHE_TTL_MS = 5 * 1000 // 5 seconds (invalidated immediately on updates)
+
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+}
+
+let cachedOverviewMetrics: CacheEntry<CampusOverviewMetrics> | null = null
+let cachedStudents: CacheEntry<CampusStudentStat[]> | null = null
+let cachedMentors: CacheEntry<CampusMentorStat[]> | null = null
+let cachedAnalytics: CacheEntry<CampusDetailedAnalytics> | null = null
+let cachedRecentSubs: { data: CampusSubmissionItem[]; timestamp: number; limit: number } | null = null
+const cachedLeaderboards = new Map<string, CacheEntry<any[]>>()
+
+let inflightOverviewPromise: Promise<CampusOverviewMetrics> | null = null
+let inflightStudentsPromise: Promise<CampusStudentStat[]> | null = null
+let inflightMentorsPromise: Promise<CampusMentorStat[]> | null = null
+let inflightAnalyticsPromise: Promise<CampusDetailedAnalytics> | null = null
+let inflightRecentSubsPromise: Promise<CampusSubmissionItem[]> | null = null
+
+/**
+ * Invalidates all in-memory campus telemetry caches and in-flight promises.
+ * Ensures the next read is fetched fresh from the authoritative database.
+ */
+export function invalidateCampusCache(): void {
+  cachedOverviewMetrics = null
+  cachedStudents = null
+  cachedMentors = null
+  cachedAnalytics = null
+  cachedRecentSubs = null
+  cachedLeaderboards.clear()
+
+  inflightOverviewPromise = null
+  inflightStudentsPromise = null
+  inflightMentorsPromise = null
+  inflightAnalyticsPromise = null
+  inflightRecentSubsPromise = null
+}
+
+// Register with cache registry to guarantee clear on logout and account switch
+registerCacheClearer(() => {
+  invalidateCampusCache()
+})
+
+function notifyCampusMutation(): void {
+  invalidateCampusCache()
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('kalvi_campus_updated'))
+  }
 }
 
 // ─── Realtime Subscriptions ─────────────────────────────────────────────────
 
 /**
- * Real-time subscription for live database updates to submissions, progress, students, and mentors.
+ * Real-time subscription for live database updates to submissions, progress, students, mentors, and users.
+ * Also synchronizes with cross-tab and in-tab event notifications.
  */
 export function subscribeToCampusUpdates(onUpdate: () => void): () => void {
   try {
     let debounceTimer: ReturnType<typeof setTimeout> | null = null
     const debounced = () => {
+      invalidateCampusCache()
       if (debounceTimer) clearTimeout(debounceTimer)
       debounceTimer = setTimeout(onUpdate, 300)
     }
@@ -191,11 +254,27 @@ export function subscribeToCampusUpdates(onUpdate: () => void): () => void {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, debounced)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'mentors' }, debounced)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'mentor_students' }, debounced)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, debounced)
       .subscribe()
+
+    const handleWindowEvents = () => {
+      debounced()
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('kalvi_progress_updated', handleWindowEvents)
+      window.addEventListener('kalvi_campus_updated', handleWindowEvents)
+      window.addEventListener('storage', handleWindowEvents)
+    }
 
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer)
       supabase.removeChannel(channel).catch(console.warn)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('kalvi_progress_updated', handleWindowEvents)
+        window.removeEventListener('kalvi_campus_updated', handleWindowEvents)
+        window.removeEventListener('storage', handleWindowEvents)
+      }
     }
   } catch (err) {
     console.warn('Realtime subscription error:', err)
@@ -207,254 +286,256 @@ export function subscribeToCampusUpdates(onUpdate: () => void): () => void {
 
 /**
  * Fetches Campus-wide Overview telemetry directly from live database tables.
+ * Derives totals directly from authoritative deduplicated student and submission data
+ * to ensure 100% mathematical parity with student and mentor directories.
  */
 export async function fetchCampusOverviewMetrics(): Promise<CampusOverviewMetrics> {
   const campusName = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus'
 
-  // Preferred path: aggregates computed in SQL (staff-only RPC). Scales past PostgREST's 1000-row response cap and
-  // avoids shipping every submission row to the browser.
-  try {
-    const { data: agg, error: aggError } = await supabase.rpc('campus_overview_metrics')
-    if (!aggError && agg && typeof agg === 'object') {
-      const m = agg as Record<string, number>
-      const totalStudents = Number(m.totalStudents) || 0
-      const totalSubmissions = Number(m.totalSubmissions) || 0
-      const solvedCount = Number(m.solvedCount) || 0
-      const totalXp = Number(m.totalXp) || 0
-      return {
+  if (cachedOverviewMetrics && Date.now() - cachedOverviewMetrics.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cachedOverviewMetrics.data
+  }
+  if (inflightOverviewPromise) {
+    return inflightOverviewPromise
+  }
+
+  inflightOverviewPromise = (async () => {
+    try {
+      const [studentsData, mentorsRes, subsRes] = await Promise.all([
+        fetchCampusStudents(),
+        supabase.from('mentors').select('id, status', { count: 'exact' }),
+        fetchAllRows(() => supabase.from('Submission').select('id, status, createdAt, userId'), [{ column: 'createdAt', ascending: false }]),
+      ])
+
+      const totalStudents = studentsData.length
+      const totalMentors = mentorsRes.count ?? (mentorsRes.data?.length || 0)
+      const subs = subsRes.data || []
+      const totalSubmissions = subs.length
+      const passedSubs = subs.filter((s) => s.status === 'PASSED').length
+
+      // Division-by-zero protection: zero submissions yields 0% pass rate
+      const campusPassRate = totalSubmissions > 0
+        ? Math.round((passedSubs / totalSubmissions) * 1000) / 10
+        : 0
+
+      // Total questions solved and total XP derived from authoritative deduplicated student stats
+      const totalQuestionsSolved = studentsData.reduce((acc, s) => acc + s.questionsSolved, 0)
+      const totalXpDistributed = studentsData.reduce((acc, s) => acc + s.totalXp, 0)
+
+      const avgProblemsSolved = totalStudents > 0
+        ? Math.round((totalQuestionsSolved / totalStudents) * 10) / 10
+        : 0
+
+      // Reward velocity: XP per solved challenge (defaults to 50 XP if no solves)
+      const rewardVelocity = totalQuestionsSolved > 0
+        ? Math.round(totalXpDistributed / totalQuestionsSolved)
+        : 50
+
+      const activeLearnersCount = studentsData.filter((s) => s.status === 'ACTIVE').length
+
+      const result: CampusOverviewMetrics = {
         totalStudents,
-        totalMentors: Number(m.totalMentors) || 0,
-        activeLearnersCount: Number(m.activeLearners) || 0,
+        totalMentors,
+        activeLearnersCount,
         totalSubmissions,
-        campusPassRate: totalSubmissions > 0 ? Math.round((Number(m.passedSubmissions) / totalSubmissions) * 1000) / 10 : 0,
-        totalXpDistributed: totalXp,
-        avgProblemsSolved: totalStudents > 0 ? Math.round((solvedCount / totalStudents) * 10) / 10 : 0,
-        rewardVelocity: solvedCount > 0 ? Math.round(totalXp / solvedCount) : 50,
+        campusPassRate,
+        totalXpDistributed,
+        avgProblemsSolved,
+        rewardVelocity,
         campusName,
       }
-    }
-  } catch {
-    // RPC not deployed yet (migration pending): fall through to the client-side aggregation below.
-  }
 
-  try {
-    const [studentsRes, mentorsRes, subsRes, progRes] = await Promise.all([
-      supabase.from('students').select('id, user_id, status', { count: 'exact' }),
-      supabase.from('mentors').select('id, status', { count: 'exact' }),
-      fetchAllRows(() => supabase.from('Submission').select('id, status, createdAt, userId'), [{ column: 'createdAt', ascending: false }]),
-      fetchAllRows(() => supabase.from('UserProgress').select('id, status, xpEarned, solvedAt, userId')),
-    ])
-
-    const totalStudents = studentsRes.count ?? (studentsRes.data?.length || 0)
-    const totalMentors = mentorsRes.count ?? (mentorsRes.data?.length || 0)
-    const totalSubmissions = subsRes.data?.length || 0
-
-    const subs = subsRes.data || []
-    const prog = progRes.data || []
-
-    const passedSubs = subs.filter((s) => s.status === 'PASSED').length
-    const campusPassRate = subs.length > 0
-      ? Math.round((passedSubs / subs.length) * 1000) / 10
-      : 0
-
-    // Authoritative XP: sum xp from solved records or legitimately recorded progress
-    const solvedProg = prog.filter((p) => p.status === 'SOLVED')
-    const totalXpDistributed = prog.reduce((acc, p) => {
-      if (p.status === 'SOLVED') {
-        return acc + (p.xpEarned != null ? p.xpEarned : 50)
+      cachedOverviewMetrics = { data: result, timestamp: Date.now() }
+      return result
+    } catch (err) {
+      console.error('Campus overview metrics error:', err)
+      return {
+        totalStudents: 0,
+        totalMentors: 0,
+        activeLearnersCount: 0,
+        totalSubmissions: 0,
+        campusPassRate: 0,
+        totalXpDistributed: 0,
+        avgProblemsSolved: 0,
+        rewardVelocity: 50,
+        campusName,
       }
-      return acc + (p.xpEarned || 0)
-    }, 0)
-
-    const avgProblemsSolved = totalStudents > 0
-      ? Math.round((solvedProg.length / totalStudents) * 10) / 10
-      : 0
-
-    // Reward Velocity: Total XP distributed / valid solved problems (division-by-zero protected)
-    const rewardVelocity = solvedProg.length > 0
-      ? Math.round(totalXpDistributed / solvedProg.length)
-      : 50
-
-    // Active learners: distinct userIds with recent submission or progress in last 14 days
-    const activeThreshold = Date.now() - 14 * 86400000
-    const activeUserIds = new Set<string>()
-    for (const s of subs) {
-      if (s.createdAt && new Date(s.createdAt).getTime() >= activeThreshold && s.userId) {
-        activeUserIds.add(s.userId)
-      }
+    } finally {
+      inflightOverviewPromise = null
     }
-    for (const p of prog) {
-      if (p.solvedAt && new Date(p.solvedAt).getTime() >= activeThreshold && p.userId) {
-        activeUserIds.add(p.userId)
-      }
-    }
+  })()
 
-    const activeLearnersCount = activeUserIds.size
-
-    return {
-      totalStudents,
-      totalMentors,
-      activeLearnersCount,
-      totalSubmissions,
-      campusPassRate,
-      totalXpDistributed,
-      avgProblemsSolved,
-      rewardVelocity,
-      campusName: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus',
-    }
-  } catch (err) {
-    console.error('Campus overview metrics error:', err)
-    return {
-      totalStudents: 0,
-      totalMentors: 0,
-      activeLearnersCount: 0,
-      totalSubmissions: 0,
-      campusPassRate: 0,
-      totalXpDistributed: 0,
-      avgProblemsSolved: 0,
-      rewardVelocity: 50,
-      campusName: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CAMPUS_NAME) || 'Kalvium Technology Campus',
-    }
-  }
+  return inflightOverviewPromise
 }
 
 /**
  * Fetches all Students with their real mentor assignments, problems solved, XP, and streaks.
  * 100% connected to live Supabase database without hardcoded fallbacks.
+ * Correctly deduplicates multi-language solves on the same canonical problem.
  */
 export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
-  try {
-    const [studentsRes, linksRes, progressRes, subsRes] = await Promise.all([
-      supabase.from('students').select('id, user_id, name, email, student_code, status, created_at').order('name', { ascending: true }),
-      supabase.from('mentor_students').select('student_id, mentor_id, mentors(id, name)').eq('status', 'ACTIVE'),
-      fetchAllRows(() => supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned')),
-      fetchAllRows(() => supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests'), [{ column: 'createdAt', ascending: false }]),
-    ])
-
-    const dbStudents = studentsRes.data || []
-    if (dbStudents.length === 0) return []
-
-    // Map mentor assignments
-    const mentorMap = new Map<string, { id: string; name: string }>()
-    if (linksRes.data) {
-      for (const link of linksRes.data) {
-        const mInfo = link.mentors as unknown as { id: string; name: string } | null
-        if (mInfo) {
-          mentorMap.set(link.student_id, { id: mInfo.id, name: mInfo.name })
-        }
-      }
-    }
-
-    // Group progress by user_id
-    const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; xpEarned?: number }>>()
-    for (const p of progressRes.data || []) {
-      if (!p.userId) continue
-      const list = progressByUser.get(p.userId) || []
-      list.push(p)
-      progressByUser.set(p.userId, list)
-    }
-
-    // Group submissions by user_id
-    const subsByUser = new Map<string, Array<{ problemId?: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number }>>()
-    for (const s of subsRes.data || []) {
-      if (!s.userId) continue
-      const list = subsByUser.get(s.userId) || []
-      if (list.length < 50) list.push(s)
-      subsByUser.set(s.userId, list)
-    }
-
-    return dbStudents.map((s) => {
-      const uProgress = progressByUser.get(s.user_id) || []
-      const uSubs = subsByUser.get(s.user_id) || []
-
-      // Calculate solved questions (distinct solved problemIds)
-      const solvedProblems = new Set<string>()
-      let totalXp = 0
-      const languageSolvedCounts: Record<string, number> = {
-        python: 0,
-        java: 0,
-        cpp: 0,
-        nodejs: 0,
-      }
-
-      for (const p of uProgress) {
-        if (p.status === 'SOLVED') {
-          solvedProblems.add(p.problemId)
-          totalXp += Number(p.xpEarned || 0)
-          const lang = normalizeLanguage(p.language)
-          languageSolvedCounts[lang] = (languageSolvedCounts[lang] || 0) + 1
-        }
-      }
-
-      // Solved questions count is distinct problems solved, exactly mirroring Student Dashboard
-      const questionsSolved = solvedProblems.size
-
-      // Belt calculation
-      let belt = 'Belt 1'
-      let beltColor = '#3B82F6'
-      if (questionsSolved >= 40) {
-        belt = 'Belt 3'
-        beltColor = '#EF4444'
-      } else if (questionsSolved >= 15) {
-        belt = 'Belt 2'
-        beltColor = '#10B981'
-      }
-
-      // Dates for streak & lastActive
-      const activityDates = [
-        ...uSubs.map((sub) => sub.createdAt),
-        ...uProgress.map((p) => p.solvedAt),
-      ].filter(Boolean) as string[]
-
-      // Authoritative IST streak
-      const streak = calculateAuthoritativeStreak(activityDates).streak
-
-      const latestSubTime = uSubs[0]?.createdAt ? new Date(uSubs[0].createdAt).getTime() : 0
-      const latestProgTime = uProgress[0]?.solvedAt ? new Date(uProgress[0].solvedAt).getTime() : 0
-      const mostRecentTime = Math.max(latestSubTime, latestProgTime)
-      const lastActiveRaw = mostRecentTime > 0 ? new Date(mostRecentTime).toISOString() : s.created_at
-      const lastActive = formatRelativeTime(lastActiveRaw)
-
-      // Student engagement health status
-      let status: 'ACTIVE' | 'STRUGGLING' | 'INACTIVE' = 'ACTIVE'
-      const daysSinceActive = mostRecentTime > 0 ? (Date.now() - mostRecentTime) / 86400000 : 30
-      const recentFails = uSubs.slice(0, 5).filter((sb) => sb.status === 'FAILED').length
-
-      if (recentFails >= 3) {
-        status = 'STRUGGLING'
-      } else if (daysSinceActive > 14 && questionsSolved < 5) {
-        status = 'INACTIVE'
-      }
-
-      const assignedMentor = mentorMap.get(s.id)
-      const totalSubmissions = uSubs.length
-      const passedSubmissions = uSubs.filter((sb) => sb.status === 'PASSED').length
-
-      return {
-        id: s.id,
-        userId: s.user_id,
-        name: s.name || s.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
-        email: s.email || '',
-        studentCode: s.student_code || `STU-${s.id.slice(0, 6)}`,
-        belt,
-        beltColor,
-        questionsSolved,
-        totalXp,
-        streak,
-        status,
-        lastActive,
-        lastActiveRaw,
-        mentorId: assignedMentor?.id || null,
-        mentorName: assignedMentor?.name || 'Unassigned',
-        languageSolvedCounts,
-        totalSubmissions,
-        passedSubmissions,
-      }
-    }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
-  } catch (err) {
-    console.error('Error in fetchCampusStudents:', err)
-    return []
+  if (cachedStudents && Date.now() - cachedStudents.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cachedStudents.data
   }
+  if (inflightStudentsPromise) {
+    return inflightStudentsPromise
+  }
+
+  inflightStudentsPromise = (async () => {
+    try {
+      const [studentsRes, linksRes, progressRes, subsRes] = await Promise.all([
+        supabase.from('students').select('id, user_id, name, email, student_code, status, created_at').order('name', { ascending: true }),
+        supabase.from('mentor_students').select('student_id, mentor_id, mentors(id, name)').eq('status', 'ACTIVE'),
+        fetchAllRows(() => supabase.from('UserProgress').select('id, userId, problemId, status, language, solvedAt, xpEarned')),
+        fetchAllRows(() => supabase.from('Submission').select('id, userId, problemId, status, language, createdAt, passedTests, totalTests'), [{ column: 'createdAt', ascending: false }]),
+      ])
+
+      const dbStudents = studentsRes.data || []
+      if (dbStudents.length === 0) return []
+
+      // Map mentor assignments
+      const mentorMap = new Map<string, { id: string; name: string }>()
+      if (linksRes.data) {
+        for (const link of linksRes.data) {
+          const mInfo = link.mentors as unknown as { id: string; name: string } | null
+          if (mInfo) {
+            mentorMap.set(link.student_id, { id: mInfo.id, name: mInfo.name })
+          }
+        }
+      }
+
+      // Group progress by user_id
+      const progressByUser = new Map<string, Array<{ problemId: string; status: string; language?: string; solvedAt?: string; xpEarned?: number }>>()
+      for (const p of progressRes.data || []) {
+        if (!p.userId) continue
+        const list = progressByUser.get(p.userId) || []
+        list.push(p)
+        progressByUser.set(p.userId, list)
+      }
+
+      // Group submissions by user_id
+      const subsByUser = new Map<string, Array<{ problemId?: string; status: string; language?: string; createdAt: string; passedTests?: number; totalTests?: number }>>()
+      for (const s of subsRes.data || []) {
+        if (!s.userId) continue
+        const list = subsByUser.get(s.userId) || []
+        if (list.length < 50) list.push(s)
+        subsByUser.set(s.userId, list)
+      }
+
+      const result: CampusStudentStat[] = dbStudents.map((s) => {
+        const uProgress = progressByUser.get(s.user_id) || []
+        const uSubs = subsByUser.get(s.user_id) || []
+
+        // Deduplicate solved problems by canonical practice slug
+        // Multi-language solves on the same canonical problem count as 1 solve
+        const solvedCanonicalSlugs = new Set<string>()
+        let totalXp = 0
+        const languageSolvedCounts: Record<string, number> = {
+          python: 0,
+          java: 0,
+          cpp: 0,
+          nodejs: 0,
+        }
+
+        // Sort progress by solvedAt ascending so earlier solve takes precedence
+        const sortedProgress = [...uProgress].sort((a, b) => {
+          const ta = a.solvedAt ? new Date(a.solvedAt).getTime() : 0
+          const tb = b.solvedAt ? new Date(b.solvedAt).getTime() : 0
+          return ta - tb
+        })
+
+        for (const p of sortedProgress) {
+          if (p.status === 'SOLVED') {
+            const canonicalSlug = mapToCanonicalPracticeSlug(p.problemId)
+            if (!solvedCanonicalSlugs.has(canonicalSlug)) {
+              solvedCanonicalSlugs.add(canonicalSlug)
+              // First solve of canonical problem awards 50 XP (or explicit xpEarned)
+              totalXp += Number(p.xpEarned != null ? p.xpEarned : 50)
+            }
+            const lang = normalizeLanguage(p.language)
+            if (languageSolvedCounts[lang] !== undefined) {
+              languageSolvedCounts[lang] = (languageSolvedCounts[lang] || 0) + 1
+            }
+          }
+        }
+
+        // Solved questions count is distinct canonical problems solved
+        const questionsSolved = solvedCanonicalSlugs.size
+
+        // Belt calculation
+        let belt = 'Belt 1'
+        let beltColor = '#3B82F6'
+        if (questionsSolved >= 40) {
+          belt = 'Belt 3'
+          beltColor = '#EF4444'
+        } else if (questionsSolved >= 15) {
+          belt = 'Belt 2'
+          beltColor = '#10B981'
+        }
+
+        // Dates for streak & lastActive
+        const activityDates = [
+          ...uSubs.map((sub) => sub.createdAt),
+          ...uProgress.map((p) => p.solvedAt),
+        ].filter(Boolean) as string[]
+
+        // Authoritative IST streak
+        const streak = calculateAuthoritativeStreak(activityDates).streak
+
+        const latestSubTime = uSubs[0]?.createdAt ? new Date(uSubs[0].createdAt).getTime() : 0
+        const latestProgTime = uProgress[0]?.solvedAt ? new Date(uProgress[0].solvedAt).getTime() : 0
+        const mostRecentTime = Math.max(latestSubTime, latestProgTime)
+        const lastActiveRaw = mostRecentTime > 0 ? new Date(mostRecentTime).toISOString() : s.created_at
+        const lastActive = formatRelativeTime(lastActiveRaw)
+
+        // Student engagement health status
+        let status: 'ACTIVE' | 'STRUGGLING' | 'INACTIVE' = 'ACTIVE'
+        const daysSinceActive = mostRecentTime > 0 ? (Date.now() - mostRecentTime) / 86400000 : 30
+        const recentFails = uSubs.slice(0, 5).filter((sb) => sb.status === 'FAILED').length
+
+        if (recentFails >= 3) {
+          status = 'STRUGGLING'
+        } else if (daysSinceActive > 14 && questionsSolved < 5) {
+          status = 'INACTIVE'
+        }
+
+        const assignedMentor = mentorMap.get(s.id)
+        const totalSubmissions = uSubs.length
+        const passedSubmissions = uSubs.filter((sb) => sb.status === 'PASSED').length
+
+        return {
+          id: s.id,
+          userId: s.user_id,
+          name: s.name || s.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
+          email: s.email || '',
+          studentCode: s.student_code || `STU-${s.id.slice(0, 6)}`,
+          belt,
+          beltColor,
+          questionsSolved,
+          totalXp,
+          streak,
+          status,
+          lastActive,
+          lastActiveRaw,
+          mentorId: assignedMentor?.id || null,
+          mentorName: assignedMentor?.name || 'Unassigned',
+          languageSolvedCounts,
+          totalSubmissions,
+          passedSubmissions,
+        }
+      }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+
+      cachedStudents = { data: result, timestamp: Date.now() }
+      return result
+    } catch (err) {
+      console.error('Error in fetchCampusStudents:', err)
+      return []
+    } finally {
+      inflightStudentsPromise = null
+    }
+  })()
+
+  return inflightStudentsPromise
 }
 
 /**
@@ -462,77 +543,95 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
  * 100% connected to live Supabase database without hardcoded fallbacks.
  */
 export async function fetchCampusMentors(): Promise<CampusMentorStat[]> {
-  try {
-    const [mentorsRes, studentsWithMetrics] = await Promise.all([
-      supabase.from('mentors').select('id, user_id, name, email, mentor_code, max_students, status').order('name'),
-      fetchCampusStudents(),
-    ])
-
-    const dbMentors = mentorsRes.data || []
-    if (dbMentors.length === 0) return []
-
-    // Group students by assigned mentorId
-    const studentsByMentor = new Map<string, CampusStudentStat[]>()
-    for (const s of studentsWithMetrics) {
-      if (s.mentorId) {
-        const list = studentsByMentor.get(s.mentorId) || []
-        list.push(s)
-        studentsByMentor.set(s.mentorId, list)
-      }
-    }
-
-    return dbMentors.map((m) => {
-      const assigned = studentsByMentor.get(m.id) || []
-      const totalStudents = assigned.length
-      const maxStudents = m.max_students || 30
-      const capacityPercent = Math.min(100, Math.round((totalStudents / maxStudents) * 100))
-
-      // Real cohort averages
-      const totalCohortSolved = assigned.reduce((acc, s) => acc + s.questionsSolved, 0)
-      const avgCohortSolved = totalStudents > 0
-        ? Math.round((totalCohortSolved / totalStudents) * 10) / 10
-        : 0
-
-
-      // Pass rate: real cohort pass rate calculated directly from cohort submissions
-      const totalCohortSubs = assigned.reduce((acc, s) => acc + (s.totalSubmissions || 0), 0)
-      const passedCohortSubs = assigned.reduce((acc, s) => acc + (s.passedSubmissions || 0), 0)
-      const avgPassRate = totalCohortSubs > 0
-        ? Math.round((passedCohortSubs / totalCohortSubs) * 100)
-        : (totalStudents > 0 ? 100 : 0)
-
-      // Performance score: 0-100 composite based on pass rate & solve velocity
-      const performanceScore = Math.min(100, Math.round((avgPassRate * 0.7) + Math.min(avgCohortSolved * 2, 30)))
-
-      const studentsUnderGuidance = assigned.map((s) => ({
-        id: s.id,
-        name: s.name,
-        belt: s.belt,
-        questionsSolved: s.questionsSolved,
-        lastActive: s.lastActive,
-        status: s.status,
-      })).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
-
-      return {
-        id: m.id,
-        userId: m.user_id,
-        name: m.name || m.email?.split('@')[0] || 'Mentor',
-        email: m.email || '',
-        mentorCode: m.mentor_code || `MNT-${m.id.slice(0, 6)}`,
-        totalStudents,
-        maxStudents,
-        capacityPercent,
-        status: (m.status as 'ACTIVE' | 'INACTIVE') || 'ACTIVE',
-        performanceScore,
-        avgCohortSolved,
-        avgPassRate,
-        students: studentsUnderGuidance,
-      }
-    }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
-  } catch (err) {
-    console.error('Error in fetchCampusMentors:', err)
-    return []
+  if (cachedMentors && Date.now() - cachedMentors.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cachedMentors.data
   }
+  if (inflightMentorsPromise) {
+    return inflightMentorsPromise
+  }
+
+  inflightMentorsPromise = (async () => {
+    try {
+      const [mentorsRes, studentsWithMetrics] = await Promise.all([
+        supabase.from('mentors').select('id, user_id, name, email, mentor_code, max_students, status').order('name'),
+        fetchCampusStudents(),
+      ])
+
+      const dbMentors = mentorsRes.data || []
+      if (dbMentors.length === 0) return []
+
+      // Group students by assigned mentorId
+      const studentsByMentor = new Map<string, CampusStudentStat[]>()
+      for (const s of studentsWithMetrics) {
+        if (s.mentorId) {
+          const list = studentsByMentor.get(s.mentorId) || []
+          list.push(s)
+          studentsByMentor.set(s.mentorId, list)
+        }
+      }
+
+      const result: CampusMentorStat[] = dbMentors.map((m) => {
+        const assigned = studentsByMentor.get(m.id) || []
+        const totalStudents = assigned.length
+        const maxStudents = m.max_students || 30
+        const capacityPercent = maxStudents > 0
+          ? Math.min(100, Math.round((totalStudents / maxStudents) * 100))
+          : 0
+
+        // Real cohort averages
+        const totalCohortSolved = assigned.reduce((acc, s) => acc + s.questionsSolved, 0)
+        const avgCohortSolved = totalStudents > 0
+          ? Math.round((totalCohortSolved / totalStudents) * 10) / 10
+          : 0
+
+        // Pass rate: real cohort pass rate calculated directly from cohort submissions
+        // Protected from zero division: cohorts with 0 submissions yield 0% pass rate (never fabricated 100%)
+        const totalCohortSubs = assigned.reduce((acc, s) => acc + (s.totalSubmissions || 0), 0)
+        const passedCohortSubs = assigned.reduce((acc, s) => acc + (s.passedSubmissions || 0), 0)
+        const avgPassRate = totalCohortSubs > 0
+          ? Math.round((passedCohortSubs / totalCohortSubs) * 100)
+          : 0
+
+        // Performance score: 0-100 composite based on pass rate & solve velocity
+        const performanceScore = Math.min(100, Math.round((avgPassRate * 0.7) + Math.min(avgCohortSolved * 2, 30)))
+
+        const studentsUnderGuidance = assigned.map((s) => ({
+          id: s.id,
+          name: s.name,
+          belt: s.belt,
+          questionsSolved: s.questionsSolved,
+          lastActive: s.lastActive,
+          status: s.status,
+        })).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+
+        return {
+          id: m.id,
+          userId: m.user_id,
+          name: m.name || m.email?.split('@')[0] || 'Mentor',
+          email: m.email || '',
+          mentorCode: m.mentor_code || `MNT-${m.id.slice(0, 6)}`,
+          totalStudents,
+          maxStudents,
+          capacityPercent,
+          status: (m.status as 'ACTIVE' | 'INACTIVE') || 'ACTIVE',
+          performanceScore,
+          avgCohortSolved,
+          avgPassRate,
+          students: studentsUnderGuidance,
+        }
+      }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+
+      cachedMentors = { data: result, timestamp: Date.now() }
+      return result
+    } catch (err) {
+      console.error('Error in fetchCampusMentors:', err)
+      return []
+    } finally {
+      inflightMentorsPromise = null
+    }
+  })()
+
+  return inflightMentorsPromise
 }
 
 /**
@@ -602,6 +701,7 @@ export async function addCampusMentor(payload: {
 
     if (mentorError) throw mentorError
 
+    notifyCampusMutation()
     return { success: true }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
@@ -673,6 +773,7 @@ export async function addCampusStudent(payload: {
       await assignStudentMentor(studentData.id, payload.mentorId)
     }
 
+    notifyCampusMutation()
     return { success: true }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
@@ -696,6 +797,7 @@ export async function assignStudentMentor(
         .update({ status: 'INACTIVE', unassigned_at: new Date().toISOString() })
         .eq('student_id', studentId)
         .eq('status', 'ACTIVE')
+      notifyCampusMutation()
       return { success: true }
     }
 
@@ -718,6 +820,7 @@ export async function assignStudentMentor(
 
     if (error) throw error
 
+    notifyCampusMutation()
     return { success: true }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
@@ -731,56 +834,76 @@ export async function assignStudentMentor(
  * Batch-resolves student user information to avoid PostgREST foreign key cache errors.
  */
 export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<CampusSubmissionItem[]> {
-  try {
-    const { data: subs, error } = await supabase
-      .from('Submission')
-      .select('id, status, language, passedTests, totalTests, executionTimeMs, createdAt, userId, Problem(title)')
-      .order('createdAt', { ascending: false })
-      .limit(limit)
-
-    if (error || !subs || subs.length === 0) {
-      return []
-    }
-
-    // Batch resolve student names & emails from users table
-    const distinctUserIds = Array.from(new Set(subs.map((s) => s.userId).filter(Boolean)))
-    const userMap = new Map<string, { name: string; email: string }>()
-
-    if (distinctUserIds.length > 0) {
-      const { data: users } = await supabase
-        .from('users')
-        .select('id, name, email')
-        .in('id', distinctUserIds)
-
-      for (const u of users || []) {
-        userMap.set(u.id, {
-          name: u.name || u.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
-          email: u.email || '',
-        })
-      }
-    }
-
-    return subs.map((item) => {
-      const uInfo = userMap.get(item.userId)
-      const probInfo = item.Problem as unknown as { title?: string } | null
-
-      return {
-        id: item.id,
-        studentName: uInfo?.name || 'Student',
-        studentEmail: uInfo?.email || '',
-        problemTitle: probInfo?.title || 'Competitive Challenge',
-        language: normalizeProgressLanguage(item.language),
-        status: item.status as 'PASSED' | 'FAILED' | 'ERROR',
-        passedTests: item.passedTests ?? 10,
-        totalTests: item.totalTests || 10,
-        createdAt: item.createdAt,
-        executionTimeMs: item.executionTimeMs || 30,
-      }
-    })
-  } catch (err) {
-    console.error('Recent submissions query error:', err)
-    return []
+  if (
+    cachedRecentSubs &&
+    cachedRecentSubs.limit === limit &&
+    Date.now() - cachedRecentSubs.timestamp < CAMPUS_CACHE_TTL_MS
+  ) {
+    return cachedRecentSubs.data
   }
+  if (inflightRecentSubsPromise) {
+    return inflightRecentSubsPromise
+  }
+
+  inflightRecentSubsPromise = (async () => {
+    try {
+      const { data: subs, error } = await supabase
+        .from('Submission')
+        .select('id, status, language, passedTests, totalTests, executionTimeMs, createdAt, userId, Problem(title)')
+        .order('createdAt', { ascending: false })
+        .limit(limit)
+
+      if (error || !subs || subs.length === 0) {
+        return []
+      }
+
+      // Batch resolve student names & emails from users table
+      const distinctUserIds = Array.from(new Set(subs.map((s) => s.userId).filter(Boolean)))
+      const userMap = new Map<string, { name: string; email: string }>()
+
+      if (distinctUserIds.length > 0) {
+        const { data: users } = await supabase
+          .from('users')
+          .select('id, name, email')
+          .in('id', distinctUserIds)
+
+        for (const u of users || []) {
+          userMap.set(u.id, {
+            name: u.name || u.email?.split('@')[0].replace(/\./g, ' ') || 'Student',
+            email: u.email || '',
+          })
+        }
+      }
+
+      const result: CampusSubmissionItem[] = subs.map((item) => {
+        const uInfo = userMap.get(item.userId)
+        const probInfo = item.Problem as unknown as { title?: string } | null
+
+        return {
+          id: item.id,
+          studentName: uInfo?.name || 'Student',
+          studentEmail: uInfo?.email || '',
+          problemTitle: probInfo?.title || 'Competitive Challenge',
+          language: normalizeProgressLanguage(item.language),
+          status: item.status as 'PASSED' | 'FAILED' | 'ERROR',
+          passedTests: item.passedTests ?? 10,
+          totalTests: item.totalTests || 10,
+          createdAt: item.createdAt,
+          executionTimeMs: item.executionTimeMs || 30,
+        }
+      })
+
+      cachedRecentSubs = { data: result, timestamp: Date.now(), limit }
+      return result
+    } catch (err) {
+      console.error('Recent submissions query error:', err)
+      return []
+    } finally {
+      inflightRecentSubsPromise = null
+    }
+  })()
+
+  return inflightRecentSubsPromise
 }
 
 /**
@@ -789,6 +912,12 @@ export async function fetchRecentCampusSubmissions(limit: number = 15): Promise<
 export async function fetchMentorLeaderboard(
   timeframe: 'weekly' | 'monthly' | 'overall' = 'overall'
 ): Promise<MentorLeaderboardEntry[]> {
+  const cacheKey = `mentor_lb_${timeframe}`
+  const cached = cachedLeaderboards.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cached.data
+  }
+
   const [mentors, studentLeaderboard] = await Promise.all([
     fetchCampusMentors(),
     fetchStudentLeaderboard(timeframe),
@@ -800,7 +929,7 @@ export async function fetchMentorLeaderboard(
     studentMetrics.set(s.id, { xp: s.totalXp, solved: s.questionsSolved })
   }
 
-  return mentors
+  const result = mentors
     .map((m) => {
       const assigned = m.students || []
       let cohortTotalXp = 0
@@ -840,6 +969,9 @@ export async function fetchMentorLeaderboard(
       return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
     })
     .map((entry, index) => ({ ...entry, rank: index + 1 }))
+
+  cachedLeaderboards.set(cacheKey, { data: result, timestamp: Date.now() })
+  return result
 }
 
 /**
@@ -848,10 +980,16 @@ export async function fetchMentorLeaderboard(
 export async function fetchStudentLeaderboard(
   timeframe: 'weekly' | 'monthly' | 'overall' = 'overall'
 ): Promise<StudentLeaderboardEntry[]> {
+  const cacheKey = `student_lb_${timeframe}`
+  const cached = cachedLeaderboards.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cached.data
+  }
+
   const students = await fetchCampusStudents()
 
   if (timeframe === 'overall') {
-    return students
+    const result = students
       .map((s) => ({
         rank: 1,
         id: s.id,
@@ -871,6 +1009,9 @@ export async function fetchStudentLeaderboard(
         return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
       })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
+
+    cachedLeaderboards.set(cacheKey, { data: result, timestamp: Date.now() })
+    return result
   }
 
   const days = timeframe === 'weekly' ? 7 : 30
@@ -892,7 +1033,7 @@ export async function fetchStudentLeaderboard(
       tfProgressByUser.set(p.userId, list)
     }
 
-    return students
+    const result = students
       .map((s) => {
         const uProgress = s.userId ? (tfProgressByUser.get(s.userId) || []) : []
 
@@ -900,8 +1041,11 @@ export async function fetchStudentLeaderboard(
         let totalXp = 0
         for (const p of uProgress) {
           if (p.status === 'SOLVED') {
-            solvedProblems.add(p.problemId)
-            totalXp += Number(p.xpEarned || 0)
+            const canonicalSlug = mapToCanonicalPracticeSlug(p.problemId)
+            if (!solvedProblems.has(canonicalSlug)) {
+              solvedProblems.add(canonicalSlug)
+              totalXp += Number(p.xpEarned != null ? p.xpEarned : 50)
+            }
           }
         }
         const questionsSolved = solvedProblems.size
@@ -926,9 +1070,12 @@ export async function fetchStudentLeaderboard(
         return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
       })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
+
+    cachedLeaderboards.set(cacheKey, { data: result, timestamp: Date.now() })
+    return result
   } catch (err) {
     console.error('Error calculating timeframe student leaderboard:', err)
-    return students
+    const result = students
       .map((s) => ({
         rank: 1,
         id: s.id,
@@ -948,6 +1095,9 @@ export async function fetchStudentLeaderboard(
         return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
       })
       .map((entry, index) => ({ ...entry, rank: index + 1 }))
+
+    cachedLeaderboards.set(cacheKey, { data: result, timestamp: Date.now() })
+    return result
   }
 }
 
@@ -959,190 +1109,206 @@ export async function fetchStudentLeaderboard(
  * - Real curriculum belt progression velocity
  */
 export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnalytics> {
-  try {
-    const [studentsData, subsRes, progRes] = await Promise.all([
-      fetchCampusStudents(),
-      fetchAllRows(() => supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests, Problem(title, slug)')),
-      fetchAllRows(() => supabase.from('UserProgress').select('id, problemId, language, status, solvedAt')),
-    ])
+  if (cachedAnalytics && Date.now() - cachedAnalytics.timestamp < CAMPUS_CACHE_TTL_MS) {
+    return cachedAnalytics.data
+  }
+  if (inflightAnalyticsPromise) {
+    return inflightAnalyticsPromise
+  }
 
-    const subs = subsRes.data || []
-    const prog = progRes.data || []
-    const totalStudents = Math.max(studentsData.length, 1)
+  inflightAnalyticsPromise = (async () => {
+    try {
+      const [studentsData, subsRes, progRes] = await Promise.all([
+        fetchCampusStudents(),
+        fetchAllRows(() => supabase.from('Submission').select('id, problemId, language, status, createdAt, passedTests, totalTests, Problem(title, slug)')),
+        fetchAllRows(() => supabase.from('UserProgress').select('id, problemId, language, status, solvedAt')),
+      ])
 
-    // 1. Live Language Breakdown
-    const langCounts: Record<string, number> = {
-      python: 0,
-      java: 0,
-      cpp: 0,
-      nodejs: 0,
-    }
+      const subs = subsRes.data || []
+      const prog = progRes.data || []
+      const totalStudents = Math.max(studentsData.length, 1)
 
-    for (const s of subs) {
-      const norm = normalizeLanguage(s.language)
-      if (langCounts[norm] !== undefined) {
-        langCounts[norm]++
+      // 1. Live Language Breakdown
+      const langCounts: Record<string, number> = {
+        python: 0,
+        java: 0,
+        cpp: 0,
+        nodejs: 0,
       }
-    }
-    for (const p of prog) {
-      const norm = normalizeLanguage(p.language)
-      if (langCounts[norm] !== undefined) {
-        langCounts[norm]++
-      }
-    }
 
-    const totalLangActivity = Object.values(langCounts).reduce((a, b) => a + b, 0)
-    const languages: LanguageStat[] = [
-      {
-        language: 'python',
-        label: 'Python',
-        count: langCounts.python,
-        percentage: totalLangActivity > 0 ? Math.round((langCounts.python / totalLangActivity) * 100) : 0,
-        color: 'text-blue-600',
-        trackLabel: 'Primary Track',
-      },
-      {
-        language: 'java',
-        label: 'Java',
-        count: langCounts.java,
-        percentage: totalLangActivity > 0 ? Math.round((langCounts.java / totalLangActivity) * 100) : 0,
-        color: 'text-amber-600',
-        trackLabel: 'OOP & Systems',
-      },
-      {
-        language: 'cpp',
-        label: 'C++',
-        count: langCounts.cpp,
-        percentage: totalLangActivity > 0 ? Math.round((langCounts.cpp / totalLangActivity) * 100) : 0,
-        color: 'text-purple-600',
-        trackLabel: 'DSA Speed',
-      },
-      {
-        language: 'nodejs',
-        label: 'Node.js',
-        count: langCounts.nodejs,
-        percentage: totalLangActivity > 0 ? Math.round((langCounts.nodejs / totalLangActivity) * 100) : 0,
-        color: 'text-emerald-600',
-        trackLabel: 'Full-Stack Track',
-      },
-    ]
-
-    // 2. Live Problem Bottlenecks (Lowest Pass Rates)
-    const problemMap = new Map<string, { title: string; belt: string }>()
-    for (const belt of problemsData) {
-      for (const p of belt.problems) {
-        problemMap.set(p.slug, { title: p.title, belt: `${belt.name} • ${belt.title}` })
-      }
-    }
-
-    const problemSubMap = new Map<string, { total: number; passed: number; title?: string; slug?: string }>()
-    for (const s of subs) {
-      if (!s.problemId) continue
-      const curr = problemSubMap.get(s.problemId) || { total: 0, passed: 0 }
-      curr.total++
-      if (s.status === 'PASSED') curr.passed++
-      const probObj = s.Problem as { title?: string; slug?: string } | null
-      if (probObj?.title) curr.title = probObj.title
-      if (probObj?.slug) curr.slug = probObj.slug
-      problemSubMap.set(s.problemId, curr)
-    }
-
-    let bottlenecks: ProblemBottleneck[] = []
-    if (problemSubMap.size > 0) {
-      for (const [probId, stats] of problemSubMap.entries()) {
-        const info = problemMap.get(stats.slug || probId)
-        const passRate = Math.round((stats.passed / stats.total) * 1000) / 10
-        bottlenecks.push({
-          id: probId,
-          title: stats.title || info?.title || probId,
-          belt: info?.belt || 'Curriculum Challenge',
-          passRate,
-          totalSubmissions: stats.total,
-          passedSubmissions: stats.passed,
-        })
-      }
-      bottlenecks.sort((a, b) => a.passRate - b.passRate)
-      bottlenecks = bottlenecks.slice(0, 5)
-    }
-
-    // 3. Live Peak Coding Hours (8 AM to 7 PM)
-    const hourLabels = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM']
-    const hourMap: Record<number, number> = {}
-    for (let h = 8; h <= 19; h++) {
-      hourMap[h] = 0
-    }
-
-    for (const s of subs) {
-      if (s.createdAt) {
-        const istDate = new Date(new Date(s.createdAt).getTime() + 5.5 * 3600 * 1000)
-        const hour = istDate.getUTCHours()
-        if (hourMap[hour] !== undefined) {
-          hourMap[hour]++
+      for (const s of subs) {
+        const norm = normalizeLanguage(s.language)
+        if (langCounts[norm] !== undefined) {
+          langCounts[norm]++
         }
       }
-    }
-
-    const maxHourVolume = Math.max(...Object.values(hourMap), 1)
-    const hourlyActivity: HourlyActivity[] = hourLabels.map((hourLabel, i) => {
-      const hourNum = i + 8
-      const volume = hourMap[hourNum] || 0
-      const percentage = Math.round((volume / maxHourVolume) * 100)
-      return {
-        hourLabel,
-        volume,
-        percentage: volume > 0 ? Math.max(percentage, 8) : 4,
+      for (const p of prog) {
+        const norm = normalizeLanguage(p.language)
+        if (langCounts[norm] !== undefined) {
+          langCounts[norm]++
+        }
       }
-    })
 
-    // 4. Live Belt Progression Funnel
-    const belt1Count = studentsData.filter((s) => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length
-    const belt2Count = studentsData.filter((s) => s.belt === 'Belt 2' || s.belt === 'Belt 3').length
-    const belt3Count = studentsData.filter((s) => s.belt === 'Belt 3').length
+      const totalLangActivity = Object.values(langCounts).reduce((a, b) => a + b, 0)
+      const languages: LanguageStat[] = [
+        {
+          language: 'python',
+          label: 'Python',
+          count: langCounts.python,
+          percentage: totalLangActivity > 0 ? Math.round((langCounts.python / totalLangActivity) * 100) : 0,
+          color: 'text-blue-600',
+          trackLabel: 'Primary Track',
+        },
+        {
+          language: 'java',
+          label: 'Java',
+          count: langCounts.java,
+          percentage: totalLangActivity > 0 ? Math.round((langCounts.java / totalLangActivity) * 100) : 0,
+          color: 'text-amber-600',
+          trackLabel: 'OOP & Systems',
+        },
+        {
+          language: 'cpp',
+          label: 'C++',
+          count: langCounts.cpp,
+          percentage: totalLangActivity > 0 ? Math.round((langCounts.cpp / totalLangActivity) * 100) : 0,
+          color: 'text-purple-600',
+          trackLabel: 'DSA Speed',
+        },
+        {
+          language: 'nodejs',
+          label: 'Node.js',
+          count: langCounts.nodejs,
+          percentage: totalLangActivity > 0 ? Math.round((langCounts.nodejs / totalLangActivity) * 100) : 0,
+          color: 'text-emerald-600',
+          trackLabel: 'Full-Stack Track',
+        },
+      ]
 
-    const beltProgression: BeltProgressionStats = {
-      belt1Enrolled: belt1Count,
-      belt1Percent: Math.round((belt1Count / totalStudents) * 100),
-      belt2Enrolled: belt2Count,
-      belt2Percent: Math.round((belt2Count / totalStudents) * 100),
-      belt3Enrolled: belt3Count,
-      belt3Percent: Math.round((belt3Count / totalStudents) * 100),
+      // 2. Live Problem Bottlenecks (Lowest Pass Rates)
+      const problemMap = new Map<string, { title: string; belt: string }>()
+      for (const belt of problemsData) {
+        for (const p of belt.problems) {
+          problemMap.set(p.slug, { title: p.title, belt: `${belt.name} • ${belt.title}` })
+        }
+      }
+
+      const problemSubMap = new Map<string, { total: number; passed: number; title?: string; slug?: string }>()
+      for (const s of subs) {
+        if (!s.problemId) continue
+        const curr = problemSubMap.get(s.problemId) || { total: 0, passed: 0 }
+        curr.total++
+        if (s.status === 'PASSED') curr.passed++
+        const probObj = s.Problem as { title?: string; slug?: string } | null
+        if (probObj?.title) curr.title = probObj.title
+        if (probObj?.slug) curr.slug = probObj.slug
+        problemSubMap.set(s.problemId, curr)
+      }
+
+      let bottlenecks: ProblemBottleneck[] = []
+      if (problemSubMap.size > 0) {
+        for (const [probId, stats] of problemSubMap.entries()) {
+          const info = problemMap.get(stats.slug || probId)
+          const passRate = Math.round((stats.passed / stats.total) * 1000) / 10
+          bottlenecks.push({
+            id: probId,
+            title: stats.title || info?.title || probId,
+            belt: info?.belt || 'Curriculum Challenge',
+            passRate,
+            totalSubmissions: stats.total,
+            passedSubmissions: stats.passed,
+          })
+        }
+        bottlenecks.sort((a, b) => a.passRate - b.passRate)
+        bottlenecks = bottlenecks.slice(0, 5)
+      }
+
+      // 3. Live Peak Coding Hours (8 AM to 7 PM IST)
+      const hourLabels = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM']
+      const hourMap: Record<number, number> = {}
+      for (let h = 8; h <= 19; h++) {
+        hourMap[h] = 0
+      }
+
+      for (const s of subs) {
+        if (s.createdAt) {
+          const istDate = new Date(new Date(s.createdAt).getTime() + 5.5 * 3600 * 1000)
+          const hour = istDate.getUTCHours()
+          if (hourMap[hour] !== undefined) {
+            hourMap[hour]++
+          }
+        }
+      }
+
+      const maxHourVolume = Math.max(...Object.values(hourMap), 1)
+      const hourlyActivity: HourlyActivity[] = hourLabels.map((hourLabel, i) => {
+        const hourNum = i + 8
+        const volume = hourMap[hourNum] || 0
+        const percentage = Math.round((volume / maxHourVolume) * 100)
+        return {
+          hourLabel,
+          volume,
+          percentage: volume > 0 ? Math.max(percentage, 8) : 4,
+        }
+      })
+
+      // 4. Live Belt Progression Funnel
+      const belt1Count = studentsData.filter((s) => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length
+      const belt2Count = studentsData.filter((s) => s.belt === 'Belt 2' || s.belt === 'Belt 3').length
+      const belt3Count = studentsData.filter((s) => s.belt === 'Belt 3').length
+
+      const beltProgression: BeltProgressionStats = {
+        belt1Enrolled: belt1Count,
+        belt1Percent: Math.round((belt1Count / totalStudents) * 100),
+        belt2Enrolled: belt2Count,
+        belt2Percent: Math.round((belt2Count / totalStudents) * 100),
+        belt3Enrolled: belt3Count,
+        belt3Percent: Math.round((belt3Count / totalStudents) * 100),
+      }
+
+      // 5. Live Daily Active Ratio
+      const activeCount = studentsData.filter((s) => s.status === 'ACTIVE').length
+      const dailyActiveRatio = Math.round((activeCount / totalStudents) * 100)
+
+      const result: CampusDetailedAnalytics = {
+        languages,
+        bottlenecks,
+        hourlyActivity,
+        beltProgression,
+        dailyActiveRatio,
+      }
+
+      cachedAnalytics = { data: result, timestamp: Date.now() }
+      return result
+    } catch (err) {
+      console.error('Error fetching campus detailed analytics:', err)
+      return {
+        languages: [
+          { language: 'python', label: 'Python', count: 0, percentage: 0, color: 'text-blue-600', trackLabel: 'Primary Track' },
+          { language: 'java', label: 'Java', count: 0, percentage: 0, color: 'text-amber-600', trackLabel: 'OOP & Systems' },
+          { language: 'cpp', label: 'C++', count: 0, percentage: 0, color: 'text-purple-600', trackLabel: 'DSA Speed' },
+          { language: 'nodejs', label: 'Node.js', count: 0, percentage: 0, color: 'text-emerald-600', trackLabel: 'Full-Stack Track' },
+        ],
+        bottlenecks: [],
+        hourlyActivity: ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM'].map((h) => ({
+          hourLabel: h,
+          volume: 0,
+          percentage: 4,
+        })),
+        beltProgression: {
+          belt1Enrolled: 0,
+          belt1Percent: 0,
+          belt2Enrolled: 0,
+          belt2Percent: 0,
+          belt3Enrolled: 0,
+          belt3Percent: 0,
+        },
+        dailyActiveRatio: 0,
+      }
+    } finally {
+      inflightAnalyticsPromise = null
     }
+  })()
 
-    // 5. Live Daily Active Ratio
-    const activeCount = studentsData.filter((s) => s.status === 'ACTIVE').length
-    const dailyActiveRatio = Math.round((activeCount / totalStudents) * 100)
-
-    return {
-      languages,
-      bottlenecks,
-      hourlyActivity,
-      beltProgression,
-      dailyActiveRatio,
-    }
-  } catch (err) {
-    console.error('Error fetching campus detailed analytics:', err)
-    return {
-      languages: [
-        { language: 'python', label: 'Python', count: 0, percentage: 0, color: 'text-blue-600', trackLabel: 'Primary Track' },
-        { language: 'java', label: 'Java', count: 0, percentage: 0, color: 'text-amber-600', trackLabel: 'OOP & Systems' },
-        { language: 'cpp', label: 'C++', count: 0, percentage: 0, color: 'text-purple-600', trackLabel: 'DSA Speed' },
-        { language: 'nodejs', label: 'Node.js', count: 0, percentage: 0, color: 'text-emerald-600', trackLabel: 'Full-Stack Track' },
-      ],
-      bottlenecks: [],
-      hourlyActivity: ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM'].map((h) => ({
-        hourLabel: h,
-        volume: 0,
-        percentage: 4,
-      })),
-      beltProgression: {
-        belt1Enrolled: 0,
-        belt1Percent: 0,
-        belt2Enrolled: 0,
-        belt2Percent: 0,
-        belt3Enrolled: 0,
-        belt3Percent: 0,
-      },
-      dailyActiveRatio: 0,
-    }
-  }
+  return inflightAnalyticsPromise
 }

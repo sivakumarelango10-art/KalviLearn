@@ -7,7 +7,10 @@ import {
   Users,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { fetchCampusOverviewMetrics } from '@/lib/campusManagerService'
+import {
+  fetchCampusOverviewMetrics,
+  subscribeToCampusUpdates,
+} from '@/lib/campusManagerService'
 
 export const CampusProfilePage: React.FC = () => {
   const { user } = useAuth()
@@ -18,18 +21,25 @@ export const CampusProfilePage: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true
-    fetchCampusOverviewMetrics()
-      .then((data) => {
-        if (isMounted) {
-          setMetrics({
-            totalStudents: data.totalStudents,
-            totalMentors: data.totalMentors,
-          })
-        }
-      })
-      .catch(console.warn)
+    const load = () => {
+      fetchCampusOverviewMetrics()
+        .then((data) => {
+          if (isMounted) {
+            setMetrics({
+              totalStudents: data.totalStudents,
+              totalMentors: data.totalMentors,
+            })
+          }
+        })
+        .catch(console.warn)
+    }
+    load()
+    const unsubscribe = subscribeToCampusUpdates(() => {
+      load()
+    })
     return () => {
       isMounted = false
+      unsubscribe()
     }
   }, [])
 

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
-import { fetchMentorLeaderboard, type MentorLeaderboardEntry } from '@/lib/campusManagerService'
+import {
+  fetchMentorLeaderboard,
+  subscribeToCampusUpdates,
+  type MentorLeaderboardEntry,
+} from '@/lib/campusManagerService'
 
 export const CampusMentorLeaderboardPage: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'weekly' | 'monthly' | 'overall'>('overall')
@@ -10,22 +14,26 @@ export const CampusMentorLeaderboardPage: React.FC = () => {
   useEffect(() => {
     document.title = 'Mentor Leaderboard — Campus Manager'
     let isMounted = true
-    const load = async () => {
-      setIsLoading(true)
+    const load = async (showLoading = true) => {
+      if (showLoading) setIsLoading(true)
       try {
         const data = await fetchMentorLeaderboard(timeframe)
         if (isMounted) {
           setLeaderboard(data)
         }
       } finally {
-        if (isMounted) {
+        if (isMounted && showLoading) {
           setIsLoading(false)
         }
       }
     }
-    load()
+    load(true)
+    const unsubscribe = subscribeToCampusUpdates(() => {
+      load(false)
+    })
     return () => {
       isMounted = false
+      unsubscribe()
     }
   }, [timeframe])
 

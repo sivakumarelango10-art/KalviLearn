@@ -24,6 +24,7 @@ import {
   fetchCampusStudents,
   fetchRecentCampusSubmissions,
   subscribeToCampusUpdates,
+  invalidateCampusCache,
   type CampusOverviewMetrics,
   type CampusMentorStat,
   type CampusStudentStat,
@@ -184,7 +185,10 @@ export const CampusDashboardPage: React.FC = () => {
               </Link>
               <button
                 type="button"
-                onClick={() => loadData(true)}
+                onClick={() => {
+                  invalidateCampusCache()
+                  loadData(true)
+                }}
                 disabled={refreshing}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-sm font-medium transition-all interactive-btn disabled:opacity-60"
               >
