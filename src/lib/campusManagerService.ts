@@ -5,6 +5,7 @@ import { fetchAllRows } from './supabasePaging'
 import { calculateAuthoritativeStreak } from './streak'
 import { mapToCanonicalPracticeSlug } from './problemStatsService'
 import { registerCacheClearer } from './cacheRegistry'
+import { isPracticeArchiveEnabled } from './featureFlags'
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -141,6 +142,71 @@ export interface CampusDetailedAnalytics {
   hourlyActivity: HourlyActivity[]
   beltProgression: BeltProgressionStats
   dailyActiveRatio: number
+}
+
+export interface CampusBeltDefinition {
+  order: number
+  name: string
+  badge: string
+  title: string
+  description: string
+  color: string
+}
+
+/**
+ * Authoritative 10 curriculum belt definitions directly from problemsData.
+ * Covers Belt 1 through Belt 10 with canonical titles, descriptions, and colors.
+ */
+export const CAMPUS_BELT_DEFINITIONS: CampusBeltDefinition[] = (problemsData as Array<{
+  order: number
+  name: string
+  title: string
+  description?: string
+  color: string
+}>).map((b) => ({
+  order: b.order,
+  name: b.name,
+  badge: `B${b.order}`,
+  title: b.title,
+  description: b.description || `${b.name} (${b.title})`,
+  color: b.color,
+}))
+
+/**
+ * Calculates a student's authoritative curriculum belt level across all 10 belts
+ * based on cumulative distinct practice problems solved.
+ */
+export function computeCampusStudentBelt(solvedCount: number): {
+  order: number
+  name: string
+  title: string
+  color: string
+} {
+  const archiveEnabled = isPracticeArchiveEnabled()
+  if (!archiveEnabled) {
+    if (solvedCount >= 410) return { order: 10, name: 'Belt 10', title: 'Black Belt', color: '#171717' }
+    if (solvedCount >= 330) return { order: 9, name: 'Belt 9', title: 'Sr. Red Belt', color: '#B91C1C' }
+    if (solvedCount >= 265) return { order: 8, name: 'Belt 8', title: 'Red Belt', color: '#EF4444' }
+    if (solvedCount >= 205) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt', color: '#78350F' }
+    if (solvedCount >= 165) return { order: 6, name: 'Belt 6', title: 'Brown Belt', color: '#92400E' }
+    if (solvedCount >= 125) return { order: 5, name: 'Belt 5', title: 'Blue Belt', color: '#3B82F6' }
+    if (solvedCount >= 85) return { order: 4, name: 'Belt 4', title: 'Purple Belt', color: '#8B5CF6' }
+    if (solvedCount >= 50) return { order: 3, name: 'Belt 3', title: 'Green Belt', color: '#10B981' }
+    if (solvedCount >= 20) return { order: 2, name: 'Belt 2', title: 'Orange Belt', color: '#F97316' }
+    return { order: 1, name: 'Belt 1', title: 'Yellow Belt', color: '#EAB308' }
+  }
+
+  // Active 58-benchmark problem milestones
+  if (solvedCount >= 55) return { order: 10, name: 'Belt 10', title: 'Black Belt', color: '#171717' }
+  if (solvedCount >= 50) return { order: 9, name: 'Belt 9', title: 'Sr. Red Belt', color: '#B91C1C' }
+  if (solvedCount >= 45) return { order: 8, name: 'Belt 8', title: 'Red Belt', color: '#EF4444' }
+  if (solvedCount >= 35) return { order: 7, name: 'Belt 7', title: 'Sr. Brown Belt', color: '#78350F' }
+  if (solvedCount >= 25) return { order: 6, name: 'Belt 6', title: 'Brown Belt', color: '#92400E' }
+  if (solvedCount >= 20) return { order: 5, name: 'Belt 5', title: 'Blue Belt', color: '#3B82F6' }
+  if (solvedCount >= 15) return { order: 4, name: 'Belt 4', title: 'Purple Belt', color: '#8B5CF6' }
+  if (solvedCount >= 10) return { order: 3, name: 'Belt 3', title: 'Green Belt', color: '#10B981' }
+  if (solvedCount >= 5) return { order: 2, name: 'Belt 2', title: 'Orange Belt', color: '#F97316' }
+  return { order: 1, name: 'Belt 1', title: 'Yellow Belt', color: '#EAB308' }
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -462,16 +528,10 @@ export async function fetchCampusStudents(): Promise<CampusStudentStat[]> {
         // Solved questions count is distinct canonical problems solved
         const questionsSolved = solvedCanonicalSlugs.size
 
-        // Belt calculation
-        let belt = 'Belt 1'
-        let beltColor = '#3B82F6'
-        if (questionsSolved >= 40) {
-          belt = 'Belt 3'
-          beltColor = '#EF4444'
-        } else if (questionsSolved >= 15) {
-          belt = 'Belt 2'
-          beltColor = '#10B981'
-        }
+        // Authoritative belt calculation across all 10 curriculum belts
+        const studentBelt = computeCampusStudentBelt(questionsSolved)
+        const belt = studentBelt.name
+        const beltColor = studentBelt.color
 
         // Dates for streak & lastActive
         const activityDates = [
@@ -1252,10 +1312,11 @@ export async function fetchCampusDetailedAnalytics(): Promise<CampusDetailedAnal
         }
       })
 
-      // 4. Live Belt Progression Funnel
-      const belt1Count = studentsData.filter((s) => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length
-      const belt2Count = studentsData.filter((s) => s.belt === 'Belt 2' || s.belt === 'Belt 3').length
-      const belt3Count = studentsData.filter((s) => s.belt === 'Belt 3').length
+      // 4. Live Belt Progression Funnel across all 10 belts
+      const parseBeltOrder = (beltStr?: string) => Number(beltStr?.replace(/\D/g, '')) || 1
+      const belt1Count = studentsData.filter((s) => parseBeltOrder(s.belt) >= 1).length
+      const belt2Count = studentsData.filter((s) => parseBeltOrder(s.belt) >= 2).length
+      const belt3Count = studentsData.filter((s) => parseBeltOrder(s.belt) >= 3).length
 
       const beltProgression: BeltProgressionStats = {
         belt1Enrolled: belt1Count,

@@ -16,6 +16,7 @@ import {
   addCampusStudent,
   assignStudentMentor,
   subscribeToCampusUpdates,
+  CAMPUS_BELT_DEFINITIONS,
   type CampusStudentStat,
   type CampusMentorStat,
 } from '@/lib/campusManagerService'
@@ -25,7 +26,7 @@ export const CampusStudentsPage: React.FC = () => {
   const [mentors, setMentors] = useState<CampusMentorStat[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [beltFilter, setBeltFilter] = useState<'ALL' | 'Belt 1' | 'Belt 2' | 'Belt 3'>('ALL')
+  const [beltFilter, setBeltFilter] = useState<string>('ALL')
   const [mentorFilter, setMentorFilter] = useState<string>('ALL')
 
   // Add Student Modal State
@@ -227,13 +228,15 @@ export const CampusStudentsPage: React.FC = () => {
             {/* Belt Filter */}
             <select
               value={beltFilter}
-              onChange={(e) => setBeltFilter(e.target.value as any)}
+              onChange={(e) => setBeltFilter(e.target.value)}
               className="px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl font-semibold text-neutral-700 focus:outline-none"
             >
               <option value="ALL">All Belts</option>
-              <option value="Belt 1">Belt 1 (Foundations)</option>
-              <option value="Belt 2">Belt 2 (Intermediate)</option>
-              <option value="Belt 3">Belt 3 (Advanced)</option>
+              {CAMPUS_BELT_DEFINITIONS.map((b) => (
+                <option key={b.name} value={b.name}>
+                  {b.name} ({b.title})
+                </option>
+              ))}
             </select>
 
             {/* Mentor Filter */}

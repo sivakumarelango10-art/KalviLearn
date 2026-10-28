@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import {
@@ -25,6 +25,7 @@ import {
   fetchRecentCampusSubmissions,
   subscribeToCampusUpdates,
   invalidateCampusCache,
+  CAMPUS_BELT_DEFINITIONS,
   type CampusOverviewMetrics,
   type CampusMentorStat,
   type CampusStudentStat,
@@ -92,17 +93,35 @@ export const CampusDashboardPage: React.FC = () => {
     return () => unsubscribe()
   }, [user?.role])
 
-  // Derived statistics
-  const belt1Count = students.filter((s) => s.belt === 'Belt 1').length
-  const belt2Count = students.filter((s) => s.belt === 'Belt 2').length
-  const belt3Count = students.filter((s) => s.belt === 'Belt 3').length
+  // Derived statistics: distribution of students across all 10 curriculum belts
+  const beltCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const b of CAMPUS_BELT_DEFINITIONS) {
+      counts[b.name] = 0
+    }
+    for (const s of students) {
+      if (counts[s.belt] !== undefined) {
+        counts[s.belt]++
+      } else {
+        const matched = CAMPUS_BELT_DEFINITIONS.find((b) => b.name === s.belt || b.title === s.belt)
+        if (matched) {
+          counts[matched.name]++
+        } else {
+          counts['Belt 1']++
+        }
+      }
+    }
+    return counts
+  }, [students])
+
   const strugglingCount = students.filter((s) => s.status === 'STRUGGLING').length
   const activeCount = students.filter((s) => s.status === 'ACTIVE').length
   const inactiveCount = students.filter((s) => s.status === 'INACTIVE').length
 
-  const belt1Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 1' || s.belt === 'Belt 2' || s.belt === 'Belt 3').length / students.length) * 100) : 0
-  const belt2Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 2' || s.belt === 'Belt 3').length / students.length) * 100) : 0
-  const belt3Pct = students.length > 0 ? Math.round((students.filter(s => s.belt === 'Belt 3').length / students.length) * 100) : 0
+  const parseBeltOrder = (beltStr?: string) => Number(beltStr?.replace(/\D/g, '')) || 1
+  const belt1Pct = students.length > 0 ? Math.round((students.filter(s => parseBeltOrder(s.belt) >= 1).length / students.length) * 100) : 0
+  const belt2Pct = students.length > 0 ? Math.round((students.filter(s => parseBeltOrder(s.belt) >= 2).length / students.length) * 100) : 0
+  const belt3Pct = students.length > 0 ? Math.round((students.filter(s => parseBeltOrder(s.belt) >= 3).length / students.length) * 100) : 0
 
   const totalAssignedStudents = mentors.reduce((acc, m) => acc + m.totalStudents, 0)
   const totalMentorCapacity = mentors.reduce((acc, m) => acc + m.maxStudents, 0)
@@ -385,32 +404,36 @@ export const CampusDashboardPage: React.FC = () => {
           <div className="p-6 space-y-6">
             {/* Belt Distribution */}
             <div>
-              <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-3">Curriculum Belt Distribution</p>
-              <div className="grid grid-cols-3 gap-3">
-                {/* Belt 1 */}
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200/70 p-4 text-center group hover:bg-neutral-100/60 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center mx-auto mb-2 shadow-2xs">
-                    B1
-                  </div>
-                  <p className="text-2xl font-extrabold text-neutral-900">{belt1Count}</p>
-                  <p className="text-[10px] font-semibold text-neutral-500 mt-0.5">Foundations</p>
-                </div>
-                {/* Belt 2 */}
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200/70 p-4 text-center group hover:bg-neutral-100/60 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-black text-xs flex items-center justify-center mx-auto mb-2 shadow-2xs">
-                    B2
-                  </div>
-                  <p className="text-2xl font-extrabold text-neutral-900">{belt2Count}</p>
-                  <p className="text-[10px] font-semibold text-neutral-500 mt-0.5">Intermediate</p>
-                </div>
-                {/* Belt 3 */}
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200/70 p-4 text-center group hover:bg-neutral-100/60 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-[#ED2A2B] text-white font-black text-xs flex items-center justify-center mx-auto mb-2 shadow-2xs">
-                    B3
-                  </div>
-                  <p className="text-2xl font-extrabold text-neutral-900">{belt3Count}</p>
-                  <p className="text-[10px] font-semibold text-neutral-500 mt-0.5">Advanced</p>
-                </div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
+                  Curriculum Belt Distribution
+                </p>
+                <span className="text-[10px] font-semibold text-neutral-400">
+                  10 Belts
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
+                {CAMPUS_BELT_DEFINITIONS.map((b) => {
+                  const count = beltCounts[b.name] || 0
+                  return (
+                    <div
+                      key={b.name}
+                      className="rounded-2xl bg-neutral-50 border border-neutral-200/70 p-3 text-center group hover:bg-neutral-100/60 transition-colors"
+                      title={`${b.name} (${b.title}): ${b.description}`}
+                    >
+                      <div
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-white font-black text-xs flex items-center justify-center mx-auto mb-2 shadow-2xs"
+                        style={{ backgroundColor: b.color }}
+                      >
+                        {b.badge}
+                      </div>
+                      <p className="text-xl sm:text-2xl font-extrabold text-neutral-900">{count}</p>
+                      <p className="text-[10px] font-semibold text-neutral-500 mt-0.5 truncate" title={b.title}>
+                        {b.title}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 

@@ -32,6 +32,8 @@ import {
   fetchMentorLeaderboard,
   fetchStudentLeaderboard,
   subscribeToCampusUpdates,
+  CAMPUS_BELT_DEFINITIONS,
+  computeCampusStudentBelt,
   type CampusOverviewMetrics,
   type CampusStudentStat,
   type CampusMentorStat,
@@ -331,6 +333,143 @@ async function runAll() {
       assert.ok(fs.existsSync(fullPath), `File must exist: ${file}`)
     }
     console.log('    All Student and Mentor portal files verified intact and unmodified.')
+  })
+
+  console.log('\n--- 8. 10 Curriculum Belts Distribution Verification ---')
+
+  test('CAMPUS_BELT_DEFINITIONS contains exactly 10 belts in order 1 to 10', () => {
+    assert.strictEqual(CAMPUS_BELT_DEFINITIONS.length, 10, 'Must have exactly 10 belts')
+    CAMPUS_BELT_DEFINITIONS.forEach((b, idx) => {
+      assert.strictEqual(b.order, idx + 1, `Belt order must be ${idx + 1}`)
+      assert.strictEqual(b.name, `Belt ${idx + 1}`, `Belt name must be Belt ${idx + 1}`)
+      assert.strictEqual(b.badge, `B${idx + 1}`, `Belt badge must be B${idx + 1}`)
+      assert.ok(b.title, `Belt ${idx + 1} must have a title`)
+      assert.ok(b.color && b.color.startsWith('#'), `Belt ${idx + 1} must have a valid hex color`)
+    })
+  })
+
+  test('All 10 belts match canonical colors from problems.json', () => {
+    const expectedColors = [
+      '#EAB308', // Belt 1 Yellow
+      '#F97316', // Belt 2 Orange
+      '#10B981', // Belt 3 Green
+      '#8B5CF6', // Belt 4 Purple
+      '#3B82F6', // Belt 5 Blue
+      '#92400E', // Belt 6 Brown
+      '#78350F', // Belt 7 Sr. Brown
+      '#EF4444', // Belt 8 Red
+      '#B91C1C', // Belt 9 Sr. Red
+      '#171717', // Belt 10 Black
+    ]
+    CAMPUS_BELT_DEFINITIONS.forEach((b, idx) => {
+      assert.strictEqual(b.color, expectedColors[idx], `Belt ${idx + 1} color must match canonical ${expectedColors[idx]}`)
+    })
+  })
+
+  test('computeCampusStudentBelt maps cumulative solves across all 10 belts', () => {
+    assert.strictEqual(computeCampusStudentBelt(0).name, 'Belt 1')
+    assert.strictEqual(computeCampusStudentBelt(19).name, 'Belt 1')
+    assert.strictEqual(computeCampusStudentBelt(20).name, 'Belt 2')
+    assert.strictEqual(computeCampusStudentBelt(50).name, 'Belt 3')
+    assert.strictEqual(computeCampusStudentBelt(85).name, 'Belt 4')
+    assert.strictEqual(computeCampusStudentBelt(125).name, 'Belt 5')
+    assert.strictEqual(computeCampusStudentBelt(165).name, 'Belt 6')
+    assert.strictEqual(computeCampusStudentBelt(205).name, 'Belt 7')
+    assert.strictEqual(computeCampusStudentBelt(265).name, 'Belt 8')
+    assert.strictEqual(computeCampusStudentBelt(330).name, 'Belt 9')
+    assert.strictEqual(computeCampusStudentBelt(410).name, 'Belt 10')
+  })
+
+  test('CampusDashboardPage.tsx renders all 10 belts without hardcoded slice or limitation', () => {
+    const dashboardCode = fs.readFileSync(path.resolve('src/pages/campus/CampusDashboardPage.tsx'), 'utf8')
+    assert.ok(dashboardCode.includes('CAMPUS_BELT_DEFINITIONS.map'), 'Must map over CAMPUS_BELT_DEFINITIONS')
+    assert.ok(!dashboardCode.includes('.slice(0, 3)'), 'Must not truncate belts with .slice(0, 3)')
+    assert.ok(!dashboardCode.includes('<div className="grid grid-cols-3 gap-3">'), 'Curriculum belt grid must not be hardcoded to grid-cols-3')
+    assert.ok(dashboardCode.includes('sm:grid-cols-5'), 'Must use 5-column responsive layout for 10 cards')
+  })
+
+  test('Belt distribution counts reconcile exactly with total campus students', () => {
+    // Simulate 127 students distributed across belts
+    const mockStudents: CampusStudentStat[] = [
+      ...Array.from({ length: 100 }, (_, i) => ({
+        id: `s-b1-${i}`,
+        name: `Student B1-${i}`,
+        email: `s1_${i}@kalvium.edu`,
+        studentCode: `STU-B1-${i}`,
+        belt: 'Belt 1',
+        beltColor: '#EAB308',
+        questionsSolved: 5,
+        totalXp: 250,
+        streak: 2,
+        status: 'ACTIVE' as const,
+        lastActive: 'Just now',
+        mentorId: null,
+        mentorName: 'Unassigned',
+        languageSolvedCounts: { python: 5 },
+      })),
+      ...Array.from({ length: 20 }, (_, i) => ({
+        id: `s-b2-${i}`,
+        name: `Student B2-${i}`,
+        email: `s2_${i}@kalvium.edu`,
+        studentCode: `STU-B2-${i}`,
+        belt: 'Belt 2',
+        beltColor: '#F97316',
+        questionsSolved: 25,
+        totalXp: 1250,
+        streak: 5,
+        status: 'ACTIVE' as const,
+        lastActive: 'Just now',
+        mentorId: null,
+        mentorName: 'Unassigned',
+        languageSolvedCounts: { python: 25 },
+      })),
+      ...Array.from({ length: 7 }, (_, i) => ({
+        id: `s-b5-${i}`,
+        name: `Student B5-${i}`,
+        email: `s5_${i}@kalvium.edu`,
+        studentCode: `STU-B5-${i}`,
+        belt: 'Belt 5',
+        beltColor: '#3B82F6',
+        questionsSolved: 130,
+        totalXp: 6500,
+        streak: 10,
+        status: 'ACTIVE' as const,
+        lastActive: 'Just now',
+        mentorId: null,
+        mentorName: 'Unassigned',
+        languageSolvedCounts: { python: 130 },
+      })),
+    ]
+
+    const beltCounts: Record<string, number> = {}
+    for (const b of CAMPUS_BELT_DEFINITIONS) {
+      beltCounts[b.name] = 0
+    }
+    for (const s of mockStudents) {
+      if (beltCounts[s.belt] !== undefined) {
+        beltCounts[s.belt]++
+      } else {
+        beltCounts['Belt 1']++
+      }
+    }
+
+    // Verify individual belt counts
+    assert.strictEqual(beltCounts['Belt 1'], 100, 'Belt 1 must have 100 students')
+    assert.strictEqual(beltCounts['Belt 2'], 20, 'Belt 2 must have 20 students')
+    assert.strictEqual(beltCounts['Belt 3'], 0, 'Belt 3 must have genuine 0')
+    assert.strictEqual(beltCounts['Belt 4'], 0, 'Belt 4 must have genuine 0')
+    assert.strictEqual(beltCounts['Belt 5'], 7, 'Belt 5 must have 7 students')
+    assert.strictEqual(beltCounts['Belt 10'], 0, 'Belt 10 must have genuine 0')
+
+    // Verify total reconciliation: sum of all 10 belts equals students.length
+    const totalRepresented = Object.values(beltCounts).reduce((a, b) => a + b, 0)
+    assert.strictEqual(totalRepresented, mockStudents.length, 'Total across 10 belts must equal students.length')
+  })
+
+  test('CampusStudentsPage.tsx select filter offers all 10 belts', () => {
+    const studentsPageCode = fs.readFileSync(path.resolve('src/pages/campus/CampusStudentsPage.tsx'), 'utf8')
+    assert.ok(studentsPageCode.includes('CAMPUS_BELT_DEFINITIONS.map'), 'Students page dropdown must map CAMPUS_BELT_DEFINITIONS')
+    assert.ok(!studentsPageCode.includes('<option value="Belt 3">Belt 3 (Advanced)</option>\n            </select>'), 'Must not truncate filter to 3 belts')
   })
 }
 
