@@ -2,13 +2,6 @@ import { build } from 'esbuild'
 
 const targets = [
   'api/super-admin.js',
-  'api/super-admin/dashboard.js',
-  'api/super-admin/campuses.js',
-  'api/super-admin/managers.js',
-  'api/super-admin/mentors.js',
-  'api/super-admin/students.js',
-  'api/super-admin/roles.js',
-  'api/super-admin/audit.js',
 ]
 
 for (const outfile of targets) {
@@ -22,5 +15,4 @@ for (const outfile of targets) {
   })
 }
 
-console.log('✓ Super Admin API bundles generated (api/super-admin.js and subroutes)')
-
+console.log('✓ Super Admin API bundle generated (api/super-admin.js)')
