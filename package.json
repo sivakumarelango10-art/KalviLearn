@@ -13,7 +13,7 @@
     "build:feedback": "esbuild src/server/feedbackHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/feedback.js",
     "build:teamsync": "esbuild src/server/teamSyncHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/tickets.js",
     "build:teamsync-webhook": "esbuild src/server/teamSyncWebhookHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/webhooks.js",
-    "build:campus": "esbuild src/server/campusHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/campus.js",
+    "build:campus": "node scripts/build-campus.mjs",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",
     "test:perf": "npx tsx scripts/test-performance-audit.ts",
     "test:auth": "npx tsx scripts/test-auth-flow.ts",

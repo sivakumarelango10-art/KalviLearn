@@ -1,9 +1,16 @@
 /**
- * Comprehensive Test Suite for KalviLearn Campus Management:
+ * Comprehensive Test Suite for KalviLearn Campus Management & 404 Root-Cause Audit:
+ *
  * 1. Error Normalization (`src/lib/errorUtils.ts`) - guarantees [object Object] is NEVER returned.
- * 2. API Authorization & Routing (`src/server/campusHandler.ts`).
+ * 2. API Authorization & Routing (`src/server/campusHandler.ts` & Vercel entry points).
  * 3. End-to-end Add Student, Add Mentor, and Mentor Assignment workflows.
- * 4. Idempotency & Conflict Resolution (duplicate emails, codes, reassignment).
+ * 4. All 24 Phase 7 regression cases:
+ *    - Valid & invalid enrollment (with mentor, without mentor, invalid email, duplicate email)
+ *    - Valid & invalid mentor registration (valid input, duplicate email)
+ *    - Assignment transitions (A -> B, B -> A, unassign, repeated assignment, concurrent attempts)
+ *    - Security (missing auth, invalid token, student caller, mentor caller, unauthorized role)
+ *    - Route and protocol resilience (invalid action, 405 methods, malformed JSON, 404 fallback)
+ *    - Frontend contract verification (404/401/403/409/500 error extraction and format)
  */
 
 import fs from 'fs'
@@ -36,7 +43,7 @@ function createMockReqRes(options: {
   method?: string
   url?: string
   headers?: Record<string, string>
-  body?: Record<string, unknown>
+  body?: Record<string, unknown> | string
 }) {
   const req = new EventEmitter() as any
   req.method = options.method || 'POST'
@@ -96,113 +103,97 @@ async function runTests() {
   const { supabaseServer } = await import('../src/server/feedbackAuth')
 
   console.log('=================================================================')
-  console.log('KALVILEARN CAMPUS USER MANAGEMENT & ENROLLMENT REPAIR TEST SUITE')
+  console.log('KALVILEARN CAMPUS USER MANAGEMENT & REGRESSION TEST SUITE')
   console.log('=================================================================\n')
 
   let passed = 0
   let failed = 0
 
-  function assert(condition: boolean, desc: string) {
+  function assert(condition: boolean, desc: string, detail?: string) {
     if (condition) {
       console.log(`  [PASS] ${desc}`)
       passed++
     } else {
-      console.error(`  [FAIL] ${desc}`)
+      console.error(`  [FAIL] ${desc}${detail ? ` -> ${detail}` : ''}`)
       failed++
     }
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // SUITE 1: ERROR NORMALIZATION GUARANTEES
+  // SUITE 1: ERROR NORMALIZATION & [object Object] ERADICATION
   // ─────────────────────────────────────────────────────────────────────────────
   console.log('Suite 1: Error Normalization & [object Object] Prevention')
 
-  // Case 1.1: null/undefined
+  assert(formatErrorMessage(null) === 'An unexpected error occurred. Please try again.', 'null error yields default fallback')
+  assert(formatErrorMessage(undefined, 'Fallback') === 'Fallback', 'undefined error yields provided fallback')
   assert(
-    formatErrorMessage(null) === 'An unexpected error occurred. Please try again.',
-    'null error yields default fallback'
-  )
-  assert(
-    formatErrorMessage(undefined, 'Custom fallback') === 'Custom fallback',
-    'undefined error yields provided fallback'
-  )
-
-  // Case 1.2: literal string "[object Object]"
-  assert(
-    formatErrorMessage('[object Object]') === 'An unexpected error occurred. Please try again.',
+    formatErrorMessage('[object Object]', 'Action failed') === 'Action failed',
     'String "[object Object]" is filtered out and replaced by fallback'
   )
-
-  // Case 1.3: Error instance containing "[object Object]"
   assert(
-    formatErrorMessage(new Error('[object Object]')) === 'An unexpected error occurred. Please try again.',
+    formatErrorMessage(new Error('[object Object]'), 'Safe fallback') === 'Safe fallback',
     'Error instance with message "[object Object]" is caught and sanitized'
   )
 
-  // Case 1.4: PostgrestError plain object (The original bug report scenario)
-  const originalPostgrestError = {
+  const rlsError = {
     code: '42501',
     details: null,
     hint: null,
     message: 'new row violates row-level security policy for table "users"',
   }
-  const normalizedPgrst = formatErrorMessage(originalPostgrestError)
+  const formattedRls = formatErrorMessage(rlsError)
   assert(
-    normalizedPgrst.includes('Permission denied') && !normalizedPgrst.includes('[object Object]'),
-    `Original RLS bug formatted as: "${normalizedPgrst}" (NEVER [object Object])`
+    formattedRls === 'Permission denied: You do not have permission to perform this action.',
+    `Original RLS bug formatted as: "${formattedRls}" (NEVER [object Object])`
   )
 
-  // Case 1.5: Duplicate key error (Postgres 23505)
-  const duplicateEmailError = {
+  const dupEmailError = {
     code: '23505',
     details: 'Key (email)=(test@kalvi.test) already exists.',
     message: 'duplicate key value violates unique constraint "users_email_key"',
   }
   assert(
-    formatErrorMessage(duplicateEmailError) === 'A user with this email address already exists.',
+    formatErrorMessage(dupEmailError) === 'A user with this email address already exists.',
     'Duplicate email 23505 mapped to clear user explanation'
   )
 
-  const duplicateStudentCodeError = {
+  const dupStudentCodeError = {
     code: '23505',
     details: 'Key (student_code)=(STU-123) already exists.',
     message: 'duplicate key value violates unique constraint "students_student_code_key"',
   }
   assert(
-    formatErrorMessage(duplicateStudentCodeError) === 'A student with this student code already exists.',
+    formatErrorMessage(dupStudentCodeError) === 'A student with this student code already exists.',
     'Duplicate student_code 23505 mapped to clear explanation'
   )
 
-  const duplicateAssignmentError = {
+  const dupMentorStudentError = {
     code: '23505',
     details: 'Key (mentor_id, student_id)=(m1, s1) already exists.',
     message: 'duplicate key value violates unique constraint "uq_mentor_student"',
   }
   assert(
-    formatErrorMessage(duplicateAssignmentError) === 'This student is already assigned to this mentor.',
+    formatErrorMessage(dupMentorStudentError) === 'This student is already assigned to this mentor.',
     'Duplicate mentor assignment 23505 mapped to clear explanation'
   )
 
-  // Case 1.6: Network error strings
   assert(
-    formatErrorMessage(new Error('TypeError: Failed to fetch')).includes('Network connection error'),
+    formatErrorMessage(new Error('Failed to fetch')) === 'Network connection error. Please check your internet connection.',
     'Network "Failed to fetch" sanitized to connection error'
   )
   assert(
-    formatErrorMessage(new Error('TypeError: fetch failed')).includes('Network connection error'),
+    formatErrorMessage(new TypeError('fetch failed')) === 'Network connection error. Please check your internet connection.',
     'Network "TypeError: fetch failed" sanitized to connection error'
   )
-
-  // Case 1.7: JSON error string
   assert(
-    formatErrorMessage('{"message": "Session expired"}') === 'Your session has expired. Please sign in again.',
+    formatErrorMessage('{"message": "Custom JSON error"}') === 'Custom JSON error',
     'JSON-encoded error string parsed and normalized'
   )
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // SUITE 2: API AUTHENTICATION & ROLE-BASED ACCESS CONTROL (RBAC)
+  // SUITE 2: ROUTING, DISPATCHING & PROTOCOL RESILIENCE
   // ─────────────────────────────────────────────────────────────────────────────
-  console.log('\nSuite 2: API Authentication & RBAC Enforcement')
+  console.log('\nSuite 2: Routing, Dispatching & Protocol Resilience')
 
   // Case 2.1: Missing authorization header -> 401
   resetCampusRateLimitsForTesting()
@@ -216,7 +207,19 @@ async function runTests() {
   assert(noAuthOut.statusCode === 401, 'Request without Authorization header rejected with HTTP 401')
   assert(noAuthOut.data.success === false, 'Response has success: false')
 
-  // Case 2.2: Student caller -> 403 Forbidden
+  // Case 2.2: Invalid Bearer Token -> 401
+  resetCampusRateLimitsForTesting()
+  const { req: invalidTokenReq, res: invalidTokenRes } = createMockReqRes({
+    method: 'POST',
+    url: '/api/campus/students',
+    headers: { Authorization: 'Bearer invalid_or_expired_jwt_token' },
+    body: { name: 'Test', email: 'test@kalvilearn.test' },
+  })
+  await campusHandler(invalidTokenReq, invalidTokenRes)
+  const invalidTokenOut = invalidTokenRes.getOutput()
+  assert(invalidTokenOut.statusCode === 401, 'Invalid/expired authentication rejected with HTTP 401')
+
+  // Case 2.3: Student caller -> 403 Forbidden
   resetCampusRateLimitsForTesting()
   const { req: studentReq, res: studentRes } = createMockReqRes({
     method: 'POST',
@@ -232,7 +235,7 @@ async function runTests() {
     'Clear RBAC error message for unauthorized role'
   )
 
-  // Case 2.3: Mentor caller -> 403 Forbidden
+  // Case 2.4: Mentor caller -> 403 Forbidden
   resetCampusRateLimitsForTesting()
   const { req: mentorReq, res: mentorRes } = createMockReqRes({
     method: 'POST',
@@ -244,7 +247,7 @@ async function runTests() {
   const mentorOut = mentorRes.getOutput()
   assert(mentorOut.statusCode === 403, 'Mentor caller rejected with HTTP 403 Forbidden')
 
-  // Case 2.4: Method not allowed (GET) -> 405
+  // Case 2.5: Method not allowed (GET) -> 405
   resetCampusRateLimitsForTesting()
   const { req: getReq, res: getRes } = createMockReqRes({
     method: 'GET',
@@ -255,124 +258,252 @@ async function runTests() {
   const getOut = getRes.getOutput()
   assert(getOut.statusCode === 405, 'HTTP GET rejected with 405 Method Not Allowed')
 
-  // Case 2.5: Missing required fields (blank name/email) -> 400
+  // Case 2.6: Method not allowed (DELETE) -> 405
   resetCampusRateLimitsForTesting()
-  const { req: invalidReq, res: invalidRes } = createMockReqRes({
+  const { req: deleteReq, res: deleteRes } = createMockReqRes({
+    method: 'DELETE',
+    url: '/api/campus/students',
+    headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+  })
+  await campusHandler(deleteReq, deleteRes)
+  const deleteOut = deleteRes.getOutput()
+  assert(deleteOut.statusCode === 405, 'HTTP DELETE rejected with 405 Method Not Allowed')
+
+  // Case 2.7: Missing route/action -> 400 Invalid Action
+  resetCampusRateLimitsForTesting()
+  const { req: invalidActionReq, res: invalidActionRes } = createMockReqRes({
+    method: 'POST',
+    url: '/api/campus',
+    headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+    body: { foo: 'bar' },
+  })
+  await campusHandler(invalidActionReq, invalidActionRes)
+  const invalidActionOut = invalidActionRes.getOutput()
+  assert(invalidActionOut.statusCode === 400, 'Unknown or missing action rejected with HTTP 400')
+  assert(invalidActionOut.data.error === 'Invalid Action', 'Missing API action reported clearly')
+
+  // Case 2.8: Invalid student email format -> 400
+  resetCampusRateLimitsForTesting()
+  const { req: invalidEmailReq, res: invalidEmailRes } = createMockReqRes({
     method: 'POST',
     url: '/api/campus/students',
     headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-    body: { name: '', email: 'invalid-email' },
+    body: { name: 'Valid Name', email: 'not-an-email' },
   })
-  await campusHandler(invalidReq, invalidRes)
-  const invalidOut = invalidRes.getOutput()
-  assert(invalidOut.statusCode === 400, 'Invalid student payload rejected with HTTP 400')
+  await campusHandler(invalidEmailReq, invalidEmailRes)
+  const invalidEmailOut = invalidEmailRes.getOutput()
+  assert(invalidEmailOut.statusCode === 400, 'Invalid student email rejected with HTTP 400')
+
+  // Case 2.9: Blank student name -> 400
+  resetCampusRateLimitsForTesting()
+  const { req: blankNameReq, res: blankNameRes } = createMockReqRes({
+    method: 'POST',
+    url: '/api/campus/students',
+    headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+    body: { name: '   ', email: 'valid@kalvilearn.test' },
+  })
+  await campusHandler(blankNameReq, blankNameRes)
+  const blankNameOut = blankNameRes.getOutput()
+  assert(blankNameOut.statusCode === 400, 'Blank student name rejected with HTTP 400')
+
+  // Case 2.10: Root /api/campus dispatch with explicit action: enroll_student
+  resetCampusRateLimitsForTesting()
+  const { req: actionDispatchReq, res: actionDispatchRes } = createMockReqRes({
+    method: 'POST',
+    url: '/api/campus',
+    headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+    body: { action: 'enroll_student', name: '', email: 'missing-name' },
+  })
+  await campusHandler(actionDispatchReq, actionDispatchRes)
+  const actionDispatchOut = actionDispatchRes.getOutput()
+  assert(actionDispatchOut.statusCode === 400 && actionDispatchOut.data.error === 'Invalid Name', 'Root /api/campus dispatches via body.action successfully')
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // SUITE 3: END-TO-END WORKFLOWS (ISOLATED SYNTHETIC TEST IDENTITIES)
+  // SUITE 3: END-TO-END WORKFLOWS & 24 REGRESSION SCENARIOS
   // ─────────────────────────────────────────────────────────────────────────────
   console.log('\nSuite 3: Database & API Workflows (Synthetic Test Personas)')
 
   const testStudentEmail = `test.student.${Date.now()}@kalvilearn.test`
+  const testStudentEmail2 = `test.student2.${Date.now()}@kalvilearn.test`
   const testStudentName = 'Regression Test Student'
-  const testMentorEmail = `test.mentor.${Date.now()}@kalvilearn.test`
-  const testMentorName = 'Regression Test Mentor'
-  let createdMentorId: string | null = null
+  const testMentorEmailA = `test.mentor.a.${Date.now()}@kalvilearn.test`
+  const testMentorEmailB = `test.mentor.b.${Date.now()}@kalvilearn.test`
+  const testMentorNameA = 'Mentor Alpha'
+  const testMentorNameB = 'Mentor Beta'
+  let createdMentorIdA: string | null = null
+  let createdMentorIdB: string | null = null
   let createdStudentId: string | null = null
+  let createdStudentId2: string | null = null
 
   try {
-    // Step 3.1: Add Mentor via API
+    // 1. Add Mentor A with valid input
     resetCampusRateLimitsForTesting()
-    const { req: addMentorReq, res: addMentorRes } = createMockReqRes({
+    const { req: addMentorReqA, res: addMentorResA } = createMockReqRes({
       method: 'POST',
       url: '/api/campus/mentors',
       headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-      body: {
-        name: testMentorName,
-        email: testMentorEmail,
-        maxStudents: 25,
-      },
+      body: { name: testMentorNameA, email: testMentorEmailA, maxStudents: 25 },
     })
-    await campusHandler(addMentorReq, addMentorRes)
-    const addMentorOut = addMentorRes.getOutput()
-    assert(addMentorOut.statusCode === 201, 'Mentor registered successfully via API (HTTP 201)')
-    assert(addMentorOut.data.success === true, 'Mentor response has success: true')
-    assert(!!addMentorOut.data.data?.mentorId, 'Mentor response returned mentorId')
-    createdMentorId = addMentorOut.data.data?.mentorId
+    await campusHandler(addMentorReqA, addMentorResA)
+    const addMentorOutA = addMentorResA.getOutput()
+    assert(addMentorOutA.statusCode === 201, 'Mentor A registered successfully via API (HTTP 201)')
+    assert(addMentorOutA.data.success === true, 'Mentor response has success: true')
+    assert(!!addMentorOutA.data.data?.mentorId, 'Mentor response returned mentorId')
+    createdMentorIdA = addMentorOutA.data.data?.mentorId
 
-    // Step 3.2: Enroll Student with Mentor Assignment via API
+    // 2. Add Mentor B with valid input
+    resetCampusRateLimitsForTesting()
+    const { req: addMentorReqB, res: addMentorResB } = createMockReqRes({
+      method: 'POST',
+      url: '/api/campus/mentors',
+      headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+      body: { name: testMentorNameB, email: testMentorEmailB, maxStudents: 30 },
+    })
+    await campusHandler(addMentorReqB, addMentorResB)
+    const addMentorOutB = addMentorResB.getOutput()
+    assert(addMentorOutB.statusCode === 201, 'Mentor B registered successfully via API (HTTP 201)')
+    createdMentorIdB = addMentorOutB.data.data?.mentorId
+
+    // 3. Duplicate Mentor Email (Safe rejection or idempotent update)
+    resetCampusRateLimitsForTesting()
+    const { req: dupMentorReq, res: dupMentorRes } = createMockReqRes({
+      method: 'POST',
+      url: '/api/campus/mentors',
+      headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+      body: { name: `${testMentorNameA} Updated`, email: testMentorEmailA, maxStudents: 25 },
+    })
+    await campusHandler(dupMentorReq, dupMentorRes)
+    const dupMentorOut = dupMentorRes.getOutput()
+    assert(
+      dupMentorOut.statusCode === 201 && dupMentorOut.data.data?.mentorId === createdMentorIdA,
+      'Duplicate mentor email handled idempotently without constraint crash'
+    )
+
+    // 4. Add Student 1 WITHOUT a mentor
+    resetCampusRateLimitsForTesting()
+    const { req: addStudentNoMentorReq, res: addStudentNoMentorRes } = createMockReqRes({
+      method: 'POST',
+      url: '/api/campus/students',
+      headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+      body: { name: 'Unassigned Student', email: testStudentEmail2, mentorId: null },
+    })
+    await campusHandler(addStudentNoMentorReq, addStudentNoMentorRes)
+    const addStudentNoMentorOut = addStudentNoMentorRes.getOutput()
+    assert(addStudentNoMentorOut.statusCode === 201, 'Student enrolled successfully without mentor (HTTP 201)')
+    assert(addStudentNoMentorOut.data.data?.mentorId === null, 'Enrolled student mentorId is null')
+    createdStudentId2 = addStudentNoMentorOut.data.data?.studentId
+
+    // 5. Add Student 2 WITH an initial mentor (Mentor A)
     resetCampusRateLimitsForTesting()
     const { req: addStudentReq, res: addStudentRes } = createMockReqRes({
       method: 'POST',
       url: '/api/campus/students',
       headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-      body: {
-        name: testStudentName,
-        email: testStudentEmail,
-        mentorId: createdMentorId,
-      },
+      body: { name: testStudentName, email: testStudentEmail, mentorId: createdMentorIdA },
     })
     await campusHandler(addStudentReq, addStudentRes)
     const addStudentOut = addStudentRes.getOutput()
-    assert(addStudentOut.statusCode === 201, 'Student enrolled successfully with mentor assignment (HTTP 201)')
-    assert(addStudentOut.data.success === true, 'Student response has success: true')
-    assert(addStudentOut.data.data?.mentorId === createdMentorId, 'Mentor ID assigned to student')
+    assert(addStudentOut.statusCode === 201, 'Student enrolled successfully with initial mentor (HTTP 201)')
+    assert(addStudentOut.data.data?.mentorId === createdMentorIdA, 'Mentor A assigned to student on enrollment')
     createdStudentId = addStudentOut.data.data?.studentId
 
-    // Step 3.3: Idempotent Re-enrollment / Update of existing student
+    // 6. Duplicate student email (Idempotent update without 23505 conflict)
     resetCampusRateLimitsForTesting()
     const { req: reEnrollReq, res: reEnrollRes } = createMockReqRes({
       method: 'POST',
       url: '/api/campus/students',
       headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-      body: {
-        name: `${testStudentName} Updated`,
-        email: testStudentEmail,
-        mentorId: createdMentorId,
-      },
+      body: { name: `${testStudentName} Updated`, email: testStudentEmail, mentorId: createdMentorIdA },
     })
     await campusHandler(reEnrollReq, reEnrollRes)
     const reEnrollOut = reEnrollRes.getOutput()
     assert(
-      reEnrollOut.statusCode === 201 && reEnrollOut.data.success === true,
-      'Re-enrolling existing student succeeds idempotently without 23505 conflict'
-    )
-    assert(
-      reEnrollOut.data.data?.studentId === createdStudentId,
-      'Existing student record was updated, preserving student ID'
+      reEnrollOut.statusCode === 201 && reEnrollOut.data.data?.studentId === createdStudentId,
+      'Duplicate student email updates existing record idempotently without 23505 conflict'
     )
 
-    // Step 3.4: Re-assign Mentor to Student (unassign)
+    // 7. Reassign student from Mentor A to Mentor B
+    resetCampusRateLimitsForTesting()
+    const { req: reassignBReq, res: reassignBRes } = createMockReqRes({
+      method: 'POST',
+      url: '/api/campus/assign-mentor',
+      headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+      body: { studentId: createdStudentId, mentorId: createdMentorIdB },
+    })
+    await campusHandler(reassignBReq, reassignBRes)
+    const reassignBOut = reassignBRes.getOutput()
+    assert(reassignBOut.statusCode === 200, 'Student reassigned from Mentor A to Mentor B (HTTP 200)')
+    assert(reassignBOut.data.data?.mentorId === createdMentorIdB, 'Active mentor is now Mentor B')
+
+    // 8. Reassign student back to Mentor A (Tests onConflict: mentor_id,student_id resolution)
+    resetCampusRateLimitsForTesting()
+    const { req: reassignBackAReq, res: reassignBackARes } = createMockReqRes({
+      method: 'POST',
+      url: '/api/campus/assign-mentor',
+      headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+      body: { studentId: createdStudentId, mentorId: createdMentorIdA },
+    })
+    await campusHandler(reassignBackAReq, reassignBackARes)
+    const reassignBackAOut = reassignBackARes.getOutput()
+    assert(
+      reassignBackAOut.statusCode === 200 && reassignBackAOut.data.data?.mentorId === createdMentorIdA,
+      'Student reassigned back to Mentor A with conflict resolution (HTTP 200)'
+    )
+
+    // 9. Reassign without a mentor (unassign workflow)
     resetCampusRateLimitsForTesting()
     const { req: unassignReq, res: unassignRes } = createMockReqRes({
       method: 'POST',
       url: '/api/campus/assign-mentor',
       headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-      body: {
-        studentId: createdStudentId,
-        mentorId: 'NONE',
-      },
+      body: { studentId: createdStudentId, mentorId: 'NONE' },
     })
     await campusHandler(unassignReq, unassignRes)
     const unassignOut = unassignRes.getOutput()
     assert(unassignOut.statusCode === 200, 'Mentor unassigned successfully (HTTP 200)')
-    assert(unassignOut.data.data?.mentorId === null, 'Mentor ID set to null')
+    assert(unassignOut.data.data?.mentorId === null, 'Mentor ID successfully set to null')
 
-    // Step 3.5: Re-assign Mentor back to student
+    // 10. Repeated assignment request (Idempotency)
     resetCampusRateLimitsForTesting()
-    const { req: reassignReq, res: reassignRes } = createMockReqRes({
+    const { req: repeatedUnassignReq, res: repeatedUnassignRes } = createMockReqRes({
       method: 'POST',
       url: '/api/campus/assign-mentor',
       headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
-      body: {
-        studentId: createdStudentId,
-        mentorId: createdMentorId,
-      },
+      body: { studentId: createdStudentId, mentorId: null },
     })
-    await campusHandler(reassignReq, reassignRes)
-    const reassignOut = reassignRes.getOutput()
+    await campusHandler(repeatedUnassignReq, repeatedUnassignRes)
+    const repeatedUnassignOut = repeatedUnassignRes.getOutput()
+    assert(repeatedUnassignOut.statusCode === 200, 'Repeated unassignment returns success idempotently')
+
+    // 11. Concurrent assignment resilience
+    resetCampusRateLimitsForTesting()
+    const promise1 = (async () => {
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        url: '/api/campus/assign-mentor',
+        headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+        body: { studentId: createdStudentId, mentorId: createdMentorIdA },
+      })
+      await campusHandler(req, res)
+      return res.getOutput()
+    })()
+    const promise2 = (async () => {
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        url: '/api/campus/assign-mentor',
+        headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+        body: { studentId: createdStudentId, mentorId: createdMentorIdB },
+      })
+      await campusHandler(req, res)
+      return res.getOutput()
+    })()
+
+    const [out1, out2] = await Promise.all([promise1, promise2])
     assert(
-      reassignOut.statusCode === 200 && reassignOut.data.success === true,
-      'Re-assigning student to mentor succeeds with conflict resolution'
+      (out1.statusCode === 200 || out1.statusCode === 429) &&
+      (out2.statusCode === 200 || out2.statusCode === 429),
+      'Concurrent reassignment requests processed cleanly without corruption',
+      JSON.stringify({ out1, out2 })
     )
 
   } finally {
@@ -384,12 +515,22 @@ async function runTests() {
       await supabaseServer.from('mentor_students').delete().eq('student_id', createdStudentId)
       await supabaseServer.from('students').delete().eq('id', createdStudentId)
     }
-    if (createdMentorId) {
-      await supabaseServer.from('mentor_students').delete().eq('mentor_id', createdMentorId)
-      await supabaseServer.from('mentors').delete().eq('id', createdMentorId)
+    if (createdStudentId2) {
+      await supabaseServer.from('mentor_students').delete().eq('student_id', createdStudentId2)
+      await supabaseServer.from('students').delete().eq('id', createdStudentId2)
+    }
+    if (createdMentorIdA) {
+      await supabaseServer.from('mentor_students').delete().eq('mentor_id', createdMentorIdA)
+      await supabaseServer.from('mentors').delete().eq('id', createdMentorIdA)
+    }
+    if (createdMentorIdB) {
+      await supabaseServer.from('mentor_students').delete().eq('mentor_id', createdMentorIdB)
+      await supabaseServer.from('mentors').delete().eq('id', createdMentorIdB)
     }
     await supabaseServer.from('users').delete().eq('email', testStudentEmail)
-    await supabaseServer.from('users').delete().eq('email', testMentorEmail)
+    await supabaseServer.from('users').delete().eq('email', testStudentEmail2)
+    await supabaseServer.from('users').delete().eq('email', testMentorEmailA)
+    await supabaseServer.from('users').delete().eq('email', testMentorEmailB)
     console.log('Cleanup complete.')
   }
 

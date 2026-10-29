@@ -721,24 +721,37 @@ async function getAuthHeader(): Promise<string | null> {
 }
 
 /**
- * Registers a new Mentor in the live database via the authoritative backend API.
+ * Helper to execute campus management mutations with path fallback and explicit action dispatch.
  */
-export async function addCampusMentor(payload: {
-  name: string
-  email: string
-  mentorCode: string
-  maxStudents?: number
-}): Promise<{ success: boolean; error?: string }> {
+async function callCampusApi(
+  primaryPath: string,
+  payload: Record<string, unknown>,
+  actionName: string
+): Promise<{ success: boolean; error?: string; data?: unknown }> {
   try {
     const authHeader = await getAuthHeader()
-    const res = await fetch('/api/campus/mentors', {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(authHeader ? { Authorization: authHeader } : {}),
+    }
+
+    const bodyWithAction = { ...payload, action: actionName }
+
+    // Try primary path first (/api/campus/students, /api/campus/mentors, /api/campus/assign-mentor)
+    let res = await fetch(primaryPath, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(authHeader ? { Authorization: authHeader } : {}),
-      },
-      body: JSON.stringify(payload),
+      headers,
+      body: JSON.stringify(bodyWithAction),
     })
+
+    // If 404 (route not found at subpath), fallback directly to root /api/campus
+    if (res.status === 404) {
+      res = await fetch('/api/campus', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(bodyWithAction),
+      })
+    }
 
     const data = await res.json().catch(() => null)
     if (!res.ok || !data?.success) {
@@ -747,12 +760,27 @@ export async function addCampusMentor(payload: {
     }
 
     notifyCampusMutation()
-    return { success: true }
+    return { success: true, data: data?.data }
   } catch (err) {
-    const msg = formatErrorMessage(err, 'Failed to register mentor.')
-    console.error('Error adding campus mentor:', msg)
+    const msg = formatErrorMessage(err, 'Operation failed.')
     return { success: false, error: msg }
   }
+}
+
+/**
+ * Registers a new Mentor in the live database via the authoritative backend API.
+ */
+export async function addCampusMentor(payload: {
+  name: string
+  email: string
+  mentorCode: string
+  maxStudents?: number
+}): Promise<{ success: boolean; error?: string }> {
+  const result = await callCampusApi('/api/campus/mentors', payload, 'add_mentor')
+  if (!result.success) {
+    console.error('Error adding campus mentor:', result.error)
+  }
+  return { success: result.success, error: result.error }
 }
 
 /**
@@ -764,30 +792,11 @@ export async function addCampusStudent(payload: {
   studentCode: string
   mentorId: string | null
 }): Promise<{ success: boolean; error?: string }> {
-  try {
-    const authHeader = await getAuthHeader()
-    const res = await fetch('/api/campus/students', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(authHeader ? { Authorization: authHeader } : {}),
-      },
-      body: JSON.stringify(payload),
-    })
-
-    const data = await res.json().catch(() => null)
-    if (!res.ok || !data?.success) {
-      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
-      return { success: false, error: formatErrorMessage(errMsg) }
-    }
-
-    notifyCampusMutation()
-    return { success: true }
-  } catch (err) {
-    const msg = formatErrorMessage(err, 'Failed to enroll student.')
-    console.error('Error adding campus student:', msg)
-    return { success: false, error: msg }
+  const result = await callCampusApi('/api/campus/students', payload, 'enroll_student')
+  if (!result.success) {
+    console.error('Error adding campus student:', result.error)
   }
+  return { success: result.success, error: result.error }
 }
 
 /**
@@ -797,30 +806,11 @@ export async function assignStudentMentor(
   studentId: string,
   mentorId: string | null
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const authHeader = await getAuthHeader()
-    const res = await fetch('/api/campus/assign-mentor', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(authHeader ? { Authorization: authHeader } : {}),
-      },
-      body: JSON.stringify({ studentId, mentorId }),
-    })
-
-    const data = await res.json().catch(() => null)
-    if (!res.ok || !data?.success) {
-      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
-      return { success: false, error: formatErrorMessage(errMsg) }
-    }
-
-    notifyCampusMutation()
-    return { success: true }
-  } catch (err) {
-    const msg = formatErrorMessage(err, 'Failed to update mentor assignment.')
-    console.error('Error assigning student mentor:', msg)
-    return { success: false, error: msg }
+  const result = await callCampusApi('/api/campus/assign-mentor', { studentId, mentorId }, 'assign_mentor')
+  if (!result.success) {
+    console.error('Error assigning student mentor:', result.error)
   }
+  return { success: result.success, error: result.error }
 }
 
 /**

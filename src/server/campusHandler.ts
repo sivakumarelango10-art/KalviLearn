@@ -122,25 +122,31 @@ export default async function handler(
     })
   }
 
-  // Route Dispatching: by URL path or action field
-  const url = req.url || ''
-  const action = (body.action as string) || ''
+  // Route Dispatching: by URL path, query parameter, Vercel matched path, or body action field
+  const url = (req.url || '').toLowerCase()
+  const matchedPath = (
+    ((req.headers['x-matched-path'] as string) || (req.headers['x-now-route-matches'] as string) || '')
+  ).toLowerCase()
+  const rawAction = typeof body.action === 'string' ? body.action : ''
+  const queryAction = typeof req.query === 'object' && req.query ? String((req.query as Record<string, unknown>).action || '') : ''
+  const action = (rawAction || queryAction).toLowerCase()
+  const dispatchKey = `${url} ${matchedPath} ${action}`
 
   try {
-    if (url.includes('/students') || action === 'add_student' || action === 'enroll_student') {
+    if (dispatchKey.includes('student') || action === 'add_student' || action === 'enroll_student') {
       return await handleAddStudent(body, res)
     }
-    if (url.includes('/mentors') || action === 'add_mentor') {
+    if ((dispatchKey.includes('mentor') && !dispatchKey.includes('assign')) || action === 'add_mentor') {
       return await handleAddMentor(body, res)
     }
-    if (url.includes('/assign-mentor') || action === 'assign_mentor') {
+    if (dispatchKey.includes('assign') || action === 'assign_mentor') {
       return await handleAssignMentor(body, res)
     }
 
     return sendJson(res, 400, {
       success: false,
       error: 'Invalid Action',
-      message: 'Unknown or missing action in campus management request.',
+      message: 'Unknown or missing action in campus management request. Supported actions: enroll_student, add_mentor, assign_mentor.',
     })
   } catch (err: unknown) {
     const errorMsg = formatErrorMessage(err, 'Failed to process campus management request.')
