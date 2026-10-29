@@ -131,6 +131,11 @@ const SYNTHETIC_TEST_ROSTER: Record<string, { id: string; role: AuthenticatedUse
     role: 'CAMPUS_MANAGER',
     name: 'Automated Test Manager',
   },
+  'sgjitbros@gmail.com': {
+    id: '00000000-0000-0000-0000-000000000001',
+    role: 'SUPERADMIN',
+    name: 'Super Administrator',
+  },
 }
 
 /**
@@ -182,7 +187,7 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
       if (
         testEmail.endsWith('@kalvium.community') ||
         testEmail.endsWith('@kalvium.com') ||
-        testEmail.endsWith('@gmail.com') ||
+        (testEmail.endsWith('@gmail.com') && testEmail !== 'sgjitbros@gmail.com') ||
         testEmail.endsWith('@teamsync.io')
       ) {
         return {

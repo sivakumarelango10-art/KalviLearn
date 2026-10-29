@@ -139,6 +139,9 @@ model User {
   // Dedicated profile relations
   studentProfile Student?
   mentorProfile  Mentor?
+  campusId       String?   @map("campus_id")
+  campus         Campus?   @relation("CampusUsers", fields: [campusId], references: [id], onDelete: SetNull)
+  managedCampuses Campus[] @relation("CampusManager")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -155,6 +158,8 @@ model Student {
   name        String?
   email       String?
   studentCode String          @unique @map("student_code") @db.VarChar(20)
+  campusId    String?         @map("campus_id")
+  campus      Campus?         @relation(fields: [campusId], references: [id], onDelete: SetNull)
   status      String          @default("ACTIVE") @db.VarChar(20)
   createdAt   DateTime        @default(now()) @map("created_at")
   updatedAt   DateTime        @updatedAt @map("updated_at")
@@ -172,6 +177,8 @@ model Mentor {
   name         String?
   email        String?
   mentorCode   String          @unique @map("mentor_code") @db.VarChar(20)
+  campusId     String?         @map("campus_id")
+  campus       Campus?         @relation(fields: [campusId], references: [id], onDelete: SetNull)
   maxStudents  Int             @default(30) @map("max_students")
   status       String          @default("ACTIVE") @db.VarChar(20)
   createdAt    DateTime        @default(now()) @map("created_at")
@@ -340,6 +347,50 @@ model TeamSyncWebhookDelivery {
   @@index([status])
   @@index([createdAt])
   @@map("teamsync_webhook_deliveries")
+}
+
+// ─── Super Admin & Campus Infrastructure ─────────────────────────────────────
+
+model Campus {
+  id          String    @id @default(uuid())
+  code        String    @unique @db.VarChar(50)
+  name        String    @db.VarChar(255)
+  city        String?   @db.VarChar(100)
+  state       String?   @db.VarChar(100)
+  country     String?   @default("India") @db.VarChar(100)
+  status      String    @default("ACTIVE") @db.VarChar(20)
+  managerId   String?   @map("manager_id")
+  manager     User?     @relation("CampusManager", fields: [managerId], references: [id], onDelete: SetNull)
+  users       User[]    @relation("CampusUsers")
+  students    Student[]
+  mentors     Mentor[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([managerId])
+  @@map("campuses")
+}
+
+model AdminAuditLog {
+  id           String    @id @default(uuid())
+  adminEmail   String    @map("admin_email") @db.VarChar(255)
+  adminId      String?   @map("admin_id")
+  action       String    @db.VarChar(100)
+  targetType   String    @map("target_type") @db.VarChar(50)
+  targetId     String?   @map("target_id") @db.VarChar(100)
+  targetLabel  String?   @map("target_label") @db.VarChar(255)
+  details      Json?
+  status       String    @default("SUCCESS") @db.VarChar(20)
+  errorMessage String?   @map("error_message") @db.Text
+  ipAddress    String?   @map("ip_address") @db.VarChar(100)
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@index([adminEmail])
+  @@index([action])
+  @@index([targetType])
+  @@index([createdAt(sort: Desc)])
+  @@map("admin_audit_logs")
 }
 
 

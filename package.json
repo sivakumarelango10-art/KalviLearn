@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tsc -b",
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build:sandbox-worker && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook && npm run build:campus && npm run check:bundle && npm run check:api-startup",
+    "build": "tsc -b && vite build && npm run build:sandbox-worker && npm run build:api && npm run build:submit && npm run build:feedback && npm run build:teamsync && npm run build:teamsync-webhook && npm run build:campus && npm run build:super-admin && npm run check:bundle && npm run check:api-startup",
     "build:sandbox-worker": "esbuild src/server/sandboxWorker.ts --bundle --platform=node --format=esm --target=node18 --external:pyodide --outfile=api/_sandbox-worker.mjs",
     "build:api": "esbuild src/server/apiHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/execute.js",
     "build:submit": "esbuild src/server/submitHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/submit.js",
@@ -14,6 +14,8 @@
     "build:teamsync": "esbuild src/server/teamSyncHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/tickets.js",
     "build:teamsync-webhook": "esbuild src/server/teamSyncWebhookHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/webhooks.js",
     "build:campus": "node scripts/build-campus.mjs",
+    "build:super-admin": "node scripts/build-super-admin.mjs",
+    "test:super-admin": "npx tsx scripts/test-super-admin.ts",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",
     "test:perf": "npx tsx scripts/test-performance-audit.ts",
     "test:auth": "npx tsx scripts/test-auth-flow.ts",

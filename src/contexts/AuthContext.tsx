@@ -14,6 +14,7 @@ interface AuthContextType {
   isMentor: boolean
   isStudent: boolean
   isCampusManager: boolean
+  isSuperAdmin: boolean
   clearAccessDenied: () => void
   loginWithGoogle: () => Promise<any>
   loginWithEmail: (email: string) => Promise<{ success: boolean; user?: DbUser; error?: string }>
@@ -264,6 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isMentor: user?.role === 'MENTOR',
     isStudent: user?.role === 'STUDENT',
     isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
+    isSuperAdmin: user?.email?.toLowerCase().trim() === 'sgjitbros@gmail.com' && user?.role === 'SUPERADMIN',
     clearAccessDenied: clearAccessDenied,
     loginWithGoogle,
     loginWithEmail,
