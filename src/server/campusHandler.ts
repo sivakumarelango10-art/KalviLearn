@@ -469,28 +469,43 @@ async function handleAssignMentor(
     })
   }
 
-  // Verify student exists
-  const { data: studentRecord, error: studentLookupErr } = await supabaseServer
+  // 1. Authoritative Student Resolution (accepts students.id or users.id)
+  let studentRecord: { id: string; user_id: string; name: string | null } | null = null
+  const byStudentId = await supabaseServer
     .from('students')
     .select('id, user_id, name')
     .eq('id', studentId)
     .maybeSingle()
 
-  if (studentLookupErr) throw studentLookupErr
+  if (byStudentId.data) {
+    studentRecord = byStudentId.data
+  } else {
+    const byUserId = await supabaseServer
+      .from('students')
+      .select('id, user_id, name')
+      .eq('user_id', studentId)
+      .maybeSingle()
+    if (byUserId.data) {
+      studentRecord = byUserId.data
+    }
+  }
+
   if (!studentRecord) {
     return sendJson(res, 404, {
       success: false,
       error: 'Student Not Found',
-      message: 'The specified student does not exist.',
+      message: 'The specified student could not be found.',
     })
   }
 
-  // Handle Unassignment
+  const canonicalStudentId = studentRecord.id
+
+  // 2. Handle Unassignment (mentorId is null or 'NONE')
   if (!mentorId) {
     const { error: unassignErr } = await supabaseServer
       .from('mentor_students')
       .update({ status: 'INACTIVE', unassigned_at: new Date().toISOString() })
-      .eq('student_id', studentId)
+      .eq('student_id', canonicalStudentId)
       .eq('status', 'ACTIVE')
 
     if (unassignErr) throw unassignErr
@@ -507,44 +522,59 @@ async function handleAssignMentor(
       success: true,
       message: 'Student unassigned from mentor successfully.',
       data: {
-        studentId,
+        studentId: canonicalStudentId,
         mentorId: null,
         mentorName: 'Unassigned',
       },
     })
   }
 
-  // Handle Assignment
-  const { data: mentorRecord, error: mentorLookupErr } = await supabaseServer
+  // 3. Authoritative Mentor Resolution (accepts mentors.id or users.id)
+  let mentorRecord: { id: string; name: string | null; user_id: string } | null = null
+  const byMentorId = await supabaseServer
     .from('mentors')
     .select('id, name, user_id')
     .eq('id', mentorId)
     .maybeSingle()
 
-  if (mentorLookupErr) throw mentorLookupErr
+  if (byMentorId.data) {
+    mentorRecord = byMentorId.data
+  } else {
+    const byUserId = await supabaseServer
+      .from('mentors')
+      .select('id, name, user_id')
+      .eq('user_id', mentorId)
+      .maybeSingle()
+    if (byUserId.data) {
+      mentorRecord = byUserId.data
+    }
+  }
+
   if (!mentorRecord) {
     return sendJson(res, 404, {
       success: false,
       error: 'Mentor Not Found',
-      message: 'The specified mentor does not exist.',
+      message: 'The specified mentor could not be found.',
     })
   }
 
-  // Deactivate prior active links to other mentors
+  const canonicalMentorId = mentorRecord.id
+
+  // 4. Deactivate prior active links to OTHER mentors
   await supabaseServer
     .from('mentor_students')
     .update({ status: 'INACTIVE', unassigned_at: new Date().toISOString() })
-    .eq('student_id', studentId)
-    .neq('mentor_id', mentorId)
+    .eq('student_id', canonicalStudentId)
+    .neq('mentor_id', canonicalMentorId)
     .eq('status', 'ACTIVE')
 
-  // Upsert active link with onConflict: 'mentor_id,student_id'
+  // 5. Upsert active link with onConflict: 'mentor_id,student_id'
   const { error: linkErr } = await supabaseServer
     .from('mentor_students')
     .upsert(
       {
-        mentor_id: mentorId,
-        student_id: studentId,
+        mentor_id: canonicalMentorId,
+        student_id: canonicalStudentId,
         status: 'ACTIVE',
         assigned_at: new Date().toISOString(),
         unassigned_at: null,
@@ -554,7 +584,7 @@ async function handleAssignMentor(
 
   if (linkErr) throw linkErr
 
-  // Update legacy users.mentorId
+  // 6. Update legacy users.mentorId
   if (studentRecord.user_id && mentorRecord.user_id) {
     await supabaseServer
       .from('users')
@@ -566,8 +596,8 @@ async function handleAssignMentor(
     success: true,
     message: `Student mentor updated to: ${mentorRecord.name || 'Assigned Mentor'}`,
     data: {
-      studentId,
-      mentorId,
+      studentId: canonicalStudentId,
+      mentorId: canonicalMentorId,
       mentorName: mentorRecord.name,
     },
   })

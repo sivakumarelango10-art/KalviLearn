@@ -22480,17 +22480,26 @@ async function handleAssignMentor(body, res) {
       message: "Student ID is required for mentor assignment."
     });
   }
-  const { data: studentRecord, error: studentLookupErr } = await supabaseServer.from("students").select("id, user_id, name").eq("id", studentId).maybeSingle();
-  if (studentLookupErr) throw studentLookupErr;
+  let studentRecord = null;
+  const byStudentId = await supabaseServer.from("students").select("id, user_id, name").eq("id", studentId).maybeSingle();
+  if (byStudentId.data) {
+    studentRecord = byStudentId.data;
+  } else {
+    const byUserId = await supabaseServer.from("students").select("id, user_id, name").eq("user_id", studentId).maybeSingle();
+    if (byUserId.data) {
+      studentRecord = byUserId.data;
+    }
+  }
   if (!studentRecord) {
     return sendJson(res, 404, {
       success: false,
       error: "Student Not Found",
-      message: "The specified student does not exist."
+      message: "The specified student could not be found."
     });
   }
+  const canonicalStudentId = studentRecord.id;
   if (!mentorId) {
-    const { error: unassignErr } = await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("student_id", studentId).eq("status", "ACTIVE");
+    const { error: unassignErr } = await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("student_id", canonicalStudentId).eq("status", "ACTIVE");
     if (unassignErr) throw unassignErr;
     if (studentRecord.user_id) {
       await supabaseServer.from("users").update({ mentorId: null }).eq("id", studentRecord.user_id);
@@ -22499,26 +22508,35 @@ async function handleAssignMentor(body, res) {
       success: true,
       message: "Student unassigned from mentor successfully.",
       data: {
-        studentId,
+        studentId: canonicalStudentId,
         mentorId: null,
         mentorName: "Unassigned"
       }
     });
   }
-  const { data: mentorRecord, error: mentorLookupErr } = await supabaseServer.from("mentors").select("id, name, user_id").eq("id", mentorId).maybeSingle();
-  if (mentorLookupErr) throw mentorLookupErr;
+  let mentorRecord = null;
+  const byMentorId = await supabaseServer.from("mentors").select("id, name, user_id").eq("id", mentorId).maybeSingle();
+  if (byMentorId.data) {
+    mentorRecord = byMentorId.data;
+  } else {
+    const byUserId = await supabaseServer.from("mentors").select("id, name, user_id").eq("user_id", mentorId).maybeSingle();
+    if (byUserId.data) {
+      mentorRecord = byUserId.data;
+    }
+  }
   if (!mentorRecord) {
     return sendJson(res, 404, {
       success: false,
       error: "Mentor Not Found",
-      message: "The specified mentor does not exist."
+      message: "The specified mentor could not be found."
     });
   }
-  await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("student_id", studentId).neq("mentor_id", mentorId).eq("status", "ACTIVE");
+  const canonicalMentorId = mentorRecord.id;
+  await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("student_id", canonicalStudentId).neq("mentor_id", canonicalMentorId).eq("status", "ACTIVE");
   const { error: linkErr } = await supabaseServer.from("mentor_students").upsert(
     {
-      mentor_id: mentorId,
-      student_id: studentId,
+      mentor_id: canonicalMentorId,
+      student_id: canonicalStudentId,
       status: "ACTIVE",
       assigned_at: (/* @__PURE__ */ new Date()).toISOString(),
       unassigned_at: null
@@ -22533,8 +22551,8 @@ async function handleAssignMentor(body, res) {
     success: true,
     message: `Student mentor updated to: ${mentorRecord.name || "Assigned Mentor"}`,
     data: {
-      studentId,
-      mentorId,
+      studentId: canonicalStudentId,
+      mentorId: canonicalMentorId,
       mentorName: mentorRecord.name
     }
   });

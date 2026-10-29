@@ -22884,7 +22884,7 @@ async function handler(req, res) {
               }
             ] : []
           },
-          { idempotencyKey: dedupeKey }
+          { idempotencyKey: dedupeKey, timeoutMs: 2500, maxRetries: 0 }
         );
         if (teamSyncRes.success && teamSyncRes.ticketId) {
           teamSyncMetadata = {

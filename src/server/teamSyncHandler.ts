@@ -369,6 +369,8 @@ export default async function handler(
 
   const teamSyncResult = await sendTicketToTeamSync(teamSyncPayload, {
     idempotencyKey: idempotencyHeader || localReport.public_reference,
+    timeoutMs: 2500,
+    maxRetries: 0,
   })
 
   // 9. Update Local Database with TeamSync Synchronization Status
@@ -385,8 +387,11 @@ export default async function handler(
       updatePayload.teamsync_status = 'SENT'
       updatePayload.teamsync_error = null
     } else {
+      const httpStatus = teamSyncResult.error?.httpStatus
       const isTransient =
-        teamSyncResult.error?.httpStatus && [502, 503, 504, 429].includes(teamSyncResult.error.httpStatus)
+        teamSyncResult.error?.code === 'TEAMSYNC_TIMEOUT' ||
+        teamSyncResult.error?.code === 'TEAMSYNC_NETWORK_ERROR' ||
+        (httpStatus !== undefined && [502, 503, 504, 429].includes(httpStatus))
       updatePayload.teamsync_status = isTransient ? 'RETRY_REQUIRED' : 'FAILED'
       updatePayload.teamsync_error = teamSyncResult.error?.message || 'Unknown TeamSync error'
     }

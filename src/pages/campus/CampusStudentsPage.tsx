@@ -44,6 +44,13 @@ export const CampusStudentsPage: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<CampusStudentStat | null>(null)
   const [reassignMentorId, setReassignMentorId] = useState<string>('')
   const [isReassigning, setIsReassigning] = useState(false)
+  const [reassignError, setReassignError] = useState<string | null>(null)
+
+  const openStudentDetails = (student: CampusStudentStat) => {
+    setSelectedStudent(student)
+    setReassignMentorId(student.mentorId || 'NONE')
+    setReassignError(null)
+  }
 
   const loadData = async (isInitial = false) => {
     if (isInitial) setIsLoading(true)
@@ -147,6 +154,7 @@ export const CampusStudentsPage: React.FC = () => {
   const handleReassignMentor = async () => {
     if (!selectedStudent) return
     setIsReassigning(true)
+    setReassignError(null)
     try {
       const mentorId = reassignMentorId === 'NONE' ? null : reassignMentorId
       const res = await assignStudentMentor(selectedStudent.id, mentorId)
@@ -162,10 +170,10 @@ export const CampusStudentsPage: React.FC = () => {
         })
         await loadData()
       } else {
-        alert(formatErrorMessage(res.error, 'Failed to update mentor assignment.'))
+        setReassignError(formatErrorMessage(res.error, 'Failed to update mentor assignment.'))
       }
     } catch (err: unknown) {
-      alert(formatErrorMessage(err, 'Failed to update mentor assignment.'))
+      setReassignError(formatErrorMessage(err, 'Failed to update mentor assignment.'))
     } finally {
       setIsReassigning(false)
     }
@@ -287,10 +295,7 @@ export const CampusStudentsPage: React.FC = () => {
                 <tr
                   key={student.id}
                   className="hover:bg-neutral-50/80 transition-colors group cursor-pointer"
-                  onClick={() => {
-                    setSelectedStudent(student)
-                    setReassignMentorId(student.mentorId || 'NONE')
-                  }}
+                  onClick={() => openStudentDetails(student)}
                 >
                   {/* Student info */}
                   <td className="py-4 px-6">
@@ -343,8 +348,7 @@ export const CampusStudentsPage: React.FC = () => {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation()
-                        setSelectedStudent(student)
-                        setReassignMentorId(student.mentorId || 'NONE')
+                        openStudentDetails(student)
                       }}
                       className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white text-neutral-700 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1"
                     >
@@ -421,11 +425,22 @@ export const CampusStudentsPage: React.FC = () => {
                   Current Guidance: <span className="font-bold text-neutral-900">{selectedStudent.mentorName}</span>
                 </p>
 
+                {reassignError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium animate-in fade-in">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>{reassignError}</span>
+                  </div>
+                )}
+
                 <div className="pt-2 flex items-center gap-2">
                   <select
                     value={reassignMentorId}
-                    onChange={(e) => setReassignMentorId(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-white border border-purple-200 rounded-xl font-semibold text-neutral-800 focus:outline-none"
+                    onChange={(e) => {
+                      setReassignMentorId(e.target.value)
+                      if (reassignError) setReassignError(null)
+                    }}
+                    disabled={isReassigning}
+                    className="flex-1 px-3 py-2 bg-white border border-purple-200 rounded-xl font-semibold text-neutral-800 focus:outline-none disabled:opacity-60"
                   >
                     <option value="NONE">No Mentor for now (Unassigned)</option>
                     {mentors.map((m) => (

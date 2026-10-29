@@ -117,20 +117,12 @@ export const feedbackService = {
       payload.idempotencyKey ||
       `idem_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 
-    // 2. Submit to backend API (Prefer TeamSync integration endpoint, fallback to /api/feedback)
-    let res = await fetch('/api/integrations/teamsync/tickets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        'X-Idempotency-Key': idempotencyKey,
-      },
-      body: JSON.stringify(payload),
-    }).catch(() => null)
-
-    if (!res || res.status === 404) {
-      // Fallback to /api/feedback
-      res = await fetch('/api/feedback', {
+    // 2. Submit to backend API (Prefer TeamSync integration endpoint, fallback to /api/feedback only on 404 Not Found)
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 10000)
+    let res: Response | null = null
+    try {
+      res = await fetch('/api/integrations/teamsync/tickets', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +130,39 @@ export const feedbackService = {
           'X-Idempotency-Key': idempotencyKey,
         },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       })
+    } catch (err: unknown) {
+      if ((err as Error)?.name === 'AbortError') {
+        throw new Error('Feedback submission timed out. Please try again.')
+      }
+      res = null
+    }
+
+    if (res?.status === 404) {
+      // Fallback to /api/feedback only when the integration endpoint route is not deployed (404)
+      try {
+        res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            'X-Idempotency-Key': idempotencyKey,
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        })
+      } catch (err: unknown) {
+        if ((err as Error)?.name === 'AbortError') {
+          throw new Error('Feedback submission timed out. Please try again.')
+        }
+        res = null
+      }
+    }
+    clearTimeout(timer)
+
+    if (!res) {
+      throw new Error('Network error while submitting feedback. Please check your connection and try again.')
     }
 
     const text = await res.text().catch(() => '')

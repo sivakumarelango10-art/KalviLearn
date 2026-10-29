@@ -22635,7 +22635,9 @@ async function handler(req, res) {
     ] : []
   };
   const teamSyncResult = await sendTicketToTeamSync(teamSyncPayload, {
-    idempotencyKey: idempotencyHeader || localReport.public_reference
+    idempotencyKey: idempotencyHeader || localReport.public_reference,
+    timeoutMs: 2500,
+    maxRetries: 0
   });
   try {
     const updatePayload = {
@@ -22649,7 +22651,8 @@ async function handler(req, res) {
       updatePayload.teamsync_status = "SENT";
       updatePayload.teamsync_error = null;
     } else {
-      const isTransient = teamSyncResult.error?.httpStatus && [502, 503, 504, 429].includes(teamSyncResult.error.httpStatus);
+      const httpStatus = teamSyncResult.error?.httpStatus;
+      const isTransient = teamSyncResult.error?.code === "TEAMSYNC_TIMEOUT" || teamSyncResult.error?.code === "TEAMSYNC_NETWORK_ERROR" || httpStatus !== void 0 && [502, 503, 504, 429].includes(httpStatus);
       updatePayload.teamsync_status = isTransient ? "RETRY_REQUIRED" : "FAILED";
       updatePayload.teamsync_error = teamSyncResult.error?.message || "Unknown TeamSync error";
     }
