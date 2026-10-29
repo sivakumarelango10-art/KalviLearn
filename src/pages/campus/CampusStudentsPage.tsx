@@ -9,12 +9,14 @@ import {
   Loader2,
   AlertCircle,
   ChevronRight,
+  Trash2,
 } from 'lucide-react'
 import {
   fetchCampusStudents,
   fetchCampusMentors,
   addCampusStudent,
   assignStudentMentor,
+  deleteCampusStudent,
   subscribeToCampusUpdates,
   CAMPUS_BELT_DEFINITIONS,
   type CampusStudentStat,
@@ -45,6 +47,11 @@ export const CampusStudentsPage: React.FC = () => {
   const [reassignMentorId, setReassignMentorId] = useState<string>('')
   const [isReassigning, setIsReassigning] = useState(false)
   const [reassignError, setReassignError] = useState<string | null>(null)
+
+  // Delete Confirmation Modal State
+  const [studentToDelete, setStudentToDelete] = useState<CampusStudentStat | null>(null)
+  const [isDeletingStudent, setIsDeletingStudent] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const openStudentDetails = (student: CampusStudentStat) => {
     setSelectedStudent(student)
@@ -178,6 +185,51 @@ export const CampusStudentsPage: React.FC = () => {
       setIsReassigning(false)
     }
   }
+
+  // Handle Delete Student confirmed
+  const handleConfirmDelete = async () => {
+    if (!studentToDelete) return
+    setIsDeletingStudent(true)
+    setDeleteError(null)
+    try {
+      const res = await deleteCampusStudent(studentToDelete.id)
+      if (res.success) {
+        setSuccessToast(`Student ${studentToDelete.name} was permanently deleted.`)
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+        toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
+        setStudentToDelete(null)
+        if (selectedStudent?.id === studentToDelete.id) {
+          setSelectedStudent(null)
+        }
+        await loadData()
+      } else {
+        setDeleteError(formatErrorMessage(res.error, 'Failed to delete student.'))
+      }
+    } catch (err: unknown) {
+      setDeleteError(formatErrorMessage(err, 'Failed to delete student.'))
+    } finally {
+      setIsDeletingStudent(false)
+    }
+  }
+
+  // Handle escape key to close modals
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (studentToDelete && !isDeletingStudent) {
+          setStudentToDelete(null)
+          setDeleteError(null)
+        } else if (isAddModalOpen && !isSubmitting) {
+          setIsAddModalOpen(false)
+          setFormError(null)
+        } else if (selectedStudent && !isReassigning) {
+          setSelectedStudent(null)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [studentToDelete, isDeletingStudent, isAddModalOpen, isSubmitting, selectedStudent, isReassigning])
 
   if (isLoading) {
     return (
@@ -344,17 +396,31 @@ export const CampusStudentsPage: React.FC = () => {
 
                   {/* Action */}
                   <td className="py-4 px-6 text-right">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        openStudentDetails(student)
-                      }}
-                      className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white text-neutral-700 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1"
-                    >
-                      <span>Details</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          openStudentDetails(student)
+                        }}
+                        className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white text-neutral-700 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1"
+                      >
+                        <span>Details</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDeleteError(null)
+                          setStudentToDelete(student)
+                        }}
+                        className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        title={`Delete ${student.name}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -492,6 +558,28 @@ export const CampusStudentsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* 4. Danger Zone */}
+              <div className="p-5 bg-red-50/60 border border-red-200/80 rounded-2xl space-y-3">
+                <div className="flex items-center gap-2 text-red-700">
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                  <h3 className="font-bold">Danger Zone</h3>
+                </div>
+                <p className="text-neutral-600 text-[11px] leading-relaxed">
+                  Permanently delete this student account, profile, mentor assignments, and submission history from KalviLearn. This action is irreversible.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteError(null)
+                    setStudentToDelete(selectedStudent)
+                  }}
+                  className="w-full py-2.5 px-4 bg-white hover:bg-red-600 hover:text-white text-red-600 border border-red-200 hover:border-red-600 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-2xs"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete Student Account</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>,
@@ -590,6 +678,101 @@ export const CampusStudentsPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* ── Delete Student Confirmation Modal ─────────────────────────────── */}
+      {studentToDelete && createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => {
+            if (!isDeletingStudent) {
+              setStudentToDelete(null)
+              setDeleteError(null)
+            }
+          }}
+        >
+          <div
+            className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5 animate-modal-pop border border-neutral-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-extrabold text-neutral-900">
+                  Delete Student Account?
+                </h3>
+                <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
+                  Are you sure you want to permanently delete{' '}
+                  <strong className="text-neutral-800">{studentToDelete.name}</strong> ({studentToDelete.email})?
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-1.5 text-xs">
+              <div className="flex justify-between text-neutral-600">
+                <span>Student Code:</span>
+                <span className="font-mono font-bold text-neutral-800">{studentToDelete.studentCode}</span>
+              </div>
+              <div className="flex justify-between text-neutral-600">
+                <span>Current Belt:</span>
+                <span className="font-bold text-neutral-800">{studentToDelete.belt}</span>
+              </div>
+              <div className="flex justify-between text-neutral-600">
+                <span>Assigned Mentor:</span>
+                <span className="font-semibold text-neutral-800">{studentToDelete.mentorName}</span>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-red-50 border border-red-200/90 rounded-2xl text-[11px] text-red-800 leading-relaxed font-medium flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" />
+              <span>
+                <strong>Warning:</strong> This permanently purges the student profile, login account, mentor assignments, all solved problems ({studentToDelete.questionsSolved}), and earned XP ({studentToDelete.totalXp}). This action cannot be undone.
+              </span>
+            </div>
+
+            {deleteError && (
+              <div className="p-3.5 bg-red-100/80 border border-red-300 text-red-900 rounded-xl text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                <span>{deleteError}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setStudentToDelete(null)
+                  setDeleteError(null)
+                }}
+                disabled={isDeletingStudent}
+                className="px-5 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeletingStudent}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-sm disabled:opacity-50"
+              >
+                {isDeletingStudent ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>Permanently Delete Student</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>,
         document.body

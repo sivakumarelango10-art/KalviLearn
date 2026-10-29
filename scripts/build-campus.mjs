@@ -5,6 +5,7 @@ const targets = [
   'api/campus/students.js',
   'api/campus/mentors.js',
   'api/campus/assign-mentor.js',
+  'api/campus/delete-student.js',
 ]
 
 for (const outfile of targets) {
@@ -18,5 +19,5 @@ for (const outfile of targets) {
   })
 }
 
-console.log('✓ Campus API bundles generated (api/campus.js, api/campus/students.js, api/campus/mentors.js, api/campus/assign-mentor.js)')
+console.log('✓ Campus API bundles generated (api/campus.js, api/campus/students.js, api/campus/mentors.js, api/campus/assign-mentor.js, api/campus/delete-student.js)')
 

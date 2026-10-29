@@ -23,6 +23,7 @@ import {
   addStudent,
   removeStudent,
 } from '@/lib/mentorService'
+import { deleteCampusStudent } from '@/lib/campusManagerService'
 import { useAuth } from '@/contexts/AuthContext'
 import { PythonLogo, JavaLogo, CppLogo } from '@/components/practice/LanguageCards'
 import { StudentDetailModal } from '@/components/mentor/StudentDetailModal'
@@ -102,11 +103,16 @@ export const MentorStudentsPage: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null)
   const [successToast, setSuccessToast] = useState<string | null>(null)
 
-  // Remove confirmation state
+  // Remove/Delete confirmation state
   const [studentToDelete, setStudentToDelete] = useState<MentorStudent | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isPermanentDeleting, setIsPermanentDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const [totalProblemsBenchmark, setTotalProblemsBenchmark] = useState<number | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const userRole = (user?.role || '').toUpperCase()
+  const isStaff = userRole === 'CAMPUS_MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN'
 
   useEffect(() => {
     fetchTotalProblemCount().then(setTotalProblemsBenchmark).catch(() => {})
@@ -265,9 +271,11 @@ export const MentorStudentsPage: React.FC = () => {
     }
   }
 
-  const handleDeleteStudent = async () => {
+  // 1. Remove from cohort (unassign)
+  const handleRemoveFromCohort = async () => {
     if (!studentToDelete) return
     setIsDeleting(true)
+    setDeleteError(null)
     try {
       const res = await removeStudent(studentToDelete.id, user?.id)
       if (res.success) {
@@ -277,12 +285,35 @@ export const MentorStudentsPage: React.FC = () => {
         setStudentToDelete(null)
         await loadData()
       } else {
-        alert(res.error || 'Failed to remove student.')
+        setDeleteError(res.error || 'Failed to remove student from cohort.')
       }
-    } catch (err) {
-      console.error('Error deleting student:', err)
+    } catch (err: unknown) {
+      setDeleteError(err instanceof Error ? err.message : 'Failed to remove student from cohort.')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  // 2. Permanently delete student account
+  const handlePermanentDelete = async () => {
+    if (!studentToDelete) return
+    setIsPermanentDeleting(true)
+    setDeleteError(null)
+    try {
+      const res = await deleteCampusStudent(studentToDelete.id)
+      if (res.success) {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+        setSuccessToast(`Student ${studentToDelete.name} was permanently deleted.`)
+        toastTimerRef.current = setTimeout(() => setSuccessToast(null), 4000)
+        setStudentToDelete(null)
+        await loadData()
+      } else {
+        setDeleteError(res.error || 'Failed to permanently delete student.')
+      }
+    } catch (err: unknown) {
+      setDeleteError(err instanceof Error ? err.message : 'Failed to permanently delete student.')
+    } finally {
+      setIsPermanentDeleting(false)
     }
   }
 
@@ -805,6 +836,11 @@ export const MentorStudentsPage: React.FC = () => {
         student={selectedStudent}
         initialLanguage={langFilter}
         onClose={() => setSelectedStudent(null)}
+        onDeleteStudent={(s) => {
+          setSelectedStudent(null)
+          setDeleteError(null)
+          setStudentToDelete(s)
+        }}
       />
 
       {/* Add Student Modal (Portaled directly to document.body) */}
@@ -939,45 +975,107 @@ export const MentorStudentsPage: React.FC = () => {
           document.body
         )}
 
-      {/* Delete Confirmation Modal (Portaled directly to document.body) */}
+      {/* Remove / Delete Confirmation Modal (Portaled directly to document.body) */}
       {studentToDelete &&
         typeof document !== 'undefined' &&
         createPortal(
           <div
             className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
-            onClick={() => setStudentToDelete(null)}
+            onClick={() => {
+              if (!isDeleting && !isPermanentDeleting) {
+                setStudentToDelete(null)
+                setDeleteError(null)
+              }
+            }}
           >
             <div
-              className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-neutral-200 space-y-4 animate-modal-pop"
+              className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-neutral-200 space-y-4 animate-modal-pop"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
-                <Trash2 className="w-5 h-5" />
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-neutral-900">
+                    {isStaff ? 'Delete or Unassign Student' : `Remove ${studentToDelete.name}?`}
+                  </h4>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Student: <strong className="text-neutral-800">{studentToDelete.name}</strong> ({studentToDelete.email})
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-base font-bold text-neutral-900">
-                  Remove {studentToDelete.name}?
-                </h4>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Are you sure you want to remove <strong className="text-neutral-700">{studentToDelete.email}</strong> from this mentor cohort? Their login authorization will be revoked.
-                </p>
-              </div>
-              <div className="flex items-center justify-end gap-2 pt-2">
+
+              {!isStaff && (
+                <div className="p-3 bg-amber-50 border border-amber-200/90 rounded-2xl text-[11px] text-amber-900 leading-relaxed font-medium space-y-1">
+                  <p className="font-bold flex items-center gap-1.5 text-amber-800">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                    <span>Mentor Role Authorization Note:</span>
+                  </p>
+                  <p>
+                    Mentors are authorized to remove students from their cohort (unassign guidance). Permanent account deletion requires Campus Manager authorization.
+                  </p>
+                </div>
+              )}
+
+              {isStaff && (
+                <div className="p-3 bg-red-50 border border-red-200/90 rounded-2xl text-[11px] text-red-900 leading-relaxed font-medium">
+                  <p className="font-bold flex items-center gap-1.5 text-red-800">
+                    <AlertCircle className="w-3.5 h-3.5 text-red-600 flex-shrink-0" />
+                    <span>Permanent Deletion Warning:</span>
+                  </p>
+                  <p className="mt-1">
+                    Permanent deletion will purge the student profile, login account, mentor assignments, all solved problems, and submission history from KalviLearn.
+                  </p>
+                </div>
+              )}
+
+              {deleteError && (
+                <div className="p-3 bg-red-100 border border-red-300 text-red-900 rounded-xl text-xs font-semibold flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                  <span>{deleteError}</span>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStudentToDelete(null)}
-                  disabled={isDeleting}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
+                  onClick={() => {
+                    setStudentToDelete(null)
+                    setDeleteError(null)
+                  }}
+                  disabled={isDeleting || isPermanentDeleting}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100 transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
+
                 <button
                   type="button"
-                  onClick={handleDeleteStudent}
-                  disabled={isDeleting}
-                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors disabled:opacity-50"
+                  onClick={handleRemoveFromCohort}
+                  disabled={isDeleting || isPermanentDeleting}
+                  className="px-4 py-2 rounded-xl border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-xs font-bold transition-colors disabled:opacity-50"
                 >
-                  {isDeleting ? 'Removing...' : 'Yes, Remove'}
+                  {isDeleting ? 'Removing...' : 'Remove from Cohort'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePermanentDelete}
+                  disabled={isDeleting || isPermanentDeleting}
+                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors flex items-center gap-1.5 disabled:opacity-50 shadow-xs"
+                >
+                  {isPermanentDeleting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Deleting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Permanently Delete</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

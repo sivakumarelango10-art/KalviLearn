@@ -12,6 +12,7 @@ import {
   Code2,
   Calendar,
   Sparkles,
+  Trash2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { MentorStudent } from '@/lib/mentorService'
@@ -22,6 +23,7 @@ interface StudentDetailModalProps {
   student: MentorStudent | null
   initialLanguage?: (typeof LANGUAGES)[number]['id']
   onClose: () => void
+  onDeleteStudent?: (student: MentorStudent) => void
 }
 
 const LANGUAGES = [
@@ -49,7 +51,12 @@ const renderLangLogo = (id: LanguageKey | string, className: string = 'w-4 h-4')
   }
 }
 
-export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, initialLanguage, onClose }) => {
+export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
+  student,
+  initialLanguage,
+  onClose,
+  onDeleteStudent,
+}) => {
   const [activeTab, setActiveTab] = useState<'solved' | 'submissions'>('solved')
   const [langFilter, setLangFilter] = useState<LanguageKey>(initialLanguage || 'all')
 
@@ -490,13 +497,25 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             <Calendar className="w-3.5 h-3.5 text-neutral-400" />
             <span>Enrolled: {student.joinedDate || 'Jan 2026'}</span>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
-          >
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            {onDeleteStudent && (
+              <button
+                type="button"
+                onClick={() => onDeleteStudent(student)}
+                className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 font-bold transition-colors flex items-center gap-1.5 cursor-pointer text-xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Student</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2 rounded-xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>,

@@ -22194,7 +22194,7 @@ function sendJson(res, statusCode, payload) {
 }
 async function handler(req, res) {
   applyCors(req, res, {
-    methods: "POST, OPTIONS",
+    methods: "POST, DELETE, OPTIONS",
     headers: "Content-Type, Authorization, X-Idempotency-Key"
   });
   if (req.method === "OPTIONS") {
@@ -22202,11 +22202,11 @@ async function handler(req, res) {
     res.end();
     return;
   }
-  if (req.method !== "POST") {
+  if (req.method !== "POST" && req.method !== "DELETE") {
     return sendJson(res, 405, {
       success: false,
-      error: "Method Not Allowed. Use POST.",
-      message: "Method Not Allowed. Use POST."
+      error: "Method Not Allowed. Use POST or DELETE.",
+      message: "Method Not Allowed. Use POST or DELETE."
     });
   }
   const clientIp = getClientIp(req);
@@ -22245,14 +22245,6 @@ async function handler(req, res) {
       message: auth.error || "Authentication required."
     });
   }
-  const callerRole = (auth.user.role || "").toUpperCase();
-  if (!ALLOWED_STAFF_ROLES.has(callerRole)) {
-    return sendJson(res, 403, {
-      success: false,
-      error: "Forbidden: Campus manager or administrator privileges required.",
-      message: "Forbidden: Campus manager or administrator privileges required."
-    });
-  }
   const userCheck = userLimiter.check(auth.user.id);
   if (!userCheck.allowed) {
     res.setHeader("Retry-After", String(userCheck.retryAfter || 60));
@@ -22262,13 +22254,32 @@ async function handler(req, res) {
       message: "Account rate limit exceeded. Please wait a moment."
     });
   }
+  const method = (req.method || "").toUpperCase();
   const url = (req.url || "").toLowerCase();
   const matchedPath = (req.headers["x-matched-path"] || req.headers["x-now-route-matches"] || "").toLowerCase();
   const rawAction = typeof body.action === "string" ? body.action : "";
   const queryAction = typeof req.query === "object" && req.query ? String(req.query.action || "") : "";
   const action = (rawAction || queryAction).toLowerCase();
-  const dispatchKey = `${url} ${matchedPath} ${action}`;
+  const dispatchKey = `${method} ${url} ${matchedPath} ${action}`;
+  const callerRole = (auth.user.role || "").toUpperCase();
+  if (callerRole === "MENTOR" && (dispatchKey.includes("delete") || action === "delete_student")) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Forbidden: Mentor Authorization Insufficient",
+      message: "Mentors are not authorized to permanently delete student accounts. This operation requires Campus Manager or Administrator privileges."
+    });
+  }
+  if (!ALLOWED_STAFF_ROLES.has(callerRole)) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Forbidden: Campus manager or administrator privileges required.",
+      message: "Forbidden: Campus manager or administrator privileges required."
+    });
+  }
   try {
+    if (dispatchKey.includes("delete") || action === "delete_student" || method === "DELETE" && dispatchKey.includes("student")) {
+      return await handleDeleteStudent(body, req, res);
+    }
     if (dispatchKey.includes("student") || action === "add_student" || action === "enroll_student") {
       return await handleAddStudent(body, res);
     }
@@ -22281,7 +22292,7 @@ async function handler(req, res) {
     return sendJson(res, 400, {
       success: false,
       error: "Invalid Action",
-      message: "Unknown or missing action in campus management request. Supported actions: enroll_student, add_mentor, assign_mentor."
+      message: "Unknown or missing action in campus management request. Supported actions: enroll_student, add_mentor, assign_mentor, delete_student."
     });
   } catch (err) {
     const errorMsg = formatErrorMessage(err, "Failed to process campus management request.");
@@ -22558,6 +22569,109 @@ async function handleAssignMentor(body, res) {
       studentId: canonicalStudentId,
       mentorId: canonicalMentorId,
       mentorName: mentorRecord.name
+    }
+  });
+}
+async function handleDeleteStudent(body, req, res) {
+  const queryStudentId = typeof req.query === "object" && req.query ? String(req.query.studentId || req.query.id || "") : "";
+  const studentId = (typeof body.studentId === "string" ? body.studentId.trim() : typeof body.id === "string" ? body.id.trim() : "") || queryStudentId.trim();
+  if (!studentId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Student ID",
+      message: "Student ID is required for student deletion."
+    });
+  }
+  let studentRecord = null;
+  const byStudentId = await supabaseServer.from("students").select("id, user_id, name, email, student_code").eq("id", studentId).maybeSingle();
+  if (byStudentId.data) {
+    studentRecord = byStudentId.data;
+  } else {
+    const byUserId = await supabaseServer.from("students").select("id, user_id, name, email, student_code").eq("user_id", studentId).maybeSingle();
+    if (byUserId.data) {
+      studentRecord = byUserId.data;
+    }
+  }
+  let canonicalUserId = studentRecord?.user_id || null;
+  let canonicalStudentId = studentRecord?.id || null;
+  let studentName = studentRecord?.name || "Student";
+  let studentEmail = studentRecord?.email || "";
+  if (!canonicalUserId) {
+    const byUser = await supabaseServer.from("users").select("id, name, email, role").eq("id", studentId).maybeSingle();
+    if (byUser.data) {
+      if (byUser.data.role !== "STUDENT") {
+        return sendJson(res, 403, {
+          success: false,
+          error: "Forbidden Operation",
+          message: `Cannot delete user with role ${byUser.data.role}. Only student accounts may be deleted.`
+        });
+      }
+      canonicalUserId = byUser.data.id;
+      studentName = byUser.data.name || studentName;
+      studentEmail = byUser.data.email || studentEmail;
+    }
+  }
+  if (!canonicalUserId && !canonicalStudentId) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Student Not Found",
+      message: "The specified student could not be found or has already been deleted."
+    });
+  }
+  let authUidToDelete = null;
+  if (canonicalUserId) {
+    const { data: userRow } = await supabaseServer.from("users").select('id, name, role, email, "authUid"').eq("id", canonicalUserId).maybeSingle();
+    if (userRow) {
+      if (userRow.role && userRow.role !== "STUDENT") {
+        return sendJson(res, 403, {
+          success: false,
+          error: "Forbidden Operation",
+          message: `Cannot delete user with role ${userRow.role}. Only student accounts may be deleted.`
+        });
+      }
+      authUidToDelete = userRow.authUid || null;
+      studentEmail = userRow.email || studentEmail;
+      studentName = userRow.name || studentName;
+    }
+  }
+  if (canonicalStudentId) {
+    const { error: msErr } = await supabaseServer.from("mentor_students").delete().eq("student_id", canonicalStudentId);
+    if (msErr) throw msErr;
+  }
+  if (canonicalUserId) {
+    const { error: upErr } = await supabaseServer.from("UserProgress").delete().eq("userId", canonicalUserId);
+    if (upErr) throw upErr;
+  }
+  if (canonicalUserId) {
+    const { error: subErr } = await supabaseServer.from("Submission").delete().eq("userId", canonicalUserId);
+    if (subErr) throw subErr;
+  }
+  if (canonicalStudentId) {
+    const { error: stuErr } = await supabaseServer.from("students").delete().eq("id", canonicalStudentId);
+    if (stuErr) throw stuErr;
+  } else if (canonicalUserId) {
+    const { error: stuErr } = await supabaseServer.from("students").delete().eq("user_id", canonicalUserId);
+    if (stuErr) throw stuErr;
+  }
+  if (canonicalUserId) {
+    const { error: userErr } = await supabaseServer.from("users").delete().eq("id", canonicalUserId);
+    if (userErr) throw userErr;
+  }
+  if (authUidToDelete) {
+    try {
+      await supabaseServer.auth.admin.deleteUser(authUidToDelete);
+    } catch (authErr) {
+      console.warn("Warning: Could not delete auth.users record:", authErr);
+    }
+  }
+  return sendJson(res, 200, {
+    success: true,
+    message: `Student ${studentName} was permanently deleted successfully.`,
+    data: {
+      deletedStudentId: canonicalStudentId,
+      deletedUserId: canonicalUserId,
+      name: studentName,
+      email: studentEmail
     }
   });
 }

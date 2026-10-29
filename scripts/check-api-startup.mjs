@@ -21,6 +21,7 @@ const FUNCTIONS = [
   'api/campus/students.js',
   'api/campus/mentors.js',
   'api/campus/assign-mentor.js',
+  'api/campus/delete-student.js',
 ]
 
 // Child program: import the bundle, then (for execute/submit) send one authenticated-looking request and require JSON.

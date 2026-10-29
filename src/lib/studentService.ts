@@ -195,3 +195,5 @@ export async function syncUserProfile(
     return { success: false, error: 'Internal error syncing profile' }
   }
 }
+
+export { deleteCampusStudent } from './campusManagerService'

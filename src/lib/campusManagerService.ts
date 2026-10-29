@@ -814,6 +814,21 @@ export async function assignStudentMentor(
 }
 
 /**
+ * Permanently deletes a student from the live database via the authoritative backend API.
+ * Purges the student's profile, user account, mentor links, and progress/submissions.
+ * Only authorized for Campus Managers and Administrators.
+ */
+export async function deleteCampusStudent(
+  studentId: string
+): Promise<{ success: boolean; error?: string; message?: string }> {
+  const result = await callCampusApi('/api/campus/delete-student', { studentId }, 'delete_student')
+  if (!result.success) {
+    console.error('Error deleting campus student:', result.error)
+  }
+  return { success: result.success, error: result.error, message: (result.data as { message?: string })?.message }
+}
+
+/**
  * Fetches Live Recent Submissions for the Learning Activity Feed directly from the database.
  * Batch-resolves student user information to avoid PostgREST foreign key cache errors.
  */

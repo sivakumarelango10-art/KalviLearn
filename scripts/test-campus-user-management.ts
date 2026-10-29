@@ -258,16 +258,16 @@ async function runTests() {
   const getOut = getRes.getOutput()
   assert(getOut.statusCode === 405, 'HTTP GET rejected with 405 Method Not Allowed')
 
-  // Case 2.6: Method not allowed (DELETE) -> 405
+  // Case 2.6: Method not allowed (PUT) -> 405
   resetCampusRateLimitsForTesting()
-  const { req: deleteReq, res: deleteRes } = createMockReqRes({
-    method: 'DELETE',
+  const { req: putReq, res: putRes } = createMockReqRes({
+    method: 'PUT',
     url: '/api/campus/students',
     headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
   })
-  await campusHandler(deleteReq, deleteRes)
-  const deleteOut = deleteRes.getOutput()
-  assert(deleteOut.statusCode === 405, 'HTTP DELETE rejected with 405 Method Not Allowed')
+  await campusHandler(putReq, putRes)
+  const putOut = putRes.getOutput()
+  assert(putOut.statusCode === 405, 'HTTP PUT rejected with 405 Method Not Allowed')
 
   // Case 2.7: Missing route/action -> 400 Invalid Action
   resetCampusRateLimitsForTesting()
