@@ -15,3 +15,4 @@ CREATE POLICY "service_role_audit" ON public.admin_audit_logs
   FOR ALL TO service_role
   USING (true)
   WITH CHECK (true);
+

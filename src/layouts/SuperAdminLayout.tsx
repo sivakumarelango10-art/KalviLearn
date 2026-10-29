@@ -74,3 +74,4 @@ export const SuperAdminLayout: React.FC = () => {
     </div>
   )
 }
+

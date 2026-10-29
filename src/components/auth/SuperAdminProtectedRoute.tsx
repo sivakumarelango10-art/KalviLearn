@@ -112,3 +112,4 @@ export const SuperAdminProtectedRoute: React.FC = () => {
 
   return <Outlet />
 }
+

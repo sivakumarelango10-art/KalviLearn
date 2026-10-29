@@ -725,3 +725,4 @@ export const SuperAdminStudentsPage: React.FC = () => {
     </div>
   )
 }
+
