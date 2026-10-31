@@ -1,0 +1,11 @@
+{"suite":"test-evaluation-pipeline","exit":0,"seconds":12.7}
+{"suite":"test-judge-bank-audit","exit":0,"seconds":6.9}
+{"suite":"test-judge-pipeline","exit":0,"seconds":86.1}
+{"suite":"test-coding-section","exit":0,"seconds":6.1}
+{"suite":"test-frontend-feedback-ui","exit":0,"seconds":2.7}
+{"suite":"test-multilang-revision","exit":0,"seconds":5.1}
+{"suite":"test-security-hardening","exit":0,"seconds":22.5}
+{"suite":"test-imported-practice","exit":0,"seconds":5.1}
+{"suite":"test-e2e-practice-execution","exit":0,"seconds":4.2}
+{"suite":"test-master-audit","exit":0,"seconds":17.6}
+{"suite":"validate-coding-judge-data","exit":0,"seconds":3.1}

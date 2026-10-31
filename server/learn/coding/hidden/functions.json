@@ -1,0 +1,1802 @@
+{
+  "reusable-max-function": {
+    "id": "learn:functions:reusable-max-function",
+    "bankId": "T06-Q01",
+    "slug": "reusable-max-function",
+    "topicId": "functions",
+    "title": "Reusable Max Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "reusable-min-function": {
+    "id": "learn:functions:reusable-min-function",
+    "bankId": "T06-Q02",
+    "slug": "reusable-min-function",
+    "topicId": "functions",
+    "title": "Reusable Min Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-12",
+        "isHidden": true
+      }
+    ]
+  },
+  "absolute-difference-function": {
+    "id": "learn:functions:absolute-difference-function",
+    "bankId": "T06-Q03",
+    "slug": "absolute-difference-function",
+    "topicId": "functions",
+    "title": "Absolute Difference Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "11",
+        "isHidden": true
+      }
+    ]
+  },
+  "parity-comparison-function": {
+    "id": "learn:functions:parity-comparison-function",
+    "bankId": "T06-Q04",
+    "slug": "parity-comparison-function",
+    "topicId": "functions",
+    "title": "Parity Comparison Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "integer-gcd-helper": {
+    "id": "learn:functions:integer-gcd-helper",
+    "bankId": "T06-Q05",
+    "slug": "integer-gcd-helper",
+    "topicId": "functions",
+    "title": "Integer GCD Helper",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "safe-division-function": {
+    "id": "learn:functions:safe-division-function",
+    "bankId": "T06-Q06",
+    "slug": "safe-division-function",
+    "topicId": "functions",
+    "title": "Safe Division Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-2",
+        "isHidden": true
+      }
+    ]
+  },
+  "composite-function-evaluation": {
+    "id": "learn:functions:composite-function-evaluation",
+    "bankId": "T06-Q07",
+    "slug": "composite-function-evaluation",
+    "topicId": "functions",
+    "title": "Composite Function Evaluation",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "31",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "48",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "210",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "203",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-16",
+        "isHidden": true
+      }
+    ]
+  },
+  "function-returns-a-pair": {
+    "id": "learn:functions:function-returns-a-pair",
+    "bankId": "T06-Q08",
+    "slug": "function-returns-a-pair",
+    "topicId": "functions",
+    "title": "Function Returns a Pair",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 -5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -11",
+        "isHidden": true
+      }
+    ]
+  },
+  "range-sum-helper": {
+    "id": "learn:functions:range-sum-helper",
+    "bankId": "T06-Q09",
+    "slug": "range-sum-helper",
+    "topicId": "functions",
+    "title": "Range Sum Helper",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "72",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "4914",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "285",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "5050",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-63",
+        "isHidden": true
+      }
+    ]
+  },
+  "divisibility-function": {
+    "id": "learn:functions:divisibility-function",
+    "bankId": "T06-Q10",
+    "slug": "divisibility-function",
+    "topicId": "functions",
+    "title": "Divisibility Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "prime-checker-function": {
+    "id": "learn:functions:prime-checker-function",
+    "bankId": "T06-Q11",
+    "slug": "prime-checker-function",
+    "topicId": "functions",
+    "title": "Prime Checker Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "factor-count-helper": {
+    "id": "learn:functions:factor-count-helper",
+    "bankId": "T06-Q12",
+    "slug": "factor-count-helper",
+    "topicId": "functions",
+    "title": "Factor Count Helper",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "function-composition-of-squares": {
+    "id": "learn:functions:function-composition-of-squares",
+    "bankId": "T06-Q13",
+    "slug": "function-composition-of-squares",
+    "topicId": "functions",
+    "title": "Function Composition of Squares",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "58",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "160",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "73",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "450",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9882",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "29",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "58",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "612",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "10000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "169",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "73",
+        "isHidden": true
+      }
+    ]
+  },
+  "swap-function-output": {
+    "id": "learn:functions:swap-function-output",
+    "bankId": "T06-Q14",
+    "slug": "swap-function-output",
+    "topicId": "functions",
+    "title": "Swap Function Output",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3 7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9 99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6 24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5 -12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      }
+    ]
+  },
+  "clamp-using-helper-functions": {
+    "id": "learn:functions:clamp-using-helper-functions",
+    "bankId": "T06-Q15",
+    "slug": "clamp-using-helper-functions",
+    "topicId": "functions",
+    "title": "Clamp Using Helper Functions",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "digits-in-both-arguments": {
+    "id": "learn:functions:digits-in-both-arguments",
+    "bankId": "T06-Q16",
+    "slug": "digits-in-both-arguments",
+    "topicId": "functions",
+    "title": "Digits in Both Arguments",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "12 4",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "15 15",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "-8 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "function-returns-sign-product": {
+    "id": "learn:functions:function-returns-sign-product",
+    "bankId": "T06-Q17",
+    "slug": "function-returns-sign-product",
+    "topicId": "functions",
+    "title": "Function Returns Sign Product",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-8 3",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "12 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "coprime-function": {
+    "id": "learn:functions:coprime-function",
+    "bankId": "T06-Q18",
+    "slug": "coprime-function",
+    "topicId": "functions",
+    "title": "Coprime Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "normalize-fraction-function": {
+    "id": "learn:functions:normalize-fraction-function",
+    "bankId": "T06-Q19",
+    "slug": "normalize-fraction-function",
+    "topicId": "functions",
+    "title": "Normalize Fraction Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "7 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "3 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-8 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "11 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "5 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "7 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "4 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-12 5",
+        "isHidden": true
+      }
+    ]
+  },
+  "math-utility-summary": {
+    "id": "learn:functions:math-utility-summary",
+    "bankId": "T06-Q20",
+    "slug": "math-utility-summary",
+    "topicId": "functions",
+    "title": "Math Utility Summary",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "1 21 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 0 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4 12 16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "1 24 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 15 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9 99 108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "1 10 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "1 21 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6 24 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 0 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "1 60 -7",
+        "isHidden": true
+      }
+    ]
+  }
+}

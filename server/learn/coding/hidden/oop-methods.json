@@ -1,0 +1,1742 @@
+{
+  "counter-increment-and-decrement": {
+    "id": "learn:oop-methods:counter-increment-and-decrement",
+    "bankId": "T23-Q01",
+    "slug": "counter-increment-and-decrement",
+    "topicId": "oop-methods",
+    "title": "Counter Increment and Decrement",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nincrement 3\ndecrement 4\nincrement 2\ndecrement 1",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nincrement 1",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\ndecrement 0\nincrement 0\ndecrement 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nincrement 12\ndecrement 7\nincrement 15",
+        "expectedOutput": "40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\ndecrement 2\nincrement 2\ndecrement 2\nincrement 2\ndecrement 2",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nincrement 9\ndecrement 5\nincrement 12\ndecrement 4\nincrement 8\ndecrement 1",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\ndecrement 12\nincrement 0\ndecrement 1",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nincrement 11\ndecrement 11\nincrement 11",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\ndecrement 5\nincrement 2\ndecrement 7\nincrement 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nincrement 0\ndecrement 6\nincrement 0\ndecrement 6",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\ndecrement 20\nincrement 19\ndecrement 18",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nincrement 4\ndecrement 8\nincrement 0\ndecrement 10\nincrement 1\ndecrement 3\nincrement 6",
+        "expectedOutput": "-3",
+        "isHidden": true
+      }
+    ]
+  },
+  "bankaccount-deposit-and-withdraw": {
+    "id": "learn:oop-methods:bankaccount-deposit-and-withdraw",
+    "bankId": "T23-Q02",
+    "slug": "bankaccount-deposit-and-withdraw",
+    "topicId": "oop-methods",
+    "title": "BankAccount Deposit and Withdraw",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\ndeposit 3\nwithdraw 4\ndeposit 2\nwithdraw 1",
+        "expectedOutput": "10 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\ndeposit 1",
+        "expectedOutput": "2 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nwithdraw 0\ndeposit 0\nwithdraw 0",
+        "expectedOutput": "5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\ndeposit 12\nwithdraw 7\ndeposit 15",
+        "expectedOutput": "40 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nwithdraw 2\ndeposit 2\nwithdraw 2\ndeposit 2\nwithdraw 2",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\ndeposit 9\nwithdraw 5\ndeposit 12\nwithdraw 4\ndeposit 8\nwithdraw 1",
+        "expectedOutput": "38 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nwithdraw 12\ndeposit 0\nwithdraw 1",
+        "expectedOutput": "2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\ndeposit 11\nwithdraw 11\ndeposit 11",
+        "expectedOutput": "11 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nwithdraw 5\ndeposit 2\nwithdraw 7\ndeposit 1",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\ndeposit 0\nwithdraw 6\ndeposit 0\nwithdraw 6",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nwithdraw 20\ndeposit 19\nwithdraw 18",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\ndeposit 4\nwithdraw 8\ndeposit 0\nwithdraw 10\ndeposit 1\nwithdraw 3\ndeposit 6",
+        "expectedOutput": "7 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "stack-push-and-pop": {
+    "id": "learn:oop-methods:stack-push-and-pop",
+    "bankId": "T23-Q03",
+    "slug": "stack-push-and-pop",
+    "topicId": "oop-methods",
+    "title": "Stack Push and Pop",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\npush 3\npop 4\npush 2\npop 1",
+        "expectedOutput": "10\n3 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\npush 1",
+        "expectedOutput": "1 1\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\npop 0\npush 0\npop 0",
+        "expectedOutput": "EMPTY\n5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\npush 12\npop 7\npush 15",
+        "expectedOutput": "20 15\n12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\npop 2\npush 2\npop 2\npush 2\npop 2",
+        "expectedOutput": "EMPTY\n8 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\npush 9\npop 5\npush 12\npop 4\npush 8\npop 1",
+        "expectedOutput": "19\n9 12 8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\npop 12\npush 0\npop 1",
+        "expectedOutput": "EMPTY\n3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\npush 11\npop 11\npush 11",
+        "expectedOutput": "0 11\n11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\npop 5\npush 2\npop 7\npush 1",
+        "expectedOutput": "1\n15 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\npush 0\npop 6\npush 0\npop 6",
+        "expectedOutput": "2\n0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\npop 20\npush 19\npop 18",
+        "expectedOutput": "EMPTY\n20 19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\npush 4\npop 8\npush 0\npop 10\npush 1\npop 3\npush 6",
+        "expectedOutput": "7 6\n4 0 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "queue-enqueue-and-dequeue": {
+    "id": "learn:oop-methods:queue-enqueue-and-dequeue",
+    "bankId": "T23-Q04",
+    "slug": "queue-enqueue-and-dequeue",
+    "topicId": "oop-methods",
+    "title": "Queue Enqueue and Dequeue",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nenqueue 3\ndequeue 4\nenqueue 2\ndequeue 1",
+        "expectedOutput": "2\n10 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nenqueue 1",
+        "expectedOutput": "1 1\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\ndequeue 0\nenqueue 0\ndequeue 0",
+        "expectedOutput": "EMPTY\n5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nenqueue 12\ndequeue 7\nenqueue 15",
+        "expectedOutput": "12 15\n20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\ndequeue 2\nenqueue 2\ndequeue 2\nenqueue 2\ndequeue 2",
+        "expectedOutput": "EMPTY\n8 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nenqueue 9\ndequeue 5\nenqueue 12\ndequeue 4\nenqueue 8\ndequeue 1",
+        "expectedOutput": "8\n19 9 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\ndequeue 12\nenqueue 0\ndequeue 1",
+        "expectedOutput": "EMPTY\n3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nenqueue 11\ndequeue 11\nenqueue 11",
+        "expectedOutput": "11 11\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\ndequeue 5\nenqueue 2\ndequeue 7\nenqueue 1",
+        "expectedOutput": "1\n15 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nenqueue 0\ndequeue 6\nenqueue 0\ndequeue 6",
+        "expectedOutput": "0\n2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\ndequeue 20\nenqueue 19\ndequeue 18",
+        "expectedOutput": "EMPTY\n20 19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nenqueue 4\ndequeue 8\nenqueue 0\ndequeue 10\nenqueue 1\ndequeue 3\nenqueue 6",
+        "expectedOutput": "1 6\n7 4 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "inventory-restock-and-sell": {
+    "id": "learn:oop-methods:inventory-restock-and-sell",
+    "bankId": "T23-Q05",
+    "slug": "inventory-restock-and-sell",
+    "topicId": "oop-methods",
+    "title": "Inventory Restock and Sell",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nrestock 3\nsell 4\nrestock 2\nsell 1",
+        "expectedOutput": "10 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nrestock 1",
+        "expectedOutput": "2 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nsell 0\nrestock 0\nsell 0",
+        "expectedOutput": "5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nrestock 12\nsell 7\nrestock 15",
+        "expectedOutput": "40 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nsell 2\nrestock 2\nsell 2\nrestock 2\nsell 2",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nrestock 9\nsell 5\nrestock 12\nsell 4\nrestock 8\nsell 1",
+        "expectedOutput": "38 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nsell 12\nrestock 0\nsell 1",
+        "expectedOutput": "0 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nrestock 11\nsell 11\nrestock 11",
+        "expectedOutput": "11 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nsell 5\nrestock 2\nsell 7\nrestock 1",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nrestock 0\nsell 6\nrestock 0\nsell 6",
+        "expectedOutput": "0 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nsell 20\nrestock 19\nsell 18",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nrestock 4\nsell 8\nrestock 0\nsell 10\nrestock 1\nsell 3\nrestock 6",
+        "expectedOutput": "6 9",
+        "isHidden": true
+      }
+    ]
+  },
+  "lamp-toggle-and-explicit-states": {
+    "id": "learn:oop-methods:lamp-toggle-and-explicit-states",
+    "bankId": "T23-Q06",
+    "slug": "lamp-toggle-and-explicit-states",
+    "topicId": "oop-methods",
+    "title": "Lamp Toggle and Explicit States",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\ntoggle 3\nturn_on 4\nturn_off 2\ntoggle 1",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nturn_off 1",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\ntoggle 0\nturn_on 0\nturn_off 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nturn_on 12\nturn_off 7\ntoggle 15",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nturn_off 2\ntoggle 2\nturn_on 2\nturn_off 2\ntoggle 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\ntoggle 9\nturn_on 5\nturn_off 12\ntoggle 4\nturn_on 8\nturn_off 1",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nturn_on 12\nturn_off 0\ntoggle 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nturn_off 11\ntoggle 11\nturn_on 11",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\ntoggle 5\nturn_on 2\nturn_off 7\ntoggle 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nturn_on 0\nturn_off 6\ntoggle 0\nturn_on 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nturn_off 20\ntoggle 19\nturn_on 18",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\ntoggle 4\nturn_on 8\nturn_off 0\ntoggle 10\nturn_on 1\nturn_off 3\ntoggle 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "thermometer-methods": {
+    "id": "learn:oop-methods:thermometer-methods",
+    "bankId": "T23-Q07",
+    "slug": "thermometer-methods",
+    "topicId": "oop-methods",
+    "title": "Thermometer Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nraise_c 3\nlower_c 4\nraise_c 2\nlower_c 1",
+        "expectedOutput": "10 250",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 160",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nraise_c 1",
+        "expectedOutput": "2 178",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nlower_c 0\nraise_c 0\nlower_c 0",
+        "expectedOutput": "5 205",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nraise_c 12\nlower_c 7\nraise_c 15",
+        "expectedOutput": "40 520",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nlower_c 2\nraise_c 2\nlower_c 2\nraise_c 2\nlower_c 2",
+        "expectedOutput": "6 214",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nraise_c 9\nlower_c 5\nraise_c 12\nlower_c 4\nraise_c 8\nlower_c 1",
+        "expectedOutput": "38 502",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nlower_c 12\nraise_c 0\nlower_c 1",
+        "expectedOutput": "-10 70",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nraise_c 11\nlower_c 11\nraise_c 11",
+        "expectedOutput": "11 259",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nlower_c 5\nraise_c 2\nlower_c 7\nraise_c 1",
+        "expectedOutput": "6 214",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nraise_c 0\nlower_c 6\nraise_c 0\nlower_c 6",
+        "expectedOutput": "-10 70",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nlower_c 20\nraise_c 19\nlower_c 18",
+        "expectedOutput": "1 169",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nraise_c 4\nlower_c 8\nraise_c 0\nlower_c 10\nraise_c 1\nlower_c 3\nraise_c 6",
+        "expectedOutput": "-3 133",
+        "isHidden": true
+      }
+    ]
+  },
+  "shopping-cart-item-methods": {
+    "id": "learn:oop-methods:shopping-cart-item-methods",
+    "bankId": "T23-Q08",
+    "slug": "shopping-cart-item-methods",
+    "topicId": "oop-methods",
+    "title": "Shopping Cart Item Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nadd_item 3\nremove_item 4\nadd_item 2\nremove_item 1",
+        "expectedOutput": "2 1\n3 1\n10 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nadd_item 1",
+        "expectedOutput": "1 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nremove_item 0\nadd_item 0\nremove_item 0",
+        "expectedOutput": "5 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nadd_item 12\nremove_item 7\nadd_item 15",
+        "expectedOutput": "12 1\n15 1\n20 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nremove_item 2\nadd_item 2\nremove_item 2\nadd_item 2\nremove_item 2",
+        "expectedOutput": "8 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nadd_item 9\nremove_item 5\nadd_item 12\nremove_item 4\nadd_item 8\nremove_item 1",
+        "expectedOutput": "8 1\n9 1\n12 1\n19 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nremove_item 12\nadd_item 0\nremove_item 1",
+        "expectedOutput": "0 1\n3 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nadd_item 11\nremove_item 11\nadd_item 11",
+        "expectedOutput": "0 1\n11 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nremove_item 5\nadd_item 2\nremove_item 7\nadd_item 1",
+        "expectedOutput": "1 1\n2 1\n15 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nadd_item 0\nremove_item 6\nadd_item 0\nremove_item 6",
+        "expectedOutput": "0 2\n2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nremove_item 20\nadd_item 19\nremove_item 18",
+        "expectedOutput": "19 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nadd_item 4\nremove_item 8\nadd_item 0\nremove_item 10\nadd_item 1\nremove_item 3\nadd_item 6",
+        "expectedOutput": "0 1\n1 1\n4 1\n6 1\n7 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-collection-methods": {
+    "id": "learn:oop-methods:unique-collection-methods",
+    "bankId": "T23-Q09",
+    "slug": "unique-collection-methods",
+    "topicId": "oop-methods",
+    "title": "Unique Collection Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nadd 3\nremove 4\nadd 2\nremove 1",
+        "expectedOutput": "2 3 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nadd 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nremove 0\nadd 0\nremove 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nadd 12\nremove 7\nadd 15",
+        "expectedOutput": "12 15 20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nremove 2\nadd 2\nremove 2\nadd 2\nremove 2",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nadd 9\nremove 5\nadd 12\nremove 4\nadd 8\nremove 1",
+        "expectedOutput": "8 9 12 19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nremove 12\nadd 0\nremove 1",
+        "expectedOutput": "0 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nadd 11\nremove 11\nadd 11",
+        "expectedOutput": "0 11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nremove 5\nadd 2\nremove 7\nadd 1",
+        "expectedOutput": "1 2 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nadd 0\nremove 6\nadd 0\nremove 6",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nremove 20\nadd 19\nremove 18",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nadd 4\nremove 8\nadd 0\nremove 10\nadd 1\nremove 3\nadd 6",
+        "expectedOutput": "0 1 4 6 7",
+        "isHidden": true
+      }
+    ]
+  },
+  "undoable-calculator": {
+    "id": "learn:oop-methods:undoable-calculator",
+    "bankId": "T23-Q10",
+    "slug": "undoable-calculator",
+    "topicId": "oop-methods",
+    "title": "Undoable Calculator",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nadd 3\nsubtract 4\nundo 2\nadd 1",
+        "expectedOutput": "14 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nundo 1",
+        "expectedOutput": "1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nadd 0\nsubtract 0\nundo 0",
+        "expectedOutput": "5 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nsubtract 12\nundo 7\nadd 15",
+        "expectedOutput": "35 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nundo 2\nadd 2\nsubtract 2\nundo 2\nadd 2",
+        "expectedOutput": "12 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nadd 9\nsubtract 5\nundo 12\nadd 4\nsubtract 8\nundo 1",
+        "expectedOutput": "32 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nsubtract 12\nundo 0\nadd 1",
+        "expectedOutput": "4 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nundo 11\nadd 11\nsubtract 11",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nadd 5\nsubtract 2\nundo 7\nadd 1",
+        "expectedOutput": "21 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nsubtract 0\nundo 6\nadd 0\nsubtract 6",
+        "expectedOutput": "-4 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nundo 20\nadd 19\nsubtract 18",
+        "expectedOutput": "21 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nadd 4\nsubtract 8\nundo 0\nadd 10\nsubtract 1\nundo 3\nadd 6",
+        "expectedOutput": "27 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "clamped-gradebook-score": {
+    "id": "learn:oop-methods:clamped-gradebook-score",
+    "bankId": "T23-Q11",
+    "slug": "clamped-gradebook-score",
+    "topicId": "oop-methods",
+    "title": "Clamped GradeBook Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\naward 3\npenalty 4\naward 2\npenalty 1",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\naward 1",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\npenalty 0\naward 0\npenalty 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\naward 12\npenalty 7\naward 15",
+        "expectedOutput": "40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\npenalty 2\naward 2\npenalty 2\naward 2\npenalty 2",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\naward 9\npenalty 5\naward 12\npenalty 4\naward 8\npenalty 1",
+        "expectedOutput": "38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\npenalty 12\naward 0\npenalty 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\naward 11\npenalty 11\naward 11",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\npenalty 5\naward 2\npenalty 7\naward 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\naward 0\npenalty 6\naward 0\npenalty 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\npenalty 20\naward 19\npenalty 18",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\naward 4\npenalty 8\naward 0\npenalty 10\naward 1\npenalty 3\naward 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "digitalclock-time-methods": {
+    "id": "learn:oop-methods:digitalclock-time-methods",
+    "bankId": "T23-Q12",
+    "slug": "digitalclock-time-methods",
+    "topicId": "oop-methods",
+    "title": "DigitalClock Time Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nforward 3\nback 4\nforward 2\nback 1",
+        "expectedOutput": "0 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nforward 1",
+        "expectedOutput": "0 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nback 0\nforward 0\nback 0",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nforward 12\nback 7\nforward 15",
+        "expectedOutput": "0 40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nback 2\nforward 2\nback 2\nforward 2\nback 2",
+        "expectedOutput": "0 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nforward 9\nback 5\nforward 12\nback 4\nforward 8\nback 1",
+        "expectedOutput": "0 38",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nback 12\nforward 0\nback 1",
+        "expectedOutput": "23 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nforward 11\nback 11\nforward 11",
+        "expectedOutput": "0 11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nback 5\nforward 2\nback 7\nforward 1",
+        "expectedOutput": "0 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nforward 0\nback 6\nforward 0\nback 6",
+        "expectedOutput": "23 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nback 20\nforward 19\nback 18",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nforward 4\nback 8\nforward 0\nback 10\nforward 1\nback 3\nforward 6",
+        "expectedOutput": "23 57",
+        "isHidden": true
+      }
+    ]
+  },
+  "stringbuilder-append-and-delete": {
+    "id": "learn:oop-methods:stringbuilder-append-and-delete",
+    "bankId": "T23-Q13",
+    "slug": "stringbuilder-append-and-delete",
+    "topicId": "oop-methods",
+    "title": "StringBuilder Append and Delete",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nappend_digit 3\ndelete_last 4\nappend_digit 2\ndelete_last 1",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nappend_digit 1",
+        "expectedOutput": "11",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\ndelete_last 0\nappend_digit 0\ndelete_last 0",
+        "expectedOutput": "",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nappend_digit 12\ndelete_last 7\nappend_digit 15",
+        "expectedOutput": "205",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\ndelete_last 2\nappend_digit 2\ndelete_last 2\nappend_digit 2\ndelete_last 2",
+        "expectedOutput": "",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nappend_digit 9\ndelete_last 5\nappend_digit 12\ndelete_last 4\nappend_digit 8\ndelete_last 1",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\ndelete_last 12\nappend_digit 0\ndelete_last 1",
+        "expectedOutput": "",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nappend_digit 11\ndelete_last 11\nappend_digit 11",
+        "expectedOutput": "01",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\ndelete_last 5\nappend_digit 2\ndelete_last 7\nappend_digit 1",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nappend_digit 0\ndelete_last 6\nappend_digit 0\ndelete_last 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\ndelete_last 20\nappend_digit 19\ndelete_last 18",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nappend_digit 4\ndelete_last 8\nappend_digit 0\ndelete_last 10\nappend_digit 1\ndelete_last 3\nappend_digit 6",
+        "expectedOutput": "76",
+        "isHidden": true
+      }
+    ]
+  },
+  "priorityqueue-min-methods": {
+    "id": "learn:oop-methods:priorityqueue-min-methods",
+    "bankId": "T23-Q14",
+    "slug": "priorityqueue-min-methods",
+    "topicId": "oop-methods",
+    "title": "PriorityQueue Min Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\ninsert 3\nextract_min 4\ninsert 2\nextract_min 1",
+        "expectedOutput": "10\n3 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\ninsert 1",
+        "expectedOutput": "1 1\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nextract_min 0\ninsert 0\nextract_min 0",
+        "expectedOutput": "EMPTY\n5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\ninsert 12\nextract_min 7\ninsert 15",
+        "expectedOutput": "15 20\n12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nextract_min 2\ninsert 2\nextract_min 2\ninsert 2\nextract_min 2",
+        "expectedOutput": "EMPTY\n8 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\ninsert 9\nextract_min 5\ninsert 12\nextract_min 4\ninsert 8\nextract_min 1",
+        "expectedOutput": "19\n9 12 8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nextract_min 12\ninsert 0\nextract_min 1",
+        "expectedOutput": "EMPTY\n3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\ninsert 11\nextract_min 11\ninsert 11",
+        "expectedOutput": "11 11\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nextract_min 5\ninsert 2\nextract_min 7\ninsert 1",
+        "expectedOutput": "1\n15 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\ninsert 0\nextract_min 6\ninsert 0\nextract_min 6",
+        "expectedOutput": "2\n0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nextract_min 20\ninsert 19\nextract_min 18",
+        "expectedOutput": "EMPTY\n20 19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\ninsert 4\nextract_min 8\ninsert 0\nextract_min 10\ninsert 1\nextract_min 3\ninsert 6",
+        "expectedOutput": "6 7\n4 0 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "accumulator-add-multiply-reset": {
+    "id": "learn:oop-methods:accumulator-add-multiply-reset",
+    "bankId": "T23-Q15",
+    "slug": "accumulator-add-multiply-reset",
+    "topicId": "oop-methods",
+    "title": "Accumulator Add Multiply Reset",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nadd 3\nmultiply 4\nreset 2\nadd 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "20 3\nmultiply 12\nreset 7\nadd 15",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nreset 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 3\nadd 0\nmultiply 0\nreset 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nreset 2\nadd 2\nmultiply 2\nreset 2\nadd 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nadd 9\nmultiply 5\nreset 12\nadd 4\nmultiply 8\nreset 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nmultiply 12\nreset 0\nadd 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nreset 11\nadd 11\nmultiply 11",
+        "expectedOutput": "121",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nadd 5\nmultiply 2\nreset 7\nadd 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nmultiply 0\nreset 6\nadd 0\nmultiply 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nreset 20\nadd 19\nmultiply 18",
+        "expectedOutput": "342",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nadd 4\nmultiply 8\nreset 0\nadd 10\nmultiply 1\nreset 3\nadd 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "seat-reservation-object": {
+    "id": "learn:oop-methods:seat-reservation-object",
+    "bankId": "T23-Q16",
+    "slug": "seat-reservation-object",
+    "topicId": "oop-methods",
+    "title": "Seat Reservation Object",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nreserve 3\ncancel 4\nreserve 2\ncancel 1",
+        "expectedOutput": "10 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nreserve 1",
+        "expectedOutput": "2 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\ncancel 0\nreserve 0\ncancel 0",
+        "expectedOutput": "5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nreserve 12\ncancel 7\nreserve 15",
+        "expectedOutput": "13 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\ncancel 2\nreserve 2\ncancel 2\nreserve 2\ncancel 2",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nreserve 9\ncancel 5\nreserve 12\ncancel 4\nreserve 8\ncancel 1",
+        "expectedOutput": "17 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\ncancel 12\nreserve 0\ncancel 1",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nreserve 11\ncancel 11\nreserve 11",
+        "expectedOutput": "11 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\ncancel 5\nreserve 2\ncancel 7\nreserve 1",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nreserve 0\ncancel 6\nreserve 0\ncancel 6",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\ncancel 20\nreserve 19\ncancel 18",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nreserve 4\ncancel 8\nreserve 0\ncancel 10\nreserve 1\ncancel 3\nreserve 6",
+        "expectedOutput": "6 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "circular-playlist-cursor-methods": {
+    "id": "learn:oop-methods:circular-playlist-cursor-methods",
+    "bankId": "T23-Q17",
+    "slug": "circular-playlist-cursor-methods",
+    "topicId": "oop-methods",
+    "title": "Circular Playlist Cursor Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nnext 3\nprevious 4\nnext 2\nprevious 1",
+        "expectedOutput": "1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1\nnext 1",
+        "expectedOutput": "2 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8 5\nprevious 2\nnext 2\nprevious 2\nnext 2\nprevious 2",
+        "expectedOutput": "4 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 3\nprevious 0\nnext 0\nprevious 0",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "20 3\nnext 12\nprevious 7\nnext 15",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nnext 9\nprevious 5\nnext 12\nprevious 4\nnext 8\nprevious 1",
+        "expectedOutput": "5 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nprevious 12\nnext 0\nprevious 1",
+        "expectedOutput": "4 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nnext 11\nprevious 11\nnext 11",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nprevious 5\nnext 2\nprevious 7\nnext 1",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nnext 0\nprevious 6\nnext 0\nprevious 6",
+        "expectedOutput": "3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nprevious 20\nnext 19\nprevious 18",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nnext 4\nprevious 8\nnext 0\nprevious 10\nnext 1\nprevious 3\nnext 6",
+        "expectedOutput": "3 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "flagregister-bit-methods": {
+    "id": "learn:oop-methods:flagregister-bit-methods",
+    "bankId": "T23-Q18",
+    "slug": "flagregister-bit-methods",
+    "topicId": "oop-methods",
+    "title": "FlagRegister Bit Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nset_bit 3\nclear_bit 4\ntoggle_bit 2\nset_bit 1",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\ntoggle_bit 1",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "5 3\nset_bit 0\nclear_bit 0\ntoggle_bit 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nclear_bit 12\ntoggle_bit 7\nset_bit 15",
+        "expectedOutput": "132",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\ntoggle_bit 2\nset_bit 2\nclear_bit 2\ntoggle_bit 2\nset_bit 2",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nset_bit 9\nclear_bit 5\ntoggle_bit 12\nset_bit 4\nclear_bit 8\ntoggle_bit 1",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nclear_bit 12\ntoggle_bit 0\nset_bit 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\ntoggle_bit 11\nset_bit 11\nclear_bit 11",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nset_bit 5\nclear_bit 2\ntoggle_bit 7\nset_bit 1",
+        "expectedOutput": "171",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nclear_bit 0\ntoggle_bit 6\nset_bit 0\nclear_bit 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\ntoggle_bit 20\nset_bit 19\nclear_bit 18",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nset_bit 4\nclear_bit 8\ntoggle_bit 0\nset_bit 10\nclear_bit 1\ntoggle_bit 3\nset_bit 6",
+        "expectedOutput": "93",
+        "isHidden": true
+      }
+    ]
+  },
+  "robot-2d-movement-methods": {
+    "id": "learn:oop-methods:robot-2d-movement-methods",
+    "bankId": "T23-Q19",
+    "slug": "robot-2d-movement-methods",
+    "topicId": "oop-methods",
+    "title": "Robot 2D Movement Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\neast 3\nnorth 4\nwest 2\nsouth 1",
+        "expectedOutput": "11 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 3\nsouth 0\neast 0\nnorth 0",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nwest 1",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\neast 12\nnorth 7\nwest 15",
+        "expectedOutput": "17 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nnorth 2\nwest 2\nsouth 2\neast 2\nnorth 2",
+        "expectedOutput": "8 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nwest 9\nsouth 5\neast 12\nnorth 4\nwest 8\nsouth 1",
+        "expectedOutput": "14 -2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nsouth 12\neast 0\nnorth 1",
+        "expectedOutput": "3 -11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\neast 11\nnorth 11\nwest 11",
+        "expectedOutput": "0 11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nnorth 5\nwest 2\nsouth 7\neast 1",
+        "expectedOutput": "14 -2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nwest 0\nsouth 6\neast 0\nnorth 6",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nsouth 20\neast 19\nnorth 18",
+        "expectedOutput": "39 -2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\neast 4\nnorth 8\nwest 0\nsouth 10\neast 1\nnorth 3\nwest 6",
+        "expectedOutput": "6 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "door-state-machine-methods": {
+    "id": "learn:oop-methods:door-state-machine-methods",
+    "bankId": "T23-Q20",
+    "slug": "door-state-machine-methods",
+    "topicId": "oop-methods",
+    "title": "Door State Machine Methods",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "10 4\nopen 3\nclose 4\nlock 2\nunlock 1",
+        "expectedOutput": "closed 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1\nlock 1",
+        "expectedOutput": "open 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 3\nunlock 0\nopen 0\nclose 0",
+        "expectedOutput": "closed 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "closed 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "20 3\nopen 12\nclose 7\nlock 15",
+        "expectedOutput": "locked 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "8 5\nclose 2\nlock 2\nunlock 2\nopen 2\nclose 2",
+        "expectedOutput": "closed 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "19 6\nlock 9\nunlock 5\nopen 12\nclose 4\nlock 8\nunlock 1",
+        "expectedOutput": "closed 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3\nunlock 12\nopen 0\nclose 1",
+        "expectedOutput": "closed 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "0 3\nopen 11\nclose 11\nlock 11",
+        "expectedOutput": "locked 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "15 4\nclose 5\nlock 2\nunlock 7\nopen 1",
+        "expectedOutput": "open 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "2 4\nlock 0\nunlock 6\nopen 0\nclose 6",
+        "expectedOutput": "closed 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "20 3\nunlock 20\nopen 19\nclose 18",
+        "expectedOutput": "closed 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 7\nopen 4\nclose 8\nlock 0\nunlock 10\nopen 1\nclose 3\nlock 6",
+        "expectedOutput": "locked 0",
+        "isHidden": true
+      }
+    ]
+  }
+}

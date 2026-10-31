@@ -1,0 +1,1742 @@
+{
+  "subset-sum-feasibility": {
+    "id": "learn:dynamic-programming:subset-sum-feasibility",
+    "bankId": "T20-Q01",
+    "slug": "subset-sum-feasibility",
+    "topicId": "dynamic-programming",
+    "title": "Subset Sum Feasibility",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0 0\n",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-subsets-equal-target": {
+    "id": "learn:dynamic-programming:count-subsets-equal-target",
+    "bankId": "T20-Q02",
+    "slug": "count-subsets-equal-target",
+    "topicId": "dynamic-programming",
+    "title": "Count Subsets Equal Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-elements-for-exact-subset-sum": {
+    "id": "learn:dynamic-programming:minimum-elements-for-exact-subset-sum",
+    "bankId": "T20-Q03",
+    "slug": "minimum-elements-for-exact-subset-sum",
+    "topicId": "dynamic-programming",
+    "title": "Minimum Elements for Exact Subset Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-elements-for-exact-subset-sum": {
+    "id": "learn:dynamic-programming:maximum-elements-for-exact-subset-sum",
+    "bankId": "T20-Q04",
+    "slug": "maximum-elements-for-exact-subset-sum",
+    "topicId": "dynamic-programming",
+    "title": "Maximum Elements for Exact Subset Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-subsets-not-exceeding-target": {
+    "id": "learn:dynamic-programming:count-subsets-not-exceeding-target",
+    "bankId": "T20-Q05",
+    "slug": "count-subsets-not-exceeding-target",
+    "topicId": "dynamic-programming",
+    "title": "Count Subsets Not Exceeding Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "128",
+        "isHidden": true
+      }
+    ]
+  },
+  "largest-attainable-subset-sum": {
+    "id": "learn:dynamic-programming:largest-attainable-subset-sum",
+    "bankId": "T20-Q06",
+    "slug": "largest-attainable-subset-sum",
+    "topicId": "dynamic-programming",
+    "title": "Largest Attainable Subset Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "can-partition-into-equal-sums": {
+    "id": "learn:dynamic-programming:can-partition-into-equal-sums",
+    "bankId": "T20-Q07",
+    "slug": "can-partition-into-equal-sums",
+    "topicId": "dynamic-programming",
+    "title": "Can Partition into Equal Sums",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1\n7",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0\n",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-equal-partition-difference": {
+    "id": "learn:dynamic-programming:minimum-equal-partition-difference",
+    "bankId": "T20-Q08",
+    "slug": "minimum-equal-partition-difference",
+    "topicId": "dynamic-programming",
+    "title": "Minimum Equal Partition Difference",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-plus-minus-expressions": {
+    "id": "learn:dynamic-programming:count-plus-minus-expressions",
+    "bankId": "T20-Q09",
+    "slug": "count-plus-minus-expressions",
+    "topicId": "dynamic-programming",
+    "title": "Count Plus Minus Expressions",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "56",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-increasing-subsequence-length": {
+    "id": "learn:dynamic-programming:longest-increasing-subsequence-length",
+    "bankId": "T20-Q10",
+    "slug": "longest-increasing-subsequence-length",
+    "topicId": "dynamic-programming",
+    "title": "Longest Increasing Subsequence Length",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-nondecreasing-subsequence-length": {
+    "id": "learn:dynamic-programming:longest-nondecreasing-subsequence-length",
+    "bankId": "T20-Q11",
+    "slug": "longest-nondecreasing-subsequence-length",
+    "topicId": "dynamic-programming",
+    "title": "Longest Nondecreasing Subsequence Length",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-strictly-decreasing-subsequence": {
+    "id": "learn:dynamic-programming:longest-strictly-decreasing-subsequence",
+    "bankId": "T20-Q12",
+    "slug": "longest-strictly-decreasing-subsequence",
+    "topicId": "dynamic-programming",
+    "title": "Longest Strictly Decreasing Subsequence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "house-robber-on-a-line": {
+    "id": "learn:dynamic-programming:house-robber-on-a-line",
+    "bankId": "T20-Q13",
+    "slug": "house-robber-on-a-line",
+    "topicId": "dynamic-programming",
+    "title": "House Robber on a Line",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "circular-house-robber": {
+    "id": "learn:dynamic-programming:circular-house-robber",
+    "bankId": "T20-Q14",
+    "slug": "circular-house-robber",
+    "topicId": "dynamic-programming",
+    "title": "Circular House Robber",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-nonnegative-contiguous-sum": {
+    "id": "learn:dynamic-programming:maximum-nonnegative-contiguous-sum",
+    "bankId": "T20-Q15",
+    "slug": "maximum-nonnegative-contiguous-sum",
+    "topicId": "dynamic-programming",
+    "title": "Maximum Nonnegative Contiguous Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "14",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "31",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-sum-increasing-subsequence": {
+    "id": "learn:dynamic-programming:maximum-sum-increasing-subsequence",
+    "bankId": "T20-Q16",
+    "slug": "maximum-sum-increasing-subsequence",
+    "topicId": "dynamic-programming",
+    "title": "Maximum Sum Increasing Subsequence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-unlimited-coins": {
+    "id": "learn:dynamic-programming:minimum-unlimited-coins",
+    "bankId": "T20-Q17",
+    "slug": "minimum-unlimited-coins",
+    "topicId": "dynamic-programming",
+    "title": "Minimum Unlimited Coins",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-unlimited-coin-combinations": {
+    "id": "learn:dynamic-programming:count-unlimited-coin-combinations",
+    "bankId": "T20-Q18",
+    "slug": "count-unlimited-coin-combinations",
+    "topicId": "dynamic-programming",
+    "title": "Count Unlimited Coin Combinations",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "10",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-ordered-coin-sequences": {
+    "id": "learn:dynamic-programming:count-ordered-coin-sequences",
+    "bankId": "T20-Q19",
+    "slug": "count-ordered-coin-sequences",
+    "topicId": "dynamic-programming",
+    "title": "Count Ordered Coin Sequences",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "10 7\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "64",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 1\n4 1 3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n2 1 0 7 6 5",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 5 5 5 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n1 0 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n0 1 0 2 0 3 0",
+        "expectedOutput": "81",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-alternating-up-down-subsequence": {
+    "id": "learn:dynamic-programming:longest-alternating-up-down-subsequence",
+    "bankId": "T20-Q20",
+    "slug": "longest-alternating-up-down-subsequence",
+    "topicId": "dynamic-programming",
+    "title": "Longest Alternating Up Down Subsequence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5\n3 1 4 1 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1\n7",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4\n4 1 3 2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6\n2 2 3 3 3 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10\n1 2 3 4 5 6 7 0 1 2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6\n2 1 0 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5\n5 5 5 5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3\n1 0 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4\n4 4 4 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7\n0 1 0 2 0 3 0",
+        "expectedOutput": "7",
+        "isHidden": true
+      }
+    ]
+  }
+}

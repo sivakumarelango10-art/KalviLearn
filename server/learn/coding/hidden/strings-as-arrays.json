@@ -1,0 +1,1742 @@
+{
+  "length-by-character-traversal": {
+    "id": "learn:strings-as-arrays:length-by-character-traversal",
+    "bankId": "T09-Q01",
+    "slug": "length-by-character-traversal",
+    "topicId": "strings-as-arrays",
+    "title": "Length by Character Traversal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "16",
+        "isHidden": true
+      }
+    ]
+  },
+  "reverse-characters": {
+    "id": "learn:strings-as-arrays:reverse-characters",
+    "bankId": "T09-Q02",
+    "slug": "reverse-characters",
+    "topicId": "strings-as-arrays",
+    "title": "Reverse Characters",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "mhtirogla",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "racecar",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "olleh",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "ananab",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "edcba",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "level",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "ippississim",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "zzyxzz",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "bababa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "xofnworbkciuqeht",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-vowel-characters": {
+    "id": "learn:strings-as-arrays:count-vowel-characters",
+    "bankId": "T09-Q03",
+    "slug": "count-vowel-characters",
+    "topicId": "strings-as-arrays",
+    "title": "Count Vowel Characters",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-consonant-characters": {
+    "id": "learn:strings-as-arrays:count-consonant-characters",
+    "bankId": "T09-Q04",
+    "slug": "count-consonant-characters",
+    "topicId": "strings-as-arrays",
+    "title": "Count Consonant Characters",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "racecar",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "a",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "aaaa",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "11",
+        "isHidden": true
+      }
+    ]
+  },
+  "palindrome-string": {
+    "id": "learn:strings-as-arrays:palindrome-string",
+    "bankId": "T09-Q05",
+    "slug": "palindrome-string",
+    "topicId": "strings-as-arrays",
+    "title": "Palindrome String",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-character-or-null": {
+    "id": "learn:strings-as-arrays:first-character-or-null",
+    "bankId": "T09-Q06",
+    "slug": "first-character-or-null",
+    "topicId": "strings-as-arrays",
+    "title": "First Character or Null",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "racecar",
+        "expectedOutput": "r",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "aaaa",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "h",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "b",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "l",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "m",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "z",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "t",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-character-or-null": {
+    "id": "learn:strings-as-arrays:last-character-or-null",
+    "bankId": "T09-Q07",
+    "slug": "last-character-or-null",
+    "topicId": "strings-as-arrays",
+    "title": "Last Character or Null",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "m",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "r",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "o",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "e",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "l",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "i",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "z",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "b",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "x",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-characters-first-seen": {
+    "id": "learn:strings-as-arrays:unique-characters-first-seen",
+    "bankId": "T09-Q08",
+    "slug": "unique-characters-first-seen",
+    "topicId": "strings-as-arrays",
+    "title": "Unique Characters First Seen",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "algorithm",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "race",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "helo",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "ban",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "abcde",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "lev",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "misp",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "zxy",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "ab",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "thequickbrownfx",
+        "isHidden": true
+      }
+    ]
+  },
+  "sorted-unique-characters": {
+    "id": "learn:strings-as-arrays:sorted-unique-characters",
+    "bankId": "T09-Q09",
+    "slug": "sorted-unique-characters",
+    "topicId": "strings-as-arrays",
+    "title": "Sorted Unique Characters",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "aghilmort",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "acer",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "ehlo",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "abn",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "abcde",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "elv",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "imps",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "xyz",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "ab",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "bcefhiknoqrtuwx",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-nonrepeating-character": {
+    "id": "learn:strings-as-arrays:first-nonrepeating-character",
+    "bankId": "T09-Q10",
+    "slug": "first-nonrepeating-character",
+    "topicId": "strings-as-arrays",
+    "title": "First Nonrepeating Character",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "racecar",
+        "expectedOutput": "e",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "aaaa",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "h",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "b",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "a",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "v",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "m",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "x",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "t",
+        "isHidden": true
+      }
+    ]
+  },
+  "run-length-character-groups": {
+    "id": "learn:strings-as-arrays:run-length-character-groups",
+    "bankId": "T09-Q11",
+    "slug": "run-length-character-groups",
+    "topicId": "strings-as-arrays",
+    "title": "Run Length Character Groups",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "a 1 l 1 g 1 o 1 r 1 i 1 t 1 h 1 m 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "a 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "r 1 a 1 c 1 e 1 c 1 a 1 r 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "h 1 e 1 l 2 o 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "b 1 a 1 n 1 a 1 n 1 a 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "a 1 b 1 c 1 d 1 e 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "l 1 e 1 v 1 e 1 l 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "m 1 i 1 s 2 i 1 s 2 i 1 p 2 i 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "z 2 x 1 y 1 z 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "a 1 b 1 a 1 b 1 a 1 b 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "t 1 h 1 e 1 q 1 u 1 i 1 c 1 k 1 b 1 r 1 o 1 w 1 n 1 f 1 o 1 x 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "alphabet-position-sum": {
+    "id": "learn:strings-as-arrays:alphabet-position-sum",
+    "bankId": "T09-Q12",
+    "slug": "alphabet-position-sum",
+    "topicId": "strings-as-arrays",
+    "title": "Alphabet Position Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "103",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "52",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "33",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "56",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "157",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "153",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "211",
+        "isHidden": true
+      }
+    ]
+  },
+  "character-frequency-sorted": {
+    "id": "learn:strings-as-arrays:character-frequency-sorted",
+    "bankId": "T09-Q13",
+    "slug": "character-frequency-sorted",
+    "topicId": "strings-as-arrays",
+    "title": "Character Frequency Sorted",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "a 1 g 1 h 1 i 1 l 1 m 1 o 1 r 1 t 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "a 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "a 2 c 2 e 1 r 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "e 1 h 1 l 2 o 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "a 3 b 1 n 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "a 1 b 1 c 1 d 1 e 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "e 2 l 2 v 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "i 4 m 1 p 2 s 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "x 1 y 1 z 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "a 3 b 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "b 1 c 1 e 1 f 1 h 1 i 1 k 1 n 1 o 2 q 1 r 1 t 1 u 1 w 1 x 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "adjacent-equal-pair-count": {
+    "id": "learn:strings-as-arrays:adjacent-equal-pair-count",
+    "bankId": "T09-Q14",
+    "slug": "adjacent-equal-pair-count",
+    "topicId": "strings-as-arrays",
+    "title": "Adjacent Equal Pair Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "aaaa",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "hello",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "a",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "racecar",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "mirror-pair-matches": {
+    "id": "learn:strings-as-arrays:mirror-pair-matches",
+    "bankId": "T09-Q15",
+    "slug": "mirror-pair-matches",
+    "topicId": "strings-as-arrays",
+    "title": "Mirror Pair Matches",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "aaaa",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "racecar",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "a",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-equal-character-run": {
+    "id": "learn:strings-as-arrays:longest-equal-character-run",
+    "bankId": "T09-Q16",
+    "slug": "longest-equal-character-run",
+    "topicId": "strings-as-arrays",
+    "title": "Longest Equal Character Run",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "aaaa",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "a",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "rotate-first-letter-to-end": {
+    "id": "learn:strings-as-arrays:rotate-first-letter-to-end",
+    "bankId": "T09-Q17",
+    "slug": "rotate-first-letter-to-end",
+    "topicId": "strings-as-arrays",
+    "title": "Rotate First Letter to End",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "lgorithma",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "acecarr",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "elloh",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "ananab",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "bcdea",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "evell",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "ississippim",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "zxyzzz",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "bababa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "hequickbrownfoxt",
+        "isHidden": true
+      }
+    ]
+  },
+  "reverse-each-two-character-block": {
+    "id": "learn:strings-as-arrays:reverse-each-two-character-block",
+    "bankId": "T09-Q18",
+    "slug": "reverse-each-two-character-block",
+    "topicId": "strings-as-arrays",
+    "title": "Reverse Each Two Character Block",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "laogirhtm",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "arecacr",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "ehllo",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "abanan",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "badce",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "elevl",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "imsssiisppi",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "zzyxzz",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "bababa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "htqeiukcrbwofnxo",
+        "isHidden": true
+      }
+    ]
+  },
+  "longest-proper-prefix-suffix": {
+    "id": "learn:strings-as-arrays:longest-proper-prefix-suffix",
+    "bankId": "T09-Q19",
+    "slug": "longest-proper-prefix-suffix",
+    "topicId": "strings-as-arrays",
+    "title": "Longest Proper Prefix Suffix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "aaaa",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "racecar",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "a",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "lexicographically-smallest-rotation": {
+    "id": "learn:strings-as-arrays:lexicographically-smallest-rotation",
+    "bankId": "T09-Q20",
+    "slug": "lexicographically-smallest-rotation",
+    "topicId": "strings-as-arrays",
+    "title": "Lexicographically Smallest Rotation",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "algorithm",
+        "expectedOutput": "algorithm",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "",
+        "expectedOutput": "",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "a",
+        "expectedOutput": "a",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "aaaa",
+        "expectedOutput": "aaaa",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "racecar",
+        "expectedOutput": "acecarr",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "hello",
+        "expectedOutput": "elloh",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "banana",
+        "expectedOutput": "abanan",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "abcde",
+        "expectedOutput": "abcde",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "level",
+        "expectedOutput": "ellev",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "mississippi",
+        "expectedOutput": "imississipp",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "zzxyzz",
+        "expectedOutput": "xyzzzz",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "ababab",
+        "expectedOutput": "ababab",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "thequickbrownfox",
+        "expectedOutput": "brownfoxthequick",
+        "isHidden": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,1742 @@
+{
+  "degree-of-every-vertex": {
+    "id": "learn:graphs:degree-of-every-vertex",
+    "bankId": "T19-Q01",
+    "slug": "degree-of-every-vertex",
+    "topicId": "graphs",
+    "title": "Degree of Every Vertex",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "1 2 2 2 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "2 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "4 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "1 2 1 1 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "4 4 4 4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "2 2 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "2 2 3 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "1 2 1 2 2 2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "2 2 2 3 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "1 2 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "neighbors-of-start": {
+    "id": "learn:graphs:neighbors-of-start",
+    "bankId": "T19-Q02",
+    "slug": "neighbors-of-start",
+    "topicId": "graphs",
+    "title": "Neighbors of Start",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 3 0\n0 1\n1 2\n0 2",
+        "expectedOutput": "1 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0\n0 1\n1 2\n3 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "0 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2\n0 1\n1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "breadth-first-search-order": {
+    "id": "learn:graphs:breadth-first-search-order",
+    "bankId": "T19-Q03",
+    "slug": "breadth-first-search-order",
+    "topicId": "graphs",
+    "title": "Breadth First Search Order",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1 0 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 3 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "3 2 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2\n0 1\n1 2",
+        "expectedOutput": "2 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "depth-first-search-order": {
+    "id": "learn:graphs:depth-first-search-order",
+    "bankId": "T19-Q04",
+    "slug": "depth-first-search-order",
+    "topicId": "graphs",
+    "title": "Depth First Search Order",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1 0 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "3 2 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 3 2 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2\n0 1\n1 2",
+        "expectedOutput": "2 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-start-connected-to-end": {
+    "id": "learn:graphs:is-start-connected-to-end",
+    "bankId": "T19-Q05",
+    "slug": "is-start-connected-to-end",
+    "topicId": "graphs",
+    "title": "Is Start Connected to End",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1 -1",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0 0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0 2\n0 1\n1 2\n0 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0 5\n0 1\n1 2\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1 4\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0 2\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3 0\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6 0\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0 5\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2 2\n0 1\n1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "connected-component-count": {
+    "id": "learn:graphs:connected-component-count",
+    "bankId": "T19-Q06",
+    "slug": "connected-component-count",
+    "topicId": "graphs",
+    "title": "Connected Component Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 0",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "connected-component-sizes": {
+    "id": "learn:graphs:connected-component-sizes",
+    "bankId": "T19-Q07",
+    "slug": "connected-component-sizes",
+    "topicId": "graphs",
+    "title": "Connected Component Sizes",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "1 3 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "all-reachable-vertices": {
+    "id": "learn:graphs:all-reachable-vertices",
+    "bankId": "T19-Q08",
+    "slug": "all-reachable-vertices",
+    "topicId": "graphs",
+    "title": "All Reachable Vertices",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2\n0 1\n1 2",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "shortest-edge-distance": {
+    "id": "learn:graphs:shortest-edge-distance",
+    "bankId": "T19-Q09",
+    "slug": "shortest-edge-distance",
+    "topicId": "graphs",
+    "title": "Shortest Edge Distance",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1 -1",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0 2\n0 1\n1 2\n0 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0 5\n0 1\n1 2\n3 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1 4\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0 2\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3 0\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6 0\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0 5\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2 2\n0 1\n1 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "lexicographically-first-shortest-path": {
+    "id": "learn:graphs:lexicographically-first-shortest-path",
+    "bankId": "T19-Q10",
+    "slug": "lexicographically-first-shortest-path",
+    "topicId": "graphs",
+    "title": "Lexicographically First Shortest Path",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0 2\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2 4",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0 5\n0 1\n1 2\n3 4",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1 4\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0 2\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3 0\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "3 2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6 0\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0 5\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2 2\n0 1\n1 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "distances-from-start": {
+    "id": "learn:graphs:distances-from-start",
+    "bankId": "T19-Q11",
+    "slug": "distances-from-start",
+    "topicId": "graphs",
+    "title": "Distances from Start",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4 0\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0 -1",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3 0\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4 0\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0 2",
+        "expectedOutput": "-1 -1 0 -1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3 0\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 1 2 -1 -1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10 1\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "1 0 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4 0\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4 3\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "2 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5 6\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "-1 -1 -1 -1 -1 -1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6 0\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2 2\n0 1\n1 2",
+        "expectedOutput": "2 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-graph-connected": {
+    "id": "learn:graphs:is-graph-connected",
+    "bankId": "T19-Q12",
+    "slug": "is-graph-connected",
+    "topicId": "graphs",
+    "title": "Is Graph Connected",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "5 0",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0 0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "has-undirected-cycle": {
+    "id": "learn:graphs:has-undirected-cycle",
+    "bankId": "T19-Q13",
+    "slug": "has-undirected-cycle",
+    "topicId": "graphs",
+    "title": "Has Undirected Cycle",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-graph-bipartite": {
+    "id": "learn:graphs:is-graph-bipartite",
+    "bankId": "T19-Q14",
+    "slug": "is-graph-bipartite",
+    "topicId": "graphs",
+    "title": "Is Graph Bipartite",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0 0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "is-an-undirected-tree": {
+    "id": "learn:graphs:is-an-undirected-tree",
+    "bankId": "T19-Q15",
+    "slug": "is-an-undirected-tree",
+    "topicId": "graphs",
+    "title": "Is an Undirected Tree",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "isolated-vertex-count": {
+    "id": "learn:graphs:isolated-vertex-count",
+    "bankId": "T19-Q16",
+    "slug": "isolated-vertex-count",
+    "topicId": "graphs",
+    "title": "Isolated Vertex Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 0",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "leaf-degree-vertex-ids": {
+    "id": "learn:graphs:leaf-degree-vertex-ids",
+    "bankId": "T19-Q17",
+    "slug": "leaf-degree-vertex-ids",
+    "topicId": "graphs",
+    "title": "Leaf Degree Vertex IDs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "triangle-count": {
+    "id": "learn:graphs:triangle-count",
+    "bankId": "T19-Q18",
+    "slug": "triangle-count",
+    "topicId": "graphs",
+    "title": "Triangle Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "number-of-bridges": {
+    "id": "learn:graphs:number-of-bridges",
+    "bankId": "T19-Q19",
+    "slug": "number-of-bridges",
+    "topicId": "graphs",
+    "title": "Number of Bridges",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "adjacency-matrix": {
+    "id": "learn:graphs:adjacency-matrix",
+    "bankId": "T19-Q20",
+    "slug": "adjacency-matrix",
+    "topicId": "graphs",
+    "title": "Adjacency Matrix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n0 1\n1 2\n2 3\n3 4",
+        "expectedOutput": "0 1 0 0 0\n1 0 1 0 0\n0 1 0 1 0\n0 0 1 0 1\n0 0 0 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 3\n0 1\n1 2\n0 2",
+        "expectedOutput": "0 1 1\n1 0 1\n1 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 4\n0 1\n0 2\n0 3\n0 4",
+        "expectedOutput": "0 1 1 1 1\n1 0 0 0 0\n1 0 0 0 0\n1 0 0 0 0\n1 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "5 0",
+        "expectedOutput": "0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n0 1\n1 2\n3 4",
+        "expectedOutput": "0 1 0 0 0 0\n1 0 1 0 0 0\n0 1 0 0 0 0\n0 0 0 0 1 0\n0 0 0 1 0 0\n0 0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 10\n0 1\n0 2\n0 3\n0 4\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
+        "expectedOutput": "0 1 1 1 1\n1 0 1 1 1\n1 1 0 1 1\n1 1 1 0 1\n1 1 1 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4 4\n0 1\n1 2\n2 3\n0 3",
+        "expectedOutput": "0 1 0 1\n1 0 1 0\n0 1 0 1\n1 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4\n0 1\n1 2\n0 2\n2 3",
+        "expectedOutput": "0 1 1 0\n1 0 1 0\n1 1 0 1\n0 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7 5\n0 1\n1 2\n3 4\n4 5\n3 5",
+        "expectedOutput": "0 1 0 0 0 0 0\n1 0 1 0 0 0 0\n0 1 0 0 0 0 0\n0 0 0 0 1 1 0\n0 0 0 1 0 1 0\n0 0 0 1 1 0 0\n0 0 0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "6 6\n0 1\n0 2\n1 3\n2 3\n3 4\n4 5",
+        "expectedOutput": "0 1 1 0 0 0\n1 0 0 1 0 0\n1 0 0 1 0 0\n0 1 1 0 1 0\n0 0 0 1 0 1\n0 0 0 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "3 2\n0 1\n1 2",
+        "expectedOutput": "0 1 0\n1 0 1\n0 1 0",
+        "isHidden": true
+      }
+    ]
+  }
+}

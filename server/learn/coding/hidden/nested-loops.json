@@ -1,0 +1,1742 @@
+{
+  "all-coordinate-pairs": {
+    "id": "learn:nested-loops:all-coordinate-pairs",
+    "bankId": "T05-Q01",
+    "slug": "all-coordinate-pairs",
+    "topicId": "nested-loops",
+    "title": "All Coordinate Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "(0,0) (0,1) (0,2) (0,3)\n(1,0) (1,1) (1,2) (1,3)\n(2,0) (2,1) (2,2) (2,3)",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "(0,0)",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "(0,0) (0,1)\n(1,0) (1,1)\n(2,0) (2,1)\n(3,0) (3,1)",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "(0,0) (0,1) (0,2) (0,3) (0,4)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "(0,0)\n(1,0)\n(2,0)\n(3,0)\n(4,0)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "(0,0) (0,1)\n(1,0) (1,1)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "(0,0) (0,1) (0,2) (0,3) (0,4)\n(1,0) (1,1) (1,2) (1,3) (1,4)\n(2,0) (2,1) (2,2) (2,3) (2,4)\n(3,0) (3,1) (3,2) (3,3) (3,4)\n(4,0) (4,1) (4,2) (4,3) (4,4)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "(0,0) (0,1) (0,2)\n(1,0) (1,1) (1,2)\n(2,0) (2,1) (2,2)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "(0,0) (0,1) (0,2) (0,3) (0,4)\n(1,0) (1,1) (1,2) (1,3) (1,4)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "(0,0) (0,1) (0,2) (0,3)\n(1,0) (1,1) (1,2) (1,3)\n(2,0) (2,1) (2,2) (2,3)\n(3,0) (3,1) (3,2) (3,3)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "(0,0) (0,1) (0,2)\n(1,0) (1,1) (1,2)\n(2,0) (2,1) (2,2)\n(3,0) (3,1) (3,2)\n(4,0) (4,1) (4,2)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "(0,0)\n(1,0)\n(2,0)",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "(0,0) (0,1) (0,2)",
+        "isHidden": true
+      }
+    ]
+  },
+  "addition-grid": {
+    "id": "learn:nested-loops:addition-grid",
+    "bankId": "T05-Q02",
+    "slug": "addition-grid",
+    "topicId": "nested-loops",
+    "title": "Addition Grid",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 1 2 3\n1 2 3 4\n2 3 4 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 1\n1 2\n2 3\n3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n1\n2\n3\n4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 1\n1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 1 2 3 4\n1 2 3 4 5\n2 3 4 5 6\n3 4 5 6 7\n4 5 6 7 8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 1 2\n1 2 3\n2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 1 2 3 4\n1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 1 2 3\n1 2 3 4\n2 3 4 5\n3 4 5 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 1 2\n1 2 3\n2 3 4\n3 4 5\n4 5 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n1\n2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "multiplication-grid": {
+    "id": "learn:nested-loops:multiplication-grid",
+    "bankId": "T05-Q03",
+    "slug": "multiplication-grid",
+    "topicId": "nested-loops",
+    "title": "Multiplication Grid",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 2 3 4\n2 4 6 8\n3 6 9 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 2\n2 4\n3 6\n4 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n2\n3\n4\n5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 2\n2 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 2 3 4 5\n2 4 6 8 10\n3 6 9 12 15\n4 8 12 16 20\n5 10 15 20 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 2 3\n2 4 6\n3 6 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 2 3 4 5\n2 4 6 8 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 2 3 4\n2 4 6 8\n3 6 9 12\n4 8 12 16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 2 3\n2 4 6\n3 6 9\n4 8 12\n5 10 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n2\n3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "row-index-grid": {
+    "id": "learn:nested-loops:row-index-grid",
+    "bankId": "T05-Q04",
+    "slug": "row-index-grid",
+    "topicId": "nested-loops",
+    "title": "Row Index Grid",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 0 0 0\n1 1 1 1\n2 2 2 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 0\n1 1\n2 2\n3 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n1\n2\n3\n4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 0\n1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 0 0 0 0\n1 1 1 1 1\n2 2 2 2 2\n3 3 3 3 3\n4 4 4 4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 0 0\n1 1 1\n2 2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 0 0 0 0\n1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 0 0 0\n1 1 1 1\n2 2 2 2\n3 3 3 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 0 0\n1 1 1\n2 2 2\n3 3 3\n4 4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n1\n2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "column-index-grid": {
+    "id": "learn:nested-loops:column-index-grid",
+    "bankId": "T05-Q05",
+    "slug": "column-index-grid",
+    "topicId": "nested-loops",
+    "title": "Column Index Grid",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 1 2 3\n0 1 2 3\n0 1 2 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 1\n0 1\n0 1\n0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n0\n0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 1\n0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 1 2 3 4\n0 1 2 3 4\n0 1 2 3 4\n0 1 2 3 4\n0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 1 2\n0 1 2\n0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 1 2 3 4\n0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 1 2 3\n0 1 2 3\n0 1 2 3\n0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 1 2\n0 1 2\n0 1 2\n0 1 2\n0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "checkerboard-digits": {
+    "id": "learn:nested-loops:checkerboard-digits",
+    "bankId": "T05-Q06",
+    "slug": "checkerboard-digits",
+    "topicId": "nested-loops",
+    "title": "Checkerboard Digits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 1 0 1\n1 0 1 0\n0 1 0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 1\n1 0\n0 1\n1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 1 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n1\n0\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 1\n1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 1 0 1 0\n1 0 1 0 1\n0 1 0 1 0\n1 0 1 0 1\n0 1 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 1 0\n1 0 1\n0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 1 0 1 0\n1 0 1 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 1 0 1\n1 0 1 0\n0 1 0 1\n1 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 1 0\n1 0 1\n0 1 0\n1 0 1\n0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "main-diagonal-ones": {
+    "id": "learn:nested-loops:main-diagonal-ones",
+    "bankId": "T05-Q07",
+    "slug": "main-diagonal-ones",
+    "topicId": "nested-loops",
+    "title": "Main Diagonal Ones",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 0 0 0\n0 1 0 0\n0 0 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 0\n0 1\n0 0\n0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n0\n0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 0\n0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 0 0 0 0\n0 1 0 0 0\n0 0 1 0 0\n0 0 0 1 0\n0 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 0 0\n0 1 0\n0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 0 0 0 0\n0 1 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 0 0 0\n0 1 0 0\n0 0 1 0\n0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 0 0\n0 1 0\n0 0 1\n0 0 0\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 0 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "anti-diagonal-ones": {
+    "id": "learn:nested-loops:anti-diagonal-ones",
+    "bankId": "T05-Q08",
+    "slug": "anti-diagonal-ones",
+    "topicId": "nested-loops",
+    "title": "Anti Diagonal Ones",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 0 0 1\n0 0 1 0\n0 1 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 1\n1 0\n0 0\n0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n0\n0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 1\n1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 0 0 0 1\n0 0 0 1 0\n0 0 1 0 0\n0 1 0 0 0\n1 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 0 1\n0 1 0\n1 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 0 0 0 1\n0 0 0 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 0 0 1\n0 0 1 0\n0 1 0 0\n1 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 0 1\n0 1 0\n1 0 0\n0 0 0\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 0 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "border-of-ones": {
+    "id": "learn:nested-loops:border-of-ones",
+    "bankId": "T05-Q09",
+    "slug": "border-of-ones",
+    "topicId": "nested-loops",
+    "title": "Border of Ones",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 1 1 1\n1 0 0 1\n1 1 1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 1\n1 1\n1 1\n1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n1\n1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 1\n1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 1 1 1 1\n1 0 0 0 1\n1 0 0 0 1\n1 0 0 0 1\n1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 1 1\n1 0 1\n1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 1 1 1 1\n1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 1 1 1\n1 0 0 1\n1 0 0 1\n1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 1 1\n1 0 1\n1 0 1\n1 0 1\n1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 1 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "upper-triangle-matrix": {
+    "id": "learn:nested-loops:upper-triangle-matrix",
+    "bankId": "T05-Q10",
+    "slug": "upper-triangle-matrix",
+    "topicId": "nested-loops",
+    "title": "Upper Triangle Matrix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 1 1 1\n0 1 1 1\n0 0 1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 1\n0 1\n0 0\n0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n0\n0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 1\n0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 1 1 1 1\n0 1 1 1 1\n0 0 1 1 1\n0 0 0 1 1\n0 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 1 1\n0 1 1\n0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 1 1 1 1\n0 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 1 1 1\n0 1 1 1\n0 0 1 1\n0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 1 1\n0 1 1\n0 0 1\n0 0 0\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 1 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "lower-triangle-matrix": {
+    "id": "learn:nested-loops:lower-triangle-matrix",
+    "bankId": "T05-Q11",
+    "slug": "lower-triangle-matrix",
+    "topicId": "nested-loops",
+    "title": "Lower Triangle Matrix",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 0 0 0\n1 1 0 0\n1 1 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 0\n1 1\n1 1\n1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n1\n1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 0\n1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 0 0 0 0\n1 1 0 0 0\n1 1 1 0 0\n1 1 1 1 0\n1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 0 0\n1 1 0\n1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 0 0 0 0\n1 1 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 0 0 0\n1 1 0 0\n1 1 1 0\n1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 0 0\n1 1 0\n1 1 1\n1 1 1\n1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 0 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "distance-to-bottom-right": {
+    "id": "learn:nested-loops:distance-to-bottom-right",
+    "bankId": "T05-Q12",
+    "slug": "distance-to-bottom-right",
+    "topicId": "nested-loops",
+    "title": "Distance to Bottom Right",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "5 4 3 2\n4 3 2 1\n3 2 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "4 3\n3 2\n2 1\n1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "4\n3\n2\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "2 1\n1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "8 7 6 5 4\n7 6 5 4 3\n6 5 4 3 2\n5 4 3 2 1\n4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "4 3 2\n3 2 1\n2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "5 4 3 2 1\n4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "6 5 4 3\n5 4 3 2\n4 3 2 1\n3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "6 5 4\n5 4 3\n4 3 2\n3 2 1\n2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "2\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "2 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "row-major-serial-numbers": {
+    "id": "learn:nested-loops:row-major-serial-numbers",
+    "bankId": "T05-Q13",
+    "slug": "row-major-serial-numbers",
+    "topicId": "nested-loops",
+    "title": "Row Major Serial Numbers",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 2\n3 4\n5 6\n7 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n2\n3\n4\n5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 2\n3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 2 3\n4 5 6\n7 8 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 2 3 4 5\n6 7 8 9 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 2 3\n4 5 6\n7 8 9\n10 11 12\n13 14 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n2\n3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "column-major-serial-numbers": {
+    "id": "learn:nested-loops:column-major-serial-numbers",
+    "bankId": "T05-Q14",
+    "slug": "column-major-serial-numbers",
+    "topicId": "nested-loops",
+    "title": "Column Major Serial Numbers",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 4 7 10\n2 5 8 11\n3 6 9 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 5\n2 6\n3 7\n4 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n2\n3\n4\n5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 3\n2 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 6 11 16 21\n2 7 12 17 22\n3 8 13 18 23\n4 9 14 19 24\n5 10 15 20 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 4 7\n2 5 8\n3 6 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 3 5 7 9\n2 4 6 8 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 5 9 13\n2 6 10 14\n3 7 11 15\n4 8 12 16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 6 11\n2 7 12\n3 8 13\n4 9 14\n5 10 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n2\n3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "right-aligned-star-triangle": {
+    "id": "learn:nested-loops:right-aligned-star-triangle",
+    "bankId": "T05-Q15",
+    "slug": "right-aligned-star-triangle",
+    "topicId": "nested-loops",
+    "title": "Right Aligned Star Triangle",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "...*\n..**\n.***",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "*",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": ".*\n**\n**\n**",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "....*",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "*\n*\n*\n*\n*",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": ".*\n**",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "....*\n...**\n..***\n.****\n*****",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "..*\n.**\n***",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "....*\n...**",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "...*\n..**\n.***\n****",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "..*\n.**\n***\n***\n***",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "*\n*\n*",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "..*",
+        "isHidden": true
+      }
+    ]
+  },
+  "left-aligned-star-triangle": {
+    "id": "learn:nested-loops:left-aligned-star-triangle",
+    "bankId": "T05-Q16",
+    "slug": "left-aligned-star-triangle",
+    "topicId": "nested-loops",
+    "title": "Left Aligned Star Triangle",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "*...\n**..\n***.",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "*",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "*.\n**\n**\n**",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "*....",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "*\n*\n*\n*\n*",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "*.\n**",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "*....\n**...\n***..\n****.\n*****",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "*..\n**.\n***",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "*....\n**...",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "*...\n**..\n***.\n****",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "*..\n**.\n***\n***\n***",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "*\n*\n*",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "*..",
+        "isHidden": true
+      }
+    ]
+  },
+  "alternating-rows": {
+    "id": "learn:nested-loops:alternating-rows",
+    "bankId": "T05-Q17",
+    "slug": "alternating-rows",
+    "topicId": "nested-loops",
+    "title": "Alternating Rows",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 0 0 0\n1 1 1 1\n0 0 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 0\n1 1\n0 0\n1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n1\n0\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 0\n1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 0 0 0 0\n1 1 1 1 1\n0 0 0 0 0\n1 1 1 1 1\n0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 0 0\n1 1 1\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 0 0 0 0\n1 1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 0 0 0\n1 1 1 1\n0 0 0 0\n1 1 1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 0 0\n1 1 1\n0 0 0\n1 1 1\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n1\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "concentric-layer-index": {
+    "id": "learn:nested-loops:concentric-layer-index",
+    "bankId": "T05-Q18",
+    "slug": "concentric-layer-index",
+    "topicId": "nested-loops",
+    "title": "Concentric Layer Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0 0 0 0\n0 1 1 0\n0 0 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0 0\n0 0\n0 0\n0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0\n0\n0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0 0\n0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0 0 0 0 0\n0 1 1 1 0\n0 1 2 1 0\n0 1 1 1 0\n0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0 0 0\n0 1 0\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0 0 0 0 0\n0 0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0 0 0 0\n0 1 1 0\n0 1 1 0\n0 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0 0 0\n0 1 0\n0 1 0\n0 1 0\n0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0\n0\n0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "row-reversal-number-grid": {
+    "id": "learn:nested-loops:row-reversal-number-grid",
+    "bankId": "T05-Q19",
+    "slug": "row-reversal-number-grid",
+    "topicId": "nested-loops",
+    "title": "Row Reversal Number Grid",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "1 2 3 4\n4 3 2 1\n1 2 3 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "1 2\n2 1\n1 2\n2 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "1\n1\n1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "1 2\n2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "1 2 3 4 5\n5 4 3 2 1\n1 2 3 4 5\n5 4 3 2 1\n1 2 3 4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "1 2 3\n3 2 1\n1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "1 2 3 4 5\n5 4 3 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "1 2 3 4\n4 3 2 1\n1 2 3 4\n4 3 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "1 2 3\n3 2 1\n1 2 3\n3 2 1\n1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "1\n1\n1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "grid-lexicographic-labels": {
+    "id": "learn:nested-loops:grid-lexicographic-labels",
+    "bankId": "T05-Q20",
+    "slug": "grid-lexicographic-labels",
+    "topicId": "nested-loops",
+    "title": "Grid Lexicographic Labels",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 4",
+        "expectedOutput": "0,0 0,1 0,2 0,3\n1,0 1,1 1,2 1,3\n2,0 2,1 2,2 2,3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "1 1",
+        "expectedOutput": "0,0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 2",
+        "expectedOutput": "0,0 0,1\n1,0 1,1\n2,0 2,1\n3,0 3,1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 5",
+        "expectedOutput": "0,0 0,1 0,2 0,3 0,4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "5 1",
+        "expectedOutput": "0,0\n1,0\n2,0\n3,0\n4,0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2 2",
+        "expectedOutput": "0,0 0,1\n1,0 1,1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "5 5",
+        "expectedOutput": "0,0 0,1 0,2 0,3 0,4\n1,0 1,1 1,2 1,3 1,4\n2,0 2,1 2,2 2,3 2,4\n3,0 3,1 3,2 3,3 3,4\n4,0 4,1 4,2 4,3 4,4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "3 3",
+        "expectedOutput": "0,0 0,1 0,2\n1,0 1,1 1,2\n2,0 2,1 2,2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 5",
+        "expectedOutput": "0,0 0,1 0,2 0,3 0,4\n1,0 1,1 1,2 1,3 1,4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "4 4",
+        "expectedOutput": "0,0 0,1 0,2 0,3\n1,0 1,1 1,2 1,3\n2,0 2,1 2,2 2,3\n3,0 3,1 3,2 3,3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "5 3",
+        "expectedOutput": "0,0 0,1 0,2\n1,0 1,1 1,2\n2,0 2,1 2,2\n3,0 3,1 3,2\n4,0 4,1 4,2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "3 1",
+        "expectedOutput": "0,0\n1,0\n2,0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "1 3",
+        "expectedOutput": "0,0 0,1 0,2",
+        "isHidden": true
+      }
+    ]
+  }
+}

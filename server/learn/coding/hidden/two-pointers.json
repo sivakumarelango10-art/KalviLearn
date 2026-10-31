@@ -1,0 +1,1742 @@
+{
+  "two-sum-exists": {
+    "id": "learn:two-pointers:two-sum-exists",
+    "bankId": "T15-Q01",
+    "slug": "two-sum-exists",
+    "topicId": "two-pointers",
+    "title": "Two Sum Exists",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "unique-two-sum-value-pairs": {
+    "id": "learn:two-pointers:unique-two-sum-value-pairs",
+    "bankId": "T15-Q02",
+    "slug": "unique-two-sum-value-pairs",
+    "topicId": "two-pointers",
+    "title": "Unique Two Sum Value Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-3 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 6\n2 5\n3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-two-sum-index-pairs": {
+    "id": "learn:two-pointers:count-two-sum-index-pairs",
+    "bankId": "T15-Q03",
+    "slug": "count-two-sum-index-pairs",
+    "topicId": "two-pointers",
+    "title": "Count Two Sum Index Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "smallest-index-two-sum": {
+    "id": "learn:two-pointers:smallest-index-two-sum",
+    "bankId": "T15-Q04",
+    "slug": "smallest-index-two-sum",
+    "topicId": "two-pointers",
+    "title": "Smallest Index Two Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "0 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "-1 -1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "-1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "-1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "-1 -1",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-pair-sums-below-target": {
+    "id": "learn:two-pointers:count-pair-sums-below-target",
+    "bankId": "T15-Q05",
+    "slug": "count-pair-sums-below-target",
+    "topicId": "two-pointers",
+    "title": "Count Pair Sums Below Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-pair-sums-at-most-target": {
+    "id": "learn:two-pointers:count-pair-sums-at-most-target",
+    "bankId": "T15-Q06",
+    "slug": "count-pair-sums-at-most-target",
+    "topicId": "two-pointers",
+    "title": "Count Pair Sums At Most Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-pair-sums-above-target": {
+    "id": "learn:two-pointers:count-pair-sums-above-target",
+    "bankId": "T15-Q07",
+    "slug": "count-pair-sums-above-target",
+    "topicId": "two-pointers",
+    "title": "Count Pair Sums Above Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "18",
+        "isHidden": true
+      }
+    ]
+  },
+  "closest-two-sum-value-pair": {
+    "id": "learn:two-pointers:closest-two-sum-value-pair",
+    "bankId": "T15-Q08",
+    "slug": "closest-two-sum-value-pair",
+    "topicId": "two-pointers",
+    "title": "Closest Two Sum Value Pair",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "NONE",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-3 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 8",
+        "isHidden": true
+      }
+    ]
+  },
+  "three-sum-unique-triples": {
+    "id": "learn:two-pointers:three-sum-unique-triples",
+    "bankId": "T15-Q09",
+    "slug": "three-sum-unique-triples",
+    "topicId": "two-pointers",
+    "title": "Three Sum Unique Triples",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 5 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      }
+    ]
+  },
+  "two-pointer-reverse": {
+    "id": "learn:two-pointers:two-pointer-reverse",
+    "bankId": "T15-Q10",
+    "slug": "two-pointer-reverse",
+    "topicId": "two-pointers",
+    "title": "Two Pointer Reverse",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "5 4 3 1 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "2 -1 -3 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "3 3 3 2 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "10 9 8 7 6 5 4 3 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "10 9 8 7 6 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "5 5 0 -5 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "6 5 4 3 2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "9 0 -9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4 4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "8 8 8 8 3 2 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "remove-duplicates-in-place-model": {
+    "id": "learn:two-pointers:remove-duplicates-in-place-model",
+    "bankId": "T15-Q11",
+    "slug": "remove-duplicates-in-place-model",
+    "topicId": "two-pointers",
+    "title": "Remove Duplicates in Place Model",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 3 4 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-4 -3 -1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 3 4 5 6 7 8 9 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6 7 8 9 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 2 3 4 5 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-9 0 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 2 3 8",
+        "isHidden": true
+      }
+    ]
+  },
+  "sorted-array-squared-values": {
+    "id": "learn:two-pointers:sorted-array-squared-values",
+    "bankId": "T15-Q12",
+    "slug": "sorted-array-squared-values",
+    "topicId": "two-pointers",
+    "title": "Sorted Array Squared Values",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 1 9 16 25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "49",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 4 9 16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 4 4 9 9 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 4 9 16 25 36 49 64 81 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "25 36 49 64 81 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "0 25 25 25 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 4 9 16 25 36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0 81 81",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "16 16 16 16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 4 9 64 64 64 64",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-opposite-value-index-pairs": {
+    "id": "learn:two-pointers:count-opposite-value-index-pairs",
+    "bankId": "T15-Q13",
+    "slug": "count-opposite-value-index-pairs",
+    "topicId": "two-pointers",
+    "title": "Count Opposite Value Index Pairs",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "two-pointer-palindrome-check": {
+    "id": "learn:two-pointers:two-pointer-palindrome-check",
+    "bankId": "T15-Q14",
+    "slug": "two-pointer-palindrome-check",
+    "topicId": "two-pointers",
+    "title": "Two Pointer Palindrome Check",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-pairs-with-difference-target": {
+    "id": "learn:two-pointers:count-pairs-with-difference-target",
+    "bankId": "T15-Q15",
+    "slug": "count-pairs-with-difference-target",
+    "topicId": "two-pointers",
+    "title": "Count Pairs With Difference Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-two-pointer-pair-sum": {
+    "id": "learn:two-pointers:maximum-two-pointer-pair-sum",
+    "bankId": "T15-Q16",
+    "slug": "maximum-two-pointer-pair-sum",
+    "topicId": "two-pointers",
+    "title": "Maximum Two Pointer Pair Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "9",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "NONE",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "16",
+        "isHidden": true
+      }
+    ]
+  },
+  "minimum-two-pointer-pair-sum": {
+    "id": "learn:two-pointers:minimum-two-pointer-pair-sum",
+    "bankId": "T15-Q17",
+    "slug": "minimum-two-pointer-pair-sum",
+    "topicId": "two-pointers",
+    "title": "Minimum Two Pointer Pair Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "NONE",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "pairs-exactly-twice-target": {
+    "id": "learn:two-pointers:pairs-exactly-twice-target",
+    "bankId": "T15-Q18",
+    "slug": "pairs-exactly-twice-target",
+    "topicId": "two-pointers",
+    "title": "Pairs Exactly Twice Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "3 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-4 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "3 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "4 10\n5 9\n6 8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "5 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2 6\n3 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "8 8",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-pair-meeting-threshold": {
+    "id": "learn:two-pointers:first-pair-meeting-threshold",
+    "bankId": "T15-Q19",
+    "slug": "first-pair-meeting-threshold",
+    "topicId": "two-pointers",
+    "title": "First Pair Meeting Threshold",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "0 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "-1 -1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "-1 -1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "0 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "pair-product-closest-to-target": {
+    "id": "learn:two-pointers:pair-product-closest-to-target",
+    "bankId": "T15-Q20",
+    "slug": "pair-product-closest-to-target",
+    "topicId": "two-pointers",
+    "title": "Pair Product Closest to Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n1 1 3 4 5",
+        "expectedOutput": "1 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0",
+        "expectedOutput": "NONE",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "NONE",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -3 -1 2",
+        "expectedOutput": "-1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n1 2 2 3 3 3",
+        "expectedOutput": "1 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n5 6 7 8 9 10",
+        "expectedOutput": "5 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n-5 -5 0 5 5",
+        "expectedOutput": "-5 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-9 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n1 2 3 8 8 8 8",
+        "expectedOutput": "1 8",
+        "isHidden": true
+      }
+    ]
+  }
+}

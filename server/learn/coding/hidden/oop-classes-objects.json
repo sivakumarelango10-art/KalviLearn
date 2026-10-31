@@ -1,0 +1,1742 @@
+{
+  "construct-student-summaries": {
+    "id": "learn:oop-classes-objects:construct-student-summaries",
+    "bankId": "T22-Q01",
+    "slug": "construct-student-summaries",
+    "topicId": "oop-classes-objects",
+    "title": "Construct Student Summaries",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Anu:82 Bala:65 Charu:82",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A:100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "Mira:0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "Adi:50 Bea:50 Cal:50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Zed:20 Yam:80 Xia:100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S0:0 S1:17 S2:34 S3:51 S4:68 S5:85 S6:1 S7:18 S8:35 S9:52",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "K:40 K:90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A:100 B:0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "Jim:60 Amy:70 Lee:80",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Zoe:90 Ann:90 Eli:85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "Bob:0 Bob:0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Pa:45 Mo:75 Li:35 Sam:95",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-constructed-objects": {
+    "id": "learn:oop-classes-objects:count-constructed-objects",
+    "bankId": "T22-Q02",
+    "slug": "count-constructed-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Count Constructed Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "highest-scoring-student": {
+    "id": "learn:oop-classes-objects:highest-scoring-student",
+    "bankId": "T22-Q03",
+    "slug": "highest-scoring-student",
+    "topicId": "oop-classes-objects",
+    "title": "Highest Scoring Student",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "0 Anu 82",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "0 A 100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0 Mira 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "0 Adi 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "2 Xia 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "5 S5 85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "1 K 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "0 A 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "2 Lee 80",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "0 Zoe 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 Bob 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "3 Sam 95",
+        "isHidden": true
+      }
+    ]
+  },
+  "lowest-scoring-student": {
+    "id": "learn:oop-classes-objects:lowest-scoring-student",
+    "bankId": "T22-Q04",
+    "slug": "lowest-scoring-student",
+    "topicId": "oop-classes-objects",
+    "title": "Lowest Scoring Student",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "1 Bala 65",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "0 A 100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0 Mira 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "0 Adi 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "0 Zed 20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "0 S0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "0 K 40",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "1 B 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "0 Jim 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "2 Eli 85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 Bob 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "2 Li 35",
+        "isHidden": true
+      }
+    ]
+  },
+  "passing-students": {
+    "id": "learn:oop-classes-objects:passing-students",
+    "bankId": "T22-Q05",
+    "slug": "passing-students",
+    "topicId": "oop-classes-objects",
+    "title": "Passing Students",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Anu Charu",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "Adi Bea Cal",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Yam Xia",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S3 S4 S5 S9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "K K",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "Jim Amy Lee",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Zoe Ann",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "Bob Bob",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Pa Mo Sam",
+        "isHidden": true
+      }
+    ]
+  },
+  "failing-students": {
+    "id": "learn:oop-classes-objects:failing-students",
+    "bankId": "T22-Q06",
+    "slug": "failing-students",
+    "topicId": "oop-classes-objects",
+    "title": "Failing Students",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Bala",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "Mira",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 100\nA 100",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Zed",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S0 S1 S2 S6 S7 S8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "B",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Eli",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Li",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-passing-objects": {
+    "id": "learn:oop-classes-objects:count-passing-objects",
+    "bankId": "T22-Q07",
+    "slug": "count-passing-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Count Passing Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "average-object-score-fraction": {
+    "id": "learn:oop-classes-objects:average-object-score-fraction",
+    "bankId": "T22-Q08",
+    "slug": "average-object-score-fraction",
+    "topicId": "oop-classes-objects",
+    "title": "Average Object Score Fraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "229 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "100 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "50 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "200 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "361 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "65 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "50 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "70 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "265 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "125 2",
+        "isHidden": true
+      }
+    ]
+  },
+  "total-marks-across-objects": {
+    "id": "learn:oop-classes-objects:total-marks-across-objects",
+    "bankId": "T22-Q09",
+    "slug": "total-marks-across-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Total Marks Across Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "229",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "150",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "361",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "130",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "210",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "265",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "250",
+        "isHidden": true
+      }
+    ]
+  },
+  "maximum-score-gap": {
+    "id": "learn:oop-classes-objects:maximum-score-gap",
+    "bankId": "T22-Q10",
+    "slug": "maximum-score-gap",
+    "topicId": "oop-classes-objects",
+    "title": "Maximum Score Gap",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "80",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 100\nA 100",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "60",
+        "isHidden": true
+      }
+    ]
+  },
+  "rank-objects-by-score": {
+    "id": "learn:oop-classes-objects:rank-objects-by-score",
+    "bankId": "T22-Q11",
+    "slug": "rank-objects-by-score",
+    "topicId": "oop-classes-objects",
+    "title": "Rank Objects by Score",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Anu Charu Bala",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "Mira",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "Adi Bea Cal",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Xia Yam Zed",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S5 S4 S9 S3 S8 S2 S7 S1 S6 S0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "K K",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A B",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "Lee Amy Jim",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Zoe Ann Eli",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "Bob Bob",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Sam Mo Pa Li",
+        "isHidden": true
+      }
+    ]
+  },
+  "alphabetical-object-display": {
+    "id": "learn:oop-classes-objects:alphabetical-object-display",
+    "bankId": "T22-Q12",
+    "slug": "alphabetical-object-display",
+    "topicId": "oop-classes-objects",
+    "title": "Alphabetical Object Display",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Anu 82\nBala 65\nCharu 82",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A 100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "Mira 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "Adi 50\nBea 50\nCal 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Xia 100\nYam 80\nZed 20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "K 40\nK 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A 100\nB 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "Amy 70\nJim 60\nLee 80",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Ann 90\nEli 85\nZoe 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "Bob 0\nBob 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Li 35\nMo 75\nPa 45\nSam 95",
+        "isHidden": true
+      }
+    ]
+  },
+  "score-as-letter-grade": {
+    "id": "learn:oop-classes-objects:score-as-letter-grade",
+    "bankId": "T22-Q13",
+    "slug": "score-as-letter-grade",
+    "topicId": "oop-classes-objects",
+    "title": "Score as Letter Grade",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "B D B",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "F",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "F F F",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "F B A",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "F F F F D B F F F F",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "F A",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A F",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "D C B",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "A A B",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "F F",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "F C F A",
+        "isHidden": true
+      }
+    ]
+  },
+  "pass-fail-status-for-objects": {
+    "id": "learn:oop-classes-objects:pass-fail-status-for-objects",
+    "bankId": "T22-Q14",
+    "slug": "pass-fail-status-for-objects",
+    "topicId": "oop-classes-objects",
+    "title": "Pass Fail Status for Objects",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "2 1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "4 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "3 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "3 1",
+        "isHidden": true
+      }
+    ]
+  },
+  "clone-scores-with-bonus": {
+    "id": "learn:oop-classes-objects:clone-scores-with-bonus",
+    "bankId": "T22-Q15",
+    "slug": "clone-scores-with-bonus",
+    "topicId": "oop-classes-objects",
+    "title": "Clone Scores with Bonus",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "87 70 87",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "55 55 55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "25 85 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "5 22 39 56 73 90 6 23 40 57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "45 95",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "100 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "65 75 85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "95 95 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "5 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "50 80 40 100",
+        "isHidden": true
+      }
+    ]
+  },
+  "copy-independence-check": {
+    "id": "learn:oop-classes-objects:copy-independence-check",
+    "bankId": "T22-Q16",
+    "slug": "copy-independence-check",
+    "topicId": "oop-classes-objects",
+    "title": "Copy Independence Check",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "82 65 82\n87 70 87",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY\nEMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "100\n100",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0\n5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "50 50 50\n55 55 55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "20 80 100\n25 85 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "0 17 34 51 68 85 1 18 35 52\n5 22 39 56 73 90 6 23 40 57",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "40 90\n45 95",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "100 0\n100 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "60 70 80\n65 75 85",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "90 90 85\n95 95 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 0\n5 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "45 75 35 95\n50 80 40 100",
+        "isHidden": true
+      }
+    ]
+  },
+  "distinct-student-names": {
+    "id": "learn:oop-classes-objects:distinct-student-names",
+    "bankId": "T22-Q17",
+    "slug": "distinct-student-names",
+    "topicId": "oop-classes-objects",
+    "title": "Distinct Student Names",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "threshold-score-distance": {
+    "id": "learn:oop-classes-objects:threshold-score-distance",
+    "bankId": "T22-Q18",
+    "slug": "threshold-score-distance",
+    "topicId": "oop-classes-objects",
+    "title": "Threshold Score Distance",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "12 -5 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "-55 5 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "-50 -33 -16 1 18 35 -49 -32 -15 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "0 50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "50 -50",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "0 10 20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "0 0 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "5 35 -5 55",
+        "isHidden": true
+      }
+    ]
+  },
+  "sort-objects-by-distance-to-pass": {
+    "id": "learn:oop-classes-objects:sort-objects-by-distance-to-pass",
+    "bankId": "T22-Q19",
+    "slug": "sort-objects-by-distance-to-pass",
+    "topicId": "oop-classes-objects",
+    "title": "Sort Objects by Distance to Pass",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "Bala Anu Charu",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "A",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "Mira",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "Adi Bea Cal",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "Yam Xia Zed",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "S3 S9 S8 S2 S4 S7 S1 S5 S6 S0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "K K",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "A B",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "Jim Amy Lee",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "Zoe Ann Eli",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "Bob Bob",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "Pa Li Mo Sam",
+        "isHidden": true
+      }
+    ]
+  },
+  "roster-grade-histogram": {
+    "id": "learn:oop-classes-objects:roster-grade-histogram",
+    "bankId": "T22-Q20",
+    "slug": "roster-grade-histogram",
+    "topicId": "oop-classes-objects",
+    "title": "Roster Grade Histogram",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "3 70\nAnu 82\nBala 65\nCharu 82",
+        "expectedOutput": "0 2 0 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 50",
+        "expectedOutput": "0 0 0 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 100\nA 100",
+        "expectedOutput": "1 0 0 0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1\nMira 0",
+        "expectedOutput": "0 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 50\nAdi 50\nBea 50\nCal 50",
+        "expectedOutput": "0 0 0 0 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 75\nZed 20\nYam 80\nXia 100",
+        "expectedOutput": "1 1 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 50\nS0 0\nS1 17\nS2 34\nS3 51\nS4 68\nS5 85\nS6 1\nS7 18\nS8 35\nS9 52",
+        "expectedOutput": "0 1 0 1 8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "2 40\nK 40\nK 90",
+        "expectedOutput": "1 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "2 50\nA 100\nB 0",
+        "expectedOutput": "1 0 0 0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "3 60\nJim 60\nAmy 70\nLee 80",
+        "expectedOutput": "0 1 1 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 90\nZoe 90\nAnn 90\nEli 85",
+        "expectedOutput": "2 1 0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "2 0\nBob 0\nBob 0",
+        "expectedOutput": "0 0 0 0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "4 40\nPa 45\nMo 75\nLi 35\nSam 95",
+        "expectedOutput": "1 0 1 0 2",
+        "isHidden": true
+      }
+    ]
+  }
+}

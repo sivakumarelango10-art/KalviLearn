@@ -1,0 +1,445 @@
+{
+  "externalRequestsBlocked": true,
+  "rows": [
+    {
+      "viewport": "desktop",
+      "requested": "/login",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/privacy-policy",
+      "title": "KalviLearn — Privacy Policy",
+      "path": "/privacy-policy",
+      "h1": [
+        "Privacy Policy"
+      ],
+      "h2": [
+        "1. Introduction & Overview",
+        "2. Information We Collect",
+        "3. How We Use Your Information"
+      ],
+      "overflow": false,
+      "buttons": [],
+      "links": [
+        {
+          "text": "KalviLearn",
+          "href": "/"
+        },
+        {
+          "text": "Back to Login",
+          "href": "/login"
+        },
+        {
+          "text": "codingplatform10@gmail.com",
+          "href": "mailto:codingplatform10@gmail.com"
+        },
+        {
+          "text": "View Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Return to Login",
+          "href": "/login"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/terms-and-conditions",
+      "title": "KalviLearn — Terms & Conditions",
+      "path": "/terms-and-conditions",
+      "h1": [
+        "Terms & Conditions"
+      ],
+      "h2": [
+        "1. Acceptance of Terms",
+        "2. Academic Eligibility & Account Registration",
+        "3. User Conduct & Academic Honesty"
+      ],
+      "overflow": false,
+      "buttons": [],
+      "links": [
+        {
+          "text": "KalviLearn",
+          "href": "/"
+        },
+        {
+          "text": "Back to Login",
+          "href": "/login"
+        },
+        {
+          "text": "codingplatform10@gmail.com",
+          "href": "mailto:codingplatform10@gmail.com"
+        },
+        {
+          "text": "View Privacy Policy",
+          "href": "/privacy-policy"
+        },
+        {
+          "text": "Return to Login",
+          "href": "/login"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/mentor/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/campus/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "requested": "/unknown-audit-route",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/login",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/privacy-policy",
+      "title": "KalviLearn — Privacy Policy",
+      "path": "/privacy-policy",
+      "h1": [
+        "Privacy Policy"
+      ],
+      "h2": [
+        "1. Introduction & Overview",
+        "2. Information We Collect",
+        "3. How We Use Your Information"
+      ],
+      "overflow": false,
+      "buttons": [],
+      "links": [
+        {
+          "text": "KalviLearn",
+          "href": "/"
+        },
+        {
+          "text": "Back to Login",
+          "href": "/login"
+        },
+        {
+          "text": "codingplatform10@gmail.com",
+          "href": "mailto:codingplatform10@gmail.com"
+        },
+        {
+          "text": "View Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Return to Login",
+          "href": "/login"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/terms-and-conditions",
+      "title": "KalviLearn — Terms & Conditions",
+      "path": "/terms-and-conditions",
+      "h1": [
+        "Terms & Conditions"
+      ],
+      "h2": [
+        "1. Acceptance of Terms",
+        "2. Academic Eligibility & Account Registration",
+        "3. User Conduct & Academic Honesty"
+      ],
+      "overflow": false,
+      "buttons": [],
+      "links": [
+        {
+          "text": "KalviLearn",
+          "href": "/"
+        },
+        {
+          "text": "Back to Login",
+          "href": "/login"
+        },
+        {
+          "text": "codingplatform10@gmail.com",
+          "href": "mailto:codingplatform10@gmail.com"
+        },
+        {
+          "text": "View Privacy Policy",
+          "href": "/privacy-policy"
+        },
+        {
+          "text": "Return to Login",
+          "href": "/login"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/mentor/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/campus/dashboard",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "requested": "/unknown-audit-route",
+      "title": "KalviLearn — Login",
+      "path": "/login",
+      "h1": [
+        "Welcome to Kalvi Learn"
+      ],
+      "h2": [],
+      "overflow": false,
+      "buttons": [
+        {
+          "label": "Continue with Google",
+          "disabled": false
+        }
+      ],
+      "links": [
+        {
+          "text": "Terms & Conditions",
+          "href": "/terms-and-conditions"
+        },
+        {
+          "text": "Privacy Policy",
+          "href": "/privacy-policy"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "api": [
+    {
+      "endpoint": "/api/execute",
+      "status": 500,
+      "body": "{\"success\":false,\"error\":\"Internal Server Error\",\"message\":\"Unexpected server error.\"}"
+    },
+    {
+      "endpoint": "/api/submit",
+      "status": 500,
+      "body": "{\"success\":false,\"error\":\"Internal Server Error\",\"message\":\"Unexpected server error.\"}"
+    },
+    {
+      "endpoint": "/api/feedback",
+      "status": 500,
+      "body": "{\"success\":false,\"error\":\"Internal Server Error\",\"message\":\"Unexpected server error.\"}"
+    }
+  ]
+}

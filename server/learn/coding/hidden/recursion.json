@@ -1,0 +1,1802 @@
+{
+  "recursive-factorial": {
+    "id": "learn:recursion:recursive-factorial",
+    "bankId": "T17-Q01",
+    "slug": "recursive-factorial",
+    "topicId": "recursion",
+    "title": "Recursive Factorial",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "120",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "40320",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "3628800",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "1307674368000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "39916800",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "5040",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "479001600",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "720",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-sum-through-n": {
+    "id": "learn:recursion:recursive-sum-through-n",
+    "bankId": "T17-Q02",
+    "slug": "recursive-sum-through-n",
+    "topicId": "recursion",
+    "title": "Recursive Sum Through N",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "36",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "120",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "66",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "28",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "78",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "2",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-fibonacci": {
+    "id": "learn:recursion:recursive-fibonacci",
+    "bankId": "T17-Q03",
+    "slug": "recursive-fibonacci",
+    "topicId": "recursion",
+    "title": "Recursive Fibonacci",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "21",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "610",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "89",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "144",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-powers-of-two": {
+    "id": "learn:recursion:recursive-powers-of-two",
+    "bankId": "T17-Q04",
+    "slug": "recursive-powers-of-two",
+    "topicId": "recursion",
+    "title": "Recursive Powers of Two",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "256",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "1024",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "32768",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "2048",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "128",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "4096",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "64",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-sum-of-squares": {
+    "id": "learn:recursion:recursive-sum-of-squares",
+    "bankId": "T17-Q05",
+    "slug": "recursive-sum-of-squares",
+    "topicId": "recursion",
+    "title": "Recursive Sum of Squares",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "55",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "204",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "385",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "1240",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "506",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "140",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "650",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "91",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "2",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-digit-sum": {
+    "id": "learn:recursion:recursive-digit-sum",
+    "bankId": "T17-Q06",
+    "slug": "recursive-digit-sum",
+    "topicId": "recursion",
+    "title": "Recursive Digit Sum",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-digit-product": {
+    "id": "learn:recursion:recursive-digit-product",
+    "bankId": "T17-Q07",
+    "slug": "recursive-digit-product",
+    "topicId": "recursion",
+    "title": "Recursive Digit Product",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-digit-count": {
+    "id": "learn:recursion:recursive-digit-count",
+    "bankId": "T17-Q08",
+    "slug": "recursive-digit-count",
+    "topicId": "recursion",
+    "title": "Recursive Digit Count",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "10",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "8",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "3",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-reverse-digits": {
+    "id": "learn:recursion:recursive-reverse-digits",
+    "bankId": "T17-Q09",
+    "slug": "recursive-reverse-digits",
+    "topicId": "recursion",
+    "title": "Recursive Reverse Digits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "51",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-numeric-palindrome": {
+    "id": "learn:recursion:recursive-numeric-palindrome",
+    "bankId": "T17-Q10",
+    "slug": "recursive-numeric-palindrome",
+    "topicId": "recursion",
+    "title": "Recursive Numeric Palindrome",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "10",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "8",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-binary-string": {
+    "id": "learn:recursion:recursive-binary-string",
+    "bankId": "T17-Q11",
+    "slug": "recursive-binary-string",
+    "topicId": "recursion",
+    "title": "Recursive Binary String",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "101",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "1000",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "1010",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "1111",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "1011",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "111",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "1100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "110",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "2",
+        "expectedOutput": "10",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-count-set-bits": {
+    "id": "learn:recursion:recursive-count-set-bits",
+    "bankId": "T17-Q12",
+    "slug": "recursive-count-set-bits",
+    "topicId": "recursion",
+    "title": "Recursive Count Set Bits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-count-down-list": {
+    "id": "learn:recursion:recursive-count-down-list",
+    "bankId": "T17-Q13",
+    "slug": "recursive-count-down-list",
+    "topicId": "recursion",
+    "title": "Recursive Count Down List",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "5 4 3 2 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "8 7 6 5 4 3 2 1 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "10 9 8 7 6 5 4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "11 10 9 8 7 6 5 4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "7 6 5 4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "12 11 10 9 8 7 6 5 4 3 2 1 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "6 5 4 3 2 1 0",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-count-up-list": {
+    "id": "learn:recursion:recursive-count-up-list",
+    "bankId": "T17-Q14",
+    "slug": "recursive-count-up-list",
+    "topicId": "recursion",
+    "title": "Recursive Count Up List",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "0 1 2 3 4 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8 9 10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "0 1 2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8 9 10 11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "0 1 2 3 4 5 6 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "0 1 2 3 4 5 6 7 8 9 10 11 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "0 1 2 3 4 5 6",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-palindrome-of-binary-digits": {
+    "id": "learn:recursion:recursive-palindrome-of-binary-digits",
+    "bankId": "T17-Q15",
+    "slug": "recursive-palindrome-of-binary-digits",
+    "topicId": "recursion",
+    "title": "Recursive Palindrome of Binary Digits",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "8",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "0",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "false",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "false",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-one-or-two-step-stairways": {
+    "id": "learn:recursion:count-one-or-two-step-stairways",
+    "bankId": "T17-Q16",
+    "slug": "count-one-or-two-step-stairways",
+    "topicId": "recursion",
+    "title": "Count One or Two Step Stairways",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "34",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "89",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "987",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "144",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "233",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "13",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-one-two-or-three-step-stairways": {
+    "id": "learn:recursion:count-one-two-or-three-step-stairways",
+    "bankId": "T17-Q17",
+    "slug": "count-one-two-or-three-step-stairways",
+    "topicId": "recursion",
+    "title": "Count One Two or Three Step Stairways",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "13",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "81",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "274",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "5768",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "504",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "44",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "927",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "24",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-catalan-number": {
+    "id": "learn:recursion:recursive-catalan-number",
+    "bankId": "T17-Q18",
+    "slug": "recursive-catalan-number",
+    "topicId": "recursion",
+    "title": "Recursive Catalan Number",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "42",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "1430",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "16796",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "9694845",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "58786",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "429",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "208012",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "132",
+        "isHidden": true
+      }
+    ]
+  },
+  "central-binomial-coefficient": {
+    "id": "learn:recursion:central-binomial-coefficient",
+    "bankId": "T17-Q19",
+    "slug": "central-binomial-coefficient",
+    "topicId": "recursion",
+    "title": "Central Binomial Coefficient",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "70",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "252",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "6435",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "462",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "35",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "924",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "20",
+        "isHidden": true
+      }
+    ]
+  },
+  "recursive-tribonacci-sequence": {
+    "id": "learn:recursion:recursive-tribonacci-sequence",
+    "bankId": "T17-Q20",
+    "slug": "recursive-tribonacci-sequence",
+    "topicId": "recursion",
+    "title": "Recursive Tribonacci Sequence",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "8",
+        "expectedOutput": "44",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10",
+        "expectedOutput": "149",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "15",
+        "expectedOutput": "3136",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "11",
+        "expectedOutput": "274",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "7",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "12",
+        "expectedOutput": "504",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "6",
+        "expectedOutput": "13",
+        "isHidden": true
+      }
+    ]
+  }
+}

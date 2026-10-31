@@ -1,0 +1,1436 @@
+{
+  "Variables & Data Types": [
+    {
+      "id": "B240-Q1",
+      "num": 1,
+      "title": "Temperature Converter",
+      "statement": "Write a program for **Temperature Converter** using the core concepts of\r\n**Variables & Data Types**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q2",
+      "num": 2,
+      "title": "Seconds Breakdown",
+      "statement": "Write a program for **Seconds Breakdown** using the core concepts of\r\n**Variables & Data Types**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q3",
+      "num": 3,
+      "title": "Swap Two Values",
+      "statement": "Write a program for **Swap Two Values** using the core concepts of\r\n**Variables & Data Types**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q4",
+      "num": 4,
+      "title": "Character Code Explorer",
+      "statement": "Write a program for **Character Code Explorer** using the core concepts\r\nof **Variables & Data Types**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q5",
+      "num": 5,
+      "title": "Rectangle Measurements",
+      "statement": "Write a program for **Rectangle Measurements** using the core concepts\r\nof **Variables & Data Types**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q6",
+      "num": 6,
+      "title": "Digit Extraction",
+      "statement": "Write a program for **Digit Extraction** using the core concepts of\r\n**Variables & Data Types**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q7",
+      "num": 7,
+      "title": "Average of Four Readings",
+      "statement": "Write a program for **Average of Four Readings** using the core concepts\r\nof **Variables & Data Types**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q8",
+      "num": 8,
+      "title": "Bytes to Storage Units",
+      "statement": "Write a program for **Bytes to Storage Units** using the core concepts\r\nof **Variables & Data Types**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q9",
+      "num": 9,
+      "title": "Circle Measurements",
+      "statement": "Write a program for **Circle Measurements** using the core concepts of\r\n**Variables & Data Types**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q10",
+      "num": 10,
+      "title": "Mixed-Type Student Record",
+      "statement": "Write a program for **Mixed-Type Student Record** using the core\r\nconcepts of **Variables & Data Types**. Read the required values,\r\nperform the stated computation, and print the result."
+    }
+  ],
+  "Basic Arithmetic Operations": [
+    {
+      "id": "B240-Q11",
+      "num": 11,
+      "title": "Weighted Score Calculator",
+      "statement": "Write a program for **Weighted Score Calculator** using the core\r\nconcepts of **Basic Arithmetic Operations**. Read the required values,\r\nperform the stated computation, and print the result."
+    },
+    {
+      "id": "B240-Q12",
+      "num": 12,
+      "title": "Simple Interest Amount",
+      "statement": "Write a program for **Simple Interest Amount** using the core concepts\r\nof **Basic Arithmetic Operations**. Read the required values, perform\r\nthe stated computation, and print the result."
+    },
+    {
+      "id": "B240-Q13",
+      "num": 13,
+      "title": "Annual Compound Growth",
+      "statement": "Write a program for **Annual Compound Growth** using the core concepts\r\nof **Basic Arithmetic Operations**. Read the required values, perform\r\nthe stated computation, and print the result."
+    },
+    {
+      "id": "B240-Q14",
+      "num": 14,
+      "title": "Fuel Cost Estimator",
+      "statement": "Write a program for **Fuel Cost Estimator** using the core concepts of\r\n**Basic Arithmetic Operations**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q15",
+      "num": 15,
+      "title": "Clock Angle Difference",
+      "statement": "Write a program for **Clock Angle Difference** using the core concepts\r\nof **Basic Arithmetic Operations**. Read the required values, perform\r\nthe stated computation, and print the result."
+    },
+    {
+      "id": "B240-Q16",
+      "num": 16,
+      "title": "Euclidean Distance",
+      "statement": "Write a program for **Euclidean Distance** using the core concepts of\r\n**Basic Arithmetic Operations**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q17",
+      "num": 17,
+      "title": "Quotient and Remainder",
+      "statement": "Write a program for **Quotient and Remainder** using the core concepts\r\nof **Basic Arithmetic Operations**. Read the required values, perform\r\nthe stated computation, and print the result."
+    },
+    {
+      "id": "B240-Q18",
+      "num": 18,
+      "title": "Percentage Change",
+      "statement": "Write a program for **Percentage Change** using the core concepts of\r\n**Basic Arithmetic Operations**. Read the required values, perform the\r\nstated computation, and print the result."
+    },
+    {
+      "id": "B240-Q19",
+      "num": 19,
+      "title": "Bill Splitter",
+      "statement": "Write a program for **Bill Splitter** using the core concepts of **Basic\r\nArithmetic Operations**. Read the required values, perform the stated\r\ncomputation, and print the result."
+    },
+    {
+      "id": "B240-Q20",
+      "num": 20,
+      "title": "Sum of First N Squares Formula",
+      "statement": "Write a program for **Sum of First N Squares Formula** using the core\r\nconcepts of **Basic Arithmetic Operations**. Read the required values,\r\nperform the stated computation, and print the result."
+    }
+  ],
+  "Conditionals / Control Flow": [
+    {
+      "id": "B240-Q21",
+      "num": 21,
+      "title": "Leap Year Decision",
+      "statement": "Implement **Leap Year Decision** by evaluating the necessary conditions\r\nin the correct order and printing the required classification or result."
+    },
+    {
+      "id": "B240-Q22",
+      "num": 22,
+      "title": "Triangle Type by Sides",
+      "statement": "Implement **Triangle Type by Sides** by evaluating the necessary\r\nconditions in the correct order and printing the required classification\r\nor result."
+    },
+    {
+      "id": "B240-Q23",
+      "num": 23,
+      "title": "Exam Grade Classifier",
+      "statement": "Implement **Exam Grade Classifier** by evaluating the necessary\r\nconditions in the correct order and printing the required classification\r\nor result."
+    },
+    {
+      "id": "B240-Q24",
+      "num": 24,
+      "title": "Electricity Slab Charge",
+      "statement": "Implement **Electricity Slab Charge** by evaluating the necessary\r\nconditions in the correct order and printing the required classification\r\nor result."
+    },
+    {
+      "id": "B240-Q25",
+      "num": 25,
+      "title": "Days in Month",
+      "statement": "Implement **Days in Month** by evaluating the necessary conditions in\r\nthe correct order and printing the required classification or result."
+    },
+    {
+      "id": "B240-Q26",
+      "num": 26,
+      "title": "Point Quadrant",
+      "statement": "Implement **Point Quadrant** by evaluating the necessary conditions in\r\nthe correct order and printing the required classification or result."
+    },
+    {
+      "id": "B240-Q27",
+      "num": 27,
+      "title": "Triangle Angle Classifier",
+      "statement": "Implement **Triangle Angle Classifier** by evaluating the necessary\r\nconditions in the correct order and printing the required classification\r\nor result."
+    },
+    {
+      "id": "B240-Q28",
+      "num": 28,
+      "title": "Password Strength Rules",
+      "statement": "Implement **Password Strength Rules** by evaluating the necessary\r\nconditions in the correct order and printing the required classification\r\nor result."
+    },
+    {
+      "id": "B240-Q29",
+      "num": 29,
+      "title": "Shipping Fee Rules",
+      "statement": "Implement **Shipping Fee Rules** by evaluating the necessary conditions\r\nin the correct order and printing the required classification or result."
+    },
+    {
+      "id": "B240-Q30",
+      "num": 30,
+      "title": "Chess Square Color",
+      "statement": "Implement **Chess Square Color** by evaluating the necessary conditions\r\nin the correct order and printing the required classification or result."
+    }
+  ],
+  "Loops": [
+    {
+      "id": "B240-Q31",
+      "num": 31,
+      "title": "Factorial Iteration",
+      "statement": "Implement **Factorial Iteration** using iteration as the main technique\r\nand print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q32",
+      "num": 32,
+      "title": "Multiplication Table Range",
+      "statement": "Implement **Multiplication Table Range** using iteration as the main\r\ntechnique and print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q33",
+      "num": 33,
+      "title": "Digit Sum Loop",
+      "statement": "Implement **Digit Sum Loop** using iteration as the main technique and\r\nprint the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q34",
+      "num": 34,
+      "title": "Reverse Digits Numerically",
+      "statement": "Implement **Reverse Digits Numerically** using iteration as the main\r\ntechnique and print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q35",
+      "num": 35,
+      "title": "Count Decimal Digits",
+      "statement": "Implement **Count Decimal Digits** using iteration as the main technique\r\nand print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q36",
+      "num": 36,
+      "title": "Greatest Common Divisor Loop",
+      "statement": "Implement **Greatest Common Divisor Loop** using iteration as the main\r\ntechnique and print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q38",
+      "num": 38,
+      "title": "Armstrong Number Check",
+      "statement": "Implement **Armstrong Number Check** using iteration as the main\r\ntechnique and print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q39",
+      "num": 39,
+      "title": "Perfect Number Check",
+      "statement": "Implement **Perfect Number Check** using iteration as the main technique\r\nand print the requested numeric result or sequence."
+    },
+    {
+      "id": "B240-Q40",
+      "num": 40,
+      "title": "Collatz Step Count",
+      "statement": "Implement **Collatz Step Count** using iteration as the main technique\r\nand print the requested numeric result or sequence."
+    }
+  ],
+  "Nested Loops": [
+    {
+      "id": "B240-Q41",
+      "num": 41,
+      "title": "Hollow Rectangle Pattern",
+      "statement": "Implement **Hollow Rectangle Pattern** using nested iteration to\r\ngenerate or evaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q42",
+      "num": 42,
+      "title": "Right-Aligned Number Triangle",
+      "statement": "Implement **Right-Aligned Number Triangle** using nested iteration to\r\ngenerate or evaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q44",
+      "num": 44,
+      "title": "Prime Pairs up to N",
+      "statement": "Implement **Prime Pairs up to N** using nested iteration to generate or\r\nevaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q45",
+      "num": 45,
+      "title": "Coordinate Pair Generator",
+      "statement": "Implement **Coordinate Pair Generator** using nested iteration to\r\ngenerate or evaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q46",
+      "num": 46,
+      "title": "Concentric Number Square",
+      "statement": "Implement **Concentric Number Square** using nested iteration to\r\ngenerate or evaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q47",
+      "num": 47,
+      "title": "Checkerboard Pattern",
+      "statement": "Implement **Checkerboard Pattern** using nested iteration to generate or\r\nevaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q48",
+      "num": 48,
+      "title": "Common Divisor Table",
+      "statement": "Implement **Common Divisor Table** using nested iteration to generate or\r\nevaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q49",
+      "num": 49,
+      "title": "Pascal Triangle Direct Computation",
+      "statement": "Implement **Pascal Triangle Direct Computation** using nested iteration\r\nto generate or evaluate the required pairwise or two-dimensional result."
+    },
+    {
+      "id": "B240-Q50",
+      "num": 50,
+      "title": "Pairwise Absolute Differences",
+      "statement": "Implement **Pairwise Absolute Differences** using nested iteration to\r\ngenerate or evaluate the required pairwise or two-dimensional result."
+    }
+  ],
+  "Functions": [
+    {
+      "id": "B240-Q51",
+      "num": 51,
+      "title": "Reusable Prime Tester",
+      "statement": "Implement **Reusable Prime Tester** by placing the reusable operation in\r\nfunction(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q52",
+      "num": 52,
+      "title": "Function for Digit Product",
+      "statement": "Implement **Function for Digit Product** by placing the reusable\r\noperation in function(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q53",
+      "num": 53,
+      "title": "Function Composition",
+      "statement": "Implement **Function Composition** by placing the reusable operation in\r\nfunction(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q54",
+      "num": 54,
+      "title": "Default Greeting Function",
+      "statement": "Implement **Default Greeting Function** by placing the reusable\r\noperation in function(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q55",
+      "num": 55,
+      "title": "Variadic Sum Function",
+      "statement": "Implement **Variadic Sum Function** by placing the reusable operation in\r\nfunction(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q56",
+      "num": 56,
+      "title": "Palindrome Function",
+      "statement": "Implement **Palindrome Function** by placing the reusable operation in\r\nfunction(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q57",
+      "num": 57,
+      "title": "Reusable Clamp Function",
+      "statement": "Implement **Reusable Clamp Function** by placing the reusable operation\r\nin function(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q58",
+      "num": 58,
+      "title": "Power Function Without Built-in Exponentiation",
+      "statement": "Implement **Power Function Without Built-in Exponentiation** by placing\r\nthe reusable operation in function(s) with suitable parameters and\r\nreturn values."
+    },
+    {
+      "id": "B240-Q59",
+      "num": 59,
+      "title": "Multiple Return Values",
+      "statement": "Implement **Multiple Return Values** by placing the reusable operation\r\nin function(s) with suitable parameters and return values."
+    },
+    {
+      "id": "B240-Q60",
+      "num": 60,
+      "title": "Function Pipeline",
+      "statement": "Implement **Function Pipeline** by placing the reusable operation in\r\nfunction(s) with suitable parameters and return values."
+    }
+  ],
+  "Scope": [
+    {
+      "id": "B240-Q61",
+      "num": 61,
+      "title": "Local Variable Shadowing",
+      "statement": "Implement **Local Variable Shadowing** to demonstrate the requested\r\nlocal, global, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q62",
+      "num": 62,
+      "title": "Global Counter Update",
+      "statement": "Implement **Global Counter Update** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q63",
+      "num": 63,
+      "title": "Nested Function Access",
+      "statement": "Implement **Nested Function Access** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q64",
+      "num": 64,
+      "title": "Nonlocal Accumulator",
+      "statement": "Implement **Nonlocal Accumulator** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q65",
+      "num": 65,
+      "title": "Local Lifetime Demonstration",
+      "statement": "Implement **Local Lifetime Demonstration** to demonstrate the requested\r\nlocal, global, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q66",
+      "num": 66,
+      "title": "Global Constant with Local Calculation",
+      "statement": "Implement **Global Constant with Local Calculation** to demonstrate the\r\nrequested local, global, enclosing, nonlocal, shadowing, or closure\r\nbehavior."
+    },
+    {
+      "id": "B240-Q67",
+      "num": 67,
+      "title": "Parameter Versus Global Name",
+      "statement": "Implement **Parameter Versus Global Name** to demonstrate the requested\r\nlocal, global, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q68",
+      "num": 68,
+      "title": "Closure Multiplier",
+      "statement": "Implement **Closure Multiplier** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q69",
+      "num": 69,
+      "title": "Independent Closures",
+      "statement": "Implement **Independent Closures** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    },
+    {
+      "id": "B240-Q70",
+      "num": 70,
+      "title": "Scope Resolution Trace",
+      "statement": "Implement **Scope Resolution Trace** to demonstrate the requested local,\r\nglobal, enclosing, nonlocal, shadowing, or closure behavior."
+    }
+  ],
+  "1D Arrays / Lists": [
+    {
+      "id": "B240-Q71",
+      "num": 71,
+      "title": "Remove Consecutive Duplicates",
+      "statement": "Given a one-dimensional array, solve **Remove Consecutive Duplicates**\r\nwhile preserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q72",
+      "num": 72,
+      "title": "Left and Right Neighbor Products",
+      "statement": "Given a one-dimensional array, solve **Left and Right Neighbor\r\nProducts** while preserving all ordering and index rules stated by the\r\ntask."
+    },
+    {
+      "id": "B240-Q73",
+      "num": 73,
+      "title": "Equilibrium Indices",
+      "statement": "Given a one-dimensional array, solve **Equilibrium Indices** while\r\npreserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q74",
+      "num": 74,
+      "title": "Maximum Difference After Index",
+      "statement": "Given a one-dimensional array, solve **Maximum Difference After Index**\r\nwhile preserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q75",
+      "num": 75,
+      "title": "Circular Neighbor Sum",
+      "statement": "Given a one-dimensional array, solve **Circular Neighbor Sum** while\r\npreserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q76",
+      "num": 76,
+      "title": "Compress Runs",
+      "statement": "Given a one-dimensional array, solve **Compress Runs** while preserving\r\nall ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q77",
+      "num": 77,
+      "title": "Longest Strictly Increasing Contiguous Segment",
+      "statement": "Given a one-dimensional array, solve **Longest Strictly Increasing\r\nContiguous Segment** while preserving all ordering and index rules\r\nstated by the task."
+    },
+    {
+      "id": "B240-Q78",
+      "num": 78,
+      "title": "Remove All Occurrences",
+      "statement": "Given a one-dimensional array, solve **Remove All Occurrences** while\r\npreserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q79",
+      "num": 79,
+      "title": "Product Except Self",
+      "statement": "Given a one-dimensional array, solve **Product Except Self** while\r\npreserving all ordering and index rules stated by the task."
+    },
+    {
+      "id": "B240-Q80",
+      "num": 80,
+      "title": "Minimum Adjacent Difference",
+      "statement": "Given a one-dimensional array, solve **Minimum Adjacent Difference**\r\nwhile preserving all ordering and index rules stated by the task."
+    }
+  ],
+  "Strings as Arrays": [
+    {
+      "id": "B240-Q81",
+      "num": 81,
+      "title": "Vowel Position Report",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Vowel Position Report** while preserving order unless transformation\r\nis required."
+    },
+    {
+      "id": "B240-Q82",
+      "num": 82,
+      "title": "Run-Length Encode String",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Run-Length Encode String** while preserving order unless\r\ntransformation is required."
+    },
+    {
+      "id": "B240-Q83",
+      "num": 83,
+      "title": "Anagram Normalizer",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Anagram Normalizer** while preserving order unless transformation is\r\nrequired."
+    },
+    {
+      "id": "B240-Q84",
+      "num": 84,
+      "title": "First Non-Repeating Character",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**First Non-Repeating Character** while preserving order unless\r\ntransformation is required."
+    },
+    {
+      "id": "B240-Q85",
+      "num": 85,
+      "title": "Rotate String by K",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Rotate String by K** while preserving order unless transformation is\r\nrequired."
+    },
+    {
+      "id": "B240-Q86",
+      "num": 86,
+      "title": "Word Initials",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Word Initials** while preserving order unless transformation is\r\nrequired."
+    },
+    {
+      "id": "B240-Q87",
+      "num": 87,
+      "title": "Longest Word Length",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Longest Word Length** while preserving order unless transformation is\r\nrequired."
+    },
+    {
+      "id": "B240-Q88",
+      "num": 88,
+      "title": "Toggle ASCII Letter Case",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Toggle ASCII Letter Case** while preserving order unless\r\ntransformation is required."
+    },
+    {
+      "id": "B240-Q89",
+      "num": 89,
+      "title": "Substring Occurrence Count",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**Substring Occurrence Count** while preserving order unless\r\ntransformation is required."
+    },
+    {
+      "id": "B240-Q90",
+      "num": 90,
+      "title": "String Difference Positions",
+      "statement": "Treat the supplied string as an indexed character sequence and solve\r\n**String Difference Positions** while preserving order unless\r\ntransformation is required."
+    }
+  ],
+  "2D Arrays / Matrices": [
+    {
+      "id": "B240-Q91",
+      "num": 91,
+      "title": "Matrix Transpose",
+      "statement": "Read the required matrix or matrices and perform **Matrix Transpose**.\r\nPrint the scalar result, traversal, positions, or resulting matrix."
+    },
+    {
+      "id": "B240-Q92",
+      "num": 92,
+      "title": "Primary and Secondary Diagonal Sums",
+      "statement": "Read the required matrix or matrices and perform **Primary and Secondary\r\nDiagonal Sums**. Print the scalar result, traversal, positions, or\r\nresulting matrix."
+    },
+    {
+      "id": "B240-Q95",
+      "num": 95,
+      "title": "Matrix Border Sum",
+      "statement": "Read the required matrix or matrices and perform **Matrix Border Sum**.\r\nPrint the scalar result, traversal, positions, or resulting matrix."
+    },
+    {
+      "id": "B240-Q97",
+      "num": 97,
+      "title": "Matrix Multiplication",
+      "statement": "Read the required matrix or matrices and perform **Matrix\r\nMultiplication**. Print the scalar result, traversal, positions, or\r\nresulting matrix."
+    },
+    {
+      "id": "B240-Q98",
+      "num": 98,
+      "title": "Saddle Points",
+      "statement": "Read the required matrix or matrices and perform **Saddle Points**.\r\nPrint the scalar result, traversal, positions, or resulting matrix."
+    },
+    {
+      "id": "B240-Q99",
+      "num": 99,
+      "title": "Spiral Traversal",
+      "statement": "Read the required matrix or matrices and perform **Spiral Traversal**.\r\nPrint the scalar result, traversal, positions, or resulting matrix."
+    },
+    {
+      "id": "B240-Q100",
+      "num": 100,
+      "title": "Zero Rows and Columns",
+      "statement": "Read the required matrix or matrices and perform **Zero Rows and\r\nColumns**. Print the scalar result, traversal, positions, or resulting\r\nmatrix."
+    }
+  ],
+  "Linear Search": [
+    {
+      "id": "B240-Q101",
+      "num": 101,
+      "title": "First Occurrence Search",
+      "statement": "Solve **First Occurrence Search** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q102",
+      "num": 102,
+      "title": "Last Occurrence Search",
+      "statement": "Solve **Last Occurrence Search** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q103",
+      "num": 103,
+      "title": "All Occurrence Indices",
+      "statement": "Solve **All Occurrence Indices** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q104",
+      "num": 104,
+      "title": "Nearest Value to Target",
+      "statement": "Solve **Nearest Value to Target** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q105",
+      "num": 105,
+      "title": "Search in Range",
+      "statement": "Solve **Search in Range** with a left-to-right linear scan and report\r\nthe required index, value, or query result."
+    },
+    {
+      "id": "B240-Q106",
+      "num": 106,
+      "title": "Sentinel Linear Search",
+      "statement": "Solve **Sentinel Linear Search** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q107",
+      "num": 107,
+      "title": "Count Comparisons in Search",
+      "statement": "Solve **Count Comparisons in Search** with a left-to-right linear scan\r\nand report the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q108",
+      "num": 108,
+      "title": "Search Records by ID",
+      "statement": "Solve **Search Records by ID** with a left-to-right linear scan and\r\nreport the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q109",
+      "num": 109,
+      "title": "Find First Value Meeting Predicate",
+      "statement": "Solve **Find First Value Meeting Predicate** with a left-to-right linear\r\nscan and report the required index, value, or query result."
+    },
+    {
+      "id": "B240-Q110",
+      "num": 110,
+      "title": "Unsorted Membership Queries",
+      "statement": "Solve **Unsorted Membership Queries** with a left-to-right linear scan\r\nand report the required index, value, or query result."
+    }
+  ],
+  "Binary Search": [
+    {
+      "id": "B240-Q111",
+      "num": 111,
+      "title": "Classic Binary Search",
+      "statement": "Solve **Classic Binary Search** using binary search or binary search on\r\nthe answer; use the monotonic or sorted property supplied by the task."
+    },
+    {
+      "id": "B240-Q112",
+      "num": 112,
+      "title": "First Occurrence Binary Search",
+      "statement": "Solve **First Occurrence Binary Search** using binary search or binary\r\nsearch on the answer; use the monotonic or sorted property supplied by\r\nthe task."
+    },
+    {
+      "id": "B240-Q113",
+      "num": 113,
+      "title": "Last Occurrence Binary Search",
+      "statement": "Solve **Last Occurrence Binary Search** using binary search or binary\r\nsearch on the answer; use the monotonic or sorted property supplied by\r\nthe task."
+    },
+    {
+      "id": "B240-Q114",
+      "num": 114,
+      "title": "Insertion Position",
+      "statement": "Solve **Insertion Position** using binary search or binary search on the\r\nanswer; use the monotonic or sorted property supplied by the task."
+    },
+    {
+      "id": "B240-Q115",
+      "num": 115,
+      "title": "Floor in Sorted Array",
+      "statement": "Solve **Floor in Sorted Array** using binary search or binary search on\r\nthe answer; use the monotonic or sorted property supplied by the task."
+    },
+    {
+      "id": "B240-Q116",
+      "num": 116,
+      "title": "Ceiling in Sorted Array",
+      "statement": "Solve **Ceiling in Sorted Array** using binary search or binary search\r\non the answer; use the monotonic or sorted property supplied by the\r\ntask."
+    },
+    {
+      "id": "B240-Q117",
+      "num": 117,
+      "title": "Integer Square Root",
+      "statement": "Solve **Integer Square Root** using binary search or binary search on\r\nthe answer; use the monotonic or sorted property supplied by the task."
+    },
+    {
+      "id": "B240-Q118",
+      "num": 118,
+      "title": "Search Rotated Sorted Array",
+      "statement": "Solve **Search Rotated Sorted Array** using binary search or binary\r\nsearch on the answer; use the monotonic or sorted property supplied by\r\nthe task."
+    },
+    {
+      "id": "B240-Q119",
+      "num": 119,
+      "title": "Minimum Feasible Capacity",
+      "statement": "Solve **Minimum Feasible Capacity** using binary search or binary search\r\non the answer; use the monotonic or sorted property supplied by the\r\ntask."
+    },
+    {
+      "id": "B240-Q120",
+      "num": 120,
+      "title": "Peak in Mountain Array",
+      "statement": "Solve **Peak in Mountain Array** using binary search or binary search on\r\nthe answer; use the monotonic or sorted property supplied by the task."
+    }
+  ],
+  "Sorting": [
+    {
+      "id": "B240-Q121",
+      "num": 121,
+      "title": "Bubble Sort Swap Count",
+      "statement": "Implement **Bubble Sort Swap Count** using the named sorting/selection\r\nrule and print the requested final order, trace, count, or selected\r\nvalue."
+    },
+    {
+      "id": "B240-Q122",
+      "num": 122,
+      "title": "Selection Sort Trace",
+      "statement": "Implement **Selection Sort Trace** using the named sorting/selection\r\nrule and print the requested final order, trace, count, or selected\r\nvalue."
+    },
+    {
+      "id": "B240-Q123",
+      "num": 123,
+      "title": "Insertion Sort Shift Count",
+      "statement": "Implement **Insertion Sort Shift Count** using the named\r\nsorting/selection rule and print the requested final order, trace,\r\ncount, or selected value."
+    },
+    {
+      "id": "B240-Q125",
+      "num": 125,
+      "title": "Sort Records by Two Keys",
+      "statement": "Implement **Sort Records by Two Keys** using the named sorting/selection\r\nrule and print the requested final order, trace, count, or selected\r\nvalue."
+    },
+    {
+      "id": "B240-Q126",
+      "num": 126,
+      "title": "Counting Sort Small Integers",
+      "statement": "Implement **Counting Sort Small Integers** using the named\r\nsorting/selection rule and print the requested final order, trace,\r\ncount, or selected value."
+    },
+    {
+      "id": "B240-Q127",
+      "num": 127,
+      "title": "Merge Sort Inversion Count",
+      "statement": "Implement **Merge Sort Inversion Count** using the named\r\nsorting/selection rule and print the requested final order, trace,\r\ncount, or selected value."
+    },
+    {
+      "id": "B240-Q128",
+      "num": 128,
+      "title": "Quickselect Kth Smallest",
+      "statement": "Implement **Quickselect Kth Smallest** using the named sorting/selection\r\nrule and print the requested final order, trace, count, or selected\r\nvalue."
+    },
+    {
+      "id": "B240-Q129",
+      "num": 129,
+      "title": "Sort Words by Length",
+      "statement": "Implement **Sort Words by Length** using the named sorting/selection\r\nrule and print the requested final order, trace, count, or selected\r\nvalue."
+    },
+    {
+      "id": "B240-Q130",
+      "num": 130,
+      "title": "Stable Partition by Parity",
+      "statement": "Implement **Stable Partition by Parity** using the named\r\nsorting/selection rule and print the requested final order, trace,\r\ncount, or selected value."
+    }
+  ],
+  "Sets": [
+    {
+      "id": "B240-Q131",
+      "num": 131,
+      "title": "Union and Intersection Sizes",
+      "statement": "Solve **Union and Intersection Sizes** using mathematical set membership\r\nand set operations; raw-input duplicates do not create extra set\r\nelements."
+    },
+    {
+      "id": "B240-Q132",
+      "num": 132,
+      "title": "Symmetric Difference Values",
+      "statement": "Solve **Symmetric Difference Values** using mathematical set membership\r\nand set operations; raw-input duplicates do not create extra set\r\nelements."
+    },
+    {
+      "id": "B240-Q133",
+      "num": 133,
+      "title": "Subset Check",
+      "statement": "Solve **Subset Check** using mathematical set membership and set\r\noperations; raw-input duplicates do not create extra set elements."
+    },
+    {
+      "id": "B240-Q134",
+      "num": 134,
+      "title": "Unique Visitors",
+      "statement": "Solve **Unique Visitors** using mathematical set membership and set\r\noperations; raw-input duplicates do not create extra set elements."
+    },
+    {
+      "id": "B240-Q135",
+      "num": 135,
+      "title": "Missing Values in Range",
+      "statement": "Solve **Missing Values in Range** using mathematical set membership and\r\nset operations; raw-input duplicates do not create extra set elements."
+    },
+    {
+      "id": "B240-Q136",
+      "num": 136,
+      "title": "Disjoint Set Test",
+      "statement": "Solve **Disjoint Set Test** using mathematical set membership and set\r\noperations; raw-input duplicates do not create extra set elements."
+    },
+    {
+      "id": "B240-Q137",
+      "num": 137,
+      "title": "Common Elements of Three Sets",
+      "statement": "Solve **Common Elements of Three Sets** using mathematical set\r\nmembership and set operations; raw-input duplicates do not create extra\r\nset elements."
+    },
+    {
+      "id": "B240-Q138",
+      "num": 138,
+      "title": "Set Equality Ignoring Duplicates",
+      "statement": "Solve **Set Equality Ignoring Duplicates** using mathematical set\r\nmembership and set operations; raw-input duplicates do not create extra\r\nset elements."
+    },
+    {
+      "id": "B240-Q139",
+      "num": 139,
+      "title": "Exactly Two Groups",
+      "statement": "Solve **Exactly Two Groups** using mathematical set membership and set\r\noperations; raw-input duplicates do not create extra set elements."
+    },
+    {
+      "id": "B240-Q140",
+      "num": 140,
+      "title": "Jaccard Similarity",
+      "statement": "Solve **Jaccard Similarity** using mathematical set membership and set\r\noperations; raw-input duplicates do not create extra set elements."
+    }
+  ],
+  "Two Pointers": [
+    {
+      "id": "B240-Q141",
+      "num": 141,
+      "title": "Sorted Pair Difference",
+      "statement": "Solve **Sorted Pair Difference** using two pointers or a sliding window\r\nas the central technique."
+    },
+    {
+      "id": "B240-Q142",
+      "num": 142,
+      "title": "Three Sum Zero",
+      "statement": "Solve **Three Sum Zero** using two pointers or a sliding window as the\r\ncentral technique."
+    },
+    {
+      "id": "B240-Q143",
+      "num": 143,
+      "title": "Container Maximum Area",
+      "statement": "Solve **Container Maximum Area** using two pointers or a sliding window\r\nas the central technique."
+    },
+    {
+      "id": "B240-Q144",
+      "num": 144,
+      "title": "Remove Duplicates In Place Count",
+      "statement": "Solve **Remove Duplicates In Place Count** using two pointers or a\r\nsliding window as the central technique."
+    },
+    {
+      "id": "B240-Q145",
+      "num": 145,
+      "title": "Sorted Squares",
+      "statement": "Solve **Sorted Squares** using two pointers or a sliding window as the\r\ncentral technique."
+    },
+    {
+      "id": "B240-Q146",
+      "num": 146,
+      "title": "Closest Pair Across Arrays",
+      "statement": "Solve **Closest Pair Across Arrays** using two pointers or a sliding\r\nwindow as the central technique."
+    },
+    {
+      "id": "B240-Q147",
+      "num": 147,
+      "title": "Longest Window Under Sum",
+      "statement": "Solve **Longest Window Under Sum** using two pointers or a sliding\r\nwindow as the central technique."
+    },
+    {
+      "id": "B240-Q148",
+      "num": 148,
+      "title": "Minimum Window Reaching Sum",
+      "statement": "Solve **Minimum Window Reaching Sum** using two pointers or a sliding\r\nwindow as the central technique."
+    },
+    {
+      "id": "B240-Q149",
+      "num": 149,
+      "title": "Interval Intersections",
+      "statement": "Solve **Interval Intersections** using two pointers or a sliding window\r\nas the central technique."
+    },
+    {
+      "id": "B240-Q150",
+      "num": 150,
+      "title": "Palindrome with One Deletion",
+      "statement": "Solve **Palindrome with One Deletion** using two pointers or a sliding\r\nwindow as the central technique."
+    }
+  ],
+  "Dictionaries / Hash Maps": [
+    {
+      "id": "B240-Q151",
+      "num": 151,
+      "title": "Word Frequency Report",
+      "statement": "Solve **Word Frequency Report** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q152",
+      "num": 152,
+      "title": "Most Frequent Value with Tie Rule",
+      "statement": "Solve **Most Frequent Value with Tie Rule** by maintaining key-value or\r\nfrequency information in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q153",
+      "num": 153,
+      "title": "Group Anagrams",
+      "statement": "Solve **Group Anagrams** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q154",
+      "num": 154,
+      "title": "Inventory Updates",
+      "statement": "Solve **Inventory Updates** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q155",
+      "num": 155,
+      "title": "Character Histogram",
+      "statement": "Solve **Character Histogram** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q156",
+      "num": 156,
+      "title": "Index by Category",
+      "statement": "Solve **Index by Category** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q157",
+      "num": 157,
+      "title": "Two Sequence Multiset Equality",
+      "statement": "Solve **Two Sequence Multiset Equality** by maintaining key-value or\r\nfrequency information in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q158",
+      "num": 158,
+      "title": "First Repeated Word",
+      "statement": "Solve **First Repeated Word** by maintaining key-value or frequency\r\ninformation in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q159",
+      "num": 159,
+      "title": "Sparse Vector Dot Product",
+      "statement": "Solve **Sparse Vector Dot Product** by maintaining key-value or\r\nfrequency information in a dictionary/hash map."
+    },
+    {
+      "id": "B240-Q160",
+      "num": 160,
+      "title": "Majority Element by Counting",
+      "statement": "Solve **Majority Element by Counting** by maintaining key-value or\r\nfrequency information in a dictionary/hash map."
+    }
+  ],
+  "Recursion": [
+    {
+      "id": "B240-Q163",
+      "num": 163,
+      "title": "Recursive String Reverse",
+      "statement": "Solve **Recursive String Reverse** recursively with a correct base case\r\nand recursive reduction."
+    },
+    {
+      "id": "B240-Q164",
+      "num": 164,
+      "title": "Recursive GCD",
+      "statement": "Solve **Recursive GCD** recursively with a correct base case and\r\nrecursive reduction."
+    },
+    {
+      "id": "B240-Q165",
+      "num": 165,
+      "title": "Tower of Hanoi",
+      "statement": "Solve **Tower of Hanoi** recursively with a correct base case and\r\nrecursive reduction."
+    },
+    {
+      "id": "B240-Q166",
+      "num": 166,
+      "title": "Recursive Binary Conversion",
+      "statement": "Solve **Recursive Binary Conversion** recursively with a correct base\r\ncase and recursive reduction."
+    },
+    {
+      "id": "B240-Q167",
+      "num": 167,
+      "title": "Recursive Palindrome Check",
+      "statement": "Solve **Recursive Palindrome Check** recursively with a correct base\r\ncase and recursive reduction."
+    },
+    {
+      "id": "B240-Q168",
+      "num": 168,
+      "title": "Recursive Array Maximum",
+      "statement": "Solve **Recursive Array Maximum** recursively with a correct base case\r\nand recursive reduction."
+    },
+    {
+      "id": "B240-Q169",
+      "num": 169,
+      "title": "Generate Balanced Parentheses",
+      "statement": "Solve **Generate Balanced Parentheses** recursively with a correct base\r\ncase and recursive reduction."
+    },
+    {
+      "id": "B240-Q170",
+      "num": 170,
+      "title": "Recursive Subset Sum Enumeration",
+      "statement": "Solve **Recursive Subset Sum Enumeration** recursively with a correct\r\nbase case and recursive reduction."
+    }
+  ],
+  "Trees / BST": [
+    {
+      "id": "B240-Q171",
+      "num": 171,
+      "title": "Count Nodes at Depth K",
+      "statement": "Given a binary tree or BST, solve **Count Nodes at Depth K**. Preserve\r\ntree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q172",
+      "num": 172,
+      "title": "Sum of Left Leaves",
+      "statement": "Given a binary tree or BST, solve **Sum of Left Leaves**. Preserve tree\r\nstructure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q173",
+      "num": 173,
+      "title": "Invert Binary Tree",
+      "statement": "Given a binary tree or BST, solve **Invert Binary Tree**. Preserve tree\r\nstructure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q174",
+      "num": 174,
+      "title": "Lowest Common Ancestor in BST",
+      "statement": "Given a binary tree or BST, solve **Lowest Common Ancestor in BST**.\r\nPreserve tree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q175",
+      "num": 175,
+      "title": "Kth Smallest in BST",
+      "statement": "Given a binary tree or BST, solve **Kth Smallest in BST**. Preserve tree\r\nstructure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q176",
+      "num": 176,
+      "title": "Count Nodes in BST Range",
+      "statement": "Given a binary tree or BST, solve **Count Nodes in BST Range**. Preserve\r\ntree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q177",
+      "num": 177,
+      "title": "Serialize Binary Tree",
+      "statement": "Given a binary tree or BST, solve **Serialize Binary Tree**. Preserve\r\ntree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q178",
+      "num": 178,
+      "title": "Maximum Width of Binary Tree",
+      "statement": "Given a binary tree or BST, solve **Maximum Width of Binary Tree**.\r\nPreserve tree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q179",
+      "num": 179,
+      "title": "Nodes at Distance K from Root",
+      "statement": "Given a binary tree or BST, solve **Nodes at Distance K from Root**.\r\nPreserve tree structure and exploit BST ordering when applicable."
+    },
+    {
+      "id": "B240-Q180",
+      "num": 180,
+      "title": "Delete Key from BST",
+      "statement": "Given a binary tree or BST, solve **Delete Key from BST**. Preserve tree\r\nstructure and exploit BST ordering when applicable."
+    }
+  ],
+  "Graphs": [
+    {
+      "id": "B240-Q181",
+      "num": 181,
+      "title": "Count Bridges",
+      "statement": "Given a graph, solve **Count Bridges** using an algorithm appropriate to\r\nthe stated graph property. Vertices are numbered 0 through n-1."
+    },
+    {
+      "id": "B240-Q182",
+      "num": 182,
+      "title": "Count Articulation Points",
+      "statement": "Given a graph, solve **Count Articulation Points** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    },
+    {
+      "id": "B240-Q183",
+      "num": 183,
+      "title": "Unweighted Distance from Source",
+      "statement": "Given a graph, solve **Unweighted Distance from Source** using an\r\nalgorithm appropriate to the stated graph property. Vertices are\r\nnumbered 0 through n-1."
+    },
+    {
+      "id": "B240-Q184",
+      "num": 184,
+      "title": "Count Triangles in Undirected Graph",
+      "statement": "Given a graph, solve **Count Triangles in Undirected Graph** using an\r\nalgorithm appropriate to the stated graph property. Vertices are\r\nnumbered 0 through n-1."
+    },
+    {
+      "id": "B240-Q185",
+      "num": 185,
+      "title": "Euler Trail Existence",
+      "statement": "Given a graph, solve **Euler Trail Existence** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    },
+    {
+      "id": "B240-Q186",
+      "num": 186,
+      "title": "Mother Vertex",
+      "statement": "Given a graph, solve **Mother Vertex** using an algorithm appropriate to\r\nthe stated graph property. Vertices are numbered 0 through n-1."
+    },
+    {
+      "id": "B240-Q187",
+      "num": 187,
+      "title": "Transitive Closure Queries",
+      "statement": "Given a graph, solve **Transitive Closure Queries** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    },
+    {
+      "id": "B240-Q188",
+      "num": 188,
+      "title": "Count Paths in DAG",
+      "statement": "Given a graph, solve **Count Paths in DAG** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    },
+    {
+      "id": "B240-Q189",
+      "num": 189,
+      "title": "0-1 Shortest Path",
+      "statement": "Given a graph, solve **0-1 Shortest Path** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    },
+    {
+      "id": "B240-Q190",
+      "num": 190,
+      "title": "Bridge-Connected Components",
+      "statement": "Given a graph, solve **Bridge-Connected Components** using an algorithm\r\nappropriate to the stated graph property. Vertices are numbered 0\r\nthrough n-1."
+    }
+  ],
+  "Dynamic Programming": [
+    {
+      "id": "B240-Q191",
+      "num": 191,
+      "title": "0/1 Knapsack Maximum Value",
+      "statement": "Solve **0/1 Knapsack Maximum Value** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q192",
+      "num": 192,
+      "title": "Longest Common Subsequence",
+      "statement": "Solve **Longest Common Subsequence** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q193",
+      "num": 193,
+      "title": "Matrix Chain Multiplication",
+      "statement": "Solve **Matrix Chain Multiplication** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q194",
+      "num": 194,
+      "title": "Limited-Coin Exact Sum",
+      "statement": "Solve **Limited-Coin Exact Sum** using dynamic programming with clearly\r\ndefined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q195",
+      "num": 195,
+      "title": "Longest Palindromic Subsequence",
+      "statement": "Solve **Longest Palindromic Subsequence** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q196",
+      "num": 196,
+      "title": "Unique Paths with Obstacles",
+      "statement": "Solve **Unique Paths with Obstacles** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q197",
+      "num": 197,
+      "title": "Rod Cutting Maximum Revenue",
+      "statement": "Solve **Rod Cutting Maximum Revenue** using dynamic programming with\r\nclearly defined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q198",
+      "num": 198,
+      "title": "Subset Count for Target",
+      "statement": "Solve **Subset Count for Target** using dynamic programming with clearly\r\ndefined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q199",
+      "num": 199,
+      "title": "Minimum Palindrome Cuts",
+      "statement": "Solve **Minimum Palindrome Cuts** using dynamic programming with clearly\r\ndefined states, base cases, and transitions."
+    },
+    {
+      "id": "B240-Q200",
+      "num": 200,
+      "title": "Optimal Game Strategy",
+      "statement": "Solve **Optimal Game Strategy** using dynamic programming with clearly\r\ndefined states, base cases, and transitions."
+    }
+  ],
+  "DSA Algorithms": [
+    {
+      "id": "B240-Q201",
+      "num": 201,
+      "title": "Next Greater Element",
+      "statement": "Implement **Next Greater Element** using the data structure or algorithm\r\nnamed in the question; inputs may be large enough to require the\r\nintended efficient technique."
+    },
+    {
+      "id": "B240-Q203",
+      "num": 203,
+      "title": "Balanced Brackets",
+      "statement": "Implement **Balanced Brackets** using the data structure or algorithm\r\nnamed in the question; inputs may be large enough to require the\r\nintended efficient technique."
+    },
+    {
+      "id": "B240-Q204",
+      "num": 204,
+      "title": "Postfix Expression Evaluation",
+      "statement": "Implement **Postfix Expression Evaluation** using the data structure or\r\nalgorithm named in the question; inputs may be large enough to require\r\nthe intended efficient technique."
+    },
+    {
+      "id": "B240-Q205",
+      "num": 205,
+      "title": "Circular Queue Simulation",
+      "statement": "Implement **Circular Queue Simulation** using the data structure or\r\nalgorithm named in the question; inputs may be large enough to require\r\nthe intended efficient technique."
+    },
+    {
+      "id": "B240-Q206",
+      "num": 206,
+      "title": "LRU Cache Simulation",
+      "statement": "Implement **LRU Cache Simulation** using the data structure or algorithm\r\nnamed in the question; inputs may be large enough to require the\r\nintended efficient technique."
+    },
+    {
+      "id": "B240-Q207",
+      "num": 207,
+      "title": "Median of Data Stream",
+      "statement": "Implement **Median of Data Stream** using the data structure or\r\nalgorithm named in the question; inputs may be large enough to require\r\nthe intended efficient technique."
+    },
+    {
+      "id": "B240-Q208",
+      "num": 208,
+      "title": "K Largest Elements",
+      "statement": "Implement **K Largest Elements** using the data structure or algorithm\r\nnamed in the question; inputs may be large enough to require the\r\nintended efficient technique."
+    },
+    {
+      "id": "B240-Q209",
+      "num": 209,
+      "title": "Fenwick Tree Range Sums",
+      "statement": "Implement **Fenwick Tree Range Sums** using the data structure or\r\nalgorithm named in the question; inputs may be large enough to require\r\nthe intended efficient technique."
+    },
+    {
+      "id": "B240-Q210",
+      "num": 210,
+      "title": "Segment Tree Range Minimum",
+      "statement": "Implement **Segment Tree Range Minimum** using the data structure or\r\nalgorithm named in the question; inputs may be large enough to require\r\nthe intended efficient technique."
+    }
+  ],
+  "OOP --- Classes & Objects": [
+    {
+      "id": "B240-Q211",
+      "num": 211,
+      "title": "Student Object",
+      "statement": "Design the class hierarchy or object behavior required for **Student\r\nObject**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q212",
+      "num": 212,
+      "title": "Rectangle Objects",
+      "statement": "Design the class hierarchy or object behavior required for **Rectangle\r\nObjects**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q213",
+      "num": 213,
+      "title": "Bank Account Object",
+      "statement": "Design the class hierarchy or object behavior required for **Bank\r\nAccount Object**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q214",
+      "num": 214,
+      "title": "Book Object",
+      "statement": "Design the class hierarchy or object behavior required for **Book\r\nObject**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q215",
+      "num": 215,
+      "title": "Point Object Distance",
+      "statement": "Design the class hierarchy or object behavior required for **Point\r\nObject Distance**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q216",
+      "num": 216,
+      "title": "Counter Objects",
+      "statement": "Design the class hierarchy or object behavior required for **Counter\r\nObjects**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q217",
+      "num": 217,
+      "title": "Car Object State",
+      "statement": "Design the class hierarchy or object behavior required for **Car Object\r\nState**. Use object state, methods, and inheritance where required, then\r\nprint the requested result."
+    },
+    {
+      "id": "B240-Q218",
+      "num": 218,
+      "title": "Time Object",
+      "statement": "Design the class hierarchy or object behavior required for **Time\r\nObject**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q219",
+      "num": 219,
+      "title": "Fraction Object",
+      "statement": "Design the class hierarchy or object behavior required for **Fraction\r\nObject**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q220",
+      "num": 220,
+      "title": "Playlist Object",
+      "statement": "Design the class hierarchy or object behavior required for **Playlist\r\nObject**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    }
+  ],
+  "OOP --- Methods": [
+    {
+      "id": "B240-Q221",
+      "num": 221,
+      "title": "Temperature Conversion Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Temperature\r\nConversion Methods**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q222",
+      "num": 222,
+      "title": "Circle Instance Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Circle\r\nInstance Methods**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q223",
+      "num": 223,
+      "title": "Employee Raise Method",
+      "statement": "Design the class hierarchy or object behavior required for **Employee\r\nRaise Method**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q224",
+      "num": 224,
+      "title": "Shopping Cart Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Shopping\r\nCart Methods**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q225",
+      "num": 225,
+      "title": "Vector Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Vector\r\nMethods**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q226",
+      "num": 226,
+      "title": "String Utility Object",
+      "statement": "Design the class hierarchy or object behavior required for **String\r\nUtility Object**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q227",
+      "num": 227,
+      "title": "Library Checkout Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Library\r\nCheckout Methods**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q228",
+      "num": 228,
+      "title": "Scoreboard Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Scoreboard\r\nMethods**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q229",
+      "num": 229,
+      "title": "Date Utility Methods",
+      "statement": "Design the class hierarchy or object behavior required for **Date\r\nUtility Methods**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q230",
+      "num": 230,
+      "title": "Wallet Transfer Method",
+      "statement": "Design the class hierarchy or object behavior required for **Wallet\r\nTransfer Method**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    }
+  ],
+  "OOP --- Inheritance": [
+    {
+      "id": "B240-Q231",
+      "num": 231,
+      "title": "Person and Student",
+      "statement": "Design the class hierarchy or object behavior required for **Person and\r\nStudent**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q232",
+      "num": 232,
+      "title": "Shape Hierarchy",
+      "statement": "Design the class hierarchy or object behavior required for **Shape\r\nHierarchy**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q233",
+      "num": 233,
+      "title": "Vehicle Hierarchy",
+      "statement": "Design the class hierarchy or object behavior required for **Vehicle\r\nHierarchy**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q234",
+      "num": 234,
+      "title": "Employee and Manager",
+      "statement": "Design the class hierarchy or object behavior required for **Employee\r\nand Manager**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q235",
+      "num": 235,
+      "title": "Account and SavingsAccount",
+      "statement": "Design the class hierarchy or object behavior required for **Account and\r\nSavingsAccount**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q236",
+      "num": 236,
+      "title": "Animal Sound Override",
+      "statement": "Design the class hierarchy or object behavior required for **Animal\r\nSound Override**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    },
+    {
+      "id": "B240-Q237",
+      "num": 237,
+      "title": "Publication Hierarchy",
+      "statement": "Design the class hierarchy or object behavior required for **Publication\r\nHierarchy**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q238",
+      "num": 238,
+      "title": "Device and SmartPhone",
+      "statement": "Design the class hierarchy or object behavior required for **Device and\r\nSmartPhone**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q239",
+      "num": 239,
+      "title": "Ticket Hierarchy",
+      "statement": "Design the class hierarchy or object behavior required for **Ticket\r\nHierarchy**. Use object state, methods, and inheritance where required,\r\nthen print the requested result."
+    },
+    {
+      "id": "B240-Q240",
+      "num": 240,
+      "title": "Multilevel Inheritance Record",
+      "statement": "Design the class hierarchy or object behavior required for **Multilevel\r\nInheritance Record**. Use object state, methods, and inheritance where\r\nrequired, then print the requested result."
+    }
+  ]
+}

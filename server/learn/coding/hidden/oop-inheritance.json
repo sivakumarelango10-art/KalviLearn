@@ -1,0 +1,1814 @@
+{
+  "basic-overridden-double": {
+    "id": "learn:oop-inheritance:basic-overridden-double",
+    "bankId": "T24-Q01",
+    "slug": "basic-overridden-double",
+    "topicId": "oop-inheritance",
+    "title": "Basic Overridden Double",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 216",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -14",
+        "isHidden": true
+      }
+    ]
+  },
+  "inherit-without-override": {
+    "id": "learn:oop-inheritance:inherit-without-override",
+    "bankId": "T24-Q02",
+    "slug": "inherit-without-override",
+    "topicId": "oop-inheritance",
+    "title": "Inherit Without Override",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -5",
+        "isHidden": true
+      }
+    ]
+  },
+  "override-changes-subtraction": {
+    "id": "learn:oop-inheritance:override-changes-subtraction",
+    "bankId": "T24-Q03",
+    "slug": "override-changes-subtraction",
+    "topicId": "oop-inheritance",
+    "title": "Override Changes Subtraction",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 -5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -11",
+        "isHidden": true
+      }
+    ]
+  },
+  "super-method-extension": {
+    "id": "learn:oop-inheritance:super-method-extension",
+    "bankId": "T24-Q04",
+    "slug": "super-method-extension",
+    "topicId": "oop-inheritance",
+    "title": "Super Method Extension",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "28",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "60",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-32",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "240",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "990",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "168",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-72",
+        "isHidden": true
+      }
+    ]
+  },
+  "three-level-method-chain": {
+    "id": "learn:oop-inheritance:three-level-method-chain",
+    "bankId": "T24-Q05",
+    "slug": "three-level-method-chain",
+    "topicId": "oop-inheritance",
+    "title": "Three Level Method Chain",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "7 10 20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 5 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "12 16 32",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 2 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-8 -5 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 30 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "99 108 216",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "5 7 14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-7 -10 -20",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "24 30 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100 200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-12 -7 -14",
+        "isHidden": true
+      }
+    ]
+  },
+  "runtime-polymorphism": {
+    "id": "learn:oop-inheritance:runtime-polymorphism",
+    "bankId": "T24-Q06",
+    "slug": "runtime-polymorphism",
+    "topicId": "oop-inheritance",
+    "title": "Runtime Polymorphism",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "base child base",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "base child base",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "base child base",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "base child base",
+        "isHidden": true
+      }
+    ]
+  },
+  "constructor-field-inheritance": {
+    "id": "learn:oop-inheritance:constructor-field-inheritance",
+    "bankId": "T24-Q07",
+    "slug": "constructor-field-inheritance",
+    "topicId": "oop-inheritance",
+    "title": "Constructor Field Inheritance",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "7 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "12 16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-8 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "99 108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "5 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-7 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "24 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-12 -7",
+        "isHidden": true
+      }
+    ]
+  },
+  "overridden-property-of-shape": {
+    "id": "learn:oop-inheritance:overridden-property-of-shape",
+    "bankId": "T24-Q08",
+    "slug": "overridden-property-of-shape",
+    "topicId": "oop-inheritance",
+    "title": "Overridden Property of Shape",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "21 49",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "48 144",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-24 64",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "225 225",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "891 9801",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "10 25",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "21 49",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "144 576",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0 10000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-60 144",
+        "isHidden": true
+      }
+    ]
+  },
+  "parent-vs-child-multiplier": {
+    "id": "learn:oop-inheritance:parent-vs-child-multiplier",
+    "bankId": "T24-Q09",
+    "slug": "parent-vs-child-multiplier",
+    "topicId": "oop-inheritance",
+    "title": "Parent vs Child Multiplier",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "70 30",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "192 64",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "40 -15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "450 450",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "10692 972",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "35 14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "70 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "720 180",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "10000 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "84 -35",
+        "isHidden": true
+      }
+    ]
+  },
+  "super-call-twice": {
+    "id": "learn:oop-inheritance:super-call-twice",
+    "bankId": "T24-Q10",
+    "slug": "super-call-twice",
+    "topicId": "oop-inheritance",
+    "title": "Super Call Twice",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "-10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-22",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "180",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-34",
+        "isHidden": true
+      }
+    ]
+  },
+  "inherited-helper-used-by-override": {
+    "id": "learn:oop-inheritance:inherited-helper-used-by-override",
+    "bankId": "T24-Q11",
+    "slug": "inherited-helper-used-by-override",
+    "topicId": "oop-inheritance",
+    "title": "Inherited Helper Used by Override",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "58",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "25",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "160",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "73",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "450",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9882",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "29",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "58",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "612",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "10000",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "169",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "73",
+        "isHidden": true
+      }
+    ]
+  },
+  "derived-helper-overrides-parent-helper": {
+    "id": "learn:oop-inheritance:derived-helper-overrides-parent-helper",
+    "bankId": "T24-Q12",
+    "slug": "derived-helper-overrides-parent-helper",
+    "topicId": "oop-inheritance",
+    "title": "Derived Helper Overrides Parent Helper",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 28",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 207",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -13",
+        "isHidden": true
+      }
+    ]
+  },
+  "grandchild-uses-parent-override": {
+    "id": "learn:oop-inheritance:grandchild-uses-parent-override",
+    "bankId": "T24-Q13",
+    "slug": "grandchild-uses-parent-override",
+    "topicId": "oop-inheritance",
+    "title": "Grandchild Uses Parent Override",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -5",
+        "isHidden": true
+      }
+    ]
+  },
+  "class-hierarchy-type-flags": {
+    "id": "learn:oop-inheritance:class-hierarchy-type-flags",
+    "bankId": "T24-Q14",
+    "slug": "class-hierarchy-type-flags",
+    "topicId": "oop-inheritance",
+    "title": "Class Hierarchy Type Flags",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "True False True",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "True False True",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "True False True",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "True False True",
+        "isHidden": true
+      }
+    ]
+  },
+  "template-method-dispatch": {
+    "id": "learn:oop-inheritance:template-method-dispatch",
+    "bankId": "T24-Q15",
+    "slug": "template-method-dispatch",
+    "topicId": "oop-inheritance",
+    "title": "Template Method Dispatch",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 28",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 207",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 54",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -19",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5 -13",
+        "isHidden": true
+      }
+    ]
+  },
+  "override-with-conditional": {
+    "id": "learn:oop-inheritance:override-with-conditional",
+    "bankId": "T24-Q16",
+    "slug": "override-with-conditional",
+    "topicId": "oop-inheritance",
+    "title": "Override with Conditional",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "positive positive",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "nonpositive positive",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "-8 3",
+        "expectedOutput": "nonpositive nonpositive",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "12 4",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 1",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "nonpositive nonpositive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "positive positive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "nonpositive nonpositive",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "nonpositive nonpositive",
+        "isHidden": true
+      }
+    ]
+  },
+  "grandchild-super-chain": {
+    "id": "learn:oop-inheritance:grandchild-super-chain",
+    "bankId": "T24-Q17",
+    "slug": "grandchild-super-chain",
+    "topicId": "oop-inheritance",
+    "title": "Grandchild Super Chain",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "cooperative-diamond-inheritance": {
+    "id": "learn:oop-inheritance:cooperative-diamond-inheritance",
+    "bankId": "T24-Q18",
+    "slug": "cooperative-diamond-inheritance",
+    "topicId": "oop-inheritance",
+    "title": "Cooperative Diamond Inheritance",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "29",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "46",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "208",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "55",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "201",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-18",
+        "isHidden": true
+      }
+    ]
+  },
+  "subclass-method-calls-another-override": {
+    "id": "learn:oop-inheritance:subclass-method-calls-another-override",
+    "bankId": "T24-Q19",
+    "slug": "subclass-method-calls-another-override",
+    "topicId": "oop-inheritance",
+    "title": "Subclass Method Calls Another Override",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "14 6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0 10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "24 8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-16 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "198 18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "10 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-14 -6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "48 12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "200 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-24 10",
+        "isHidden": true
+      }
+    ]
+  },
+  "polymorphic-aggregate": {
+    "id": "learn:oop-inheritance:polymorphic-aggregate",
+    "bankId": "T24-Q20",
+    "slug": "polymorphic-aggregate",
+    "topicId": "oop-inheritance",
+    "title": "Polymorphic Aggregate",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "30",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "48",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "324",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "21",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "300",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-21",
+        "isHidden": true
+      }
+    ]
+  }
+}

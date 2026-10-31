@@ -1,0 +1,1862 @@
+{
+  "local-parameter-shadows-global": {
+    "id": "learn:scope:local-parameter-shadows-global",
+    "bankId": "T07-Q01",
+    "slug": "local-parameter-shadows-global",
+    "topicId": "scope",
+    "title": "Local Parameter Shadows Global",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "11",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "17",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "31",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "109",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "31",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "101",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-6",
+        "isHidden": true
+      }
+    ]
+  },
+  "local-assignment-does-not-leak": {
+    "id": "learn:scope:local-assignment-does-not-leak",
+    "bankId": "T07-Q02",
+    "slug": "local-assignment-does-not-leak",
+    "topicId": "scope",
+    "title": "Local Assignment Does Not Leak",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "6 7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "10 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "8 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "6 -8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "18 99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "4 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-6 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "12 24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "10 -12",
+        "isHidden": true
+      }
+    ]
+  },
+  "read-global-without-rebinding": {
+    "id": "learn:scope:read-global-without-rebinding",
+    "bankId": "T07-Q03",
+    "slug": "read-global-without-rebinding",
+    "topicId": "scope",
+    "title": "Read Global Without Rebinding",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "global-keyword-mutation": {
+    "id": "learn:scope:global-keyword-mutation",
+    "bankId": "T07-Q04",
+    "slug": "global-keyword-mutation",
+    "topicId": "scope",
+    "title": "Global Keyword Mutation",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "enclosing-variable-read": {
+    "id": "learn:scope:enclosing-variable-read",
+    "bankId": "T07-Q05",
+    "slug": "enclosing-variable-read",
+    "topicId": "scope",
+    "title": "Enclosing Variable Read",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "nonlocal-increment": {
+    "id": "learn:scope:nonlocal-increment",
+    "bankId": "T07-Q06",
+    "slug": "nonlocal-increment",
+    "topicId": "scope",
+    "title": "Nonlocal Increment",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "13",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "20",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "117",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "36",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-2",
+        "isHidden": true
+      }
+    ]
+  },
+  "inner-shadow-vs-enclosing": {
+    "id": "learn:scope:inner-shadow-vs-enclosing",
+    "bankId": "T07-Q07",
+    "slug": "inner-shadow-vs-enclosing",
+    "topicId": "scope",
+    "title": "Inner Shadow vs Enclosing",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3 7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9 99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6 24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5 -12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      }
+    ]
+  },
+  "nested-closure-captures-parameter": {
+    "id": "learn:scope:nested-closure-captures-parameter",
+    "bankId": "T07-Q08",
+    "slug": "nested-closure-captures-parameter",
+    "topicId": "scope",
+    "title": "Nested Closure Captures Parameter",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "loop-variable-persists-in-function": {
+    "id": "learn:scope:loop-variable-persists-in-function",
+    "bankId": "T07-Q09",
+    "slug": "loop-variable-persists-in-function",
+    "topicId": "scope",
+    "title": "Loop Variable Persists in Function",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "19",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "18",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "27",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "63",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "129",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "14",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-13",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "45",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "103",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "if-block-uses-local-function-scope": {
+    "id": "learn:scope:if-block-uses-local-function-scope",
+    "bankId": "T07-Q10",
+    "slug": "if-block-uses-local-function-scope",
+    "topicId": "scope",
+    "title": "If Block Uses Local Function Scope",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "comprehension-does-not-overwrite-x": {
+    "id": "learn:scope:comprehension-does-not-overwrite-x",
+    "bankId": "T07-Q11",
+    "slug": "comprehension-does-not-overwrite-x",
+    "topicId": "scope",
+    "title": "Comprehension Does Not Overwrite X",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-12",
+        "isHidden": true
+      }
+    ]
+  },
+  "parameter-rebinding-does-not-modify-caller": {
+    "id": "learn:scope:parameter-rebinding-does-not-modify-caller",
+    "bankId": "T07-Q12",
+    "slug": "parameter-rebinding-does-not-modify-caller",
+    "topicId": "scope",
+    "title": "Parameter Rebinding Does Not Modify Caller",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -12",
+        "isHidden": true
+      }
+    ]
+  },
+  "three-level-legb-lookup": {
+    "id": "learn:scope:three-level-legb-lookup",
+    "bankId": "T07-Q13",
+    "slug": "three-level-legb-lookup",
+    "topicId": "scope",
+    "title": "Three Level LEGB Lookup",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "closest-scope-wins": {
+    "id": "learn:scope:closest-scope-wins",
+    "bankId": "T07-Q14",
+    "slug": "closest-scope-wins",
+    "topicId": "scope",
+    "title": "Closest Scope Wins",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "nonlocal-swap-state": {
+    "id": "learn:scope:nonlocal-swap-state",
+    "bankId": "T07-Q15",
+    "slug": "nonlocal-swap-state",
+    "topicId": "scope",
+    "title": "Nonlocal Swap State",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "3 7",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "4 12",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "15 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "9 99",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "2 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-3 -7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "6 24",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "0 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "5 -12",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "1 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "3 -8",
+        "isHidden": true
+      }
+    ]
+  },
+  "closure-factory-with-two-calls": {
+    "id": "learn:scope:closure-factory-with-two-calls",
+    "bankId": "T07-Q16",
+    "slug": "closure-factory-with-two-calls",
+    "topicId": "scope",
+    "title": "Closure Factory with Two Calls",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10 13 16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5 10 15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16 20 24",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5 -2 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30 45 60",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108 117 126",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7 9 11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10 -13 -16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30 36 42",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 100 100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7 -2 3",
+        "isHidden": true
+      }
+    ]
+  },
+  "default-parameter-evaluated-at-definition": {
+    "id": "learn:scope:default-parameter-evaluated-at-definition",
+    "bankId": "T07-Q17",
+    "slug": "default-parameter-evaluated-at-definition",
+    "topicId": "scope",
+    "title": "Default Parameter Evaluated at Definition",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "10",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "16",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "108",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-10",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "30",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-5",
+        "isHidden": true
+      }
+    ]
+  },
+  "local-and-global-same-name": {
+    "id": "learn:scope:local-and-global-same-name",
+    "bankId": "T07-Q18",
+    "slug": "local-and-global-same-name",
+    "topicId": "scope",
+    "title": "Local and Global Same Name",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "-5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "8",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-11",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "90",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "18",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-17",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-11",
+        "isHidden": true
+      }
+    ]
+  },
+  "nested-function-argument-overrides-closure": {
+    "id": "learn:scope:nested-function-argument-overrides-closure",
+    "bankId": "T07-Q19",
+    "slug": "nested-function-argument-overrides-closure",
+    "topicId": "scope",
+    "title": "Nested Function Argument Overrides Closure",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "23",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "36",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "75",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "225",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "16",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-23",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "66",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "200",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "-8 3",
+        "expectedOutput": "-7",
+        "isHidden": true
+      }
+    ]
+  },
+  "two-independent-closure-instances": {
+    "id": "learn:scope:two-independent-closure-instances",
+    "bankId": "T07-Q20",
+    "slug": "two-independent-closure-instances",
+    "topicId": "scope",
+    "title": "Two Independent Closure Instances",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "7 3",
+        "expectedOutput": "13 3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 5",
+        "expectedOutput": "10 5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "12 4",
+        "expectedOutput": "20 4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 1",
+        "expectedOutput": "3 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "-8 3",
+        "expectedOutput": "-2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "15 15",
+        "expectedOutput": "45 15",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "99 9",
+        "expectedOutput": "117 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "5 2",
+        "expectedOutput": "9 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "-7 -3",
+        "expectedOutput": "-13 -3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "24 6",
+        "expectedOutput": "36 6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "100 0",
+        "expectedOutput": "100 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "0 0",
+        "expectedOutput": "0 0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "-12 5",
+        "expectedOutput": "-2 5",
+        "isHidden": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,1778 @@
+{
+  "first-target-index": {
+    "id": "learn:linear-search:first-target-index",
+    "bankId": "T11-Q01",
+    "slug": "first-target-index",
+    "topicId": "linear-search",
+    "title": "First Target Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-target-index": {
+    "id": "learn:linear-search:last-target-index",
+    "bankId": "T11-Q02",
+    "slug": "last-target-index",
+    "topicId": "linear-search",
+    "title": "Last Target Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "count-equal-values": {
+    "id": "learn:linear-search:count-equal-values",
+    "bankId": "T11-Q03",
+    "slug": "count-equal-values",
+    "topicId": "linear-search",
+    "title": "Count Equal Values",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "1 7\n7",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "all-matching-indices": {
+    "id": "learn:linear-search:all-matching-indices",
+    "bankId": "T11-Q04",
+    "slug": "all-matching-indices",
+    "topicId": "linear-search",
+    "title": "All Matching Indices",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2 3 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0 2 4 6",
+        "isHidden": true
+      }
+    ]
+  },
+  "target-exists": {
+    "id": "learn:linear-search:target-exists",
+    "bankId": "T11-Q05",
+    "slug": "target-exists",
+    "topicId": "linear-search",
+    "title": "Target Exists",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "false",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "true",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "true",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "true",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-greater-than-target": {
+    "id": "learn:linear-search:first-greater-than-target",
+    "bankId": "T11-Q06",
+    "slug": "first-greater-than-target",
+    "topicId": "linear-search",
+    "title": "First Greater Than Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-less-than-target": {
+    "id": "learn:linear-search:last-less-than-target",
+    "bankId": "T11-Q07",
+    "slug": "last-less-than-target",
+    "topicId": "linear-search",
+    "title": "Last Less Than Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "5",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-greater-or-equal": {
+    "id": "learn:linear-search:first-greater-or-equal",
+    "bankId": "T11-Q08",
+    "slug": "first-greater-or-equal",
+    "topicId": "linear-search",
+    "title": "First Greater or Equal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-less-or-equal": {
+    "id": "learn:linear-search:last-less-or-equal",
+    "bankId": "T11-Q09",
+    "slug": "last-less-or-equal",
+    "topicId": "linear-search",
+    "title": "Last Less or Equal",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "6",
+        "isHidden": true
+      }
+    ]
+  },
+  "nearest-value-index": {
+    "id": "learn:linear-search:nearest-value-index",
+    "bankId": "T11-Q10",
+    "slug": "nearest-value-index",
+    "topicId": "linear-search",
+    "title": "Nearest Value Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 14,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 15,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-nonmatching-index": {
+    "id": "learn:linear-search:first-nonmatching-index",
+    "bankId": "T11-Q11",
+    "slug": "first-nonmatching-index",
+    "topicId": "linear-search",
+    "title": "First Nonmatching Index",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "indices-of-even-entries": {
+    "id": "learn:linear-search:indices-of-even-entries",
+    "bankId": "T11-Q12",
+    "slug": "indices-of-even-entries",
+    "topicId": "linear-search",
+    "title": "Indices of Even Entries",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "EMPTY",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0 1 2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "EMPTY",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "0 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 3 5 7 9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0 2 4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "1 3 5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0 1 2 3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0 2 3 4 6",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-multiple-of-target": {
+    "id": "learn:linear-search:first-multiple-of-target",
+    "bankId": "T11-Q13",
+    "slug": "first-multiple-of-target",
+    "topicId": "linear-search",
+    "title": "First Multiple of Target",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "first-local-peak": {
+    "id": "learn:linear-search:first-local-peak",
+    "bankId": "T11-Q14",
+    "slug": "first-local-peak",
+    "topicId": "linear-search",
+    "title": "First Local Peak",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "search-starting-after-first-half": {
+    "id": "learn:linear-search:search-starting-after-first-half",
+    "bankId": "T11-Q15",
+    "slug": "search-starting-after-first-half",
+    "topicId": "linear-search",
+    "title": "Search Starting After First Half",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "4",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ]
+  },
+  "last-negative-position": {
+    "id": "learn:linear-search:last-negative-position",
+    "bankId": "T11-Q16",
+    "slug": "last-negative-position",
+    "topicId": "linear-search",
+    "title": "Last Negative Position",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "1 7\n7",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "-1",
+        "isHidden": true
+      }
+    ]
+  },
+  "index-of-maximum-first-tie": {
+    "id": "learn:linear-search:index-of-maximum-first-tie",
+    "bankId": "T11-Q17",
+    "slug": "index-of-maximum-first-tie",
+    "topicId": "linear-search",
+    "title": "Index of Maximum First Tie",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "4",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "9",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "0",
+        "isHidden": true
+      }
+    ]
+  },
+  "index-of-minimum-last-tie": {
+    "id": "learn:linear-search:index-of-minimum-last-tie",
+    "bankId": "T11-Q18",
+    "slug": "index-of-minimum-last-tie",
+    "topicId": "linear-search",
+    "title": "Index of Minimum Last Tie",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "1 7\n7",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "1",
+        "isHidden": true
+      }
+    ]
+  },
+  "closest-smaller-value": {
+    "id": "learn:linear-search:closest-smaller-value",
+    "bankId": "T11-Q19",
+    "slug": "closest-smaller-value",
+    "topicId": "linear-search",
+    "title": "Closest Smaller Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "-3",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "2",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "3",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "3",
+        "isHidden": true
+      }
+    ]
+  },
+  "closest-larger-value": {
+    "id": "learn:linear-search:closest-larger-value",
+    "bankId": "T11-Q20",
+    "slug": "closest-larger-value",
+    "topicId": "linear-search",
+    "title": "Closest Larger Value",
+    "testCases": [
+      {
+        "testIndex": 1,
+        "input": "5 4\n3 1 4 1 5",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "testIndex": 2,
+        "input": "0 0\n",
+        "expectedOutput": "null",
+        "isHidden": false
+      },
+      {
+        "testIndex": 3,
+        "input": "4 -1\n-4 -1 -3 2",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "testIndex": 4,
+        "input": "1 7\n7",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 5,
+        "input": "3 0\n0 0 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 6,
+        "input": "6 3\n2 2 3 3 3 1",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 7,
+        "input": "10 7\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "8",
+        "isHidden": true
+      },
+      {
+        "testIndex": 8,
+        "input": "6 6\n10 9 8 7 6 5",
+        "expectedOutput": "7",
+        "isHidden": true
+      },
+      {
+        "testIndex": 9,
+        "input": "5 5\n5 -5 5 -5 0",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 10,
+        "input": "6 4\n1 2 3 4 5 6",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "testIndex": 11,
+        "input": "3 9\n-9 0 9",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 12,
+        "input": "4 4\n4 4 4 4",
+        "expectedOutput": "null",
+        "isHidden": true
+      },
+      {
+        "testIndex": 13,
+        "input": "7 8\n8 1 8 2 8 3 8",
+        "expectedOutput": "null",
+        "isHidden": true
+      }
+    ]
+  }
+}

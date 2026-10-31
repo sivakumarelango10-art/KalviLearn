@@ -1,0 +1,313 @@
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
+import { supabase, signInWithGoogle } from '@/lib/supabase'
+import { verifyUserInDatabase, signOutUser, DbUser } from '@/lib/authService'
+import { clearAllUserCaches } from '@/lib/cacheRegistry'
+import { fetchUserProgressFromCloud, subscribeToStudentCloudProgress } from '@/lib/cloudSync'
+import { hydrateStateFromCloud, resetUserState, claimStateForUser, getActiveUserId } from '@/lib/progress'
+
+interface AuthContextType {
+  user: DbUser | null
+  isLoading: boolean
+  accessDenied: boolean
+  deniedEmail: string | null
+  deniedReason: 'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null
+  isMentor: boolean
+  isStudent: boolean
+  isCampusManager: boolean
+  isSuperAdmin: boolean
+  clearAccessDenied: () => void
+  loginWithGoogle: () => Promise<any>
+  loginWithEmail: (email: string) => Promise<{ success: boolean; user?: DbUser; error?: string }>
+  logout: () => Promise<void>
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+const LOCAL_USER_KEY = 'kalvi_active_user'
+
+async function syncUserData(userId: string) {
+  // Never merge another account's cached progress into this user's state.
+  claimStateForUser(userId)
+  try {
+    // Fetch full progress, solved problems, best code, and submissions from Supabase
+    const cloudState = await fetchUserProgressFromCloud(userId)
+    // Ignore stale responses: the user may have logged out or switched accounts while this was in flight.
+    if (getActiveUserId() !== userId) return
+    if (cloudState && (cloudState.solvedSlugs.length > 0 || Object.keys(cloudState.progress).length > 0)) {
+      hydrateStateFromCloud(cloudState)
+    } else {
+      // Zero progress in database: reset local state so student starts 100% fresh
+      resetUserState({ keepOwner: true })
+    }
+  } catch (err) {
+    console.warn('Cross-device cloud synchronization error:', err)
+  }
+}
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<DbUser | null>(() => {
+    try {
+      if (typeof window !== 'undefined' && import.meta.env.DEV) {
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.get('test_auth_user') === 'superadmin') {
+          const testSuperAdmin = {
+            id: '00000000-0000-0000-0000-000000000001',
+            email: 'sgjitbros@gmail.com',
+            name: 'Super Admin',
+            role: 'SUPERADMIN',
+            status: 'ACTIVE',
+          }
+          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(testSuperAdmin))
+          localStorage.setItem('kalvi_test_auth_token', 'Bearer test_auth_superadmin_sgjitbros@gmail.com')
+          return testSuperAdmin
+        }
+      }
+      const saved = localStorage.getItem(LOCAL_USER_KEY)
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+  // Zero-delay initial state: false unless actively handling OAuth callback tokens
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash
+        const search = window.location.search
+        if (hash.includes('access_token=') || hash.includes('error=') || search.includes('code=')) {
+          return true
+        }
+      }
+      return false
+    } catch {
+      return false
+    }
+  })
+  const [accessDenied, setAccessDenied] = useState<boolean>(false)
+  const [deniedEmail, setDeniedEmail] = useState<string | null>(null)
+  const [deniedReason, setDeniedReason] = useState<'ACCOUNT_NOT_REGISTERED' | 'ACCOUNT_INACTIVE' | 'ERROR' | null>(null)
+
+
+  // Verify and sync session
+  useEffect(() => {
+    let isMounted = true
+
+    async function checkCurrentSession() {
+      try {
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise<{ data: { session: null } }>((resolve) =>
+          setTimeout(() => resolve({ data: { session: null } }), 1500)
+        )
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
+
+        if (!session?.user?.email) {
+          // If Supabase session is absent, purge any stored cached active user to prevent unauthenticated bypass
+          if (isMounted) {
+            if (!import.meta.env.PROD) {
+              const saved = localStorage.getItem(LOCAL_USER_KEY)
+              if (saved) {
+                try {
+                  const u = JSON.parse(saved)
+                  if (u && u.id && u.email) {
+                    setUser(u)
+                    setIsLoading(false)
+                    return
+                  }
+                } catch {
+                  // Fall through to removal
+                }
+              }
+            }
+            localStorage.removeItem(LOCAL_USER_KEY)
+            setUser(null)
+            setIsLoading(false)
+          }
+          return
+        }
+
+        const email = session.user.email
+        const result = await verifyUserInDatabase(email)
+
+        if (!isMounted) return
+
+        if (result.allowed && result.user) {
+          const googleName = session.user.user_metadata?.full_name || session.user.user_metadata?.name
+          const resolvedUser: DbUser = {
+            ...result.user,
+            name: result.user.name || googleName || undefined,
+          }
+          setUser(resolvedUser)
+          setAccessDenied(false)
+          setDeniedEmail(null)
+          setDeniedReason(null)
+          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(resolvedUser))
+          syncUserData(resolvedUser.id).catch(console.warn)
+        } else {
+          // Access Denied: User not registered or inactive in database
+          console.warn(`User ${email} rejected: ${result.reason || 'Account not registered'}`)
+          await signOutUser()
+          setUser(null)
+          setAccessDenied(true)
+          setDeniedEmail(email)
+          setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
+          localStorage.removeItem(LOCAL_USER_KEY)
+          resetUserState()
+        }
+      } catch (err) {
+        console.error('Session verification error:', err)
+      } finally {
+        if (isMounted) setIsLoading(false)
+      }
+    }
+
+    checkCurrentSession()
+
+    // Listen to OAuth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          clearAllUserCaches()
+          setUser(null)
+          localStorage.removeItem(LOCAL_USER_KEY)
+          resetUserState()
+          setIsLoading(false)
+          return
+        }
+
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || (event === 'INITIAL_SESSION' && session?.user?.email)) {
+          const email = session?.user?.email
+          if (!email) return
+
+          setIsLoading(true)
+          const result = await verifyUserInDatabase(email)
+
+          if (result.allowed && result.user) {
+            const googleName = session?.user?.user_metadata?.full_name || session?.user?.user_metadata?.name
+            const resolvedUser: DbUser = {
+              ...result.user,
+              name: result.user.name || googleName || undefined,
+            }
+            setUser(resolvedUser)
+            setAccessDenied(false)
+            setDeniedEmail(null)
+            setDeniedReason(null)
+            localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(resolvedUser))
+            syncUserData(resolvedUser.id).catch(console.warn)
+          } else {
+            console.warn(`User ${email} access denied: ${result.reason || 'whitelist check'}`)
+            await signOutUser()
+            setUser(null)
+            setAccessDenied(true)
+            setDeniedEmail(email)
+            setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
+            localStorage.removeItem(LOCAL_USER_KEY)
+            resetUserState()
+          }
+          setIsLoading(false)
+        }
+      }
+    )
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  // Real-time synchronization for student progress and submissions across devices
+  useEffect(() => {
+    if (!user?.id || user.role !== 'STUDENT') return
+
+    const unsubscribe = subscribeToStudentCloudProgress(user.id, () => {
+      syncUserData(user.id).catch(console.warn)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [user?.id, user?.role])
+
+  const clearAccessDenied = useCallback(() => {
+    setAccessDenied(false)
+    setDeniedEmail(null)
+    setDeniedReason(null)
+  }, [])
+
+  const loginWithGoogle = useCallback(async () => {
+    clearAccessDenied()
+    return await signInWithGoogle()
+  }, [clearAccessDenied])
+
+  const loginWithEmail = useCallback(async (email: string) => {
+    // In production, authentication must require cryptographic proof via Google OAuth
+    if (import.meta.env.PROD) {
+      console.warn('Direct passwordless loginWithEmail is disabled in production. Use Google OAuth.')
+      return { success: false, error: 'Passwordless login is disabled in production. Please sign in with Google.' }
+    }
+    setIsLoading(true)
+    clearAccessDenied()
+    try {
+      const result = await verifyUserInDatabase(email)
+      if (result.allowed && result.user) {
+        setUser(result.user)
+        localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(result.user))
+        syncUserData(result.user.id).catch(console.warn)
+        return { success: true, user: result.user }
+      } else {
+        setAccessDenied(true)
+        setDeniedEmail(email)
+        setDeniedReason(result.reason || 'ACCOUNT_NOT_REGISTERED')
+        return { success: false, error: result.reason || 'Account not registered' }
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }, [clearAccessDenied])
+
+  const logout = useCallback(async () => {
+    await signOutUser()
+    setUser(null)
+    clearAccessDenied()
+    resetUserState()
+  }, [clearAccessDenied])
+
+  const contextValue = useMemo(() => ({
+    user,
+    isLoading,
+    accessDenied,
+    deniedEmail,
+    deniedReason,
+    isMentor: user?.role === 'MENTOR',
+    isStudent: user?.role === 'STUDENT',
+    isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
+    isSuperAdmin: user?.email?.toLowerCase().trim() === 'sgjitbros@gmail.com' && user?.role === 'SUPERADMIN',
+    clearAccessDenied: clearAccessDenied,
+    loginWithGoogle,
+    loginWithEmail,
+    logout,
+  }), [
+    user,
+    isLoading,
+    accessDenied,
+    deniedEmail,
+    deniedReason,
+    clearAccessDenied,
+    loginWithGoogle,
+    loginWithEmail,
+    logout,
+  ])
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
