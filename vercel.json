@@ -6,11 +6,11 @@
   "rewrites": [
     {
       "source": "/api/campus/(.*)",
-      "destination": "/api/campus"
+      "destination": "/api/campus?__subpath=$1"
     },
     {
       "source": "/api/super-admin/(.*)",
-      "destination": "/api/super-admin"
+      "destination": "/api/super-admin?__subpath=$1"
     },
     {
       "source": "/((?!api/|assets/|.*\\.[a-zA-Z0-9]+$).*)",

@@ -272,7 +272,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                     <td className="py-3.5 px-4 text-neutral-400">
                       <div className="flex items-center gap-1 text-[11px]">
                         <Calendar className="w-3 h-3 text-neutral-500" />
-                        <span>{new Date(mgr.created_at).toLocaleDateString()}</span>
+                        <span>{mgr.created_at ? new Date(mgr.created_at).toLocaleDateString() : '—'}</span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4 text-right">

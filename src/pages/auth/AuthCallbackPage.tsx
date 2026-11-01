@@ -120,7 +120,9 @@ export const AuthCallbackPage: React.FC = () => {
           setStatusMessage('Redirecting to your workspace...')
           const role = resolvedUser.role?.toUpperCase()
 
-          if (role === 'CAMPUS_MANAGER' || role === 'ADMIN' || role === 'SUPERADMIN') {
+          if (role === 'SUPERADMIN') {
+            navigate('/super-admin/dashboard', { replace: true })
+          } else if (role === 'CAMPUS_MANAGER' || role === 'ADMIN') {
             navigate('/campus/dashboard', { replace: true })
           } else if (role === 'MENTOR') {
             navigate('/mentor', { replace: true })

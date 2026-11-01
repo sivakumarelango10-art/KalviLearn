@@ -121,6 +121,8 @@ async function runAllTests() {
   // Dynamically import after process.env is initialized
   const { default: superAdminHandler, resetSuperAdminRateLimitsForTesting } = await import('../src/server/superAdminHandler')
   const { supabaseServer } = await import('../src/server/feedbackAuth')
+  const { installMockSupabaseServer } = await import('./mockDatabase')
+  installMockSupabaseServer(supabaseServer)
 
   async function runTest(title: string, fn: () => Promise<void>) {
     resetSuperAdminRateLimitsForTesting()
@@ -495,6 +497,297 @@ async function runAllTests() {
     assert.ok(campusLog, 'CREATE_CAMPUS audit log must exist')
     assert.strictEqual(campusLog.admin_email, 'sgjitbros@gmail.com')
     assert.strictEqual(campusLog.status, 'SUCCESS')
+  })
+
+  // SECTION 8: EXTENDED REGRESSION & AUDIT VERIFICATION
+  console.log('\n--- SECTION 8: Timestamp Compatibility & Isolation Verification ---')
+
+  await runTest('19. Campus manager listing: queries users table with createdAt aliasing without 42703 error', async () => {
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_managers' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.ok(Array.isArray(out.data.data))
+    for (const m of out.data.data) {
+      assert.ok(m.created_at, 'Each manager must have created_at mapped')
+      assert.ok(m.updated_at, 'Each manager must have updated_at mapped')
+    }
+  })
+
+  await runTest('20. Mentor provisioning: creates mentor profile with unique code and campus assignment', async () => {
+    const mentorEmail = `test.mentor.${Date.now()}@kalvilearn.test`
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'provision_mentor',
+        name: 'Dr. Automated Mentor',
+        email: mentorEmail,
+        campusId: createdCampusId,
+        maxStudents: 25,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.email, mentorEmail)
+    assert.ok(out.data.data.mentorCode.startsWith('MEN-'))
+
+    // Verify in database
+    const { data: dbMentor } = await supabaseServer.from('mentors').select('*').eq('email', mentorEmail).single()
+    assert.ok(dbMentor)
+    assert.strictEqual(dbMentor.campus_id, createdCampusId)
+  })
+
+  await runTest('21. Cross-campus privilege separation: non-superadmin cannot query super-admin API', async () => {
+    const { req, res } = createMockReqRes({
+      headers: { authorization: CAMPUS_MANAGER_TOKEN },
+      body: { action: 'list_campuses' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 403)
+    assert.strictEqual(out.data.success, false)
+  })
+
+  // SECTION 9: ENHANCED USER MANAGEMENT & ROLE TRANSFERS
+  console.log('\n--- SECTION 9: Enhanced User Management & Role Transfers ---')
+
+  let transferSourceUserId = ''
+  let transferDestUserId = ''
+
+  await runTest('22. Update user details: edits name, status, and campus mapping with profile sync', async () => {
+    const editEmail = `test.editable.${Date.now()}@kalvilearn.test`
+    const { data: newUser } = await supabaseServer.from('users').insert({
+      email: editEmail,
+      name: 'Editable User Before',
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      campus_id: createdCampusId,
+    }).select().single()
+    assert.ok(newUser)
+
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_user',
+        userId: newUser.id,
+        name: 'Editable User After',
+        role: 'STUDENT',
+        status: 'ACTIVE',
+        campusId: createdCampusId,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.name, 'Editable User After')
+
+    // Verify in database
+    const { data: updated } = await supabaseServer.from('users').select('*').eq('id', newUser.id).single()
+    assert.strictEqual(updated.name, 'Editable User After')
+  })
+
+  await runTest('23. Role transfer workflow: transfers MENTOR role from source to destination, assigns source STUDENT', async () => {
+    // 1. Setup source user with MENTOR role
+    const srcEmail = `mentor.source.${Date.now()}@kalvilearn.test`
+    const { data: srcUser } = await supabaseServer.from('users').insert({
+      email: srcEmail,
+      name: 'Mentor Source User',
+      role: 'MENTOR',
+      status: 'ACTIVE',
+      campus_id: createdCampusId,
+    }).select().single()
+    transferSourceUserId = srcUser.id
+
+    await supabaseServer.from('mentors').insert({
+      user_id: srcUser.id,
+      name: 'Mentor Source User',
+      email: srcEmail,
+      mentor_code: `MEN-SRC-${Date.now()}`,
+      campus_id: createdCampusId,
+      status: 'ACTIVE',
+    })
+
+    // 2. Setup destination user with STUDENT role
+    const destEmail = `student.dest.${Date.now()}@kalvilearn.test`
+    const { data: destUser } = await supabaseServer.from('users').insert({
+      email: destEmail,
+      name: 'Student Destination User',
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      campus_id: createdCampusId,
+    }).select().single()
+    transferDestUserId = destUser.id
+
+    // 3. Perform Role Transfer
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'transfer_role',
+        sourceUserId: srcUser.id,
+        destinationUserId: destUser.id,
+        role: 'MENTOR',
+        sourceNewRole: 'STUDENT',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.transferredRole, 'MENTOR')
+    assert.strictEqual(out.data.data.destination.role, 'MENTOR')
+    assert.strictEqual(out.data.data.source.role, 'STUDENT')
+
+    // 4. Verify in database
+    const { data: checkSrc } = await supabaseServer.from('users').select('*').eq('id', srcUser.id).single()
+    assert.strictEqual(checkSrc.role, 'STUDENT')
+
+    const { data: checkDest } = await supabaseServer.from('users').select('*').eq('id', destUser.id).single()
+    assert.strictEqual(checkDest.role, 'MENTOR')
+
+    // Destination must have a mentor record
+    const { data: destMentor } = await supabaseServer.from('mentors').select('*').eq('user_id', destUser.id).maybeSingle()
+    assert.ok(destMentor, 'Destination user must have a mentor profile created/active')
+  })
+
+  await runTest('24. Campus Manager role transfer: rebinds campuses.manager_id and transfers access atomically', async () => {
+    // Create new campus for manager transfer
+    const { data: testCamp } = await supabaseServer.from('campuses').insert({
+      code: `MGR-TRANS-${Date.now()}`,
+      name: 'Manager Transfer Campus',
+      status: 'ACTIVE',
+    }).select().single()
+
+    // Create current manager
+    const mgr1Email = `current.mgr.${Date.now()}@kalvilearn.test`
+    const { data: mgr1 } = await supabaseServer.from('users').insert({
+      email: mgr1Email,
+      name: 'Current Manager',
+      role: 'CAMPUS_MANAGER',
+      status: 'ACTIVE',
+      campus_id: testCamp.id,
+    }).select().single()
+
+    // Bind manager to campus
+    await supabaseServer.from('campuses').update({ manager_id: mgr1.id }).eq('id', testCamp.id)
+
+    // Create incoming manager
+    const mgr2Email = `incoming.mgr.${Date.now()}@kalvilearn.test`
+    const { data: mgr2 } = await supabaseServer.from('users').insert({
+      email: mgr2Email,
+      name: 'Incoming Manager',
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      campus_id: testCamp.id,
+    }).select().single()
+
+    // Execute transfer
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'transfer_role',
+        sourceUserId: mgr1.id,
+        destinationUserId: mgr2.id,
+        role: 'CAMPUS_MANAGER',
+        sourceNewRole: 'STUDENT',
+        campusId: testCamp.id,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+
+    // Verify campus manager_id rebound to mgr2
+    const { data: campCheck } = await supabaseServer.from('campuses').select('*').eq('id', testCamp.id).single()
+    assert.strictEqual(campCheck.manager_id, mgr2.id)
+
+    // Verify mgr1 demoted to STUDENT
+    const { data: mgr1Check } = await supabaseServer.from('users').select('*').eq('id', mgr1.id).single()
+    assert.strictEqual(mgr1Check.role, 'STUDENT')
+
+    // Verify mgr2 promoted to CAMPUS_MANAGER
+    const { data: mgr2Check } = await supabaseServer.from('users').select('*').eq('id', mgr2.id).single()
+    assert.strictEqual(mgr2Check.role, 'CAMPUS_MANAGER')
+  })
+
+  await runTest('25. Sole Super Admin protection: cannot transfer role away from or demote sgjitbros@gmail.com (403)', async () => {
+    const { data: saUser } = await supabaseServer.from('users').select('id').eq('email', 'sgjitbros@gmail.com').single()
+    assert.ok(saUser)
+
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'transfer_role',
+        sourceUserId: saUser.id,
+        destinationUserId: transferDestUserId || '00000000-0000-4000-a000-000000000004',
+        role: 'SUPERADMIN',
+        sourceNewRole: 'STUDENT',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 403)
+    assert.ok(out.data.message.includes('SUPERADMIN') || out.data.error.includes('SUPERADMIN') || out.data.message.includes('sgjitbros@gmail.com'))
+  })
+
+  await runTest('26. Sole Super Admin protection: cannot deactivate account or toggle status (403)', async () => {
+    const { data: saUser } = await supabaseServer.from('users').select('id').eq('email', 'sgjitbros@gmail.com').single()
+    assert.ok(saUser)
+
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'toggle_user_status',
+        userId: saUser.id,
+        status: 'INACTIVE',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 403)
+    assert.ok(out.data.message.includes('sgjitbros@gmail.com'))
+  })
+
+  await runTest('27. Role transfer validation: rejects transfer when destination already holds role or status is INACTIVE (400)', async () => {
+    // Create active mentor source
+    const mentorSrcEmail = `active.src.${Date.now()}@kalvilearn.test`
+    const { data: mSrcUser } = await supabaseServer.from('users').insert({
+      email: mentorSrcEmail,
+      name: 'Active Mentor Source',
+      role: 'MENTOR',
+      status: 'ACTIVE',
+    }).select().single()
+
+    // Create inactive destination user
+    const inactEmail = `inactive.dest.${Date.now()}@kalvilearn.test`
+    const { data: inactUser } = await supabaseServer.from('users').insert({
+      email: inactEmail,
+      name: 'Inactive User',
+      role: 'STUDENT',
+      status: 'INACTIVE',
+    }).select().single()
+
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'transfer_role',
+        sourceUserId: mSrcUser.id,
+        destinationUserId: inactUser.id,
+        role: 'MENTOR',
+        sourceNewRole: 'STUDENT',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.ok(out.data.message.includes('Inactive') || out.data.error.includes('Inactive'))
   })
 
   // CLEANUP TEST FIXTURES

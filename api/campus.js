@@ -21754,7 +21754,10 @@ function getAllowedOrigins() {
   if (process.env.NODE_ENV !== "production") {
     origins.add("http://localhost:5173");
     origins.add("http://127.0.0.1:5173");
+    origins.add("http://localhost:5174");
+    origins.add("http://127.0.0.1:5174");
     origins.add("http://localhost:4173");
+    origins.add("http://127.0.0.1:4173");
   }
   return origins;
 }
@@ -22180,6 +22183,58 @@ function normalizeSpecificPatterns(msg) {
   return msg;
 }
 
+// src/server/routeResolver.ts
+function parseQueryParams(req) {
+  const params = {};
+  try {
+    const rawUrl = req.url || "/";
+    const parsed = new URL(rawUrl, "http://localhost");
+    for (const [k, v] of parsed.searchParams.entries()) {
+      params[k] = v;
+    }
+  } catch {
+  }
+  if (typeof req.query === "object" && req.query) {
+    for (const [k, v] of Object.entries(req.query)) {
+      if (typeof v === "string") params[k] = v;
+      else if (Array.isArray(v) && typeof v[0] === "string") params[k] = v[0];
+      else if (v !== void 0 && v !== null) params[k] = String(v);
+    }
+  }
+  return params;
+}
+function resolveRoute(req, body = {}, basePrefix) {
+  const method = (req.method || "GET").toUpperCase();
+  const queryParams = parseQueryParams(req);
+  let subpath = (queryParams.__subpath || queryParams._subpath || queryParams.subpath || queryParams.path || req.headers["x-kalvi-subpath"] || req.headers["x-forwarded-uri"] || req.headers["x-original-url"] || req.headers["x-rewrite-url"] || req.headers["x-invoke-path"] || "").toLowerCase().trim();
+  if (!subpath) {
+    try {
+      const parsed = new URL(req.url || "/", "http://localhost");
+      const p = parsed.pathname.toLowerCase();
+      if (p.startsWith(basePrefix.toLowerCase())) {
+        subpath = p.slice(basePrefix.length);
+      } else {
+        subpath = p;
+      }
+    } catch {
+    }
+  }
+  subpath = subpath.split("?")[0].replace(/^\/+|\/+$/g, "");
+  const cleanBase = basePrefix.toLowerCase().replace(/^\/+|\/+$/g, "");
+  if (subpath.startsWith(cleanBase)) {
+    subpath = subpath.slice(cleanBase.length).replace(/^\/+|\/+$/g, "");
+  }
+  let action = "";
+  if (typeof body.action === "string" && body.action.trim()) {
+    action = body.action.trim().toLowerCase();
+  } else if (queryParams.action && typeof queryParams.action === "string") {
+    action = queryParams.action.trim().toLowerCase();
+  } else if (typeof req.headers["x-kalvi-action"] === "string" && req.headers["x-kalvi-action"].trim()) {
+    action = req.headers["x-kalvi-action"].trim().toLowerCase();
+  }
+  return { method, subpath, action, queryParams };
+}
+
 // src/server/campusHandler.ts
 var ipLimiter = new RateLimiter(120, 6e4);
 var userLimiter = new RateLimiter(60, 6e4);
@@ -22199,19 +22254,19 @@ function sendJson(res, statusCode, payload) {
 }
 async function handler(req, res) {
   applyCors(req, res, {
-    methods: "POST, DELETE, OPTIONS",
-    headers: "Content-Type, Authorization, X-Idempotency-Key"
+    methods: "GET, POST, DELETE, OPTIONS",
+    headers: "Content-Type, Authorization, X-Idempotency-Key, X-Kalvi-Subpath, X-Kalvi-Action"
   });
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
     res.end();
     return;
   }
-  if (req.method !== "POST" && req.method !== "DELETE") {
+  if (req.method !== "GET" && req.method !== "POST" && req.method !== "DELETE") {
     return sendJson(res, 405, {
       success: false,
-      error: "Method Not Allowed. Use POST or DELETE.",
-      message: "Method Not Allowed. Use POST or DELETE."
+      error: "Method Not Allowed. Use GET, POST, or DELETE.",
+      message: "Method Not Allowed. Use GET, POST, or DELETE."
     });
   }
   const clientIp = getClientIp(req);
@@ -22225,21 +22280,25 @@ async function handler(req, res) {
     });
   }
   let body = {};
-  try {
-    body = await readJsonBody(req);
-  } catch (err) {
-    if (err instanceof PayloadTooLargeError) {
-      return sendJson(res, 413, {
+  if (req.method !== "GET") {
+    try {
+      body = await readJsonBody(req);
+    } catch (err) {
+      if (err instanceof PayloadTooLargeError) {
+        return sendJson(res, 413, {
+          success: false,
+          error: "Payload Too Large",
+          message: "Request payload exceeded the maximum permitted size."
+        });
+      }
+      return sendJson(res, 400, {
         success: false,
-        error: "Payload Too Large",
-        message: "Request payload exceeded the maximum permitted size."
+        error: "Invalid JSON",
+        message: "Failed to parse JSON request body."
       });
     }
-    return sendJson(res, 400, {
-      success: false,
-      error: "Invalid JSON",
-      message: "Failed to parse JSON request body."
-    });
+  } else if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+    body = req.body;
   }
   const authHeader = req.headers["authorization"] || req.headers["Authorization"];
   const auth = await authenticateFeedbackRequest(authHeader);
@@ -22259,15 +22318,25 @@ async function handler(req, res) {
       message: "Account rate limit exceeded. Please wait a moment."
     });
   }
-  const method = (req.method || "").toUpperCase();
-  const url = (req.url || "").toLowerCase();
-  const matchedPath = (req.headers["x-matched-path"] || req.headers["x-now-route-matches"] || "").toLowerCase();
-  const rawAction = typeof body.action === "string" ? body.action : "";
-  const queryAction = typeof req.query === "object" && req.query ? String(req.query.action || "") : "";
-  const action = (rawAction || queryAction).toLowerCase();
-  const dispatchKey = `${method} ${url} ${matchedPath} ${action}`;
+  const route = resolveRoute(req, body, "/api/campus");
+  req.query = { ...route.queryParams, ...typeof req.query === "object" && req.query ? req.query : {} };
+  let action = route.action;
+  if (!action) {
+    if (route.subpath === "students" || route.subpath.startsWith("students/")) {
+      if (route.method === "GET") action = "list_students";
+      else if (route.method === "POST") action = "enroll_student";
+      else if (route.method === "DELETE") action = "delete_student";
+    } else if (route.subpath === "mentors" || route.subpath.startsWith("mentors/")) {
+      if (route.method === "GET") action = "list_mentors";
+      else if (route.method === "POST") action = "add_mentor";
+    } else if (route.subpath === "assign-mentor" || route.subpath === "assign_mentor") {
+      action = "assign_mentor";
+    } else if (route.subpath === "delete-student" || route.subpath === "delete_student") {
+      action = "delete_student";
+    }
+  }
   const callerRole = (auth.user.role || "").toUpperCase();
-  if (callerRole === "MENTOR" && (dispatchKey.includes("delete") || action === "delete_student")) {
+  if (callerRole === "MENTOR" && (action === "delete_student" || route.subpath.includes("delete") || route.method === "DELETE")) {
     return sendJson(res, 403, {
       success: false,
       error: "Forbidden: Mentor Authorization Insufficient",
@@ -22282,22 +22351,28 @@ async function handler(req, res) {
     });
   }
   try {
-    if (dispatchKey.includes("delete") || action === "delete_student" || method === "DELETE" && dispatchKey.includes("student")) {
+    if (action === "delete_student" || route.method === "DELETE") {
       return await handleDeleteStudent(body, req, res);
     }
-    if (dispatchKey.includes("student") || action === "add_student" || action === "enroll_student") {
+    if (action === "list_students" || route.method === "GET" && route.subpath.includes("student")) {
+      return await handleListCampusStudents(req, auth.user, res);
+    }
+    if (action === "enroll_student" || action === "add_student") {
       return await handleAddStudent(body, res);
     }
-    if (dispatchKey.includes("mentor") && !dispatchKey.includes("assign") || action === "add_mentor") {
+    if (action === "list_mentors" || route.method === "GET" && route.subpath.includes("mentor")) {
+      return await handleListCampusMentors(req, auth.user, res);
+    }
+    if (action === "add_mentor") {
       return await handleAddMentor(body, res);
     }
-    if (dispatchKey.includes("assign") || action === "assign_mentor") {
+    if (action === "assign_mentor") {
       return await handleAssignMentor(body, res);
     }
     return sendJson(res, 400, {
       success: false,
       error: "Invalid Action",
-      message: "Unknown or missing action in campus management request. Supported actions: enroll_student, add_mentor, assign_mentor, delete_student."
+      message: "Unknown or missing action in campus management request. Supported actions: enroll_student, add_mentor, assign_mentor, delete_student, list_students, list_mentors."
     });
   } catch (err) {
     const errorMsg = formatErrorMessage(err, "Failed to process campus management request.");
@@ -22678,6 +22753,95 @@ async function handleDeleteStudent(body, req, res) {
       name: studentName,
       email: studentEmail
     }
+  });
+}
+async function handleListCampusStudents(req, callerUser, res) {
+  const query = typeof req.query === "object" && req.query ? req.query : {};
+  const search = String(query.search || "").trim().toLowerCase();
+  const status = String(query.status || "ALL").trim();
+  const mentorId = String(query.mentorId || "ALL").trim();
+  const page = Math.max(1, parseInt(String(query.page || "1"), 10));
+  const limit = Math.min(200, Math.max(10, parseInt(String(query.limit || "50"), 10)));
+  let campusId = String(query.campusId || "").trim();
+  if (callerUser.role === "CAMPUS_MANAGER") {
+    const { data: campus } = await supabaseServer.from("campuses").select("id").eq("manager_id", callerUser.id).maybeSingle();
+    if (campus?.id) {
+      campusId = campus.id;
+    }
+  }
+  let q = supabaseServer.from("students").select("id, user_id, name, email, student_code, status, campus_id, created_at, updated_at", { count: "exact" });
+  if (campusId && campusId !== "ALL") {
+    q = q.eq("campus_id", campusId);
+  }
+  if (status && status !== "ALL") {
+    q = q.eq("status", status);
+  }
+  if (search) {
+    q = q.or(`name.ilike.%${search}%,email.ilike.%${search}%,student_code.ilike.%${search}%`);
+  }
+  const offset = (page - 1) * limit;
+  q = q.order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+  const { data: students, count, error } = await q;
+  if (error) throw error;
+  const studentList = students || [];
+  const studentIds = studentList.map((s) => s.id);
+  let mentorMap = {};
+  if (studentIds.length > 0) {
+    const { data: links } = await supabaseServer.from("mentor_students").select("student_id, mentor:mentors(id, name, email)").in("student_id", studentIds).eq("status", "ACTIVE");
+    if (links) {
+      for (const l of links) {
+        if (l.mentor) {
+          const m = Array.isArray(l.mentor) ? l.mentor[0] : l.mentor;
+          if (m) mentorMap[l.student_id] = m;
+        }
+      }
+    }
+  }
+  let enriched = studentList.map((s) => ({
+    ...s,
+    mentor: mentorMap[s.id] || null
+  }));
+  if (mentorId && mentorId !== "ALL") {
+    enriched = enriched.filter((s) => s.mentor?.id === mentorId);
+  }
+  return sendJson(res, 200, {
+    success: true,
+    message: "Campus students retrieved successfully.",
+    data: enriched,
+    count: count !== null && count !== void 0 ? count : enriched.length
+  });
+}
+async function handleListCampusMentors(req, callerUser, res) {
+  const query = typeof req.query === "object" && req.query ? req.query : {};
+  let campusId = String(query.campusId || "").trim();
+  if (callerUser.role === "CAMPUS_MANAGER") {
+    const { data: campus } = await supabaseServer.from("campuses").select("id").eq("manager_id", callerUser.id).maybeSingle();
+    if (campus?.id) {
+      campusId = campus.id;
+    }
+  }
+  let q = supabaseServer.from("mentors").select("id, user_id, name, email, mentor_code, max_students, status, campus_id, created_at, updated_at").order("name", { ascending: true });
+  if (campusId && campusId !== "ALL") {
+    q = q.eq("campus_id", campusId);
+  }
+  const [mentorsRes, linksRes] = await Promise.all([
+    q,
+    supabaseServer.from("mentor_students").select("mentor_id").eq("status", "ACTIVE")
+  ]);
+  if (mentorsRes.error) throw mentorsRes.error;
+  const activeLinks = linksRes.data || [];
+  const countsMap = {};
+  for (const l of activeLinks) {
+    countsMap[l.mentor_id] = (countsMap[l.mentor_id] || 0) + 1;
+  }
+  const enriched = (mentorsRes.data || []).map((m) => ({
+    ...m,
+    assignedStudentCount: countsMap[m.id] || 0
+  }));
+  return sendJson(res, 200, {
+    success: true,
+    message: "Campus mentors retrieved successfully.",
+    data: enriched
   });
 }
 export {

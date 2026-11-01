@@ -1,6 +1,7 @@
 import { codingTestCases } from '../data/codingTestCases'
 import * as practiceModule from '../data/serverTestCases'
 import { resolveLearnServerSuite } from '../../../server/learn/coding/hidden/index'
+import { supabaseServer } from '../feedbackAuth'
 
 /**
  * Authoritative, server-only judge test repository for BOTH question banks:
@@ -16,7 +17,7 @@ import { resolveLearnServerSuite } from '../../../server/learn/coding/hidden/ind
  *   "coding-<slug>"                         CodingQuestion.id as shipped to the client
  *   "<slug>"                                bare slug (must exist in exactly one bank)
  */
-export type QuestionSource = 'practice' | 'coding' | 'learn'
+export type QuestionSource = 'practice' | 'coding' | 'learn' | 'custom'
 
 export interface JudgeCase {
   testIndex: number
@@ -44,11 +45,25 @@ const practiceBank = ((practiceModule as unknown as { serverTestCases?: Record<s
   (practiceModule as unknown as { default?: Record<string, RawSuite> }).default ||
   practiceModule) as unknown as Record<string, RawSuite>
 const codingBank = codingTestCases as unknown as Record<string, RawSuite>
+const customBank: Record<string, RawSuite> = {}
+
+export function registerCustomSuite(slug: string, suite: RawSuite): void {
+  customBank[slug] = suite
+}
+
+export function unregisterCustomSuite(slug: string): void {
+  delete customBank[slug]
+}
+
+export function getCustomSuite(slug: string): RawSuite | undefined {
+  return customBank[slug]
+}
 
 const BANKS: Record<QuestionSource, Record<string, RawSuite>> = {
   practice: practiceBank,
   coding: codingBank,
   learn: {},
+  custom: customBank,
 }
 
 function toSuite(source: QuestionSource, key: string, raw: RawSuite): QuestionSuite {
@@ -81,6 +96,17 @@ export type ResolveFailure = 'not_found' | 'ambiguous'
 
 export function resolveQuestion(identifier: string): { suite: QuestionSuite } | { error: ResolveFailure } {
   const id = (identifier || '').trim()
+
+  // 0. Explicit or bare custom questions bank
+  if (customBank[id]) {
+    return { suite: toSuite('custom', id, customBank[id]) }
+  }
+  if (id.startsWith('custom:')) {
+    const customKey = id.slice('custom:'.length)
+    if (customBank[customKey]) {
+      return { suite: toSuite('custom', customKey, customBank[customKey]) }
+    }
+  }
 
   // 1. Explicit learn: namespace
   if (id.startsWith('learn:')) {
@@ -160,10 +186,82 @@ export function getServerTests(identifier: string): QuestionSuite | null {
   return 'suite' in r ? r.suite : null
 }
 
+/**
+ * Asynchronous resolution path that falls back to persistent database storage
+ * (Problem + TestCase tables via supabaseServer) when a custom question is not
+ * found in the in-memory cache (e.g. following a server restart or cold start).
+ */
+export async function resolveQuestionAsync(
+  identifier: string
+): Promise<{ suite: QuestionSuite } | { error: ResolveFailure }> {
+  // 1. Try in-memory resolution first
+  const memoryResult = resolveQuestion(identifier)
+  if ('suite' in memoryResult) {
+    return memoryResult
+  }
+
+  // 2. Query persistent database
+  const id = (identifier || '').trim()
+  const targetSlug = id.startsWith('custom:') ? id.slice('custom:'.length) : id
+
+  try {
+    let problem: any = null
+    const { data: bySlug } = await supabaseServer
+      .from('Problem')
+      .select('id, slug, title, isActive')
+      .eq('slug', targetSlug)
+      .maybeSingle()
+
+    if (bySlug) {
+      problem = bySlug
+    } else {
+      const { data: byId } = await supabaseServer
+        .from('Problem')
+        .select('id, slug, title, isActive')
+        .eq('id', targetSlug)
+        .maybeSingle()
+      problem = byId
+    }
+
+    if (problem) {
+      const { data: testCases, error: tcErr } = await supabaseServer
+        .from('TestCase')
+        .select('testIndex, input, expectedOutput, isHidden')
+        .eq('problemId', problem.id)
+        .order('testIndex', { ascending: true })
+
+      if (!tcErr && testCases && testCases.length > 0) {
+        const rawSuite: RawSuite = {
+          title: problem.title,
+          testCases: testCases.map((tc: any, i: number) => ({
+            testIndex: tc.testIndex ?? i + 1,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+            isHidden: Boolean(tc.isHidden),
+          })),
+        }
+        // Cache in memory for subsequent rapid evaluation
+        customBank[problem.slug] = rawSuite
+        return { suite: toSuite('custom', problem.slug, rawSuite) }
+      }
+    }
+  } catch (err) {
+    console.warn(`[testRepository] Failed to query database for question "${identifier}":`, err)
+  }
+
+  return memoryResult
+}
+
+export async function getServerTestsAsync(identifier: string): Promise<QuestionSuite | null> {
+  const r = await resolveQuestionAsync(identifier)
+  return 'suite' in r ? r.suite : null
+}
+
 export function listAllQuestionIds(): string[] {
   return [
     ...Object.keys(practiceBank).map((k) => `practice:${k}`),
     ...Object.keys(codingBank).map((k) => `coding:${k}`),
+    ...Object.keys(customBank).map((k) => `custom:${k}`),
   ]
 }
 
