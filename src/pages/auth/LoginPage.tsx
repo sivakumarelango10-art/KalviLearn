@@ -17,7 +17,9 @@ export const LoginPage: React.FC = () => {
   const { user, accessDenied, deniedEmail, deniedReason, clearAccessDenied } = useAuth()
   const location = useLocation()
   const defaultDestination =
-    user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN'
+    user?.role === 'SUPERADMIN'
+      ? '/super-admin/dashboard'
+      : user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN'
       ? '/campus/dashboard'
       : user?.role === 'MENTOR'
       ? '/mentor'
@@ -25,7 +27,9 @@ export const LoginPage: React.FC = () => {
   const stateFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
   let targetDestination = defaultDestination
   if (stateFrom && stateFrom !== '/' && stateFrom !== '/login') {
-    if (user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN') {
+    if (user?.role === 'SUPERADMIN') {
+      targetDestination = stateFrom.startsWith('/super-admin') ? stateFrom : '/super-admin/dashboard'
+    } else if (user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN') {
       targetDestination = stateFrom.startsWith('/campus') ? stateFrom : '/campus/dashboard'
     } else if (user?.role === 'MENTOR') {
       targetDestination = stateFrom.startsWith('/mentor') ? stateFrom : '/mentor'

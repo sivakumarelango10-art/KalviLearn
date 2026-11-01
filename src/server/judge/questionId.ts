@@ -12,6 +12,7 @@
 export const PLAIN_SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,127}$/i
 export const LEARN_ID_PATTERN = /^learn:[a-z0-9-]{1,64}:[a-z0-9][a-z0-9-]{0,127}$/i
 export const LEARN_SLUG_PATTERN = /^learn:[a-z0-9][a-z0-9-]{0,127}$/i
+export const CUSTOM_ID_PATTERN = /^custom:[a-z0-9][a-z0-9-]{0,127}$/i
 
 export const MAX_QUESTION_ID_LENGTH = 200
 export const MAX_CODE_CHARS = 65536
@@ -33,7 +34,8 @@ export function isValidQuestionId(id: unknown): id is string {
   return (
     PLAIN_SLUG_PATTERN.test(id) ||
     LEARN_ID_PATTERN.test(id) ||
-    LEARN_SLUG_PATTERN.test(id)
+    LEARN_SLUG_PATTERN.test(id) ||
+    CUSTOM_ID_PATTERN.test(id)
   )
 }
 

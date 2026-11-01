@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { outputsMatch } from './judge/compare'
 import { selectEngine, type EngineCaseResult, type EngineName } from './judge/engines'
-import { resolveQuestion, type JudgeCase } from './judge/testRepository'
+import { resolveQuestionAsync, type JudgeCase } from './judge/testRepository'
 import { isPythonOnlyQuestion, isLanguageSupportedForQuestion, normalizeLanguage } from './judge/questionId'
 
 /**
@@ -122,7 +122,7 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
   const mode: 'run' | 'submit' = req.mode ?? (req.isSubmit === false ? 'run' : 'submit')
   const submissionId = randomUUID()
 
-  const resolved = resolveQuestion(questionSlug)
+  const resolved = await resolveQuestionAsync(questionSlug)
   const suite = 'suite' in resolved ? resolved.suite : null
   const judgeTotal = suite?.testCases.length ?? 10
   const casesToRun = suite ? (mode === 'run' ? suite.testCases.filter((t) => !t.isHidden) : suite.testCases) : []
@@ -164,6 +164,11 @@ export async function executeQuestion(req: ExecuteRequest): Promise<ExecuteRespo
     if (suite.testCases.length !== 10 || suite.visibleCount !== 3 || suite.hiddenCount !== 7) {
       console.error(`[judge] invalid suite ${suite.questionId}: ${suite.visibleCount} visible / ${suite.hiddenCount} hidden`)
       return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question is misconfigured on the server.', total, base)
+    }
+  } else if (suite.source === 'custom') {
+    if (suite.testCases.length < 1) {
+      console.error(`[judge] invalid suite ${suite.questionId}: custom question has no test cases`)
+      return failure('SYSTEM_ERROR', 'Invalid Question Configuration', 'This question has no test cases configured on the server.', total, base)
     }
   } else {
     // Learn / Coding questions: must have at least 1 visible case and at least 3 cases total

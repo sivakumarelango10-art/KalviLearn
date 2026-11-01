@@ -99,8 +99,10 @@ function createMockReqRes(options: {
 
 async function runTests() {
   const { formatErrorMessage } = await import('../src/lib/errorUtils')
-  const { default: campusHandler, resetCampusRateLimitsForTesting } = await import('../src/server/campusHandler')
   const { supabaseServer } = await import('../src/server/feedbackAuth')
+  const { installMockSupabaseServer } = await import('./mockDatabase')
+  installMockSupabaseServer(supabaseServer)
+  const { default: campusHandler, resetCampusRateLimitsForTesting } = await import('../src/server/campusHandler')
 
   console.log('=================================================================')
   console.log('KALVILEARN CAMPUS USER MANAGEMENT & REGRESSION TEST SUITE')
@@ -247,7 +249,18 @@ async function runTests() {
   const mentorOut = mentorRes.getOutput()
   assert(mentorOut.statusCode === 403, 'Mentor caller rejected with HTTP 403 Forbidden')
 
-  // Case 2.5: Method not allowed (GET) -> 405
+  // Case 2.5: Method not allowed (PATCH) -> 405
+  resetCampusRateLimitsForTesting()
+  const { req: patchReq, res: patchRes } = createMockReqRes({
+    method: 'PATCH',
+    url: '/api/campus/students',
+    headers: { Authorization: 'Bearer test_auth_campus_manager_synthetic.campus@kalvilearn.test' },
+  })
+  await campusHandler(patchReq, patchRes)
+  const patchOut = patchRes.getOutput()
+  assert(patchOut.statusCode === 405, 'HTTP PATCH rejected with 405 Method Not Allowed')
+
+  // Case 2.5b: GET student operations allowed for Campus Manager -> 200
   resetCampusRateLimitsForTesting()
   const { req: getReq, res: getRes } = createMockReqRes({
     method: 'GET',
@@ -256,7 +269,8 @@ async function runTests() {
   })
   await campusHandler(getReq, getRes)
   const getOut = getRes.getOutput()
-  assert(getOut.statusCode === 405, 'HTTP GET rejected with 405 Method Not Allowed')
+  assert(getOut.statusCode === 200, 'HTTP GET /api/campus/students returns HTTP 200')
+  assert(Array.isArray(getOut.data.data), 'HTTP GET returns array of students')
 
   // Case 2.6: Method not allowed (PUT) -> 405
   resetCampusRateLimitsForTesting()

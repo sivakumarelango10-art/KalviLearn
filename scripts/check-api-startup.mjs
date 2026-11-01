@@ -26,7 +26,7 @@ const probe = `
 const { EventEmitter } = await import('node:events')
 const mod = await import(process.argv[1])
 if (typeof mod.default !== 'function') { console.log('NO_HANDLER'); process.exit(2) }
-if (!/(execute|submit)\\.js$/.test(process.argv[1])) { console.log('LOADED'); process.exit(0) }
+if (!/(execute|submit|campus|super-admin)\.js$/.test(process.argv[1])) { console.log('LOADED'); process.exit(0) }
 const req = new EventEmitter()
 Object.assign(req, { method: 'POST', url: '/api/x', headers: { 'content-type': 'application/json', authorization: 'Bearer startup-probe' }, socket: { remoteAddress: '203.0.113.9' }, body: { questionSlug: 'belt-1-q1-arithmetic-check-v1', language: 'python', code: 'print(1)' } })
 let body = ''

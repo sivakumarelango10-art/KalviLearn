@@ -10,6 +10,7 @@ import {
   History,
   LogOut,
   ShieldAlert,
+  BookOpen,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
 import { cn } from '@/lib/utils'
@@ -58,6 +59,12 @@ const NAV_ITEMS = [
     badge: 'RBAC',
   },
   {
+    label: 'Content',
+    path: '/super-admin/content',
+    icon: BookOpen,
+    badge: 'Curriculum',
+  },
+  {
     label: 'Audit Logs',
     path: '/super-admin/audit',
     icon: History,
@@ -78,6 +85,12 @@ export const SuperAdminSidebar: React.FC<SuperAdminSidebarProps> = ({
         location.pathname === '/super-admin/dashboard' ||
         location.pathname === '/super-admin' ||
         location.pathname === '/super-admin/'
+      )
+    }
+    if (path === '/super-admin/content') {
+      return (
+        location.pathname.startsWith('/super-admin/content') ||
+        location.pathname.startsWith('/super-admin/questions')
       )
     }
     return location.pathname.startsWith(path)
