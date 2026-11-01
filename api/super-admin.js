@@ -28136,6 +28136,58 @@ function normalizeSpecificPatterns(msg) {
   return msg;
 }
 
+// src/server/routeResolver.ts
+function parseQueryParams(req) {
+  const params = {};
+  try {
+    const rawUrl = req.url || "/";
+    const parsed = new URL(rawUrl, "http://localhost");
+    for (const [k2, v2] of parsed.searchParams.entries()) {
+      params[k2] = v2;
+    }
+  } catch {
+  }
+  if (typeof req.query === "object" && req.query) {
+    for (const [k2, v2] of Object.entries(req.query)) {
+      if (typeof v2 === "string") params[k2] = v2;
+      else if (Array.isArray(v2) && typeof v2[0] === "string") params[k2] = v2[0];
+      else if (v2 !== void 0 && v2 !== null) params[k2] = String(v2);
+    }
+  }
+  return params;
+}
+function resolveRoute(req, body = {}, basePrefix) {
+  const method = (req.method || "GET").toUpperCase();
+  const queryParams = parseQueryParams(req);
+  let subpath = (queryParams.__subpath || queryParams._subpath || queryParams.subpath || queryParams.path || req.headers["x-kalvi-subpath"] || req.headers["x-forwarded-uri"] || req.headers["x-original-url"] || req.headers["x-rewrite-url"] || req.headers["x-invoke-path"] || "").toLowerCase().trim();
+  if (!subpath) {
+    try {
+      const parsed = new URL(req.url || "/", "http://localhost");
+      const p2 = parsed.pathname.toLowerCase();
+      if (p2.startsWith(basePrefix.toLowerCase())) {
+        subpath = p2.slice(basePrefix.length);
+      } else {
+        subpath = p2;
+      }
+    } catch {
+    }
+  }
+  subpath = subpath.split("?")[0].replace(/^\/+|\/+$/g, "");
+  const cleanBase = basePrefix.toLowerCase().replace(/^\/+|\/+$/g, "");
+  if (subpath.startsWith(cleanBase)) {
+    subpath = subpath.slice(cleanBase.length).replace(/^\/+|\/+$/g, "");
+  }
+  let action = "";
+  if (typeof body.action === "string" && body.action.trim()) {
+    action = body.action.trim().toLowerCase();
+  } else if (queryParams.action && typeof queryParams.action === "string") {
+    action = queryParams.action.trim().toLowerCase();
+  } else if (typeof req.headers["x-kalvi-action"] === "string" && req.headers["x-kalvi-action"].trim()) {
+    action = req.headers["x-kalvi-action"].trim().toLowerCase();
+  }
+  return { method, subpath, action, queryParams };
+}
+
 // server/learn/coding/hidden/variables-data-types.json
 var variables_data_types_default = {
   "integer-to-decimal-string": {
@@ -117063,7 +117115,7 @@ async function recordAdminAudit(adminEmail, adminId, action, targetType, targetI
 async function handler(req, res) {
   applyCors(req, res, {
     methods: "GET, POST, PUT, DELETE, OPTIONS",
-    headers: "Content-Type, Authorization, X-Idempotency-Key"
+    headers: "Content-Type, Authorization, X-Idempotency-Key, X-Kalvi-Subpath, X-Kalvi-Action"
   });
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
@@ -117081,21 +117133,25 @@ async function handler(req, res) {
     });
   }
   let body = {};
-  try {
-    body = await readJsonBody(req);
-  } catch (err) {
-    if (err instanceof PayloadTooLargeError) {
-      return sendJson(res, 413, {
+  if (req.method !== "GET") {
+    try {
+      body = await readJsonBody(req);
+    } catch (err) {
+      if (err instanceof PayloadTooLargeError) {
+        return sendJson(res, 413, {
+          success: false,
+          error: "Payload Too Large",
+          message: "Request payload exceeded the maximum permitted size."
+        });
+      }
+      return sendJson(res, 400, {
         success: false,
-        error: "Payload Too Large",
-        message: "Request payload exceeded the maximum permitted size."
+        error: "Invalid JSON",
+        message: "Failed to parse JSON request body."
       });
     }
-    return sendJson(res, 400, {
-      success: false,
-      error: "Invalid JSON",
-      message: "Failed to parse JSON request body."
-    });
+  } else if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+    body = req.body;
   }
   const authHeader = req.headers["authorization"] || req.headers["Authorization"];
   const auth = await authenticateFeedbackRequest(authHeader);
@@ -117124,17 +117180,42 @@ async function handler(req, res) {
       message: "Account rate limit exceeded. Please wait a moment."
     });
   }
-  const method = (req.method || "").toUpperCase();
+  const route = resolveRoute(req, body, "/api/super-admin");
+  req.query = { ...route.queryParams, ...typeof req.query === "object" && req.query ? req.query : {} };
+  let action = route.action;
+  const sub = route.subpath;
+  const method = route.method;
   const url = (req.url || "").toLowerCase();
-  const matchedPath = (req.headers["x-matched-path"] || req.headers["x-now-route-matches"] || "").toLowerCase();
-  const rawAction = typeof body.action === "string" ? body.action : "";
-  const queryAction = typeof req.query === "object" && req.query ? String(req.query.action || "") : "";
-  const action = (rawAction || queryAction).toLowerCase();
+  if (!action) {
+    if (sub === "dashboard") {
+      action = "dashboard";
+    } else if (sub === "campuses" || sub.startsWith("campuses/")) {
+      if (method === "GET") action = "list_campuses";
+    } else if (sub === "managers" || sub.startsWith("managers/")) {
+      if (method === "GET") action = "list_managers";
+    } else if (sub === "mentors" || sub.startsWith("mentors/")) {
+      if (method === "GET") action = "list_mentors";
+    } else if (sub === "students" || sub.startsWith("students/")) {
+      if (method === "GET") action = "list_students";
+      else if (method === "DELETE") action = "delete_student";
+    } else if (sub === "roles" || sub.startsWith("roles/")) {
+      if (method === "GET") action = "list_roles";
+    } else if (sub === "audit" || sub.startsWith("audit/")) {
+      if (method === "GET") action = "list_audit_logs";
+    } else if (sub === "questions" || sub.startsWith("questions/")) {
+      if (method === "GET") action = "list_questions";
+      else if (method === "DELETE") action = "delete_question";
+    } else if (sub === "curriculum" || sub.startsWith("curriculum/")) {
+      if (method === "GET") action = "list_curriculum_modules";
+    } else if (sub === "belts" || sub.startsWith("belts/")) {
+      if (method === "GET") action = "list_belts";
+    }
+  }
   try {
-    if (action === "dashboard" || url.includes("/dashboard") || matchedPath.includes("/dashboard")) {
+    if (action === "dashboard" || sub === "dashboard" || url.includes("/dashboard")) {
       return await handleGetDashboard(res);
     }
-    if (action === "list_campuses" || method === "GET" && (url.includes("/campuses") || matchedPath.includes("/campuses"))) {
+    if (action === "list_campuses" || method === "GET" && (sub === "campuses" || url.includes("/campuses"))) {
       return await handleListCampuses(res);
     }
     if (action === "create_campus") {
@@ -117149,7 +117230,7 @@ async function handler(req, res) {
     if (action === "assign_campus_manager") {
       return await handleAssignCampusManager(body, auth.user.id, clientIp, res);
     }
-    if (action === "list_managers" || method === "GET" && (url.includes("/managers") || matchedPath.includes("/managers"))) {
+    if (action === "list_managers" || method === "GET" && (sub === "managers" || url.includes("/managers"))) {
       return await handleListManagers(res);
     }
     if (action === "provision_manager") {
@@ -117161,7 +117242,7 @@ async function handler(req, res) {
     if (action === "toggle_manager_status") {
       return await handleToggleManagerStatus(body, auth.user.id, clientIp, res);
     }
-    if (action === "list_mentors" || method === "GET" && (url.includes("/mentors") || matchedPath.includes("/mentors"))) {
+    if (action === "list_mentors" || method === "GET" && (sub === "mentors" || url.includes("/mentors"))) {
       return await handleListMentors(res);
     }
     if (action === "provision_mentor") {
@@ -117173,7 +117254,7 @@ async function handler(req, res) {
     if (action === "toggle_mentor_status") {
       return await handleToggleMentorStatus(body, auth.user.id, clientIp, res);
     }
-    if (action === "list_students" || method === "GET" && (url.includes("/students") || matchedPath.includes("/students"))) {
+    if (action === "list_students" || method === "GET" && (sub === "students" || url.includes("/students"))) {
       return await handleListStudents(body, req, res);
     }
     if (action === "enroll_student") {
@@ -117182,10 +117263,10 @@ async function handler(req, res) {
     if (action === "update_student") {
       return await handleUpdateStudent(body, auth.user.id, clientIp, res);
     }
-    if (action === "delete_student" || method === "DELETE" && (url.includes("/students") || matchedPath.includes("/students"))) {
+    if (action === "delete_student" || method === "DELETE" && (sub === "students" || url.includes("/students"))) {
       return await handleDeleteStudent(body, req, auth.user.id, clientIp, res);
     }
-    if (action === "list_roles" || action === "list_users_roles" || method === "GET" && (url.includes("/roles") || matchedPath.includes("/roles"))) {
+    if (action === "list_roles" || action === "list_users_roles" || method === "GET" && (sub === "roles" || url.includes("/roles"))) {
       return await handleListUserRoles(res);
     }
     if (action === "update_user_role") {
@@ -117203,10 +117284,10 @@ async function handler(req, res) {
     if (action === "assign_user_campus") {
       return await handleAssignUserCampus(body, auth.user.id, clientIp, res);
     }
-    if (action === "list_audit_logs" || method === "GET" && (url.includes("/audit") || matchedPath.includes("/audit"))) {
+    if (action === "list_audit_logs" || method === "GET" && (sub === "audit" || url.includes("/audit"))) {
       return await handleListAuditLogs(body, req, res);
     }
-    if (action === "list_questions" || method === "GET" && (url.includes("/questions") || matchedPath.includes("/questions"))) {
+    if (action === "list_questions" || method === "GET" && (sub === "questions" || url.includes("/questions"))) {
       return await handleListQuestions(body, req, res);
     }
     if (action === "get_question") {
@@ -117230,10 +117311,10 @@ async function handler(req, res) {
     if (action === "toggle_question_status") {
       return await handleToggleQuestionStatus(body, auth.user.id, clientIp, res);
     }
-    if (action === "delete_question" || method === "DELETE" && (url.includes("/questions") || matchedPath.includes("/questions"))) {
+    if (action === "delete_question" || method === "DELETE" && (sub === "questions" || url.includes("/questions"))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res);
     }
-    if (action === "list_curriculum_modules" || method === "GET" && (url.includes("/curriculum") || matchedPath.includes("/curriculum"))) {
+    if (action === "list_curriculum_modules" || method === "GET" && (sub === "curriculum" || url.includes("/curriculum"))) {
       return await handleListCurriculumModules(body, req, res);
     }
     if (action === "create_curriculum_module") {
@@ -117266,7 +117347,7 @@ async function handler(req, res) {
     if (action === "toggle_learning_unit_status" || action === "toggle_unit_status") {
       return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res);
     }
-    if (action === "list_belts" || method === "GET" && (url.includes("/belts") || matchedPath.includes("/belts"))) {
+    if (action === "list_belts" || method === "GET" && (sub === "belts" || url.includes("/belts"))) {
       return await handleListBelts(res);
     }
     if (action === "update_belt") {

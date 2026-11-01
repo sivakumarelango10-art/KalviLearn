@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
+import { resolveRoute } from './routeResolver'
 import { registerCustomSuite, unregisterCustomSuite } from './judge/testRepository'
 import { selectEngine } from './judge/engines'
 import { outputsMatch } from './judge/compare'
@@ -84,7 +85,7 @@ export default async function handler(
   // CORS handling
   applyCors(req, res, {
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
-    headers: 'Content-Type, Authorization, X-Idempotency-Key',
+    headers: 'Content-Type, Authorization, X-Idempotency-Key, X-Kalvi-Subpath, X-Kalvi-Action',
   })
 
   if (req.method === 'OPTIONS') {
@@ -105,23 +106,27 @@ export default async function handler(
     })
   }
 
-  // Parse Body if present
+  // Parse Body if not GET
   let body: Record<string, unknown> = {}
-  try {
-    body = await readJsonBody(req)
-  } catch (err: unknown) {
-    if (err instanceof PayloadTooLargeError) {
-      return sendJson(res, 413, {
+  if (req.method !== 'GET') {
+    try {
+      body = await readJsonBody(req)
+    } catch (err: unknown) {
+      if (err instanceof PayloadTooLargeError) {
+        return sendJson(res, 413, {
+          success: false,
+          error: 'Payload Too Large',
+          message: 'Request payload exceeded the maximum permitted size.',
+        })
+      }
+      return sendJson(res, 400, {
         success: false,
-        error: 'Payload Too Large',
-        message: 'Request payload exceeded the maximum permitted size.',
+        error: 'Invalid JSON',
+        message: 'Failed to parse JSON request body.',
       })
     }
-    return sendJson(res, 400, {
-      success: false,
-      error: 'Invalid JSON',
-      message: 'Failed to parse JSON request body.',
-    })
+  } else if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) {
+    body = req.body as Record<string, unknown>
   }
 
   // Authenticate Caller
@@ -159,24 +164,49 @@ export default async function handler(
     })
   }
 
-  // Route & Action Dispatching
-  const method = (req.method || '').toUpperCase()
+  // Robust Route & Action Resolution
+  const route = resolveRoute(req, body, '/api/super-admin')
+  req.query = { ...route.queryParams, ...(typeof req.query === 'object' && req.query ? req.query : {}) }
+
+  let action = route.action
+  const sub = route.subpath
+  const method = route.method
   const url = (req.url || '').toLowerCase()
-  const matchedPath = (
-    ((req.headers['x-matched-path'] as string) || (req.headers['x-now-route-matches'] as string) || '')
-  ).toLowerCase()
-  const rawAction = typeof body.action === 'string' ? body.action : ''
-  const queryAction = typeof req.query === 'object' && req.query ? String((req.query as Record<string, unknown>).action || '') : ''
-  const action = (rawAction || queryAction).toLowerCase()
+
+  if (!action) {
+    if (sub === 'dashboard') {
+      action = 'dashboard'
+    } else if (sub === 'campuses' || sub.startsWith('campuses/')) {
+      if (method === 'GET') action = 'list_campuses'
+    } else if (sub === 'managers' || sub.startsWith('managers/')) {
+      if (method === 'GET') action = 'list_managers'
+    } else if (sub === 'mentors' || sub.startsWith('mentors/')) {
+      if (method === 'GET') action = 'list_mentors'
+    } else if (sub === 'students' || sub.startsWith('students/')) {
+      if (method === 'GET') action = 'list_students'
+      else if (method === 'DELETE') action = 'delete_student'
+    } else if (sub === 'roles' || sub.startsWith('roles/')) {
+      if (method === 'GET') action = 'list_roles'
+    } else if (sub === 'audit' || sub.startsWith('audit/')) {
+      if (method === 'GET') action = 'list_audit_logs'
+    } else if (sub === 'questions' || sub.startsWith('questions/')) {
+      if (method === 'GET') action = 'list_questions'
+      else if (method === 'DELETE') action = 'delete_question'
+    } else if (sub === 'curriculum' || sub.startsWith('curriculum/')) {
+      if (method === 'GET') action = 'list_curriculum_modules'
+    } else if (sub === 'belts' || sub.startsWith('belts/')) {
+      if (method === 'GET') action = 'list_belts'
+    }
+  }
 
   try {
     // 1. Dashboard Telemetry
-    if (action === 'dashboard' || url.includes('/dashboard') || matchedPath.includes('/dashboard')) {
+    if (action === 'dashboard' || sub === 'dashboard' || url.includes('/dashboard')) {
       return await handleGetDashboard(res)
     }
 
     // 2. Campus Management
-    if (action === 'list_campuses' || (method === 'GET' && (url.includes('/campuses') || matchedPath.includes('/campuses')))) {
+    if (action === 'list_campuses' || (method === 'GET' && (sub === 'campuses' || url.includes('/campuses')))) {
       return await handleListCampuses(res)
     }
     if (action === 'create_campus') {
@@ -193,7 +223,7 @@ export default async function handler(
     }
 
     // 3. Campus Managers
-    if (action === 'list_managers' || (method === 'GET' && (url.includes('/managers') || matchedPath.includes('/managers')))) {
+    if (action === 'list_managers' || (method === 'GET' && (sub === 'managers' || url.includes('/managers')))) {
       return await handleListManagers(res)
     }
     if (action === 'provision_manager') {
@@ -207,7 +237,7 @@ export default async function handler(
     }
 
     // 4. Mentors
-    if (action === 'list_mentors' || (method === 'GET' && (url.includes('/mentors') || matchedPath.includes('/mentors')))) {
+    if (action === 'list_mentors' || (method === 'GET' && (sub === 'mentors' || url.includes('/mentors')))) {
       return await handleListMentors(res)
     }
     if (action === 'provision_mentor') {
@@ -221,7 +251,7 @@ export default async function handler(
     }
 
     // 5. Students
-    if (action === 'list_students' || (method === 'GET' && (url.includes('/students') || matchedPath.includes('/students')))) {
+    if (action === 'list_students' || (method === 'GET' && (sub === 'students' || url.includes('/students')))) {
       return await handleListStudents(body, req, res)
     }
     if (action === 'enroll_student') {
@@ -230,12 +260,12 @@ export default async function handler(
     if (action === 'update_student') {
       return await handleUpdateStudent(body, auth.user.id, clientIp, res)
     }
-    if (action === 'delete_student' || (method === 'DELETE' && (url.includes('/students') || matchedPath.includes('/students')))) {
+    if (action === 'delete_student' || (method === 'DELETE' && (sub === 'students' || url.includes('/students')))) {
       return await handleDeleteStudent(body, req, auth.user.id, clientIp, res)
     }
 
     // 6. Role & Permission Management
-    if (action === 'list_roles' || action === 'list_users_roles' || (method === 'GET' && (url.includes('/roles') || matchedPath.includes('/roles')))) {
+    if (action === 'list_roles' || action === 'list_users_roles' || (method === 'GET' && (sub === 'roles' || url.includes('/roles')))) {
       return await handleListUserRoles(res)
     }
     if (action === 'update_user_role') {
@@ -255,12 +285,12 @@ export default async function handler(
     }
 
     // 7. Audit Logs
-    if (action === 'list_audit_logs' || (method === 'GET' && (url.includes('/audit') || matchedPath.includes('/audit')))) {
+    if (action === 'list_audit_logs' || (method === 'GET' && (sub === 'audit' || url.includes('/audit')))) {
       return await handleListAuditLogs(body, req, res)
     }
 
     // 8. Questions Management
-    if (action === 'list_questions' || (method === 'GET' && (url.includes('/questions') || matchedPath.includes('/questions')))) {
+    if (action === 'list_questions' || (method === 'GET' && (sub === 'questions' || url.includes('/questions')))) {
       return await handleListQuestions(body, req, res)
     }
     if (action === 'get_question') {
@@ -284,12 +314,12 @@ export default async function handler(
     if (action === 'toggle_question_status') {
       return await handleToggleQuestionStatus(body, auth.user.id, clientIp, res)
     }
-    if (action === 'delete_question' || (method === 'DELETE' && (url.includes('/questions') || matchedPath.includes('/questions')))) {
+    if (action === 'delete_question' || (method === 'DELETE' && (sub === 'questions' || url.includes('/questions')))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res)
     }
 
     // 9. Curriculum (Courses) Management
-    if (action === 'list_curriculum_modules' || (method === 'GET' && (url.includes('/curriculum') || matchedPath.includes('/curriculum')))) {
+    if (action === 'list_curriculum_modules' || (method === 'GET' && (sub === 'curriculum' || url.includes('/curriculum')))) {
       return await handleListCurriculumModules(body, req, res)
     }
     if (action === 'create_curriculum_module') {
@@ -324,7 +354,7 @@ export default async function handler(
     }
 
     // 10. Practice Belts Management
-    if (action === 'list_belts' || (method === 'GET' && (url.includes('/belts') || matchedPath.includes('/belts')))) {
+    if (action === 'list_belts' || (method === 'GET' && (sub === 'belts' || url.includes('/belts')))) {
       return await handleListBelts(res)
     }
     if (action === 'update_belt') {

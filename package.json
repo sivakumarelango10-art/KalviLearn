@@ -15,6 +15,7 @@
     "build:teamsync-webhook": "esbuild src/server/teamSyncWebhookHandler.ts --bundle --platform=node --format=esm --target=node18 --outfile=api/integrations/teamsync/webhooks.js",
     "build:campus": "node scripts/build-campus.mjs",
     "build:super-admin": "node scripts/build-super-admin.mjs",
+    "test:consolidated-routing": "npx tsx scripts/test-consolidated-routing.ts",
     "test:super-admin": "npx tsx scripts/test-super-admin.ts",
     "test:super-admin-questions": "npx tsx scripts/test-super-admin-questions.ts",
     "test": "npx tsx scripts/test-evaluation-pipeline.ts",

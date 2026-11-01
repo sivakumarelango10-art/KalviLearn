@@ -176,8 +176,11 @@ async function callSuperAdminApi<T = unknown>(
 ): Promise<{ success: boolean; error?: string; data?: T }> {
   try {
     const authHeader = await getAuthHeader()
+    const cleanSubpath = primaryPath.replace(/^\/api\/super-admin\/?/, '').split('?')[0]
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'X-Kalvi-Subpath': cleanSubpath,
+      'X-Kalvi-Action': actionName,
       ...(authHeader ? { Authorization: authHeader } : {}),
     }
 

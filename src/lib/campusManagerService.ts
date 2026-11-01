@@ -730,8 +730,11 @@ async function callCampusApi(
 ): Promise<{ success: boolean; error?: string; data?: unknown }> {
   try {
     const authHeader = await getAuthHeader()
+    const cleanSubpath = primaryPath.replace(/^\/api\/campus\/?/, '').split('?')[0]
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'X-Kalvi-Subpath': cleanSubpath,
+      'X-Kalvi-Action': actionName,
       ...(authHeader ? { Authorization: authHeader } : {}),
     }
 
