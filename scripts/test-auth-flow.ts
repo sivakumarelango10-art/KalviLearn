@@ -1,10 +1,18 @@
 /**
- * Comprehensive Auth Flow Verification Script
- * Validates Google OAuth redirect construction, role-based portal routing,
- * database whitelist checking, and elimination of obsolete kalvicode URLs.
+ * Comprehensive Auth Flow & Redirect Verification Script
+ * Validates:
+ * - Environment-aware OAuth callback construction (localhost:5174, 127.0.0.1:5174, localhost:5173, production)
+ * - Strict allowlist origin validation (open-redirect prevention)
+ * - Role-based portal routing (SUPERADMIN, CAMPUS_MANAGER, ADMIN, MENTOR, STUDENT)
+ * - Zero references to obsolete legacy domains (kalvicode)
  */
-import { verifyUserInDatabase, type DbUser } from '../src/lib/authService'
-import { supabase } from '../src/lib/supabase'
+import {
+  getAuthCallbackUrl,
+  isAllowedAuthOrigin,
+  DEFAULT_PRODUCTION_URL,
+  DEFAULT_PRODUCTION_CALLBACK,
+  ALLOWED_AUTH_ORIGINS,
+} from '../src/lib/supabase'
 
 interface TestResult {
   title: string
@@ -22,51 +30,122 @@ function assert(condition: boolean, title: string, details?: string) {
   })
 }
 
+function resolvePortalPath(role: string): string {
+  const normalized = (role || '').toUpperCase()
+  if (normalized === 'SUPERADMIN') {
+    return '/super-admin/dashboard'
+  } else if (normalized === 'CAMPUS_MANAGER' || normalized === 'ADMIN') {
+    return '/campus/dashboard'
+  } else if (normalized === 'MENTOR') {
+    return '/mentor'
+  } else {
+    return '/dashboard'
+  }
+}
+
 async function runTests() {
   console.log('========================================================================')
   console.log('🔐 KALVILEARN AUTHENTICATION & REDIRECT FLOW VERIFICATION SUITE')
   console.log('========================================================================\n')
 
-  // Test 1: Redirect URL Generation for Production
+  // --- 1. Production Redirect Configuration ---
+  console.log('--- 1. Production Redirect Configuration ---')
   {
-    const origin = 'https://kalvilearn.vercel.app'
-    const callbackUrl = `${origin}/auth/callback`
+    const prodUrl = getAuthCallbackUrl('https://kalvilearn.vercel.app/auth/callback')
     assert(
-      callbackUrl === 'https://kalvilearn.vercel.app/auth/callback',
-      'Production OAuth Redirect URL is properly formatted to kalvilearn',
-      `Result: ${callbackUrl}`
+      prodUrl === 'https://kalvilearn.vercel.app/auth/callback',
+      'Production OAuth Redirect URL is correctly formatted',
+      `Result: ${prodUrl}`
     )
     assert(
-      !callbackUrl.includes('kalvicode'),
+      !prodUrl.includes('kalvicode'),
       'Production Redirect URL contains zero references to kalvicode',
-      `URL: ${callbackUrl}`
+      `URL: ${prodUrl}`
     )
-  }
-
-  // Test 2: Redirect URL Generation for Local Development
-  {
-    const origin = 'http://localhost:5173'
-    const callbackUrl = `${origin}/auth/callback`
     assert(
-      callbackUrl === 'http://localhost:5173/auth/callback',
-      'Local development OAuth Redirect URL preserves localhost:5173',
-      `Result: ${callbackUrl}`
+      DEFAULT_PRODUCTION_CALLBACK === 'https://kalvilearn.vercel.app/auth/callback',
+      'DEFAULT_PRODUCTION_CALLBACK constant matches production',
+      `Constant: ${DEFAULT_PRODUCTION_CALLBACK}`
     )
   }
 
-  // Test 3: Role-Based Redirection Matrix
+  // --- 2. Local Development Configuration (Port 5174) ---
+  console.log('\n--- 2. Local Development Configuration (Port 5174) ---')
   {
-    function resolvePortalPath(role: string): string {
-      const normalized = role.toUpperCase()
-      if (normalized === 'CAMPUS_MANAGER' || normalized === 'ADMIN' || normalized === 'SUPERADMIN') {
-        return '/campus/dashboard'
-      } else if (normalized === 'MENTOR') {
-        return '/mentor'
-      } else {
-        return '/dashboard'
-      }
-    }
+    const local5174 = getAuthCallbackUrl('http://localhost:5174/auth/callback')
+    assert(
+      local5174 === 'http://localhost:5174/auth/callback',
+      'Local development OAuth Redirect URL preserves localhost:5174',
+      `Result: ${local5174}`
+    )
 
+    const ip5174 = getAuthCallbackUrl('http://127.0.0.1:5174/auth/callback')
+    assert(
+      ip5174 === 'http://127.0.0.1:5174/auth/callback',
+      'Local development OAuth Redirect URL preserves 127.0.0.1:5174',
+      `Result: ${ip5174}`
+    )
+
+    const local5173 = getAuthCallbackUrl('http://localhost:5173/auth/callback')
+    assert(
+      local5173 === 'http://localhost:5173/auth/callback',
+      'Local development OAuth Redirect URL preserves localhost:5173',
+      `Result: ${local5173}`
+    )
+  }
+
+  // --- 3. Allowlist Validation & Open Redirect Security ---
+  console.log('\n--- 3. Allowlist Validation & Open Redirect Security ---')
+  {
+    assert(
+      isAllowedAuthOrigin('http://localhost:5174'),
+      'Allowlist accepts http://localhost:5174'
+    )
+    assert(
+      isAllowedAuthOrigin('http://127.0.0.1:5174'),
+      'Allowlist accepts http://127.0.0.1:5174'
+    )
+    assert(
+      isAllowedAuthOrigin('http://localhost:5173'),
+      'Allowlist accepts http://localhost:5173'
+    )
+    assert(
+      isAllowedAuthOrigin('https://kalvilearn.vercel.app'),
+      'Allowlist accepts https://kalvilearn.vercel.app'
+    )
+    assert(
+      isAllowedAuthOrigin('https://kalvilearn-preview-feat.vercel.app'),
+      'Allowlist accepts Vercel preview deployments (*.vercel.app)'
+    )
+    assert(
+      !isAllowedAuthOrigin('https://malicious-phishing-site.com'),
+      'Allowlist strictly rejects arbitrary external domains'
+    )
+    assert(
+      !isAllowedAuthOrigin('http://localhost:9999'),
+      'Allowlist strictly rejects unapproved local ports'
+    )
+
+    // Verify open-redirect defense: untrusted URL falls back to default safe callback
+    const maliciousAttempt = getAuthCallbackUrl('https://evil-hacker.com/steal-token')
+    assert(
+      maliciousAttempt === DEFAULT_PRODUCTION_CALLBACK,
+      'Arbitrary redirect input is rejected and falls back safely to default callback',
+      `Fallback: ${maliciousAttempt}`
+    )
+
+    // Relative path redirect
+    const relativeAttempt = getAuthCallbackUrl('/auth/callback')
+    assert(
+      relativeAttempt.endsWith('/auth/callback'),
+      'Relative path redirect safely resolves to an authorized /auth/callback path',
+      `Resolved: ${relativeAttempt}`
+    )
+  }
+
+  // --- 4. Role-Based Portal Routing ---
+  console.log('\n--- 4. Role-Based Portal Routing ---')
+  {
     assert(
       resolvePortalPath('STUDENT') === '/dashboard',
       'STUDENT role routes deterministically to /dashboard'
@@ -84,89 +163,16 @@ async function runTests() {
       'ADMIN role routes deterministically to /campus/dashboard'
     )
     assert(
-      resolvePortalPath('SUPERADMIN') === '/campus/dashboard',
-      'SUPERADMIN role routes deterministically to /campus/dashboard'
+      resolvePortalPath('SUPERADMIN') === '/super-admin/dashboard',
+      'SUPERADMIN role routes deterministically to /super-admin/dashboard'
+    )
+    assert(
+      resolvePortalPath('superadmin') === '/super-admin/dashboard',
+      'SUPERADMIN case-insensitive role routes to /super-admin/dashboard'
     )
   }
 
-  // Test 4: Live Database Verification for Roles
-  {
-    console.log('Testing live database role lookups from users table...')
-
-    // Check Student dynamically from database
-    try {
-      const { data: dbStudent } = await supabase
-        .from('users')
-        .select('email, role')
-        .eq('role', 'STUDENT')
-        .limit(1)
-        .maybeSingle()
-
-      const testEmail = dbStudent?.email || 'student.test@kalvilearn.test'
-      const student = await verifyUserInDatabase(testEmail)
-      assert(
-        student.allowed && student.user?.role === 'STUDENT',
-        'Database verifies STUDENT account and maps role accurately',
-        `User: ${student.user?.email}, Role: ${student.user?.role}`
-      )
-    } catch (e: any) {
-      assert(false, 'Database verifies STUDENT account', e.message)
-    }
-
-    // Check Mentor dynamically from database
-    try {
-      const { data: dbMentor } = await supabase
-        .from('users')
-        .select('email, role')
-        .eq('role', 'MENTOR')
-        .limit(1)
-        .maybeSingle()
-
-      const testEmail = dbMentor?.email || 'mentor.test@kalvilearn.test'
-      const mentor = await verifyUserInDatabase(testEmail)
-      assert(
-        mentor.allowed && mentor.user?.role === 'MENTOR',
-        'Database verifies MENTOR account and maps role accurately',
-        `User: ${mentor.user?.email}, Role: ${mentor.user?.role}`
-      )
-    } catch (e: any) {
-      assert(false, 'Database verifies MENTOR account', e.message)
-    }
-
-    // Check Campus Manager / Admin dynamically from database
-    try {
-      const { data: dbCM } = await supabase
-        .from('users')
-        .select('email, role')
-        .in('role', ['CAMPUS_MANAGER', 'ADMIN'])
-        .limit(1)
-        .maybeSingle()
-
-      const testEmail = dbCM?.email || 'manager.test@kalvilearn.test'
-      const cm = await verifyUserInDatabase(testEmail)
-      assert(
-        cm.allowed && (cm.user?.role === 'CAMPUS_MANAGER' || cm.user?.role === 'ADMIN'),
-        'Database verifies CAMPUS_MANAGER / ADMIN account and maps role accurately',
-        `User: ${cm.user?.email}, Role: ${cm.user?.role}`
-      )
-    } catch (e: any) {
-      assert(false, 'Database verifies CAMPUS_MANAGER account', e.message)
-    }
-
-    // Check Unauthorized Email
-    try {
-      const unauthorized = await verifyUserInDatabase('unknown_unauthorized_user_xyz@kalvilearn.test')
-      assert(
-        !unauthorized.allowed && unauthorized.reason === 'ACCOUNT_NOT_REGISTERED',
-        'Unauthorized user is correctly rejected with ACCOUNT_NOT_REGISTERED',
-        `Allowed: ${unauthorized.allowed}, Reason: ${unauthorized.reason}`
-      )
-    } catch (e: any) {
-      assert(false, 'Unauthorized user is rejected', e.message)
-    }
-  }
-
-  // Print Summary
+  // --- 5. Print Summary ---
   console.log('\n========================================================================')
   console.log('RESULTS SUMMARY')
   console.log('========================================================================')

@@ -8,6 +8,9 @@
  * - Zero network dependencies (runs fully in sandbox without production credentials)
  */
 
+import curriculumData from '../src/data/curriculum.json'
+import problemsData from '../src/data/problems.json'
+
 export interface MockDbState {
   campuses: any[]
   users: any[]
@@ -19,6 +22,9 @@ export interface MockDbState {
   UserProgress: any[]
   Problem: any[]
   TestCase: any[]
+  Module: any[]
+  LearningUnit: any[]
+  Belt: any[]
 }
 
 export function createInitialMockDb(): MockDbState {
@@ -28,6 +34,8 @@ export function createInitialMockDb(): MockDbState {
   const seedProblems = [
     {
       id: 'mock-prob-1',
+      beltId: 'mock-belt-1',
+      order: 1,
       slug: 'two-sum-problem',
       title: 'Two Sum',
       difficulty: 'Easy',
@@ -53,6 +61,8 @@ export function createInitialMockDb(): MockDbState {
     },
     {
       id: 'mock-prob-2',
+      beltId: 'mock-belt-1',
+      order: 2,
       slug: 'palindrome-check',
       title: 'Palindrome Check',
       difficulty: 'Easy',
@@ -78,6 +88,8 @@ export function createInitialMockDb(): MockDbState {
     },
     {
       id: 'mock-prob-3',
+      beltId: 'mock-belt-2',
+      order: 1,
       slug: 'search-2d-matrix',
       title: 'Search a 2D Matrix',
       difficulty: 'Medium',
@@ -237,6 +249,48 @@ export function createInitialMockDb(): MockDbState {
     UserProgress: [],
     Problem: seedProblems,
     TestCase: seedTestCases,
+    Module: (curriculumData as any[]).map((m, idx) => ({
+      id: `mock-module-${m.order || idx + 1}`,
+      order: m.order || idx + 1,
+      title: m.title,
+      description: m.description || '',
+      isActive: true,
+      status: 'PUBLISHED',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    })),
+    LearningUnit: (curriculumData as any[]).flatMap((m, mIdx) => {
+      const modId = `mock-module-${m.order || mIdx + 1}`
+      return (m.learningUnits || []).map((lu: any, luIdx: number) => ({
+        id: `mock-unit-${m.order || mIdx + 1}-${lu.order || luIdx + 1}`,
+        moduleId: modId,
+        order: lu.order || luIdx + 1,
+        title: lu.title,
+        concept: lu.concept || lu.content || '',
+        content: lu.content || lu.concept || '',
+        approach: lu.approach || '',
+        codeSnippets: lu.codeSnippets || {},
+        codingQuestion: lu.codingQuestion || '',
+        inputFormat: lu.inputFormat || '',
+        outputFormat: lu.outputFormat || '',
+        examples: lu.examples || [],
+        readingTimeMinutes: lu.readingTimeMinutes || 2,
+        isActive: true,
+        status: 'PUBLISHED',
+        createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+        updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      }))
+    }),
+    Belt: (problemsData as any[]).map((b, idx) => ({
+      id: `mock-belt-${b.order || idx + 1}`,
+      order: b.order || idx + 1,
+      name: b.belt || `Belt ${b.order || idx + 1}`,
+      title: b.title,
+      description: b.description || '',
+      color: b.color || '#EAB308',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    })),
   }
 }
 
@@ -266,6 +320,9 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
     let targetKey = tableName
     if (tableName === 'problems' || tableName === 'questions') targetKey = 'Problem'
     if (tableName === 'test_cases' || tableName === 'testcases') targetKey = 'TestCase'
+    if (tableName === 'modules' || tableName === 'curriculum_modules') targetKey = 'Module'
+    if (tableName === 'learning_units' || tableName === 'learningunits') targetKey = 'LearningUnit'
+    if (tableName === 'belts') targetKey = 'Belt'
 
     if (!(targetKey in db)) {
       throw new Error(`Table ${tableName} not defined in MockDatabase`)

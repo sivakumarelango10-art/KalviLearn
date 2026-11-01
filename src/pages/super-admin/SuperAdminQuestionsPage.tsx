@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   BookOpen,
   Search,
@@ -21,6 +22,7 @@ import {
   ShieldCheck,
   Terminal,
   Check,
+  ArrowLeft,
 } from 'lucide-react'
 import {
   AdminQuestion,
@@ -64,6 +66,7 @@ interface QuestionFormData {
   slug: string
   difficulty: 'Easy' | 'Medium' | 'Hard'
   subdivision: string
+  beltId?: string
   description: string
   inputFormat: string
   outputFormat: string
@@ -118,7 +121,23 @@ const DEFAULT_FORM: QuestionFormData = {
   },
 }
 
-export const SuperAdminQuestionsPage: React.FC = () => {
+export interface SuperAdminQuestionsPageProps {
+  initialBelt?: number | 'ALL'
+  initialTopic?: string
+  backRoute?: string
+  backLabel?: string
+  customTitle?: string
+  customDescription?: string
+}
+
+export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = ({
+  initialBelt,
+  initialTopic,
+  backRoute,
+  backLabel,
+  customTitle,
+  customDescription,
+}) => {
   const [questions, setQuestions] = useState<AdminQuestion[]>([])
   const [stats, setStats] = useState<AdminQuestionsDashboardStats>({
     total: 0,
@@ -136,7 +155,8 @@ export const SuperAdminQuestionsPage: React.FC = () => {
   // Filters
   const [search, setSearch] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState('ALL')
-  const [topicFilter, setTopicFilter] = useState('ALL')
+  const [topicFilter, setTopicFilter] = useState(initialTopic ?? 'ALL')
+  const [beltFilter, setBeltFilter] = useState<number | 'ALL'>(initialBelt ?? 'ALL')
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -192,6 +212,7 @@ export const SuperAdminQuestionsPage: React.FC = () => {
           { id: 'tc-3', testIndex: 3, isHidden: true, description: 'Hidden validation test case 2 (large scale)', input: '5 100\n1 2 4 25 50', expectedOutput: '2 3' },
         ],
         createdAt: '2026-10-31T09:00:00Z',
+        updatedAt: '2026-10-31T09:00:00Z',
       })
     } else if (params.get('open_runner') === 'true') {
       setIsEditorOpen(true)
@@ -225,6 +246,7 @@ export const SuperAdminQuestionsPage: React.FC = () => {
         difficulty: difficultyFilter !== 'ALL' ? difficultyFilter : undefined,
         topic: topicFilter !== 'ALL' ? topicFilter : undefined,
         status: statusFilter !== 'ALL' ? statusFilter : undefined,
+        belt: beltFilter !== 'ALL' ? beltFilter : undefined,
         page,
         limit: 15,
       })
@@ -245,7 +267,7 @@ export const SuperAdminQuestionsPage: React.FC = () => {
 
   useEffect(() => {
     loadQuestions()
-  }, [difficultyFilter, topicFilter, statusFilter, page])
+  }, [difficultyFilter, topicFilter, statusFilter, beltFilter, page])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -283,6 +305,8 @@ export const SuperAdminQuestionsPage: React.FC = () => {
     setIsEditing(false)
     setFormData({
       ...DEFAULT_FORM,
+      subdivision: initialTopic || DEFAULT_FORM.subdivision,
+      beltId: initialBelt ? String(initialBelt) : DEFAULT_FORM.beltId,
       examples: [
         {
           label: 'Example 1',
@@ -696,6 +720,21 @@ export const SuperAdminQuestionsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Optional Breadcrumb Back Link */}
+      {backRoute && (
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-neutral-400">
+          <Link
+            to={backRoute}
+            className="hover:text-white transition-colors flex items-center gap-1 font-medium"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>{backLabel || 'Back'}</span>
+          </Link>
+          <span className="text-neutral-600">/</span>
+          <span className="text-red-400 font-semibold">{customTitle || 'Questions'}</span>
+        </nav>
+      )}
+
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#262626] pb-5">
         <div>
@@ -705,13 +744,14 @@ export const SuperAdminQuestionsPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                Questions Management
+                {customTitle || 'Questions Management'}
                 <span className="text-xs px-2 py-0.5 rounded-full bg-red-950/60 text-red-300 border border-red-800/80 font-mono">
-                  Arena
+                  {initialBelt ? `Belt ${initialBelt}` : initialTopic ? 'Topic' : 'Arena'}
                 </span>
               </h1>
               <p className="text-sm text-neutral-400">
-                Author, organize, preview, and grade coding problems for the student Problem Arena.
+                {customDescription ||
+                  'Author, organize, preview, and grade coding problems for the student Problem Arena.'}
               </p>
             </div>
           </div>
@@ -800,7 +840,7 @@ export const SuperAdminQuestionsPage: React.FC = () => {
       <div className="bg-[#121212] border border-[#262626] rounded-xl p-4 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search */}
-          <form onSubmit={handleSearchSubmit} className="md:col-span-5 relative">
+          <form onSubmit={handleSearchSubmit} className="md:col-span-4 relative">
             <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -829,7 +869,7 @@ export const SuperAdminQuestionsPage: React.FC = () => {
           </div>
 
           {/* Topic Filter */}
-          <div className="md:col-span-3">
+          <div className="md:col-span-2">
             <select
               value={topicFilter}
               onChange={(e) => {
@@ -842,6 +882,25 @@ export const SuperAdminQuestionsPage: React.FC = () => {
               {CODING_TOPICS.map((topic) => (
                 <option key={topic.id} value={topic.sourceTitle}>
                   {topic.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Belt Filter */}
+          <div className="md:col-span-2">
+            <select
+              value={beltFilter}
+              onChange={(e) => {
+                setBeltFilter(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))
+                setPage(1)
+              }}
+              className="w-full bg-[#1a1a1a] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-sm text-neutral-200 outline-none"
+            >
+              <option value="ALL">All Belts</option>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((b) => (
+                <option key={b} value={b}>
+                  Belt {b}
                 </option>
               ))}
             </select>

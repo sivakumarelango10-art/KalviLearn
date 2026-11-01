@@ -18,6 +18,9 @@ async function main() {
     'https://kalvicode.vercel.app/login',
     'http://localhost:5173',
     'http://localhost:5173/login',
+    'http://localhost:5174',
+    'http://localhost:5174/login',
+    'http://localhost:5174/auth/callback',
   ];
 
   console.log('--- Probing Supabase URL Allow List ---');

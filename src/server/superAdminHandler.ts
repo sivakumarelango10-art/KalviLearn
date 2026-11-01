@@ -6,6 +6,8 @@ import { registerCustomSuite, unregisterCustomSuite } from './judge/testReposito
 import { selectEngine } from './judge/engines'
 import { outputsMatch } from './judge/compare'
 import { normalizeLanguage } from './judge/questionId'
+import curriculumData from '../data/curriculum.json'
+import problemsData from '../data/problems.json'
 
 // Rate limiters: 120 req/min per IP, 60 req/min per authenticated user
 const ipLimiter = new RateLimiter(120, 60_000)
@@ -284,6 +286,49 @@ export default async function handler(
     }
     if (action === 'delete_question' || (method === 'DELETE' && (url.includes('/questions') || matchedPath.includes('/questions')))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res)
+    }
+
+    // 9. Curriculum (Courses) Management
+    if (action === 'list_curriculum_modules' || (method === 'GET' && (url.includes('/curriculum') || matchedPath.includes('/curriculum')))) {
+      return await handleListCurriculumModules(body, req, res)
+    }
+    if (action === 'create_curriculum_module') {
+      return await handleCreateCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'update_curriculum_module') {
+      return await handleUpdateCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_curriculum_module') {
+      return await handleDeleteCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reorder_curriculum_modules') {
+      return await handleReorderCurriculumModules(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'create_learning_unit') {
+      return await handleCreateLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'update_learning_unit') {
+      return await handleUpdateLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_learning_unit') {
+      return await handleDeleteLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reorder_learning_units') {
+      return await handleReorderLearningUnits(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_module_status') {
+      return await handleToggleModuleStatus(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_learning_unit_status' || action === 'toggle_unit_status') {
+      return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res)
+    }
+
+    // 10. Practice Belts Management
+    if (action === 'list_belts' || (method === 'GET' && (url.includes('/belts') || matchedPath.includes('/belts')))) {
+      return await handleListBelts(res)
+    }
+    if (action === 'update_belt') {
+      return await handleUpdateBelt(body, auth.user.id, clientIp, res)
     }
 
     return sendJson(res, 400, {
@@ -2574,6 +2619,11 @@ async function handleListQuestions(
   const difficulty = typeof body.difficulty === 'string' ? body.difficulty.trim() : (urlObj.searchParams.get('difficulty') || 'ALL').trim()
   const topic = typeof body.topic === 'string' ? body.topic.trim() : (urlObj.searchParams.get('topic') || 'ALL').trim()
   const status = typeof body.status === 'string' ? body.status.trim().toUpperCase() : (urlObj.searchParams.get('status') || 'ALL').trim().toUpperCase()
+  const belt = typeof body.belt === 'string'
+    ? body.belt.trim()
+    : typeof body.belt === 'number'
+    ? String(body.belt)
+    : (urlObj.searchParams.get('belt') || 'ALL').trim()
 
   const [problemsRes, testCasesRes] = await Promise.all([
     supabaseServer.from('Problem').select('*').order('createdAt', { ascending: false }),
@@ -2618,6 +2668,13 @@ async function handleListQuestions(
     if (topic !== 'ALL' && (p.subdivision || 'General') !== topic) return false
     if (status === 'PUBLISHED' && !p.isActive) return false
     if (status === 'DRAFT' && p.isActive) return false
+    if (belt !== 'ALL') {
+      const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
+      const matchesBeltId = p.beltId === belt || (typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltId === `mock-belt-${beltNum}` || (p.beltId && p.beltId.includes(String(beltNum)))))
+      const matchesSlug = typeof beltNum === 'number' && !isNaN(beltNum) && p.slug && p.slug.startsWith(`belt-${beltNum}-`)
+      const matchesOrder = typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltOrder === beltNum || (p.order === beltNum && !p.slug?.includes('-q')))
+      if (!matchesBeltId && !matchesSlug && !matchesOrder) return false
+    }
     if (search) {
       const matchTitle = (p.title || '').toLowerCase().includes(search)
       const matchSlug = (p.slug || '').toLowerCase().includes(search)
@@ -2632,6 +2689,7 @@ async function handleListQuestions(
     const visibleCount = pCases.filter((c: any) => !c.isHidden).length
     const hiddenCount = pCases.filter((c: any) => c.isHidden).length
     const examples = Array.isArray(p.examples) ? p.examples : []
+    const inferredBeltOrder = p.beltOrder || (p.slug && p.slug.match(/^belt-(\d+)-/) ? Number(p.slug.match(/^belt-(\d+)-/)[1]) : 1)
 
     return {
       id: p.id,
@@ -2640,6 +2698,8 @@ async function handleListQuestions(
       difficulty: p.difficulty,
       topic: p.subdivision || 'General',
       subdivision: p.subdivision,
+      beltId: p.beltId || `mock-belt-${inferredBeltOrder}`,
+      beltOrder: inferredBeltOrder,
       status: p.isActive ? 'PUBLISHED' : 'DRAFT',
       isActive: Boolean(p.isActive),
       description: p.description,
@@ -2933,11 +2993,26 @@ async function handleCreateQuestion(
 
   const problemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
 
+  // Infer or format beltId and order for relational PostgreSQL schema
+  const rawBelt = body.beltId || body.belt
+  let beltId = 'mock-belt-1'
+  if (typeof rawBelt === 'string' && rawBelt.trim()) {
+    beltId = rawBelt.trim().startsWith('mock-belt-') || rawBelt.trim().length > 10
+      ? rawBelt.trim()
+      : `mock-belt-${rawBelt.trim().replace(/[^0-9]/g, '') || '1'}`
+  } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
+    beltId = `mock-belt-${rawBelt}`
+  }
+
+  const order = typeof body.order === 'number' && !isNaN(body.order) ? body.order : 1
+
   // 1. Insert Problem
   const { data: createdProb, error: probErr } = await supabaseServer
     .from('Problem')
     .insert({
       id: problemId,
+      beltId,
+      order,
       slug,
       title,
       difficulty,
@@ -3065,6 +3140,17 @@ async function handleUpdateQuestion(
   }
   if (typeof body.isActive === 'boolean') {
     updates.isActive = body.isActive
+  }
+  if (body.beltId !== undefined || body.belt !== undefined) {
+    const rawBelt = body.beltId || body.belt
+    if (typeof rawBelt === 'string' && rawBelt.trim()) {
+      updates.beltId = rawBelt.trim()
+    } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
+      updates.beltId = `mock-belt-${rawBelt}`
+    }
+  }
+  if (typeof body.order === 'number' && !isNaN(body.order)) {
+    updates.order = body.order
   }
 
   // Update Problem row
@@ -3201,6 +3287,8 @@ async function handleDuplicateQuestion(
     .from('Problem')
     .insert({
       id: newProblemId,
+      beltId: original.beltId || 'mock-belt-1',
+      order: (original.order || 0) + 1,
       slug: duplicateSlug,
       title: newTitle,
       difficulty: original.difficulty,
@@ -3646,5 +3734,752 @@ async function handleRunQuestionTests(
       allPassed,
       results,
     },
+  })
+}
+
+// ─── 9. Curriculum (Courses) Management Handlers ─────────────────────────────
+
+async function handleListCurriculumModules(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const search = typeof body.search === 'string' ? body.search.trim().toLowerCase() : (urlObj.searchParams.get('search') || '').trim().toLowerCase()
+
+  const [modulesRes, unitsRes] = await Promise.all([
+    supabaseServer.from('Module').select('*').order('order', { ascending: true }),
+    supabaseServer.from('LearningUnit').select('*').order('order', { ascending: true }),
+  ])
+
+  let rawModules = modulesRes.data || []
+  let rawUnits = unitsRes.data || []
+
+  // Fallback: If DB Module table is empty, initialize from curriculum.json
+  if (rawModules.length === 0) {
+    rawModules = (curriculumData as any[]).map((m, idx) => ({
+      id: `mock-module-${m.order || idx + 1}`,
+      order: m.order || idx + 1,
+      title: m.title,
+      description: m.description || '',
+      isActive: true,
+      status: 'PUBLISHED',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    }))
+    rawUnits = (curriculumData as any[]).flatMap((m, mIdx) => {
+      const modId = `mock-module-${m.order || mIdx + 1}`
+      return (m.learningUnits || []).map((lu: any, luIdx: number) => ({
+        id: `mock-unit-${m.order || mIdx + 1}-${lu.order || luIdx + 1}`,
+        moduleId: modId,
+        order: lu.order || luIdx + 1,
+        title: lu.title,
+        concept: lu.concept || lu.content || '',
+        content: lu.content || lu.concept || '',
+        approach: lu.approach || '',
+        codeSnippets: lu.codeSnippets || {},
+        codingQuestion: lu.codingQuestion || '',
+        inputFormat: lu.inputFormat || '',
+        outputFormat: lu.outputFormat || '',
+        examples: lu.examples || [],
+        readingTimeMinutes: lu.readingTimeMinutes || 2,
+        isActive: true,
+        status: 'PUBLISHED',
+        createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      }))
+    })
+  }
+
+  // Group units by moduleId
+  const unitsByModuleId = new Map<string, any[]>()
+  for (const u of rawUnits) {
+    if (!unitsByModuleId.has(u.moduleId)) {
+      unitsByModuleId.set(u.moduleId, [])
+    }
+    unitsByModuleId.get(u.moduleId)!.push(u)
+  }
+
+  let totalPublishedModules = 0
+  let totalDraftModules = 0
+  let totalPublishedUnits = 0
+  let totalDraftUnits = 0
+
+  const modules = rawModules.map((m: any) => {
+    const isModActive = m.isActive !== false && m.status !== 'DRAFT'
+    if (isModActive) totalPublishedModules++
+    else totalDraftModules++
+
+    let mUnits = unitsByModuleId.get(m.id) || []
+    mUnits.sort((a, b) => (a.order || 0) - (b.order || 0))
+
+    for (const u of mUnits) {
+      if (u.isActive !== false && u.status !== 'DRAFT') totalPublishedUnits++
+      else totalDraftUnits++
+    }
+
+    if (search) {
+      mUnits = mUnits.filter((u: any) =>
+        (u.title || '').toLowerCase().includes(search) ||
+        (u.concept || '').toLowerCase().includes(search) ||
+        (u.content || '').toLowerCase().includes(search)
+      )
+    }
+
+    return {
+      id: m.id,
+      order: m.order,
+      title: m.title,
+      description: m.description || '',
+      isActive: isModActive,
+      status: isModActive ? 'PUBLISHED' : 'DRAFT',
+      learningUnitsCount: (unitsByModuleId.get(m.id) || []).length,
+      learningUnits: mUnits,
+    }
+  })
+
+  // Sort modules by order
+  modules.sort((a, b) => a.order - b.order)
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Curriculum modules retrieved successfully.',
+    data: {
+      modules,
+      stats: {
+        totalModules: rawModules.length,
+        totalLearningUnits: rawUnits.length,
+        publishedModules: totalPublishedModules,
+        draftModules: totalDraftModules,
+        publishedUnits: totalPublishedUnits,
+        draftUnits: totalDraftUnits,
+      },
+    },
+  })
+}
+
+async function handleCreateCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const title = typeof body.title === 'string' ? body.title.trim() : ''
+  const description = typeof body.description === 'string' ? body.description.trim() : ''
+  const order = typeof body.order === 'number' ? body.order : null
+
+  if (!title) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module Title',
+      message: 'Module title is required.',
+    })
+  }
+
+  const { data: existingModules, error: listErr } = await supabaseServer.from('Module').select('order')
+  if (listErr) throw listErr
+
+  const nextOrder = order ?? ((existingModules || []).reduce((max: number, m: any) => Math.max(max, m.order || 0), 0) + 1)
+  const newModuleId = `mod-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+
+  const { data: created, error: createErr } = await supabaseServer
+    .from('Module')
+    .insert({
+      id: newModuleId,
+      title,
+      description,
+      order: nextOrder,
+      isActive: true,
+      status: 'PUBLISHED',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+    .select()
+    .single()
+
+  if (createErr) throw createErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'CREATE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    newModuleId,
+    title,
+    { title, order: nextOrder, description },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Module "${title}" created successfully.`,
+    data: { ...created, learningUnits: [] },
+  })
+}
+
+async function handleUpdateCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required for update.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.description === 'string') updates.description = body.description.trim()
+  if (typeof body.order === 'number') updates.order = body.order
+  if (typeof body.isActive === 'boolean') updates.isActive = body.isActive
+  if (typeof body.status === 'string') updates.status = body.status.toUpperCase()
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Module')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    id,
+    updates.title || id,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Module updated successfully.`,
+    data: updated,
+  })
+}
+
+async function handleDeleteCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required for deletion.',
+    })
+  }
+
+  // Cascade delete learning units
+  await supabaseServer.from('LearningUnit').delete().eq('moduleId', id)
+
+  // Delete module
+  const { error: delErr } = await supabaseServer.from('Module').delete().eq('id', id)
+  if (delErr) throw delErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    id,
+    `Module ${id}`,
+    { deletedId: id },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Module and associated learning units deleted successfully.',
+    data: { id },
+  })
+}
+
+async function handleReorderCurriculumModules(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const moduleOrders = Array.isArray(body.moduleOrders) ? body.moduleOrders : []
+  if (moduleOrders.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Orders',
+      message: 'moduleOrders array is required.',
+    })
+  }
+
+  for (const item of moduleOrders) {
+    if (item.id && typeof item.order === 'number') {
+      await supabaseServer.from('Module').update({ order: item.order }).eq('id', item.id)
+    }
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'REORDER_CURRICULUM_MODULES',
+    'CURRICULUM',
+    'bulk',
+    `Reordered ${moduleOrders.length} modules`,
+    { moduleOrders },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Modules reordered successfully.',
+  })
+}
+
+async function handleCreateLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const moduleId = typeof body.moduleId === 'string' ? body.moduleId.trim() : ''
+  const title = typeof body.title === 'string' ? body.title.trim() : ''
+
+  if (!moduleId || !title) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Fields',
+      message: 'Module ID and unit title are required.',
+    })
+  }
+
+  const { data: existingUnits } = await supabaseServer.from('LearningUnit').select('order').eq('moduleId', moduleId)
+  const nextOrder = typeof body.order === 'number'
+    ? body.order
+    : ((existingUnits || []).reduce((max: number, u: any) => Math.max(max, u.order || 0), 0) + 1)
+
+  const newUnitId = `unit-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+
+  const newUnit = {
+    id: newUnitId,
+    moduleId,
+    order: nextOrder,
+    title,
+    concept: typeof body.concept === 'string' ? body.concept : '',
+    content: typeof body.content === 'string' ? body.content : (typeof body.concept === 'string' ? body.concept : ''),
+    approach: typeof body.approach === 'string' ? body.approach : '',
+    codeSnippets: body.codeSnippets || {},
+    codingQuestion: typeof body.codingQuestion === 'string' ? body.codingQuestion : '',
+    inputFormat: typeof body.inputFormat === 'string' ? body.inputFormat : '',
+    outputFormat: typeof body.outputFormat === 'string' ? body.outputFormat : '',
+    examples: Array.isArray(body.examples) ? body.examples : [],
+    readingTimeMinutes: typeof body.readingTimeMinutes === 'number' ? body.readingTimeMinutes : 2,
+    isActive: true,
+    status: 'PUBLISHED',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const { data: created, error: createErr } = await supabaseServer
+    .from('LearningUnit')
+    .insert(newUnit)
+    .select()
+    .single()
+
+  if (createErr) throw createErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'CREATE_LEARNING_UNIT',
+    'CURRICULUM',
+    newUnitId,
+    title,
+    { moduleId, title, order: nextOrder },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Learning unit "${title}" created successfully.`,
+    data: created,
+  })
+}
+
+async function handleUpdateLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Learning Unit ID is required.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.concept === 'string') updates.concept = body.concept
+  if (typeof body.content === 'string') updates.content = body.content
+  if (typeof body.approach === 'string') updates.approach = body.approach
+  if (body.codeSnippets !== undefined) updates.codeSnippets = body.codeSnippets
+  if (typeof body.codingQuestion === 'string') updates.codingQuestion = body.codingQuestion
+  if (typeof body.inputFormat === 'string') updates.inputFormat = body.inputFormat
+  if (typeof body.outputFormat === 'string') updates.outputFormat = body.outputFormat
+  if (Array.isArray(body.examples)) updates.examples = body.examples
+  if (typeof body.readingTimeMinutes === 'number') updates.readingTimeMinutes = body.readingTimeMinutes
+  if (typeof body.order === 'number') updates.order = body.order
+  if (typeof body.isActive === 'boolean') updates.isActive = body.isActive
+  if (typeof body.status === 'string') updates.status = body.status.toUpperCase()
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('LearningUnit')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_LEARNING_UNIT',
+    'CURRICULUM',
+    id,
+    updates.title || id,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning unit updated successfully.',
+    data: updated,
+  })
+}
+
+async function handleDeleteLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Learning Unit ID is required.',
+    })
+  }
+
+  const { error: delErr } = await supabaseServer.from('LearningUnit').delete().eq('id', id)
+  if (delErr) throw delErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_LEARNING_UNIT',
+    'CURRICULUM',
+    id,
+    `Unit ${id}`,
+    { deletedId: id },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning unit deleted successfully.',
+    data: { id },
+  })
+}
+
+async function handleReorderLearningUnits(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const unitOrders = Array.isArray(body.unitOrders) ? body.unitOrders : []
+  if (unitOrders.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Orders',
+      message: 'unitOrders array is required.',
+    })
+  }
+
+  for (const item of unitOrders) {
+    if (item.id && typeof item.order === 'number') {
+      await supabaseServer.from('LearningUnit').update({ order: item.order }).eq('id', item.id)
+    }
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'REORDER_LEARNING_UNITS',
+    'CURRICULUM',
+    'bulk',
+    `Reordered ${unitOrders.length} learning units`,
+    { unitOrders },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning units reordered successfully.',
+  })
+}
+
+async function handleToggleModuleStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required.',
+    })
+  }
+
+  const { data: existing } = await supabaseServer.from('Module').select('*').eq('id', id).single()
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: 'Module not found.',
+    })
+  }
+
+  const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
+  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const { data: updated } = await supabaseServer
+    .from('Module')
+    .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_MODULE_STATUS',
+    'CURRICULUM',
+    id,
+    existing.title,
+    { previousStatus: existing.status, newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Module status changed to ${nextStatus}.`,
+    data: updated,
+  })
+}
+
+async function handleToggleLearningUnitStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Unit ID is required.',
+    })
+  }
+
+  const { data: existing } = await supabaseServer.from('LearningUnit').select('*').eq('id', id).single()
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: 'Learning unit not found.',
+    })
+  }
+
+  const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
+  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const { data: updated } = await supabaseServer
+    .from('LearningUnit')
+    .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_LEARNING_UNIT_STATUS',
+    'CURRICULUM',
+    id,
+    existing.title,
+    { previousStatus: existing.status, newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Learning unit status changed to ${nextStatus}.`,
+    data: updated,
+  })
+}
+
+// ─── 10. Practice Belts Management Handlers ─────────────────────────────
+
+async function handleListBelts(res: ServerResponse) {
+  const [beltsRes, problemsRes] = await Promise.all([
+    supabaseServer.from('Belt').select('*').order('order', { ascending: true }),
+    supabaseServer.from('Problem').select('id, beltId, isActive, slug'),
+  ])
+
+  let rawBelts = beltsRes.data || []
+  if (rawBelts.length === 0) {
+    rawBelts = (problemsData as any[]).map((b, idx) => ({
+      id: `mock-belt-${b.order || idx + 1}`,
+      order: b.order || idx + 1,
+      name: b.belt || `Belt ${b.order || idx + 1}`,
+      title: b.title,
+      description: b.description || '',
+      color: b.color || '#EAB308',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    }))
+  }
+
+  const allProblems = problemsRes.data || []
+
+  const belts = rawBelts.map((b: any) => {
+    // Count problems assigned to this belt
+    const bOrder = b.order
+    const beltProbs = allProblems.filter((p: any) =>
+      p.beltId === b.id ||
+      p.beltId === `mock-belt-${bOrder}` ||
+      (p.slug && p.slug.startsWith(`belt-${bOrder}-`))
+    )
+
+    const totalCount = beltProbs.length > 0 ? beltProbs.length : ((problemsData as any[])[bOrder - 1]?.problems?.length || 0)
+    const publishedCount = beltProbs.length > 0 ? beltProbs.filter((p: any) => p.isActive).length : totalCount
+    const draftCount = totalCount - publishedCount
+
+    return {
+      id: b.id,
+      order: b.order,
+      name: b.name || `Belt ${b.order}`,
+      title: b.title,
+      description: b.description || '',
+      color: b.color || '#EAB308',
+      problemCount: totalCount,
+      publishedCount,
+      draftCount,
+    }
+  })
+
+  belts.sort((a, b) => a.order - b.order)
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Belts retrieved successfully.',
+    data: {
+      belts,
+      stats: {
+        totalBelts: belts.length,
+        totalProblems: belts.reduce((sum, b) => sum + b.problemCount, 0),
+        publishedProblems: belts.reduce((sum, b) => sum + b.publishedCount, 0),
+        draftProblems: belts.reduce((sum, b) => sum + b.draftCount, 0),
+      },
+    },
+  })
+}
+
+async function handleUpdateBelt(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const idOrOrder = body.id || body.order
+  if (!idOrOrder) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Belt Identifier',
+      message: 'Belt id or order is required.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.name === 'string' && body.name.trim()) updates.name = body.name.trim()
+  if (typeof body.description === 'string') updates.description = body.description.trim()
+  if (typeof body.color === 'string' && body.color.trim()) updates.color = body.color.trim()
+
+  let query = supabaseServer.from('Belt').update(updates)
+  if (typeof body.id === 'string') {
+    query = query.eq('id', body.id)
+  } else if (typeof body.order === 'number') {
+    query = query.eq('order', body.order)
+  }
+
+  const { data: updated, error: updErr } = await query.select().single()
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_BELT',
+    'PRACTICE_BELT',
+    String(idOrOrder),
+    updates.title || `Belt ${idOrOrder}`,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Belt updated successfully.',
+    data: updated,
   })
 }

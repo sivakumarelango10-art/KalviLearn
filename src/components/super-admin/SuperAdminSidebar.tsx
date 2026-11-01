@@ -59,10 +59,10 @@ const NAV_ITEMS = [
     badge: 'RBAC',
   },
   {
-    label: 'Questions',
-    path: '/super-admin/questions',
+    label: 'Content',
+    path: '/super-admin/content',
     icon: BookOpen,
-    badge: 'Arena',
+    badge: 'Curriculum',
   },
   {
     label: 'Audit Logs',
@@ -85,6 +85,12 @@ export const SuperAdminSidebar: React.FC<SuperAdminSidebarProps> = ({
         location.pathname === '/super-admin/dashboard' ||
         location.pathname === '/super-admin' ||
         location.pathname === '/super-admin/'
+      )
+    }
+    if (path === '/super-admin/content') {
+      return (
+        location.pathname.startsWith('/super-admin/content') ||
+        location.pathname.startsWith('/super-admin/questions')
       )
     }
     return location.pathname.startsWith(path)

@@ -162,6 +162,22 @@ const SuperAdminQuestionsPage = lazyWithRetry(
   () => import('@/pages/super-admin/SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage })),
   'SuperAdminQuestionsPage'
 )
+const SuperAdminContentLandingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminContentLandingPage').then((m) => ({ default: m.SuperAdminContentLandingPage })),
+  'SuperAdminContentLandingPage'
+)
+const SuperAdminCoursesPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminCoursesPage').then((m) => ({ default: m.SuperAdminCoursesPage })),
+  'SuperAdminCoursesPage'
+)
+const SuperAdminLearnCodingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminLearnCodingPage').then((m) => ({ default: m.SuperAdminLearnCodingPage })),
+  'SuperAdminLearnCodingPage'
+)
+const SuperAdminPracticeCodingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminPracticeCodingPage').then((m) => ({ default: m.SuperAdminPracticeCodingPage })),
+  'SuperAdminPracticeCodingPage'
+)
 
 const PageLoader = () => (
   <div className="h-full min-h-[50vh] w-full flex flex-col items-center justify-center bg-transparent py-16 space-y-3 animate-in fade-in duration-150">
@@ -401,6 +417,38 @@ export const router = createBrowserRouter([
           {
             path: 'roles',
             element: withSuspense(<SuperAdminRolesPage />),
+          },
+          {
+            path: 'content',
+            element: withSuspense(<SuperAdminContentLandingPage />),
+          },
+          {
+            path: 'content/courses',
+            element: withSuspense(<SuperAdminCoursesPage />),
+          },
+          {
+            path: 'content/learn-coding',
+            element: withSuspense(<SuperAdminLearnCodingPage />),
+          },
+          {
+            path: 'content/learn-coding/:topicId',
+            element: withSuspense(<SuperAdminLearnCodingPage />),
+          },
+          {
+            path: 'content/learn-coding/belt/:beltId',
+            element: withSuspense(<SuperAdminLearnCodingPage />),
+          },
+          {
+            path: 'content/practice-coding',
+            element: withSuspense(<SuperAdminPracticeCodingPage />),
+          },
+          {
+            path: 'content/practice-coding/:topicId',
+            element: withSuspense(<SuperAdminPracticeCodingPage />),
+          },
+          {
+            path: 'content/practice-coding/belt/:beltId',
+            element: withSuspense(<SuperAdminPracticeCodingPage />),
           },
           {
             path: 'questions',

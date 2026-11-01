@@ -960,6 +960,292 @@ if lines:
     assert.strictEqual(submitResult.total, 3)
   })
 
+  // ======================================================================
+  // 11. Curriculum & Content Management Verification
+  // ======================================================================
+  console.log('\n--- 11. Curriculum & Courses Management ---')
+
+  let testModuleId = ''
+  let testUnitId = ''
+
+  await runTest('11.1 List curriculum modules returns 10 initial modules with 85 learning units', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_curriculum_modules' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    const modules = out.data.data.modules
+    assert.ok(modules.length >= 10, `Expected at least 10 modules, got ${modules.length}`)
+    const totalUnits = modules.reduce((sum: number, m: any) => sum + (m.learningUnits?.length || 0), 0)
+    assert.ok(totalUnits >= 85, `Expected at least 85 learning units, got ${totalUnits}`)
+    assert.strictEqual(out.data.data.stats.totalModules >= 10, true)
+  })
+
+  await runTest('11.2 Super Admin creates a new curriculum module', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_curriculum_module',
+        title: 'System Design & Distributed Architectures',
+        description: 'Scalability, microservices, caches, and consistency models.',
+        order: 11,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.title, 'System Design & Distributed Architectures')
+    testModuleId = out.data.data.id
+    assert.ok(testModuleId.length > 0)
+  })
+
+  await runTest('11.3 Super Admin updates module and reorders modules', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_curriculum_module',
+        id: testModuleId,
+        title: 'System Design & Cloud Systems (Updated)',
+        description: 'Advanced scalability and cloud patterns.',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.data.title, 'System Design & Cloud Systems (Updated)')
+
+    // Reorder modules
+    resetSuperAdminRateLimitsForTesting()
+    const { req: reqReorder, res: resReorder } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'reorder_curriculum_modules',
+        moduleOrders: [{ id: testModuleId, order: 11 }],
+      },
+    })
+    await superAdminHandler(reqReorder, resReorder)
+    assert.strictEqual(resReorder.getOutput().statusCode, 200)
+  })
+
+  await runTest('11.4 Super Admin toggles module publication status', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'toggle_module_status',
+        id: testModuleId,
+        isActive: false,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.data.isActive, false)
+    assert.strictEqual(out.data.data.status, 'DRAFT')
+  })
+
+  // ======================================================================
+  // 12. Learning Units Management Verification
+  // ======================================================================
+  console.log('\n--- 12. Learning Units Management ---')
+
+  await runTest('12.1 Super Admin creates a learning unit in a module', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_learning_unit',
+        moduleId: testModuleId,
+        title: 'Event-Driven Architectures',
+        concept: 'Message queues and pub/sub decoupled systems.',
+        approach: 'Define event schema, consumer idempotency, and partition keys.',
+        codeSnippets: {
+          python: '# Event producer\nimport json\nprint(json.dumps({"event": "order_created"}))',
+          javascript: 'console.log(JSON.stringify({ event: "order_created" }));',
+        },
+        inputFormat: 'Input: Event payload JSON string.',
+        outputFormat: 'Output: Processed ACK status.',
+        examples: [
+          { input: '{"id": 1}', output: 'ACK', explanation: 'Order 1 processed' },
+        ],
+        readingTimeMinutes: 5,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    testUnitId = out.data.data.id
+    assert.strictEqual(out.data.data.title, 'Event-Driven Architectures')
+    assert.strictEqual(out.data.data.readingTimeMinutes, 5)
+  })
+
+  await runTest('12.2 Super Admin updates learning unit and reorders units', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_learning_unit',
+        id: testUnitId,
+        title: 'Event-Driven Architectures & Streaming',
+        readingTimeMinutes: 7,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.data.title, 'Event-Driven Architectures & Streaming')
+    assert.strictEqual(out.data.data.readingTimeMinutes, 7)
+
+    // Reorder units
+    resetSuperAdminRateLimitsForTesting()
+    const { req: reqOrder, res: resOrder } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'reorder_learning_units',
+        unitOrders: [{ id: testUnitId, order: 1 }],
+      },
+    })
+    await superAdminHandler(reqOrder, resOrder)
+    assert.strictEqual(resOrder.getOutput().statusCode, 200)
+  })
+
+  await runTest('12.3 Super Admin deletes learning unit', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'delete_learning_unit',
+        id: testUnitId,
+      },
+    })
+    await superAdminHandler(req, res)
+    assert.strictEqual(res.getOutput().statusCode, 200)
+  })
+
+  await runTest('12.4 Super Admin deletes created module with cascade cleanup', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'delete_curriculum_module',
+        id: testModuleId,
+      },
+    })
+    await superAdminHandler(req, res)
+    assert.strictEqual(res.getOutput().statusCode, 200)
+  })
+
+  // ======================================================================
+  // 13. Practice Belts Management Verification
+  // ======================================================================
+  console.log('\n--- 13. Practice Belts Management ---')
+
+  await runTest('13.1 List practice belts returns all 10 martial arts belts with problem counts', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_belts' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    const belts = out.data.data.belts
+    assert.strictEqual(belts.length, 10, 'Expected exactly 10 belts')
+    assert.strictEqual(belts[0].name, 'Belt 1')
+    assert.strictEqual(belts[0].title, 'Yellow Belt')
+    assert.strictEqual(belts[0].color, '#EAB308')
+    assert.strictEqual(belts[9].title, 'Black Belt')
+    assert.strictEqual(belts[9].color, '#171717')
+  })
+
+  await runTest('13.2 Super Admin updates belt metadata (title, description, color)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_belt',
+        order: 1,
+        title: 'Yellow Belt: Foundations',
+        color: '#FACC15',
+        description: 'Variables, core operators, and decision branches.',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.data.title, 'Yellow Belt: Foundations')
+    assert.strictEqual(out.data.data.color, '#FACC15')
+  })
+
+  // ======================================================================
+  // 14. Belt & Topic Scoped Question Filtering
+  // ======================================================================
+  console.log('\n--- 14. Scoped Question Filtering & Security ---')
+
+  await runTest('14.1 Belt-scoped question filtering returns only questions for that belt', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'list_questions',
+        belt: 1,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const qList = out.data.data.questions
+    assert.ok(qList.length > 0)
+    for (const q of qList) {
+      assert.strictEqual(q.beltOrder === 1 || q.beltId?.includes('1'), true, 'Must belong to Belt 1')
+    }
+  })
+
+  await runTest('14.2 Topic-scoped question filtering returns only questions for that topic', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'list_questions',
+        topic: '1D Arrays / Lists',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const qList = out.data.data.questions
+    assert.ok(qList.length > 0)
+    for (const q of qList) {
+      assert.strictEqual(q.subdivision, '1D Arrays / Lists')
+    }
+  })
+
+  await runTest('14.3 Non-SuperAdmin access to curriculum and belt management is strictly rejected with 403 Forbidden', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req: reqStu, res: resStu } = createMockReqRes({
+      headers: { authorization: STUDENT_TOKEN },
+      body: { action: 'list_curriculum_modules' },
+    })
+    await superAdminHandler(reqStu, resStu)
+    assert.strictEqual(resStu.getOutput().statusCode, 403, 'Student must receive 403 on curriculum')
+
+    resetSuperAdminRateLimitsForTesting()
+    const { req: reqMgr, res: resMgr } = createMockReqRes({
+      headers: { authorization: CAMPUS_MANAGER_TOKEN },
+      body: { action: 'list_belts' },
+    })
+    await superAdminHandler(reqMgr, resMgr)
+    assert.strictEqual(resMgr.getOutput().statusCode, 403, 'Campus manager must receive 403 on belts')
+  })
+
   console.log('\n======================================================================')
   console.log(`RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)
   console.log('======================================================================\n')

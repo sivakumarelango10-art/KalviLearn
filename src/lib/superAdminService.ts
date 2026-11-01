@@ -641,6 +641,10 @@ export interface AdminQuestion {
   title: string
   difficulty: 'Easy' | 'Medium' | 'Hard'
   subdivision: string
+  topic?: string
+  beltId?: string
+  beltOrder?: number
+  status?: 'PUBLISHED' | 'DRAFT'
   description: string
   inputFormat?: string
   outputFormat?: string
@@ -693,6 +697,7 @@ export async function fetchAdminQuestions(params?: {
   difficulty?: string
   topic?: string
   status?: string
+  belt?: number | string
   page?: number
   limit?: number
 }): Promise<{
@@ -864,6 +869,324 @@ export async function runAdminQuestionTests(payload: {
     '/api/super-admin/questions',
     payload,
     'run_question_tests',
+    'POST'
+  )
+}
+
+// ─── 9. Curriculum (Courses) Management ─────────────────────────────
+
+export interface AdminCurriculumExample {
+  input: string
+  output: string
+  explanation?: string
+}
+
+export interface AdminLearningUnit {
+  id: string
+  moduleId: string
+  order: number
+  title: string
+  concept?: string
+  content?: string
+  approach?: string
+  codeSnippets?: {
+    python?: string
+    cpp?: string
+    java?: string
+    javascript?: string
+  }
+  codingQuestion?: string
+  inputFormat?: string
+  outputFormat?: string
+  examples?: AdminCurriculumExample[]
+  readingTimeMinutes?: number
+  isActive?: boolean
+  status?: 'PUBLISHED' | 'DRAFT'
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface AdminCurriculumModule {
+  id: string
+  order: number
+  title: string
+  description?: string
+  isActive?: boolean
+  status?: 'PUBLISHED' | 'DRAFT'
+  learningUnitsCount?: number
+  learningUnits: AdminLearningUnit[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface AdminCurriculumStats {
+  totalModules: number
+  totalLearningUnits: number
+  publishedModules: number
+  draftModules: number
+  publishedUnits: number
+  draftUnits: number
+}
+
+export async function fetchCurriculumModules(params?: {
+  search?: string
+}): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: {
+    modules: AdminCurriculumModule[]
+    stats: AdminCurriculumStats
+  }
+}> {
+  const query = new URLSearchParams()
+  if (params?.search) query.set('search', params.search)
+  const qs = query.toString() ? `?${query.toString()}` : ''
+  return callSuperAdminApi(
+    `/api/super-admin/curriculum${qs}`,
+    params,
+    'list_curriculum_modules',
+    'GET'
+  )
+}
+
+export async function createCurriculumModule(payload: {
+  title: string
+  description?: string
+  order?: number
+}): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminCurriculumModule
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    payload,
+    'create_curriculum_module',
+    'POST'
+  )
+}
+
+export async function updateCurriculumModule(
+  id: string,
+  payload: {
+    title?: string
+    description?: string
+    order?: number
+    isActive?: boolean
+    status?: string
+  }
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminCurriculumModule
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id, ...payload },
+    'update_curriculum_module',
+    'POST'
+  )
+}
+
+export async function deleteCurriculumModule(id: string): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: { id: string }
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id },
+    'delete_curriculum_module',
+    'POST'
+  )
+}
+
+export async function reorderCurriculumModules(
+  moduleOrders: Array<{ id: string; order: number }>
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { moduleOrders },
+    'reorder_curriculum_modules',
+    'POST'
+  )
+}
+
+export async function createLearningUnit(payload: {
+  moduleId: string
+  title: string
+  order?: number
+  concept?: string
+  content?: string
+  approach?: string
+  codeSnippets?: {
+    python?: string
+    cpp?: string
+    java?: string
+    javascript?: string
+  }
+  codingQuestion?: string
+  inputFormat?: string
+  outputFormat?: string
+  examples?: AdminCurriculumExample[]
+  readingTimeMinutes?: number
+}): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminLearningUnit
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    payload,
+    'create_learning_unit',
+    'POST'
+  )
+}
+
+export async function updateLearningUnit(
+  id: string,
+  payload: Partial<AdminLearningUnit>
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminLearningUnit
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id, ...payload },
+    'update_learning_unit',
+    'POST'
+  )
+}
+
+export async function deleteLearningUnit(id: string): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: { id: string }
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id },
+    'delete_learning_unit',
+    'POST'
+  )
+}
+
+export async function reorderLearningUnits(
+  unitOrders: Array<{ id: string; order: number }>
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { unitOrders },
+    'reorder_learning_units',
+    'POST'
+  )
+}
+
+export async function toggleModuleStatus(
+  id: string,
+  isActive?: boolean
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminCurriculumModule
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id, isActive },
+    'toggle_module_status',
+    'POST'
+  )
+}
+
+export async function toggleLearningUnitStatus(
+  id: string,
+  isActive?: boolean
+): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminLearningUnit
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/curriculum',
+    { id, isActive },
+    'toggle_learning_unit_status',
+    'POST'
+  )
+}
+
+// ─── 10. Practice Belts Management ─────────────────────────────
+
+export interface AdminBelt {
+  id: string
+  order: number
+  name: string
+  title: string
+  description: string
+  color: string
+  problemCount: number
+  publishedCount: number
+  draftCount: number
+}
+
+export interface AdminBeltsStats {
+  totalBelts: number
+  totalProblems: number
+  publishedProblems: number
+  draftProblems: number
+}
+
+export async function fetchBelts(): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: {
+    belts: AdminBelt[]
+    stats: AdminBeltsStats
+  }
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/belts',
+    {},
+    'list_belts',
+    'GET'
+  )
+}
+
+export async function updateBelt(payload: {
+  id?: string
+  order?: number
+  title?: string
+  name?: string
+  description?: string
+  color?: string
+}): Promise<{
+  success: boolean
+  message?: string
+  error?: string
+  data?: AdminBelt
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/belts',
+    payload,
+    'update_belt',
     'POST'
   )
 }
