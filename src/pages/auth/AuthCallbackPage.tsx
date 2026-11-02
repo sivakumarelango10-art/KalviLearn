@@ -53,36 +53,42 @@ export const AuthCallbackPage: React.FC = () => {
 
         // 2. Fetch authenticated Supabase session
         setStatusMessage('Establishing secure session...')
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession()
+        let { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
         if (sessionError || !session?.user?.email) {
-          // If session is still in flight, wait up to 2 seconds for onAuthStateChange
-          const authUser = await new Promise<any>((resolve) => {
-            const timeout = setTimeout(() => resolve(null), 2500)
-            const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-              if (currentSession?.user?.email) {
-                clearTimeout(timeout)
-                subscription.unsubscribe()
-                resolve(currentSession.user)
-              }
-            })
-          })
-
-          if (!authUser?.email) {
-            if (!isCancelled) {
-              setErrorMessage('Session could not be established. Please try signing in again.')
-              setTimeout(() => navigate('/login', { replace: true }), 2500)
+          // Wait for Supabase to finish processing the OAuth callback. Keep the full
+          // session so the access token and authenticated user are from the same result.
+          session = await new Promise<typeof session>((resolve) => {
+            let settled = false
+            const finish = (value: typeof session) => {
+              if (settled) return
+              settled = true
+              clearTimeout(timeout)
+              subscription.unsubscribe()
+              resolve(value)
             }
-            return
+            const timeout = setTimeout(() => finish(null), 10_000)
+            const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+              if (currentSession?.user?.email && currentSession.access_token) finish(currentSession)
+            })
+            void supabase.auth.getSession().then(({ data }) => {
+              if (data.session?.user?.email && data.session.access_token) finish(data.session)
+            }).catch(() => finish(null))
+          })
+        }
+
+        if (isCancelled) return
+        if (!session?.user?.email || !session.access_token) {
+          if (!isCancelled) {
+            setErrorMessage('Session could not be established. Please sign in with Google again.')
+            setTimeout(() => navigate('/login', { replace: true }), 2500)
           }
+          return
         }
 
         // 3. User authenticated by Google: verify identity in KalviLearn database
-        const activeUser = session?.user
-        const email = activeUser?.email?.toLowerCase() || ''
+        const activeUser = session.user
+        const email = activeUser.email.toLowerCase()
         setStatusMessage(`Authorizing profile for ${email}...`)
 
         const result = await verifyUserInDatabase(email)
