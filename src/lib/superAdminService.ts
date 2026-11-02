@@ -149,20 +149,56 @@ export interface AdminAuditLogEntry {
 /**
  * Retrieves the authorization bearer header from the active Supabase session.
  */
-async function getAuthHeader(): Promise<string | null> {
+/**
+ * Super Admin auth only: never keep an access token in React state or a module cache.
+ * getSession waits for Supabase auth initialization and returns the SDK-managed session.
+ */
+let refreshInFlight: Promise<string | null> | null = null
+
+async function refreshSuperAdminAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight
+
+  refreshInFlight = (async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession()
+      if (error || !session?.refresh_token) return null
+
+      const { data, error: refreshError } = await supabase.auth.refreshSession({
+        refresh_token: session.refresh_token,
+      })
+      if (refreshError || !data.session?.access_token) return null
+      return data.session.access_token
+    } catch {
+      return null
+    } finally {
+      refreshInFlight = null
+    }
+  })()
+
+  return refreshInFlight
+}
+
+async function getAuthHeader(forceRefresh = false): Promise<string | null> {
   try {
+    // Existing local test-auth behavior is intentionally limited to local development.
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       const testToken = localStorage.getItem('kalvi_test_auth_token')
-      if (testToken) return testToken
+      if (testToken) return testToken.startsWith('Bearer ') ? testToken : `Bearer ${testToken}`
     }
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.access_token) {
-      return `Bearer ${session.access_token}`
-    }
+
+    // getSession initializes from persisted storage and cooperates with the Supabase SDK's
+    // automatic refresh. Check expiry ourselves so requests don't race an about-to-expire JWT.
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error || !session) return null
+
+    const expiresAtMs = typeof session.expires_at === 'number' ? session.expires_at * 1000 : 0
+    const shouldRefresh = forceRefresh || !session.access_token || (expiresAtMs > 0 && expiresAtMs <= Date.now() + 30_000)
+    const token = shouldRefresh ? await refreshSuperAdminAccessToken() : session.access_token
+
+    return token ? `Bearer ${token}` : null
   } catch {
-    // Non-browser or disconnected environment
+    return null
   }
-  return null
 }
 
 /**
