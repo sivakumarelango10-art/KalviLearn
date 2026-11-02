@@ -49,8 +49,8 @@ export const SuperAdminDashboardPage: React.FC = () => {
   ]
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] w-full bg-[#090b10] px-4 py-5 text-slate-100 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[1600px] space-y-6">
+    <main className="min-h-screen w-full bg-[#090b10] px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1680px] space-y-6 xl:space-y-7">
         <header className="flex flex-col gap-4 border-b border-white/[0.08] pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
@@ -76,7 +76,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
 
         {error && <div role="alert" className="flex items-center justify-between rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">{error}<button onClick={() => void loadData()} className="font-semibold underline underline-offset-2">Retry</button></div>}
 
-        <section aria-label="Platform metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section aria-label="Platform metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description }) => (
             <Link key={label} to={href} className="group rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-white/[0.16] hover:bg-[#151a24]">
               <div className="flex items-start justify-between">
@@ -95,7 +95,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
           ))}
         </section>
 
-        <section className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(340px,.9fr)]">
+        <section className="grid grid-cols-1 gap-5 2xl:grid-cols-[minmax(0,1.1fr)_minmax(380px,.9fr)]">
           <div className="rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
