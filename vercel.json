@@ -5,6 +5,14 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/super-admin",
+      "destination": "/api/super-admin"
+    },
+    {
+      "source": "/api/super-admin/(.*)",
+      "destination": "/api/super-admin?__subpath=$1"
+    },
+    {
       "source": "/api/campus/(.*)",
       "destination": "/api/campus?__subpath=$1"
     },
