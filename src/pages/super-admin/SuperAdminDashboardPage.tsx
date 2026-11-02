@@ -14,7 +14,7 @@ type Counts = {
 type Campus = {
   id: string; name: string; code: string; city: string | null; state: string | null;
   country: string | null; status: string; managerId: string | null; createdAt: string;
-  manager?: { name: string; email: string } | null;
+  manager?: { name: string | null; email: string } | null;
   studentCount: number; mentorCount: number;
 }
 type ManagerOption = { id: string; name: string | null; email: string }
