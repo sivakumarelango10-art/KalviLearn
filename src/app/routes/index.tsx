@@ -370,6 +370,26 @@ export const router = createBrowserRouter([
         element: withSuspense(<SuperAdminCampusesPage />),
       },
       {
+        path: 'managers',
+        element: withSuspense(<SuperAdminManagersPage />),
+      },
+      {
+        path: 'mentors',
+        element: withSuspense(<SuperAdminMentorsPage />),
+      },
+      {
+        path: 'students',
+        element: withSuspense(<SuperAdminStudentsPage />),
+      },
+      {
+        path: 'roles',
+        element: withSuspense(<SuperAdminRolesPage />),
+      },
+      {
+        path: 'audit',
+        element: withSuspense(<SuperAdminAuditPage />),
+      },
+      {
         path: '*',
         element: <Navigate to="/super-admin/dashboard" replace />,
       },
