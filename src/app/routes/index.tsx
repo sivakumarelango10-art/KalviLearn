@@ -1,4 +1,4 @@
-import { Suspense, type ReactNode } from 'react'
+import { Suspense, createElement, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
@@ -111,26 +111,6 @@ const SuperAdminCampusesPage = lazyWithRetry(
   'SuperAdminCampusesPage'
 )
 
-const SuperAdminManagersPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
-  'SuperAdminManagersPage'
-)
-const SuperAdminMentorsPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
-  'SuperAdminMentorsPage'
-)
-const SuperAdminStudentsPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
-  'SuperAdminStudentsPage'
-)
-const SuperAdminRolesPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
-  'SuperAdminRolesPage'
-)
-const SuperAdminAuditPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
-  'SuperAdminAuditPage'
-)
 
 // Campus Manager Portal Pages
 const CampusDashboardPage = lazyWithRetry(
@@ -371,23 +351,38 @@ export const router = createBrowserRouter([
       },
       {
         path: 'managers',
-        element: withSuspense(<SuperAdminManagersPage />),
+        element: withSuspense(createElement(lazyWithRetry(
+          () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
+          'SuperAdminManagersPage'
+        ))),
       },
       {
         path: 'mentors',
-        element: withSuspense(<SuperAdminMentorsPage />),
+        element: withSuspense(createElement(lazyWithRetry(
+          () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
+          'SuperAdminMentorsPage'
+        ))),
       },
       {
         path: 'students',
-        element: withSuspense(<SuperAdminStudentsPage />),
+        element: withSuspense(createElement(lazyWithRetry(
+          () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
+          'SuperAdminStudentsPage'
+        ))),
       },
       {
         path: 'roles',
-        element: withSuspense(<SuperAdminRolesPage />),
+        element: withSuspense(createElement(lazyWithRetry(
+          () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
+          'SuperAdminRolesPage'
+        ))),
       },
       {
         path: 'audit',
-        element: withSuspense(<SuperAdminAuditPage />),
+        element: withSuspense(createElement(lazyWithRetry(
+          () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
+          'SuperAdminAuditPage'
+        ))),
       },
       {
         path: '*',
