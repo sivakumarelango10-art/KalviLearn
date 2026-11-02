@@ -14,7 +14,7 @@ export function resetCampusRateLimitsForTesting() {
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const ALLOWED_STAFF_ROLES = new Set<string>(['CAMPUS_MANAGER', 'ADMIN', 'SUPERADMIN'])
+const ALLOWED_STAFF_ROLES = new Set<string>(['CAMPUS_MANAGER', 'ADMIN'])
 
 interface ApiResponse {
   success: boolean

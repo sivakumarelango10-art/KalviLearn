@@ -3,11 +3,9 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
 import { CampusManagerProtectedRoute } from '@/components/auth/CampusManagerProtectedRoute'
-import { SuperAdminProtectedRoute } from '@/components/auth/SuperAdminProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
 import { CampusManagerLayout } from '@/layouts/CampusManagerLayout'
-import { SuperAdminLayout } from '@/layouts/SuperAdminLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
 
@@ -130,55 +128,6 @@ const CampusProfilePage = lazyWithRetry(
   () => import('@/pages/campus/CampusProfilePage').then((m) => ({ default: m.CampusProfilePage })),
   'CampusProfilePage'
 )
-const SuperAdminDashboardPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminDashboardPage').then((m) => ({ default: m.SuperAdminDashboardPage })),
-  'SuperAdminDashboardPage'
-)
-const SuperAdminCampusesPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminCampusesPage').then((m) => ({ default: m.SuperAdminCampusesPage })),
-  'SuperAdminCampusesPage'
-)
-const SuperAdminManagersPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
-  'SuperAdminManagersPage'
-)
-const SuperAdminMentorsPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
-  'SuperAdminMentorsPage'
-)
-const SuperAdminStudentsPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
-  'SuperAdminStudentsPage'
-)
-const SuperAdminRolesPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
-  'SuperAdminRolesPage'
-)
-const SuperAdminAuditPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
-  'SuperAdminAuditPage'
-)
-const SuperAdminQuestionsPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage })),
-  'SuperAdminQuestionsPage'
-)
-const SuperAdminContentLandingPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminContentLandingPage').then((m) => ({ default: m.SuperAdminContentLandingPage })),
-  'SuperAdminContentLandingPage'
-)
-const SuperAdminCoursesPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminCoursesPage').then((m) => ({ default: m.SuperAdminCoursesPage })),
-  'SuperAdminCoursesPage'
-)
-const SuperAdminLearnCodingPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminLearnCodingPage').then((m) => ({ default: m.SuperAdminLearnCodingPage })),
-  'SuperAdminLearnCodingPage'
-)
-const SuperAdminPracticeCodingPage = lazyWithRetry(
-  () => import('@/pages/super-admin/SuperAdminPracticeCodingPage').then((m) => ({ default: m.SuperAdminPracticeCodingPage })),
-  'SuperAdminPracticeCodingPage'
-)
-
 const PageLoader = () => (
   <div className="h-full min-h-[50vh] w-full flex flex-col items-center justify-center bg-transparent py-16 space-y-3 animate-in fade-in duration-150">
     <div className="w-5 h-5 border-2 border-[#ED2A2B] border-t-transparent rounded-full animate-spin" />
@@ -381,90 +330,6 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Navigate to="/campus/dashboard" replace />,
-  },
-  {
-    path: '/super-admin',
-    element: <SuperAdminProtectedRoute />,
-    errorElement: <RouteErrorBoundary />,
-    children: [
-      {
-        element: <SuperAdminLayout />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="/super-admin/dashboard" replace />,
-          },
-          {
-            path: 'dashboard',
-            element: withSuspense(<SuperAdminDashboardPage />),
-          },
-          {
-            path: 'campuses',
-            element: withSuspense(<SuperAdminCampusesPage />),
-          },
-          {
-            path: 'managers',
-            element: withSuspense(<SuperAdminManagersPage />),
-          },
-          {
-            path: 'mentors',
-            element: withSuspense(<SuperAdminMentorsPage />),
-          },
-          {
-            path: 'students',
-            element: withSuspense(<SuperAdminStudentsPage />),
-          },
-          {
-            path: 'roles',
-            element: withSuspense(<SuperAdminRolesPage />),
-          },
-          {
-            path: 'content',
-            element: withSuspense(<SuperAdminContentLandingPage />),
-          },
-          {
-            path: 'content/courses',
-            element: withSuspense(<SuperAdminCoursesPage />),
-          },
-          {
-            path: 'content/learn-coding',
-            element: withSuspense(<SuperAdminLearnCodingPage />),
-          },
-          {
-            path: 'content/learn-coding/:topicId',
-            element: withSuspense(<SuperAdminLearnCodingPage />),
-          },
-          {
-            path: 'content/learn-coding/belt/:beltId',
-            element: withSuspense(<SuperAdminLearnCodingPage />),
-          },
-          {
-            path: 'content/practice-coding',
-            element: withSuspense(<SuperAdminPracticeCodingPage />),
-          },
-          {
-            path: 'content/practice-coding/:topicId',
-            element: withSuspense(<SuperAdminPracticeCodingPage />),
-          },
-          {
-            path: 'content/practice-coding/belt/:beltId',
-            element: withSuspense(<SuperAdminPracticeCodingPage />),
-          },
-          {
-            path: 'questions',
-            element: withSuspense(<SuperAdminQuestionsPage />),
-          },
-          {
-            path: 'audit',
-            element: withSuspense(<SuperAdminAuditPage />),
-          },
-          {
-            path: '*',
-            element: withSuspense(<NotFoundPage />),
-          },
-        ],
-      },
-    ],
   },
   {
     path: '*',
