@@ -231,10 +231,29 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
   try {
     const { data, error } = await supabaseServer.auth.getUser(token)
     if (error || !data?.user?.email) {
+      // Keep client responses generic and safe, but emit non-secret diagnostics so
+      // production logs can distinguish an expired token from Supabase/config/network
+      // failures without ever recording the JWT or refresh token.
+      const status = Number((error as any)?.status)
+      const code = String((error as any)?.code || '')
+      const message = String((error as any)?.message || '')
+      if (status === 401 || status === 403 || /expired|invalid.*jwt|jwt.*invalid/i.test(message)) {
+        return {
+          authenticated: false,
+          statusCode: 401,
+          error: 'Invalid or expired authentication session token.',
+        }
+      }
+
+      console.error('[auth] Supabase user-token verification failed.', {
+        status: Number.isFinite(status) ? status : undefined,
+        code: code || undefined,
+        message: message.slice(0, 240) || undefined,
+      })
       return {
         authenticated: false,
-        statusCode: 401,
-        error: 'Invalid or expired authentication session token.',
+        statusCode: 503,
+        error: 'Unable to verify the sign-in session with Supabase. Please retry.',
       }
     }
 
