@@ -2,6 +2,13 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
+import { resolveRoute } from './routeResolver'
+import { registerCustomSuite, unregisterCustomSuite } from './judge/testRepository'
+import { selectEngine } from './judge/engines'
+import { outputsMatch } from './judge/compare'
+import { normalizeLanguage } from './judge/questionId'
+import curriculumData from '../data/curriculum.json'
+import problemsData from '../data/problems.json'
 
 // Rate limiters: 120 req/min per IP, 60 req/min per authenticated user
 const ipLimiter = new RateLimiter(120, 60_000)
@@ -78,7 +85,7 @@ export default async function handler(
   // CORS handling
   applyCors(req, res, {
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
-    headers: 'Content-Type, Authorization, X-Idempotency-Key',
+    headers: 'Content-Type, Authorization, X-Idempotency-Key, X-Kalvi-Subpath, X-Kalvi-Action',
   })
 
   if (req.method === 'OPTIONS') {
@@ -99,23 +106,27 @@ export default async function handler(
     })
   }
 
-  // Parse Body if present
+  // Parse Body if not GET
   let body: Record<string, unknown> = {}
-  try {
-    body = await readJsonBody(req)
-  } catch (err: unknown) {
-    if (err instanceof PayloadTooLargeError) {
-      return sendJson(res, 413, {
+  if (req.method !== 'GET') {
+    try {
+      body = await readJsonBody(req)
+    } catch (err: unknown) {
+      if (err instanceof PayloadTooLargeError) {
+        return sendJson(res, 413, {
+          success: false,
+          error: 'Payload Too Large',
+          message: 'Request payload exceeded the maximum permitted size.',
+        })
+      }
+      return sendJson(res, 400, {
         success: false,
-        error: 'Payload Too Large',
-        message: 'Request payload exceeded the maximum permitted size.',
+        error: 'Invalid JSON',
+        message: 'Failed to parse JSON request body.',
       })
     }
-    return sendJson(res, 400, {
-      success: false,
-      error: 'Invalid JSON',
-      message: 'Failed to parse JSON request body.',
-    })
+  } else if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) {
+    body = req.body as Record<string, unknown>
   }
 
   // Authenticate Caller
@@ -153,24 +164,49 @@ export default async function handler(
     })
   }
 
-  // Route & Action Dispatching
-  const method = (req.method || '').toUpperCase()
+  // Robust Route & Action Resolution
+  const route = resolveRoute(req, body, '/api/super-admin')
+  req.query = { ...route.queryParams, ...(typeof req.query === 'object' && req.query ? req.query : {}) }
+
+  let action = route.action
+  const sub = route.subpath
+  const method = route.method
   const url = (req.url || '').toLowerCase()
-  const matchedPath = (
-    ((req.headers['x-matched-path'] as string) || (req.headers['x-now-route-matches'] as string) || '')
-  ).toLowerCase()
-  const rawAction = typeof body.action === 'string' ? body.action : ''
-  const queryAction = typeof req.query === 'object' && req.query ? String((req.query as Record<string, unknown>).action || '') : ''
-  const action = (rawAction || queryAction).toLowerCase()
+
+  if (!action) {
+    if (sub === 'dashboard') {
+      action = 'dashboard'
+    } else if (sub === 'campuses' || sub.startsWith('campuses/')) {
+      if (method === 'GET') action = 'list_campuses'
+    } else if (sub === 'managers' || sub.startsWith('managers/')) {
+      if (method === 'GET') action = 'list_managers'
+    } else if (sub === 'mentors' || sub.startsWith('mentors/')) {
+      if (method === 'GET') action = 'list_mentors'
+    } else if (sub === 'students' || sub.startsWith('students/')) {
+      if (method === 'GET') action = 'list_students'
+      else if (method === 'DELETE') action = 'delete_student'
+    } else if (sub === 'roles' || sub.startsWith('roles/')) {
+      if (method === 'GET') action = 'list_roles'
+    } else if (sub === 'audit' || sub.startsWith('audit/')) {
+      if (method === 'GET') action = 'list_audit_logs'
+    } else if (sub === 'questions' || sub.startsWith('questions/')) {
+      if (method === 'GET') action = 'list_questions'
+      else if (method === 'DELETE') action = 'delete_question'
+    } else if (sub === 'curriculum' || sub.startsWith('curriculum/')) {
+      if (method === 'GET') action = 'list_curriculum_modules'
+    } else if (sub === 'belts' || sub.startsWith('belts/')) {
+      if (method === 'GET') action = 'list_belts'
+    }
+  }
 
   try {
     // 1. Dashboard Telemetry
-    if (action === 'dashboard' || url.includes('/dashboard') || matchedPath.includes('/dashboard')) {
+    if (action === 'dashboard' || sub === 'dashboard' || url.includes('/dashboard')) {
       return await handleGetDashboard(res)
     }
 
     // 2. Campus Management
-    if (action === 'list_campuses' || (method === 'GET' && (url.includes('/campuses') || matchedPath.includes('/campuses')))) {
+    if (action === 'list_campuses' || (method === 'GET' && (sub === 'campuses' || url.includes('/campuses')))) {
       return await handleListCampuses(res)
     }
     if (action === 'create_campus') {
@@ -187,7 +223,7 @@ export default async function handler(
     }
 
     // 3. Campus Managers
-    if (action === 'list_managers' || (method === 'GET' && (url.includes('/managers') || matchedPath.includes('/managers')))) {
+    if (action === 'list_managers' || (method === 'GET' && (sub === 'managers' || url.includes('/managers')))) {
       return await handleListManagers(res)
     }
     if (action === 'provision_manager') {
@@ -201,7 +237,7 @@ export default async function handler(
     }
 
     // 4. Mentors
-    if (action === 'list_mentors' || (method === 'GET' && (url.includes('/mentors') || matchedPath.includes('/mentors')))) {
+    if (action === 'list_mentors' || (method === 'GET' && (sub === 'mentors' || url.includes('/mentors')))) {
       return await handleListMentors(res)
     }
     if (action === 'provision_mentor') {
@@ -215,7 +251,7 @@ export default async function handler(
     }
 
     // 5. Students
-    if (action === 'list_students' || (method === 'GET' && (url.includes('/students') || matchedPath.includes('/students')))) {
+    if (action === 'list_students' || (method === 'GET' && (sub === 'students' || url.includes('/students')))) {
       return await handleListStudents(body, req, res)
     }
     if (action === 'enroll_student') {
@@ -224,21 +260,105 @@ export default async function handler(
     if (action === 'update_student') {
       return await handleUpdateStudent(body, auth.user.id, clientIp, res)
     }
-    if (action === 'delete_student' || (method === 'DELETE' && (url.includes('/students') || matchedPath.includes('/students')))) {
+    if (action === 'delete_student' || (method === 'DELETE' && (sub === 'students' || url.includes('/students')))) {
       return await handleDeleteStudent(body, req, auth.user.id, clientIp, res)
     }
 
     // 6. Role & Permission Management
-    if (action === 'list_roles' || action === 'list_users_roles' || (method === 'GET' && (url.includes('/roles') || matchedPath.includes('/roles')))) {
+    if (action === 'list_roles' || action === 'list_users_roles' || (method === 'GET' && (sub === 'roles' || url.includes('/roles')))) {
       return await handleListUserRoles(res)
     }
     if (action === 'update_user_role') {
       return await handleUpdateUserRole(body, auth.user.id, clientIp, res)
     }
+    if (action === 'update_user' || action === 'edit_user') {
+      return await handleUpdateUser(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'transfer_role' || action === 'transfer_user_role') {
+      return await handleTransferRole(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_user_status') {
+      return await handleToggleUserStatus(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'assign_user_campus') {
+      return await handleAssignUserCampus(body, auth.user.id, clientIp, res)
+    }
 
     // 7. Audit Logs
-    if (action === 'list_audit_logs' || (method === 'GET' && (url.includes('/audit') || matchedPath.includes('/audit')))) {
+    if (action === 'list_audit_logs' || (method === 'GET' && (sub === 'audit' || url.includes('/audit')))) {
       return await handleListAuditLogs(body, req, res)
+    }
+
+    // 8. Questions Management
+    if (action === 'list_questions' || (method === 'GET' && (sub === 'questions' || url.includes('/questions')))) {
+      return await handleListQuestions(body, req, res)
+    }
+    if (action === 'get_question') {
+      return await handleGetQuestion(body, req, res)
+    }
+    if (action === 'get_question_preview') {
+      return await handleGetQuestionPreview(body, req, res)
+    }
+    if (action === 'run_question_tests') {
+      return await handleRunQuestionTests(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'create_question') {
+      return await handleCreateQuestion(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'update_question') {
+      return await handleUpdateQuestion(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'duplicate_question') {
+      return await handleDuplicateQuestion(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_question_status') {
+      return await handleToggleQuestionStatus(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_question' || (method === 'DELETE' && (sub === 'questions' || url.includes('/questions')))) {
+      return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res)
+    }
+
+    // 9. Curriculum (Courses) Management
+    if (action === 'list_curriculum_modules' || (method === 'GET' && (sub === 'curriculum' || url.includes('/curriculum')))) {
+      return await handleListCurriculumModules(body, req, res)
+    }
+    if (action === 'create_curriculum_module') {
+      return await handleCreateCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'update_curriculum_module') {
+      return await handleUpdateCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_curriculum_module') {
+      return await handleDeleteCurriculumModule(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reorder_curriculum_modules') {
+      return await handleReorderCurriculumModules(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'create_learning_unit') {
+      return await handleCreateLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'update_learning_unit') {
+      return await handleUpdateLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_learning_unit') {
+      return await handleDeleteLearningUnit(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reorder_learning_units') {
+      return await handleReorderLearningUnits(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_module_status') {
+      return await handleToggleModuleStatus(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'toggle_learning_unit_status' || action === 'toggle_unit_status') {
+      return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res)
+    }
+
+    // 10. Practice Belts Management
+    if (action === 'list_belts' || (method === 'GET' && (sub === 'belts' || url.includes('/belts')))) {
+      return await handleListBelts(res)
+    }
+    if (action === 'update_belt') {
+      return await handleUpdateBelt(body, auth.user.id, clientIp, res)
     }
 
     return sendJson(res, 400, {
@@ -618,6 +738,12 @@ async function handleAssignCampusManager(
     })
   }
 
+  // Unbind previous manager from this campus if changed
+  const { data: currentCampus } = await supabaseServer.from('campuses').select('id, manager_id').eq('id', campusId).maybeSingle()
+  if (currentCampus?.manager_id && currentCampus.manager_id !== managerId) {
+    await supabaseServer.from('users').update({ campus_id: null, "updatedAt": new Date().toISOString() }).eq('id', currentCampus.manager_id)
+  }
+
   let managerName = 'Unassigned'
   if (managerId) {
     const { data: mgr } = await supabaseServer.from('users').select('id, name, email, role').eq('id', managerId).maybeSingle()
@@ -629,7 +755,7 @@ async function handleAssignCampusManager(
       })
     }
     managerName = mgr.name || mgr.email
-    await supabaseServer.from('users').update({ campus_id: campusId }).eq('id', managerId)
+    await supabaseServer.from('users').update({ campus_id: campusId, "updatedAt": new Date().toISOString() }).eq('id', managerId)
   }
 
   const { data: updated, error } = await supabaseServer
@@ -667,7 +793,7 @@ async function handleListManagers(res: ServerResponse) {
   const [managersRes, campusesRes] = await Promise.all([
     supabaseServer
       .from('users')
-      .select('id, email, name, role, status, campus_id, created_at, updated_at')
+      .select('id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt')
       .in('role', ['CAMPUS_MANAGER', 'ADMIN'])
       .order('name', { ascending: true }),
     supabaseServer.from('campuses').select('id, name, code, manager_id'),
@@ -678,10 +804,12 @@ async function handleListManagers(res: ServerResponse) {
   const campuses = campusesRes.data || []
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]))
 
-  const managers = (managersRes.data || []).map((m) => {
+  const managers = (managersRes.data || []).map((m: any) => {
     const assignedCampus = m.campus_id ? campusMap[m.campus_id] : campuses.find((c) => c.manager_id === m.id)
     return {
       ...m,
+      created_at: m.created_at || m.createdAt || new Date().toISOString(),
+      updated_at: m.updated_at || m.updatedAt || new Date().toISOString(),
       campus: assignedCampus ? { id: assignedCampus.id, name: assignedCampus.name, code: assignedCampus.code } : null,
     }
   })
@@ -796,6 +924,9 @@ async function handleAssignManagerCampus(
     })
   }
 
+  // Clear this manager from any existing campus assignment first
+  await supabaseServer.from('campuses').update({ manager_id: null, updated_at: new Date().toISOString() }).eq('manager_id', managerId)
+
   const { data: user, error: uErr } = await supabaseServer
     .from('users')
     .update({ campus_id: campusId, "updatedAt": new Date().toISOString() })
@@ -806,7 +937,7 @@ async function handleAssignManagerCampus(
   if (uErr) throw uErr
 
   if (campusId) {
-    await supabaseServer.from('campuses').update({ manager_id: managerId }).eq('id', campusId)
+    await supabaseServer.from('campuses').update({ manager_id: managerId, updated_at: new Date().toISOString() }).eq('id', campusId)
   }
 
   await recordAdminAudit(
@@ -1292,7 +1423,7 @@ async function handleEnrollStudent(
         role: 'STUDENT',
         status: 'ACTIVE',
         campus_id: campusId,
-        updated_at: new Date().toISOString(),
+        "updatedAt": new Date().toISOString(),
       })
       .eq('id', userId)
   } else {
@@ -1598,7 +1729,7 @@ async function handleDeleteStudent(
 
   // Step B: Delete student submissions and progress
   if (canonicalUserId) {
-    await supabaseServer.from('submissions').delete().eq('userId', canonicalUserId)
+    await supabaseServer.from('Submission').delete().eq('userId', canonicalUserId)
     await supabaseServer.from('UserProgress').delete().eq('userId', canonicalUserId)
   }
 
@@ -1653,7 +1784,7 @@ async function handleListUserRoles(res: ServerResponse) {
   const [usersRes, campusesRes] = await Promise.all([
     supabaseServer
       .from('users')
-      .select('id, email, name, role, status, campus_id, created_at, updated_at')
+      .select('id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt')
       .order('email', { ascending: true }),
     supabaseServer.from('campuses').select('id, name, code'),
   ])
@@ -1663,8 +1794,10 @@ async function handleListUserRoles(res: ServerResponse) {
   const campuses = campusesRes.data || []
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]))
 
-  const enriched = (usersRes.data || []).map((u) => ({
+  const enriched = (usersRes.data || []).map((u: any) => ({
     ...u,
+    created_at: u.created_at || u.createdAt || new Date().toISOString(),
+    updated_at: u.updated_at || u.updatedAt || new Date().toISOString(),
     campus: u.campus_id ? campusMap[u.campus_id] || null : null,
     isSuperAdminProtected: u.email?.toLowerCase().trim() === SUPER_ADMIN_EMAIL,
   }))
@@ -1756,6 +1889,14 @@ async function handleUpdateUserRole(
 
   const previousRole = targetUser.role
 
+  // If user was CAMPUS_MANAGER and role is changing away, unbind manager_id on any campus
+  if (previousRole === 'CAMPUS_MANAGER' && newRole !== 'CAMPUS_MANAGER') {
+    await supabaseServer
+      .from('campuses')
+      .update({ manager_id: null, updated_at: new Date().toISOString() })
+      .eq('manager_id', targetUserId)
+  }
+
   // Update role in `users`
   const { data: updated, error: updErr } = await supabaseServer
     .from('users')
@@ -1819,6 +1960,640 @@ async function handleUpdateUserRole(
   })
 }
 
+async function handleUpdateUser(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const targetUserId = typeof body.userId === 'string' ? body.userId.trim() : ''
+  if (!targetUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing User ID',
+      message: 'User ID is required.',
+    })
+  }
+
+  const { data: targetUser, error: findErr } = await supabaseServer
+    .from('users')
+    .select('id, email, name, role, status, campus_id')
+    .eq('id', targetUserId)
+    .maybeSingle()
+
+  if (findErr) throw findErr
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'User Not Found',
+      message: 'The target user could not be found.',
+    })
+  }
+
+  const targetEmail = (targetUser.email || '').toLowerCase().trim()
+  const isTargetSuperAdmin = targetEmail === SUPER_ADMIN_EMAIL
+
+  // Parse updates
+  const newName = typeof body.name === 'string' ? body.name.trim() : targetUser.name
+  let newRole = typeof body.role === 'string' ? body.role.trim().toUpperCase() : targetUser.role
+  let newStatus = typeof body.status === 'string' ? body.status.trim().toUpperCase() : targetUser.status
+  let newCampusId = body.campusId !== undefined
+    ? (typeof body.campusId === 'string' && body.campusId !== 'NONE' && body.campusId.trim() ? body.campusId.trim() : null)
+    : targetUser.campus_id
+
+  // Security Guards:
+  if (isTargetSuperAdmin) {
+    if (newRole !== 'SUPERADMIN') {
+      return sendJson(res, 403, {
+        success: false,
+        error: 'Operation Forbidden',
+        message: 'Forbidden: The sole Super Administrator account (sgjitbros@gmail.com) cannot be demoted or modified.',
+      })
+    }
+    if (newStatus === 'INACTIVE') {
+      return sendJson(res, 403, {
+        success: false,
+        error: 'Operation Forbidden',
+        message: 'Forbidden: The sole Super Administrator account cannot be deactivated.',
+      })
+    }
+  } else {
+    if (newRole === 'SUPERADMIN') {
+      return sendJson(res, 403, {
+        success: false,
+        error: 'Operation Forbidden',
+        message: 'Forbidden: Super Administrator role cannot be assigned to other accounts.',
+      })
+    }
+  }
+
+  if (newRole && !ALLOWED_TARGET_ROLES.has(newRole) && newRole !== 'SUPERADMIN') {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Role',
+      message: `Invalid role "${newRole}". Supported roles: ${Array.from(ALLOWED_TARGET_ROLES).join(', ')}.`,
+    })
+  }
+
+  if (newStatus && newStatus !== 'ACTIVE' && newStatus !== 'INACTIVE') {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Status',
+      message: 'Status must be ACTIVE or INACTIVE.',
+    })
+  }
+
+  // Self-demotion / deactivation guard
+  if (targetUserId === adminId && (newRole !== targetUser.role || newStatus === 'INACTIVE')) {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Operation Forbidden',
+      message: 'Forbidden: Self-role changes or self-deactivation are not permitted.',
+    })
+  }
+
+  // If campus is changing and user was a CAMPUS_MANAGER:
+  if (targetUser.campus_id !== newCampusId && (targetUser.role === 'CAMPUS_MANAGER' || targetUser.role === 'ADMIN')) {
+    if (targetUser.campus_id) {
+      await supabaseServer
+        .from('campuses')
+        .update({ manager_id: null, updated_at: new Date().toISOString() })
+        .eq('id', targetUser.campus_id)
+        .eq('manager_id', targetUserId)
+    }
+  }
+
+  // If role is changing away from CAMPUS_MANAGER, unbind manager_id on any campus
+  if (targetUser.role === 'CAMPUS_MANAGER' && newRole !== 'CAMPUS_MANAGER') {
+    await supabaseServer
+      .from('campuses')
+      .update({ manager_id: null, updated_at: new Date().toISOString() })
+      .eq('manager_id', targetUserId)
+  }
+
+  // Update user in `users`
+  const updatePayload: Record<string, any> = {
+    name: newName,
+    role: newRole,
+    status: newStatus,
+    campus_id: newCampusId,
+    "updatedAt": new Date().toISOString(),
+  }
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('users')
+    .update(updatePayload)
+    .eq('id', targetUserId)
+    .select('id, email, name, role, status, campus_id')
+    .single()
+
+  if (updErr) throw updErr
+
+  // Profile synchronization if role or status changed:
+  if (newRole === 'MENTOR') {
+    const { data: existingM } = await supabaseServer.from('mentors').select('id').eq('user_id', targetUserId).maybeSingle()
+    if (existingM) {
+      await supabaseServer.from('mentors').update({ name: newName, status: newStatus, campus_id: newCampusId, updated_at: new Date().toISOString() }).eq('id', existingM.id)
+    } else {
+      const mentorCode = `MEN-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      await supabaseServer.from('mentors').insert({
+        user_id: targetUserId,
+        name: newName,
+        email: targetUser.email,
+        mentor_code: mentorCode,
+        max_students: 30,
+        status: newStatus,
+        campus_id: newCampusId,
+      })
+    }
+  } else if (newRole === 'STUDENT') {
+    const { data: existingS } = await supabaseServer.from('students').select('id').eq('user_id', targetUserId).maybeSingle()
+    if (existingS) {
+      await supabaseServer.from('students').update({ name: newName, status: newStatus, campus_id: newCampusId, updated_at: new Date().toISOString() }).eq('id', existingS.id)
+    } else {
+      const studentCode = `STU-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      await supabaseServer.from('students').insert({
+        user_id: targetUserId,
+        name: newName,
+        email: targetUser.email,
+        student_code: studentCode,
+        status: newStatus,
+        campus_id: newCampusId,
+      })
+    }
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_USER',
+    'USER',
+    targetUserId,
+    `${newName || targetEmail} (${targetEmail})`,
+    {
+      previous: { name: targetUser.name, role: targetUser.role, status: targetUser.status, campus_id: targetUser.campus_id },
+      updated: { name: newName, role: newRole, status: newStatus, campus_id: newCampusId },
+    },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `User "${newName || targetEmail}" updated successfully.`,
+    data: updated,
+  })
+}
+
+async function handleTransferRole(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const sourceUserId = typeof body.sourceUserId === 'string' ? body.sourceUserId.trim() : ''
+  const destinationUserId = typeof body.destinationUserId === 'string' ? body.destinationUserId.trim() : ''
+  const roleToTransfer = typeof body.roleToTransfer === 'string'
+    ? body.roleToTransfer.trim().toUpperCase()
+    : (typeof body.role === 'string' ? body.role.trim().toUpperCase() : '')
+  const requestedSourceNewRole = typeof body.sourceNewRole === 'string' ? body.sourceNewRole.trim().toUpperCase() : ''
+  const campusId = typeof body.campusId === 'string' && body.campusId !== 'NONE' && body.campusId.trim() ? body.campusId.trim() : null
+
+  if (!sourceUserId || !destinationUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Users',
+      message: 'Both source user ID and destination user ID are required.',
+    })
+  }
+
+  if (sourceUserId === destinationUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Transfer',
+      message: 'Source and destination users must be different.',
+    })
+  }
+
+  if (roleToTransfer === 'SUPERADMIN') {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Forbidden Operation',
+      message: 'Forbidden: SUPERADMIN role cannot be transferred.',
+    })
+  }
+
+  if (!ALLOWED_TARGET_ROLES.has(roleToTransfer)) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Role',
+      message: `Invalid role to transfer: "${roleToTransfer}". Supported roles: ${Array.from(ALLOWED_TARGET_ROLES).join(', ')}.`,
+    })
+  }
+
+  // Fetch both users
+  const [sourceRes, destRes] = await Promise.all([
+    supabaseServer.from('users').select('id, email, name, role, status, campus_id').eq('id', sourceUserId).maybeSingle(),
+    supabaseServer.from('users').select('id, email, name, role, status, campus_id').eq('id', destinationUserId).maybeSingle(),
+  ])
+
+  if (sourceRes.error) throw sourceRes.error
+  if (destRes.error) throw destRes.error
+
+  const sourceUser = sourceRes.data
+  const destUser = destRes.data
+
+  if (!sourceUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Source User Not Found',
+      message: 'The source user holding the role could not be found.',
+    })
+  }
+  if (!destUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Destination User Not Found',
+      message: 'The destination user to receive the role could not be found.',
+    })
+  }
+
+  const sourceEmail = (sourceUser.email || '').toLowerCase().trim()
+  const destEmail = (destUser.email || '').toLowerCase().trim()
+
+  // Guard: SuperAdmin cannot be source user losing role
+  if (sourceEmail === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Operation Forbidden',
+      message: 'Forbidden: The sole Super Administrator account (sgjitbros@gmail.com) cannot transfer their role away.',
+    })
+  }
+  if (destEmail === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Operation Forbidden',
+      message: 'Forbidden: Cannot transfer a role onto the Super Administrator account.',
+    })
+  }
+
+  // Validate source user actually holds the role being transferred
+  if (sourceUser.role !== roleToTransfer) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Role Mismatch',
+      message: `Source user "${sourceUser.name || sourceEmail}" does not currently hold the role "${roleToTransfer}" (current role: ${sourceUser.role}).`,
+    })
+  }
+
+  // Validate destination user does not already hold this role
+  if (destUser.role === roleToTransfer) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Duplicate Role',
+      message: `Destination user "${destUser.name || destEmail}" already holds the role "${roleToTransfer}".`,
+    })
+  }
+
+  // Validate destination user status
+  if (destUser.status === 'INACTIVE') {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Inactive Destination',
+      message: `Cannot transfer role to inactive user "${destUser.name || destEmail}". Please activate their account first.`,
+    })
+  }
+
+  // Determine source user's new role (defaults to STUDENT if transferring MENTOR/CAMPUS_MANAGER)
+  let sourceNewRole = requestedSourceNewRole
+  if (!sourceNewRole || sourceNewRole === roleToTransfer) {
+    sourceNewRole = 'STUDENT'
+  }
+  if (!ALLOWED_TARGET_ROLES.has(sourceNewRole)) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Resulting Role',
+      message: `Invalid new role "${sourceNewRole}" for source user.`,
+    })
+  }
+
+  const effectiveCampusId = campusId || destUser.campus_id || sourceUser.campus_id
+
+  // Perform transfer operations:
+  // Step 1: Destination user gets roleToTransfer
+  const destUpdatePayload: Record<string, any> = {
+    role: roleToTransfer,
+    "updatedAt": new Date().toISOString(),
+  }
+  if (roleToTransfer === 'CAMPUS_MANAGER' && effectiveCampusId) {
+    destUpdatePayload.campus_id = effectiveCampusId
+  }
+
+  const { error: destUpdErr } = await supabaseServer
+    .from('users')
+    .update(destUpdatePayload)
+    .eq('id', destinationUserId)
+
+  if (destUpdErr) throw destUpdErr
+
+  // Step 2: Source user gets sourceNewRole
+  const sourceUpdatePayload: Record<string, any> = {
+    role: sourceNewRole,
+    "updatedAt": new Date().toISOString(),
+  }
+  // If source was campus manager and new role is not campus manager, unbind them from any campus they managed
+  if (roleToTransfer === 'CAMPUS_MANAGER' && sourceNewRole !== 'CAMPUS_MANAGER') {
+    await supabaseServer
+      .from('campuses')
+      .update({ manager_id: null, updated_at: new Date().toISOString() })
+      .eq('manager_id', sourceUserId)
+  }
+
+  const { error: sourceUpdErr } = await supabaseServer
+    .from('users')
+    .update(sourceUpdatePayload)
+    .eq('id', sourceUserId)
+
+  if (sourceUpdErr) throw sourceUpdErr
+
+  // Step 3: Profile synchronization:
+  if (roleToTransfer === 'CAMPUS_MANAGER') {
+    // Unbind destination from any prior campus they may have managed
+    await supabaseServer
+      .from('campuses')
+      .update({ manager_id: null, updated_at: new Date().toISOString() })
+      .eq('manager_id', destinationUserId)
+
+    // Assign destination to the target effective campus
+    if (effectiveCampusId) {
+      await supabaseServer
+        .from('campuses')
+        .update({ manager_id: destinationUserId, updated_at: new Date().toISOString() })
+        .eq('id', effectiveCampusId)
+    }
+  } else if (roleToTransfer === 'MENTOR') {
+    const { data: existingM } = await supabaseServer.from('mentors').select('id').eq('user_id', destinationUserId).maybeSingle()
+    if (!existingM) {
+      const mentorCode = `MEN-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      await supabaseServer.from('mentors').insert({
+        user_id: destinationUserId,
+        name: destUser.name,
+        email: destUser.email,
+        mentor_code: mentorCode,
+        max_students: 30,
+        status: 'ACTIVE',
+        campus_id: effectiveCampusId,
+      })
+    } else {
+      await supabaseServer.from('mentors').update({ status: 'ACTIVE', campus_id: effectiveCampusId, updated_at: new Date().toISOString() }).eq('id', existingM.id)
+    }
+  } else if (roleToTransfer === 'STUDENT') {
+    const { data: existingS } = await supabaseServer.from('students').select('id').eq('user_id', destinationUserId).maybeSingle()
+    if (!existingS) {
+      const studentCode = `STU-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      await supabaseServer.from('students').insert({
+        user_id: destinationUserId,
+        name: destUser.name,
+        email: destUser.email,
+        student_code: studentCode,
+        status: 'ACTIVE',
+        campus_id: effectiveCampusId,
+      })
+    } else {
+      await supabaseServer.from('students').update({ status: 'ACTIVE', campus_id: effectiveCampusId, updated_at: new Date().toISOString() }).eq('id', existingS.id)
+    }
+  }
+
+  // Ensure source user's new profile exists if demoted to STUDENT/MENTOR
+  if (sourceNewRole === 'STUDENT') {
+    const { data: existingS } = await supabaseServer.from('students').select('id').eq('user_id', sourceUserId).maybeSingle()
+    if (!existingS) {
+      const studentCode = `STU-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      await supabaseServer.from('students').insert({
+        user_id: sourceUserId,
+        name: sourceUser.name,
+        email: sourceUser.email,
+        student_code: studentCode,
+        status: 'ACTIVE',
+        campus_id: sourceUser.campus_id,
+      })
+    }
+  } else if (sourceNewRole === 'MENTOR') {
+    const { data: existingM } = await supabaseServer.from('mentors').select('id').eq('user_id', sourceUserId).maybeSingle()
+    if (!existingM) {
+      const mentorCode = `MEN-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      await supabaseServer.from('mentors').insert({
+        user_id: sourceUserId,
+        name: sourceUser.name,
+        email: sourceUser.email,
+        mentor_code: mentorCode,
+        max_students: 30,
+        status: 'ACTIVE',
+        campus_id: sourceUser.campus_id,
+      })
+    }
+  }
+
+  // Record Audit Log
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TRANSFER_ROLE',
+    'USER',
+    destinationUserId,
+    `Transfer ${roleToTransfer}: ${sourceUser.name || sourceEmail} -> ${destUser.name || destEmail}`,
+    {
+      roleTransferred: roleToTransfer,
+      source: { id: sourceUserId, email: sourceEmail, previousRole: sourceUser.role, newRole: sourceNewRole },
+      destination: { id: destinationUserId, email: destEmail, previousRole: destUser.role, newRole: roleToTransfer },
+      campusId: effectiveCampusId,
+    },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Role "${roleToTransfer}" successfully transferred from ${sourceUser.name || sourceEmail} to ${destUser.name || destEmail}. ${sourceUser.name || sourceEmail} is now ${sourceNewRole}.`,
+    data: {
+      sourceUser: { id: sourceUserId, role: sourceNewRole },
+      destinationUser: { id: destinationUserId, role: roleToTransfer },
+      source: { id: sourceUserId, role: sourceNewRole },
+      destination: { id: destinationUserId, role: roleToTransfer },
+      roleTransferred: roleToTransfer,
+      transferredRole: roleToTransfer,
+    },
+  })
+}
+
+async function handleToggleUserStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const targetUserId = typeof body.userId === 'string' ? body.userId.trim() : ''
+  const requestedStatus = typeof body.status === 'string' ? body.status.trim().toUpperCase() : ''
+
+  if (!targetUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing User ID',
+      message: 'User ID is required.',
+    })
+  }
+
+  const { data: targetUser, error: findErr } = await supabaseServer
+    .from('users')
+    .select('id, email, name, role, status')
+    .eq('id', targetUserId)
+    .maybeSingle()
+
+  if (findErr) throw findErr
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'User Not Found',
+      message: 'The target user could not be found.',
+    })
+  }
+
+  const targetEmail = (targetUser.email || '').toLowerCase().trim()
+  const nextStatus = requestedStatus || (targetUser.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
+
+  if (targetEmail === SUPER_ADMIN_EMAIL && nextStatus === 'INACTIVE') {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Operation Forbidden',
+      message: 'Forbidden: The sole Super Administrator account (sgjitbros@gmail.com) cannot be deactivated.',
+    })
+  }
+
+  if (targetUserId === adminId && nextStatus === 'INACTIVE') {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Operation Forbidden',
+      message: 'Forbidden: Self-deactivation is not permitted.',
+    })
+  }
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('users')
+    .update({ status: nextStatus, "updatedAt": new Date().toISOString() })
+    .eq('id', targetUserId)
+    .select('id, email, name, role, status')
+    .single()
+
+  if (updErr) throw updErr
+
+  // Synchronize status to profile
+  if (targetUser.role === 'MENTOR') {
+    await supabaseServer.from('mentors').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('user_id', targetUserId)
+  } else if (targetUser.role === 'STUDENT') {
+    await supabaseServer.from('students').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('user_id', targetUserId)
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_USER_STATUS',
+    'USER',
+    targetUserId,
+    `${targetUser.name || targetEmail} (${targetEmail})`,
+    { previousStatus: targetUser.status, newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Account for ${targetUser.name || targetEmail} is now ${nextStatus}.`,
+    data: updated,
+  })
+}
+
+async function handleAssignUserCampus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const targetUserId = typeof body.userId === 'string' ? body.userId.trim() : ''
+  const campusId = typeof body.campusId === 'string' && body.campusId !== 'NONE' && body.campusId.trim() ? body.campusId.trim() : null
+
+  if (!targetUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing User ID',
+      message: 'User ID is required.',
+    })
+  }
+
+  const { data: targetUser, error: findErr } = await supabaseServer
+    .from('users')
+    .select('id, email, name, role, status, campus_id')
+    .eq('id', targetUserId)
+    .maybeSingle()
+
+  if (findErr) throw findErr
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'User Not Found',
+      message: 'The target user could not be found.',
+    })
+  }
+
+  const previousCampusId = targetUser.campus_id
+
+  // If user was campus manager of previous campus, clear old campus manager_id
+  if (previousCampusId && (targetUser.role === 'CAMPUS_MANAGER' || targetUser.role === 'ADMIN')) {
+    await supabaseServer
+      .from('campuses')
+      .update({ manager_id: null, updated_at: new Date().toISOString() })
+      .eq('id', previousCampusId)
+      .eq('manager_id', targetUserId)
+  }
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('users')
+    .update({ campus_id: campusId, "updatedAt": new Date().toISOString() })
+    .eq('id', targetUserId)
+    .select('id, email, name, role, status, campus_id')
+    .single()
+
+  if (updErr) throw updErr
+
+  // Synchronize to profiles
+  if (targetUser.role === 'MENTOR') {
+    await supabaseServer.from('mentors').update({ campus_id: campusId, updated_at: new Date().toISOString() }).eq('user_id', targetUserId)
+  } else if (targetUser.role === 'STUDENT') {
+    await supabaseServer.from('students').update({ campus_id: campusId, updated_at: new Date().toISOString() }).eq('user_id', targetUserId)
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'ASSIGN_USER_CAMPUS',
+    'USER',
+    targetUserId,
+    `${targetUser.name || targetUser.email} (${targetUser.email})`,
+    { previousCampusId, newCampusId: campusId },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Campus assignment updated for ${targetUser.name || targetUser.email}.`,
+    data: updated,
+  })
+}
+
 // ─── 7. Audit Log Access ─────────────────────────────────────────────────────
 
 async function handleListAuditLogs(
@@ -1859,5 +2634,1882 @@ async function handleListAuditLogs(
       limit,
       totalPages: Math.ceil((count ?? (logs || []).length) / limit),
     },
+  })
+}
+
+// ─── 8. Questions Management ────────────────────────────────────────────────
+
+async function handleListQuestions(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const search = typeof body.search === 'string' ? body.search.trim().toLowerCase() : (urlObj.searchParams.get('search') || '').trim().toLowerCase()
+  const difficulty = typeof body.difficulty === 'string' ? body.difficulty.trim() : (urlObj.searchParams.get('difficulty') || 'ALL').trim()
+  const topic = typeof body.topic === 'string' ? body.topic.trim() : (urlObj.searchParams.get('topic') || 'ALL').trim()
+  const status = typeof body.status === 'string' ? body.status.trim().toUpperCase() : (urlObj.searchParams.get('status') || 'ALL').trim().toUpperCase()
+  const belt = typeof body.belt === 'string'
+    ? body.belt.trim()
+    : typeof body.belt === 'number'
+    ? String(body.belt)
+    : (urlObj.searchParams.get('belt') || 'ALL').trim()
+
+  const [problemsRes, testCasesRes] = await Promise.all([
+    supabaseServer.from('Problem').select('*').order('createdAt', { ascending: false }),
+    supabaseServer.from('TestCase').select('id, problemId, testIndex, isHidden'),
+  ])
+
+  if (problemsRes.error) throw problemsRes.error
+  if (testCasesRes.error) throw testCasesRes.error
+
+  const allProblems = problemsRes.data || []
+  const allCases = testCasesRes.data || []
+
+  // Group test cases by problemId
+  const casesByProblemId = new Map<string, any[]>()
+  for (const tc of allCases) {
+    if (!casesByProblemId.has(tc.problemId)) {
+      casesByProblemId.set(tc.problemId, [])
+    }
+    casesByProblemId.get(tc.problemId)!.push(tc)
+  }
+
+  // Calculate summary stats across all questions
+  let totalPublished = 0
+  let totalDraft = 0
+  const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 }
+  const topicCounts: Record<string, number> = {}
+
+  for (const p of allProblems) {
+    if (p.isActive) totalPublished++
+    else totalDraft++
+
+    const diff = p.difficulty || 'Easy'
+    if (diff in difficultyCounts) difficultyCounts[diff]++
+
+    const top = p.subdivision || 'General'
+    topicCounts[top] = (topicCounts[top] || 0) + 1
+  }
+
+  // Filter questions
+  const filtered = allProblems.filter((p: any) => {
+    if (difficulty !== 'ALL' && p.difficulty !== difficulty) return false
+    if (topic !== 'ALL' && (p.subdivision || 'General') !== topic) return false
+    if (status === 'PUBLISHED' && !p.isActive) return false
+    if (status === 'DRAFT' && p.isActive) return false
+    if (belt !== 'ALL') {
+      const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
+      const matchesBeltId = p.beltId === belt || (typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltId === `mock-belt-${beltNum}` || (p.beltId && p.beltId.includes(String(beltNum)))))
+      const matchesSlug = typeof beltNum === 'number' && !isNaN(beltNum) && p.slug && p.slug.startsWith(`belt-${beltNum}-`)
+      const matchesOrder = typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltOrder === beltNum || (p.order === beltNum && !p.slug?.includes('-q')))
+      if (!matchesBeltId && !matchesSlug && !matchesOrder) return false
+    }
+    if (search) {
+      const matchTitle = (p.title || '').toLowerCase().includes(search)
+      const matchSlug = (p.slug || '').toLowerCase().includes(search)
+      const matchSub = (p.subdivision || '').toLowerCase().includes(search)
+      if (!matchTitle && !matchSlug && !matchSub) return false
+    }
+    return true
+  })
+
+  const enrichedQuestions = filtered.map((p: any) => {
+    const pCases = casesByProblemId.get(p.id) || []
+    const visibleCount = pCases.filter((c: any) => !c.isHidden).length
+    const hiddenCount = pCases.filter((c: any) => c.isHidden).length
+    const examples = Array.isArray(p.examples) ? p.examples : []
+    const inferredBeltOrder = p.beltOrder || (p.slug && p.slug.match(/^belt-(\d+)-/) ? Number(p.slug.match(/^belt-(\d+)-/)[1]) : 1)
+
+    return {
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      difficulty: p.difficulty,
+      topic: p.subdivision || 'General',
+      subdivision: p.subdivision,
+      beltId: p.beltId || `mock-belt-${inferredBeltOrder}`,
+      beltOrder: inferredBeltOrder,
+      status: p.isActive ? 'PUBLISHED' : 'DRAFT',
+      isActive: Boolean(p.isActive),
+      description: p.description,
+      inputFormat: p.inputFormat,
+      outputFormat: p.outputFormat,
+      constraints: p.explanation || '',
+      exampleCount: examples.length,
+      testCaseCount: pCases.length,
+      visibleTestCaseCount: visibleCount,
+      hiddenTestCaseCount: hiddenCount,
+      createdAt: p.createdAt || p.created_at || new Date().toISOString(),
+      updatedAt: p.updatedAt || p.updated_at || new Date().toISOString(),
+    }
+  })
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Questions retrieved successfully.',
+    data: {
+      questions: enrichedQuestions,
+      stats: {
+        total: allProblems.length,
+        published: totalPublished,
+        draft: totalDraft,
+        easy: difficultyCounts.Easy || 0,
+        medium: difficultyCounts.Medium || 0,
+        hard: difficultyCounts.Hard || 0,
+        difficultyCounts,
+        topicCounts,
+      },
+    },
+  })
+}
+
+async function handleGetQuestion(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const idOrSlug = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim()
+      ? body.slug.trim()
+      : (urlObj.searchParams.get('id') || urlObj.searchParams.get('slug') || '').trim())
+
+  if (!idOrSlug) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required.',
+    })
+  }
+
+  // Fetch question by ID or slug
+  const { data: allMatching, error } = await supabaseServer
+    .from('Problem')
+    .select('*')
+
+  if (error) throw error
+
+  const question = (allMatching || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug)
+  if (!question) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${idOrSlug}" was not found.`,
+    })
+  }
+
+  // Fetch all test cases (Super Admin view includes hidden test cases for editing)
+  const { data: testCases, error: tcErr } = await supabaseServer
+    .from('TestCase')
+    .select('*')
+    .eq('problemId', question.id)
+    .order('testIndex', { ascending: true })
+
+  if (tcErr) throw tcErr
+
+  const examples = Array.isArray(question.examples) ? question.examples : []
+  const cases = testCases || []
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Question details retrieved.',
+    data: {
+      id: question.id,
+      slug: question.slug,
+      title: question.title,
+      difficulty: question.difficulty,
+      topic: question.subdivision || 'General',
+      subdivision: question.subdivision,
+      status: question.isActive ? 'PUBLISHED' : 'DRAFT',
+      isActive: Boolean(question.isActive),
+      description: question.description,
+      inputFormat: question.inputFormat,
+      outputFormat: question.outputFormat,
+      constraints: question.explanation || '',
+      examples,
+      testCases: cases,
+      starterCodes: question.starterCodes || {},
+      exampleCount: examples.length,
+      testCaseCount: cases.length,
+      createdAt: question.createdAt || question.created_at,
+      updatedAt: question.updatedAt || question.updated_at,
+    },
+  })
+}
+
+async function handleGetQuestionPreview(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const idOrSlug = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim()
+      ? body.slug.trim()
+      : (urlObj.searchParams.get('id') || urlObj.searchParams.get('slug') || '').trim())
+
+  if (!idOrSlug) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required.',
+    })
+  }
+
+  const { data: allMatching, error } = await supabaseServer
+    .from('Problem')
+    .select('*')
+
+  if (error) throw error
+
+  const question = (allMatching || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug)
+  if (!question) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${idOrSlug}" was not found.`,
+    })
+  }
+
+  // Fetch ONLY visible test cases (STRICT SECURITY GUARANTEE: isHidden === false)
+  const { data: allCases, error: tcErr } = await supabaseServer
+    .from('TestCase')
+    .select('testIndex, input, expectedOutput, explanation, isHidden')
+    .eq('problemId', question.id)
+    .order('testIndex', { ascending: true })
+
+  if (tcErr) throw tcErr
+
+  const cases = allCases || []
+  const visibleCases = cases
+    .filter((tc: any) => !tc.isHidden)
+    .map((tc: any) => ({
+      testIndex: tc.testIndex,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      explanation: tc.explanation,
+      isHidden: false,
+    }))
+
+  const hiddenCount = cases.filter((tc: any) => tc.isHidden).length
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Question preview generated (hidden test cases protected).',
+    data: {
+      id: question.id,
+      slug: question.slug,
+      title: question.title,
+      difficulty: question.difficulty,
+      topic: question.subdivision || 'General',
+      subdivision: question.subdivision,
+      status: question.isActive ? 'PUBLISHED' : 'DRAFT',
+      description: question.description,
+      inputFormat: question.inputFormat,
+      outputFormat: question.outputFormat,
+      constraints: question.explanation || '',
+      examples: Array.isArray(question.examples) ? question.examples : [],
+      starterCodes: question.starterCodes || {},
+      testCases: visibleCases,
+      visibleTestCases: visibleCases,
+      testCaseCount: {
+        total: cases.length,
+        visible: visibleCases.length,
+        hidden: hiddenCount,
+      },
+      testCaseMeta: {
+        totalCount: cases.length,
+        visibleCount: visibleCases.length,
+        hiddenCount,
+      },
+    },
+  })
+}
+
+async function handleCreateQuestion(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const title = typeof body.title === 'string' ? body.title.trim() : ''
+  const slug = typeof body.slug === 'string' ? body.slug.trim().toLowerCase() : ''
+  const difficulty = typeof body.difficulty === 'string' ? body.difficulty.trim() : 'Easy'
+  const topic = typeof body.topic === 'string' ? body.topic.trim() : (typeof body.subdivision === 'string' ? body.subdivision.trim() : 'General')
+  const description = typeof body.description === 'string' ? body.description.trim() : ''
+  const inputFormat = typeof body.inputFormat === 'string' ? body.inputFormat.trim() : ''
+  const outputFormat = typeof body.outputFormat === 'string' ? body.outputFormat.trim() : ''
+  const constraints = typeof body.constraints === 'string' ? body.constraints.trim() : ''
+  const status = typeof body.status === 'string' ? body.status.trim().toUpperCase() : 'PUBLISHED'
+  const isActive = status !== 'DRAFT'
+
+  const examples = Array.isArray(body.examples) ? body.examples : []
+  const testCases = Array.isArray(body.testCases) ? body.testCases : []
+
+  // Validations:
+  if (!title || title.length < 3) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Title',
+      message: 'Question title must be at least 3 characters long.',
+    })
+  }
+
+  if (!slug || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Slug',
+      message: 'Slug must contain only lowercase alphanumeric characters and hyphens (e.g. "my-two-sum").',
+    })
+  }
+
+  if (!['Easy', 'Medium', 'Hard'].includes(difficulty)) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Difficulty',
+      message: 'Difficulty must be "Easy", "Medium", or "Hard".',
+    })
+  }
+
+  if (!description) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Description',
+      message: 'Problem description statement is required.',
+    })
+  }
+
+  if (testCases.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Test Cases',
+      message: 'At least one test case is required to evaluate code execution.',
+    })
+  }
+
+  // Validate test case structure
+  for (let i = 0; i < testCases.length; i++) {
+    const tc = testCases[i]
+    if (typeof tc.input !== 'string' || typeof tc.expectedOutput !== 'string') {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Test Case',
+        message: `Test case #${i + 1} must include both input and expectedOutput strings.`,
+      })
+    }
+  }
+
+  // Check unique slug in database
+  const { data: existingList } = await supabaseServer.from('Problem').select('id, slug')
+  const isSlugTaken = (existingList || []).some((p: any) => p.slug === slug)
+  if (isSlugTaken) {
+    return sendJson(res, 409, {
+      success: false,
+      error: 'Slug Conflict',
+      message: `A question with slug "${slug}" already exists. Please choose a unique identifier.`,
+    })
+  }
+
+  // Default starter codes if not provided
+  const starterCodes = body.starterCodes || {
+    python: '# Language: Python 3\nimport sys\n\ndef solve():\n    input_data = sys.stdin.read().strip()\n    if not input_data:\n        return\n    # Write your solution here\n    pass\n\nif __name__ == "__main__":\n    solve()\n',
+    javascript: '// Language: JavaScript (Node.js)\nconst fs = require("fs");\n\nfunction solve() {\n    const input = fs.readFileSync(0, "utf-8").trim();\n    if (!input) return;\n    // Write your solution here\n}\n\nsolve();\n',
+    cpp: '// Language: C++ (g++)\n#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n',
+    java: '// Language: Java (OpenJDK)\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        // Write your solution here\n        scanner.close();\n    }\n}\n',
+  }
+
+  const problemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+
+  // Infer or format beltId and order for relational PostgreSQL schema
+  const rawBelt = body.beltId || body.belt
+  let beltId = 'mock-belt-1'
+  if (typeof rawBelt === 'string' && rawBelt.trim()) {
+    beltId = rawBelt.trim().startsWith('mock-belt-') || rawBelt.trim().length > 10
+      ? rawBelt.trim()
+      : `mock-belt-${rawBelt.trim().replace(/[^0-9]/g, '') || '1'}`
+  } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
+    beltId = `mock-belt-${rawBelt}`
+  }
+
+  const order = typeof body.order === 'number' && !isNaN(body.order) ? body.order : 1
+
+  // 1. Insert Problem
+  const { data: createdProb, error: probErr } = await supabaseServer
+    .from('Problem')
+    .insert({
+      id: problemId,
+      beltId,
+      order,
+      slug,
+      title,
+      difficulty,
+      subdivision: topic,
+      description,
+      inputFormat,
+      outputFormat,
+      explanation: constraints,
+      examples,
+      starterCodes,
+      isActive,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+    .select()
+    .single()
+
+  if (probErr) throw probErr
+
+  // 2. Insert Test Cases
+  const tcRows = testCases.map((tc: any, idx: number) => ({
+    id: `tc-${problemId}-${idx + 1}`,
+    problemId,
+    testIndex: tc.testIndex || idx + 1,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    explanation: tc.explanation || tc.description || null,
+    isHidden: Boolean(tc.isHidden),
+  }))
+
+  const { error: tcErr } = await supabaseServer.from('TestCase').insert(tcRows)
+  if (tcErr) throw tcErr
+
+  // 3. Register in testRepository for live execution compatibility
+  registerCustomSuite(slug, {
+    title,
+    testCases: tcRows.map((r: any) => ({
+      testIndex: r.testIndex,
+      input: r.input,
+      expectedOutput: r.expectedOutput,
+      isHidden: r.isHidden,
+    })),
+  })
+
+  // 4. Audit Log
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'CREATE_QUESTION',
+    'QUESTION',
+    problemId,
+    `${title} (${slug})`,
+    { slug, difficulty, topic, status, testCaseCount: tcRows.length },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  const visibleCount = tcRows.filter((c: any) => !c.isHidden).length
+  const hiddenCount = tcRows.filter((c: any) => c.isHidden).length
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Question "${title}" created successfully.`,
+    data: {
+      ...createdProb,
+      testCases: tcRows,
+      testCaseCount: {
+        total: tcRows.length,
+        visible: visibleCount,
+        hidden: hiddenCount,
+      },
+      status: isActive ? 'PUBLISHED' : 'DRAFT',
+    },
+  })
+}
+
+async function handleUpdateQuestion(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim() ? body.slug.trim() : '')
+
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required for updates.',
+    })
+  }
+
+  const { data: allMatching, error: findErr } = await supabaseServer
+    .from('Problem')
+    .select('*')
+
+  if (findErr) throw findErr
+
+  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  const updates: Record<string, any> = {
+    updatedAt: new Date().toISOString(),
+  }
+
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.difficulty === 'string' && ['Easy', 'Medium', 'Hard'].includes(body.difficulty)) updates.difficulty = body.difficulty
+  if (typeof body.topic === 'string') updates.subdivision = body.topic.trim()
+  if (typeof body.description === 'string') updates.description = body.description.trim()
+  if (typeof body.inputFormat === 'string') updates.inputFormat = body.inputFormat.trim()
+  if (typeof body.outputFormat === 'string') updates.outputFormat = body.outputFormat.trim()
+  if (typeof body.constraints === 'string') updates.explanation = body.constraints.trim()
+  if (Array.isArray(body.examples)) updates.examples = body.examples
+  if (typeof body.status === 'string') {
+    updates.isActive = body.status.trim().toUpperCase() === 'PUBLISHED'
+  }
+  if (typeof body.isActive === 'boolean') {
+    updates.isActive = body.isActive
+  }
+  if (body.beltId !== undefined || body.belt !== undefined) {
+    const rawBelt = body.beltId || body.belt
+    if (typeof rawBelt === 'string' && rawBelt.trim()) {
+      updates.beltId = rawBelt.trim()
+    } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
+      updates.beltId = `mock-belt-${rawBelt}`
+    }
+  }
+  if (typeof body.order === 'number' && !isNaN(body.order)) {
+    updates.order = body.order
+  }
+
+  // Update Problem row
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Problem')
+    .update(updates)
+    .eq('id', existing.id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  // If test cases provided, update them
+  if (Array.isArray(body.testCases) && body.testCases.length > 0) {
+    // Delete old test cases
+    await supabaseServer.from('TestCase').delete().eq('problemId', existing.id)
+
+    // Insert new test cases
+    const tcRows = body.testCases.map((tc: any, idx: number) => ({
+      id: `tc-${existing.id}-${idx + 1}`,
+      problemId: existing.id,
+      testIndex: tc.testIndex || idx + 1,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      explanation: tc.explanation || tc.description || null,
+      isHidden: Boolean(tc.isHidden),
+    }))
+
+    const { error: insErr } = await supabaseServer.from('TestCase').insert(tcRows)
+    if (insErr) throw insErr
+
+    // Update in testRepository
+    registerCustomSuite(existing.slug, {
+      title: updates.title || existing.title,
+      testCases: tcRows.map((r: any) => ({
+        testIndex: r.testIndex,
+        input: r.input,
+        expectedOutput: r.expectedOutput,
+        isHidden: r.isHidden,
+      })),
+    })
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_QUESTION',
+    'QUESTION',
+    existing.id,
+    `${updates.title || existing.title} (${existing.slug})`,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  // Fetch current test cases for count
+  const { data: currentCases } = await supabaseServer
+    .from('TestCase')
+    .select('id, isHidden')
+    .eq('problemId', existing.id)
+
+  const cCases = currentCases || []
+  const visibleCount = cCases.filter((c: any) => !c.isHidden).length
+  const hiddenCount = cCases.filter((c: any) => c.isHidden).length
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${updates.title || existing.title}" updated successfully.`,
+    data: {
+      ...updated,
+      testCaseCount: {
+        total: cCases.length,
+        visible: visibleCount,
+        hidden: hiddenCount,
+      },
+    },
+  })
+}
+
+async function handleDuplicateQuestion(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim() ? body.slug.trim() : '')
+
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required to duplicate.',
+    })
+  }
+
+  const { data: allMatching, error: findErr } = await supabaseServer
+    .from('Problem')
+    .select('*')
+
+  if (findErr) throw findErr
+
+  const original = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
+  if (!original) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  // Fetch test cases
+  const { data: originalCases } = await supabaseServer
+    .from('TestCase')
+    .select('*')
+    .eq('problemId', original.id)
+    .order('testIndex', { ascending: true })
+
+  // Generate unique duplicate slug
+  const baseSlug = `${original.slug}-copy`
+  let duplicateSlug = baseSlug
+  const isSlugTaken = (allMatching || []).some((p: any) => p.slug === duplicateSlug)
+  if (isSlugTaken) {
+    duplicateSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`
+  }
+
+  const newProblemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+  const newTitle = `${original.title} (Copy)`
+
+  // Insert cloned problem as DRAFT
+  const { data: cloned, error: cloneErr } = await supabaseServer
+    .from('Problem')
+    .insert({
+      id: newProblemId,
+      beltId: original.beltId || 'mock-belt-1',
+      order: (original.order || 0) + 1,
+      slug: duplicateSlug,
+      title: newTitle,
+      difficulty: original.difficulty,
+      subdivision: original.subdivision,
+      description: original.description,
+      inputFormat: original.inputFormat,
+      outputFormat: original.outputFormat,
+      explanation: original.explanation,
+      examples: original.examples,
+      starterCodes: original.starterCodes,
+      isActive: false, // Draft by default
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+    .select()
+    .single()
+
+  if (cloneErr) throw cloneErr
+
+  // Clone test cases
+  const clonedCases = (originalCases || []).map((tc: any, idx: number) => ({
+    id: `tc-${newProblemId}-${idx + 1}`,
+    problemId: newProblemId,
+    testIndex: tc.testIndex || idx + 1,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    explanation: tc.explanation,
+    isHidden: tc.isHidden,
+  }))
+
+  if (clonedCases.length > 0) {
+    await supabaseServer.from('TestCase').insert(clonedCases)
+
+    registerCustomSuite(duplicateSlug, {
+      title: newTitle,
+      testCases: clonedCases.map((r: any) => ({
+        testIndex: r.testIndex,
+        input: r.input,
+        expectedOutput: r.expectedOutput,
+        isHidden: r.isHidden,
+      })),
+    })
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DUPLICATE_QUESTION',
+    'QUESTION',
+    newProblemId,
+    `${newTitle} (${duplicateSlug})`,
+    { sourceId: original.id, sourceSlug: original.slug, duplicateSlug },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Question duplicated as "${newTitle}".`,
+    data: {
+      ...cloned,
+      status: 'DRAFT',
+      testCases: clonedCases,
+    },
+  })
+}
+
+async function handleToggleQuestionStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim() ? body.slug.trim() : '')
+  const requestedStatus = typeof body.status === 'string' ? body.status.trim().toUpperCase() : ''
+
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required.',
+    })
+  }
+
+  const { data: allMatching, error: findErr } = await supabaseServer
+    .from('Problem')
+    .select('id, slug, title, isActive')
+
+  if (findErr) throw findErr
+
+  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  let nextIsActive: boolean
+  if (typeof body.isActive === 'boolean') {
+    nextIsActive = body.isActive
+  } else if (requestedStatus) {
+    nextIsActive = requestedStatus === 'PUBLISHED'
+  } else {
+    nextIsActive = !existing.isActive
+  }
+  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Problem')
+    .update({ isActive: nextIsActive, updatedAt: new Date().toISOString() })
+    .eq('id', existing.id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_QUESTION_STATUS',
+    'QUESTION',
+    existing.id,
+    `${existing.title} (${existing.slug})`,
+    { previousStatus: existing.isActive ? 'PUBLISHED' : 'DRAFT', newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" is now ${nextStatus}.`,
+    data: {
+      ...updated,
+      status: nextStatus,
+    },
+  })
+}
+
+async function handleDeleteQuestion(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const id = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim()
+      ? body.slug.trim()
+      : (urlObj.searchParams.get('id') || urlObj.searchParams.get('slug') || '').trim())
+
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required for deletion.',
+    })
+  }
+
+  const { data: allMatching, error: findErr } = await supabaseServer
+    .from('Problem')
+    .select('id, slug, title')
+
+  if (findErr) throw findErr
+
+  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  // Delete test cases first
+  await supabaseServer.from('TestCase').delete().eq('problemId', existing.id)
+
+  // Delete problem
+  const { error: delErr } = await supabaseServer.from('Problem').delete().eq('id', existing.id)
+  if (delErr) throw delErr
+
+  // Unregister from testRepository
+  unregisterCustomSuite(existing.slug)
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_QUESTION',
+    'QUESTION',
+    existing.id,
+    `${existing.title} (${existing.slug})`,
+    { deletedId: existing.id, deletedSlug: existing.slug },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" (${existing.slug}) deleted successfully.`,
+    data: { id: existing.id, deletedId: existing.id, slug: existing.slug, title: existing.title },
+  })
+}
+
+async function handleRunQuestionTests(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const code = typeof body.code === 'string' ? body.code : ''
+  if (!code.trim()) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Code',
+      message: 'Source code is required for execution.',
+    })
+  }
+  if (code.length > 65536) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Payload Too Large',
+      message: 'Submitted code exceeds the maximum allowed limit of 64KB.',
+    })
+  }
+
+  const rawLanguage = typeof body.language === 'string' ? body.language : 'python'
+  const normLang = normalizeLanguage(rawLanguage)
+  if (!normLang) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Unsupported Language',
+      message: `Unsupported language "${rawLanguage}". Supported: Python, JavaScript, Java, C++.`,
+    })
+  }
+
+  const filter = typeof body.filter === 'string' ? body.filter.toLowerCase() : 'all'
+
+  // Resolve test cases either from body.testCases or from database by id/slug
+  let rawCases: Array<{
+    id?: string
+    testIndex?: number
+    input: string
+    expectedOutput: string
+    isHidden?: boolean
+    description?: string
+  }> = []
+
+  if (Array.isArray(body.testCases) && body.testCases.length > 0) {
+    rawCases = body.testCases.map((tc: any, idx: number) => ({
+      testIndex: typeof tc.testIndex === 'number' ? tc.testIndex : idx + 1,
+      input: String(tc.input ?? ''),
+      expectedOutput: String(tc.expectedOutput ?? ''),
+      isHidden: Boolean(tc.isHidden),
+      description: typeof tc.description === 'string' ? tc.description : '',
+    }))
+  } else {
+    const idOrSlug = typeof body.id === 'string' && body.id.trim()
+      ? body.id.trim()
+      : (typeof body.slug === 'string' && body.slug.trim()
+        ? body.slug.trim()
+        : (typeof body.idOrSlug === 'string' && body.idOrSlug.trim() ? body.idOrSlug.trim() : ''))
+
+    if (!idOrSlug) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Missing Test Cases',
+        message: 'Either testCases array or a question ID/slug is required.',
+      })
+    }
+
+    const { data: allMatching, error: pErr } = await supabaseServer.from('Problem').select('id, slug, title')
+    if (pErr) throw pErr
+    const found = (allMatching || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug)
+    if (!found) {
+      return sendJson(res, 404, {
+        success: false,
+        error: 'Question Not Found',
+        message: `Question "${idOrSlug}" was not found.`,
+      })
+    }
+
+    const { data: dbCases, error: tcErr } = await supabaseServer
+      .from('TestCase')
+      .select('*')
+      .eq('problemId', found.id)
+      .order('testIndex', { ascending: true })
+    if (tcErr) throw tcErr
+
+    rawCases = (dbCases || []).map((tc: any, idx: number) => ({
+      id: tc.id,
+      testIndex: tc.testIndex ?? idx + 1,
+      input: tc.input || '',
+      expectedOutput: tc.expectedOutput || '',
+      isHidden: Boolean(tc.isHidden),
+      description: tc.description || tc.explanation || '',
+    }))
+  }
+
+  if (rawCases.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'No Test Cases',
+      message: 'No test cases available to execute.',
+    })
+  }
+
+  // Apply filter: 'all' | 'public' | 'hidden'
+  let casesToRun = rawCases
+  if (filter === 'public') {
+    casesToRun = rawCases.filter((tc) => !tc.isHidden)
+  } else if (filter === 'hidden') {
+    casesToRun = rawCases.filter((tc) => tc.isHidden)
+  }
+
+  if (casesToRun.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Empty Filter Selection',
+      message: `No test cases found for filter "${filter}". Total cases available: ${rawCases.length} (${rawCases.filter((t) => !t.isHidden).length} public, ${rawCases.filter((t) => t.isHidden).length} hidden).`,
+    })
+  }
+
+  const engine = selectEngine(normLang)
+  const started = performance.now()
+  const outcome = await engine.run({
+    code,
+    language: normLang,
+    inputs: casesToRun.map((tc) => tc.input),
+  })
+
+  const overallTimeMs = Math.round(performance.now() - started)
+
+  if (outcome.kind === 'unavailable') {
+    return sendJson(res, 503, {
+      success: false,
+      error: 'Execution Unavailable',
+      message: outcome.message || 'Judge engine is temporarily unavailable.',
+    })
+  }
+
+  if (outcome.kind === 'compile_error') {
+    return sendJson(res, 200, {
+      success: false,
+      error: 'Compilation Error',
+      message: outcome.error,
+      data: {
+        status: 'COMPILATION_ERROR',
+        engine: engine.name,
+        overallTimeMs,
+        passedCount: 0,
+        totalCount: casesToRun.length,
+        allPassed: false,
+        compilationError: outcome.error,
+        results: casesToRun.map((tc, idx) => ({
+          testIndex: tc.testIndex ?? idx + 1,
+          isHidden: Boolean(tc.isHidden),
+          description: tc.description || (tc.isHidden ? 'Hidden validation test' : 'Public sample test'),
+          input: tc.input,
+          expectedOutput: tc.expectedOutput,
+          actualOutput: '',
+          executionTimeMs: 0,
+          status: 'runtime_error',
+          passed: false,
+          error: outcome.error,
+        })),
+      },
+    })
+  }
+
+  const results = casesToRun.map((tc, idx) => {
+    const r = outcome.cases[idx] || { output: '', kind: 'runtime_error', ms: 0, error: 'No response' }
+    let caseStatus: 'passed' | 'failed' | 'runtime_error' | 'time_limit_exceeded' = 'passed'
+    const matches = outputsMatch(r.output, tc.expectedOutput)
+
+    if (r.kind === 'timeout') {
+      caseStatus = 'time_limit_exceeded'
+    } else if (r.kind === 'runtime_error' || r.kind === 'memory') {
+      caseStatus = 'runtime_error'
+    } else {
+      caseStatus = matches ? 'passed' : 'failed'
+    }
+
+    return {
+      testIndex: tc.testIndex ?? idx + 1,
+      isHidden: Boolean(tc.isHidden),
+      description: tc.description || (tc.isHidden ? 'Hidden validation test' : 'Public sample test'),
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      actualOutput: r.output || '',
+      executionTimeMs: r.ms,
+      status: caseStatus,
+      passed: caseStatus === 'passed',
+      error: r.error || null,
+    }
+  })
+
+  const passedCount = results.filter((r) => r.passed).length
+  const allPassed = passedCount === results.length
+  let overallStatus: string = 'ACCEPTED'
+  if (!allPassed) {
+    if (results.some((r) => r.status === 'time_limit_exceeded')) overallStatus = 'TIME_LIMIT_EXCEEDED'
+    else if (results.some((r) => r.status === 'runtime_error')) overallStatus = 'RUNTIME_ERROR'
+    else overallStatus = 'WRONG_ANSWER'
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'RUN_QUESTION_TESTS',
+    'QUESTION',
+    (body.id || body.slug || 'custom') as string,
+    `Admin test runner executed ${results.length} tests (${normLang})`,
+    {
+      filter,
+      totalExecuted: results.length,
+      passedCount,
+      allPassed,
+      overallStatus,
+      engine: engine.name,
+    },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Admin Test Runner: ${passedCount} / ${results.length} tests passed (${normLang}, ${overallTimeMs}ms).`,
+    data: {
+      status: overallStatus,
+      engine: engine.name,
+      overallTimeMs,
+      passedCount,
+      totalCount: results.length,
+      allPassed,
+      results,
+    },
+  })
+}
+
+// ─── 9. Curriculum (Courses) Management Handlers ─────────────────────────────
+
+async function handleListCurriculumModules(
+  body: Record<string, unknown>,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const urlObj = new URL(req.url || '/', 'http://localhost')
+  const search = typeof body.search === 'string' ? body.search.trim().toLowerCase() : (urlObj.searchParams.get('search') || '').trim().toLowerCase()
+
+  const [modulesRes, unitsRes] = await Promise.all([
+    supabaseServer.from('Module').select('*').order('order', { ascending: true }),
+    supabaseServer.from('LearningUnit').select('*').order('order', { ascending: true }),
+  ])
+
+  let rawModules = modulesRes.data || []
+  let rawUnits = unitsRes.data || []
+
+  // Fallback: If DB Module table is empty, initialize from curriculum.json
+  if (rawModules.length === 0) {
+    rawModules = (curriculumData as any[]).map((m, idx) => ({
+      id: `mock-module-${m.order || idx + 1}`,
+      order: m.order || idx + 1,
+      title: m.title,
+      description: m.description || '',
+      isActive: true,
+      status: 'PUBLISHED',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    }))
+    rawUnits = (curriculumData as any[]).flatMap((m, mIdx) => {
+      const modId = `mock-module-${m.order || mIdx + 1}`
+      return (m.learningUnits || []).map((lu: any, luIdx: number) => ({
+        id: `mock-unit-${m.order || mIdx + 1}-${lu.order || luIdx + 1}`,
+        moduleId: modId,
+        order: lu.order || luIdx + 1,
+        title: lu.title,
+        concept: lu.concept || lu.content || '',
+        content: lu.content || lu.concept || '',
+        approach: lu.approach || '',
+        codeSnippets: lu.codeSnippets || {},
+        codingQuestion: lu.codingQuestion || '',
+        inputFormat: lu.inputFormat || '',
+        outputFormat: lu.outputFormat || '',
+        examples: lu.examples || [],
+        readingTimeMinutes: lu.readingTimeMinutes || 2,
+        isActive: true,
+        status: 'PUBLISHED',
+        createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      }))
+    })
+  }
+
+  // Group units by moduleId
+  const unitsByModuleId = new Map<string, any[]>()
+  for (const u of rawUnits) {
+    if (!unitsByModuleId.has(u.moduleId)) {
+      unitsByModuleId.set(u.moduleId, [])
+    }
+    unitsByModuleId.get(u.moduleId)!.push(u)
+  }
+
+  let totalPublishedModules = 0
+  let totalDraftModules = 0
+  let totalPublishedUnits = 0
+  let totalDraftUnits = 0
+
+  const modules = rawModules.map((m: any) => {
+    const isModActive = m.isActive !== false && m.status !== 'DRAFT'
+    if (isModActive) totalPublishedModules++
+    else totalDraftModules++
+
+    let mUnits = unitsByModuleId.get(m.id) || []
+    mUnits.sort((a, b) => (a.order || 0) - (b.order || 0))
+
+    for (const u of mUnits) {
+      if (u.isActive !== false && u.status !== 'DRAFT') totalPublishedUnits++
+      else totalDraftUnits++
+    }
+
+    if (search) {
+      mUnits = mUnits.filter((u: any) =>
+        (u.title || '').toLowerCase().includes(search) ||
+        (u.concept || '').toLowerCase().includes(search) ||
+        (u.content || '').toLowerCase().includes(search)
+      )
+    }
+
+    return {
+      id: m.id,
+      order: m.order,
+      title: m.title,
+      description: m.description || '',
+      isActive: isModActive,
+      status: isModActive ? 'PUBLISHED' : 'DRAFT',
+      learningUnitsCount: (unitsByModuleId.get(m.id) || []).length,
+      learningUnits: mUnits,
+    }
+  })
+
+  // Sort modules by order
+  modules.sort((a, b) => a.order - b.order)
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Curriculum modules retrieved successfully.',
+    data: {
+      modules,
+      stats: {
+        totalModules: rawModules.length,
+        totalLearningUnits: rawUnits.length,
+        publishedModules: totalPublishedModules,
+        draftModules: totalDraftModules,
+        publishedUnits: totalPublishedUnits,
+        draftUnits: totalDraftUnits,
+      },
+    },
+  })
+}
+
+async function handleCreateCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const title = typeof body.title === 'string' ? body.title.trim() : ''
+  const description = typeof body.description === 'string' ? body.description.trim() : ''
+  const order = typeof body.order === 'number' ? body.order : null
+
+  if (!title) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module Title',
+      message: 'Module title is required.',
+    })
+  }
+
+  const { data: existingModules, error: listErr } = await supabaseServer.from('Module').select('order')
+  if (listErr) throw listErr
+
+  const nextOrder = order ?? ((existingModules || []).reduce((max: number, m: any) => Math.max(max, m.order || 0), 0) + 1)
+  const newModuleId = `mod-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+
+  const { data: created, error: createErr } = await supabaseServer
+    .from('Module')
+    .insert({
+      id: newModuleId,
+      title,
+      description,
+      order: nextOrder,
+      isActive: true,
+      status: 'PUBLISHED',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+    .select()
+    .single()
+
+  if (createErr) throw createErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'CREATE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    newModuleId,
+    title,
+    { title, order: nextOrder, description },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Module "${title}" created successfully.`,
+    data: { ...created, learningUnits: [] },
+  })
+}
+
+async function handleUpdateCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required for update.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.description === 'string') updates.description = body.description.trim()
+  if (typeof body.order === 'number') updates.order = body.order
+  if (typeof body.isActive === 'boolean') updates.isActive = body.isActive
+  if (typeof body.status === 'string') updates.status = body.status.toUpperCase()
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Module')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    id,
+    updates.title || id,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Module updated successfully.`,
+    data: updated,
+  })
+}
+
+async function handleDeleteCurriculumModule(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required for deletion.',
+    })
+  }
+
+  // Cascade delete learning units
+  await supabaseServer.from('LearningUnit').delete().eq('moduleId', id)
+
+  // Delete module
+  const { error: delErr } = await supabaseServer.from('Module').delete().eq('id', id)
+  if (delErr) throw delErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_CURRICULUM_MODULE',
+    'CURRICULUM',
+    id,
+    `Module ${id}`,
+    { deletedId: id },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Module and associated learning units deleted successfully.',
+    data: { id },
+  })
+}
+
+async function handleReorderCurriculumModules(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const moduleOrders = Array.isArray(body.moduleOrders) ? body.moduleOrders : []
+  if (moduleOrders.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Orders',
+      message: 'moduleOrders array is required.',
+    })
+  }
+
+  for (const item of moduleOrders) {
+    if (item.id && typeof item.order === 'number') {
+      await supabaseServer.from('Module').update({ order: item.order }).eq('id', item.id)
+    }
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'REORDER_CURRICULUM_MODULES',
+    'CURRICULUM',
+    'bulk',
+    `Reordered ${moduleOrders.length} modules`,
+    { moduleOrders },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Modules reordered successfully.',
+  })
+}
+
+async function handleCreateLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const moduleId = typeof body.moduleId === 'string' ? body.moduleId.trim() : ''
+  const title = typeof body.title === 'string' ? body.title.trim() : ''
+
+  if (!moduleId || !title) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Fields',
+      message: 'Module ID and unit title are required.',
+    })
+  }
+
+  const { data: existingUnits } = await supabaseServer.from('LearningUnit').select('order').eq('moduleId', moduleId)
+  const nextOrder = typeof body.order === 'number'
+    ? body.order
+    : ((existingUnits || []).reduce((max: number, u: any) => Math.max(max, u.order || 0), 0) + 1)
+
+  const newUnitId = `unit-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+
+  const newUnit = {
+    id: newUnitId,
+    moduleId,
+    order: nextOrder,
+    title,
+    concept: typeof body.concept === 'string' ? body.concept : '',
+    content: typeof body.content === 'string' ? body.content : (typeof body.concept === 'string' ? body.concept : ''),
+    approach: typeof body.approach === 'string' ? body.approach : '',
+    codeSnippets: body.codeSnippets || {},
+    codingQuestion: typeof body.codingQuestion === 'string' ? body.codingQuestion : '',
+    inputFormat: typeof body.inputFormat === 'string' ? body.inputFormat : '',
+    outputFormat: typeof body.outputFormat === 'string' ? body.outputFormat : '',
+    examples: Array.isArray(body.examples) ? body.examples : [],
+    readingTimeMinutes: typeof body.readingTimeMinutes === 'number' ? body.readingTimeMinutes : 2,
+    isActive: true,
+    status: 'PUBLISHED',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const { data: created, error: createErr } = await supabaseServer
+    .from('LearningUnit')
+    .insert(newUnit)
+    .select()
+    .single()
+
+  if (createErr) throw createErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'CREATE_LEARNING_UNIT',
+    'CURRICULUM',
+    newUnitId,
+    title,
+    { moduleId, title, order: nextOrder },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 201, {
+    success: true,
+    message: `Learning unit "${title}" created successfully.`,
+    data: created,
+  })
+}
+
+async function handleUpdateLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Learning Unit ID is required.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.concept === 'string') updates.concept = body.concept
+  if (typeof body.content === 'string') updates.content = body.content
+  if (typeof body.approach === 'string') updates.approach = body.approach
+  if (body.codeSnippets !== undefined) updates.codeSnippets = body.codeSnippets
+  if (typeof body.codingQuestion === 'string') updates.codingQuestion = body.codingQuestion
+  if (typeof body.inputFormat === 'string') updates.inputFormat = body.inputFormat
+  if (typeof body.outputFormat === 'string') updates.outputFormat = body.outputFormat
+  if (Array.isArray(body.examples)) updates.examples = body.examples
+  if (typeof body.readingTimeMinutes === 'number') updates.readingTimeMinutes = body.readingTimeMinutes
+  if (typeof body.order === 'number') updates.order = body.order
+  if (typeof body.isActive === 'boolean') updates.isActive = body.isActive
+  if (typeof body.status === 'string') updates.status = body.status.toUpperCase()
+
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('LearningUnit')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_LEARNING_UNIT',
+    'CURRICULUM',
+    id,
+    updates.title || id,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning unit updated successfully.',
+    data: updated,
+  })
+}
+
+async function handleDeleteLearningUnit(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Learning Unit ID is required.',
+    })
+  }
+
+  const { error: delErr } = await supabaseServer.from('LearningUnit').delete().eq('id', id)
+  if (delErr) throw delErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_LEARNING_UNIT',
+    'CURRICULUM',
+    id,
+    `Unit ${id}`,
+    { deletedId: id },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning unit deleted successfully.',
+    data: { id },
+  })
+}
+
+async function handleReorderLearningUnits(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const unitOrders = Array.isArray(body.unitOrders) ? body.unitOrders : []
+  if (unitOrders.length === 0) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Orders',
+      message: 'unitOrders array is required.',
+    })
+  }
+
+  for (const item of unitOrders) {
+    if (item.id && typeof item.order === 'number') {
+      await supabaseServer.from('LearningUnit').update({ order: item.order }).eq('id', item.id)
+    }
+  }
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'REORDER_LEARNING_UNITS',
+    'CURRICULUM',
+    'bulk',
+    `Reordered ${unitOrders.length} learning units`,
+    { unitOrders },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Learning units reordered successfully.',
+  })
+}
+
+async function handleToggleModuleStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Module ID',
+      message: 'Module ID is required.',
+    })
+  }
+
+  const { data: existing } = await supabaseServer.from('Module').select('*').eq('id', id).single()
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: 'Module not found.',
+    })
+  }
+
+  const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
+  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const { data: updated } = await supabaseServer
+    .from('Module')
+    .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_MODULE_STATUS',
+    'CURRICULUM',
+    id,
+    existing.title,
+    { previousStatus: existing.status, newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Module status changed to ${nextStatus}.`,
+    data: updated,
+  })
+}
+
+async function handleToggleLearningUnitStatus(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' ? body.id.trim() : ''
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Unit ID',
+      message: 'Unit ID is required.',
+    })
+  }
+
+  const { data: existing } = await supabaseServer.from('LearningUnit').select('*').eq('id', id).single()
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: 'Learning unit not found.',
+    })
+  }
+
+  const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
+  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const { data: updated } = await supabaseServer
+    .from('LearningUnit')
+    .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'TOGGLE_LEARNING_UNIT_STATUS',
+    'CURRICULUM',
+    id,
+    existing.title,
+    { previousStatus: existing.status, newStatus: nextStatus },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Learning unit status changed to ${nextStatus}.`,
+    data: updated,
+  })
+}
+
+// ─── 10. Practice Belts Management Handlers ─────────────────────────────
+
+async function handleListBelts(res: ServerResponse) {
+  const [beltsRes, problemsRes] = await Promise.all([
+    supabaseServer.from('Belt').select('*').order('order', { ascending: true }),
+    supabaseServer.from('Problem').select('id, beltId, isActive, slug'),
+  ])
+
+  let rawBelts = beltsRes.data || []
+  if (rawBelts.length === 0) {
+    rawBelts = (problemsData as any[]).map((b, idx) => ({
+      id: `mock-belt-${b.order || idx + 1}`,
+      order: b.order || idx + 1,
+      name: b.belt || `Belt ${b.order || idx + 1}`,
+      title: b.title,
+      description: b.description || '',
+      color: b.color || '#EAB308',
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    }))
+  }
+
+  const allProblems = problemsRes.data || []
+
+  const belts = rawBelts.map((b: any) => {
+    // Count problems assigned to this belt
+    const bOrder = b.order
+    const beltProbs = allProblems.filter((p: any) =>
+      p.beltId === b.id ||
+      p.beltId === `mock-belt-${bOrder}` ||
+      (p.slug && p.slug.startsWith(`belt-${bOrder}-`))
+    )
+
+    const totalCount = beltProbs.length > 0 ? beltProbs.length : ((problemsData as any[])[bOrder - 1]?.problems?.length || 0)
+    const publishedCount = beltProbs.length > 0 ? beltProbs.filter((p: any) => p.isActive).length : totalCount
+    const draftCount = totalCount - publishedCount
+
+    return {
+      id: b.id,
+      order: b.order,
+      name: b.name || `Belt ${b.order}`,
+      title: b.title,
+      description: b.description || '',
+      color: b.color || '#EAB308',
+      problemCount: totalCount,
+      publishedCount,
+      draftCount,
+    }
+  })
+
+  belts.sort((a, b) => a.order - b.order)
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Belts retrieved successfully.',
+    data: {
+      belts,
+      stats: {
+        totalBelts: belts.length,
+        totalProblems: belts.reduce((sum, b) => sum + b.problemCount, 0),
+        publishedProblems: belts.reduce((sum, b) => sum + b.publishedCount, 0),
+        draftProblems: belts.reduce((sum, b) => sum + b.draftCount, 0),
+      },
+    },
+  })
+}
+
+async function handleUpdateBelt(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const idOrOrder = body.id || body.order
+  if (!idOrOrder) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Belt Identifier',
+      message: 'Belt id or order is required.',
+    })
+  }
+
+  const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
+  if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
+  if (typeof body.name === 'string' && body.name.trim()) updates.name = body.name.trim()
+  if (typeof body.description === 'string') updates.description = body.description.trim()
+  if (typeof body.color === 'string' && body.color.trim()) updates.color = body.color.trim()
+
+  let query = supabaseServer.from('Belt').update(updates)
+  if (typeof body.id === 'string') {
+    query = query.eq('id', body.id)
+  } else if (typeof body.order === 'number') {
+    query = query.eq('order', body.order)
+  }
+
+  const { data: updated, error: updErr } = await query.select().single()
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'UPDATE_BELT',
+    'PRACTICE_BELT',
+    String(idOrOrder),
+    updates.title || `Belt ${idOrOrder}`,
+    updates,
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Belt updated successfully.',
+    data: updated,
   })
 }
