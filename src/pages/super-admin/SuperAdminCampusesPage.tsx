@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2, ChevronDown, Filter, Plus, RefreshCw, Search } from 'lucide-react'
+import { Building2, Filter, Plus, RefreshCw, Search } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import type { Campus } from '@/lib/types'
 
 type CampusRow = {
   id: string; name: string; code: string; city: string | null; state: string | null;
