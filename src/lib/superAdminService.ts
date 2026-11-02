@@ -240,24 +240,32 @@ async function callSuperAdminApi<T = unknown>(
       fetchOptions.body = JSON.stringify(bodyWithAction)
     }
 
-    // Try primary path first (/api/super-admin/dashboard, /api/super-admin/campuses, etc.)
-    let res = await fetch(url, fetchOptions)
-
-    // Fallback to /api/super-admin if subpath yields 404
-    if (res.status === 404) {
-      if (method === 'GET') {
-        const searchParams = new URLSearchParams()
-        for (const [k, v] of Object.entries(bodyWithAction)) {
-          if (v !== undefined && v !== null) {
-            searchParams.append(k, String(v))
+    // Preserve the existing path fallback while retrying once with a refreshed JWT after 401.
+    const requestWithFallback = async (): Promise<Response> => {
+      let response = await fetch(url, fetchOptions)
+      if (response.status === 404) {
+        if (method === 'GET') {
+          const searchParams = new URLSearchParams()
+          for (const [k, v] of Object.entries(bodyWithAction)) {
+            if (v !== undefined && v !== null) searchParams.append(k, String(v))
           }
+          response = await fetch(`/api/super-admin?${searchParams.toString()}`, fetchOptions)
+        } else {
+          response = await fetch('/api/super-admin', {
+            ...fetchOptions,
+            body: JSON.stringify(bodyWithAction),
+          })
         }
-        res = await fetch(`/api/super-admin?${searchParams.toString()}`, fetchOptions)
-      } else {
-        res = await fetch('/api/super-admin', {
-          ...fetchOptions,
-          body: JSON.stringify(bodyWithAction),
-        })
+      }
+      return response
+    }
+
+    let res = await requestWithFallback()
+    if (res.status === 401 && !(import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem('kalvi_test_auth_token'))) {
+      const refreshedHeader = await getAuthHeader(true)
+      if (refreshedHeader) {
+        fetchOptions.headers = { ...headers, Authorization: refreshedHeader }
+        res = await requestWithFallback()
       }
     }
 
