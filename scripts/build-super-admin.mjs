@@ -1,19 +1,13 @@
 import { build } from 'esbuild'
+import { mkdir } from 'node:fs/promises'
+import { dirname } from 'node:path'
 
-const targets = [
-  'api/super-admin.js',
-  'api/super-admin/dashboard.js',
-  'api/super-admin/campuses.js',
-  'api/super-admin/managers.js',
-  'api/super-admin/mentors.js',
-  'api/super-admin/students.js',
-  'api/super-admin/roles.js',
-  'api/super-admin/audit.js',
-]
+const targets = ['api/super-admin.js', ...["dashboard","campuses","managers","mentors","students","roles","audit"].map((route) => `api/super-admin/${route}.js`)]
 
 for (const outfile of targets) {
+  await mkdir(dirname(outfile), { recursive: true })
   await build({
-    entryPoints: ['api/_super-admin-entry.mjs'],
+    entryPoints: ['src/server/superAdminHandler.ts'],
     bundle: true,
     platform: 'node',
     format: 'esm',
