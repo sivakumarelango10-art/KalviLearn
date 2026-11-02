@@ -1,68 +1,608 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Building2, Filter, Plus, RefreshCw, Search } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
-
-type CampusRow = {
-  id: string; name: string; code: string; city: string | null; state: string | null;
-  country: string | null; status: string; manager_id: string | null; created_at: string;
-  studentCount: number; mentorCount: number; manager: { name: string | null; email: string } | null;
-}
+import React, { useEffect, useState } from 'react'
+import {
+  Building2,
+  Plus,
+  Search,
+  Filter,
+  Edit2,
+  Power,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  X,
+  Users,
+  GraduationCap,
+  MapPin,
+  UserCheck,
+} from 'lucide-react'
+import {
+  fetchCampuses,
+  createCampus,
+  updateCampus,
+  toggleCampusStatus,
+  fetchCampusManagers,
+  AdminCampus,
+  AdminCampusManager,
+} from '@/lib/superAdminService'
 
 export const SuperAdminCampusesPage: React.FC = () => {
-  const [rows,setRows] = useState<CampusRow[]>([])
-  const [query,setQuery] = useState('')
-  const [status,setStatus] = useState<'ALL'|'ACTIVE'|'INACTIVE'>('ALL')
-  const [loading,setLoading] = useState(true)
-  const [error,setError] = useState('')
-  const [refreshing,setRefreshing] = useState(false)
+  const [campuses, setCampuses] = useState<AdminCampus[]>([])
+  const [managers, setManagers] = useState<AdminCampusManager[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL')
 
-  const load = useCallback(async (refresh = false) => {
-    refresh ? setRefreshing(true) : setLoading(true)
-    setError('')
-    try {
-      const {data: campusData,error: campusError} = await supabase.from('campuses').select('id,name,code,city,state,country,status,manager_id,created_at').order('name')
-      if(campusError) throw campusError
-      const ids=(campusData||[]).map(row=>row.id)
-      const managerIds=Array.from(new Set((campusData||[]).map(row=>row.manager_id).filter(Boolean))) as string[]
-      const [students,mentors,managers]=ids.length?await Promise.all([
-        supabase.from('students').select('campus_id').in('campus_id',ids),
-        supabase.from('mentors').select('campus_id').in('campus_id',ids),
-        managerIds.length?supabase.from('users').select('id,name,email').in('id',managerIds):Promise.resolve({data:[],error:null}),
-      ]):[{data:[],error:null},{data:[],error:null},{data:[],error:null}]
-      if(students.error||mentors.error||managers.error) throw students.error||mentors.error||managers.error
-      const sc=new Map<string,number>(),mc=new Map<string,number>(),mm=new Map((managers.data||[]).map(m=>[m.id,m]))
-      for(const r of students.data||[]) if(r.campus_id) sc.set(r.campus_id,(sc.get(r.campus_id)||0)+1)
-      for(const r of mentors.data||[]) if(r.campus_id) mc.set(r.campus_id,(mc.get(r.campus_id)||0)+1)
-      setRows((campusData||[]).map(row=>({...row,studentCount:sc.get(row.id)||0,mentorCount:mc.get(row.id)||0,manager:row.manager_id?mm.get(row.manager_id)||null:null})))
-    } catch(err) { setError(err instanceof Error?err.message:'Unable to load campuses.') }
-    finally {setLoading(false);setRefreshing(false)}
-  },[])
+  // Modals state
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingCampus, setEditingCampus] = useState<AdminCampus | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
-  useEffect(()=>{
-    document.title='Campus Management — KalviLearn'
-    void load()
-    const channel=supabase.channel('super-admin-campus-list').on('postgres_changes',{event:'*',schema:'public',table:'campuses'},()=>void load(true)).subscribe()
-    return ()=>{void supabase.removeChannel(channel)}
-  },[load])
+  // Create form state
+  const [newCode, setNewCode] = useState('')
+  const [newName, setNewName] = useState('')
+  const [newCity, setNewCity] = useState('')
+  const [newState, setNewState] = useState('')
+  const [newCountry, setNewCountry] = useState('India')
+  const [newStatus, setNewStatus] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE')
+  const [newManagerId, setNewManagerId] = useState('')
 
-  const filtered=useMemo(()=>rows.filter(row=>{
-    const q=query.trim().toLowerCase()
-    const match=!q||[row.name,row.code,row.city,row.state,row.country].some(value=>value?.toLowerCase().includes(q))
-    return match&&(status==='ALL'||row.status.toUpperCase()===status)
-  }),[rows,query,status])
+  const loadData = async () => {
+    setLoading(true)
+    setError(null)
+    const [cRes, mRes] = await Promise.all([fetchCampuses(), fetchCampusManagers()])
+    if (cRes.success && cRes.data) {
+      setCampuses(cRes.data)
+    } else {
+      setError(cRes.error || 'Failed to load campuses.')
+    }
+    if (mRes.success && mRes.data) {
+      setManagers(mRes.data)
+    }
+    setLoading(false)
+  }
 
-  return <div className="min-h-screen bg-[#090909] text-white flex">
-    <aside className="hidden md:flex w-[228px] shrink-0 border-r border-[#242424] bg-[#151515] flex-col">
-      <div className="h-14 border-b border-[#242424] px-4 flex items-center gap-3"><div className="h-7 w-7 border-[3px] border-[#ed2a2b] flex items-center justify-center text-[#ed2a2b] font-black">K</div><div className="leading-tight"><div className="font-extrabold text-xs">Kalvi<span className="text-[#ed2a2b]">Admin</span></div><div className="text-[9px] tracking-widest text-[#ed5b5b] font-bold">SUPER ADMIN</div></div></div>
-      <nav className="flex-1 p-2 space-y-1">{[['Dashboard','/super-admin/dashboard'],['Campuses','/super-admin/campuses'],['Campus Managers','/super-admin/managers'],['Mentors','/super-admin/mentors'],['Students','/super-admin/students'],['Roles & Access','/super-admin/roles'],['Content','/super-admin/content'],['Audit Logs','/super-admin/audit']].map(([label,path])=><Link key={path} to={path} className={`block rounded-xl px-3 py-3 text-xs font-semibold ${label==='Campuses'?'bg-[#321b1b] border border-[#5b2929] text-[#ff6a6a]':'text-slate-300 hover:bg-[#222]'}`}>{label}</Link>)}</nav>
-    </aside>
-    <main className="flex-1 min-w-0 px-5 lg:px-10 py-7"><div className="max-w-[1145px] mx-auto space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-4 border-b border-[#262626] pb-4"><div><div className="flex items-center gap-2"><Building2 size={21} className="text-blue-400"/><h1 className="text-xl font-extrabold">Campus Management</h1></div><p className="mt-1 text-xs text-slate-400">Authoritative registry of university and tech campuses, status controls, and manager bindings.</p></div><div className="flex gap-2"><button type="button" onClick={()=>void load(true)} disabled={refreshing} className="rounded-lg border border-[#303030] bg-[#171717] px-3 py-2 text-xs flex items-center gap-2"><RefreshCw size={13} className={refreshing?'animate-spin':''}/>Refresh</button><Link to="/super-admin/dashboard?createCampus=1" className="rounded-lg bg-[#ed2a2b] px-3 py-2 text-xs font-bold flex items-center gap-2"><Plus size={14}/>Create Campus</Link></div></header>
-      <div className="rounded-xl border border-[#292929] bg-[#171717] p-3 flex flex-wrap items-center gap-4 justify-between"><label className="relative w-full md:max-w-[285px]"><Search size={14} className="absolute left-3 top-2.5 text-slate-500"/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by campus name, code, or city..." className="w-full rounded-lg border border-[#323232] bg-[#090909] py-2 pl-9 pr-3 text-[11px] outline-none focus:border-red-500"/></label><div className="flex items-center gap-2 text-[11px] text-slate-400"><Filter size={13}/><span>Status:</span>{(['ALL','ACTIVE','INACTIVE'] as const).map(value=><button key={value} type="button" onClick={()=>setStatus(value)} className={`rounded-lg px-3 py-1.5 ${status===value?'bg-[#242424] border border-[#454545] text-white':'hover:bg-[#222]'}`}>{value}</button>)}</div></div>
-      {error&&<div role="alert" className="rounded-xl border border-red-900 bg-red-950/40 p-3 text-xs text-red-300">{error}</div>}
-      <div className="overflow-x-auto rounded-2xl border border-[#292929] bg-[#171717]"><table className="w-full min-w-[900px] text-left"><thead className="bg-[#101010]"><tr>{['CAMPUS NAME','CODE','LOCATION','MANAGER','ENROLLED STUDENTS','MENTORS','STATUS','ACTIONS'].map(h=><th key={h} className="px-3 py-3 text-[10px] font-bold tracking-wide text-slate-400">{h}</th>)}</tr></thead><tbody className="divide-y divide-[#292929]">{loading?<tr><td colSpan={8} className="py-10 text-center text-xs text-slate-500">Loading campuses…</td></tr>:filtered.length===0?<tr><td colSpan={8} className="py-10 text-center text-xs text-slate-500">No campuses found matching your criteria.</td></tr>:filtered.map(row=><tr key={row.id} className="hover:bg-[#202020]"><td className="px-3 py-3 text-xs font-semibold">{row.name}</td><td className="px-3 py-3 text-xs font-mono text-slate-300">{row.code}</td><td className="px-3 py-3 text-xs text-slate-400">{[row.city,row.state,row.country].filter(Boolean).join(', ')}</td><td className="px-3 py-3 text-xs text-slate-300">{row.manager?.name||row.manager?.email||'Unassigned'}</td><td className="px-3 py-3 text-xs tabular-nums">{row.studentCount}</td><td className="px-3 py-3 text-xs tabular-nums">{row.mentorCount}</td><td className="px-3 py-3"><span className={`rounded-full px-2 py-1 text-[9px] font-bold ${row.status.toUpperCase()==='ACTIVE'?'bg-emerald-950 text-emerald-400':'bg-slate-800 text-slate-400'}`}>{row.status.toUpperCase()}</span></td><td className="px-3 py-3 text-xs text-slate-500">—</td></tr>)}</tbody></table></div>
-    </div></main>
-  </div>
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    const res = await createCampus({
+      code: newCode,
+      name: newName,
+      city: newCity || undefined,
+      state: newState || undefined,
+      country: newCountry || undefined,
+      status: newStatus,
+      managerId: newManagerId || undefined,
+    })
+
+    if (res.success) {
+      setSuccessMsg(`Campus "${newName}" created successfully.`)
+      setShowCreateModal(false)
+      // Reset form
+      setNewCode('')
+      setNewName('')
+      setNewCity('')
+      setNewState('')
+      setNewManagerId('')
+      loadData()
+    } else {
+      setError(res.error || 'Failed to create campus.')
+    }
+    setSubmitting(false)
+  }
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingCampus) return
+    setSubmitting(true)
+    setError(null)
+
+    const res = await updateCampus(editingCampus.id, {
+      name: editingCampus.name,
+      city: editingCampus.city,
+      state: editingCampus.state,
+      country: editingCampus.country,
+      status: editingCampus.status,
+      managerId: editingCampus.manager_id || null,
+    })
+
+    if (res.success) {
+      setSuccessMsg(`Campus "${editingCampus.name}" updated successfully.`)
+      setEditingCampus(null)
+      loadData()
+    } else {
+      setError(res.error || 'Failed to update campus.')
+    }
+    setSubmitting(false)
+  }
+
+  const handleToggle = async (campus: AdminCampus) => {
+    const nextStatus = campus.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+    const confirm = window.confirm(
+      `Are you sure you want to change campus "${campus.name}" to ${nextStatus}?`
+    )
+    if (!confirm) return
+
+    const res = await toggleCampusStatus(campus.id, nextStatus)
+    if (res.success) {
+      setSuccessMsg(`Campus "${campus.name}" is now ${nextStatus}.`)
+      loadData()
+    } else {
+      setError(res.error || 'Failed to change campus status.')
+    }
+  }
+
+  const filtered = campuses.filter((c) => {
+    if (statusFilter !== 'ALL' && c.status !== statusFilter) return false
+    if (!search.trim()) return true
+    const s = search.toLowerCase()
+    return (
+      c.name.toLowerCase().includes(s) ||
+      c.code.toLowerCase().includes(s) ||
+      (c.city && c.city.toLowerCase().includes(s))
+    )
+  })
+
+  return (
+    <div className="space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+        <div>
+          <div className="flex items-center gap-2">
+            <Building2 className="w-6 h-6 text-blue-400" />
+            <h1 className="text-2xl font-bold text-white tracking-tight">Campus Management</h1>
+          </div>
+          <p className="text-sm text-neutral-400 mt-1">
+            Authoritative registry of university and tech campuses, status controls, and manager bindings.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <span>Refresh</span>
+          </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#ED2A2B] hover:bg-[#d02425] text-white text-xs font-semibold transition-all shadow-xs"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create Campus</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Notifications */}
+      {error && (
+        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {successMsg && (
+        <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-emerald-300 text-sm flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <span>{successMsg}</span>
+          </div>
+          <button onClick={() => setSuccessMsg(null)} className="text-xs text-neutral-400 hover:text-white">
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* Filters & Search */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by campus name, code, or city..."
+            className="w-full pl-9 pr-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Filter className="w-3.5 h-3.5 text-neutral-400" />
+          <span className="text-xs text-neutral-400">Status:</span>
+          {(['ALL', 'ACTIVE', 'INACTIVE'] as const).map((st) => (
+            <button
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              className={`px-2.5 py-1 text-xs rounded-lg transition-colors font-medium ${
+                statusFilter === st
+                  ? 'bg-neutral-800 text-white border border-neutral-700'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              {st}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Campuses Table */}
+      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+                <th className="py-3.5 px-4">Campus Name</th>
+                <th className="py-3.5 px-4">Code</th>
+                <th className="py-3.5 px-4">Location</th>
+                <th className="py-3.5 px-4">Manager</th>
+                <th className="py-3.5 px-4">Enrolled Students</th>
+                <th className="py-3.5 px-4">Mentors</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-neutral-400">
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <span>Loading campuses...</span>
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-neutral-400">
+                    No campuses found matching your criteria.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((campus) => (
+                  <tr key={campus.id} className="hover:bg-neutral-800/40 transition-colors">
+                    <td className="py-3.5 px-4 font-semibold text-white">
+                      {campus.name}
+                    </td>
+                    <td className="py-3.5 px-4 font-mono text-neutral-300">
+                      <span className="px-2 py-0.5 rounded bg-neutral-800 border border-neutral-700/80 text-[11px]">
+                        {campus.code}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-neutral-400">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-neutral-500" />
+                        <span>{campus.city ? `${campus.city}, ${campus.state || ''}` : 'Unspecified'}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      {campus.manager ? (
+                        <div className="flex items-center gap-1.5 text-purple-300">
+                          <UserCheck className="w-3.5 h-3.5 text-purple-400" />
+                          <span className="font-medium">{campus.manager.name || campus.manager.email}</span>
+                        </div>
+                      ) : (
+                        <span className="text-neutral-500 italic">Unassigned</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 font-medium text-white">
+                      <div className="flex items-center gap-1.5">
+                        <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{campus.studentCount ?? 0}</span>
+                        <span className="text-[10px] text-neutral-500">
+                          ({campus.activeStudentCount ?? 0} active)
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 font-medium text-white">
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{campus.mentorCount ?? 0}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      {campus.status === 'ACTIVE' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          ACTIVE
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                          INACTIVE
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setEditingCampus(campus)}
+                          className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+                          title="Edit Campus"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleToggle(campus)}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            campus.status === 'ACTIVE'
+                              ? 'text-neutral-400 hover:text-red-400 hover:bg-neutral-800'
+                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-neutral-800'
+                          }`}
+                          title={campus.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                        >
+                          <Power className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Create Campus Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+            <button
+              onClick={() => setShowCreateModal(false)}
+              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-blue-400" />
+              <span>Create New Campus</span>
+            </h3>
+
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Campus Code * <span className="text-[10px] text-neutral-500 font-mono">(e.g. KALVIUM-PUNE)</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newCode}
+                  onChange={(e) => setNewCode(e.target.value.toUpperCase())}
+                  placeholder="KALVIUM-DELHI"
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Campus Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Kalvium Delhi Technological Campus"
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    value={newCity}
+                    onChange={(e) => setNewCity(e.target.value)}
+                    placeholder="Delhi"
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    State
+                  </label>
+                  <input
+                    type="text"
+                    value={newState}
+                    onChange={(e) => setNewState(e.target.value)}
+                    placeholder="Delhi NCR"
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    value={newCountry}
+                    onChange={(e) => setNewCountry(e.target.value)}
+                    placeholder="India"
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    Initial Status
+                  </label>
+                  <select
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  >
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Assign Campus Manager
+                </label>
+                <select
+                  value={newManagerId}
+                  onChange={(e) => setNewManagerId(e.target.value)}
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                >
+                  <option value="">None (Assign Later)</option>
+                  {managers.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name || m.email} ({m.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d02425] text-white text-xs font-semibold disabled:opacity-50"
+                >
+                  {submitting ? 'Creating...' : 'Create Campus'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Campus Modal */}
+      {editingCampus && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+            <button
+              onClick={() => setEditingCampus(null)}
+              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Edit2 className="w-5 h-5 text-blue-400" />
+              <span>Edit Campus: {editingCampus.code}</span>
+            </h3>
+
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Campus Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editingCampus.name}
+                  onChange={(e) => setEditingCampus({ ...editingCampus, name: e.target.value })}
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    value={editingCampus.city || ''}
+                    onChange={(e) => setEditingCampus({ ...editingCampus, city: e.target.value })}
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1">
+                    State
+                  </label>
+                  <input
+                    type="text"
+                    value={editingCampus.state || ''}
+                    onChange={(e) => setEditingCampus({ ...editingCampus, state: e.target.value })}
+                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Status
+                </label>
+                <select
+                  value={editingCampus.status}
+                  onChange={(e) =>
+                    setEditingCampus({
+                      ...editingCampus,
+                      status: e.target.value as 'ACTIVE' | 'INACTIVE',
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                >
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">
+                  Campus Manager
+                </label>
+                <select
+                  value={editingCampus.manager_id || ''}
+                  onChange={(e) =>
+                    setEditingCampus({ ...editingCampus, manager_id: e.target.value || null })
+                  }
+                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                >
+                  <option value="">None (Unassigned)</option>
+                  {managers.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name || m.email} ({m.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingCampus(null)}
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d02425] text-white text-xs font-semibold disabled:opacity-50"
+                >
+                  {submitting ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
-export default SuperAdminCampusesPage
