@@ -257,7 +257,9 @@ async function callSuperAdminApi<T = unknown>(
     const testAuthEnabled = import.meta.env.DEV && typeof window !== 'undefined' && !!localStorage.getItem('kalvi_test_auth_token')
     let options = await createOptions()
     if (!('Authorization' in (options.headers || {})) && !testAuthEnabled) {
-      return { success: false, error: 'Your sign-in session is missing. Please sign in with Google again.' }
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError) return { success: false, error: 'Your sign-in session could not be restored. Please sign in with Google again.' }
+      return { success: false, error: session ? 'Your session has no usable access token. Please sign in with Google again.' : 'Your sign-in session is missing. Please sign in with Google again.' }
     }
 
     let response = await requestWithFallback(options)
