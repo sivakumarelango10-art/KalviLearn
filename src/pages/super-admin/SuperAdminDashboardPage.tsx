@@ -40,12 +40,12 @@ export const SuperAdminDashboardPage: React.FC = () => {
   }, [])
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-full space-y-5 bg-[#0b0b0d] p-4 sm:p-6 text-white rounded-2xl">
       {/* Top Banner / Welcome */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800/80">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white tracking-tight">Platform Command Center</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Platform Command Center</h1>
             <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-red-950 text-red-400 border border-red-800">
               Super Admin
             </span>
@@ -81,17 +81,17 @@ export const SuperAdminDashboardPage: React.FC = () => {
       )}
 
       {/* Primary KPI Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4">
         {/* Campuses Card */}
-        <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex flex-col justify-between relative overflow-hidden">
+        <div className="group p-5 rounded-2xl bg-gradient-to-br from-[#1b1b1f] to-[#141416] border border-white/[0.07] hover:border-white/[0.14] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Campuses</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-3xl font-black text-white">
+            <div className="text-4xl font-semibold tracking-tight text-white">
               {loading ? '-' : telemetry?.overview.totalCampuses ?? 0}
             </div>
             <div className="text-xs text-neutral-400 mt-1 flex items-center gap-1.5">
@@ -112,7 +112,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
         <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Campus Managers</span>
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
               <UserCog className="w-4 h-4" />
             </div>
           </div>
@@ -138,7 +138,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
         <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Mentors</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
@@ -164,7 +164,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
         <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Students</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
               <GraduationCap className="w-4 h-4" />
             </div>
           </div>
@@ -188,7 +188,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
       </div>
 
       {/* Role Breakdown Bar */}
-      <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-3">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#151517] border border-white/[0.07] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Layers className="w-4 h-4 text-neutral-400" />
@@ -205,8 +205,8 @@ export const SuperAdminDashboardPage: React.FC = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
-          <div className="bg-neutral-950 p-3 rounded-xl border border-neutral-800/80">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 pt-1">
+          <div className="bg-[#0d0d0f] p-4 rounded-xl border border-white/[0.06] hover:border-white/[0.12] transition-colors">
             <div className="text-[11px] font-semibold text-neutral-400 uppercase">Super Admin</div>
             <div className="text-xl font-bold text-red-400 mt-0.5">
               {telemetry?.roleDistribution?.SUPERADMIN ?? 1}
@@ -245,9 +245,9 @@ export const SuperAdminDashboardPage: React.FC = () => {
       </div>
 
       {/* Two-Column Layout: Campuses Breakdown & Recent Audit Logs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
         {/* Campuses Overview Card */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col">
+        <div className="p-5 sm:p-6 rounded-2xl bg-[#151517] border border-white/[0.07] flex flex-col">
           <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
             <div className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-blue-400" />
@@ -264,14 +264,14 @@ export const SuperAdminDashboardPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="divide-y divide-neutral-800/60 overflow-y-auto max-h-80 mt-2">
+          <div className="divide-y divide-neutral-800/60 overflow-y-auto max-h-[28rem] mt-3">
             {(!telemetry?.campuses || telemetry.campuses.length === 0) ? (
               <div className="py-8 text-center text-xs text-neutral-500">
                 {loading ? 'Loading campuses...' : 'No campuses registered.'}
               </div>
             ) : (
               telemetry.campuses.map((c) => (
-                <div key={c.id} className="py-3 flex items-center justify-between gap-3">
+                <div key={c.id} className="py-4 flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-white truncate">{c.name}</span>
@@ -329,7 +329,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
               </div>
             ) : (
               telemetry.recentAuditLogs.map((log) => (
-                <div key={log.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                <div key={log.id} className="py-3.5 flex items-center justify-between gap-3 text-xs">
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 font-medium text-white truncate">
                       {log.status === 'SUCCESS' ? (
