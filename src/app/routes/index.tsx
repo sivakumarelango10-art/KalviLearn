@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
 import { CampusManagerProtectedRoute } from '@/components/auth/CampusManagerProtectedRoute'
+import { SuperAdminProtectedRoute } from '@/components/auth/SuperAdminProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
 import { CampusManagerLayout } from '@/layouts/CampusManagerLayout'
@@ -97,6 +98,17 @@ const MentorCurriculumPage = lazyWithRetry(
 const MentorProfilePage = lazyWithRetry(
   () => import('@/pages/mentor/MentorProfilePage').then((m) => ({ default: m.MentorProfilePage })),
   'MentorProfilePage'
+)
+
+
+// Super Admin Portal Pages (platform governance)
+const SuperAdminDashboardPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminDashboardPage').then((m) => ({ default: m.SuperAdminDashboardPage })),
+  'SuperAdminDashboardPage'
+)
+const SuperAdminCampusesPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminCampusesPage').then((m) => ({ default: m.SuperAdminCampusesPage })),
+  'SuperAdminCampusesPage'
 )
 
 // Campus Manager Portal Pages
@@ -320,6 +332,25 @@ export const router = createBrowserRouter([
             element: withSuspense(<NotFoundPage />),
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/super-admin',
+    element: <SuperAdminProtectedRoute />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        path: 'dashboard',
+        element: withSuspense(<SuperAdminDashboardPage />),
+      },
+      {
+        path: 'campuses',
+        element: withSuspense(<SuperAdminCampusesPage />),
+      },
+      {
+        path: '*',
+        element: <Navigate to="/super-admin/dashboard" replace />,
       },
     ],
   },
