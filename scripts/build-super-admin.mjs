@@ -1,11 +1,10 @@
 import { build } from 'esbuild'
-import { mkdir } from 'node:fs/promises'
-import { dirname } from 'node:path'
 
-const targets = ['api/super-admin.js', ...["dashboard","campuses","managers","mentors","students","roles","audit"].map((route) => `api/super-admin/${route}.js`)]
+const targets = [
+  'api/super-admin.js',
+]
 
 for (const outfile of targets) {
-  await mkdir(dirname(outfile), { recursive: true })
   await build({
     entryPoints: ['src/server/superAdminHandler.ts'],
     bundle: true,
@@ -16,4 +15,4 @@ for (const outfile of targets) {
   })
 }
 
-console.log('Super Admin API bundles generated.')
+console.log('✓ Super Admin API bundle generated (api/super-admin.js)')
