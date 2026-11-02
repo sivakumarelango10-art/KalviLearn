@@ -1,4 +1,4 @@
-import { Suspense, type ReactNode } from 'react'
+import { Suspense, createElement, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
@@ -351,38 +351,38 @@ export const router = createBrowserRouter([
       },
       {
         path: 'managers',
-        element: withSuspense(lazyWithRetry(
+        element: withSuspense(createElement(lazyWithRetry(
           () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
           'SuperAdminManagersPage'
-        )({})),
+        ))),
       },
       {
         path: 'mentors',
-        element: withSuspense(lazyWithRetry(
+        element: withSuspense(createElement(lazyWithRetry(
           () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
           'SuperAdminMentorsPage'
-        )({})),
+        ))),
       },
       {
         path: 'students',
-        element: withSuspense(lazyWithRetry(
+        element: withSuspense(createElement(lazyWithRetry(
           () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
           'SuperAdminStudentsPage'
-        )({})),
+        ))),
       },
       {
         path: 'roles',
-        element: withSuspense(lazyWithRetry(
+        element: withSuspense(createElement(lazyWithRetry(
           () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
           'SuperAdminRolesPage'
-        )({})),
+        ))),
       },
       {
         path: 'audit',
-        element: withSuspense(lazyWithRetry(
+        element: withSuspense(createElement(lazyWithRetry(
           () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
           'SuperAdminAuditPage'
-        )({})),
+        ))),
       },
       {
         path: '*',
