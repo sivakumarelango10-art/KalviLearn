@@ -14,7 +14,6 @@ interface AuthContextType {
   isMentor: boolean
   isStudent: boolean
   isCampusManager: boolean
-  isSuperAdmin: boolean
   clearAccessDenied: () => void
   loginWithGoogle: () => Promise<any>
   loginWithEmail: (email: string) => Promise<{ success: boolean; user?: DbUser; error?: string }>
@@ -47,21 +46,6 @@ async function syncUserData(userId: string) {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<DbUser | null>(() => {
     try {
-      if (typeof window !== 'undefined' && import.meta.env.DEV) {
-        const urlParams = new URLSearchParams(window.location.search)
-        if (urlParams.get('test_auth_user') === 'superadmin') {
-          const testSuperAdmin = {
-            id: '00000000-0000-0000-0000-000000000001',
-            email: 'sgjitbros@gmail.com',
-            name: 'Super Admin',
-            role: 'SUPERADMIN',
-            status: 'ACTIVE',
-          }
-          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(testSuperAdmin))
-          localStorage.setItem('kalvi_test_auth_token', 'Bearer test_auth_superadmin_sgjitbros@gmail.com')
-          return testSuperAdmin
-        }
-      }
       const saved = localStorage.getItem(LOCAL_USER_KEY)
       return saved ? JSON.parse(saved) : null
     } catch {
@@ -280,7 +264,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isMentor: user?.role === 'MENTOR',
     isStudent: user?.role === 'STUDENT',
     isCampusManager: user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN',
-    isSuperAdmin: user?.email?.toLowerCase().trim() === 'sgjitbros@gmail.com' && user?.role === 'SUPERADMIN',
     clearAccessDenied: clearAccessDenied,
     loginWithGoogle,
     loginWithEmail,
