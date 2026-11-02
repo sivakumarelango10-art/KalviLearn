@@ -78,11 +78,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     async function checkCurrentSession() {
       try {
-        const sessionPromise = supabase.auth.getSession()
-        const timeoutPromise = new Promise<{ data: { session: null } }>((resolve) =>
-          setTimeout(() => resolve({ data: { session: null } }), 1500)
-        )
-        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
+        // Supabase getSession waits for persisted-session restoration. Do not race it
+        // against a short timeout: a slow browser/storage restore is not a signed-out state.
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError) throw sessionError
 
         if (!session?.user?.email) {
           // If Supabase session is absent, purge any stored cached active user to prevent unauthenticated bypass
