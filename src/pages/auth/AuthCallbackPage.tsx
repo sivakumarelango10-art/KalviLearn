@@ -88,7 +88,12 @@ export const AuthCallbackPage: React.FC = () => {
 
         // 3. User authenticated by Google: verify identity in KalviLearn database
         const activeUser = session.user
-        const email = activeUser.email.toLowerCase()
+        const email = activeUser.email?.toLowerCase()
+        if (!email) {
+          setErrorMessage('Your Google account did not provide an email address. Please sign in again.')
+          setTimeout(() => navigate('/login', { replace: true }), 2500)
+          return
+        }
         setStatusMessage(`Authorizing profile for ${email}...`)
 
         const result = await verifyUserInDatabase(email)
