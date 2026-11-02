@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
-  Activity, ArrowRight, BookOpen, Building2, GraduationCap, Layers3,
+  Activity, BookOpen, Building2, GraduationCap, Layers3,
   Plus, RefreshCw, ShieldCheck, Users, UserRoundCog, X,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -24,6 +24,7 @@ const number = (value: number) => new Intl.NumberFormat().format(value)
 
 export const SuperAdminDashboardPage: React.FC = () => {
   const { user, logout } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [counts, setCounts] = useState<Counts>(initialCounts)
   const [campuses, setCampuses] = useState<Campus[]>([])
   const [auditAvailable, setAuditAvailable] = useState(false)
@@ -92,6 +93,15 @@ export const SuperAdminDashboardPage: React.FC = () => {
       setLoading(false); setRefreshing(false)
     }
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get('createCampus') === '1') {
+      void openCreate()
+      const next = new URLSearchParams(searchParams)
+      next.delete('createCampus')
+      setSearchParams(next, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     document.title = 'Platform Command Center — KalviLearn'
