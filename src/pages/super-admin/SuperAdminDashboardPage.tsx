@@ -36,7 +36,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
   const roleDistribution = telemetry?.roleDistribution
   const totalUsers = overview?.totalUsers ?? 0
   const roleItems = [
-    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 1, color: 'bg-rose-400', text: 'text-rose-300' },
+    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-rose-400', text: 'text-rose-300' },
     { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
     { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-amber-300' },
     { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
@@ -49,8 +49,8 @@ export const SuperAdminDashboardPage: React.FC = () => {
   ]
 
   return (
-    <main className="min-h-screen w-full bg-black px-4 py-5 text-slate-100 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[1128px] space-y-4">
+    <main className="min-h-full w-full bg-black px-4 py-4 text-slate-100 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1128px] space-y-3">
         <header className="flex flex-col gap-4 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
@@ -76,18 +76,18 @@ export const SuperAdminDashboardPage: React.FC = () => {
 
         {error && <div role="alert" className="flex items-center justify-between rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">{error}<button onClick={() => void loadData()} className="font-semibold underline underline-offset-2">Retry</button></div>}
 
-        <section aria-label="Platform metrics" className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section aria-label="Platform metrics" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description }) => (
-            <Link key={label} to={href} className="group rounded-xl border border-white/[0.08] bg-[#101116] p-4 transition-colors hover:border-white/[0.14] hover:bg-[#121318]">
+            <Link key={label} to={href} className="group flex min-h-[122px] flex-col justify-between rounded-lg border border-white/[0.08] bg-[#101116] p-3 transition-colors hover:border-white/[0.14] hover:bg-[#121318]">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-400">{label}</p>
-                  <p className="mt-2 text-2xl font-semibold tracking-tight text-white tabular-nums">{loading ? '—' : number(value)}</p>
-                  <p className="mt-1 text-xs text-slate-500">{description}</p>
+                  <p className="text-xs font-medium text-slate-400">{label}</p>
+                  <p className="mt-1 text-xl font-semibold tracking-tight text-white tabular-nums">{loading ? '—' : number(value)}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-500">{description}</p>
                 </div>
-                <span className={`rounded-xl p-2.5 ${tint} ${color}`}><Icon className="h-5 w-5" /></span>
+                <span className={`rounded-lg p-2 ${tint} ${color}`}><Icon className="h-4 w-4" /></span>
               </div>
-              <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-3">
+              <div className="mt-3 flex items-center justify-between border-t border-white/[0.07] pt-2.5">
                 <span className="flex items-center gap-2 text-xs text-slate-400"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{number(active)} active</span>
                 <span className={`inline-flex items-center gap-1 text-xs font-semibold ${color}`}>Manage <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
               </div>
@@ -95,8 +95,8 @@ export const SuperAdminDashboardPage: React.FC = () => {
           ))}
         </section>
 
-        <section className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)]">
-          <div className="rounded-xl border border-white/[0.08] bg-[#101116] p-4 sm:p-5">
+        <section className="grid grid-cols-1 items-stretch gap-3 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)]">
+          <div className="rounded-lg border border-white/[0.08] bg-[#101116] p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2 text-slate-300"><Layers3 className="h-4 w-4 text-slate-400" /><h2 className="text-sm font-semibold">Platform role distribution</h2></div>
@@ -104,7 +104,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
               </div>
               <Link to="/super-admin/roles" className="text-xs font-medium text-slate-400 transition hover:text-white">RBAC directory <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" /></Link>
             </div>
-            <div className="mt-5 flex h-2 overflow-hidden rounded-full bg-white/[0.06]" aria-label="Role distribution bar">
+            <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-white/[0.06]" aria-label="Role distribution bar">
               {roleItems.map(item => <div key={item.label} className={item.color} style={{ width: totalUsers ? `${(item.value / totalUsers) * 100}%` : '0%' }} title={`${item.label}: ${item.value}`} />)}
             </div>
             <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
@@ -113,12 +113,12 @@ export const SuperAdminDashboardPage: React.FC = () => {
                 <p className={`mt-1.5 text-xl font-semibold tabular-nums ${item.text}`}>{number(item.value)}</p>
               </div>)}
             </div>
-            <div className="mt-5 flex items-center justify-between rounded-lg border border-white/[0.06] bg-black/30 px-3.5 py-2.5">
+            <div className="mt-4 flex items-center justify-between rounded-lg border border-white/[0.06] bg-black/30 px-3.5 py-2.5">
               <span className="text-xs text-slate-400">Total platform accounts</span><span className="text-lg font-semibold text-white tabular-nums">{number(totalUsers)}</span>
             </div>
           </div>
 
-          <div className="rounded-xl border border-white/[0.08] bg-[#101116] p-4 sm:p-5">
+          <div className="rounded-lg border border-white/[0.08] bg-[#101116] p-4">
             <div className="flex items-center justify-between gap-3">
               <div><div className="flex items-center gap-2 text-slate-300"><Activity className="h-4 w-4 text-rose-300" /><h2 className="text-sm font-semibold">Recent admin activity</h2></div><p className="mt-1 text-xs text-slate-500">Latest recorded governance events</p></div>
               <Link to="/super-admin/audit" className="shrink-0 text-xs font-medium text-rose-300 hover:text-rose-200">View audit log <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" /></Link>
