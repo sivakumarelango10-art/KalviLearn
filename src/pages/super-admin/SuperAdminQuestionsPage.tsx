@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BookOpen,
@@ -160,6 +160,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const questionListRequestId = useRef(0)
 
   // Modals
   const [isEditorOpen, setIsEditorOpen] = useState(false)
@@ -238,6 +239,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   }, [])
 
   const loadQuestions = async () => {
+    const requestId = ++questionListRequestId.current
     try {
       setLoading(true)
       setError(null)
@@ -251,6 +253,9 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         limit: 15,
       })
 
+      // Ignore an older response if a newer filter/page request has already started.
+      if (requestId !== questionListRequestId.current) return
+
       if (res.success && res.data) {
         setQuestions(res.data.questions || [])
         setStats(res.data.stats)
@@ -259,9 +264,11 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         setError(res.error || 'Failed to fetch questions.')
       }
     } catch (err: any) {
-      setError(err?.message || 'Unexpected error occurred while fetching questions.')
+      if (requestId === questionListRequestId.current) {
+        setError(err?.message || 'Unexpected error occurred while fetching questions.')
+      }
     } finally {
-      setLoading(false)
+      if (requestId === questionListRequestId.current) setLoading(false)
     }
   }
 
@@ -271,8 +278,11 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setPage(1)
-    loadQuestions()
+    if (page !== 1) {
+      setPage(1)
+      return
+    }
+    void loadQuestions()
   }
 
   const handleResetFilters = () => {
@@ -335,40 +345,55 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setIsEditorOpen(true)
   }
 
-  // Open Edit modal
-  const handleOpenEdit = (q: AdminQuestion) => {
-    setIsEditing(true)
-    setFormData({
-      id: q.id,
-      title: q.title,
-      slug: q.slug,
-      difficulty: q.difficulty,
-      subdivision: q.subdivision,
-      description: q.description || '',
-      inputFormat: q.inputFormat || '',
-      outputFormat: q.outputFormat || '',
-      constraints: q.constraints || q.explanation || '',
-      isActive: q.isActive,
-      examples: q.examples?.length
-        ? q.examples
-        : [{ label: 'Example 1', input: '', output: '', explanation: '' }],
-      testCases: q.testCases?.length
-        ? q.testCases.map((tc) => ({
-            id: tc.id,
-            input: tc.input,
-            expectedOutput: tc.expectedOutput,
-            isHidden: !!tc.isHidden,
-            description: tc.description || tc.explanation || '',
-          }))
-        : [{ input: '', expectedOutput: '', isHidden: false, description: '' }],
-      starterCodes: q.starterCodes || {
-        python: '# Write your solution here\n',
-        javascript: '// Write your solution here\n',
-      },
-    })
-    setFormErrors({})
-    setEditorTab('info')
-    setIsEditorOpen(true)
+  // Fetch full content and test cases only when an administrator opens the editor.
+  const handleOpenEdit = async (q: AdminQuestion) => {
+    setActionLoading(true)
+    setError(null)
+    try {
+      const res = await fetchAdminQuestionById(q.id)
+      if (!res.success || !res.data) {
+        setError(res.error || 'Failed to load question details for editing.')
+        return
+      }
+
+      const question = res.data
+      setIsEditing(true)
+      setFormData({
+        id: question.id,
+        title: question.title,
+        slug: question.slug,
+        difficulty: question.difficulty,
+        subdivision: question.subdivision,
+        description: question.description || '',
+        inputFormat: question.inputFormat || '',
+        outputFormat: question.outputFormat || '',
+        constraints: question.constraints || question.explanation || '',
+        isActive: question.isActive,
+        examples: question.examples?.length
+          ? question.examples
+          : [{ label: 'Example 1', input: '', output: '', explanation: '' }],
+        testCases: question.testCases?.length
+          ? question.testCases.map((tc) => ({
+              id: tc.id,
+              input: tc.input,
+              expectedOutput: tc.expectedOutput,
+              isHidden: !!tc.isHidden,
+              description: tc.description || tc.explanation || '',
+            }))
+          : [{ input: '', expectedOutput: '', isHidden: false, description: '' }],
+        starterCodes: question.starterCodes || {
+          python: '# Write your solution here\n',
+          javascript: '// Write your solution here\n',
+        },
+      })
+      setFormErrors({})
+      setEditorTab('info')
+      setIsEditorOpen(true)
+    } catch (err: any) {
+      setError(err?.message || 'Unable to load question details for editing.')
+    } finally {
+      setActionLoading(false)
+    }
   }
 
   // Open Preview Modal (Student View - strictly omits hidden tests)
