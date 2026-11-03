@@ -174,7 +174,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <GraduationCap className="w-6 h-6 text-emerald-400" />
+            <GraduationCap className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Platform Students Directory</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -187,7 +187,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF6266]' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
@@ -202,7 +202,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-red-900/60 text-[#FF6266] text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-[#681717] text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
@@ -234,7 +234,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, or code..."
-            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
           />
         </form>
 
@@ -246,7 +246,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <select
               value={campusFilter}
               onChange={(e) => setCampusFilter(e.target.value)}
-              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-[#FF6266]"
             >
               <option value="ALL">All Campuses</option>
               {campuses.map((c) => (
@@ -264,7 +264,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <select
               value={mentorFilter}
               onChange={(e) => setMentorFilter(e.target.value)}
-              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500 max-w-[150px] truncate"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-[#FF6266] max-w-[150px] truncate"
             >
               <option value="ALL">All Mentors</option>
               {mentors.map((m) => (
@@ -315,7 +315,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
                     <span>Loading student records...</span>
                   </td>
                 </tr>
@@ -449,7 +449,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-emerald-400" />
+              <GraduationCap className="w-5 h-5 text-[#FF6266]" />
               <span>Enroll New Student</span>
             </h3>
 
@@ -464,7 +464,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollName}
                   onChange={(e) => setEnrollName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -478,7 +478,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollEmail}
                   onChange={(e) => setEnrollEmail(e.target.value.toLowerCase())}
                   placeholder="student@kalvium.community"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -489,7 +489,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={enrollCampusId}
                   onChange={(e) => setEnrollCampusId(e.target.value)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -507,7 +507,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={enrollMentorId}
                   onChange={(e) => setEnrollMentorId(e.target.value)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Assign Later)</option>
                   {mentors.map((m) => (
@@ -527,7 +527,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollCode}
                   onChange={(e) => setEnrollCode(e.target.value.toUpperCase())}
                   placeholder="STU-00123"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -563,7 +563,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-emerald-400" />
+              <Edit2 className="w-5 h-5 text-[#FF6266]" />
               <span>Edit Student: {editingStudent.student_code}</span>
             </h3>
 
@@ -577,7 +577,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   required
                   value={editingStudent.name || ''}
                   onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -590,7 +590,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingStudent({ ...editingStudent, campus_id: e.target.value || null })
                   }
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -615,7 +615,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                       mentor: found ? { id: found.id, name: found.name, email: found.email } : null,
                     })
                   }}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {mentors.map((m) => (
@@ -633,7 +633,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={editingStudent.status}
                   onChange={(e) => setEditingStudent({ ...editingStudent, status: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
@@ -664,14 +664,14 @@ export const SuperAdminStudentsPage: React.FC = () => {
       {/* Delete Confirmation Modal */}
       {deletingStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-[#080808] border border-red-900/60 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-[#681717] rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setDeletingStudent(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="w-12 h-12 rounded-xl bg-[#ED2A2B]/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-[#ED2A2B]/10 border border-[#681717] text-[#FF6266] flex items-center justify-center mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
 
@@ -698,7 +698,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-[#FF6266]"
               />
             </div>
 
