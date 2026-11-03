@@ -318,6 +318,22 @@ export default async function handler(
     if (action === 'list_belts') return await handleListBelts(res)
     if (action === 'update_belt') return await handleUpdateBelt(body, auth.user.id, clientIp, res)
 
+    // Content Management — curriculum, learning units, belts and questions.
+    // Reached only after verified Supabase user identity plus sole SUPERADMIN email/role checks above.
+    if (action === 'list_curriculum_modules') return await handleListCurriculumModules(body, req, res)
+    if (action === 'create_curriculum_module') return await handleCreateCurriculumModule(body, auth.user.id, clientIp, res)
+    if (action === 'update_curriculum_module') return await handleUpdateCurriculumModule(body, auth.user.id, clientIp, res)
+    if (action === 'delete_curriculum_module') return await handleDeleteCurriculumModule(body, auth.user.id, clientIp, res)
+    if (action === 'reorder_curriculum_modules') return await handleReorderCurriculumModules(body, auth.user.id, clientIp, res)
+    if (action === 'create_learning_unit') return await handleCreateLearningUnit(body, auth.user.id, clientIp, res)
+    if (action === 'update_learning_unit') return await handleUpdateLearningUnit(body, auth.user.id, clientIp, res)
+    if (action === 'delete_learning_unit') return await handleDeleteLearningUnit(body, auth.user.id, clientIp, res)
+    if (action === 'reorder_learning_units') return await handleReorderLearningUnits(body, auth.user.id, clientIp, res)
+    if (action === 'toggle_module_status') return await handleToggleModuleStatus(body, auth.user.id, clientIp, res)
+    if (action === 'toggle_learning_unit_status' || action === 'toggle_unit_status') return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res)
+    if (action === 'list_belts') return await handleListBelts(res)
+    if (action === 'update_belt') return await handleUpdateBelt(body, auth.user.id, clientIp, res)
+
     // 8. Questions Management
     if (action === 'list_questions' || (method === 'GET' && (sub === 'questions' || url.includes('/questions')))) {
       return await handleListQuestions(body, req, res)
