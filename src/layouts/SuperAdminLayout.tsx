@@ -25,7 +25,7 @@ export const SuperAdminLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const sidebar = (
-    <aside className="flex h-full w-[264px] shrink-0 flex-col border-r border-white/[0.08] bg-[#171717] text-slate-300">
+    <aside className="flex h-full w-[264px] shrink-0 flex-col border-r border-white/[0.08] bg-[#080808] text-slate-300">
       <div className="flex h-[72px] items-center justify-between border-b border-white/[0.07] px-5">
         <Link to="/super-admin/dashboard" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
           <svg viewBox="0 0 100 120" className="h-8 w-7 shrink-0" fill="none" aria-hidden="true">
@@ -62,7 +62,7 @@ export const SuperAdminLayout: React.FC = () => {
       </nav>
 
       <div className="border-t border-white/[0.07] p-3">
-        <div className="rounded-xl border border-white/[0.10] bg-[#101010] p-3">
+        <div className="rounded-xl border border-white/[0.10] bg-[#000000] p-3">
           <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
             <span className="h-2 w-2 rounded-full bg-emerald-500" /> Sole Administrator
           </div>
@@ -78,21 +78,21 @@ export const SuperAdminLayout: React.FC = () => {
   )
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#090b10] font-sans text-slate-100">
+    <div className="flex h-screen w-full overflow-hidden bg-[#000000] font-sans text-slate-100">
       <div className="hidden h-full shrink-0 lg:flex">{sidebar}</div>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <button type="button" aria-label="Close navigation" className="absolute inset-0 bg-black/65" onClick={() => setMobileOpen(false)} />
           <div className="relative z-10 h-full shadow-2xl">{sidebar}</div>
-          <button type="button" aria-label="Close menu" onClick={() => setMobileOpen(false)} className="absolute right-3 top-3 z-20 rounded-lg bg-[#171717] p-2 text-slate-300"><X className="h-5 w-5" /></button>
+          <button type="button" aria-label="Close menu" onClick={() => setMobileOpen(false)} className="absolute right-3 top-3 z-20 rounded-lg bg-[#080808] p-2 text-slate-300"><X className="h-5 w-5" /></button>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 shrink-0 items-center border-b border-white/[0.07] bg-[#0d0f14] px-4 lg:hidden">
+        <header className="flex h-14 shrink-0 items-center border-b border-white/[0.07] bg-[#050505] px-4 lg:hidden">
           <button type="button" aria-label="Open navigation" onClick={() => setMobileOpen(true)} className="rounded-lg p-2 text-slate-300 hover:bg-white/[0.06]"><Menu className="h-5 w-5" /></button>
           <span className="ml-3 text-sm font-semibold text-white">KalviAdmin <span className="text-[#ED2A2B]">/ Super Admin</span></span>
         </header>
-        <main className="min-h-0 flex-1 overflow-y-auto bg-[#090b10]">
+        <main className="min-h-0 flex-1 overflow-y-auto bg-[#000000]">
           <Outlet />
         </main>
       </div>
