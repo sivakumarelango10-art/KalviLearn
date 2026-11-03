@@ -211,74 +211,81 @@ async function callSuperAdminApi<T = unknown>(
   method: 'POST' | 'GET' | 'DELETE' = 'POST'
 ): Promise<{ success: boolean; error?: string; data?: T }> {
   try {
-    const authHeader = await getAuthHeader()
     const cleanSubpath = primaryPath.replace(/^\/api\/super-admin\/?/, '').split('?')[0]
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'X-Kalvi-Subpath': cleanSubpath,
-      'X-Kalvi-Action': actionName,
-      ...(authHeader ? { Authorization: authHeader } : {}),
-    }
-
     const bodyWithAction = { ...payload, action: actionName }
 
     let url = primaryPath
-    const fetchOptions: RequestInit = {
-      method,
-      headers,
-    }
-
     if (method === 'GET') {
       const searchParams = new URLSearchParams()
-      for (const [k, v] of Object.entries(bodyWithAction)) {
-        if (v !== undefined && v !== null) {
-          searchParams.append(k, String(v))
-        }
+      for (const [key, value] of Object.entries(bodyWithAction)) {
+        if (value !== undefined && value !== null) searchParams.append(key, String(value))
       }
       url = `${primaryPath}?${searchParams.toString()}`
-    } else {
-      fetchOptions.body = JSON.stringify(bodyWithAction)
     }
 
-    // Preserve the existing path fallback while retrying once with a refreshed JWT after 401.
-    const requestWithFallback = async (): Promise<Response> => {
-      let response = await fetch(url, fetchOptions)
+    const createOptions = async (forceRefresh = false): Promise<RequestInit> => {
+      const authHeader = await getAuthHeader(forceRefresh)
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Kalvi-Subpath': cleanSubpath,
+        'X-Kalvi-Action': actionName,
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      }
+      return {
+        method,
+        headers,
+        ...(method !== 'GET' ? { body: JSON.stringify(bodyWithAction) } : {}),
+      }
+    }
+
+    const requestWithFallback = async (options: RequestInit): Promise<Response> => {
+      let response = await fetch(url, options)
       if (response.status === 404) {
         if (method === 'GET') {
           const searchParams = new URLSearchParams()
-          for (const [k, v] of Object.entries(bodyWithAction)) {
-            if (v !== undefined && v !== null) searchParams.append(k, String(v))
+          for (const [key, value] of Object.entries(bodyWithAction)) {
+            if (value !== undefined && value !== null) searchParams.append(key, String(value))
           }
-          response = await fetch(`/api/super-admin?${searchParams.toString()}`, fetchOptions)
+          response = await fetch(`/api/super-admin?${searchParams.toString()}`, options)
         } else {
-          response = await fetch('/api/super-admin', {
-            ...fetchOptions,
-            body: JSON.stringify(bodyWithAction),
-          })
+          response = await fetch('/api/super-admin', options)
         }
       }
       return response
     }
 
-    let res = await requestWithFallback()
-    if (res.status === 401 && !(import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem('kalvi_test_auth_token'))) {
-      const refreshedHeader = await getAuthHeader(true)
-      if (refreshedHeader) {
-        fetchOptions.headers = { ...headers, Authorization: refreshedHeader }
-        res = await requestWithFallback()
+    const testAuthEnabled = import.meta.env.DEV && typeof window !== 'undefined' && !!localStorage.getItem('kalvi_test_auth_token')
+    let options = await createOptions()
+    if (!('Authorization' in (options.headers || {})) && !testAuthEnabled) {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError) return { success: false, error: 'Your sign-in session could not be restored. Please sign in with Google again.' }
+      return { success: false, error: session ? 'Your session has no usable access token. Please sign in with Google again.' : 'Your sign-in session is missing. Please sign in with Google again.' }
+    }
+
+    let response = await requestWithFallback(options)
+    if (response.status === 401 && !testAuthEnabled) {
+      options = await createOptions(true)
+      if ('Authorization' in (options.headers || {})) {
+        response = await requestWithFallback(options)
+      } else {
+        return { success: false, error: 'Your session could not be refreshed. Please sign in with Google again.' }
       }
     }
 
-    const data = await res.json().catch(() => null)
-    if (!res.ok || !data?.success) {
-      const errMsg = data?.message || data?.error || `Request failed with status ${res.status}`
-      return { success: false, error: formatErrorMessage(errMsg) }
+    const data = await response.json().catch(() => null)
+    if (!response.ok || !data?.success) {
+      const message = data?.message || data?.error || `Request failed with status ${response.status}`
+      if (response.status === 401) return { success: false, error: 'Your session is invalid or expired. Please sign in with Google again.' }
+      if (response.status === 403) return { success: false, error: message || 'Your account does not have Super Admin permission.' }
+      if (response.status >= 500) return { success: false, error: `Super Admin service error: ${message}` }
+      return { success: false, error: formatErrorMessage(message) }
     }
 
-    return { success: true, data: data?.data }
+    return { success: true, data: data.data }
   } catch (err) {
-    const msg = formatErrorMessage(err, 'Super Admin operation failed.')
-    return { success: false, error: msg }
+    const message = formatErrorMessage(err, 'Super Admin operation failed.')
+    if (err instanceof TypeError) return { success: false, error: 'Unable to reach the Super Admin service. Check your connection and retry.' }
+    return { success: false, error: message }
   }
 }
 

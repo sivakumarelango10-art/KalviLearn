@@ -60,7 +60,8 @@
     "preview": "vite preview",
     "build:super-admin": "node scripts/build-super-admin.mjs",
     "test:super-admin": "npx tsx scripts/test-super-admin.ts",
-    "test:super-admin-questions": "npx tsx scripts/test-super-admin-questions.ts"
+    "test:super-admin-questions": "npx tsx scripts/test-super-admin-questions.ts",
+    "test:super-admin-session": "npx tsx scripts/test-super-admin-session.ts"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
