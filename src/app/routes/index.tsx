@@ -415,13 +415,6 @@ export const router = createBrowserRouter([
             element: withSuspense(<SuperAdminPracticeCodingPage />),
           },
           {
-            path: 'questions',
-            element: withSuspense(createElement(lazyWithRetry(
-              () => import('@/pages/super-admin/SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage })),
-              'SuperAdminQuestionsPage'
-            ))),
-          },
-          {
             path: 'audit',
             element: withSuspense(createElement(lazyWithRetry(
               () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
