@@ -53,7 +53,7 @@ export const SuperAdminLayout: React.FC = () => {
             <NavLink key={item.path} to={item.path} end={item.path === '/super-admin/dashboard'}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `flex items-center gap-2 rounded-lg border px-2 py-2.5 text-[11px] font-medium transition-colors ${isActive ? 'border-[#ED2A2B]/35 bg-[#ED2A2B]/[0.10] text-[#ff6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className="h-3 w-3 shrink-0" />
               <span className="min-w-0 flex-1">{item.label}</span>
               {'badge' in item && <span className="rounded bg-white/[0.07] px-1 py-0.5 text-[8px] font-bold tracking-wide text-slate-400">{item.badge}</span>}
             </NavLink>
