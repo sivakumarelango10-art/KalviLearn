@@ -7,6 +7,7 @@ import { SuperAdminProtectedRoute } from '@/components/auth/SuperAdminProtectedR
 import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
 import { CampusManagerLayout } from '@/layouts/CampusManagerLayout'
+import { SuperAdminLayout } from '@/layouts/SuperAdminLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
 
@@ -342,51 +343,56 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
     children: [
       {
-        path: 'dashboard',
-        element: withSuspense(<SuperAdminDashboardPage />),
-      },
-      {
-        path: 'campuses',
-        element: withSuspense(<SuperAdminCampusesPage />),
-      },
-      {
-        path: 'managers',
-        element: withSuspense(createElement(lazyWithRetry(
-          () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
-          'SuperAdminManagersPage'
-        ))),
-      },
-      {
-        path: 'mentors',
-        element: withSuspense(createElement(lazyWithRetry(
-          () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
-          'SuperAdminMentorsPage'
-        ))),
-      },
-      {
-        path: 'students',
-        element: withSuspense(createElement(lazyWithRetry(
-          () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
-          'SuperAdminStudentsPage'
-        ))),
-      },
-      {
-        path: 'roles',
-        element: withSuspense(createElement(lazyWithRetry(
-          () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
-          'SuperAdminRolesPage'
-        ))),
-      },
-      {
-        path: 'audit',
-        element: withSuspense(createElement(lazyWithRetry(
-          () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
-          'SuperAdminAuditPage'
-        ))),
-      },
-      {
-        path: '*',
-        element: <Navigate to="/super-admin/dashboard" replace />,
+        element: <SuperAdminLayout />,
+        children: [
+          {
+            path: 'dashboard',
+            element: withSuspense(<SuperAdminDashboardPage />),
+          },
+          {
+            path: 'campuses',
+            element: withSuspense(<SuperAdminCampusesPage />),
+          },
+          {
+            path: 'managers',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminManagersPage').then((m) => ({ default: m.SuperAdminManagersPage })),
+              'SuperAdminManagersPage'
+            ))),
+          },
+          {
+            path: 'mentors',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminMentorsPage').then((m) => ({ default: m.SuperAdminMentorsPage })),
+              'SuperAdminMentorsPage'
+            ))),
+          },
+          {
+            path: 'students',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminStudentsPage').then((m) => ({ default: m.SuperAdminStudentsPage })),
+              'SuperAdminStudentsPage'
+            ))),
+          },
+          {
+            path: 'roles',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
+              'SuperAdminRolesPage'
+            ))),
+          },
+          {
+            path: 'audit',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
+              'SuperAdminAuditPage'
+            ))),
+          },
+          {
+            path: '*',
+            element: <Navigate to="/super-admin/dashboard" replace />,
+          },
+        ],
       },
     ],
   },
