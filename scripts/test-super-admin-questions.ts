@@ -258,6 +258,40 @@ async function main() {
     assert.strictEqual(out.data.data.questions[0].title, 'Two Sum')
   })
 
+  await runTest('2.5 Question list pagination limits rows and returns stable metadata', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req: firstReq, res: firstRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', page: 1, limit: 2 },
+    })
+    await superAdminHandler(firstReq, firstRes)
+    const first = firstRes.getOutput()
+    assert.strictEqual(first.statusCode, 200)
+    assert.strictEqual(first.data.data.page, 1)
+    assert.strictEqual(first.data.data.limit, 2)
+    assert.ok(first.data.data.total >= 4)
+    assert.strictEqual(first.data.data.questions.length, 2)
+    assert.strictEqual(first.data.data.totalPages, Math.ceil(first.data.data.total / 2))
+    assert.ok(first.data.data.questions.every((q: any) =>
+      q.testCaseCount && typeof q.testCaseCount.total === 'number' &&
+      typeof q.testCaseCount.visible === 'number' &&
+      typeof q.testCaseCount.hidden === 'number'
+    ))
+    assert.ok(first.data.data.questions.every((q: any) => !('testCases' in q)))
+
+    const { req: secondReq, res: secondRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', page: 2, limit: 2 },
+    })
+    await superAdminHandler(secondReq, secondRes)
+    const second = secondRes.getOutput()
+    assert.strictEqual(second.statusCode, 200)
+    assert.strictEqual(second.data.data.page, 2)
+    assert.strictEqual(second.data.data.questions.length, 2)
+    const firstIds = new Set(first.data.data.questions.map((q: any) => q.id))
+    assert.ok(second.data.data.questions.every((q: any) => !firstIds.has(q.id)))
+  })
+
   // ─── 3. QUESTION CREATION & VALIDATION ───────────────────────────────────────
   console.log('\n--- 3. Question Creation & Validation ---')
 
