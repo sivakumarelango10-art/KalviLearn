@@ -113,6 +113,23 @@ const SuperAdminCampusesPage = lazyWithRetry(
 )
 
 
+const SuperAdminContentLandingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminContentLandingPage').then((m) => ({ default: m.SuperAdminContentLandingPage })),
+  'SuperAdminContentLandingPage'
+)
+const SuperAdminCoursesPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminCoursesPage').then((m) => ({ default: m.SuperAdminCoursesPage })),
+  'SuperAdminCoursesPage'
+)
+const SuperAdminLearnCodingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminLearnCodingPage').then((m) => ({ default: m.SuperAdminLearnCodingPage })),
+  'SuperAdminLearnCodingPage'
+)
+const SuperAdminPracticeCodingPage = lazyWithRetry(
+  () => import('@/pages/super-admin/SuperAdminPracticeCodingPage').then((m) => ({ default: m.SuperAdminPracticeCodingPage })),
+  'SuperAdminPracticeCodingPage'
+)
+
 // Campus Manager Portal Pages
 const CampusDashboardPage = lazyWithRetry(
   () => import('@/pages/campus/CampusDashboardPage').then((m) => ({ default: m.CampusDashboardPage })),
@@ -379,6 +396,29 @@ export const router = createBrowserRouter([
             element: withSuspense(createElement(lazyWithRetry(
               () => import('@/pages/super-admin/SuperAdminRolesPage').then((m) => ({ default: m.SuperAdminRolesPage })),
               'SuperAdminRolesPage'
+            ))),
+          },
+          {
+            path: 'content',
+            element: withSuspense(<SuperAdminContentLandingPage />),
+          },
+          {
+            path: 'content/courses',
+            element: withSuspense(<SuperAdminCoursesPage />),
+          },
+          {
+            path: 'content/learn-coding',
+            element: withSuspense(<SuperAdminLearnCodingPage />),
+          },
+          {
+            path: 'content/practice-coding',
+            element: withSuspense(<SuperAdminPracticeCodingPage />),
+          },
+          {
+            path: 'questions',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage })),
+              'SuperAdminQuestionsPage'
             ))),
           },
           {
