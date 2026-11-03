@@ -36,7 +36,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
   const roleDistribution = telemetry?.roleDistribution
   const totalUsers = overview?.totalUsers ?? 0
   const roleItems = [
-    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-rose-400', text: 'text-rose-300' },
+    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-[#8B0000]', text: 'text-rose-300' },
     { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
     { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-amber-300' },
     { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
