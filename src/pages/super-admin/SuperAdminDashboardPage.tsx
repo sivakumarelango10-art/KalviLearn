@@ -37,15 +37,15 @@ export const SuperAdminDashboardPage: React.FC = () => {
   const totalUsers = overview?.totalUsers ?? 0
   const roleItems = [
     { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-[#FF6266]', text: 'text-[#FF6266]' },
-    { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
-    { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-[#FF6266]' },
-    { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
+    { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-[#F04452]', text: 'text-[#FF8588]' },
+    { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-[#C92A3A]', text: 'text-[#FF6266]' },
+    { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-[#8F1D2C]', text: 'text-[#FF8588]' },
   ]
   const metrics = [
     { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-rose-500/10', href: '/super-admin/campuses', description: 'Registered institutions' },
-    { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-violet-300', tint: 'bg-violet-400/10', href: '/super-admin/managers', description: 'Campus operations' },
-    { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-[#FF6266]', tint: 'bg-amber-400/10', href: '/super-admin/mentors', description: 'Learning facilitators' },
-    { label: 'Students', value: overview?.totalStudents, active: overview?.activeStudents, icon: GraduationCap, color: 'text-emerald-300', tint: 'bg-emerald-400/10', href: '/super-admin/students', description: 'Enrolled learners' },
+    { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/managers', description: 'Campus operations' },
+    { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/mentors', description: 'Learning facilitators' },
+    { label: 'Students', value: overview?.totalStudents, active: overview?.activeStudents, icon: GraduationCap, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/students', description: 'Enrolled learners' },
   ]
 
   return (
@@ -54,11 +54,11 @@ export const SuperAdminDashboardPage: React.FC = () => {
         <header className="flex flex-col gap-4 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/20 bg-[#FF6266]/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#FF6266]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#681717] bg-[#1F0B0B] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#FF6266]">
                 <ShieldCheck className="h-3.5 w-3.5" /> Super Admin
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs text-emerald-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.7)]" /> Platform overview
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FF6266] shadow-[0_0_8px_rgba(255,98,102,.35)]" /> Platform overview
               </span>
             </div>
             <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">Command center</h1>
@@ -68,13 +68,13 @@ export const SuperAdminDashboardPage: React.FC = () => {
             <button onClick={() => void loadData()} disabled={loading} className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.08] disabled:opacity-60">
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
             </button>
-            <Link to="/super-admin/campuses" className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#ED2A2B] px-4 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition hover:bg-[#FF6266]">
+            <Link to="/super-admin/campuses" className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#ED2A2B] px-4 text-sm font-semibold text-white shadow-lg shadow-[#1F0B0B] transition hover:bg-[#B91C1C]">
               <Plus className="h-4 w-4" /> Add campus
             </Link>
           </div>
         </header>
 
-        {error && <div role="alert" className="flex items-center justify-between rounded-xl border border-rose-400/20 bg-[#FF6266]/10 px-4 py-3 text-sm text-[#FF8588]">{error}<button onClick={() => void loadData()} className="font-semibold underline underline-offset-2">Retry</button></div>}
+        {error && <div role="alert" className="flex items-center justify-between rounded-xl border border-[#681717] bg-[#1F0B0B] px-4 py-3 text-sm text-[#FF8588]">{error}<button onClick={() => void loadData()} className="font-semibold underline underline-offset-2">Retry</button></div>}
 
         <section aria-label="Platform metrics" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description }) => (
