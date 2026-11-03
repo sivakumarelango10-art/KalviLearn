@@ -42,7 +42,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
     { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-[#8F1D2C]', text: 'text-[#FF8588]' },
   ]
   const metrics = [
-    { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-rose-500/10', href: '/super-admin/campuses', description: 'Registered institutions' },
+    { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/campuses', description: 'Registered institutions' },
     { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/managers', description: 'Campus operations' },
     { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/mentors', description: 'Learning facilitators' },
     { label: 'Students', value: overview?.totalStudents, active: overview?.activeStudents, icon: GraduationCap, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/students', description: 'Enrolled learners' },
@@ -57,7 +57,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#681717] bg-[#1F0B0B] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#FF6266]">
                 <ShieldCheck className="h-3.5 w-3.5" /> Super Admin
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#FF6266]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#FF6266] shadow-[0_0_8px_rgba(255,98,102,.35)]" /> Platform overview
               </span>
             </div>
