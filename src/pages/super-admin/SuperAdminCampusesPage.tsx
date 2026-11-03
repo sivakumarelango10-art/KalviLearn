@@ -155,7 +155,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-rose-400" />
+            <Building2 className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Campus Management</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -183,9 +183,9 @@ export const SuperAdminCampusesPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-red-900/60 text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -287,8 +287,8 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {campus.manager ? (
-                        <div className="flex items-center gap-1.5 text-purple-300">
-                          <UserCheck className="w-3.5 h-3.5 text-purple-400" />
+                        <div className="flex items-center gap-1.5 text-[#FF6266]">
+                          <UserCheck className="w-3.5 h-3.5 text-[#FF6266]" />
                           <span className="font-medium">{campus.manager.name || campus.manager.email}</span>
                         </div>
                       ) : (
@@ -306,7 +306,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4 font-medium text-white">
                       <div className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-amber-400" />
+                        <Users className="w-3.5 h-3.5 text-[#FF6266]" />
                         <span>{campus.mentorCount ?? 0}</span>
                       </div>
                     </td>
@@ -335,7 +335,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                           onClick={() => handleToggle(campus)}
                           className={`p-1.5 rounded-lg transition-colors ${
                             campus.status === 'ACTIVE'
-                              ? 'text-neutral-400 hover:text-red-400 hover:bg-[#141414]'
+                              ? 'text-neutral-400 hover:text-[#FF6266] hover:bg-[#141414]'
                               : 'text-neutral-400 hover:text-emerald-400 hover:bg-[#141414]'
                           }`}
                           title={campus.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
@@ -363,7 +363,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-rose-400" />
+              <Building2 className="w-5 h-5 text-[#FF6266]" />
               <span>Create New Campus</span>
             </h3>
 
@@ -501,7 +501,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-rose-400" />
+              <Edit2 className="w-5 h-5 text-[#FF6266]" />
               <span>Edit Campus: {editingCampus.code}</span>
             </h3>
 
