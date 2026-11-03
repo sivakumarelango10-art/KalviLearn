@@ -171,7 +171,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
             <GraduationCap className="w-6 h-6 text-emerald-400" />
@@ -185,7 +185,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
           <button
             onClick={() => loadData(page)}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
             <span>Refresh</span>
@@ -226,7 +226,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
       )}
 
       {/* Filters Bar */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <form onSubmit={handleSearchSubmit} className="relative w-full lg:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
@@ -234,7 +234,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, or code..."
-            className="w-full pl-9 pr-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
           />
         </form>
 
@@ -246,7 +246,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <select
               value={campusFilter}
               onChange={(e) => setCampusFilter(e.target.value)}
-              className="px-2 py-1 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
             >
               <option value="ALL">All Campuses</option>
               {campuses.map((c) => (
@@ -264,7 +264,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <select
               value={mentorFilter}
               onChange={(e) => setMentorFilter(e.target.value)}
-              className="px-2 py-1 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500 max-w-[150px] truncate"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500 max-w-[150px] truncate"
             >
               <option value="ALL">All Mentors</option>
               {mentors.map((m) => (
@@ -284,7 +284,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 onClick={() => setStatusFilter(st)}
                 className={`px-2 py-1 text-xs rounded-lg transition-colors font-medium ${
                   statusFilter === st
-                    ? 'bg-neutral-800 text-white border border-neutral-700'
+                    ? 'bg-[#141414] text-white border border-white/15'
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
@@ -296,11 +296,11 @@ export const SuperAdminStudentsPage: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-[#080808] border border-white/10 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-3.5 px-4">Student Name</th>
                 <th className="py-3.5 px-4">Student Code</th>
                 <th className="py-3.5 px-4">Email</th>
@@ -327,12 +327,12 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 </tr>
               ) : (
                 students.map((student) => (
-                  <tr key={student.id} className="hover:bg-neutral-800/40 transition-colors">
+                  <tr key={student.id} className="hover:bg-[#141414]/40 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-white">
                       {student.name || 'Unnamed Student'}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-neutral-300">
-                      <span className="px-2 py-0.5 rounded bg-neutral-800 border border-neutral-700/80 text-[11px]">
+                      <span className="px-2 py-0.5 rounded bg-[#141414] border border-white/15/80 text-[11px]">
                         {student.student_code}
                       </span>
                     </td>
@@ -344,8 +344,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {student.campus ? (
-                        <div className="flex items-center gap-1 text-blue-300">
-                          <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                        <div className="flex items-center gap-1 text-rose-300">
+                          <Building2 className="w-3.5 h-3.5 text-rose-400" />
                           <span>{student.campus.name}</span>
                         </div>
                       ) : (
@@ -376,7 +376,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                           ACTIVE
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#141414] text-neutral-400 border border-white/15">
                           INACTIVE
                         </span>
                       )}
@@ -385,7 +385,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setEditingStudent(student)}
-                          className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+                          className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-[#141414] transition-colors"
                           title="Edit Student"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -395,7 +395,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                             setDeletingStudent(student)
                             setDeleteConfirmText('')
                           }}
-                          className="p-1.5 text-neutral-400 hover:text-red-400 rounded-lg hover:bg-neutral-800 transition-colors"
+                          className="p-1.5 text-neutral-400 hover:text-red-400 rounded-lg hover:bg-[#141414] transition-colors"
                           title="Permanently Delete Student"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -410,7 +410,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="p-3 border-t border-neutral-800 bg-neutral-950/60 flex items-center justify-between text-xs text-neutral-400">
+        <div className="p-3 border-t border-white/10 bg-black/60 flex items-center justify-between text-xs text-neutral-400">
           <div>
             Showing <span className="text-white font-medium">{students.length}</span> of{' '}
             <span className="text-white font-medium">{totalCount}</span> students
@@ -419,7 +419,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <button
               onClick={() => loadData(Math.max(1, page - 1))}
               disabled={page <= 1 || loading}
-              className="p-1.5 rounded bg-neutral-900 border border-neutral-800 hover:border-neutral-700 disabled:opacity-40"
+              className="p-1.5 rounded bg-[#080808] border border-white/10 hover:border-white/15 disabled:opacity-40"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -430,7 +430,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             <button
               onClick={() => loadData(Math.min(totalPages, page + 1))}
               disabled={page >= totalPages || loading}
-              className="p-1.5 rounded bg-neutral-900 border border-neutral-800 hover:border-neutral-700 disabled:opacity-40"
+              className="p-1.5 rounded bg-[#080808] border border-white/10 hover:border-white/15 disabled:opacity-40"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -441,7 +441,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
       {/* Enroll Student Modal */}
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setShowEnrollModal(false)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -464,7 +464,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollName}
                   onChange={(e) => setEnrollName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -478,7 +478,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollEmail}
                   onChange={(e) => setEnrollEmail(e.target.value.toLowerCase())}
                   placeholder="student@kalvium.community"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -489,7 +489,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={enrollCampusId}
                   onChange={(e) => setEnrollCampusId(e.target.value)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -507,7 +507,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={enrollMentorId}
                   onChange={(e) => setEnrollMentorId(e.target.value)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Assign Later)</option>
                   {mentors.map((m) => (
@@ -527,11 +527,11 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   value={enrollCode}
                   onChange={(e) => setEnrollCode(e.target.value.toUpperCase())}
                   placeholder="STU-00123"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowEnrollModal(false)}
@@ -555,7 +555,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
       {/* Edit Student Modal */}
       {editingStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setEditingStudent(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -577,7 +577,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   required
                   value={editingStudent.name || ''}
                   onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -590,7 +590,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingStudent({ ...editingStudent, campus_id: e.target.value || null })
                   }
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -615,7 +615,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                       mentor: found ? { id: found.id, name: found.name, email: found.email } : null,
                     })
                   }}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {mentors.map((m) => (
@@ -633,14 +633,14 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 <select
                   value={editingStudent.status}
                   onChange={(e) => setEditingStudent({ ...editingStudent, status: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setEditingStudent(null)}
@@ -664,7 +664,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
       {/* Delete Confirmation Modal */}
       {deletingStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-red-900/60 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-red-900/60 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setDeletingStudent(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -684,7 +684,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
               This action cannot be undone.
             </p>
 
-            <div className="bg-neutral-950 border border-neutral-800 p-3 rounded-lg mb-4 text-xs font-mono text-neutral-300">
+            <div className="bg-black border border-white/10 p-3 rounded-lg mb-4 text-xs font-mono text-neutral-300">
               <div>Email: {deletingStudent.email}</div>
               <div>Code: {deletingStudent.student_code}</div>
             </div>
@@ -698,11 +698,11 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
               <button
                 type="button"
                 onClick={() => setDeletingStudent(null)}

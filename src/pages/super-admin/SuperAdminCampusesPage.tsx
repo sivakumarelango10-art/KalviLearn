@@ -152,10 +152,10 @@ export const SuperAdminCampusesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-blue-400" />
+            <Building2 className="w-6 h-6 text-rose-400" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Campus Management</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -166,7 +166,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
           <button
             onClick={loadData}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
             <span>Refresh</span>
@@ -207,7 +207,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
       )}
 
       {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
@@ -215,7 +215,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by campus name, code, or city..."
-            className="w-full pl-9 pr-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
           />
         </div>
 
@@ -228,7 +228,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               onClick={() => setStatusFilter(st)}
               className={`px-2.5 py-1 text-xs rounded-lg transition-colors font-medium ${
                 statusFilter === st
-                  ? 'bg-neutral-800 text-white border border-neutral-700'
+                  ? 'bg-[#141414] text-white border border-white/15'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -239,11 +239,11 @@ export const SuperAdminCampusesPage: React.FC = () => {
       </div>
 
       {/* Campuses Table */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-[#080808] border border-white/10 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-3.5 px-4">Campus Name</th>
                 <th className="py-3.5 px-4">Code</th>
                 <th className="py-3.5 px-4">Location</th>
@@ -270,12 +270,12 @@ export const SuperAdminCampusesPage: React.FC = () => {
                 </tr>
               ) : (
                 filtered.map((campus) => (
-                  <tr key={campus.id} className="hover:bg-neutral-800/40 transition-colors">
+                  <tr key={campus.id} className="hover:bg-[#141414]/40 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-white">
                       {campus.name}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-neutral-300">
-                      <span className="px-2 py-0.5 rounded bg-neutral-800 border border-neutral-700/80 text-[11px]">
+                      <span className="px-2 py-0.5 rounded bg-[#141414] border border-white/15/80 text-[11px]">
                         {campus.code}
                       </span>
                     </td>
@@ -317,7 +317,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                           ACTIVE
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#141414] text-neutral-400 border border-white/15">
                           INACTIVE
                         </span>
                       )}
@@ -326,7 +326,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setEditingCampus(campus)}
-                          className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+                          className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-[#141414] transition-colors"
                           title="Edit Campus"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -335,8 +335,8 @@ export const SuperAdminCampusesPage: React.FC = () => {
                           onClick={() => handleToggle(campus)}
                           className={`p-1.5 rounded-lg transition-colors ${
                             campus.status === 'ACTIVE'
-                              ? 'text-neutral-400 hover:text-red-400 hover:bg-neutral-800'
-                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-neutral-800'
+                              ? 'text-neutral-400 hover:text-red-400 hover:bg-[#141414]'
+                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-[#141414]'
                           }`}
                           title={campus.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                         >
@@ -355,7 +355,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
       {/* Create Campus Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setShowCreateModal(false)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -363,7 +363,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-blue-400" />
+              <Building2 className="w-5 h-5 text-rose-400" />
               <span>Create New Campus</span>
             </h3>
 
@@ -378,7 +378,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value.toUpperCase())}
                   placeholder="KALVIUM-DELHI"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -392,7 +392,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Kalvium Delhi Technological Campus"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -406,7 +406,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newCity}
                     onChange={(e) => setNewCity(e.target.value)}
                     placeholder="Delhi"
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   />
                 </div>
                 <div>
@@ -418,7 +418,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newState}
                     onChange={(e) => setNewState(e.target.value)}
                     placeholder="Delhi NCR"
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   />
                 </div>
               </div>
@@ -433,7 +433,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newCountry}
                     onChange={(e) => setNewCountry(e.target.value)}
                     placeholder="India"
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   />
                 </div>
                 <div>
@@ -443,7 +443,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   >
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
@@ -458,7 +458,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                 <select
                   value={newManagerId}
                   onChange={(e) => setNewManagerId(e.target.value)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Assign Later)</option>
                   {managers.map((m) => (
@@ -469,7 +469,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
@@ -493,7 +493,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
       {/* Edit Campus Modal */}
       {editingCampus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setEditingCampus(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -501,7 +501,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-blue-400" />
+              <Edit2 className="w-5 h-5 text-rose-400" />
               <span>Edit Campus: {editingCampus.code}</span>
             </h3>
 
@@ -515,7 +515,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   required
                   value={editingCampus.name}
                   onChange={(e) => setEditingCampus({ ...editingCampus, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -528,7 +528,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     type="text"
                     value={editingCampus.city || ''}
                     onChange={(e) => setEditingCampus({ ...editingCampus, city: e.target.value })}
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   />
                 </div>
                 <div>
@@ -539,7 +539,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     type="text"
                     value={editingCampus.state || ''}
                     onChange={(e) => setEditingCampus({ ...editingCampus, state: e.target.value })}
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                   />
                 </div>
               </div>
@@ -556,7 +556,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                       status: e.target.value as 'ACTIVE' | 'INACTIVE',
                     })
                   }
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
@@ -572,7 +572,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingCampus({ ...editingCampus, manager_id: e.target.value || null })
                   }
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {managers.map((m) => (
@@ -583,7 +583,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setEditingCampus(null)}
