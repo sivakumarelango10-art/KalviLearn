@@ -60,7 +60,7 @@ export const SuperAdminAuditPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
             <History className="w-6 h-6 text-red-400" />
@@ -74,7 +74,7 @@ export const SuperAdminAuditPage: React.FC = () => {
           <button
             onClick={() => loadData(page)}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
             <span>Refresh</span>
@@ -95,7 +95,7 @@ export const SuperAdminAuditPage: React.FC = () => {
       )}
 
       {/* Filters Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {/* Target Type Filter */}
           <div className="flex items-center gap-1.5 text-xs text-neutral-400">
@@ -104,7 +104,7 @@ export const SuperAdminAuditPage: React.FC = () => {
             <select
               value={targetTypeFilter}
               onChange={(e) => setTargetTypeFilter(e.target.value)}
-              className="px-2 py-1 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
             >
               <option value="ALL">All Entities</option>
               <option value="CAMPUS">Campuses</option>
@@ -121,7 +121,7 @@ export const SuperAdminAuditPage: React.FC = () => {
             <select
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value)}
-              className="px-2 py-1 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
             >
               <option value="ALL">All Actions</option>
               <option value="CREATE_CAMPUS">CREATE_CAMPUS</option>
@@ -146,11 +146,11 @@ export const SuperAdminAuditPage: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-[#080808] border border-white/10 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-3.5 px-4">Timestamp</th>
                 <th className="py-3.5 px-4">Action</th>
                 <th className="py-3.5 px-4">Target Entity</th>
@@ -176,7 +176,7 @@ export const SuperAdminAuditPage: React.FC = () => {
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-neutral-800/40 transition-colors">
+                  <tr key={log.id} className="hover:bg-[#141414]/40 transition-colors">
                     <td className="py-3.5 px-4 text-neutral-400 font-mono whitespace-nowrap">
                       {new Date(log.created_at).toLocaleString()}
                     </td>
@@ -184,7 +184,7 @@ export const SuperAdminAuditPage: React.FC = () => {
                       {log.action}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-neutral-800 text-neutral-300">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#141414] text-neutral-300">
                         {log.target_type}
                       </span>
                     </td>
@@ -210,7 +210,7 @@ export const SuperAdminAuditPage: React.FC = () => {
                     <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => setInspectingLog(log)}
-                        className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-colors"
+                        className="px-2.5 py-1 rounded bg-[#141414] hover:bg-[#202020] text-neutral-300 hover:text-white transition-colors"
                       >
                         Inspect
                       </button>
@@ -223,7 +223,7 @@ export const SuperAdminAuditPage: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div className="p-3 border-t border-neutral-800 bg-neutral-950/60 flex items-center justify-between text-xs text-neutral-400">
+        <div className="p-3 border-t border-white/10 bg-black/60 flex items-center justify-between text-xs text-neutral-400">
           <div>
             Showing <span className="text-white font-medium">{logs.length}</span> of{' '}
             <span className="text-white font-medium">{totalCount}</span> entries
@@ -232,7 +232,7 @@ export const SuperAdminAuditPage: React.FC = () => {
             <button
               onClick={() => loadData(Math.max(1, page - 1))}
               disabled={page <= 1 || loading}
-              className="p-1.5 rounded bg-neutral-900 border border-neutral-800 hover:border-neutral-700 disabled:opacity-40"
+              className="p-1.5 rounded bg-[#080808] border border-white/10 hover:border-white/15 disabled:opacity-40"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -243,7 +243,7 @@ export const SuperAdminAuditPage: React.FC = () => {
             <button
               onClick={() => loadData(Math.min(totalPages, page + 1))}
               disabled={page >= totalPages || loading}
-              className="p-1.5 rounded bg-neutral-900 border border-neutral-800 hover:border-neutral-700 disabled:opacity-40"
+              className="p-1.5 rounded bg-[#080808] border border-white/10 hover:border-white/15 disabled:opacity-40"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -254,7 +254,7 @@ export const SuperAdminAuditPage: React.FC = () => {
       {/* Details Inspection Modal */}
       {inspectingLog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-lg w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-lg w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setInspectingLog(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -270,7 +270,7 @@ export const SuperAdminAuditPage: React.FC = () => {
             </p>
 
             <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 bg-neutral-950 p-3 rounded-xl border border-neutral-800 font-mono">
+              <div className="grid grid-cols-2 gap-2 bg-black p-3 rounded-xl border border-white/10 font-mono">
                 <div>
                   <span className="text-neutral-500 block">Action</span>
                   <span className="text-red-400 font-semibold">{inspectingLog.action}</span>
@@ -303,7 +303,7 @@ export const SuperAdminAuditPage: React.FC = () => {
                 <span className="block text-xs font-semibold text-neutral-300 mb-1">
                   Mutation Details (Payload)
                 </span>
-                <pre className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-48">
+                <pre className="p-3 rounded-xl bg-black border border-white/10 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-48">
                   {JSON.stringify(inspectingLog.details || {}, null, 2)}
                 </pre>
               </div>
@@ -320,11 +320,11 @@ export const SuperAdminAuditPage: React.FC = () => {
               )}
             </div>
 
-            <div className="flex items-center justify-end pt-4 mt-4 border-t border-neutral-800">
+            <div className="flex items-center justify-end pt-4 mt-4 border-t border-white/10">
               <button
                 type="button"
                 onClick={() => setInspectingLog(null)}
-                className="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-medium"
+                className="px-4 py-2 rounded-lg bg-[#141414] hover:bg-[#202020] text-white text-xs font-medium"
               >
                 Close
               </button>
