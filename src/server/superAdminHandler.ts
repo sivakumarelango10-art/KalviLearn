@@ -197,6 +197,10 @@ export default async function handler(
     } else if (sub === 'belts' || sub.startsWith('belts/')) {
       if (method === 'GET') action = 'list_belts'
     }
+    // Content-management list endpoints may be deployed through the consolidated
+    // /api/super-admin entrypoint. Preserve explicit action headers/body values,
+    // and resolve the module route names for both direct and rewritten requests.
+
   }
 
   try {
