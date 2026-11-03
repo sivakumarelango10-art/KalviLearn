@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   GraduationCap,
   Plus,
@@ -46,6 +46,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
   const [limit] = useState(30)
   const [totalCount, setTotalCount] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
+  const lookupsLoadedRef = useRef(false)
+  const lookupsInFlightRef = useRef<Promise<void> | null>(null)
 
   // Modals
   const [showEnrollModal, setShowEnrollModal] = useState(false)
@@ -61,10 +63,25 @@ export const SuperAdminStudentsPage: React.FC = () => {
   const [enrollMentorId, setEnrollMentorId] = useState('')
   const [enrollCode, setEnrollCode] = useState('')
 
+  const loadLookupData = async () => {
+    if (lookupsLoadedRef.current) return
+    if (!lookupsInFlightRef.current) {
+      lookupsInFlightRef.current = (async () => {
+        const [cRes, mRes] = await Promise.all([fetchCampuses(), fetchSuperAdminMentors()])
+        if (cRes.success && cRes.data) setCampuses(cRes.data)
+        if (mRes.success && mRes.data) setMentors(mRes.data)
+        lookupsLoadedRef.current = Boolean(cRes.success && cRes.data && mRes.success && mRes.data)
+      })().finally(() => {
+        lookupsInFlightRef.current = null
+      })
+    }
+    await lookupsInFlightRef.current
+  }
+
   const loadData = async (targetPage = page) => {
     setLoading(true)
     setError(null)
-    const [sRes, cRes, mRes] = await Promise.all([
+    const [sRes] = await Promise.all([
       fetchSuperAdminStudents({
         search: search.trim() || undefined,
         campusId: campusFilter !== 'ALL' ? campusFilter : undefined,
@@ -73,8 +90,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
         page: targetPage,
         limit,
       }),
-      fetchCampuses(),
-      fetchSuperAdminMentors(),
+      loadLookupData(),
     ])
 
     if (sRes.success && sRes.data) {
@@ -85,12 +101,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
     } else {
       setError(sRes.error || 'Failed to load students.')
     }
-
-    if (cRes.success && cRes.data) setCampuses(cRes.data)
-    if (mRes.success && mRes.data) setMentors(mRes.data)
     setLoading(false)
   }
-
   useEffect(() => {
     loadData(1)
   }, [campusFilter, mentorFilter, statusFilter])
