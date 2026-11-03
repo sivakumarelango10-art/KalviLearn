@@ -20,11 +20,11 @@ import {
 } from '@/lib/superAdminService'
 
 const ROLE_COLORS: Record<string, string> = {
-  SUPERADMIN: 'bg-red-950/80 text-red-300 border-red-800/80',
-  CAMPUS_MANAGER: 'bg-purple-950/80 text-purple-300 border-purple-800/80',
-  ADMIN: 'bg-purple-950/80 text-purple-300 border-purple-800/80',
-  MENTOR: 'bg-amber-950/80 text-amber-300 border-amber-800/80',
-  STUDENT: 'bg-emerald-950/80 text-emerald-300 border-emerald-800/80',
+  SUPERADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  CAMPUS_MANAGER: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  ADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  MENTOR: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  STUDENT: 'bg-[#1F0B0B] text-[#FF8588] border-[#681717]',
 }
 
 const SUPPORTED_ROLES = ['STUDENT', 'MENTOR', 'CAMPUS_MANAGER', 'ADMIN'] as const
@@ -94,7 +94,7 @@ export const SuperAdminRolesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-red-500" />
+            <ShieldCheck className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Role & Access Control (RBAC)</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -107,7 +107,7 @@ export const SuperAdminRolesPage: React.FC = () => {
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF6266]' : ''}`} />
             <span>Refresh</span>
           </button>
         </div>
@@ -115,9 +115,9 @@ export const SuperAdminRolesPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-[#681717] text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -141,18 +141,18 @@ export const SuperAdminRolesPage: React.FC = () => {
       {/* Security Principles Banner */}
       <div className="p-4 rounded-xl bg-[#080808]/90 border border-white/10 text-xs text-neutral-300 space-y-1.5">
         <div className="flex items-center gap-2 text-white font-semibold">
-          <Lock className="w-4 h-4 text-red-400" />
+          <Lock className="w-4 h-4 text-[#FF6266]" />
           <span>Super Admin Access Enforcement Rules</span>
         </div>
         <ul className="list-disc list-inside text-neutral-400 space-y-1 pl-1">
           <li>
             <strong className="text-white">Sole Administrator Protection:</strong> The account{' '}
-            <code className="text-red-400 font-mono">sgjitbros@gmail.com</code> is immutable and can never be demoted.
+            <code className="text-[#FF6266] font-mono">sgjitbros@gmail.com</code> is immutable and can never be demoted.
           </li>
           <li>
             <strong className="text-white">Role Restrictions:</strong> Only{' '}
-            <code className="text-red-400 font-mono">sgjitbros@gmail.com</code> may hold the{' '}
-            <code className="text-red-400 font-mono">SUPERADMIN</code> role. Self-promotion and other promotions to SUPERADMIN are denied.
+            <code className="text-[#FF6266] font-mono">sgjitbros@gmail.com</code> may hold the{' '}
+            <code className="text-[#FF6266] font-mono">SUPERADMIN</code> role. Self-promotion and other promotions to SUPERADMIN are denied.
           </li>
           <li>
             <strong className="text-white">Automatic Profile Synchronization:</strong> Assigning a user to{' '}
@@ -171,7 +171,7 @@ export const SuperAdminRolesPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users by name, email, or campus..."
-            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
           />
         </div>
 
@@ -211,7 +211,7 @@ export const SuperAdminRolesPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
                     <span>Loading roles directory...</span>
                   </td>
                 </tr>
@@ -230,7 +230,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <span>{u.name || 'Unnamed User'}</span>
                           {isProtected && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800 uppercase font-mono font-bold">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-[#1F0B0B] text-[#FF6266] border border-[#681717] uppercase font-mono font-bold">
                               <ShieldAlert className="w-3 h-3" />
                               Sole Super Admin
                             </span>
@@ -245,8 +245,8 @@ export const SuperAdminRolesPage: React.FC = () => {
                       </td>
                       <td className="py-3.5 px-4">
                         {u.campus ? (
-                          <div className="flex items-center gap-1 text-rose-300">
-                            <Building2 className="w-3.5 h-3.5 text-rose-400" />
+                          <div className="flex items-center gap-1 text-[#FF6266]">
+                            <Building2 className="w-3.5 h-3.5 text-[#FF6266]" />
                             <span>{u.campus.name}</span>
                           </div>
                         ) : (
@@ -312,7 +312,7 @@ export const SuperAdminRolesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-red-500" />
+              <UserCheck className="w-5 h-5 text-[#FF6266]" />
               <span>Modify User Role</span>
             </h3>
 
@@ -337,7 +337,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="STUDENT">STUDENT (Learner)</option>
                   <option value="MENTOR">MENTOR (Faculty Guidance)</option>

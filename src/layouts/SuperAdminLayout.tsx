@@ -37,7 +37,7 @@ export const SuperAdminLayout: React.FC = () => {
             <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#ED2A2B]">Super Admin</span>
           </span>
         </Link>
-        <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[10px] font-bold tracking-wider text-red-400">ROOT</span>
+        <span className="rounded-full border border-[#681717] bg-[#1F0B0B] px-3 py-1 text-[10px] font-bold tracking-wider text-[#FF6266]">ROOT</span>
       </div>
 
       <nav aria-label="Super Admin navigation" className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
@@ -46,7 +46,7 @@ export const SuperAdminLayout: React.FC = () => {
           return (
             <NavLink key={item.path} to={item.path} end={item.path === '/super-admin/dashboard'}
               onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => `flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${isActive ? 'border-[#ED2A2B]/35 bg-[#ED2A2B]/[0.10] text-[#ff6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
+              className={({ isActive }) => `flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${isActive ? 'border-[#681717] bg-[#1F0B0B] text-[#FF6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
               <Icon className="h-4 w-4 shrink-0" />
               <span className="min-w-0 flex-1">{item.label}</span>
               {'badge' in item && <span className="rounded bg-white/[0.07] px-1.5 py-1 text-[9px] font-bold tracking-wide text-slate-400">{item.badge}</span>}

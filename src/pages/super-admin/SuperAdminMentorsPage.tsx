@@ -147,7 +147,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <Users className="w-6 h-6 text-amber-400" />
+            <Users className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Faculty Mentors</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -160,7 +160,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF6266]' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
@@ -175,9 +175,9 @@ export const SuperAdminMentorsPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-[#681717] text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -207,7 +207,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by mentor name, email, or code..."
-            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
           />
         </div>
 
@@ -218,7 +218,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
             <select
               value={campusFilter}
               onChange={(e) => setCampusFilter(e.target.value)}
-              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-red-500"
+              className="px-2 py-1 bg-black border border-white/10 rounded-lg text-xs text-white focus:outline-hidden focus:border-[#FF6266]"
             >
               <option value="ALL">All Campuses</option>
               {campuses.map((c) => (
@@ -267,7 +267,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
                     <span>Loading mentors...</span>
                   </td>
                 </tr>
@@ -296,8 +296,8 @@ export const SuperAdminMentorsPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {mentor.campus ? (
-                        <div className="flex items-center gap-1.5 text-rose-300">
-                          <Building2 className="w-3.5 h-3.5 text-rose-400" />
+                        <div className="flex items-center gap-1.5 text-[#FF6266]">
+                          <Building2 className="w-3.5 h-3.5 text-[#FF6266]" />
                           <span>{mentor.campus.name}</span>
                         </div>
                       ) : (
@@ -306,7 +306,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-1.5 font-medium text-white">
-                        <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
+                        <GraduationCap className="w-3.5 h-3.5 text-[#FF6266]" />
                         <span>{mentor.assignedStudentCount}</span>
                         <span className="text-neutral-500">/ {mentor.max_students} students</span>
                       </div>
@@ -336,8 +336,8 @@ export const SuperAdminMentorsPage: React.FC = () => {
                           onClick={() => handleToggle(mentor)}
                           className={`p-1.5 rounded-lg transition-colors ${
                             mentor.status === 'ACTIVE'
-                              ? 'text-neutral-400 hover:text-red-400 hover:bg-[#141414]'
-                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-[#141414]'
+                              ? 'text-neutral-400 hover:text-[#FF6266] hover:bg-[#141414]'
+                              : 'text-neutral-400 hover:text-[#FF6266] hover:bg-[#1F0B0B]'
                           }`}
                           title={mentor.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                         >
@@ -364,7 +364,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-amber-400" />
+              <Users className="w-5 h-5 text-[#FF6266]" />
               <span>Provision Faculty Mentor</span>
             </h3>
 
@@ -379,7 +379,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   value={provName}
                   onChange={(e) => setProvName(e.target.value)}
                   placeholder="e.g. Dr. Jane Smith"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -393,7 +393,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   value={provEmail}
                   onChange={(e) => setProvEmail(e.target.value.toLowerCase())}
                   placeholder="mentor@kalvium.community"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -404,7 +404,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                 <select
                   value={provCampusId}
                   onChange={(e) => setProvCampusId(e.target.value)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -425,7 +425,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   max="150"
                   value={provMaxStudents}
                   onChange={(e) => setProvMaxStudents(Number(e.target.value))}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -461,7 +461,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-amber-400" />
+              <Edit2 className="w-5 h-5 text-[#FF6266]" />
               <span>Edit Mentor: {editingMentor.mentor_code}</span>
             </h3>
 
@@ -475,7 +475,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   required
                   value={editingMentor.name || ''}
                   onChange={(e) => setEditingMentor({ ...editingMentor, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -488,7 +488,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingMentor({ ...editingMentor, campus_id: e.target.value || null })
                   }
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -511,7 +511,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingMentor({ ...editingMentor, max_students: Number(e.target.value) })
                   }
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -522,7 +522,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
                 <select
                   value={editingMentor.status}
                   onChange={(e) => setEditingMentor({ ...editingMentor, status: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>

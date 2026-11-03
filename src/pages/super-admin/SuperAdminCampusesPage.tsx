@@ -155,7 +155,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-rose-400" />
+            <Building2 className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Campus Management</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -168,7 +168,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF6266]' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
@@ -183,9 +183,9 @@ export const SuperAdminCampusesPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-[#681717] text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -215,7 +215,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by campus name, code, or city..."
-            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
           />
         </div>
 
@@ -258,7 +258,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
                     <span>Loading campuses...</span>
                   </td>
                 </tr>
@@ -287,8 +287,8 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {campus.manager ? (
-                        <div className="flex items-center gap-1.5 text-purple-300">
-                          <UserCheck className="w-3.5 h-3.5 text-purple-400" />
+                        <div className="flex items-center gap-1.5 text-[#FF6266]">
+                          <UserCheck className="w-3.5 h-3.5 text-[#FF6266]" />
                           <span className="font-medium">{campus.manager.name || campus.manager.email}</span>
                         </div>
                       ) : (
@@ -306,7 +306,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4 font-medium text-white">
                       <div className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-amber-400" />
+                        <Users className="w-3.5 h-3.5 text-[#FF6266]" />
                         <span>{campus.mentorCount ?? 0}</span>
                       </div>
                     </td>
@@ -335,8 +335,8 @@ export const SuperAdminCampusesPage: React.FC = () => {
                           onClick={() => handleToggle(campus)}
                           className={`p-1.5 rounded-lg transition-colors ${
                             campus.status === 'ACTIVE'
-                              ? 'text-neutral-400 hover:text-red-400 hover:bg-[#141414]'
-                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-[#141414]'
+                              ? 'text-neutral-400 hover:text-[#FF6266] hover:bg-[#141414]'
+                              : 'text-neutral-400 hover:text-[#FF6266] hover:bg-[#1F0B0B]'
                           }`}
                           title={campus.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                         >
@@ -363,7 +363,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-rose-400" />
+              <Building2 className="w-5 h-5 text-[#FF6266]" />
               <span>Create New Campus</span>
             </h3>
 
@@ -378,7 +378,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value.toUpperCase())}
                   placeholder="KALVIUM-DELHI"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white font-mono focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -392,7 +392,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Kalvium Delhi Technological Campus"
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -406,7 +406,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newCity}
                     onChange={(e) => setNewCity(e.target.value)}
                     placeholder="Delhi"
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   />
                 </div>
                 <div>
@@ -418,7 +418,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newState}
                     onChange={(e) => setNewState(e.target.value)}
                     placeholder="Delhi NCR"
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   />
                 </div>
               </div>
@@ -433,7 +433,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     value={newCountry}
                     onChange={(e) => setNewCountry(e.target.value)}
                     placeholder="India"
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   />
                 </div>
                 <div>
@@ -443,7 +443,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   >
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
@@ -458,7 +458,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                 <select
                   value={newManagerId}
                   onChange={(e) => setNewManagerId(e.target.value)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Assign Later)</option>
                   {managers.map((m) => (
@@ -501,7 +501,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-rose-400" />
+              <Edit2 className="w-5 h-5 text-[#FF6266]" />
               <span>Edit Campus: {editingCampus.code}</span>
             </h3>
 
@@ -515,7 +515,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   required
                   value={editingCampus.name}
                   onChange={(e) => setEditingCampus({ ...editingCampus, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 />
               </div>
 
@@ -528,7 +528,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     type="text"
                     value={editingCampus.city || ''}
                     onChange={(e) => setEditingCampus({ ...editingCampus, city: e.target.value })}
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   />
                 </div>
                 <div>
@@ -539,7 +539,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     type="text"
                     value={editingCampus.state || ''}
                     onChange={(e) => setEditingCampus({ ...editingCampus, state: e.target.value })}
-                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                    className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                   />
                 </div>
               </div>
@@ -556,7 +556,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                       status: e.target.value as 'ACTIVE' | 'INACTIVE',
                     })
                   }
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
@@ -572,7 +572,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                   onChange={(e) =>
                     setEditingCampus({ ...editingCampus, manager_id: e.target.value || null })
                   }
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="">None (Unassigned)</option>
                   {managers.map((m) => (
