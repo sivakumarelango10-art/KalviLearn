@@ -78,7 +78,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
     await lookupsInFlightRef.current
   }
 
-  const loadData = async (targetPage = page) => {
+  const loadData = async (targetPage = page, refreshLookups = false) => {
+    if (refreshLookups) lookupsLoadedRef.current = false
     setLoading(true)
     setError(null)
     const [sRes] = await Promise.all([
@@ -195,7 +196,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => loadData(page)}
+            onClick={() => loadData(page, true)}
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
