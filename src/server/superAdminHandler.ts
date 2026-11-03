@@ -407,7 +407,7 @@ export default async function handler(
 // ─── 1. Dashboard Telemetry ──────────────────────────────────────────────────
 
 async function handleGetDashboard(res: ServerResponse) {
-  // Aggregate live counts from Supabase database tables
+  // Fetch only the fields required for telemetry, then aggregate each collection once.
   const [
     campusesRes,
     usersRes,
@@ -417,9 +417,9 @@ async function handleGetDashboard(res: ServerResponse) {
   ] = await Promise.all([
     supabaseServer.from('campuses').select('id, code, name, city, state, status, manager_id'),
     supabaseServer.from('users').select('id, role, status, campus_id'),
-    supabaseServer.from('mentors').select('id, status, campus_id, max_students'),
+    supabaseServer.from('mentors').select('id, status, campus_id'),
     supabaseServer.from('students').select('id, status, campus_id'),
-    supabaseServer.from('admin_audit_logs').select('*').order('created_at', { ascending: false }).limit(10),
+    supabaseServer.from('admin_audit_logs').select('id, admin_email, admin_id, action, target_type, target_id, target_label, status, created_at').order('created_at', { ascending: false }).limit(10),
   ])
 
   if (campusesRes.error) throw campusesRes.error
@@ -433,7 +433,6 @@ async function handleGetDashboard(res: ServerResponse) {
   const students = studentsRes.data || []
   const recentAudit = auditRes.data || []
 
-  // Role counts
   const roleCounts: Record<string, number> = {
     STUDENT: 0,
     MENTOR: 0,
@@ -441,41 +440,74 @@ async function handleGetDashboard(res: ServerResponse) {
     ADMIN: 0,
     SUPERADMIN: 0,
   }
-  for (const u of users) {
-    const r = (u.role || 'STUDENT').toUpperCase()
-    roleCounts[r] = (roleCounts[r] || 0) + 1
+  const managerCampusIds = new Set<string>()
+  let totalManagers = 0
+  let activeManagers = 0
+
+  for (const user of users) {
+    const role = (user.role || 'STUDENT').toUpperCase()
+    roleCounts[role] = (roleCounts[role] || 0) + 1
+
+    if (user.role === 'CAMPUS_MANAGER' || user.role === 'ADMIN') {
+      totalManagers++
+      if (user.status === 'ACTIVE') activeManagers++
+      if (user.campus_id) managerCampusIds.add(user.campus_id)
+    }
   }
 
-  // Campus breakdown
-  const campusBreakdown = campuses.map((c) => {
-    const cStudents = students.filter((s) => s.campus_id === c.id)
-    const cMentors = mentors.filter((m) => m.campus_id === c.id)
-    const cManagers = users.filter((u) => u.campus_id === c.id && (u.role === 'CAMPUS_MANAGER' || u.role === 'ADMIN'))
+  const studentCountsByCampus = new Map<string, { total: number; active: number }>()
+  for (const student of students) {
+    if (!student.campus_id) continue
+    const counts = studentCountsByCampus.get(student.campus_id) || { total: 0, active: 0 }
+    counts.total++
+    if (student.status === 'ACTIVE') counts.active++
+    studentCountsByCampus.set(student.campus_id, counts)
+  }
+
+  const mentorCountsByCampus = new Map<string, { total: number; active: number }>()
+  let activeMentors = 0
+  for (const mentor of mentors) {
+    if (mentor.status === 'ACTIVE') activeMentors++
+    if (!mentor.campus_id) continue
+    const counts = mentorCountsByCampus.get(mentor.campus_id) || { total: 0, active: 0 }
+    counts.total++
+    if (mentor.status === 'ACTIVE') counts.active++
+    mentorCountsByCampus.set(mentor.campus_id, counts)
+  }
+
+  let activeStudents = 0
+  for (const student of students) {
+    if (student.status === 'ACTIVE') activeStudents++
+  }
+
+  const campusBreakdown = campuses.map((campus) => {
+    const studentCounts = studentCountsByCampus.get(campus.id)
+    const mentorCounts = mentorCountsByCampus.get(campus.id)
     return {
-      id: c.id,
-      code: c.code,
-      name: c.name,
-      city: c.city,
-      state: c.state,
-      status: c.status,
-      totalStudents: cStudents.length,
-      activeStudents: cStudents.filter((s) => s.status === 'ACTIVE').length,
-      totalMentors: cMentors.length,
-      activeMentors: cMentors.filter((m) => m.status === 'ACTIVE').length,
-      hasManager: !!c.manager_id || cManagers.length > 0,
+      id: campus.id,
+      code: campus.code,
+      name: campus.name,
+      city: campus.city,
+      state: campus.state,
+      status: campus.status,
+      totalStudents: studentCounts?.total || 0,
+      activeStudents: studentCounts?.active || 0,
+      totalMentors: mentorCounts?.total || 0,
+      activeMentors: mentorCounts?.active || 0,
+      hasManager: !!campus.manager_id || managerCampusIds.has(campus.id),
     }
   })
 
   const telemetry = {
     overview: {
       totalCampuses: campuses.length,
-      activeCampuses: campuses.filter((c) => c.status === 'ACTIVE').length,
-      totalManagers: users.filter((u) => u.role === 'CAMPUS_MANAGER' || u.role === 'ADMIN').length,
-      activeManagers: users.filter((u) => (u.role === 'CAMPUS_MANAGER' || u.role === 'ADMIN') && u.status === 'ACTIVE').length,
+      activeCampuses: campuses.reduce((count, campus) => count + (campus.status === 'ACTIVE' ? 1 : 0), 0),
+      totalManagers,
+      activeManagers,
       totalMentors: mentors.length,
-      activeMentors: mentors.filter((m) => m.status === 'ACTIVE').length,
+      activeMentors,
       totalStudents: students.length,
-      activeStudents: students.filter((s) => s.status === 'ACTIVE').length,
+      activeStudents,
       totalUsers: users.length,
     },
     roleDistribution: roleCounts,
@@ -489,6 +521,7 @@ async function handleGetDashboard(res: ServerResponse) {
     data: telemetry,
   })
 }
+
 
 // ─── 2. Campus Management ────────────────────────────────────────────────────
 
@@ -544,22 +577,38 @@ async function enrichCampusesWithCounts(
     supabaseServer.from('mentors').select('id, campus_id, status'),
   ])
 
-  const students = studentsRes.data || []
-  const mentors = mentorsRes.data || []
+  const studentCountsByCampus = new Map<string, { total: number; active: number }>()
+  for (const student of studentsRes.data || []) {
+    if (!student.campus_id) continue
+    const counts = studentCountsByCampus.get(student.campus_id) || { total: 0, active: 0 }
+    counts.total++
+    if (student.status === 'ACTIVE') counts.active++
+    studentCountsByCampus.set(student.campus_id, counts)
+  }
 
-  return campuses.map((c) => {
-    const cStudents = students.filter((s) => s.campus_id === c.id)
-    const cMentors = mentors.filter((m) => m.campus_id === c.id)
+  const mentorCountsByCampus = new Map<string, { total: number; active: number }>()
+  for (const mentor of mentorsRes.data || []) {
+    if (!mentor.campus_id) continue
+    const counts = mentorCountsByCampus.get(mentor.campus_id) || { total: 0, active: 0 }
+    counts.total++
+    if (mentor.status === 'ACTIVE') counts.active++
+    mentorCountsByCampus.set(mentor.campus_id, counts)
+  }
+
+  return campuses.map((campus) => {
+    const studentCounts = studentCountsByCampus.get(campus.id)
+    const mentorCounts = mentorCountsByCampus.get(campus.id)
     return {
-      ...c,
-      manager: managersMap[c.manager_id] || c.manager || null,
-      studentCount: cStudents.length,
-      activeStudentCount: cStudents.filter((s) => s.status === 'ACTIVE').length,
-      mentorCount: cMentors.length,
-      activeMentorCount: cMentors.filter((m) => m.status === 'ACTIVE').length,
+      ...campus,
+      manager: managersMap[campus.manager_id] || campus.manager || null,
+      studentCount: studentCounts?.total || 0,
+      activeStudentCount: studentCounts?.active || 0,
+      mentorCount: mentorCounts?.total || 0,
+      activeMentorCount: mentorCounts?.active || 0,
     }
   })
 }
+
 
 async function handleCreateCampus(
   body: Record<string, unknown>,
@@ -2683,93 +2732,126 @@ async function handleListQuestions(
     ? String(body.belt)
     : (urlObj.searchParams.get('belt') || 'ALL').trim()
 
-  const [problemsRes, testCasesRes] = await Promise.all([
-    supabaseServer.from('Problem').select('*').order('createdAt', { ascending: false }),
-    supabaseServer.from('TestCase').select('id, problemId, testIndex, isHidden'),
-  ])
+  const requestedPage = Number.parseInt(String(body.page ?? urlObj.searchParams.get('page') ?? '1'), 10)
+  const requestedLimit = Number.parseInt(String(body.limit ?? urlObj.searchParams.get('limit') ?? '50'), 10)
+  const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1
+  const limit = Number.isFinite(requestedLimit) ? Math.min(100, Math.max(1, requestedLimit)) : 50
 
-  if (problemsRes.error) throw problemsRes.error
-  if (testCasesRes.error) throw testCasesRes.error
+  // Load only list metadata for statistics and filters. Large descriptions, starter code,
+  // and test-case payloads are fetched only when an administrator opens one question.
+  const { data: allProblems, error: problemsError } = await supabaseServer
+    .from('Problem')
+    .select('id, beltId, order, title, slug, difficulty, subdivision, isActive, examples, createdAt')
+    .order('createdAt', { ascending: false })
 
-  const allProblems = problemsRes.data || []
-  const allCases = testCasesRes.data || []
+  if (problemsError) throw problemsError
 
-  // Group test cases by problemId
-  const casesByProblemId = new Map<string, any[]>()
-  for (const tc of allCases) {
-    if (!casesByProblemId.has(tc.problemId)) {
-      casesByProblemId.set(tc.problemId, [])
-    }
-    casesByProblemId.get(tc.problemId)!.push(tc)
-  }
-
-  // Calculate summary stats across all questions
+  const problems = allProblems || []
   let totalPublished = 0
   let totalDraft = 0
   const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 }
   const topicCounts: Record<string, number> = {}
 
-  for (const p of allProblems) {
-    if (p.isActive) totalPublished++
+  for (const problem of problems) {
+    if (problem.isActive) totalPublished++
     else totalDraft++
 
-    const diff = p.difficulty || 'Easy'
+    const diff = problem.difficulty || 'Easy'
     if (diff in difficultyCounts) difficultyCounts[diff]++
 
-    const top = p.subdivision || 'General'
-    topicCounts[top] = (topicCounts[top] || 0) + 1
+    const problemTopic = problem.subdivision || 'General'
+    topicCounts[problemTopic] = (topicCounts[problemTopic] || 0) + 1
   }
 
-  // Filter questions
-  const filtered = allProblems.filter((p: any) => {
-    if (difficulty !== 'ALL' && p.difficulty !== difficulty) return false
-    if (topic !== 'ALL' && (p.subdivision || 'General') !== topic) return false
-    if (status === 'PUBLISHED' && !p.isActive) return false
-    if (status === 'DRAFT' && p.isActive) return false
+  const filtered = problems.filter((problem: any) => {
+    if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
+    if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
+    if (status === 'PUBLISHED' && !problem.isActive) return false
+    if (status === 'DRAFT' && problem.isActive) return false
+
     if (belt !== 'ALL') {
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
-      const matchesBeltId = p.beltId === belt || (typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltId === `mock-belt-${beltNum}` || (p.beltId && p.beltId.includes(String(beltNum)))))
-      const matchesSlug = typeof beltNum === 'number' && !isNaN(beltNum) && p.slug && p.slug.startsWith(`belt-${beltNum}-`)
-      const matchesOrder = typeof beltNum === 'number' && !isNaN(beltNum) && (p.beltOrder === beltNum || (p.order === beltNum && !p.slug?.includes('-q')))
+      const hasBeltNumber = Number.isFinite(beltNum)
+      const matchesBeltId = problem.beltId === belt || (
+        hasBeltNumber && (
+          problem.beltId === 'mock-belt-' + beltNum ||
+          (typeof problem.beltId === 'string' && problem.beltId.includes(String(beltNum)))
+        )
+      )
+      const matchesSlug = hasBeltNumber && typeof problem.slug === 'string' && problem.slug.startsWith('belt-' + beltNum + '-')
+      const matchesOrder = hasBeltNumber && problem.order === beltNum && !problem.slug?.includes('-q')
       if (!matchesBeltId && !matchesSlug && !matchesOrder) return false
     }
+
     if (search) {
-      const matchTitle = (p.title || '').toLowerCase().includes(search)
-      const matchSlug = (p.slug || '').toLowerCase().includes(search)
-      const matchSub = (p.subdivision || '').toLowerCase().includes(search)
-      if (!matchTitle && !matchSlug && !matchSub) return false
+      const matchTitle = (problem.title || '').toLowerCase().includes(search)
+      const matchSlug = (problem.slug || '').toLowerCase().includes(search)
+      const matchTopic = (problem.subdivision || '').toLowerCase().includes(search)
+      if (!matchTitle && !matchSlug && !matchTopic) return false
     }
     return true
   })
 
-  const enrichedQuestions = filtered.map((p: any) => {
-    const pCases = casesByProblemId.get(p.id) || []
-    const visibleCount = pCases.filter((c: any) => !c.isHidden).length
-    const hiddenCount = pCases.filter((c: any) => c.isHidden).length
-    const examples = Array.isArray(p.examples) ? p.examples : []
-    const inferredBeltOrder = p.beltOrder || (p.slug && p.slug.match(/^belt-(\d+)-/) ? Number(p.slug.match(/^belt-(\d+)-/)[1]) : 1)
+  const total = filtered.length
+  const totalPages = Math.max(1, Math.ceil(total / limit))
+  const currentPage = Math.min(page, totalPages)
+  const offset = (currentPage - 1) * limit
+  const pageProblems = filtered.slice(offset, offset + limit)
+  const pageProblemIds = pageProblems.map((problem: any) => problem.id)
+
+  // Test-case counts are needed only for the visible admin list page. Never return test
+  // case inputs/outputs from this endpoint, including for hidden cases.
+  const testCasesRes = pageProblemIds.length > 0
+    ? await supabaseServer
+        .from('TestCase')
+        .select('id, problemId, testIndex, isHidden')
+        .in('problemId', pageProblemIds)
+    : { data: [], error: null }
+
+  if (testCasesRes.error) throw testCasesRes.error
+
+  const testCaseCounts = new Map<string, { total: number; visible: number; hidden: number }>()
+  for (const testCase of testCasesRes.data || []) {
+    const counts = testCaseCounts.get(testCase.problemId) || { total: 0, visible: 0, hidden: 0 }
+    counts.total++
+    if (testCase.isHidden) counts.hidden++
+    else counts.visible++
+    testCaseCounts.set(testCase.problemId, counts)
+  }
+
+  const enrichedQuestions = pageProblems.map((problem: any) => {
+    const testCaseCount = testCaseCounts.get(problem.id) || { total: 0, visible: 0, hidden: 0 }
+    const examples = Array.isArray(problem.examples) ? problem.examples : []
+    const inferredBeltOrder = problem.beltOrder || (
+      problem.slug && problem.slug.match(/^belt-(\d+)-/)
+        ? Number(problem.slug.match(/^belt-(\d+)-/)[1])
+        : 1
+    )
 
     return {
-      id: p.id,
-      slug: p.slug,
-      title: p.title,
-      difficulty: p.difficulty,
-      topic: p.subdivision || 'General',
-      subdivision: p.subdivision,
-      beltId: p.beltId || `mock-belt-${inferredBeltOrder}`,
+      id: problem.id,
+      slug: problem.slug,
+      title: problem.title,
+      difficulty: problem.difficulty,
+      topic: problem.subdivision || 'General',
+      subdivision: problem.subdivision,
+      beltId: problem.beltId || 'mock-belt-' + inferredBeltOrder,
       beltOrder: inferredBeltOrder,
-      status: p.isActive ? 'PUBLISHED' : 'DRAFT',
-      isActive: Boolean(p.isActive),
-      description: p.description,
-      inputFormat: p.inputFormat,
-      outputFormat: p.outputFormat,
-      constraints: p.explanation || '',
+      status: problem.isActive ? 'PUBLISHED' : 'DRAFT',
+      isActive: Boolean(problem.isActive),
+      // Full content and starter code are loaded on demand by the edit/preview actions.
+      description: '',
+      inputFormat: '',
+      outputFormat: '',
+      constraints: '',
+      examples,
+      starterCodes: {},
       exampleCount: examples.length,
-      testCaseCount: pCases.length,
-      visibleTestCaseCount: visibleCount,
-      hiddenTestCaseCount: hiddenCount,
-      createdAt: p.createdAt || p.created_at || new Date().toISOString(),
-      updatedAt: p.updatedAt || p.updated_at || new Date().toISOString(),
+      testCaseCount,
+      visibleTestCaseCount: testCaseCount.visible,
+      hiddenTestCaseCount: testCaseCount.hidden,
+      createdAt: problem.createdAt || problem.created_at || new Date().toISOString(),
+      updatedAt: problem.updatedAt || problem.updated_at || problem.createdAt || new Date().toISOString(),
     }
   })
 
@@ -2779,7 +2861,7 @@ async function handleListQuestions(
     data: {
       questions: enrichedQuestions,
       stats: {
-        total: allProblems.length,
+        total: problems.length,
         published: totalPublished,
         draft: totalDraft,
         easy: difficultyCounts.Easy || 0,
@@ -2788,8 +2870,33 @@ async function handleListQuestions(
         difficultyCounts,
         topicCounts,
       },
+      total,
+      page: currentPage,
+      limit,
+      totalPages,
     },
   })
+}
+
+
+async function findQuestionByIdOrSlug(idOrSlug: string): Promise<any | null> {
+  const byId = await supabaseServer
+    .from('Problem')
+    .select('*')
+    .eq('id', idOrSlug)
+    .maybeSingle()
+
+  if (byId.error) throw byId.error
+  if (byId.data) return byId.data
+
+  const bySlug = await supabaseServer
+    .from('Problem')
+    .select('*')
+    .eq('slug', idOrSlug)
+    .maybeSingle()
+
+  if (bySlug.error) throw bySlug.error
+  return bySlug.data || null
 }
 
 async function handleGetQuestion(
@@ -2812,14 +2919,7 @@ async function handleGetQuestion(
     })
   }
 
-  // Fetch question by ID or slug
-  const { data: allMatching, error } = await supabaseServer
-    .from('Problem')
-    .select('*')
-
-  if (error) throw error
-
-  const question = (allMatching || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug)
+  const question = await findQuestionByIdOrSlug(idOrSlug)
   if (!question) {
     return sendJson(res, 404, {
       success: false,
@@ -2887,13 +2987,7 @@ async function handleGetQuestionPreview(
     })
   }
 
-  const { data: allMatching, error } = await supabaseServer
-    .from('Problem')
-    .select('*')
-
-  if (error) throw error
-
-  const question = (allMatching || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug)
+  const question = await findQuestionByIdOrSlug(idOrSlug)
   if (!question) {
     return sendJson(res, 404, {
       success: false,
