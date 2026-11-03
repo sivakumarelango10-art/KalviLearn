@@ -3811,7 +3811,7 @@ async function handleListCurriculumModules(
   ])
 
   let rawModules = modulesRes.data || []
-  let rawUnits = unitsRes.data || []
+  let rawUnits = (unitsRes.data || []).map((unit: any) => ({ ...unit, concept: unit.concept ?? unit.content }))
 
   // Fallback: If DB Module table is empty, initialize from curriculum.json
   if (rawModules.length === 0) {
@@ -4137,7 +4137,7 @@ async function handleCreateLearningUnit(
     moduleId,
     order: nextOrder,
     title,
-    concept: typeof body.concept === 'string' ? body.concept : '',
+    // The database stores the lesson theory in "content"; the UI labels it "concept".
     content: typeof body.content === 'string' ? body.content : (typeof body.concept === 'string' ? body.concept : ''),
     approach: typeof body.approach === 'string' ? body.approach : '',
     codeSnippets: body.codeSnippets || {},
@@ -4197,8 +4197,9 @@ async function handleUpdateLearningUnit(
 
   const updates: Record<string, any> = { updatedAt: new Date().toISOString() }
   if (typeof body.title === 'string' && body.title.trim()) updates.title = body.title.trim()
-  if (typeof body.concept === 'string') updates.concept = body.concept
+  // "concept" is a UI alias for the existing database "content" column.
   if (typeof body.content === 'string') updates.content = body.content
+  else if (typeof body.concept === 'string') updates.content = body.concept
   if (typeof body.approach === 'string') updates.approach = body.approach
   if (body.codeSnippets !== undefined) updates.codeSnippets = body.codeSnippets
   if (typeof body.codingQuestion === 'string') updates.codingQuestion = body.codingQuestion
