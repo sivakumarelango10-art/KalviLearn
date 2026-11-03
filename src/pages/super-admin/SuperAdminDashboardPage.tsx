@@ -42,14 +42,14 @@ export const SuperAdminDashboardPage: React.FC = () => {
     { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
   ]
   const metrics = [
-    { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-sky-300', tint: 'bg-sky-400/10', href: '/super-admin/campuses', description: 'Registered institutions' },
+    { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-rose-300', tint: 'bg-rose-500/10', href: '/super-admin/campuses', description: 'Registered institutions' },
     { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-violet-300', tint: 'bg-violet-400/10', href: '/super-admin/managers', description: 'Campus operations' },
     { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-amber-300', tint: 'bg-amber-400/10', href: '/super-admin/mentors', description: 'Learning facilitators' },
     { label: 'Students', value: overview?.totalStudents, active: overview?.activeStudents, icon: GraduationCap, color: 'text-emerald-300', tint: 'bg-emerald-400/10', href: '/super-admin/students', description: 'Enrolled learners' },
   ]
 
   return (
-    <main className="min-h-screen w-full bg-[#090b10] px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen w-full bg-black px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-[1680px] space-y-6 xl:space-y-7">
         <header className="flex flex-col gap-4 border-b border-white/[0.08] pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -78,7 +78,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
 
         <section aria-label="Platform metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description }) => (
-            <Link key={label} to={href} className="group rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-white/[0.16] hover:bg-[#151a24]">
+            <Link key={label} to={href} className="group rounded-2xl border border-white/[0.08] bg-[#080808] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-white/[0.16] hover:bg-[#000000]">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-400">{label}</p>
@@ -96,7 +96,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
         </section>
 
         <section className="grid grid-cols-1 gap-5 2xl:grid-cols-[minmax(0,1.1fr)_minmax(380px,.9fr)]">
-          <div className="rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 sm:p-6">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#080808] p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2 text-slate-300"><Layers3 className="h-4 w-4 text-slate-400" /><h2 className="text-sm font-semibold">Platform role distribution</h2></div>
@@ -118,7 +118,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 sm:p-6">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#080808] p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <div><div className="flex items-center gap-2 text-slate-300"><Activity className="h-4 w-4 text-rose-300" /><h2 className="text-sm font-semibold">Recent admin activity</h2></div><p className="mt-1 text-xs text-slate-500">Latest recorded governance events</p></div>
               <Link to="/super-admin/audit" className="shrink-0 text-xs font-medium text-rose-300 hover:text-rose-200">View audit log <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" /></Link>
@@ -135,10 +135,10 @@ export const SuperAdminDashboardPage: React.FC = () => {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/[0.08] bg-[#11151d] p-5 sm:p-6">
+        <section className="rounded-2xl border border-white/[0.08] bg-[#080808] p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div><div className="flex items-center gap-2 text-slate-300"><Building2 className="h-4 w-4 text-sky-300" /><h2 className="text-sm font-semibold">Campus directory</h2></div><p className="mt-1 text-xs text-slate-500">Campus health and enrollment at a glance</p></div>
-            <Link to="/super-admin/campuses" className="text-xs font-medium text-sky-300 hover:text-sky-200">All campuses <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" /></Link>
+            <div><div className="flex items-center gap-2 text-slate-300"><Building2 className="h-4 w-4 text-rose-300" /><h2 className="text-sm font-semibold">Campus directory</h2></div><p className="mt-1 text-xs text-slate-500">Campus health and enrollment at a glance</p></div>
+            <Link to="/super-admin/campuses" className="text-xs font-medium text-rose-300 hover:text-sky-200">All campuses <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" /></Link>
           </div>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[640px] text-left">
