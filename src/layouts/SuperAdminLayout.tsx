@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard, Building2, UserCog, Users, GraduationCap,
   ShieldCheck, BookOpen, History, LogOut, Menu, X,
@@ -22,7 +22,6 @@ const NAV_ITEMS: SuperAdminNavItem[] = [
 
 export const SuperAdminLayout: React.FC = () => {
   const { user, logout } = useAuth()
-  const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const sidebar = (
