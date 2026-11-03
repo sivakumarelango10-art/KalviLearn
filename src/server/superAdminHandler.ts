@@ -196,6 +196,14 @@ export default async function handler(
       if (method === 'GET') action = 'list_curriculum_modules'
     } else if (sub === 'belts' || sub.startsWith('belts/')) {
       if (method === 'GET') action = 'list_belts'
+    } else if (sub === 'content' || sub.startsWith('content/')) {
+      if (sub === 'content/courses') {
+        if (method === 'GET') action = 'list_curriculum_modules'
+      } else if (sub === 'content/learn-coding') {
+        if (method === 'GET') action = 'list_belts'
+      } else if (sub === 'content/practice-coding') {
+        if (method === 'GET') action = 'list_questions'
+      }
     }
     // Content-management list endpoints may be deployed through the consolidated
     // /api/super-admin entrypoint. Preserve explicit action headers/body values,
