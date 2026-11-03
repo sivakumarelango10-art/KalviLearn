@@ -36,10 +36,10 @@ export const SuperAdminDashboardPage: React.FC = () => {
   const roleDistribution = telemetry?.roleDistribution
   const totalUsers = overview?.totalUsers ?? 0
   const roleItems = [
-    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-[#FF6266]', text: 'text-[#FF6266]' },
-    { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-[#F04452]', text: 'text-[#FF8588]' },
-    { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-[#C92A3A]', text: 'text-[#FF6266]' },
-    { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-[#8F1D2C]', text: 'text-[#FF8588]' },
+    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-rose-400', text: 'text-rose-300' },
+    { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
+    { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-amber-300' },
+    { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
   ]
   const metrics = [
     { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/campuses', description: 'Registered institutions' },
