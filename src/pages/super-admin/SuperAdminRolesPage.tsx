@@ -91,7 +91,7 @@ export const SuperAdminRolesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-red-500" />
@@ -105,7 +105,7 @@ export const SuperAdminRolesPage: React.FC = () => {
           <button
             onClick={loadData}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
             <span>Refresh</span>
@@ -139,7 +139,7 @@ export const SuperAdminRolesPage: React.FC = () => {
       )}
 
       {/* Security Principles Banner */}
-      <div className="p-4 rounded-xl bg-neutral-900/90 border border-neutral-800 text-xs text-neutral-300 space-y-1.5">
+      <div className="p-4 rounded-xl bg-[#080808]/90 border border-white/10 text-xs text-neutral-300 space-y-1.5">
         <div className="flex items-center gap-2 text-white font-semibold">
           <Lock className="w-4 h-4 text-red-400" />
           <span>Super Admin Access Enforcement Rules</span>
@@ -163,7 +163,7 @@ export const SuperAdminRolesPage: React.FC = () => {
       </div>
 
       {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
@@ -171,7 +171,7 @@ export const SuperAdminRolesPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users by name, email, or campus..."
-            className="w-full pl-9 pr-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
           />
         </div>
 
@@ -183,7 +183,7 @@ export const SuperAdminRolesPage: React.FC = () => {
               onClick={() => setRoleFilter(r)}
               className={`px-2 py-1 text-xs rounded-lg transition-colors font-medium ${
                 roleFilter === r
-                  ? 'bg-neutral-800 text-white border border-neutral-700'
+                  ? 'bg-[#141414] text-white border border-white/15'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -194,11 +194,11 @@ export const SuperAdminRolesPage: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-[#080808] border border-white/10 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-3.5 px-4">User Name</th>
                 <th className="py-3.5 px-4">Email</th>
                 <th className="py-3.5 px-4">Campus</th>
@@ -225,7 +225,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 filtered.map((u) => {
                   const isProtected = u.isSuperAdminProtected
                   return (
-                    <tr key={u.id} className="hover:bg-neutral-800/40 transition-colors">
+                    <tr key={u.id} className="hover:bg-[#141414]/40 transition-colors">
                       <td className="py-3.5 px-4 font-semibold text-white">
                         <div className="flex items-center gap-2">
                           <span>{u.name || 'Unnamed User'}</span>
@@ -245,8 +245,8 @@ export const SuperAdminRolesPage: React.FC = () => {
                       </td>
                       <td className="py-3.5 px-4">
                         {u.campus ? (
-                          <div className="flex items-center gap-1 text-blue-300">
-                            <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                          <div className="flex items-center gap-1 text-rose-300">
+                            <Building2 className="w-3.5 h-3.5 text-rose-400" />
                             <span>{u.campus.name}</span>
                           </div>
                         ) : (
@@ -256,7 +256,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                       <td className="py-3.5 px-4">
                         <span
                           className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${
-                            ROLE_COLORS[u.role] || 'bg-neutral-800 text-neutral-300 border-neutral-700'
+                            ROLE_COLORS[u.role] || 'bg-[#141414] text-neutral-300 border-white/15'
                           }`}
                         >
                           {u.role}
@@ -269,7 +269,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                             ACTIVE
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#141414] text-neutral-400 border border-white/15">
                             INACTIVE
                           </span>
                         )}
@@ -286,7 +286,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                                 : 'STUDENT'
                               setNewRole(targetRole)
                             }}
-                            className="px-2.5 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 transition-colors font-medium"
+                            className="px-2.5 py-1 text-xs rounded-lg bg-[#141414] hover:bg-[#202020] text-neutral-200 transition-colors font-medium"
                           >
                             Change Role
                           </button>
@@ -304,7 +304,7 @@ export const SuperAdminRolesPage: React.FC = () => {
       {/* Change Role Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setSelectedUser(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -325,7 +325,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 <label className="block text-xs font-medium text-neutral-300 mb-1">
                   Current Role
                 </label>
-                <div className="font-mono text-xs text-neutral-400 bg-neutral-950 p-2.5 rounded-lg border border-neutral-800">
+                <div className="font-mono text-xs text-neutral-400 bg-black p-2.5 rounded-lg border border-white/10">
                   {selectedUser.role}
                 </div>
               </div>
@@ -337,7 +337,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="STUDENT">STUDENT (Learner)</option>
                   <option value="MENTOR">MENTOR (Faculty Guidance)</option>
@@ -349,7 +349,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setSelectedUser(null)}
