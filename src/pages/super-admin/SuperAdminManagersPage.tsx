@@ -130,7 +130,7 @@ export const SuperAdminManagersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
             <UserCog className="w-6 h-6 text-purple-400" />
@@ -144,7 +144,7 @@ export const SuperAdminManagersPage: React.FC = () => {
           <button
             onClick={loadData}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
             <span>Refresh</span>
@@ -185,7 +185,7 @@ export const SuperAdminManagersPage: React.FC = () => {
       )}
 
       {/* Search */}
-      <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+      <div className="bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
@@ -193,17 +193,17 @@ export const SuperAdminManagersPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search managers by name, email, or campus..."
-            className="w-full pl-9 pr-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-[#080808] border border-white/10 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-3.5 px-4">Manager Name</th>
                 <th className="py-3.5 px-4">Email</th>
                 <th className="py-3.5 px-4">Assigned Campus</th>
@@ -229,7 +229,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                 </tr>
               ) : (
                 filtered.map((mgr) => (
-                  <tr key={mgr.id} className="hover:bg-neutral-800/40 transition-colors">
+                  <tr key={mgr.id} className="hover:bg-[#141414]/40 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-white">
                       {mgr.name || 'Unnamed Manager'}
                     </td>
@@ -241,10 +241,10 @@ export const SuperAdminManagersPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {mgr.campus ? (
-                        <div className="flex items-center gap-1.5 text-blue-300">
-                          <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                        <div className="flex items-center gap-1.5 text-rose-300">
+                          <Building2 className="w-3.5 h-3.5 text-rose-400" />
                           <span className="font-medium">{mgr.campus.name}</span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-800 text-neutral-400">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#141414] text-neutral-400">
                             {mgr.campus.code}
                           </span>
                         </div>
@@ -264,7 +264,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                           ACTIVE
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#141414] text-neutral-400 border border-white/15">
                           INACTIVE
                         </span>
                       )}
@@ -282,7 +282,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                             setReassigningManager(mgr)
                             setSelectedCampusId(mgr.campus_id || '')
                           }}
-                          className="px-2 py-1 text-[11px] rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 transition-colors"
+                          className="px-2 py-1 text-[11px] rounded bg-[#141414] hover:bg-[#202020] text-neutral-200 transition-colors"
                         >
                           Assign Campus
                         </button>
@@ -290,8 +290,8 @@ export const SuperAdminManagersPage: React.FC = () => {
                           onClick={() => handleToggle(mgr)}
                           className={`p-1.5 rounded-lg transition-colors ${
                             mgr.status === 'ACTIVE'
-                              ? 'text-neutral-400 hover:text-red-400 hover:bg-neutral-800'
-                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-neutral-800'
+                              ? 'text-neutral-400 hover:text-red-400 hover:bg-[#141414]'
+                              : 'text-neutral-400 hover:text-emerald-400 hover:bg-[#141414]'
                           }`}
                           title={mgr.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                         >
@@ -310,7 +310,7 @@ export const SuperAdminManagersPage: React.FC = () => {
       {/* Provision Modal */}
       {showProvisionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setShowProvisionModal(false)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -333,7 +333,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                   value={provName}
                   onChange={(e) => setProvName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -347,7 +347,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                   value={provEmail}
                   onChange={(e) => setProvEmail(e.target.value.toLowerCase())}
                   placeholder="manager@campus.edu"
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 />
               </div>
 
@@ -358,7 +358,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                 <select
                   value={provCampusId}
                   onChange={(e) => setProvCampusId(e.target.value)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -369,7 +369,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowProvisionModal(false)}
@@ -393,7 +393,7 @@ export const SuperAdminManagersPage: React.FC = () => {
       {/* Reassign Campus Modal */}
       {reassigningManager && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+          <div className="max-w-md w-full bg-[#080808] border border-white/10 rounded-2xl p-6 shadow-2xl relative">
             <button
               onClick={() => setReassigningManager(null)}
               className="absolute top-4 right-4 text-neutral-400 hover:text-white"
@@ -401,7 +401,7 @@ export const SuperAdminManagersPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-blue-400" />
+              <Building2 className="w-5 h-5 text-rose-400" />
               <span>Assign Campus</span>
             </h3>
             <p className="text-xs text-neutral-400 mb-4">
@@ -416,7 +416,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                 <select
                   value={selectedCampusId}
                   onChange={(e) => setSelectedCampusId(e.target.value)}
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
                 >
                   <option value="">None (Unassigned)</option>
                   {campuses.map((c) => (
@@ -427,7 +427,7 @@ export const SuperAdminManagersPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setReassigningManager(null)}
