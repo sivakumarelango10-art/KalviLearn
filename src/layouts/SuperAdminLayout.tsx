@@ -25,52 +25,52 @@ export const SuperAdminLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const sidebar = (
-    <aside className="flex h-full w-[264px] shrink-0 flex-col border-r border-white/[0.08] bg-[#080808] text-slate-300">
-      <div className="flex h-[72px] items-center justify-between border-b border-white/[0.07] px-5">
-        <Link to="/super-admin/dashboard" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
-          <svg viewBox="0 0 100 120" className="h-8 w-7 shrink-0" fill="none" aria-hidden="true">
+    <aside className="flex h-full w-[176px] shrink-0 flex-col border-r border-white/[0.08] bg-[#080808] text-slate-300">
+      <div className="flex h-[48px] items-center justify-between border-b border-white/[0.07] px-2">
+        <Link to="/super-admin/dashboard" className="flex min-w-0 items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <svg viewBox="0 0 100 120" className="h-6 w-5 shrink-0" fill="none" aria-hidden="true">
             <rect x="15" y="15" width="70" height="90" stroke="#ED2A2B" strokeWidth="11" />
             <polyline points="79.5 20.5 20.5 60 79.5 99.5" stroke="#ED2A2B" strokeWidth="11" strokeLinecap="square" />
           </svg>
           <span className="min-w-0 leading-tight">
-            <span className="block text-sm font-extrabold tracking-tight text-white">KalviAdmin</span>
-            <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#ED2A2B]">Super Admin</span>
+            <span className="block text-[11px] font-extrabold tracking-tight text-white">KalviAdmin</span>
+            <span className="mt-0.5 block text-[9px] font-bold uppercase tracking-[0.12em] text-[#ED2A2B]">Super Admin</span>
           </span>
         </Link>
-        <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[10px] font-bold tracking-wider text-red-400">ROOT</span>
+        <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[9px] font-bold tracking-wider text-red-400">ROOT</span>
       </div>
 
-      <nav aria-label="Super Admin navigation" className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <nav aria-label="Super Admin navigation" className="flex-1 space-y-1 overflow-y-auto px-2 py-2">
         {NAV_ITEMS.map(item => {
           const Icon = item.icon
           return item.disabled ? (
             <div key={item.path} aria-disabled="true" title="Content management is not available yet"
-              className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-500 opacity-70">
-              <Icon className="h-4 w-4 shrink-0" /><span className="flex-1">{item.label}</span>
-              {'badge' in item && <span className="rounded bg-white/[0.06] px-1.5 py-1 text-[9px] font-bold tracking-wide text-slate-500">{item.badge}</span>}
+              className="flex cursor-not-allowed items-center gap-2 rounded-lg px-2 py-2.5 text-[11px] font-medium text-slate-500 opacity-70">
+              <Icon className="h-3 w-3 shrink-0" /><span className="flex-1">{item.label}</span>
+              {'badge' in item && <span className="rounded bg-white/[0.06] px-1 py-0.5 text-[8px] font-bold tracking-wide text-slate-500">{item.badge}</span>}
             </div>
           ) : (
             <NavLink key={item.path} to={item.path} end={item.path === '/super-admin/dashboard'}
               onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => `flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${isActive ? 'border-[#ED2A2B]/35 bg-[#ED2A2B]/[0.10] text-[#ff6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
+              className={({ isActive }) => `flex items-center gap-2 rounded-lg border px-2 py-2.5 text-[11px] font-medium transition-colors ${isActive ? 'border-[#ED2A2B]/35 bg-[#ED2A2B]/[0.10] text-[#ff6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
               <Icon className="h-4 w-4 shrink-0" />
               <span className="min-w-0 flex-1">{item.label}</span>
-              {'badge' in item && <span className="rounded bg-white/[0.07] px-1.5 py-1 text-[9px] font-bold tracking-wide text-slate-400">{item.badge}</span>}
+              {'badge' in item && <span className="rounded bg-white/[0.07] px-1 py-0.5 text-[8px] font-bold tracking-wide text-slate-400">{item.badge}</span>}
             </NavLink>
           )
         })}
       </nav>
 
-      <div className="border-t border-white/[0.07] p-3">
-        <div className="rounded-xl border border-white/[0.10] bg-[#000000] p-3">
-          <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="border-t border-white/[0.07] p-2">
+        <div className="rounded-lg border border-white/[0.10] bg-[#000000] p-2">
+          <div className="mb-1.5 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-400">
             <span className="h-2 w-2 rounded-full bg-emerald-500" /> Sole Administrator
           </div>
-          <div className="truncate text-xs font-semibold text-white">{user?.email || 'Administrator account'}</div>
-          <div className="mt-1 text-[11px] text-slate-400">Role: <span className="font-bold text-[#ff6266]">{user?.role || 'SUPERADMIN'}</span></div>
+          <div className="truncate text-[10px] font-semibold text-white">{user?.email || 'Administrator account'}</div>
+          <div className="mt-0.5 text-[10px] text-slate-400">Role: <span className="font-bold text-[#ff6266]">{user?.role || 'SUPERADMIN'}</span></div>
         </div>
         <button type="button" onClick={() => void logout()}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/[0.05] hover:text-white">
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-[11px] text-slate-400 transition hover:bg-white/[0.05] hover:text-white">
           <LogOut className="h-4 w-4" /> Sign Out
         </button>
       </div>
