@@ -16,7 +16,7 @@ const NAV_ITEMS: SuperAdminNavItem[] = [
   { label: 'Mentors', path: '/super-admin/mentors', icon: Users },
   { label: 'Students', path: '/super-admin/students', icon: GraduationCap },
   { label: 'Roles & Access', path: '/super-admin/roles', icon: ShieldCheck, badge: 'RBAC' },
-  { label: 'Content', path: '/super-admin/content', icon: BookOpen, badge: 'CURRICULUM', disabled: true },
+  { label: 'Content', path: '/super-admin/content', icon: BookOpen, badge: 'CURRICULUM' },
   { label: 'Audit Logs', path: '/super-admin/audit', icon: History, badge: 'APPEND-ONLY' },
 ]
 
@@ -43,13 +43,7 @@ export const SuperAdminLayout: React.FC = () => {
       <nav aria-label="Super Admin navigation" className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {NAV_ITEMS.map(item => {
           const Icon = item.icon
-          return item.disabled ? (
-            <div key={item.path} aria-disabled="true" title="Content management is not available yet"
-              className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-500 opacity-70">
-              <Icon className="h-4 w-4 shrink-0" /><span className="flex-1">{item.label}</span>
-              {'badge' in item && <span className="rounded bg-white/[0.06] px-1.5 py-1 text-[9px] font-bold tracking-wide text-slate-500">{item.badge}</span>}
-            </div>
-          ) : (
+          return (
             <NavLink key={item.path} to={item.path} end={item.path === '/super-admin/dashboard'}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${isActive ? 'border-[#ED2A2B]/35 bg-[#ED2A2B]/[0.10] text-[#ff6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
