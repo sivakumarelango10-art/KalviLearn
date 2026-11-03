@@ -153,6 +153,24 @@ export interface AdminAuditLogEntry {
  * Super Admin auth only: never keep an access token in React state or a module cache.
  * getSession waits for Supabase auth initialization and returns the SDK-managed session.
  */
+type SupabaseSessionSnapshot = Awaited<ReturnType<typeof supabase.auth.getSession>>
+
+// Coalesce simultaneous page-load requests into one SDK session read. This is an
+// in-flight promise only: no access token or session is persisted in a module cache.
+let sessionReadInFlight: Promise<SupabaseSessionSnapshot> | null = null
+
+async function getSessionSnapshot(): Promise<SupabaseSessionSnapshot> {
+  if (sessionReadInFlight) return sessionReadInFlight
+
+  const pending = supabase.auth.getSession()
+  sessionReadInFlight = pending
+  try {
+    return await pending
+  } finally {
+    if (sessionReadInFlight === pending) sessionReadInFlight = null
+  }
+}
+
 let refreshInFlight: Promise<string | null> | null = null
 
 async function refreshSuperAdminAccessToken(): Promise<string | null> {
@@ -160,7 +178,7 @@ async function refreshSuperAdminAccessToken(): Promise<string | null> {
 
   refreshInFlight = (async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const { data: { session }, error } = await getSessionSnapshot()
       if (error || !session?.refresh_token) return null
 
       const { data, error: refreshError } = await supabase.auth.refreshSession({
@@ -188,7 +206,7 @@ async function getAuthHeader(forceRefresh = false): Promise<string | null> {
 
     // getSession initializes from persisted storage and cooperates with the Supabase SDK's
     // automatic refresh. Check expiry ourselves so requests don't race an about-to-expire JWT.
-    const { data: { session }, error } = await supabase.auth.getSession()
+    const { data: { session }, error } = await getSessionSnapshot()
     if (error || !session) return null
 
     const expiresAtMs = typeof session.expires_at === 'number' ? session.expires_at * 1000 : 0
@@ -257,7 +275,7 @@ async function callSuperAdminApi<T = unknown>(
     const testAuthEnabled = import.meta.env.DEV && typeof window !== 'undefined' && !!localStorage.getItem('kalvi_test_auth_token')
     let options = await createOptions()
     if (!('Authorization' in (options.headers || {})) && !testAuthEnabled) {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await getSessionSnapshot()
       if (sessionError) return { success: false, error: 'Your sign-in session could not be restored. Please sign in with Google again.' }
       return { success: false, error: session ? 'Your session has no usable access token. Please sign in with Google again.' : 'Your sign-in session is missing. Please sign in with Google again.' }
     }
