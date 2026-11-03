@@ -20,10 +20,10 @@ import {
 } from '@/lib/superAdminService'
 
 const ROLE_COLORS: Record<string, string> = {
-  SUPERADMIN: 'bg-red-950/80 text-red-300 border-red-800/80',
-  CAMPUS_MANAGER: 'bg-purple-950/80 text-purple-300 border-purple-800/80',
-  ADMIN: 'bg-purple-950/80 text-purple-300 border-purple-800/80',
-  MENTOR: 'bg-amber-950/80 text-amber-300 border-amber-800/80',
+  SUPERADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  CAMPUS_MANAGER: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  ADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
+  MENTOR: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
   STUDENT: 'bg-emerald-950/80 text-emerald-300 border-emerald-800/80',
 }
 
@@ -115,9 +115,9 @@ export const SuperAdminRolesPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-red-900/60 text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -141,18 +141,18 @@ export const SuperAdminRolesPage: React.FC = () => {
       {/* Security Principles Banner */}
       <div className="p-4 rounded-xl bg-[#080808]/90 border border-white/10 text-xs text-neutral-300 space-y-1.5">
         <div className="flex items-center gap-2 text-white font-semibold">
-          <Lock className="w-4 h-4 text-red-400" />
+          <Lock className="w-4 h-4 text-[#FF6266]" />
           <span>Super Admin Access Enforcement Rules</span>
         </div>
         <ul className="list-disc list-inside text-neutral-400 space-y-1 pl-1">
           <li>
             <strong className="text-white">Sole Administrator Protection:</strong> The account{' '}
-            <code className="text-red-400 font-mono">sgjitbros@gmail.com</code> is immutable and can never be demoted.
+            <code className="text-[#FF6266] font-mono">sgjitbros@gmail.com</code> is immutable and can never be demoted.
           </li>
           <li>
             <strong className="text-white">Role Restrictions:</strong> Only{' '}
-            <code className="text-red-400 font-mono">sgjitbros@gmail.com</code> may hold the{' '}
-            <code className="text-red-400 font-mono">SUPERADMIN</code> role. Self-promotion and other promotions to SUPERADMIN are denied.
+            <code className="text-[#FF6266] font-mono">sgjitbros@gmail.com</code> may hold the{' '}
+            <code className="text-[#FF6266] font-mono">SUPERADMIN</code> role. Self-promotion and other promotions to SUPERADMIN are denied.
           </li>
           <li>
             <strong className="text-white">Automatic Profile Synchronization:</strong> Assigning a user to{' '}
@@ -230,7 +230,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <span>{u.name || 'Unnamed User'}</span>
                           {isProtected && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800 uppercase font-mono font-bold">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-[#1F0B0B] text-[#FF6266] border border-[#681717] uppercase font-mono font-bold">
                               <ShieldAlert className="w-3 h-3" />
                               Sole Super Admin
                             </span>
@@ -245,8 +245,8 @@ export const SuperAdminRolesPage: React.FC = () => {
                       </td>
                       <td className="py-3.5 px-4">
                         {u.campus ? (
-                          <div className="flex items-center gap-1 text-rose-300">
-                            <Building2 className="w-3.5 h-3.5 text-rose-400" />
+                          <div className="flex items-center gap-1 text-[#FF6266]">
+                            <Building2 className="w-3.5 h-3.5 text-[#FF6266]" />
                             <span>{u.campus.name}</span>
                           </div>
                         ) : (
