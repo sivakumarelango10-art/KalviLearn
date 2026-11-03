@@ -202,9 +202,9 @@ export const SuperAdminStudentsPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-red-900/60 text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-xs text-neutral-400 hover:text-white">
@@ -344,8 +344,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {student.campus ? (
-                        <div className="flex items-center gap-1 text-rose-300">
-                          <Building2 className="w-3.5 h-3.5 text-rose-400" />
+                        <div className="flex items-center gap-1 text-[#FF6266]">
+                          <Building2 className="w-3.5 h-3.5 text-[#FF6266]" />
                           <span>{student.campus.name}</span>
                         </div>
                       ) : (
@@ -354,8 +354,8 @@ export const SuperAdminStudentsPage: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       {student.mentor ? (
-                        <div className="flex items-center gap-1 text-amber-300">
-                          <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <div className="flex items-center gap-1 text-[#FF6266]">
+                          <UserCheck className="w-3.5 h-3.5 text-[#FF6266]" />
                           <span>{student.mentor.name || student.mentor.email}</span>
                         </div>
                       ) : (
@@ -366,7 +366,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-white">{student.stats?.solvedCount ?? 0}</span>
                         <span className="text-neutral-500 text-[10px]">solved</span>
-                        <span className="text-red-400 font-semibold">{student.stats?.totalXp ?? 0} XP</span>
+                        <span className="text-[#FF6266] font-semibold">{student.stats?.totalXp ?? 0} XP</span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
@@ -395,7 +395,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                             setDeletingStudent(student)
                             setDeleteConfirmText('')
                           }}
-                          className="p-1.5 text-neutral-400 hover:text-red-400 rounded-lg hover:bg-[#141414] transition-colors"
+                          className="p-1.5 text-neutral-400 hover:text-[#FF6266] rounded-lg hover:bg-[#141414] transition-colors"
                           title="Permanently Delete Student"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -671,7 +671,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-[#ED2A2B]/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
 
@@ -714,7 +714,7 @@ export const SuperAdminStudentsPage: React.FC = () => {
                 type="button"
                 onClick={handleDeletePermanent}
                 disabled={deleteConfirmText !== 'DELETE' || submitting}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold disabled:opacity-40"
+                className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#B91C1C] text-white text-xs font-semibold disabled:opacity-40"
               >
                 {submitting ? 'Deleting...' : 'Permanently Delete'}
               </button>
