@@ -17,11 +17,6 @@ const NAV_ITEMS = [
   { label: 'Audit Logs', path: '/super-admin/audit', icon: History, badge: 'APPEND-ONLY' },
 ] as const
 
-const getInitials = (name?: string | null, email?: string | null) => {
-  const source = (name || email?.split('@')[0] || 'SA').trim()
-  return source.split(/[\s._-]+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'SA'
-}
-
 export const SuperAdminLayout: React.FC = () => {
   const { user, logout } = useAuth()
   const location = useLocation()
@@ -46,7 +41,6 @@ export const SuperAdminLayout: React.FC = () => {
       <nav aria-label="Super Admin navigation" className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {NAV_ITEMS.map(item => {
           const Icon = item.icon
-          const active = location.pathname === item.path || (item.path !== '/super-admin/dashboard' && location.pathname.startsWith(item.path + '/'))
           return item.disabled ? (
             <div key={item.path} aria-disabled="true" title="Content management is not available yet"
               className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-500 opacity-70">
