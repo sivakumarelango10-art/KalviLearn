@@ -3,10 +3,13 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Building2, UserCog, Users, GraduationCap,
   ShieldCheck, BookOpen, History, LogOut, Menu, X,
+  type LucideIcon,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
-const NAV_ITEMS = [
+type SuperAdminNavItem = { label: string; path: string; icon: LucideIcon; badge?: string; disabled?: boolean }
+
+const NAV_ITEMS: SuperAdminNavItem[] = [
   { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard, badge: 'LIVE' },
   { label: 'Campuses', path: '/super-admin/campuses', icon: Building2 },
   { label: 'Campus Managers', path: '/super-admin/managers', icon: UserCog },
@@ -15,7 +18,7 @@ const NAV_ITEMS = [
   { label: 'Roles & Access', path: '/super-admin/roles', icon: ShieldCheck, badge: 'RBAC' },
   { label: 'Content', path: '/super-admin/content', icon: BookOpen, badge: 'CURRICULUM', disabled: true },
   { label: 'Audit Logs', path: '/super-admin/audit', icon: History, badge: 'APPEND-ONLY' },
-] as const
+]
 
 export const SuperAdminLayout: React.FC = () => {
   const { user, logout } = useAuth()
