@@ -24,7 +24,7 @@ const ROLE_COLORS: Record<string, string> = {
   CAMPUS_MANAGER: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
   ADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
   MENTOR: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
-  STUDENT: 'bg-emerald-950/80 text-emerald-300 border-emerald-800/80',
+  STUDENT: 'bg-[#1F0B0B] text-[#FF8588] border-[#681717]',
 }
 
 const SUPPORTED_ROLES = ['STUDENT', 'MENTOR', 'CAMPUS_MANAGER', 'ADMIN'] as const
@@ -94,7 +94,7 @@ export const SuperAdminRolesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-red-500" />
+            <ShieldCheck className="w-6 h-6 text-[#FF6266]" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Role & Access Control (RBAC)</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
@@ -107,7 +107,7 @@ export const SuperAdminRolesPage: React.FC = () => {
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-red-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF6266]' : ''}`} />
             <span>Refresh</span>
           </button>
         </div>
@@ -115,7 +115,7 @@ export const SuperAdminRolesPage: React.FC = () => {
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-red-900/60 text-[#FF6266] text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-[#1F0B0B]/40 border border-[#681717] text-[#FF6266] text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <XCircle className="w-4 h-4 text-[#FF6266] flex-shrink-0" />
             <span>{error}</span>
@@ -171,7 +171,7 @@ export const SuperAdminRolesPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users by name, email, or campus..."
-            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-red-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
           />
         </div>
 
@@ -211,7 +211,7 @@ export const SuperAdminRolesPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
                     <span>Loading roles directory...</span>
                   </td>
                 </tr>
@@ -312,7 +312,7 @@ export const SuperAdminRolesPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-red-500" />
+              <UserCheck className="w-5 h-5 text-[#FF6266]" />
               <span>Modify User Role</span>
             </h3>
 
@@ -337,7 +337,7 @@ export const SuperAdminRolesPage: React.FC = () => {
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-red-500"
+                  className="w-full px-3 py-2 bg-black border border-white/10 rounded-lg text-sm text-white focus:outline-hidden focus:border-[#FF6266]"
                 >
                   <option value="STUDENT">STUDENT (Learner)</option>
                   <option value="MENTOR">MENTOR (Faculty Guidance)</option>
