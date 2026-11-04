@@ -21156,19 +21156,19 @@ var checkApiKeyFormat = (key) => {
   warnedKeySubtypes.add(subtype);
   console.warn("@supabase/supabase-js: Unrecognized Supabase API key format. The client will proceed and send this key as-is; if you see authentication errors you may need to upgrade @supabase/supabase-js to a version that recognizes this key type.");
 };
-var fetchWithAuth = (supabaseKey2, supabaseUrl2, getAccessToken, customFetch, tracePropagationOptions, options) => {
+var fetchWithAuth = (supabaseKey, supabaseUrl2, getAccessToken, customFetch, tracePropagationOptions, options) => {
   const fetch$1 = resolveFetch2(customFetch);
   const HeadersConstructor = resolveHeadersConstructor();
   const traceEnabled = (tracePropagationOptions === null || tracePropagationOptions === void 0 ? void 0 : tracePropagationOptions.enabled) === true;
   const respectSampling = (tracePropagationOptions === null || tracePropagationOptions === void 0 ? void 0 : tracePropagationOptions.respectSamplingDecision) !== false;
   const traceTargets = traceEnabled ? getDefaultPropagationTargets(supabaseUrl2) : null;
-  const allowKeyAsBearer = !((options === null || options === void 0 ? void 0 : options.omitApiKeyAsBearer) && isNewApiKey(supabaseKey2));
+  const allowKeyAsBearer = !((options === null || options === void 0 ? void 0 : options.omitApiKeyAsBearer) && isNewApiKey(supabaseKey));
   return async (input, init) => {
     const realToken = await getAccessToken();
     let headers = new HeadersConstructor(init === null || init === void 0 ? void 0 : init.headers);
-    if (!headers.has("apikey")) headers.set("apikey", supabaseKey2);
+    if (!headers.has("apikey")) headers.set("apikey", supabaseKey);
     if (!headers.has("Authorization")) {
-      const bearer = realToken !== null && realToken !== void 0 ? realToken : allowKeyAsBearer ? supabaseKey2 : null;
+      const bearer = realToken !== null && realToken !== void 0 ? realToken : allowKeyAsBearer ? supabaseKey : null;
       if (bearer) headers.set("Authorization", `Bearer ${bearer}`);
     }
     if (traceTargets) {
@@ -21468,13 +21468,13 @@ var SupabaseClient = class {
   * })
   * ```
   */
-  constructor(supabaseUrl2, supabaseKey2, options) {
+  constructor(supabaseUrl2, supabaseKey, options) {
     var _settings$auth$storag, _settings$global$head;
     this.supabaseUrl = supabaseUrl2;
-    this.supabaseKey = supabaseKey2;
+    this.supabaseKey = supabaseKey;
     const baseUrl = validateSupabaseUrl(supabaseUrl2);
-    if (!supabaseKey2) throw new Error("supabaseKey is required.");
-    checkApiKeyFormat(supabaseKey2);
+    if (!supabaseKey) throw new Error("supabaseKey is required.");
+    checkApiKeyFormat(supabaseKey);
     this.realtimeUrl = new URL("realtime/v1", baseUrl);
     this.realtimeUrl.protocol = this.realtimeUrl.protocol.replace("http", "ws");
     this.authUrl = new URL("auth/v1", baseUrl);
@@ -21501,8 +21501,8 @@ var SupabaseClient = class {
         throw new Error(`@supabase/supabase-js: Supabase Client is configured with the accessToken option, accessing supabase.auth.${String(prop)} is not possible`);
       } });
     }
-    this.fetch = fetchWithAuth(supabaseKey2, supabaseUrl2, this._getSessionToken.bind(this), settings.global.fetch, settings.tracePropagation);
-    this.functionsFetch = fetchWithAuth(supabaseKey2, supabaseUrl2, this._getSessionToken.bind(this), settings.global.fetch, settings.tracePropagation, { omitApiKeyAsBearer: true });
+    this.fetch = fetchWithAuth(supabaseKey, supabaseUrl2, this._getSessionToken.bind(this), settings.global.fetch, settings.tracePropagation);
+    this.functionsFetch = fetchWithAuth(supabaseKey, supabaseUrl2, this._getSessionToken.bind(this), settings.global.fetch, settings.tracePropagation, { omitApiKeyAsBearer: true });
     this.realtime = this._initRealtimeClient(_objectSpread23({
       headers: this.headers,
       accessToken: this._getAccessToken.bind(this),
@@ -21714,8 +21714,8 @@ var SupabaseClient = class {
     }
   }
 };
-var createClient = (supabaseUrl2, supabaseKey2, options) => {
-  return new SupabaseClient(supabaseUrl2, supabaseKey2, options);
+var createClient = (supabaseUrl2, supabaseKey, options) => {
+  return new SupabaseClient(supabaseUrl2, supabaseKey, options);
 };
 function shouldShowDeprecationWarning() {
   if (typeof window !== "undefined" || globalThis["Deno"] !== void 0) return false;
@@ -21796,8 +21796,9 @@ function isTestAuthEnabled() {
 // src/server/feedbackAuth.ts
 var IS_STRICT_PRODUCTION = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
 var supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || (IS_STRICT_PRODUCTION ? "" : "https://iavxnhwbgoarnexmyxpn.supabase.co");
-var supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || (IS_STRICT_PRODUCTION ? "" : process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40");
-var CONFIG_ERROR = IS_STRICT_PRODUCTION && (!supabaseUrl || !supabaseKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !supabaseKey && "SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
+var serverSecretKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+var supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40";
+var CONFIG_ERROR = IS_STRICT_PRODUCTION && (!supabaseUrl || !serverSecretKey) ? `Server misconfigured: missing ${[!supabaseUrl && "SUPABASE_URL", !serverSecretKey && "SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY)"].filter(Boolean).join(" and ")} in the deployment environment.` : null;
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`);
 function isTrustedStorageUrl(raw) {
   try {
@@ -21808,9 +21809,20 @@ function isTrustedStorageUrl(raw) {
     return false;
   }
 }
-var supabaseServer = createClient(supabaseUrl || "https://unconfigured.invalid", supabaseKey || "unconfigured", {
-  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-});
+var supabaseAuthServer = createClient(
+  supabaseUrl || "https://unconfigured.invalid",
+  serverSecretKey || (IS_STRICT_PRODUCTION ? "" : supabaseAnonKey) || "unconfigured",
+  {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  }
+);
+var supabaseServer = createClient(
+  supabaseUrl || "https://unconfigured.invalid",
+  serverSecretKey || "unconfigured_privileged_key",
+  {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  }
+);
 var AUTH_CACHE_TTL_MS = 3e4;
 var AUTH_CACHE_MAX = 1e3;
 var authCache = /* @__PURE__ */ new Map();
@@ -21924,12 +21936,27 @@ async function authenticateFeedbackRequest(authHeader) {
   }
   authCache.delete(cacheKey);
   try {
-    const { data, error } = await supabaseServer.auth.getUser(token);
+    const { data, error } = await supabaseAuthServer.auth.getUser(token);
     if (error || !data?.user?.email) {
+      const status = Number(error?.status);
+      const code = String(error?.code || "");
+      const message = String(error?.message || "");
+      if (status === 401 || status === 403 || /expired|invalid.*jwt|jwt.*invalid/i.test(message)) {
+        return {
+          authenticated: false,
+          statusCode: 401,
+          error: "Invalid or expired authentication session token."
+        };
+      }
+      console.error("[auth] Supabase user-token verification failed.", {
+        status: Number.isFinite(status) ? status : void 0,
+        code: code || void 0,
+        message: message.slice(0, 240) || void 0
+      });
       return {
         authenticated: false,
-        statusCode: 401,
-        error: "Invalid or expired authentication session token."
+        statusCode: 503,
+        error: "Unable to verify the sign-in session with Supabase. Please retry."
       };
     }
     const email = data.user.email.toLowerCase();

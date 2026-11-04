@@ -716,6 +716,7 @@ export interface AdminQuestion {
   topic?: string
   beltId?: string
   beltOrder?: number
+  learningUnitId?: string | null
   status?: 'PUBLISHED' | 'DRAFT'
   description: string
   inputFormat?: string
@@ -746,6 +747,8 @@ export interface AdminQuestionInput {
   constraints?: string
   examples?: AdminQuestionExample[]
   starterCodes?: Record<string, string>
+  learningUnitId?: string | null
+  beltId?: string | null
   isActive?: boolean
   testCases: Array<{
     input: string
@@ -770,6 +773,9 @@ export async function fetchAdminQuestions(params?: {
   topic?: string
   status?: string
   belt?: number | string
+  learningUnitId?: string
+  onlyLearningUnits?: boolean
+  onlyBelts?: boolean
   page?: number
   limit?: number
 }): Promise<{

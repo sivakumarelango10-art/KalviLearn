@@ -21,8 +21,10 @@ model Belt {
 
 model Problem {
   id              String         @id @default(uuid())
-  beltId          String
-  belt            Belt           @relation(fields: [beltId], references: [id], onDelete: Cascade)
+  beltId          String?
+  belt            Belt?          @relation(fields: [beltId], references: [id], onDelete: Cascade)
+  learningUnitId  String?
+  learningUnit    LearningUnit?  @relation(fields: [learningUnitId], references: [id], onDelete: Cascade)
   order           Int
   title           String
   slug            String         @unique
@@ -43,6 +45,7 @@ model Problem {
   createdAt       DateTime       @default(now())
 
   @@index([beltId])
+  @@index([learningUnitId])
   @@index([isActive])
 }
 
@@ -87,6 +90,7 @@ model LearningUnit {
   readingTimeMinutes Int      @default(2)
   isActive           Boolean  @default(true)
   status             String   @default("PUBLISHED")
+  problems           Problem[]
   createdAt          DateTime @default(now())
   updatedAt          DateTime @default(now()) @updatedAt
 

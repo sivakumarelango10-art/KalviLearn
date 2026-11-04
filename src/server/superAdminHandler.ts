@@ -2725,6 +2725,11 @@ async function handleListQuestions(
   const difficulty = typeof body.difficulty === 'string' ? body.difficulty.trim() : (urlObj.searchParams.get('difficulty') || 'ALL').trim()
   const topic = typeof body.topic === 'string' ? body.topic.trim() : (urlObj.searchParams.get('topic') || 'ALL').trim()
   const status = typeof body.status === 'string' ? body.status.trim().toUpperCase() : (urlObj.searchParams.get('status') || 'ALL').trim().toUpperCase()
+  const learningUnitId = typeof body.learningUnitId === 'string'
+    ? body.learningUnitId.trim()
+    : (urlObj.searchParams.get('learningUnitId') || '').trim()
+  const onlyLearningUnits = body.onlyLearningUnits === true || urlObj.searchParams.get('onlyLearningUnits') === 'true'
+  const onlyBelts = body.onlyBelts === true || urlObj.searchParams.get('onlyBelts') === 'true'
   const belt = typeof body.belt === 'string'
     ? body.belt.trim()
     : typeof body.belt === 'number'
@@ -2740,18 +2745,19 @@ async function handleListQuestions(
   // and test-case payloads are fetched only when an administrator opens one question.
   const { data: allProblems, error: problemsError } = await supabaseServer
     .from('Problem')
-    .select('id, beltId, order, title, slug, difficulty, subdivision, isActive, examples, createdAt')
+    .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, createdAt')
     .order('createdAt', { ascending: false })
 
   if (problemsError) throw problemsError
 
   const problems = allProblems || []
+  const statsSubset = learningUnitId ? problems.filter((p: any) => p.learningUnitId === learningUnitId) : problems
   let totalPublished = 0
   let totalDraft = 0
   const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 }
   const topicCounts: Record<string, number> = {}
 
-  for (const problem of problems) {
+  for (const problem of statsSubset) {
     if (problem.isActive) totalPublished++
     else totalDraft++
 
@@ -2763,12 +2769,15 @@ async function handleListQuestions(
   }
 
   const filtered = problems.filter((problem: any) => {
+    if (learningUnitId && problem.learningUnitId !== learningUnitId) return false
+    if (!learningUnitId && onlyLearningUnits && !problem.learningUnitId) return false
+    if (!learningUnitId && onlyBelts && problem.learningUnitId) return false
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
     if (status === 'PUBLISHED' && !problem.isActive) return false
     if (status === 'DRAFT' && problem.isActive) return false
 
-    if (belt !== 'ALL') {
+    if (belt !== 'ALL' && !learningUnitId) {
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
       const hasBeltNumber = Number.isFinite(beltNum)
       const matchesBeltId = problem.beltId === belt || (
@@ -2860,7 +2869,7 @@ async function handleListQuestions(
     data: {
       questions: enrichedQuestions,
       stats: {
-        total: problems.length,
+        total: statsSubset.length,
         published: totalPublished,
         draft: totalDraft,
         easy: difficultyCounts.Easy || 0,
@@ -2949,6 +2958,8 @@ async function handleGetQuestion(
       difficulty: question.difficulty,
       topic: question.subdivision || 'General',
       subdivision: question.subdivision,
+      learningUnitId: question.learningUnitId || null,
+      beltId: question.beltId || null,
       status: question.isActive ? 'PUBLISHED' : 'DRAFT',
       isActive: Boolean(question.isActive),
       description: question.description,
@@ -3027,6 +3038,8 @@ async function handleGetQuestionPreview(
       difficulty: question.difficulty,
       topic: question.subdivision || 'General',
       subdivision: question.subdivision,
+      learningUnitId: question.learningUnitId || null,
+      beltId: question.beltId || null,
       status: question.isActive ? 'PUBLISHED' : 'DRAFT',
       description: question.description,
       inputFormat: question.inputFormat,
@@ -3144,9 +3157,29 @@ async function handleCreateQuestion(
 
   const problemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
 
+  const learningUnitId = typeof body.learningUnitId === 'string' && body.learningUnitId.trim()
+    ? body.learningUnitId.trim()
+    : null
+
+  if (learningUnitId) {
+    const { data: unit, error: unitErr } = await supabaseServer
+      .from('LearningUnit')
+      .select('id')
+      .eq('id', learningUnitId)
+      .maybeSingle()
+    if (unitErr) throw unitErr
+    if (!unit) {
+      return sendJson(res, 404, {
+        success: false,
+        error: 'Learning Unit Not Found',
+        message: `Learning Unit with ID "${learningUnitId}" does not exist.`,
+      })
+    }
+  }
+
   // Infer or format beltId and order for relational PostgreSQL schema
   const rawBelt = body.beltId || body.belt
-  let beltId = 'mock-belt-1'
+  let beltId: string | null = learningUnitId ? null : 'mock-belt-1'
   if (typeof rawBelt === 'string' && rawBelt.trim()) {
     beltId = rawBelt.trim().startsWith('mock-belt-') || rawBelt.trim().length > 10
       ? rawBelt.trim()
@@ -3163,6 +3196,7 @@ async function handleCreateQuestion(
     .insert({
       id: problemId,
       beltId,
+      learningUnitId,
       order,
       slug,
       title,
@@ -3291,6 +3325,26 @@ async function handleUpdateQuestion(
   }
   if (typeof body.isActive === 'boolean') {
     updates.isActive = body.isActive
+  }  if (body.learningUnitId !== undefined) {
+    if (typeof body.learningUnitId === 'string' && body.learningUnitId.trim()) {
+      const lid = body.learningUnitId.trim()
+      const { data: unit, error: unitErr } = await supabaseServer
+        .from('LearningUnit')
+        .select('id')
+        .eq('id', lid)
+        .maybeSingle()
+      if (unitErr) throw unitErr
+      if (!unit) {
+        return sendJson(res, 404, {
+          success: false,
+          error: 'Learning Unit Not Found',
+          message: `Learning Unit with ID "${lid}" does not exist.`,
+        })
+      }
+      updates.learningUnitId = lid
+    } else {
+      updates.learningUnitId = null
+    }
   }
   if (body.beltId !== undefined || body.belt !== undefined) {
     const rawBelt = body.beltId || body.belt
@@ -3298,6 +3352,8 @@ async function handleUpdateQuestion(
       updates.beltId = rawBelt.trim()
     } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
       updates.beltId = `mock-belt-${rawBelt}`
+    } else if (rawBelt === null) {
+      updates.beltId = null
     }
   }
   if (typeof body.order === 'number' && !isNaN(body.order)) {
@@ -3438,7 +3494,8 @@ async function handleDuplicateQuestion(
     .from('Problem')
     .insert({
       id: newProblemId,
-      beltId: original.beltId || 'mock-belt-1',
+      beltId: original.beltId || null,
+      learningUnitId: original.learningUnitId || null,
       order: (original.order || 0) + 1,
       slug: duplicateSlug,
       title: newTitle,
