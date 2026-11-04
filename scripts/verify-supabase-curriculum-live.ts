@@ -10,6 +10,30 @@
  * 4. Preserves all existing records and handles errors gracefully without exposing secrets
  */
 
+import fs from 'fs'
+import path from 'path'
+
+// Synchronously load .env and .env.local BEFORE initializing Supabase client
+for (const envFile of ['.env', '.env.local']) {
+  const envPath = path.resolve(process.cwd(), envFile)
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8')
+    for (const line of envContent.split('\n')) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const idx = trimmed.indexOf('=')
+      if (idx > 0) {
+        const k = trimmed.substring(0, idx).trim()
+        let v = trimmed.substring(idx + 1).trim()
+        if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+          v = v.substring(1, v.length - 1)
+        }
+        if (!process.env[k]) process.env[k] = v
+      }
+    }
+  }
+}
+
 import { supabaseServer } from '../src/server/feedbackAuth'
 
 const TIMEOUT_MS = 15000
@@ -109,7 +133,7 @@ async function runLiveVerification() {
         console.log('   The database correctly enforces Row-Level Security on write operations.')
         console.log('   Server-side writes require SUPABASE_SERVICE_ROLE_KEY in the environment')
         console.log('   (configured in Vercel production deployment settings).')
-        console.log('   In local development, provide SUPABASE_SERVICE_ROLE_KEY to enable local mutations.\n')
+        console.log('   In local development, provide SUPABASE_SERVICE_ROLE_KEY in .env to enable local mutations.\n')
       }
     } else {
       canWrite = true
