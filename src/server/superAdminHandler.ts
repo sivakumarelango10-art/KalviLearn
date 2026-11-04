@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
+import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
 import { resolveRoute } from './routeResolver'
@@ -4011,12 +4011,27 @@ async function handleListCurriculumModules(
   })
 }
 
+function assertPrivilegedDatabaseAccess(res: ServerResponse): boolean {
+  const configErr = getPrivilegedServerKeyError()
+  if (configErr) {
+    sendJson(res, 503, {
+      success: false,
+      error: 'Server Misconfigured',
+      message: configErr,
+    })
+    return false
+  }
+  return true
+}
+
 async function handleCreateCurriculumModule(
   body: Record<string, unknown>,
   adminId: string,
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const title = typeof body.title === 'string' ? body.title.trim() : ''
   const description = typeof body.description === 'string' ? body.description.trim() : ''
   const order = typeof body.order === 'number' ? body.order : null
@@ -4090,6 +4105,8 @@ async function handleUpdateCurriculumModule(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4170,6 +4187,8 @@ async function handleDeleteCurriculumModule(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4255,6 +4274,8 @@ async function handleReorderCurriculumModules(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const moduleOrders = Array.isArray(body.moduleOrders) ? body.moduleOrders : []
   if (moduleOrders.length === 0) {
     return sendJson(res, 400, {
@@ -4310,6 +4331,8 @@ async function handleCreateLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const moduleId = typeof body.moduleId === 'string' ? body.moduleId.trim() : ''
   const title = typeof body.title === 'string' ? body.title.trim() : ''
 
@@ -4417,6 +4440,8 @@ async function handleUpdateLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4506,6 +4531,8 @@ async function handleDeleteLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4579,6 +4606,8 @@ async function handleReorderLearningUnits(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const unitOrders = Array.isArray(body.unitOrders) ? body.unitOrders : []
   if (unitOrders.length === 0) {
     return sendJson(res, 400, {
@@ -4634,6 +4663,8 @@ async function handleToggleModuleStatus(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4711,6 +4742,8 @@ async function handleToggleLearningUnitStatus(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {

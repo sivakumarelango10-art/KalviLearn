@@ -105,7 +105,7 @@ async function runSuite() {
   console.log('========================================================================\n')
 
   const { default: superAdminHandler, resetSuperAdminRateLimitsForTesting } = await import('../src/server/superAdminHandler')
-  const { supabaseServer } = await import('../src/server/feedbackAuth')
+  const { supabaseServer, supabaseAuthServer, getPrivilegedServerKeyError, hasPrivilegedServerKey } = await import('../src/server/feedbackAuth')
   const { installMockSupabaseServer } = await import('./mockDatabase')
   installMockSupabaseServer(supabaseServer)
 
@@ -294,6 +294,50 @@ async function runSuite() {
     } finally {
       supabaseServer.from = origFrom
     }
+  })
+
+  await test('3.4 Privileged writes without SUPABASE_SECRET_KEY return explicit HTTP 503 error', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const origMocked = (supabaseServer as any).__isMocked
+    const origSecret = process.env.SUPABASE_SECRET_KEY
+    const origServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY
+    try {
+      // Simulate unconfigured server environment
+      delete process.env.SUPABASE_SECRET_KEY
+      delete process.env.SUPABASE_SERVICE_ROLE_KEY
+      ;(supabaseServer as any).__isMocked = false
+
+      const { req, res } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: {
+          action: 'create_curriculum_module',
+          title: 'Unconfigured Write Module',
+        },
+      })
+      await superAdminHandler(req, res)
+      const out = res.getOutput()
+      assert.strictEqual(out.statusCode, 503, 'Must return 503 when server secret key is missing')
+      assert.strictEqual(out.data.success, false)
+      assert.strictEqual(out.data.error, 'Server Misconfigured')
+      assert.ok(
+        out.data.message.includes('SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY)'),
+        'Message must explicitly name the missing secret key'
+      )
+    } finally {
+      (supabaseServer as any).__isMocked = origMocked
+      if (origSecret) process.env.SUPABASE_SECRET_KEY = origSecret
+      if (origServiceRole) process.env.SUPABASE_SERVICE_ROLE_KEY = origServiceRole
+    }
+  })
+
+  await test('3.5 Auth verification client is isolated from privileged database client', async () => {
+    assert.ok(supabaseAuthServer, 'Dedicated auth server client must exist')
+    assert.ok(supabaseServer, 'Privileged database server client must exist')
+    assert.notStrictEqual(
+      supabaseAuthServer,
+      supabaseServer,
+      'Auth client and privileged database client must be separate instances'
+    )
   })
 
   // ─── 4. Full Curriculum Lifecycle & Persistence ───────────────────────

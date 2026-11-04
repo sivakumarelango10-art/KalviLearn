@@ -295,6 +295,7 @@ export function createInitialMockDb(): MockDbState {
 }
 
 export function installMockSupabaseServer(supabaseServerInstance: any) {
+  supabaseServerInstance.__isMocked = true
   const db = createInitialMockDb()
 
   supabaseServerInstance.from = function (tableName: string) {
