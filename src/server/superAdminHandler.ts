@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer } from './feedbackAuth'
+import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
 import { resolveRoute } from './routeResolver'
@@ -7,7 +7,6 @@ import { registerCustomSuite, unregisterCustomSuite } from './judge/testReposito
 import { selectEngine } from './judge/engines'
 import { outputsMatch } from './judge/compare'
 import { normalizeLanguage } from './judge/questionId'
-import curriculumData from '../data/curriculum.json'
 import problemsData from '../data/problems.json'
 
 // Rate limiters: 120 req/min per IP, 60 req/min per authenticated user
@@ -3904,40 +3903,44 @@ async function handleListCurriculumModules(
     supabaseServer.from('LearningUnit').select('*').order('order', { ascending: true }),
   ])
 
-  let rawModules = modulesRes.data || []
-  let rawUnits = (unitsRes.data || []).map((unit: any) => ({ ...unit, concept: unit.concept ?? unit.content }))
+  // 1. Check errors explicitly. Never swallow database errors or convert them to mock data!
+  if (modulesRes.error) {
+    console.error('[curriculum] Supabase Module query error:', modulesRes.error)
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to load curriculum modules from database: ${modulesRes.error.message || 'Database query error.'}`,
+    })
+  }
 
-  // Fallback: If DB Module table is empty, initialize from curriculum.json
+  if (unitsRes.error) {
+    console.error('[curriculum] Supabase LearningUnit query error:', unitsRes.error)
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to load learning units from database: ${unitsRes.error.message || 'Database query error.'}`,
+    })
+  }
+
+  const rawModules = modulesRes.data || []
+  const rawUnits = (unitsRes.data || []).map((unit: any) => ({ ...unit, concept: unit.concept ?? unit.content }))
+
+  // 2. If database Module table is genuinely empty, return an honest empty state (zero mock fallbacks)
   if (rawModules.length === 0) {
-    rawModules = (curriculumData as any[]).map((m, idx) => ({
-      id: `mock-module-${m.order || idx + 1}`,
-      order: m.order || idx + 1,
-      title: m.title,
-      description: m.description || '',
-      isActive: true,
-      status: 'PUBLISHED',
-      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
-    }))
-    rawUnits = (curriculumData as any[]).flatMap((m, mIdx) => {
-      const modId = `mock-module-${m.order || mIdx + 1}`
-      return (m.learningUnits || []).map((lu: any, luIdx: number) => ({
-        id: `mock-unit-${m.order || mIdx + 1}-${lu.order || luIdx + 1}`,
-        moduleId: modId,
-        order: lu.order || luIdx + 1,
-        title: lu.title,
-        concept: lu.concept || lu.content || '',
-        content: lu.content || lu.concept || '',
-        approach: lu.approach || '',
-        codeSnippets: lu.codeSnippets || {},
-        codingQuestion: lu.codingQuestion || '',
-        inputFormat: lu.inputFormat || '',
-        outputFormat: lu.outputFormat || '',
-        examples: lu.examples || [],
-        readingTimeMinutes: lu.readingTimeMinutes || 2,
-        isActive: true,
-        status: 'PUBLISHED',
-        createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
-      }))
+    return sendJson(res, 200, {
+      success: true,
+      message: 'Curriculum modules retrieved successfully (0 modules in database).',
+      data: {
+        modules: [],
+        stats: {
+          totalModules: 0,
+          totalLearningUnits: 0,
+          publishedModules: 0,
+          draftModules: 0,
+          publishedUnits: 0,
+          draftUnits: 0,
+        },
+      },
     })
   }
 
@@ -4008,12 +4011,27 @@ async function handleListCurriculumModules(
   })
 }
 
+function assertPrivilegedDatabaseAccess(res: ServerResponse): boolean {
+  const configErr = getPrivilegedServerKeyError()
+  if (configErr) {
+    sendJson(res, 503, {
+      success: false,
+      error: 'Server Misconfigured',
+      message: configErr,
+    })
+    return false
+  }
+  return true
+}
+
 async function handleCreateCurriculumModule(
   body: Record<string, unknown>,
   adminId: string,
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const title = typeof body.title === 'string' ? body.title.trim() : ''
   const description = typeof body.description === 'string' ? body.description.trim() : ''
   const order = typeof body.order === 'number' ? body.order : null
@@ -4027,7 +4045,13 @@ async function handleCreateCurriculumModule(
   }
 
   const { data: existingModules, error: listErr } = await supabaseServer.from('Module').select('order')
-  if (listErr) throw listErr
+  if (listErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to inspect existing modules: ${listErr.message}`,
+    })
+  }
 
   const nextOrder = order ?? ((existingModules || []).reduce((max: number, m: any) => Math.max(max, m.order || 0), 0) + 1)
   const newModuleId = `mod-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
@@ -4047,7 +4071,13 @@ async function handleCreateCurriculumModule(
     .select()
     .single()
 
-  if (createErr) throw createErr
+  if (createErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to create module in database: ${createErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4075,12 +4105,22 @@ async function handleUpdateCurriculumModule(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
       success: false,
       error: 'Missing Module ID',
       message: 'Module ID is required for update.',
+    })
+  }
+
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be updated in the database. Please create a database-backed module first.',
     })
   }
 
@@ -4098,7 +4138,28 @@ async function handleUpdateCurriculumModule(
     .select()
     .single()
 
-  if (updErr) throw updErr
+  if (updErr) {
+    if (updErr.code === 'PGRST116') {
+      return sendJson(res, 404, {
+        success: false,
+        error: 'Not Found',
+        message: `Module with ID "${id}" was not found in the database.`,
+      })
+    }
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to update module: ${updErr.message || 'Database error.'}`,
+    })
+  }
+
+  if (!updated) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: `Module with ID "${id}" was not found in the database.`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4126,6 +4187,8 @@ async function handleDeleteCurriculumModule(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4135,12 +4198,55 @@ async function handleDeleteCurriculumModule(
     })
   }
 
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be deleted from the database.',
+    })
+  }
+
+  // Check if module exists
+  const { data: existingModule, error: findErr } = await supabaseServer
+    .from('Module')
+    .select('id, title')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (findErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to verify module existence: ${findErr.message}`,
+    })
+  }
+  if (!existingModule) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: `Module with ID "${id}" does not exist in the database.`,
+    })
+  }
+
   // Cascade delete learning units
-  await supabaseServer.from('LearningUnit').delete().eq('moduleId', id)
+  const { error: luDelErr } = await supabaseServer.from('LearningUnit').delete().eq('moduleId', id)
+  if (luDelErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to delete associated learning units: ${luDelErr.message}`,
+    })
+  }
 
   // Delete module
   const { error: delErr } = await supabaseServer.from('Module').delete().eq('id', id)
-  if (delErr) throw delErr
+  if (delErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to delete module: ${delErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4168,6 +4274,8 @@ async function handleReorderCurriculumModules(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const moduleOrders = Array.isArray(body.moduleOrders) ? body.moduleOrders : []
   if (moduleOrders.length === 0) {
     return sendJson(res, 400, {
@@ -4177,9 +4285,24 @@ async function handleReorderCurriculumModules(
     })
   }
 
+  if (moduleOrders.some((item) => typeof item.id === 'string' && item.id.startsWith('mock-'))) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be reordered in the database.',
+    })
+  }
+
   for (const item of moduleOrders) {
     if (item.id && typeof item.order === 'number') {
-      await supabaseServer.from('Module').update({ order: item.order }).eq('id', item.id)
+      const { error: reorderErr } = await supabaseServer.from('Module').update({ order: item.order }).eq('id', item.id)
+      if (reorderErr) {
+        return sendJson(res, 500, {
+          success: false,
+          error: 'Database Error',
+          message: `Failed to update module order: ${reorderErr.message}`,
+        })
+      }
     }
   }
 
@@ -4208,6 +4331,8 @@ async function handleCreateLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const moduleId = typeof body.moduleId === 'string' ? body.moduleId.trim() : ''
   const title = typeof body.title === 'string' ? body.title.trim() : ''
 
@@ -4216,6 +4341,35 @@ async function handleCreateLearningUnit(
       success: false,
       error: 'Missing Fields',
       message: 'Module ID and unit title are required.',
+    })
+  }
+
+  if (moduleId.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Cannot add learning units to mock demonstration modules. Please create a database-backed module first.',
+    })
+  }
+
+  const { data: targetModule, error: modErr } = await supabaseServer
+    .from('Module')
+    .select('id')
+    .eq('id', moduleId)
+    .maybeSingle()
+
+  if (modErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to verify target module: ${modErr.message}`,
+    })
+  }
+  if (!targetModule) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: `Target module with ID "${moduleId}" does not exist in the database.`,
     })
   }
 
@@ -4252,7 +4406,13 @@ async function handleCreateLearningUnit(
     .select()
     .single()
 
-  if (createErr) throw createErr
+  if (createErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to create learning unit in database: ${createErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4280,12 +4440,22 @@ async function handleUpdateLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
       success: false,
       error: 'Missing Unit ID',
       message: 'Learning Unit ID is required.',
+    })
+  }
+
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be updated in the database. Please create a database-backed unit first.',
     })
   }
 
@@ -4312,7 +4482,28 @@ async function handleUpdateLearningUnit(
     .select()
     .single()
 
-  if (updErr) throw updErr
+  if (updErr) {
+    if (updErr.code === 'PGRST116') {
+      return sendJson(res, 404, {
+        success: false,
+        error: 'Not Found',
+        message: `Learning unit with ID "${id}" was not found in the database.`,
+      })
+    }
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to update learning unit: ${updErr.message || 'Database error.'}`,
+    })
+  }
+
+  if (!updated) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: `Learning unit with ID "${id}" was not found in the database.`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4340,6 +4531,8 @@ async function handleDeleteLearningUnit(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4349,8 +4542,43 @@ async function handleDeleteLearningUnit(
     })
   }
 
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be deleted from the database.',
+    })
+  }
+
+  const { data: existing, error: findErr } = await supabaseServer
+    .from('LearningUnit')
+    .select('id, title')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (findErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to verify unit existence: ${findErr.message}`,
+    })
+  }
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Not Found',
+      message: `Learning unit with ID "${id}" was not found in the database.`,
+    })
+  }
+
   const { error: delErr } = await supabaseServer.from('LearningUnit').delete().eq('id', id)
-  if (delErr) throw delErr
+  if (delErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to delete learning unit: ${delErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4378,6 +4606,8 @@ async function handleReorderLearningUnits(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const unitOrders = Array.isArray(body.unitOrders) ? body.unitOrders : []
   if (unitOrders.length === 0) {
     return sendJson(res, 400, {
@@ -4387,9 +4617,24 @@ async function handleReorderLearningUnits(
     })
   }
 
+  if (unitOrders.some((item) => typeof item.id === 'string' && item.id.startsWith('mock-'))) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be reordered in the database.',
+    })
+  }
+
   for (const item of unitOrders) {
     if (item.id && typeof item.order === 'number') {
-      await supabaseServer.from('LearningUnit').update({ order: item.order }).eq('id', item.id)
+      const { error: reorderErr } = await supabaseServer.from('LearningUnit').update({ order: item.order }).eq('id', item.id)
+      if (reorderErr) {
+        return sendJson(res, 500, {
+          success: false,
+          error: 'Database Error',
+          message: `Failed to update learning unit order: ${reorderErr.message}`,
+        })
+      }
     }
   }
 
@@ -4418,6 +4663,8 @@ async function handleToggleModuleStatus(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4427,7 +4674,22 @@ async function handleToggleModuleStatus(
     })
   }
 
-  const { data: existing } = await supabaseServer.from('Module').select('*').eq('id', id).single()
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be toggled in the database.',
+    })
+  }
+
+  const { data: existing, error: findErr } = await supabaseServer.from('Module').select('*').eq('id', id).maybeSingle()
+  if (findErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to verify module: ${findErr.message}`,
+    })
+  }
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
@@ -4439,12 +4701,20 @@ async function handleToggleModuleStatus(
   const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
   const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
 
-  const { data: updated } = await supabaseServer
+  const { data: updated, error: updErr } = await supabaseServer
     .from('Module')
     .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single()
+
+  if (updErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to update module status: ${updErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4472,6 +4742,8 @@ async function handleToggleLearningUnitStatus(
   clientIp: string,
   res: ServerResponse
 ) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+
   const id = typeof body.id === 'string' ? body.id.trim() : ''
   if (!id) {
     return sendJson(res, 400, {
@@ -4481,7 +4753,22 @@ async function handleToggleLearningUnitStatus(
     })
   }
 
-  const { data: existing } = await supabaseServer.from('LearningUnit').select('*').eq('id', id).single()
+  if (id.startsWith('mock-')) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Invalid Operation',
+      message: 'Demonstration or mock items cannot be toggled in the database.',
+    })
+  }
+
+  const { data: existing, error: findErr } = await supabaseServer.from('LearningUnit').select('*').eq('id', id).maybeSingle()
+  if (findErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to verify learning unit: ${findErr.message}`,
+    })
+  }
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
@@ -4493,12 +4780,20 @@ async function handleToggleLearningUnitStatus(
   const nextIsActive = typeof body.isActive === 'boolean' ? body.isActive : !existing.isActive
   const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
 
-  const { data: updated } = await supabaseServer
+  const { data: updated, error: updErr } = await supabaseServer
     .from('LearningUnit')
     .update({ isActive: nextIsActive, status: nextStatus, updatedAt: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single()
+
+  if (updErr) {
+    return sendJson(res, 500, {
+      success: false,
+      error: 'Database Error',
+      message: `Failed to update unit status: ${updErr.message}`,
+    })
+  }
 
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -4519,8 +4814,6 @@ async function handleToggleLearningUnitStatus(
     data: updated,
   })
 }
-
-// ─── 10. Practice Belts Management Handlers ─────────────────────────────
 
 async function handleListBelts(res: ServerResponse) {
   const [beltsRes, problemsRes] = await Promise.all([

@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { context as esbuildContext } from 'esbuild'
 
 // Longest/most specific prefixes first.
@@ -65,7 +65,15 @@ function apiPlugin(): Plugin {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  for (const [k, v] of Object.entries(env)) {
+    if (!process.env[k]) {
+      process.env[k] = v
+    }
+  }
+
+  return {
   base: '/',
   plugins: [react(), apiPlugin()],
   resolve: {
@@ -98,4 +106,5 @@ export default defineConfig({
       },
     },
   },
+  }
 })

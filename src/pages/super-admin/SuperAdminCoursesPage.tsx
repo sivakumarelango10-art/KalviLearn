@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BookOpen,
@@ -21,6 +21,7 @@ import {
   X,
   Copy,
   Check,
+  Loader2,
 } from 'lucide-react'
 import {
   AdminCurriculumModule,
@@ -144,11 +145,19 @@ export const SuperAdminCoursesPage: React.FC = () => {
     moduleId?: string
   } | null>(null)
 
+  // Operation In-Flight States
+  const [isSavingModule, setIsSavingModule] = useState(false)
+  const [isSavingUnit, setIsSavingUnit] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const loadSeqRef = useRef(0)
+
   const loadCurriculum = async () => {
+    const seq = ++loadSeqRef.current
     setLoading(true)
     setError(null)
     try {
       const res = await fetchCurriculumModules({ search: searchQuery })
+      if (seq !== loadSeqRef.current) return // Avoid race conditions from older in-flight requests
       if (res.success && res.data?.modules) {
         setModules(res.data.modules)
         // Expand first module by default
@@ -168,12 +177,16 @@ export const SuperAdminCoursesPage: React.FC = () => {
           })
         }
       } else {
-        setError(res.error || 'Failed to load curriculum modules.')
+        setError(res.error || res.message || 'Failed to load curriculum modules.')
       }
     } catch (err: any) {
-      setError(err?.message || 'Error fetching curriculum modules.')
+      if (seq === loadSeqRef.current) {
+        setError(err?.message || 'Error fetching curriculum modules.')
+      }
     } finally {
-      setLoading(false)
+      if (seq === loadSeqRef.current) {
+        setLoading(false)
+      }
     }
   }
 
@@ -268,6 +281,8 @@ export const SuperAdminCoursesPage: React.FC = () => {
       return
     }
 
+    setIsSavingModule(true)
+    setError(null)
     try {
       if (editingModule) {
         const res = await updateCurriculumModule(editingModule.id, {
@@ -275,21 +290,23 @@ export const SuperAdminCoursesPage: React.FC = () => {
           description: moduleForm.description.trim(),
           order: moduleForm.order,
         })
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Module "${moduleForm.title}" updated.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to update module.')
+        setSuccessMessage(`Module "${moduleForm.title}" updated successfully.`)
       } else {
         const res = await createCurriculumModule({
           title: moduleForm.title.trim(),
           description: moduleForm.description.trim(),
           order: moduleForm.order,
         })
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Module "${moduleForm.title}" created.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to create module.')
+        setSuccessMessage(`Module "${moduleForm.title}" created successfully.`)
       }
       setIsModuleModalOpen(false)
-      loadCurriculum()
+      await loadCurriculum()
     } catch (err: any) {
       setError(err?.message || 'Failed to save module.')
+    } finally {
+      setIsSavingModule(false)
     }
   }
 
@@ -384,6 +401,8 @@ export const SuperAdminCoursesPage: React.FC = () => {
       return
     }
 
+    setIsSavingUnit(true)
+    setError(null)
     try {
       if (editingUnit) {
         const res = await updateLearningUnit(editingUnit.id, {
@@ -399,8 +418,8 @@ export const SuperAdminCoursesPage: React.FC = () => {
           codeSnippets: unitForm.codeSnippets,
           examples: unitForm.examples,
         })
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Learning unit "${unitForm.title}" updated.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to update learning unit.')
+        setSuccessMessage(`Learning unit "${unitForm.title}" updated successfully.`)
       } else {
         const res = await createLearningUnit({
           moduleId: activeModuleIdForUnit || activeModule?.id || '',
@@ -416,13 +435,15 @@ export const SuperAdminCoursesPage: React.FC = () => {
           codeSnippets: unitForm.codeSnippets,
           examples: unitForm.examples,
         })
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Learning unit "${unitForm.title}" created.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to create learning unit.')
+        setSuccessMessage(`Learning unit "${unitForm.title}" created successfully.`)
       }
       setIsUnitModalOpen(false)
-      loadCurriculum()
+      await loadCurriculum()
     } catch (err: any) {
       setError(err?.message || 'Failed to save learning unit.')
+    } finally {
+      setIsSavingUnit(false)
     }
   }
 
@@ -475,21 +496,32 @@ export const SuperAdminCoursesPage: React.FC = () => {
 
   const handleDeleteConfirmed = async () => {
     if (!deleteTarget) return
+    setIsDeleting(true)
+    setError(null)
 
     try {
       if (deleteTarget.type === 'module') {
         const res = await deleteCurriculumModule(deleteTarget.id)
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Module "${deleteTarget.title}" deleted.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to delete module.')
+        setSuccessMessage(`Module "${deleteTarget.title}" deleted successfully.`)
+        if (selectedModuleId === deleteTarget.id) {
+          setSelectedModuleId(null)
+          setSelectedUnitId(null)
+        }
       } else {
         const res = await deleteLearningUnit(deleteTarget.id)
-        if (!res.success) throw new Error(res.error)
-        setSuccessMessage(`Learning unit "${deleteTarget.title}" deleted.`)
+        if (!res.success) throw new Error(res.error || res.message || 'Failed to delete learning unit.')
+        setSuccessMessage(`Learning unit "${deleteTarget.title}" deleted successfully.`)
+        if (selectedUnitId === deleteTarget.id) {
+          setSelectedUnitId(null)
+        }
       }
       setDeleteTarget(null)
-      loadCurriculum()
+      await loadCurriculum()
     } catch (err: any) {
       setError(err?.message || 'Deletion failed.')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -666,14 +698,28 @@ export const SuperAdminCoursesPage: React.FC = () => {
               </div>
             ) : modules.length === 0 ? (
               <div className="p-8 text-center text-xs text-neutral-500 space-y-2">
-                <p>No modules found matching search criteria.</p>
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="text-xs font-semibold text-blue-400 hover:underline"
-                >
-                  Clear Search
-                </button>
+                <p>
+                  {searchQuery
+                    ? 'No modules found matching search criteria.'
+                    : 'No curriculum modules found in the database.'}
+                </p>
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-xs font-semibold text-blue-400 hover:underline"
+                  >
+                    Clear Search
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleOpenCreateModule}
+                    className="text-xs font-semibold text-blue-400 hover:underline"
+                  >
+                    + Create First Module
+                  </button>
+                )}
               </div>
             ) : (
               modules.map((mod, modIdx) => {
@@ -1242,9 +1288,11 @@ export const SuperAdminCoursesPage: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveModule}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-900/30"
+                disabled={isSavingModule}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-900/30 inline-flex items-center gap-1.5 disabled:opacity-50"
               >
-                {editingModule ? 'Save Changes' : 'Create Module'}
+                {isSavingModule && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {editingModule ? (isSavingModule ? 'Saving...' : 'Save Changes') : (isSavingModule ? 'Creating...' : 'Create Module')}
               </button>
             </div>
           </div>
@@ -1522,9 +1570,11 @@ export const SuperAdminCoursesPage: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveUnit}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-900/30"
+                disabled={isSavingUnit}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-900/30 inline-flex items-center gap-1.5 disabled:opacity-50"
               >
-                {editingUnit ? 'Save Changes' : 'Create Unit'}
+                {isSavingUnit && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {editingUnit ? (isSavingUnit ? 'Saving...' : 'Save Changes') : (isSavingUnit ? 'Creating...' : 'Create Unit')}
               </button>
             </div>
           </div>
@@ -1723,9 +1773,11 @@ export const SuperAdminCoursesPage: React.FC = () => {
               </button>
               <button
                 onClick={handleDeleteConfirmed}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white shadow-md shadow-red-900/30"
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white shadow-md shadow-red-900/30 inline-flex items-center gap-1.5 disabled:opacity-50"
               >
-                Confirm Delete
+                {isDeleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {isDeleting ? 'Deleting...' : 'Confirm Delete'}
               </button>
             </div>
           </div>

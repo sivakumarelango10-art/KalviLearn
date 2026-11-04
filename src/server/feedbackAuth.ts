@@ -16,30 +16,46 @@ const supabaseUrl =
   process.env.VITE_SUPABASE_URL ||
   (IS_STRICT_PRODUCTION ? '' : 'https://iavxnhwbgoarnexmyxpn.supabase.co')
 
-// SUPABASE_SECRET_KEY: Supabase's newer secret API key (sb_secret_...), the replacement for the service_role key.
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+// SUPABASE_SECRET_KEY is the preferred modern secret key; SUPABASE_SERVICE_ROLE_KEY is the backward-compatible fallback.
+export const serverSecretKey =
   process.env.SUPABASE_SECRET_KEY ||
-  (IS_STRICT_PRODUCTION
-    ? ''
-    : process.env.SUPABASE_ANON_KEY ||
-      process.env.VITE_SUPABASE_ANON_KEY ||
-      process.env.SUPABASE_PUBLISHABLE_KEY ||
-      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-      'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40')
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  ''
+
+export function hasPrivilegedServerKey(): boolean {
+  return Boolean(serverSecretKey && serverSecretKey.trim())
+}
+
+const supabaseAnonKey =
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_PUBLISHABLE_KEY ||
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  'sb_publishable_UFx1PWpHPXwzyVLhO4DMmQ_0CG9_h40'
 
 // A missing production credential must NOT crash the module at import time: on Vercel that turns every request to
 // every function importing this file (Run, Submit, feedback) into a bare 500 with no explanation. Instead the
 // server starts, logs the misconfiguration once, and authentication fails CLOSED per request with a clear 503.
 const CONFIG_ERROR =
-  IS_STRICT_PRODUCTION && (!supabaseUrl || !supabaseKey)
-    ? `Server misconfigured: missing ${[!supabaseUrl && 'SUPABASE_URL', !supabaseKey && 'SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)'].filter(Boolean).join(' and ')} in the deployment environment.`
+  IS_STRICT_PRODUCTION && (!supabaseUrl || !serverSecretKey)
+    ? `Server misconfigured: missing ${[!supabaseUrl && 'SUPABASE_URL', !serverSecretKey && 'SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY)'].filter(Boolean).join(' and ')} in the deployment environment.`
     : null
 if (CONFIG_ERROR) console.error(`[auth] ${CONFIG_ERROR} Every authenticated request will be refused until it is set.`)
 
 /** Non-null when the server cannot verify identities (production without Supabase service credentials). */
 export function serverConfigError(): string | null {
   return CONFIG_ERROR
+}
+
+/** Error message when privileged database operations cannot be performed */
+export function getPrivilegedServerKeyError(): string | null {
+  if (!supabaseUrl) {
+    return 'Server misconfigured: missing SUPABASE_URL in server environment.'
+  }
+  if (!hasPrivilegedServerKey() && !(supabaseServer as any)?.__isMocked) {
+    return 'Server misconfigured: SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY) is required for privileged database operations but is not configured.'
+  }
+  return null
 }
 
 /**
@@ -61,11 +77,30 @@ export function isTrustedStorageUrl(raw: string): boolean {
   }
 }
 
-// When misconfigured, a placeholder client keeps the module loadable; it is never reached because authentication
-// (which every data path requires first) refuses all requests while CONFIG_ERROR is set.
-export const supabaseServer = createClient(supabaseUrl || 'https://unconfigured.invalid', supabaseKey || 'unconfigured', {
-  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-})
+/**
+ * Dedicated auth client for authoritatively validating incoming user bearer JWTs.
+ * Uses the secret key when available, or falls back to public anon key for dev/test verification.
+ */
+export const supabaseAuthServer = createClient(
+  supabaseUrl || 'https://unconfigured.invalid',
+  serverSecretKey || (IS_STRICT_PRODUCTION ? '' : supabaseAnonKey) || 'unconfigured',
+  {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  }
+)
+
+/**
+ * Privileged server-authoritative database client.
+ * Uses SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY).
+ * NEVER silently falls back to the public anon key for database CRUD operations.
+ */
+export const supabaseServer = createClient(
+  supabaseUrl || 'https://unconfigured.invalid',
+  serverSecretKey || 'unconfigured_privileged_key',
+  {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  }
+)
 
 export interface AuthenticatedUser {
   id: string
@@ -229,7 +264,7 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
   authCache.delete(cacheKey)
 
   try {
-    const { data, error } = await supabaseServer.auth.getUser(token)
+    const { data, error } = await supabaseAuthServer.auth.getUser(token)
     if (error || !data?.user?.email) {
       // Keep client responses generic and safe, but emit non-secret diagnostics so
       // production logs can distinguish an expired token from Supabase/config/network
