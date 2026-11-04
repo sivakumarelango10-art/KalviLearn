@@ -247,7 +247,7 @@ export function createInitialMockDb(): MockDbState {
     admin_audit_logs: [],
     Submission: [],
     UserProgress: [],
-    Problem: seedProblems,
+    Problem: seedProblems.map((p) => ({ ...p, learningUnitId: p.learningUnitId || null })),
     TestCase: seedTestCases,
     Module: (curriculumData as any[]).map((m, idx) => ({
       id: `mock-module-${m.order || idx + 1}`,
@@ -381,6 +381,11 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
         return queryBuilder
       },
 
+      is(col: string, val: any) {
+        filters.push((row) => (val === null ? row[col] === null || row[col] === undefined : row[col] === val))
+        return queryBuilder
+      },
+
       neq(col: string, val: any) {
         filters.push((row) => String(row[col] ?? '') !== String(val ?? ''))
         return queryBuilder
@@ -482,6 +487,7 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
           }
 
           if (targetKey === 'Problem') {
+            row.learningUnitId = row.learningUnitId !== undefined ? row.learningUnitId : null
             const exists = tableRows.some((r: any) => r.slug === row.slug)
             if (exists) {
               insertError = {
@@ -549,7 +555,12 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             filters.push((row) => String(row[col] ?? '') === String(val ?? ''))
             return returnBuilder
           },
-          neq(col: string, val: any) {
+          is(col: string, val: any) {
+            filters.push((row) => (val === null ? row[col] === null || row[col] === undefined : row[col] === val))
+            return returnBuilder
+          },
+
+      neq(col: string, val: any) {
             filters.push((row) => String(row[col] ?? '') !== String(val ?? ''))
             return returnBuilder
           },

@@ -23,6 +23,7 @@ import {
   Terminal,
   Check,
   ArrowLeft,
+  Code2,
 } from 'lucide-react'
 import {
   AdminQuestion,
@@ -124,19 +125,25 @@ const DEFAULT_FORM: QuestionFormData = {
 export interface SuperAdminQuestionsPageProps {
   initialBelt?: number | 'ALL'
   initialTopic?: string
+  learningUnitId?: string
   backRoute?: string
   backLabel?: string
   customTitle?: string
   customDescription?: string
+  isEmbedded?: boolean
+  unitTitle?: string
 }
 
 export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = ({
   initialBelt,
   initialTopic,
+  learningUnitId,
   backRoute,
   backLabel,
   customTitle,
   customDescription,
+  isEmbedded,
+  unitTitle,
 }) => {
   const [questions, setQuestions] = useState<AdminQuestion[]>([])
   const [stats, setStats] = useState<AdminQuestionsDashboardStats>({
@@ -248,9 +255,10 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         difficulty: difficultyFilter !== 'ALL' ? difficultyFilter : undefined,
         topic: topicFilter !== 'ALL' ? topicFilter : undefined,
         status: statusFilter !== 'ALL' ? statusFilter : undefined,
-        belt: beltFilter !== 'ALL' ? beltFilter : undefined,
+        belt: learningUnitId ? undefined : (beltFilter !== 'ALL' ? beltFilter : undefined),
+        learningUnitId: learningUnitId || undefined,
         page,
-        limit: 15,
+        limit: isEmbedded ? 50 : 15,
       })
 
       // Ignore an older response if a newer filter/page request has already started.
@@ -274,7 +282,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
   useEffect(() => {
     loadQuestions()
-  }, [difficultyFilter, topicFilter, statusFilter, beltFilter, page])
+  }, [difficultyFilter, topicFilter, statusFilter, beltFilter, page, learningUnitId])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -564,6 +572,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
           description: tc.description?.trim(),
         })),
         starterCodes: formData.starterCodes,
+        learningUnitId: learningUnitId || undefined,
+        beltId: learningUnitId ? null : (formData.beltId || undefined),
       }
 
       let res
@@ -744,8 +754,243 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   }
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Optional Breadcrumb Back Link */}
+    <div className={isEmbedded ? "space-y-4 pt-6 border-t border-neutral-850" : "space-y-6 pb-12"}>
+      {isEmbedded ? (
+        <div className="space-y-4">
+          {/* Header Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-neutral-950 p-4 rounded-xl border border-neutral-800">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-emerald-950/60 border border-emerald-800/80 text-emerald-400">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                    Coding Questions
+                  </h4>
+                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-300 border border-neutral-800">
+                    {stats.total} Total
+                  </span>
+                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/80">
+                    {stats.published} Published
+                  </span>
+                  {stats.draft > 0 && (
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-950/60 text-amber-400 border border-amber-800/80">
+                      {stats.draft} Draft
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-neutral-400 mt-0.5">
+                  Interactive coding exercises with automated test cases attached to {unitTitle ? `"${unitTitle}"` : 'this lesson'}.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={loadQuestions}
+                disabled={loading}
+                className="p-1.5 rounded-lg border border-neutral-800 hover:border-neutral-700 bg-neutral-900 text-neutral-400 hover:text-white transition-colors"
+                title="Refresh questions"
+              >
+                <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
+              </button>
+              <button
+                type="button"
+                onClick={handleOpenAdd}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-all shadow-md shadow-emerald-950/30"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add New Question</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Alerts */}
+          {error && (
+            <div className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-red-950/30 border border-red-800/80 text-red-300 text-xs">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <span>{error}</span>
+              </div>
+              <button onClick={() => setError(null)} className="text-red-400 hover:text-red-200">
+                <XCircle className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/80 text-emerald-300 text-xs">
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>{successMsg}</span>
+              </div>
+              <button onClick={() => setSuccessMsg(null)} className="text-emerald-400 hover:text-emerald-200">
+                <XCircle className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Questions list or Empty State */}
+          {loading && questions.length === 0 ? (
+            <div className="p-8 text-center bg-neutral-950 rounded-xl border border-neutral-800 text-neutral-400 text-xs">
+              <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-emerald-400" />
+              Loading lesson questions...
+            </div>
+          ) : questions.length === 0 ? (
+            <div className="p-8 text-center bg-neutral-950/60 rounded-xl border border-dashed border-neutral-800 space-y-3">
+              <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500">
+                <FileCode className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-neutral-300">
+                  No coding questions have been added to this learning unit yet.
+                </p>
+                <p className="text-[11px] text-neutral-500 mt-0.5">
+                  Add coding exercises with automated test cases so learners can practice right inside this lesson.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleOpenAdd}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-semibold transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Question</span>
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {questions.map((q) => {
+                const diff = DIFFICULTY_COLORS[q.difficulty] || DIFFICULTY_COLORS.Easy
+                const totalTests = q.testCaseCount?.total ?? q.testCases?.length ?? 0
+                const hiddenTests = q.testCaseCount?.hidden ?? q.testCases?.filter((t) => t.isHidden)?.length ?? 0
+                const visibleTests = totalTests - hiddenTests
+
+                return (
+                  <div
+                    key={q.id}
+                    className="bg-neutral-950 border border-neutral-800 hover:border-neutral-700/80 rounded-xl p-3.5 transition-all space-y-2.5"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                        <h5 className="font-semibold text-white text-xs truncate">
+                          {q.title}
+                        </h5>
+                        <span className="text-[10px] font-mono text-neutral-500 bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800 shrink-0">
+                          {q.slug}
+                        </span>
+                        <span
+                          className={cn(
+                            'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold border shrink-0',
+                            diff.bg,
+                            diff.text,
+                            diff.border
+                          )}
+                        >
+                          {q.difficulty}
+                        </span>
+                        {q.isActive ? (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 shrink-0">
+                            <Globe className="w-2.5 h-2.5" /> Published
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-900 text-neutral-400 border border-neutral-800 shrink-0">
+                            <Lock className="w-2.5 h-2.5" /> Draft
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-1 self-end sm:self-center shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenPreview(q)}
+                          title="Learner Preview (Hides hidden test cases)"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenAdminPreview(q)}
+                          title="Admin Full Inspection (All public & hidden test cases)"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-emerald-400 border border-neutral-800 transition-colors"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenTestRunner(q)}
+                          title="Run Test Cases"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-blue-400 border border-neutral-800 transition-colors"
+                        >
+                          <Play className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(q)}
+                          title="Edit Question"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-amber-400 border border-neutral-800 transition-colors"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDuplicate(q)}
+                          title="Duplicate as Draft"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleStatus(q)}
+                          title={q.isActive ? 'Unpublish to Draft' : 'Publish Question'}
+                          className={cn(
+                            'p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors',
+                            q.isActive
+                              ? 'text-neutral-400 hover:text-amber-400'
+                              : 'text-neutral-400 hover:text-emerald-400'
+                          )}
+                        >
+                          {q.isActive ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setQuestionToDelete(q)}
+                          title="Delete Question"
+                          className="p-1.5 rounded bg-neutral-900 hover:bg-red-950/60 text-neutral-400 hover:text-red-400 border border-neutral-800 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Metadata footer */}
+                    <div className="flex flex-wrap items-center gap-3 text-[10px] text-neutral-400 font-mono pt-2 border-t border-neutral-900">
+                      <span className="flex items-center gap-1">
+                        <span className="text-white font-semibold">{totalTests}</span> Test Cases ({visibleTests} public, {hiddenTests} hidden)
+                      </span>
+                      <span>·</span>
+                      <span>{q.examples?.length || 0} Examples</span>
+                      {q.updatedAt && (
+                        <>
+                          <span>·</span>
+                          <span className="text-neutral-500">Updated {new Date(q.updatedAt).toLocaleDateString()}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Optional Breadcrumb Back Link */}
       {backRoute && (
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-neutral-400">
           <Link
@@ -1158,7 +1403,10 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             </div>
           </div>
         )}
+
       </div>
+        </>
+      )}
 
       {/* ─────────────────────────────────────────────────────────────
           ADD / EDIT QUESTION MODAL

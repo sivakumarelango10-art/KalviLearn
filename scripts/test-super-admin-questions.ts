@@ -1279,6 +1279,341 @@ if lines:
     await superAdminHandler(reqMgr, resMgr)
     assert.strictEqual(resMgr.getOutput().statusCode, 403, 'Campus manager must receive 403 on belts')
   })
+  // ─── 15. LEARN CODING CURRICULUM QUESTIONS MANAGEMENT ──────────────────────
+  console.log('\n--- 15. Learn Coding Curriculum Questions Management ---')
+
+  let testUnitAId = 'mock-unit-1-1'
+  let testUnitBId = 'mock-unit-1-2'
+  let unitAProb1Id = ''
+  let unitAProb2Id = ''
+  let unitBProb1Id = ''
+
+  await runTest('15.1 Scoped question listing for learning unit returns zero when none added', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', learningUnitId: testUnitAId },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.questions.length, 0)
+    assert.strictEqual(out.data.data.stats.total, 0)
+    assert.strictEqual(out.data.data.stats.published, 0)
+    assert.strictEqual(out.data.data.stats.draft, 0)
+  })
+
+  await runTest('15.2 Reject question creation with non-existent learningUnitId (404)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        learningUnitId: 'non-existent-unit-999999',
+        title: 'Invalid Lesson Question',
+        slug: 'invalid-lesson-question',
+        difficulty: 'Easy',
+        description: 'Should be rejected because learning unit does not exist.',
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 404, 'Must return 404 for non-existent learning unit')
+    assert.strictEqual(out.data.success, false)
+  })
+
+  await runTest('15.3 Create first coding question linked to Unit A', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        learningUnitId: testUnitAId,
+        title: 'Unit A Print Hello',
+        slug: 'unit-a-print-hello',
+        difficulty: 'Easy',
+        topic: 'Variables & Data Types',
+        description: 'Print Hello World to stdout.',
+        inputFormat: 'No input required.',
+        outputFormat: 'Print "Hello World".',
+        constraints: 'None.',
+        status: 'PUBLISHED',
+        examples: [{ label: 'Example 1', input: '', output: 'Hello World', explanation: 'Basic print' }],
+        testCases: [
+          { input: '', expectedOutput: 'Hello World', isHidden: false, description: 'Public sample' },
+          { input: '   ', expectedOutput: 'Hello World', isHidden: true, description: 'Hidden evaluation test' },
+        ],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.learningUnitId, testUnitAId)
+    assert.strictEqual(out.data.data.beltId, null, 'Must NOT assign arbitrary mock-belt-1 to learning unit question')
+    unitAProb1Id = out.data.data.id
+    assert.ok(unitAProb1Id)
+  })
+
+  await runTest('15.4 Create second coding question linked to Unit A as DRAFT', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        learningUnitId: testUnitAId,
+        title: 'Unit A Add Numbers',
+        slug: 'unit-a-add-numbers',
+        difficulty: 'Medium',
+        topic: 'Variables & Data Types',
+        description: 'Read two numbers and print sum.',
+        inputFormat: 'Two space-separated integers a and b.',
+        outputFormat: 'Sum of a and b.',
+        status: 'DRAFT',
+        examples: [{ label: 'Example 1', input: '2 3', output: '5' }],
+        testCases: [
+          { input: '2 3', expectedOutput: '5', isHidden: false },
+          { input: '100 200', expectedOutput: '300', isHidden: true },
+        ],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    assert.strictEqual(out.data.data.learningUnitId, testUnitAId)
+    assert.strictEqual(out.data.data.status, 'DRAFT')
+    unitAProb2Id = out.data.data.id
+    assert.ok(unitAProb2Id)
+  })
+
+  await runTest('15.5 Create question linked to Unit B for isolation testing', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        learningUnitId: testUnitBId,
+        title: 'Unit B Factorial',
+        slug: 'unit-b-factorial',
+        difficulty: 'Hard',
+        topic: 'Conditionals & Loops',
+        description: 'Calculate n factorial.',
+        status: 'PUBLISHED',
+        testCases: [
+          { input: '5', expectedOutput: '120', isHidden: false },
+        ],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    unitBProb1Id = out.data.data.id
+    assert.ok(unitBProb1Id)
+  })
+
+  await runTest('15.6 Scoped question listing for Unit A returns only Unit A questions with accurate stats', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', learningUnitId: testUnitAId },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const questions = out.data.data.questions
+    assert.strictEqual(questions.length, 2, 'Unit A must have exactly 2 questions')
+    const slugs = questions.map((q: any) => q.slug)
+    assert.ok(slugs.includes('unit-a-print-hello'))
+    assert.ok(slugs.includes('unit-a-add-numbers'))
+    assert.ok(!slugs.includes('unit-b-factorial'), 'Unit B question must NOT appear in Unit A')
+
+    // Verify stats
+    assert.strictEqual(out.data.data.stats.total, 2)
+    assert.strictEqual(out.data.data.stats.published, 1)
+    assert.strictEqual(out.data.data.stats.draft, 1)
+  })
+
+  await runTest('15.7 Question isolation: Unit B listing contains only Unit B question', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', learningUnitId: testUnitBId },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const questions = out.data.data.questions
+    assert.strictEqual(questions.length, 1)
+    assert.strictEqual(questions[0].slug, 'unit-b-factorial')
+    assert.strictEqual(out.data.data.stats.total, 1)
+    assert.strictEqual(out.data.data.stats.published, 1)
+    assert.strictEqual(out.data.data.stats.draft, 0)
+  })
+
+  await runTest('15.8 Student preview of learning unit question strips hidden test cases', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'get_question_preview', id: unitAProb1Id },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const q = out.data.data
+    assert.strictEqual(q.title, 'Unit A Print Hello')
+    assert.ok(Array.isArray(q.testCases))
+    assert.strictEqual(q.testCases.length, 1, 'Hidden test cases must be stripped')
+    assert.strictEqual(q.testCases[0].isHidden, false)
+  })
+
+  await runTest('15.9 Super Admin full detail retrieves all test cases for editing', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'get_question', id: unitAProb1Id },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const q = out.data.data
+    assert.strictEqual(q.learningUnitId, testUnitAId)
+    assert.strictEqual(q.testCases.length, 2, 'Admin view must include both public and hidden test cases')
+    const hasHidden = q.testCases.some((tc: any) => tc.isHidden === true)
+    assert.strictEqual(hasHidden, true)
+  })
+
+  await runTest('15.10 Super Admin updates learning unit question fields and test cases', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: unitAProb1Id,
+        title: 'Unit A Print Hello World (Updated)',
+        difficulty: 'Easy',
+        constraints: 'O(1) space complexity required.',
+        testCases: [
+          { input: '', expectedOutput: 'Hello World', isHidden: false, description: 'Updated sample' },
+          { input: 'test', expectedOutput: 'Hello World', isHidden: true, description: 'Updated hidden test' },
+          { input: 'abc', expectedOutput: 'Hello World', isHidden: true, description: 'Added 2nd hidden test' },
+        ],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+
+    // Verify persisted
+    const { req: vReq, res: vRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'get_question', id: unitAProb1Id },
+    })
+    await superAdminHandler(vReq, vRes)
+    const vOut = vRes.getOutput()
+    assert.strictEqual(vOut.data.data.title, 'Unit A Print Hello World (Updated)')
+    assert.strictEqual(vOut.data.data.testCases.length, 3)
+  })
+
+  await runTest('15.11 Super Admin toggles publication status of learning unit question', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'toggle_question_status', id: unitAProb2Id, isActive: true },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+
+    // Check stats updated
+    const { req: sReq, res: sRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', learningUnitId: testUnitAId },
+    })
+    await superAdminHandler(sReq, sRes)
+    const sOut = sRes.getOutput()
+    assert.strictEqual(sOut.data.data.stats.published, 2, 'Both questions now published')
+    assert.strictEqual(sOut.data.data.stats.draft, 0)
+  })
+
+  await runTest('15.12 Super Admin duplicates learning unit question, preserving unit association as DRAFT', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'duplicate_question', id: unitAProb1Id },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    const dup = out.data.data
+    assert.strictEqual(dup.learningUnitId, testUnitAId, 'Duplicated question must stay bound to same unit')
+    assert.strictEqual(dup.isActive, false, 'Duplicated question must be DRAFT by default')
+    assert.ok(dup.slug.includes('-copy'))
+
+    // Cleanup duplicated question
+    const { req: dReq, res: dRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'delete_question', id: dup.id },
+    })
+    await superAdminHandler(dReq, dRes)
+  })
+
+  await runTest('15.13 Super Admin executes test runner on learning unit question', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const pythonCode = 'print("Hello World")'
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'run_question_tests',
+        slug: 'unit-a-print-hello',
+        code: pythonCode,
+        language: 'python',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.passedCount, out.data.data.totalCount, 'All test cases must pass')
+    assert.strictEqual(out.data.data.allPassed, true)
+  })
+
+  await runTest('15.14 Super Admin deletes learning unit question with cascade cleanup', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'delete_question', id: unitAProb2Id },
+    })
+    await superAdminHandler(req, res)
+    assert.strictEqual(res.getOutput().statusCode, 200)
+
+    // Verify deleted
+    const { req: cReq, res: cRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'get_question', id: unitAProb2Id },
+    })
+    await superAdminHandler(cReq, cRes)
+    assert.strictEqual(cRes.getOutput().statusCode, 404)
+  })
+
+  await runTest('15.15 Practice belt questions remain completely unaffected', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions', belt: '1' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const beltQuestions = out.data.data.questions
+    assert.ok(beltQuestions.length > 0)
+    for (const q of beltQuestions) {
+      assert.strictEqual(q.learningUnitId ?? null, null, 'Practice belt questions must not have learningUnitId')
+    }
+  })
+
 
   console.log('\n======================================================================')
   console.log(`RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)

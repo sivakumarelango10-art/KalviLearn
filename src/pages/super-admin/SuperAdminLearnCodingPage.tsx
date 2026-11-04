@@ -19,7 +19,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import curriculumData from '@/data/curriculum.json'
-import { AdminBelt, fetchBelts, updateBelt } from '@/lib/superAdminService'
+import { AdminBelt, AdminCurriculumModule, fetchBelts, updateBelt, fetchCurriculumModules } from '@/lib/superAdminService'
 import { SuperAdminQuestionsPage } from './SuperAdminQuestionsPage'
 import { cn } from '@/lib/utils'
 
@@ -115,6 +115,34 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  const [dbModules, setDbModules] = useState<AdminCurriculumModule[]>([])
+
+  useEffect(() => {
+    async function loadCurriculum() {
+      try {
+        const res = await fetchCurriculumModules()
+        if (res.success && res.data?.modules && res.data.modules.length > 0) {
+          setDbModules(res.data.modules)
+        }
+      } catch (err: any) {
+        console.warn('Using fallback curriculum metadata:', err?.message)
+      }
+    }
+    loadCurriculum()
+  }, [])
+
+  const activeModules = useMemo(() => {
+    if (dbModules.length > 0) return dbModules
+    return CURRICULUM_MODULES.map((m, mIdx) => ({
+      ...m,
+      id: (m as any).id || `mock-module-${m.order || mIdx + 1}`,
+      learningUnits: (m.learningUnits || []).map((u, uIdx) => ({
+        ...u,
+        id: (u as any).id || `mock-unit-${m.order || mIdx + 1}-${u.order || uIdx + 1}`,
+      })),
+    })) as unknown as AdminCurriculumModule[]
+  }, [dbModules])
+
   // Curriculum group state
   const [selectedModuleOrder, setSelectedModuleOrder] = useState<number | null>(null)
   const [selectedUnitOrder, setSelectedUnitOrder] = useState<number>(1)
@@ -162,20 +190,20 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
 
   // Total curriculum units count
   const totalCurriculumUnits = useMemo(() => {
-    return CURRICULUM_MODULES.reduce((sum, m) => sum + (m.learningUnits?.length || 0), 0)
-  }, [])
+    return activeModules.reduce((sum, m) => sum + (m.learningUnits?.length || 0), 0)
+  }, [activeModules])
 
   // Filtered curriculum modules
   const filteredModules = useMemo(() => {
-    if (!searchQuery.trim()) return CURRICULUM_MODULES
+    if (!searchQuery.trim()) return activeModules
     const q = searchQuery.toLowerCase().trim()
-    return CURRICULUM_MODULES.filter(
+    return activeModules.filter(
       (m) =>
         m.title.toLowerCase().includes(q) ||
         (m.description || '').toLowerCase().includes(q) ||
         m.learningUnits.some((u) => u.title.toLowerCase().includes(q) || (u.concept || '').toLowerCase().includes(q))
     )
-  }, [searchQuery])
+  }, [searchQuery, activeModules])
 
   // Filtered Belts
   const filteredBelts = useMemo(() => {
@@ -192,8 +220,8 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
   // Active module & unit derived state when a module is opened
   const currentModule = useMemo(() => {
     if (selectedModuleOrder === null) return null
-    return CURRICULUM_MODULES.find((m) => m.order === selectedModuleOrder) || null
-  }, [selectedModuleOrder])
+    return activeModules.find((m) => m.order === selectedModuleOrder) || null
+  }, [selectedModuleOrder, activeModules])
 
   const currentUnit = useMemo(() => {
     if (!currentModule || !currentModule.learningUnits.length) return null
@@ -535,6 +563,13 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Coding Questions for this Learning Unit */}
+              <SuperAdminQuestionsPage
+                learningUnitId={currentUnit.id}
+                isEmbedded={true}
+                unitTitle={currentUnit.title}
+              />
             </div>
 
             {/* Previous Unit / Next Unit Navigation Footer */}
