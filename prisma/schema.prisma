@@ -64,24 +64,31 @@ model Module {
   order         Int            @unique
   title         String
   description   String?
+  isActive      Boolean        @default(true)
+  status        String         @default("PUBLISHED")
   learningUnits LearningUnit[]
   createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
 }
 
 model LearningUnit {
-  id             String   @id @default(uuid())
-  moduleId       String
-  module         Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  order          Int
-  title          String
-  content        String   @db.Text
-  codingQuestion String   @db.Text
-  inputFormat    String   @db.Text
-  outputFormat   String   @db.Text
-  examples       Json
-  codeSnippets   Json?
-  approach       String?  @db.Text
-  createdAt      DateTime @default(now())
+  id                 String   @id @default(uuid())
+  moduleId           String
+  module             Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order              Int
+  title              String
+  content            String   @db.Text
+  codingQuestion     String   @db.Text
+  inputFormat        String   @db.Text
+  outputFormat       String   @db.Text
+  examples           Json
+  codeSnippets       Json?
+  approach           String?  @db.Text
+  readingTimeMinutes Int      @default(2)
+  isActive           Boolean  @default(true)
+  status             String   @default("PUBLISHED")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
 
   @@index([moduleId])
 }
