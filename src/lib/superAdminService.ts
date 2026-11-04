@@ -714,7 +714,7 @@ export interface AdminQuestion {
   difficulty: 'Easy' | 'Medium' | 'Hard'
   subdivision: string
   topic?: string
-  beltId?: string
+  beltId?: string | null
   beltOrder?: number
   learningUnitId?: string | null
   status?: 'PUBLISHED' | 'DRAFT'
