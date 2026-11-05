@@ -67,7 +67,8 @@ interface QuestionFormData {
   slug: string
   difficulty: 'Easy' | 'Medium' | 'Hard'
   subdivision: string
-  beltId?: string
+  beltId?: string | null
+  learningUnitId?: string | null
   description: string
   inputFormat: string
   outputFormat: string
@@ -324,7 +325,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setFormData({
       ...DEFAULT_FORM,
       subdivision: initialTopic || DEFAULT_FORM.subdivision,
-      beltId: initialBelt ? String(initialBelt) : DEFAULT_FORM.beltId,
+      beltId: learningUnitId ? null : (initialBelt ? String(initialBelt) : DEFAULT_FORM.beltId),
+      learningUnitId: learningUnitId || null,
       examples: [
         {
           label: 'Example 1',
@@ -372,6 +374,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         slug: question.slug,
         difficulty: question.difficulty,
         subdivision: question.subdivision,
+        beltId: question.beltId ?? (learningUnitId ? null : undefined),
+        learningUnitId: question.learningUnitId ?? (learningUnitId || null),
         description: question.description || '',
         inputFormat: question.inputFormat || '',
         outputFormat: question.outputFormat || '',
@@ -572,8 +576,9 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
           description: tc.description?.trim(),
         })),
         starterCodes: formData.starterCodes,
-        learningUnitId: learningUnitId || undefined,
-        beltId: learningUnitId ? null : (formData.beltId || undefined),
+        // Scope question to lesson and nullify beltId
+        learningUnitId: learningUnitId || formData.learningUnitId || undefined,
+        beltId: (learningUnitId || formData.learningUnitId) ? null : (formData.beltId || undefined),
       }
 
       let res
@@ -838,6 +843,28 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-emerald-400" />
               Loading lesson questions...
             </div>
+          ) : error && questions.length === 0 ? (
+            <div className="p-8 text-center bg-neutral-950/80 rounded-xl border border-red-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-full bg-red-950/40 border border-red-800/60 flex items-center justify-center mx-auto text-red-400">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-red-300">
+                  Failed to load lesson questions
+                </p>
+                <p className="text-[11px] text-neutral-400 mt-1 max-w-md mx-auto">
+                  {error}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={loadQuestions}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-semibold transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Retry</span>
+              </button>
+            </div>
           ) : questions.length === 0 ? (
             <div className="p-8 text-center bg-neutral-950/60 rounded-xl border border-dashed border-neutral-800 space-y-3">
               <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500">
@@ -974,10 +1001,17 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         <span className="text-white font-semibold">{totalTests}</span> Test Cases ({visibleTests} public, {hiddenTests} hidden)
                       </span>
                       <span>·</span>
+
+                      <span className="flex items-center gap-1 text-neutral-300">
+                        <Code2 className="w-3 h-3 text-neutral-500" />
+                        <span>{q.starterCodes && Object.keys(q.starterCodes).length > 0 ? Object.keys(q.starterCodes).map((l) => l.toUpperCase()).join(' · ') : 'PYTHON · JS'}</span>
+                      </span>
+                      <span>·</span>
                       <span>{q.examples?.length || 0} Examples</span>
                       {q.updatedAt && (
                         <>
                           <span>·</span>
+
                           <span className="text-neutral-500">Updated {new Date(q.updatedAt).toLocaleDateString()}</span>
                         </>
                       )}
@@ -1231,7 +1265,23 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     Loading questions...
                   </td>
                 </tr>
-              ) : questions.length === 0 ? (
+              ) : error && questions.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-red-400">
+                    <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-60 text-red-400" />
+                    <p className="font-semibold text-sm">Failed to load questions</p>
+                    <p className="text-xs text-neutral-400 mt-1 max-w-md mx-auto">{error}</p>
+                    <button
+                      type="button"
+                      onClick={loadQuestions}
+                      className="mt-3 px-3 py-1.5 rounded bg-neutral-900 border border-neutral-700 hover:border-neutral-500 text-xs font-semibold text-neutral-200 inline-flex items-center gap-1.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Retry</span>
+                    </button>
+                  </td>
+                </tr>
+          ) : questions.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-neutral-500">
                     <FileCode className="w-8 h-8 mx-auto mb-2 opacity-40" />
