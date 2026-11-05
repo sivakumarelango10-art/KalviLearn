@@ -116517,7 +116517,7 @@ async function handleListQuestions(body, req, res) {
   const requestedLimit = Number.parseInt(String(body.limit ?? urlObj.searchParams.get("limit") ?? "50"), 10);
   const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
   const limit = Number.isFinite(requestedLimit) ? Math.min(100, Math.max(1, requestedLimit)) : 50;
-  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, createdAt").order("createdAt", { ascending: false });
+  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, starterCodes, createdAt, updatedAt").order("createdAt", { ascending: false });
   if (problemsError) throw problemsError;
   const problems = allProblems || [];
   const statsSubset = learningUnitId ? problems.filter((p2) => p2.learningUnitId === learningUnitId) : problems;
@@ -116542,6 +116542,7 @@ async function handleListQuestions(body, req, res) {
     if (status === "PUBLISHED" && !problem.isActive) return false;
     if (status === "DRAFT" && problem.isActive) return false;
     if (belt !== "ALL" && !learningUnitId) {
+      if (problem.learningUnitId) return false;
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ""), 10);
       const hasBeltNumber = Number.isFinite(beltNum);
       const matchesBeltId = problem.beltId === belt || hasBeltNumber && (problem.beltId === "mock-belt-" + beltNum || typeof problem.beltId === "string" && problem.beltId.includes(String(beltNum)));
@@ -116584,7 +116585,8 @@ async function handleListQuestions(body, req, res) {
       difficulty: problem.difficulty,
       topic: problem.subdivision || "General",
       subdivision: problem.subdivision,
-      beltId: problem.beltId || "mock-belt-" + inferredBeltOrder,
+      learningUnitId: problem.learningUnitId || null,
+      beltId: problem.learningUnitId ? problem.beltId || null : problem.beltId || "mock-belt-" + inferredBeltOrder,
       beltOrder: inferredBeltOrder,
       status: problem.isActive ? "PUBLISHED" : "DRAFT",
       isActive: Boolean(problem.isActive),
@@ -116594,7 +116596,7 @@ async function handleListQuestions(body, req, res) {
       outputFormat: "",
       constraints: "",
       examples,
-      starterCodes: {},
+      starterCodes: problem.starterCodes || {},
       exampleCount: examples.length,
       testCaseCount,
       visibleTestCaseCount: testCaseCount.visible,

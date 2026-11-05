@@ -2745,7 +2745,7 @@ async function handleListQuestions(
   // and test-case payloads are fetched only when an administrator opens one question.
   const { data: allProblems, error: problemsError } = await supabaseServer
     .from('Problem')
-    .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, createdAt')
+    .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, starterCodes, createdAt, updatedAt')
     .order('createdAt', { ascending: false })
 
   if (problemsError) throw problemsError
@@ -2778,6 +2778,7 @@ async function handleListQuestions(
     if (status === 'DRAFT' && problem.isActive) return false
 
     if (belt !== 'ALL' && !learningUnitId) {
+      if (problem.learningUnitId) return false
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
       const hasBeltNumber = Number.isFinite(beltNum)
       const matchesBeltId = problem.beltId === belt || (
@@ -2843,7 +2844,8 @@ async function handleListQuestions(
       difficulty: problem.difficulty,
       topic: problem.subdivision || 'General',
       subdivision: problem.subdivision,
-      beltId: problem.beltId || 'mock-belt-' + inferredBeltOrder,
+      learningUnitId: problem.learningUnitId || null,
+      beltId: problem.learningUnitId ? (problem.beltId || null) : (problem.beltId || 'mock-belt-' + inferredBeltOrder),
       beltOrder: inferredBeltOrder,
       status: problem.isActive ? 'PUBLISHED' : 'DRAFT',
       isActive: Boolean(problem.isActive),
@@ -2853,7 +2855,7 @@ async function handleListQuestions(
       outputFormat: '',
       constraints: '',
       examples,
-      starterCodes: {},
+      starterCodes: problem.starterCodes || {},
       exampleCount: examples.length,
       testCaseCount,
       visibleTestCaseCount: testCaseCount.visible,
