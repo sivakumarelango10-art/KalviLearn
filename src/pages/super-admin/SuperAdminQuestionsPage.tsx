@@ -24,10 +24,15 @@ import {
   Check,
   ArrowLeft,
   Code2,
+  Clock,
+  Cpu,
+  Languages,
+  History as HistoryIcon,
 } from 'lucide-react'
 import {
   AdminQuestion,
   AdminQuestionExample,
+  AdminQuestionRevision,
   AdminQuestionsDashboardStats,
   AdminTestRunnerResponseData,
   fetchAdminQuestions,
@@ -39,6 +44,8 @@ import {
   toggleAdminQuestionStatus,
   deleteAdminQuestion,
   runAdminQuestionTests,
+  fetchAdminQuestionRevisions,
+  restoreAdminQuestionRevision,
 } from '@/lib/superAdminService'
 import { CODING_TOPICS } from '@/coding/topics'
 import { cn } from '@/lib/utils'
@@ -69,10 +76,14 @@ interface QuestionFormData {
   subdivision: string
   beltId?: string | null
   learningUnitId?: string | null
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
   description: string
   inputFormat: string
   outputFormat: string
   constraints: string
+  timeLimitMs: number
+  memoryLimitMb: number
+  changeSummary?: string
   isActive: boolean
   examples: AdminQuestionExample[]
   testCases: Array<{
@@ -80,6 +91,7 @@ interface QuestionFormData {
     input: string
     expectedOutput: string
     isHidden: boolean
+    points?: number
     description?: string
   }>
   starterCodes: Record<string, string>
@@ -90,10 +102,14 @@ const DEFAULT_FORM: QuestionFormData = {
   slug: '',
   difficulty: 'Easy',
   subdivision: 'Variables & Data Types',
+  status: 'PUBLISHED',
   description: '',
   inputFormat: '',
   outputFormat: '',
   constraints: '',
+  timeLimitMs: 2000,
+  memoryLimitMb: 256,
+  changeSummary: '',
   isActive: true,
   examples: [
     {
@@ -108,18 +124,20 @@ const DEFAULT_FORM: QuestionFormData = {
       input: '',
       expectedOutput: '',
       isHidden: false,
+      points: 10,
       description: 'Sample test case',
     },
     {
       input: '',
       expectedOutput: '',
       isHidden: true,
+      points: 10,
       description: 'Hidden validation test case',
     },
   ],
   starterCodes: {
-    python: '# Write your solution here\n',
-    javascript: '// Write your solution here\n',
+    python: '# Language: Python 3\nimport sys\n\ndef solve():\n    input_data = sys.stdin.read().strip()\n    if not input_data:\n        return\n    # Write your solution here\n    pass\n\nif __name__ == "__main__":\n    solve()\n',
+    javascript: '// Language: JavaScript (Node.js)\nconst fs = require("fs");\n\nfunction solve() {\n    const input = fs.readFileSync(0, "utf-8").trim();\n    if (!input) return;\n    // Write your solution here\n}\n\nsolve();\n',
   },
 }
 
@@ -174,8 +192,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState<QuestionFormData>(DEFAULT_FORM)
-  const [editorTab, setEditorTab] = useState<'info' | 'formats' | 'examples' | 'testcases' | 'runner'>('info')
+  const [editorTab, setEditorTab] = useState<'info' | 'content' | 'formats' | 'examples' | 'testcases' | 'languages' | 'runner' | 'revisions'>('info')
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+
+  // Revisions state
+  const [revisions, setRevisions] = useState<AdminQuestionRevision[]>([])
+  const [revisionsLoading, setRevisionsLoading] = useState(false)
+  const [restoringRevisionId, setRestoringRevisionId] = useState<string | null>(null)
+  const [selectedRevisionSnapshot, setSelectedRevisionSnapshot] = useState<any | null>(null)
 
   // Preview Modals
   const [previewQuestion, setPreviewQuestion] = useState<AdminQuestion | null>(null) // Student Preview
@@ -376,10 +400,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         subdivision: question.subdivision,
         beltId: question.beltId ?? (learningUnitId ? null : undefined),
         learningUnitId: question.learningUnitId ?? (learningUnitId || null),
+        status: question.status || (question.isActive ? 'PUBLISHED' : 'DRAFT'),
         description: question.description || '',
         inputFormat: question.inputFormat || '',
         outputFormat: question.outputFormat || '',
         constraints: question.constraints || question.explanation || '',
+        timeLimitMs: question.timeLimitMs || 2000,
+        memoryLimitMb: question.memoryLimitMb || 256,
+        changeSummary: '',
         isActive: question.isActive,
         examples: question.examples?.length
           ? question.examples
@@ -390,9 +418,10 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               input: tc.input,
               expectedOutput: tc.expectedOutput,
               isHidden: !!tc.isHidden,
+              points: tc.points ?? 10,
               description: tc.description || tc.explanation || '',
             }))
-          : [{ input: '', expectedOutput: '', isHidden: false, description: '' }],
+          : [{ input: '', expectedOutput: '', isHidden: false, points: 10, description: '' }],
         starterCodes: question.starterCodes || {
           python: '# Write your solution here\n',
           javascript: '// Write your solution here\n',
@@ -401,6 +430,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
       setFormErrors({})
       setEditorTab('info')
       setIsEditorOpen(true)
+
+      // Fetch revisions in background
+      setRevisionsLoading(true)
+      fetchAdminQuestionRevisions(question.id)
+        .then((r: any) => {
+          if (r.success && r.data) setRevisions(r.data)
+        })
+        .finally(() => setRevisionsLoading(false))
     } catch (err: any) {
       setError(err?.message || 'Unable to load question details for editing.')
     } finally {
@@ -563,16 +600,22 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         slug: formData.slug.trim(),
         difficulty: formData.difficulty,
         subdivision: formData.subdivision,
+        status: formData.status || (activeState ? 'PUBLISHED' : 'DRAFT'),
         description: formData.description.trim(),
         inputFormat: formData.inputFormat.trim(),
         outputFormat: formData.outputFormat.trim(),
         constraints: formData.constraints.trim(),
+        timeLimitMs: formData.timeLimitMs || 2000,
+        memoryLimitMb: formData.memoryLimitMb || 256,
+        changeSummary: formData.changeSummary?.trim() || undefined,
         isActive: activeState,
         examples: formData.examples.filter((e) => e.input.trim() && e.output.trim()),
-        testCases: formData.testCases.map((tc) => ({
+        testCases: formData.testCases.map((tc, idx) => ({
           input: tc.input.trim(),
           expectedOutput: tc.expectedOutput.trim(),
           isHidden: tc.isHidden,
+          points: tc.points ?? 10,
+          displayOrder: idx + 1,
           description: tc.description?.trim(),
         })),
         starterCodes: formData.starterCodes,
@@ -606,7 +649,108 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     }
   }
 
-  // Example handlers
+  // Move example up / down
+  const handleMoveExample = (idx: number, direction: 'up' | 'down') => {
+    setFormData((prev) => {
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1
+      if (targetIdx < 0 || targetIdx >= prev.examples.length) return prev
+      const copy = [...prev.examples]
+      const temp = copy[idx]
+      copy[idx] = copy[targetIdx]
+      copy[targetIdx] = temp
+      return { ...prev, examples: copy }
+    })
+  }
+
+  // Starter code handlers
+  const handleUpdateStarterCode = (lang: string, code: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      starterCodes: {
+        ...prev.starterCodes,
+        [lang]: code,
+      },
+    }))
+  }
+
+  const handleAddLanguage = (lang: string) => {
+    if (!lang) return
+    const defaultTemplates: Record<string, string> = {
+      python: '# Language: Python 3\nimport sys\n\ndef solve():\n    pass\n\nif __name__ == "__main__":\n    solve()\n',
+      javascript: '// Language: JavaScript (Node.js)\nconst fs = require("fs");\n\nfunction solve() {\n}\n\nsolve();\n',
+      nodejs: '// Language: JavaScript (Node.js)\nconst fs = require("fs");\n\nfunction solve() {\n}\n\nsolve();\n',
+      cpp: '// Language: C++ (g++)\n#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}\n',
+      java: '// Language: Java (OpenJDK)\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n    }\n}\n',
+    }
+    const template = defaultTemplates[lang] || `// Starter code for ${lang}\n`
+    setFormData((prev) => ({
+      ...prev,
+      starterCodes: {
+        ...prev.starterCodes,
+        [lang]: template,
+      },
+    }))
+  }
+
+  const handleRemoveLanguage = (lang: string) => {
+    setFormData((prev) => {
+      const next = { ...prev.starterCodes }
+      delete next[lang]
+      return { ...prev, starterCodes: next }
+    })
+  }
+
+  // Revision Restore Handler
+  const handleRestoreRevision = async (rev: AdminQuestionRevision) => {
+    if (!formData.id) return
+    const confirm = window.confirm(
+      `Restore revision v${rev.version} (${rev.changeSummary || 'No summary'})?\n\nThis will restore all question details, examples, test cases, and starter codes.`
+    )
+    if (!confirm) return
+
+    setRestoringRevisionId(rev.id)
+    try {
+      const res = await restoreAdminQuestionRevision(formData.id, rev.id)
+      if (res.success && res.data) {
+        const q = res.data
+        setFormData((prev) => ({
+          ...prev,
+          title: q.title,
+          difficulty: q.difficulty,
+          subdivision: q.subdivision,
+          description: q.description || '',
+          inputFormat: q.inputFormat || '',
+          outputFormat: q.outputFormat || '',
+          constraints: q.constraints || q.explanation || '',
+          timeLimitMs: q.timeLimitMs || 2000,
+          memoryLimitMb: q.memoryLimitMb || 256,
+          status: q.status || (q.isActive ? 'PUBLISHED' : 'DRAFT'),
+          examples: q.examples || [],
+          testCases: (q.testCases || []).map((tc: any) => ({
+            id: tc.id,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+            isHidden: !!tc.isHidden,
+            points: tc.points ?? 10,
+            description: tc.description || tc.explanation || '',
+          })),
+          starterCodes: q.starterCodes || prev.starterCodes,
+        }))
+        setSuccessMsg(`Question successfully restored to revision v${rev.version}.`)
+        // Refresh revisions
+        const revRes = await fetchAdminQuestionRevisions(formData.id)
+        if (revRes.success && revRes.data) setRevisions(revRes.data)
+      } else {
+        setError(res.error || 'Failed to restore revision.')
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Error restoring revision.')
+    } finally {
+      setRestoringRevisionId(null)
+    }
+  }
+
+    // Example handlers
   const handleAddExample = () => {
     setFormData((prev) => ({
       ...prev,
@@ -1488,11 +1632,11 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-[#262626] bg-[#141414] px-4">
+            <div className="flex border-b border-[#262626] bg-[#141414] px-4 overflow-x-auto">
               <button
                 onClick={() => setEditorTab('info')}
                 className={cn(
-                  'px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors',
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap',
                   editorTab === 'info'
                     ? 'border-[#ED2A2B] text-white'
                     : 'border-transparent text-neutral-400 hover:text-neutral-200'
@@ -1501,20 +1645,20 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 1. Basic Info
               </button>
               <button
-                onClick={() => setEditorTab('formats')}
+                onClick={() => setEditorTab('content')}
                 className={cn(
-                  'px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors',
-                  editorTab === 'formats'
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap',
+                  (editorTab === 'content' || editorTab === 'formats')
                     ? 'border-[#ED2A2B] text-white'
                     : 'border-transparent text-neutral-400 hover:text-neutral-200'
                 )}
               >
-                2. Input / Output & Constraints
+                2. Question Content
               </button>
               <button
                 onClick={() => setEditorTab('examples')}
                 className={cn(
-                  'px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5',
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap',
                   editorTab === 'examples'
                     ? 'border-[#ED2A2B] text-white'
                     : 'border-transparent text-neutral-400 hover:text-neutral-200'
@@ -1525,7 +1669,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               <button
                 onClick={() => setEditorTab('testcases')}
                 className={cn(
-                  'px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5',
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap',
                   editorTab === 'testcases'
                     ? 'border-[#ED2A2B] text-white'
                     : 'border-transparent text-neutral-400 hover:text-neutral-200'
@@ -1537,24 +1681,48 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 )}
               </button>
               <button
+                onClick={() => setEditorTab('languages')}
+                className={cn(
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap',
+                  editorTab === 'languages'
+                    ? 'border-[#ED2A2B] text-white'
+                    : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <Languages className="w-3.5 h-3.5 text-indigo-400" />
+                5. Languages ({Object.keys(formData.starterCodes || {}).length})
+              </button>
+              <button
                 onClick={() => {
                   setEditorTab('runner')
                   if (!runnerCode.trim()) {
                     setRunnerCode(
                       formData.starterCodes?.[runnerLanguage] ||
-                      '# Python 3 solution\\nimport sys\\n\\ndef solve():\\n    lines = sys.stdin.read().splitlines()\\n    if not lines: return\\n    # Write logic\\n\\nif __name__ == "__main__":\\n    solve()\\n'
+                      '# Python 3 solution\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if not lines: return\n    # Write logic\n\nif __name__ == "__main__":\n    solve()\n'
                     )
                   }
                 }}
                 className={cn(
-                  'px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5',
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap',
                   editorTab === 'runner'
                     ? 'border-[#ED2A2B] text-white'
                     : 'border-transparent text-neutral-400 hover:text-neutral-200'
                 )}
               >
                 <Terminal className="w-3.5 h-3.5 text-blue-400" />
-                5. Admin Test Runner
+                6. Test Runner
+              </button>
+              <button
+                onClick={() => setEditorTab('revisions')}
+                className={cn(
+                  'px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap',
+                  editorTab === 'revisions'
+                    ? 'border-[#ED2A2B] text-white'
+                    : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <HistoryIcon className="w-3.5 h-3.5 text-amber-400" />
+                7. Revisions {revisions.length > 0 && `(${revisions.length})`}
               </button>
             </div>
 
@@ -1623,8 +1791,31 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       </select>
                     </div>
 
+                    {/* Status */}
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-300 mb-1">
+                        Publication Status
+                      </label>
+                      <select
+                        value={formData.status || (formData.isActive ? 'PUBLISHED' : 'DRAFT')}
+                        onChange={(e) => {
+                          const s = e.target.value as 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+                          setFormData((prev) => ({
+                            ...prev,
+                            status: s,
+                            isActive: s === 'PUBLISHED',
+                          }))
+                        }}
+                        className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-sm text-white outline-none"
+                      >
+                        <option value="PUBLISHED">Published (Visible to Students)</option>
+                        <option value="DRAFT">Draft (Admin Only)</option>
+                        <option value="ARCHIVED">Archived</option>
+                      </select>
+                    </div>
+
                     {/* Topic */}
-                    <div className="md:col-span-2">
+                    <div>
                       <label className="block text-xs font-medium text-neutral-300 mb-1">
                         Topic / Category
                       </label>
@@ -1644,6 +1835,59 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     </div>
                   </div>
 
+                  {/* Association Details */}
+                  <div className="p-4 rounded-xl bg-[#181818] border border-[#2e2e2e] space-y-3">
+                    <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
+                      Question Association
+                    </h4>
+                    {learningUnitId || formData.learningUnitId ? (
+                      <div className="flex items-center gap-2 text-xs text-neutral-300">
+                        <span className="px-2.5 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800 text-indigo-300 font-semibold">
+                          Learn Coding Curriculum
+                        </span>
+                        <span>Attached to Lesson: <strong className="text-white">{unitTitle || formData.learningUnitId}</strong></span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-400 mb-1">
+                            Belt Practice Assignment
+                          </label>
+                          <select
+                            value={formData.beltId || 'mock-belt-1'}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, beltId: e.target.value }))}
+                            className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none"
+                          >
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                              <option key={num} value={`mock-belt-${num}`}>
+                                Belt {num}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Change Summary for Revisions */}
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-300 mb-1">
+                      Change Summary (Optional note recorded in Revision History)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.changeSummary || ''}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, changeSummary: e.target.value }))}
+                      placeholder="e.g. Added edge test cases, updated memory limit"
+                      className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-neutral-300 outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: QUESTION CONTENT */}
+              {(editorTab === 'content' || editorTab === 'formats') && (
+                <div className="space-y-4">
                   {/* Problem Description */}
                   <div>
                     <label className="block text-xs font-medium text-neutral-300 mb-1">
@@ -1662,40 +1906,37 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       <p className="text-xs text-red-400 mt-1">{formErrors.description}</p>
                     )}
                   </div>
-                </div>
-              )}
 
-              {/* TAB 2: FORMATS & CONSTRAINTS */}
-              {editorTab === 'formats' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-medium text-neutral-300 mb-1">
-                      Input Format Description
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={formData.inputFormat}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, inputFormat: e.target.value }))
-                      }
-                      placeholder="e.g. The first line contains an integer n. The second line contains n space-separated integers."
-                      className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-sm text-white outline-none"
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-300 mb-1">
+                        Input Format Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.inputFormat}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, inputFormat: e.target.value }))
+                        }
+                        placeholder="e.g. The first line contains an integer n. The second line contains n space-separated integers."
+                        className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-xs text-white outline-none"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-neutral-300 mb-1">
-                      Output Format Description
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={formData.outputFormat}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, outputFormat: e.target.value }))
-                      }
-                      placeholder="e.g. Return the indices of the two numbers that sum up to target."
-                      className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-sm text-white outline-none"
-                    />
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-300 mb-1">
+                        Output Format Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.outputFormat}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, outputFormat: e.target.value }))
+                        }
+                        placeholder="e.g. Return the indices of the two numbers that sum up to target."
+                        className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-xs text-white outline-none"
+                      />
+                    </div>
                   </div>
 
                   <div>
@@ -1703,14 +1944,51 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       Constraints
                     </label>
                     <textarea
-                      rows={4}
+                      rows={3}
                       value={formData.constraints}
                       onChange={(e) =>
                         setFormData((prev) => ({ ...prev, constraints: e.target.value }))
                       }
                       placeholder="e.g. 1 <= nums.length <= 10^4&#10;-10^9 <= nums[i] <= 10^9"
-                      className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-sm text-white outline-none font-mono"
+                      className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg p-3 text-xs text-white outline-none font-mono"
                     />
+                  </div>
+
+                  {/* Execution Limits */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-[#181818] border border-[#2e2e2e]">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 mb-1 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-amber-400" />
+                        Execution Time Limit (ms)
+                      </label>
+                      <input
+                        type="number"
+                        min="100"
+                        max="10000"
+                        step="100"
+                        value={formData.timeLimitMs}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, timeLimitMs: Number(e.target.value) || 2000 }))}
+                        className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none font-mono"
+                      />
+                      <span className="text-[11px] text-neutral-500 mt-1 block">Default: 2000 ms</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 mb-1 flex items-center gap-1.5">
+                        <Cpu className="w-3.5 h-3.5 text-blue-400" />
+                        Memory Limit (MB)
+                      </label>
+                      <input
+                        type="number"
+                        min="32"
+                        max="2048"
+                        step="32"
+                        value={formData.memoryLimitMb}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, memoryLimitMb: Number(e.target.value) || 256 }))}
+                        className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none font-mono"
+                      />
+                      <span className="text-[11px] text-neutral-500 mt-1 block">Default: 256 MB</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1744,16 +2022,36 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           onChange={(e) => handleUpdateExample(idx, 'label', e.target.value)}
                           className="bg-transparent text-xs font-bold text-neutral-200 border-b border-transparent focus:border-[#ED2A2B] outline-none"
                         />
-                        {formData.examples.length > 1 && (
+                        <div className="flex items-center gap-1">
                           <button
                             type="button"
-                            onClick={() => handleRemoveExample(idx)}
-                            className="p-1 rounded text-neutral-500 hover:text-red-400"
-                            title="Remove Example"
+                            disabled={idx === 0}
+                            onClick={() => handleMoveExample(idx, 'up')}
+                            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                            title="Move Up"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <ChevronUp className="w-3.5 h-3.5" />
                           </button>
-                        )}
+                          <button
+                            type="button"
+                            disabled={idx === formData.examples.length - 1}
+                            onClick={() => handleMoveExample(idx, 'down')}
+                            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                            title="Move Down"
+                          >
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          </button>
+                          {formData.examples.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveExample(idx)}
+                              className="p-1 rounded text-neutral-500 hover:text-red-400"
+                              title="Remove Example"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1802,21 +2100,24 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
               {/* TAB 4: TEST CASES */}
               {editorTab === 'testcases' && (
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl bg-[#181818] border border-[#2e2e2e]">
                     <div>
-                      <p className="text-xs text-neutral-400">
-                        Test cases used by the Judge Engine. Hidden test cases are never exposed to students.
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                        Test Cases Management
+                      </h4>
+                      <p className="text-xs text-neutral-400 mt-0.5">
+                        Test cases are evaluated by the Judge Engine. Hidden test cases are strictly guarded and never exposed to client browsers.
                       </p>
                       {formErrors.testCases && (
-                        <p className="text-xs text-red-400 mt-0.5">{formErrors.testCases}</p>
+                        <p className="text-xs text-red-400 mt-1">{formErrors.testCases}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleAddTestCase(false)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#222] hover:bg-[#333] text-neutral-200 text-xs font-semibold"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222] hover:bg-[#333] text-emerald-400 text-xs font-semibold border border-emerald-900/50"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         + Public Test
@@ -1824,132 +2125,348 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       <button
                         type="button"
                         onClick={() => handleAddTestCase(true)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold hover:bg-amber-900/40"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold hover:bg-amber-900/40"
                       >
-                        <Lock className="w-3 h-3" />
+                        <Lock className="w-3.5 h-3.5" />
                         + Hidden Test
                       </button>
                     </div>
                   </div>
 
-                  {formData.testCases.map((tc, idx) => (
-                    <div
-                      key={idx}
-                      className={cn(
-                        'p-4 rounded-xl border space-y-3 relative group transition-colors',
-                        tc.isHidden
-                          ? 'bg-[#181512] border-amber-900/40'
-                          : 'bg-[#181818] border-[#2e2e2e]'
-                      )}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-neutral-400">
-                            #{idx + 1}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleUpdateTestCase(idx, 'isHidden', !tc.isHidden)}
-                            className={cn(
-                              'px-2 py-0.5 rounded text-[11px] font-semibold flex items-center gap-1 border transition-colors',
-                              tc.isHidden
-                                ? 'bg-amber-950/60 text-amber-300 border-amber-800/80'
-                                : 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80'
-                            )}
-                          >
-                            {tc.isHidden ? (
-                              <>
-                                <Lock className="w-2.5 h-2.5" /> Hidden Test
-                              </>
-                            ) : (
-                              <>
-                                <Globe className="w-2.5 h-2.5" /> Public Sample
-                              </>
-                            )}
-                          </button>
-                          <input
-                            type="text"
-                            value={tc.description || ''}
-                            onChange={(e) => handleUpdateTestCase(idx, 'description', e.target.value)}
-                            placeholder="Optional note / description"
-                            className="bg-transparent text-xs text-neutral-400 border-b border-transparent focus:border-neutral-500 outline-none w-48"
-                          />
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            disabled={idx === 0}
-                            onClick={() => handleMoveTestCase(idx, 'up')}
-                            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20 disabled:hover:text-neutral-500"
-                            title="Move Up"
-                          >
-                            <ChevronUp className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            disabled={idx === formData.testCases.length - 1}
-                            onClick={() => handleMoveTestCase(idx, 'down')}
-                            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20 disabled:hover:text-neutral-500"
-                            title="Move Down"
-                          >
-                            <ChevronDown className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDuplicateTestCase(idx)}
-                            className="p-1 rounded text-neutral-500 hover:text-white"
-                            title="Duplicate Test Case"
-                          >
-                            <Copy className="w-3.5 h-3.5" />
-                          </button>
-                          {formData.testCases.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveTestCase(idx)}
-                              className="p-1 rounded text-neutral-500 hover:text-red-400"
-                              title="Delete Test Case"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
+                  {/* SECTION 1: PUBLIC TEST CASES */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-[#262626]">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-emerald-400" />
+                        <h5 className="text-xs font-bold text-neutral-200 uppercase tracking-wider">
+                          Public Test Cases ({formData.testCases.filter((t) => !t.isHidden).length})
+                        </h5>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
-                            Input (stdin)
-                          </label>
-                          <textarea
-                            rows={3}
-                            value={tc.input}
-                            onChange={(e) => handleUpdateTestCase(idx, 'input', e.target.value)}
-                            placeholder="Input lines sent to stdin..."
-                            className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
-                            Expected Output (stdout)
-                          </label>
-                          <textarea
-                            rows={3}
-                            value={tc.expectedOutput}
-                            onChange={(e) =>
-                              handleUpdateTestCase(idx, 'expectedOutput', e.target.value)
-                            }
-                            placeholder="Exact expected stdout..."
-                            className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
-                          />
-                        </div>
-                      </div>
+                      <span className="text-[11px] text-neutral-500">Visible to students in test runner and preview</span>
                     </div>
-                  ))}
+
+                    {formData.testCases.filter((t) => !t.isHidden).length === 0 ? (
+                      <div className="p-4 rounded-xl border border-dashed border-[#333] text-center text-xs text-neutral-500">
+                        No public test cases added yet. Click "+ Public Test" above.
+                      </div>
+                    ) : (
+                      formData.testCases.map((tc, idx) => {
+                        if (tc.isHidden) return null
+                        return (
+                          <div
+                            key={idx}
+                            className="p-4 rounded-xl border border-emerald-900/30 bg-[#161816] space-y-3 relative group transition-colors"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2.5">
+                                <span className="text-xs font-mono font-bold text-emerald-400">
+                                  #{idx + 1}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateTestCase(idx, 'isHidden', true)}
+                                  className="px-2 py-0.5 rounded text-[11px] font-semibold flex items-center gap-1 border bg-emerald-950/60 text-emerald-300 border-emerald-800/80 hover:bg-emerald-900/60"
+                                  title="Click to convert to Hidden test case"
+                                >
+                                  <Globe className="w-2.5 h-2.5" /> Public Sample
+                                </button>
+                                <div className="flex items-center gap-1 text-[11px] text-neutral-400">
+                                  <span>Points:</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={tc.points ?? 10}
+                                    onChange={(e) => handleUpdateTestCase(idx, 'points', Number(e.target.value) || 10)}
+                                    className="w-12 bg-[#121212] border border-[#333] rounded px-1.5 py-0.5 text-center text-xs text-white"
+                                  />
+                                </div>
+                                <input
+                                  type="text"
+                                  value={tc.description || ''}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'description', e.target.value)}
+                                  placeholder="Optional description / label"
+                                  className="bg-transparent text-xs text-neutral-400 border-b border-transparent focus:border-neutral-500 outline-none w-44"
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  disabled={idx === 0}
+                                  onClick={() => handleMoveTestCase(idx, 'up')}
+                                  className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                                  title="Move Up"
+                                >
+                                  <ChevronUp className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={idx === formData.testCases.length - 1}
+                                  onClick={() => handleMoveTestCase(idx, 'down')}
+                                  className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                                  title="Move Down"
+                                >
+                                  <ChevronDown className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDuplicateTestCase(idx)}
+                                  className="p-1 rounded text-neutral-500 hover:text-white"
+                                  title="Duplicate Test Case"
+                                >
+                                  <Copy className="w-3.5 h-3.5" />
+                                </button>
+                                {formData.testCases.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveTestCase(idx)}
+                                    className="p-1 rounded text-neutral-500 hover:text-red-400"
+                                    title="Delete Test Case"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
+                                  Input (stdin)
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={tc.input}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'input', e.target.value)}
+                                  placeholder="Input lines sent to stdin..."
+                                  className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
+                                  Expected Output (stdout)
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={tc.expectedOutput}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'expectedOutput', e.target.value)}
+                                  placeholder="Exact expected stdout..."
+                                  className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
+
+                  {/* SECTION 2: HIDDEN TEST CASES */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-[#262626]">
+                      <div className="flex items-center gap-2">
+                        <Lock className="w-4 h-4 text-amber-400" />
+                        <h5 className="text-xs font-bold text-neutral-200 uppercase tracking-wider">
+                          Hidden Test Cases ({formData.testCases.filter((t) => t.isHidden).length})
+                        </h5>
+                      </div>
+                      <span className="text-[11px] text-amber-500/80">Guarded server-side only; never sent to student browsers</span>
+                    </div>
+
+                    {formData.testCases.filter((t) => t.isHidden).length === 0 ? (
+                      <div className="p-4 rounded-xl border border-dashed border-[#333] text-center text-xs text-neutral-500">
+                        No hidden test cases added yet. Click "+ Hidden Test" above.
+                      </div>
+                    ) : (
+                      formData.testCases.map((tc, idx) => {
+                        if (!tc.isHidden) return null
+                        return (
+                          <div
+                            key={idx}
+                            className="p-4 rounded-xl border border-amber-900/40 bg-[#191612] space-y-3 relative group transition-colors"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2.5">
+                                <span className="text-xs font-mono font-bold text-amber-400">
+                                  #{idx + 1}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateTestCase(idx, 'isHidden', false)}
+                                  className="px-2 py-0.5 rounded text-[11px] font-semibold flex items-center gap-1 border bg-amber-950/60 text-amber-300 border-amber-800/80 hover:bg-amber-900/60"
+                                  title="Click to convert to Public test case"
+                                >
+                                  <Lock className="w-2.5 h-2.5" /> Hidden Test
+                                </button>
+                                <div className="flex items-center gap-1 text-[11px] text-neutral-400">
+                                  <span>Points:</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={tc.points ?? 10}
+                                    onChange={(e) => handleUpdateTestCase(idx, 'points', Number(e.target.value) || 10)}
+                                    className="w-12 bg-[#121212] border border-[#333] rounded px-1.5 py-0.5 text-center text-xs text-white"
+                                  />
+                                </div>
+                                <input
+                                  type="text"
+                                  value={tc.description || ''}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'description', e.target.value)}
+                                  placeholder="Optional description / label"
+                                  className="bg-transparent text-xs text-neutral-400 border-b border-transparent focus:border-neutral-500 outline-none w-44"
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  disabled={idx === 0}
+                                  onClick={() => handleMoveTestCase(idx, 'up')}
+                                  className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                                  title="Move Up"
+                                >
+                                  <ChevronUp className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={idx === formData.testCases.length - 1}
+                                  onClick={() => handleMoveTestCase(idx, 'down')}
+                                  className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-20"
+                                  title="Move Down"
+                                >
+                                  <ChevronDown className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDuplicateTestCase(idx)}
+                                  className="p-1 rounded text-neutral-500 hover:text-white"
+                                  title="Duplicate Test Case"
+                                >
+                                  <Copy className="w-3.5 h-3.5" />
+                                </button>
+                                {formData.testCases.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveTestCase(idx)}
+                                    className="p-1 rounded text-neutral-500 hover:text-red-400"
+                                    title="Delete Test Case"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
+                                  Input (stdin)
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={tc.input}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'input', e.target.value)}
+                                  placeholder="Input lines sent to stdin..."
+                                  className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
+                                  Expected Output (stdout)
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={tc.expectedOutput}
+                                  onChange={(e) => handleUpdateTestCase(idx, 'expectedOutput', e.target.value)}
+                                  placeholder="Exact expected stdout..."
+                                  className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-2 text-xs text-white font-mono outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
                 </div>
               )}
 
-              {/* TAB 5: ADMIN TEST RUNNER */}
+              {/* TAB 5: PROGRAMMING LANGUAGES */}
+              {editorTab === 'languages' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                        Language Starter Code Templates
+                      </h4>
+                      <p className="text-xs text-neutral-400 mt-0.5">
+                        Students receive these templates when they start solving this question in the editor.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            handleAddLanguage(e.target.value)
+                            e.target.value = ''
+                          }
+                        }}
+                        defaultValue=""
+                        className="bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-2.5 py-1 text-xs text-white outline-none"
+                      >
+                        <option value="" disabled>+ Add Language...</option>
+                        {!formData.starterCodes?.python && <option value="python">Python 3</option>}
+                        {!formData.starterCodes?.javascript && <option value="javascript">JavaScript (Node.js)</option>}
+                        {!formData.starterCodes?.cpp && <option value="cpp">C++ (g++)</option>}
+                        {!formData.starterCodes?.java && <option value="java">Java (OpenJDK)</option>}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {Object.entries(formData.starterCodes || {}).map(([lang, code]) => {
+                      const labels: Record<string, string> = {
+                        python: 'Python 3',
+                        javascript: 'JavaScript (Node.js)',
+                        nodejs: 'JavaScript (Node.js)',
+                        cpp: 'C++ (g++)',
+                        java: 'Java (OpenJDK)',
+                      }
+                      return (
+                        <div key={lang} className="p-4 rounded-xl bg-[#181818] border border-[#2e2e2e] space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-white uppercase tracking-wider">
+                              {labels[lang] || lang}
+                            </span>
+                            {Object.keys(formData.starterCodes || {}).length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveLanguage(lang)}
+                                className="text-neutral-500 hover:text-red-400 p-1"
+                                title="Remove Language"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                          <textarea
+                            rows={6}
+                            value={code}
+                            onChange={(e) => handleUpdateStarterCode(lang, e.target.value)}
+                            placeholder={`Starter code template for ${lang}...`}
+                            className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-3 text-xs text-neutral-200 font-mono outline-none"
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 6: ADMIN TEST RUNNER */}
               {editorTab === 'runner' && (
                 <div className="space-y-4">
                   <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-900/40 text-blue-300 text-xs flex items-start gap-2.5">
@@ -1990,7 +2507,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           if (formData.starterCodes?.[runnerLanguage]) {
                             setRunnerCode(formData.starterCodes[runnerLanguage])
                           } else if (runnerLanguage === 'python') {
-                            setRunnerCode('# Solution implementation\\nimport sys\\n\\ndef solve():\\n    lines = sys.stdin.read().splitlines()\\n    if not lines: return\\n    # Write logic\\n\\nif __name__ == "__main__":\\n    solve()\\n')
+                            setRunnerCode('# Solution implementation\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().splitlines()\n    if not lines: return\n    # Write logic\n\nif __name__ == "__main__":\n    solve()\n')
                           }
                         }}
                         className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#222] hover:bg-[#333] text-neutral-300 text-xs font-medium"
@@ -2055,7 +2572,6 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
                   {!runnerLoading && runnerResult && (
                     <div className="space-y-4 pt-2">
-                      {/* Summary Banner */}
                       <div
                         className={cn(
                           'p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm',
@@ -2089,7 +2605,6 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         </div>
                       </div>
 
-                      {/* Compilation Error if present */}
                       {runnerResult.compilationError && (
                         <div className="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-xs font-mono whitespace-pre-wrap">
                           <strong className="block text-sm font-sans font-bold text-red-200 mb-1">
@@ -2099,7 +2614,6 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         </div>
                       )}
 
-                      {/* Individual Test Cases Results */}
                       <div className="space-y-3">
                         {runnerResult.results.map((r, idx) => (
                           <div
@@ -2158,56 +2672,21 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                               </div>
                             </div>
 
-                            {/* Input, Expected, and Actual side-by-side or stacked */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                               <div className="bg-[#101010] border border-[#2a2a2a] rounded-lg p-2.5">
-                                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-                                  <span>Input (stdin)</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => copyToClipboard(r.input, `in-${idx}`)}
-                                    className="text-neutral-500 hover:text-white"
-                                  >
-                                    {copiedField === `in-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                  </button>
-                                </div>
+                                <span className="text-neutral-500 font-semibold block mb-1">Input (stdin):</span>
                                 <pre className="font-mono text-neutral-300 whitespace-pre-wrap max-h-28 overflow-y-auto">
                                   {r.input || '(empty)'}
                                 </pre>
                               </div>
-
                               <div className="bg-[#101010] border border-[#2a2a2a] rounded-lg p-2.5">
-                                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-                                  <span>Expected Output</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => copyToClipboard(r.expectedOutput, `exp-${idx}`)}
-                                    className="text-neutral-500 hover:text-white"
-                                  >
-                                    {copiedField === `exp-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                  </button>
-                                </div>
-                                <pre className="font-mono text-emerald-400 whitespace-pre-wrap max-h-28 overflow-y-auto">
+                                <span className="text-neutral-500 font-semibold block mb-1">Expected Output:</span>
+                                <pre className="font-mono text-neutral-300 whitespace-pre-wrap max-h-28 overflow-y-auto">
                                   {r.expectedOutput || '(empty)'}
                                 </pre>
                               </div>
-
-                              <div
-                                className={cn(
-                                  'bg-[#101010] rounded-lg p-2.5 border',
-                                  r.passed ? 'border-emerald-800/50' : 'border-red-800/80'
-                                )}
-                              >
-                                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-                                  <span>Actual Output</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => copyToClipboard(r.actualOutput, `act-${idx}`)}
-                                    className="text-neutral-500 hover:text-white"
-                                  >
-                                    {copiedField === `act-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                  </button>
-                                </div>
+                              <div className="bg-[#101010] border border-[#2a2a2a] rounded-lg p-2.5">
+                                <span className="text-neutral-500 font-semibold block mb-1">Actual Stdout:</span>
                                 <pre
                                   className={cn(
                                     'font-mono whitespace-pre-wrap max-h-28 overflow-y-auto',
@@ -2227,6 +2706,100 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           </div>
                         ))}
                       </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB 7: REVISION HISTORY */}
+              {editorTab === 'revisions' && (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-900/40 text-amber-300 text-xs flex items-start gap-2.5">
+                    <HistoryIcon className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
+                    <div>
+                      <strong className="block font-semibold">Immutable Revision History</strong>
+                      <span>
+                        Every modification to this question automatically produces an immutable versioned snapshot.
+                        You can inspect snapshots and restore this question to any prior state at any time.
+                      </span>
+                    </div>
+                  </div>
+
+                  {!formData.id ? (
+                    <div className="p-8 rounded-xl bg-[#161616] border border-dashed border-[#333] text-center text-neutral-400 text-xs">
+                      Revision history will begin recording automatically once this question is created.
+                    </div>
+                  ) : revisionsLoading ? (
+                    <div className="p-8 rounded-xl bg-[#161616] border border-[#2e2e2e] text-center text-neutral-400 text-sm">
+                      <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#ED2A2B]" />
+                      Loading revision history...
+                    </div>
+                  ) : revisions.length === 0 ? (
+                    <div className="p-8 rounded-xl bg-[#161616] border border-dashed border-[#333] text-center text-neutral-400 text-xs">
+                      No historical revisions found for this question yet.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {revisions.map((rev) => (
+                        <div
+                          key={rev.id}
+                          className="p-4 rounded-xl bg-[#181818] border border-[#2e2e2e] space-y-3"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5">
+                              <span className="px-2.5 py-1 rounded-full bg-amber-950/60 border border-amber-800/80 text-amber-400 font-mono text-xs font-bold">
+                                v{rev.version}
+                              </span>
+                              <div>
+                                <span className="text-xs font-bold text-white block">
+                                  {rev.changeSummary || 'No change summary provided'}
+                                </span>
+                                <span className="text-[11px] text-neutral-500">
+                                  {new Date(rev.createdAt).toLocaleString()} · Author: {rev.changedBy || 'Super Admin'}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedRevisionSnapshot(rev.snapshot)}
+                                className="px-3 py-1.5 rounded-lg bg-[#222] hover:bg-[#333] text-neutral-300 text-xs font-semibold"
+                              >
+                                View Snapshot
+                              </button>
+                              <button
+                                type="button"
+                                disabled={restoringRevisionId === rev.id}
+                                onClick={() => handleRestoreRevision(rev)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold disabled:opacity-40"
+                              >
+                                <RefreshCw className={cn('w-3.5 h-3.5', restoringRevisionId === rev.id && 'animate-spin')} />
+                                {restoringRevisionId === rev.id ? 'Restoring...' : 'Restore This Version'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Snapshot Inspector Modal */}
+                  {selectedRevisionSnapshot && (
+                    <div className="p-4 rounded-xl bg-[#141414] border border-[#333] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-neutral-300">Raw Snapshot Inspector</span>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedRevisionSnapshot(null)}
+                          className="text-xs text-neutral-500 hover:text-white"
+                        >
+                          Close
+                        </button>
+                      </div>
+                      <pre className="font-mono text-xs text-neutral-300 bg-[#0d0d0d] p-3 rounded max-h-60 overflow-y-auto whitespace-pre-wrap">
+                        {JSON.stringify(selectedRevisionSnapshot, null, 2)}
+                      </pre>
                     </div>
                   )}
                 </div>
