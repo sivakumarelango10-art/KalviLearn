@@ -20,33 +20,101 @@ model Belt {
 }
 
 model Problem {
-  id              String         @id @default(uuid())
-  beltId          String?
-  belt            Belt?          @relation(fields: [beltId], references: [id], onDelete: Cascade)
-  learningUnitId  String?
-  learningUnit    LearningUnit?  @relation(fields: [learningUnitId], references: [id], onDelete: Cascade)
-  order           Int
-  title           String
-  slug            String         @unique
-  difficulty      String         // "Easy" | "Medium" | "Hard"
-  description     String         @db.Text
-  inputFormat     String         @db.Text
-  outputFormat    String         @db.Text
-  explanation     String?        @db.Text
-  exampleExplanation String?     @db.Text
-  examples        Json?
-  subdivision     String?
-  starterCodes    Json
-  isActive        Boolean        @default(true)
+  id                 String               @id @default(uuid())
+  beltId             String?
+  belt               Belt?                @relation(fields: [beltId], references: [id], onDelete: Cascade)
+  learningUnitId     String?
+  learningUnit       LearningUnit?        @relation(fields: [learningUnitId], references: [id], onDelete: Cascade)
+  order              Int
+  title              String
+  slug               String               @unique
+  difficulty         String               // "Easy" | "Medium" | "Hard"
+  status             String               @default("PUBLISHED") // "DRAFT" | "PUBLISHED" | "ARCHIVED"
+  description        String               @db.Text
+  inputFormat        String               @db.Text
+  outputFormat       String               @db.Text
+  explanation        String?              @db.Text
+  exampleExplanation String?              @db.Text
+  examples           Json?
+  subdivision        String?
+  starterCodes       Json
+  isActive           Boolean              @default(true)
+  timeLimitMs        Int                  @default(2000)
+  memoryLimitMb      Int                  @default(256)
   canonicalProblemId String?
-  testCases       TestCase[]
-  submissions     Submission[]
-  userProgress    UserProgress[]
-  createdAt       DateTime       @default(now())
+  createdBy          String?
+  updatedBy          String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now()) @updatedAt
+  testCases          TestCase[]
+  problemExamples    ProblemExample[]
+  problemTestCases   ProblemTestCase[]
+  problemStarterCodes ProblemStarterCode[]
+  problemRevisions   ProblemRevision[]
+  submissions        Submission[]
+  userProgress       UserProgress[]
 
   @@index([beltId])
   @@index([learningUnitId])
   @@index([isActive])
+  @@index([status])
+}
+
+model ProblemExample {
+  id             String   @id @default(uuid())
+  problemId      String
+  problem        Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  input          String   @db.Text
+  expectedOutput String   @db.Text
+  explanation    String?  @db.Text
+  displayOrder   Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@index([problemId, displayOrder])
+}
+
+model ProblemTestCase {
+  id             String   @id @default(uuid())
+  problemId      String
+  problem        Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  input          String   @db.Text
+  expectedOutput String   @db.Text
+  isHidden       Boolean  @default(false)
+  displayOrder   Int      @default(1)
+  points         Int      @default(10)
+  explanation    String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@index([problemId, displayOrder])
+  @@index([problemId, isHidden])
+}
+
+model ProblemStarterCode {
+  id        String   @id @default(uuid())
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  language  String   // e.g. "python", "javascript", "cpp", "java"
+  code      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([problemId, language])
+  @@index([problemId])
+}
+
+model ProblemRevision {
+  id            String   @id @default(uuid())
+  problemId     String
+  problem       Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  version       Int      @default(1)
+  snapshot      Json
+  changedBy     String?
+  changeSummary String?
+  createdAt     DateTime @default(now())
+
+  @@index([problemId, version])
 }
 
 model TestCase {
@@ -382,8 +450,3 @@ model Campus {
   @@index([managerId])
   @@map("campuses")
 }
-
-
-
-
-

@@ -1614,6 +1614,243 @@ if lines:
     }
   })
 
+  // ─── 16. NORMALIZED RELATIONAL ARCHITECTURE & REVISION HISTORY ─────────────
+  console.log('\n--- 16. Normalized Relational Architecture & Revision History ---')
+
+  let normProblemId = ''
+  const normSlug = 'normalized-arch-test-problem'
+
+  await runTest('16.1 Create question populates ProblemExample, ProblemTestCase, ProblemStarterCode, and ProblemRevision v1', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        title: 'Normalized Architecture Problem',
+        slug: normSlug,
+        difficulty: 'Medium',
+        subdivision: '1D Arrays / Lists',
+        description: 'Verify normalized multi-table database architecture.',
+        inputFormat: 'Single line of integers',
+        outputFormat: 'Sorted array',
+        constraints: '1 <= n <= 10^5',
+        timeLimitMs: 3000,
+        memoryLimitMb: 512,
+        status: 'PUBLISHED',
+        examples: [
+          { label: 'Example 1', input: '3 1 2', output: '1 2 3', explanation: 'Sorted order' },
+          { label: 'Example 2', input: '5 4 3 2 1', output: '1 2 3 4 5', explanation: 'Reverse sorted' },
+        ],
+        testCases: [
+          { input: '3 1 2', expectedOutput: '1 2 3', isHidden: false, points: 15, description: 'Public sample' },
+          { input: '10 9 8', expectedOutput: '8 9 10', isHidden: true, points: 25, description: 'Hidden evaluation 1' },
+          { input: '100', expectedOutput: '100', isHidden: true, points: 60, description: 'Single element edge case' },
+        ],
+        starterCodes: {
+          python: '# Python 3 solution\ndef solve():\n    pass\n',
+          javascript: '// Node.js solution\nfunction solve() {}\n',
+          cpp: '// C++ solution\nint main() { return 0; }\n',
+          java: '// Java solution\npublic class Main { public static void main(String[] args) {} }\n',
+        },
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    normProblemId = out.data.data.id
+    assert.ok(normProblemId, 'Question ID must be returned')
+
+    // Inspect child tables in in-memory database
+    const examples = db.ProblemExample.filter((pe: any) => pe.problemId === normProblemId)
+    assert.strictEqual(examples.length, 2, 'Must create 2 ProblemExample records')
+    assert.strictEqual(examples[0].displayOrder, 1)
+    assert.strictEqual(examples[1].displayOrder, 2)
+
+    const testCases = db.ProblemTestCase.filter((tc: any) => tc.problemId === normProblemId)
+    assert.strictEqual(testCases.length, 3, 'Must create 3 ProblemTestCase records')
+    assert.strictEqual(testCases[0].points, 15)
+    assert.strictEqual(testCases[1].points, 25)
+    assert.strictEqual(testCases[1].isHidden, true)
+
+    const starterCodes = db.ProblemStarterCode.filter((sc: any) => sc.problemId === normProblemId)
+    assert.strictEqual(starterCodes.length, 4, 'Must create 4 ProblemStarterCode records')
+    const languages = starterCodes.map((s: any) => s.language).sort()
+    assert.deepStrictEqual(languages, ['cpp', 'java', 'javascript', 'python'])
+
+    const revisions = db.ProblemRevision.filter((r: any) => r.problemId === normProblemId)
+    assert.strictEqual(revisions.length, 1, 'Must create initial v1 ProblemRevision')
+    assert.strictEqual(revisions[0].version, 1)
+    assert.strictEqual(revisions[0].changeSummary, 'Initial question creation')
+  })
+
+  await runTest('16.2 Independent Examples reordering and editing persists', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: normProblemId,
+        examples: [
+          { label: 'Example 2 (Promoted)', input: '5 4 3 2 1', output: '1 2 3 4 5', explanation: 'Now first' },
+          { label: 'Example 1 (Demoted)', input: '3 1 2', output: '1 2 3', explanation: 'Now second' },
+          { label: 'Example 3 (Added)', input: '0', output: '0', explanation: 'Zero case' },
+        ],
+        changeSummary: 'Reordered examples and added zero case',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+
+    const examples = db.ProblemExample.filter((pe: any) => pe.problemId === normProblemId)
+    assert.strictEqual(examples.length, 3, 'Must have 3 updated examples')
+    assert.strictEqual(examples[0].displayOrder, 1)
+    assert.strictEqual(examples[0].input, '5 4 3 2 1')
+    assert.strictEqual(examples[1].displayOrder, 2)
+    assert.strictEqual(examples[1].input, '3 1 2')
+    assert.strictEqual(examples[2].displayOrder, 3)
+    assert.strictEqual(examples[2].input, '0')
+  })
+
+  await runTest('16.3 Segregated Public vs Hidden test cases with custom points and visibility toggles', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: normProblemId,
+        testCases: [
+          { input: '3 1 2', expectedOutput: '1 2 3', isHidden: false, points: 20, displayOrder: 1, description: 'Public sample' },
+          { input: '10 9 8', expectedOutput: '8 9 10', isHidden: false, points: 20, displayOrder: 2, description: 'Toggled to public' },
+          { input: '100', expectedOutput: '100', isHidden: true, points: 60, displayOrder: 3, description: 'Hidden edge case' },
+        ],
+        changeSummary: 'Converted test case 2 to public and adjusted points',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+
+    const ptc = db.ProblemTestCase.filter((tc: any) => tc.problemId === normProblemId)
+    assert.strictEqual(ptc.length, 3)
+    const publicCases = ptc.filter((tc: any) => !tc.isHidden)
+    const hiddenCases = ptc.filter((tc: any) => tc.isHidden)
+    assert.strictEqual(publicCases.length, 2, 'Must have 2 public test cases')
+    assert.strictEqual(hiddenCases.length, 1, 'Must have 1 hidden test case')
+    assert.strictEqual(hiddenCases[0].points, 60, 'Hidden case must carry 60 points')
+  })
+
+  await runTest('16.4 Multi-language starter codes independently retrieved and updated', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'get_question',
+        id: normProblemId,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    const starterCodes = out.data.data.starterCodes
+    assert.ok(starterCodes.python, 'Must contain Python starter')
+    assert.ok(starterCodes.javascript, 'Must contain JavaScript starter')
+    assert.ok(starterCodes.cpp, 'Must contain C++ starter')
+    assert.ok(starterCodes.java, 'Must contain Java starter')
+  })
+
+  await runTest('16.5 Updating question records new immutable ProblemRevision with snapshot and change summary', async () => {
+    const revisions = db.ProblemRevision.filter((r: any) => r.problemId === normProblemId)
+    assert.strictEqual(revisions.length, 3, 'Must have 3 revisions (v1, v2, v3) after 2 updates')
+    const latest = revisions[revisions.length - 1]
+    assert.strictEqual(latest.version, 3)
+    assert.strictEqual(latest.changeSummary, 'Converted test case 2 to public and adjusted points')
+    assert.ok(latest.snapshot.problem)
+    assert.ok(latest.snapshot.testCases)
+  })
+
+  await runTest('16.6 Super Admin lists revisions via list_question_revisions in descending order', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'list_question_revisions',
+        id: normProblemId,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    const revList = out.data.data
+    assert.strictEqual(revList.length, 3)
+    assert.strictEqual(revList[0].version, 3, 'First element must be latest version (v3)')
+    assert.strictEqual(revList[1].version, 2)
+    assert.strictEqual(revList[2].version, 1)
+  })
+
+  await runTest('16.7 Super Admin restores revision via restore_question_revision and generates restoration revision v4', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    // Restore to initial v1 revision
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'restore_question_revision',
+        problemId: normProblemId,
+        version: 1,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.restoredFromVersion, 1)
+    assert.strictEqual(out.data.data.currentVersion, 4)
+
+    // Verify restored examples count
+    const restoredExamples = db.ProblemExample.filter((pe: any) => pe.problemId === normProblemId)
+    assert.strictEqual(restoredExamples.length, 2, 'Restored v1 must revert to 2 original examples')
+
+    // Verify new restoration revision v4 was recorded
+    const revisions = db.ProblemRevision.filter((r: any) => r.problemId === normProblemId)
+    assert.strictEqual(revisions.length, 4, 'Must now have 4 total revisions')
+    assert.strictEqual(revisions[revisions.length - 1].changeSummary, 'Restored from revision v1')
+  })
+
+  await runTest('16.8 Cascade deletion removes rows across ProblemExample, ProblemTestCase, ProblemStarterCode, ProblemRevision, and legacy TestCase', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'delete_question',
+        id: normProblemId,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+
+    // Verify Problem deleted
+    const probExists = db.Problem.some((p: any) => p.id === normProblemId)
+    assert.strictEqual(probExists, false, 'Problem record must be deleted')
+
+    // Verify all child tables cascade deleted
+    const peCount = db.ProblemExample.filter((pe: any) => pe.problemId === normProblemId).length
+    assert.strictEqual(peCount, 0, 'ProblemExample records must be cascade deleted')
+
+    const ptcCount = db.ProblemTestCase.filter((tc: any) => tc.problemId === normProblemId).length
+    assert.strictEqual(ptcCount, 0, 'ProblemTestCase records must be cascade deleted')
+
+    const tcCount = db.TestCase.filter((tc: any) => tc.problemId === normProblemId).length
+    assert.strictEqual(tcCount, 0, 'Legacy TestCase records must be cascade deleted')
+
+    const pscCount = db.ProblemStarterCode.filter((sc: any) => sc.problemId === normProblemId).length
+    assert.strictEqual(pscCount, 0, 'ProblemStarterCode records must be cascade deleted')
+
+    const revCount = db.ProblemRevision.filter((r: any) => r.problemId === normProblemId).length
+    assert.strictEqual(revCount, 0, 'ProblemRevision records must be cascade deleted')
+  })
+
 
   console.log('\n======================================================================')
   console.log(`RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)

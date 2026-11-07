@@ -690,21 +690,36 @@ export async function fetchAuditLogs(params?: {
 // ─── 8. Questions Management ──────────────────────────────────────────────────
 
 export interface AdminQuestionExample {
+  id?: string
+  problemId?: string
   label?: string
   input: string
   output: string
   explanation?: string
+  displayOrder?: number
 }
 
 export interface AdminTestCase {
   id?: string
   problemId?: string
   testIndex?: number
+  displayOrder?: number
   input: string
   expectedOutput: string
   isHidden?: boolean
+  points?: number
   description?: string
   explanation?: string
+}
+
+export interface AdminQuestionRevision {
+  id: string
+  problemId: string
+  version: number
+  snapshot: Record<string, unknown>
+  changedBy?: string | null
+  changeSummary?: string | null
+  createdAt: string
 }
 
 export interface AdminQuestion {
@@ -717,12 +732,16 @@ export interface AdminQuestion {
   beltId?: string | null
   beltOrder?: number
   learningUnitId?: string | null
-  status?: 'PUBLISHED' | 'DRAFT'
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
   description: string
   inputFormat?: string
   outputFormat?: string
   constraints?: string
   explanation?: string
+  timeLimitMs?: number
+  memoryLimitMb?: number
+  createdBy?: string | null
+  updatedBy?: string | null
   examples: AdminQuestionExample[]
   starterCodes?: Record<string, string>
   isActive: boolean
@@ -734,6 +753,7 @@ export interface AdminQuestion {
     hidden: number
   }
   testCases?: AdminTestCase[]
+  revisions?: AdminQuestionRevision[]
 }
 
 export interface AdminQuestionInput {
@@ -745,16 +765,24 @@ export interface AdminQuestionInput {
   inputFormat?: string
   outputFormat?: string
   constraints?: string
+  timeLimitMs?: number
+  memoryLimitMb?: number
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
   examples?: AdminQuestionExample[]
   starterCodes?: Record<string, string>
   learningUnitId?: string | null
   beltId?: string | null
   isActive?: boolean
+  changeSummary?: string
   testCases: Array<{
+    id?: string
     input: string
     expectedOutput: string
     isHidden?: boolean
+    points?: number
+    displayOrder?: number
     description?: string
+    explanation?: string
   }>
 }
 
@@ -947,6 +975,35 @@ export async function runAdminQuestionTests(payload: {
     '/api/super-admin/questions',
     payload,
     'run_question_tests',
+    'POST'
+  )
+}
+
+export async function fetchAdminQuestionRevisions(idOrSlug: string): Promise<{
+  success: boolean
+  data?: AdminQuestionRevision[]
+  error?: string
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/questions',
+    { id: idOrSlug },
+    'list_question_revisions',
+    'POST'
+  )
+}
+
+export async function restoreAdminQuestionRevision(
+  problemId: string,
+  revisionId: string
+): Promise<{
+  success: boolean
+  data?: AdminQuestion
+  error?: string
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/questions',
+    { problemId, revisionId },
+    'restore_question_revision',
     'POST'
   )
 }

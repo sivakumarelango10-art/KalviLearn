@@ -114784,6 +114784,12 @@ async function handler(req, res) {
     if (action === "delete_question" || method === "DELETE" && (sub === "questions" || url.includes("/questions"))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res);
     }
+    if (action === "list_question_revisions") {
+      return await handleListQuestionRevisions(body, req, res);
+    }
+    if (action === "restore_question_revision") {
+      return await handleRestoreQuestionRevision(body, auth.user.id, clientIp, res);
+    }
     if (action === "list_curriculum_modules" || method === "GET" && (sub === "curriculum" || url.includes("/curriculum"))) {
       return await handleListCurriculumModules(body, req, res);
     }
@@ -116517,7 +116523,7 @@ async function handleListQuestions(body, req, res) {
   const requestedLimit = Number.parseInt(String(body.limit ?? urlObj.searchParams.get("limit") ?? "50"), 10);
   const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
   const limit = Number.isFinite(requestedLimit) ? Math.min(100, Math.max(1, requestedLimit)) : 50;
-  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, examples, starterCodes, createdAt, updatedAt").order("createdAt", { ascending: false });
+  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, timeLimitMs, memoryLimitMb, examples, starterCodes, createdAt, updatedAt").order("createdAt", { ascending: false });
   if (problemsError) throw problemsError;
   const problems = allProblems || [];
   const statsSubset = learningUnitId ? problems.filter((p2) => p2.learningUnitId === learningUnitId) : problems;
@@ -116526,7 +116532,8 @@ async function handleListQuestions(body, req, res) {
   const difficultyCounts = { Easy: 0, Medium: 0, Hard: 0 };
   const topicCounts = {};
   for (const problem of statsSubset) {
-    if (problem.isActive) totalPublished++;
+    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.isActive;
+    if (isPub) totalPublished++;
     else totalDraft++;
     const diff = problem.difficulty || "Easy";
     if (diff in difficultyCounts) difficultyCounts[diff]++;
@@ -116539,8 +116546,9 @@ async function handleListQuestions(body, req, res) {
     if (!learningUnitId && onlyBelts && problem.learningUnitId) return false;
     if (difficulty !== "ALL" && problem.difficulty !== difficulty) return false;
     if (topic !== "ALL" && (problem.subdivision || "General") !== topic) return false;
-    if (status === "PUBLISHED" && !problem.isActive) return false;
-    if (status === "DRAFT" && problem.isActive) return false;
+    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.isActive;
+    if (status === "PUBLISHED" && !isPub) return false;
+    if (status === "DRAFT" && isPub) return false;
     if (belt !== "ALL" && !learningUnitId) {
       if (problem.learningUnitId) return false;
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ""), 10);
@@ -116564,20 +116572,27 @@ async function handleListQuestions(body, req, res) {
   const offset = (currentPage - 1) * limit;
   const pageProblems = filtered.slice(offset, offset + limit);
   const pageProblemIds = pageProblems.map((problem) => problem.id);
-  const testCasesRes = pageProblemIds.length > 0 ? await supabaseServer.from("TestCase").select("id, problemId, testIndex, isHidden").in("problemId", pageProblemIds) : { data: [], error: null };
-  if (testCasesRes.error) throw testCasesRes.error;
   const testCaseCounts = /* @__PURE__ */ new Map();
-  for (const testCase of testCasesRes.data || []) {
-    const counts = testCaseCounts.get(testCase.problemId) || { total: 0, visible: 0, hidden: 0 };
-    counts.total++;
-    if (testCase.isHidden) counts.hidden++;
-    else counts.visible++;
-    testCaseCounts.set(testCase.problemId, counts);
+  if (pageProblemIds.length > 0) {
+    let testCasesRes = await supabaseServer.from("ProblemTestCase").select("id, problemId, displayOrder, isHidden").in("problemId", pageProblemIds);
+    if (testCasesRes.error || !testCasesRes.data || testCasesRes.data.length === 0) {
+      testCasesRes = await supabaseServer.from("TestCase").select("id, problemId, testIndex, isHidden").in("problemId", pageProblemIds);
+    }
+    if (testCasesRes.data) {
+      for (const tc of testCasesRes.data) {
+        const counts = testCaseCounts.get(tc.problemId) || { total: 0, visible: 0, hidden: 0 };
+        counts.total++;
+        if (tc.isHidden) counts.hidden++;
+        else counts.visible++;
+        testCaseCounts.set(tc.problemId, counts);
+      }
+    }
   }
   const enrichedQuestions = pageProblems.map((problem) => {
     const testCaseCount = testCaseCounts.get(problem.id) || { total: 0, visible: 0, hidden: 0 };
     const examples = Array.isArray(problem.examples) ? problem.examples : [];
-    const inferredBeltOrder = problem.beltOrder || (problem.slug && problem.slug.match(/^belt-(\d+)-/) ? Number(problem.slug.match(/^belt-(\d+)-/)[1]) : 1);
+    const inferredBeltOrder = problem.beltOrder || (problem.slug && problem.slug.match(/^belt-(d+)-/) ? Number(problem.slug.match(/^belt-(d+)-/)[1]) : 1);
+    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.isActive;
     return {
       id: problem.id,
       slug: problem.slug,
@@ -116588,9 +116603,10 @@ async function handleListQuestions(body, req, res) {
       learningUnitId: problem.learningUnitId || null,
       beltId: problem.learningUnitId ? problem.beltId || null : problem.beltId || "mock-belt-" + inferredBeltOrder,
       beltOrder: inferredBeltOrder,
-      status: problem.isActive ? "PUBLISHED" : "DRAFT",
+      status: isPub ? "PUBLISHED" : "DRAFT",
       isActive: Boolean(problem.isActive),
-      // Full content and starter code are loaded on demand by the edit/preview actions.
+      timeLimitMs: problem.timeLimitMs || 2e3,
+      memoryLimitMb: problem.memoryLimitMb || 256,
       description: "",
       inputFormat: "",
       outputFormat: "",
@@ -116653,10 +116669,73 @@ async function handleGetQuestion(body, req, res) {
       message: `Question with identifier "${idOrSlug}" was not found.`
     });
   }
-  const { data: testCases, error: tcErr } = await supabaseServer.from("TestCase").select("*").eq("problemId", question.id).order("testIndex", { ascending: true });
-  if (tcErr) throw tcErr;
-  const examples = Array.isArray(question.examples) ? question.examples : [];
-  const cases = testCases || [];
+  let examples = [];
+  const { data: peRows } = await supabaseServer.from("ProblemExample").select("*").eq("problemId", question.id).order("displayOrder", { ascending: true });
+  if (peRows && peRows.length > 0) {
+    examples = peRows.map((pe2, idx) => ({
+      id: pe2.id,
+      problemId: pe2.problemId,
+      label: `Example ${pe2.displayOrder || idx + 1}`,
+      input: pe2.input || "",
+      output: pe2.expectedOutput || "",
+      expectedOutput: pe2.expectedOutput || "",
+      explanation: pe2.explanation || "",
+      displayOrder: pe2.displayOrder || idx + 1
+    }));
+  } else if (Array.isArray(question.examples)) {
+    examples = question.examples.map((ex, idx) => ({
+      id: ex.id || `ex-${idx + 1}`,
+      label: ex.label || `Example ${idx + 1}`,
+      input: ex.input || "",
+      output: ex.output || ex.expectedOutput || "",
+      expectedOutput: ex.output || ex.expectedOutput || "",
+      explanation: ex.explanation || "",
+      displayOrder: ex.displayOrder || idx + 1
+    }));
+  }
+  let testCases = [];
+  const { data: ptcRows } = await supabaseServer.from("ProblemTestCase").select("*").eq("problemId", question.id).order("displayOrder", { ascending: true });
+  if (ptcRows && ptcRows.length > 0) {
+    testCases = ptcRows.map((tc, idx) => ({
+      id: tc.id,
+      problemId: tc.problemId,
+      testIndex: tc.displayOrder || idx + 1,
+      displayOrder: tc.displayOrder || idx + 1,
+      input: tc.input || "",
+      expectedOutput: tc.expectedOutput || "",
+      isHidden: Boolean(tc.isHidden),
+      points: tc.points ?? 10,
+      description: tc.explanation || "",
+      explanation: tc.explanation || ""
+    }));
+  } else {
+    const { data: legacyCases } = await supabaseServer.from("TestCase").select("*").eq("problemId", question.id).order("testIndex", { ascending: true });
+    testCases = (legacyCases || []).map((tc, idx) => ({
+      id: tc.id,
+      problemId: tc.problemId,
+      testIndex: tc.testIndex || idx + 1,
+      displayOrder: tc.testIndex || idx + 1,
+      input: tc.input || "",
+      expectedOutput: tc.expectedOutput || "",
+      isHidden: Boolean(tc.isHidden),
+      points: 10,
+      description: tc.explanation || "",
+      explanation: tc.explanation || ""
+    }));
+  }
+  let starterCodes = {};
+  const { data: pscRows } = await supabaseServer.from("ProblemStarterCode").select("*").eq("problemId", question.id);
+  if (pscRows && pscRows.length > 0) {
+    for (const sc of pscRows) {
+      if (sc.language) starterCodes[sc.language] = sc.code || "";
+    }
+  } else if (question.starterCodes && typeof question.starterCodes === "object") {
+    starterCodes = { ...question.starterCodes };
+  }
+  const { data: revisions } = await supabaseServer.from("ProblemRevision").select("id, version, changeSummary, changedBy, createdAt").eq("problemId", question.id).order("version", { ascending: false });
+  const visibleCount = testCases.filter((tc) => !tc.isHidden).length;
+  const hiddenCount = testCases.filter((tc) => tc.isHidden).length;
+  const isPub = question.status === "PUBLISHED" || question.status !== "DRAFT" && question.isActive;
   return sendJson(res, 200, {
     success: true,
     message: "Question details retrieved.",
@@ -116669,17 +116748,26 @@ async function handleGetQuestion(body, req, res) {
       subdivision: question.subdivision,
       learningUnitId: question.learningUnitId || null,
       beltId: question.beltId || null,
-      status: question.isActive ? "PUBLISHED" : "DRAFT",
+      status: isPub ? "PUBLISHED" : "DRAFT",
       isActive: Boolean(question.isActive),
-      description: question.description,
-      inputFormat: question.inputFormat,
-      outputFormat: question.outputFormat,
+      timeLimitMs: question.timeLimitMs || 2e3,
+      memoryLimitMb: question.memoryLimitMb || 256,
+      createdBy: question.createdBy || null,
+      updatedBy: question.updatedBy || null,
+      description: question.description || "",
+      inputFormat: question.inputFormat || "",
+      outputFormat: question.outputFormat || "",
       constraints: question.explanation || "",
       examples,
-      testCases: cases,
-      starterCodes: question.starterCodes || {},
+      testCases,
+      starterCodes,
       exampleCount: examples.length,
-      testCaseCount: cases.length,
+      testCaseCount: {
+        total: testCases.length,
+        visible: visibleCount,
+        hidden: hiddenCount
+      },
+      revisions: revisions || [],
       createdAt: question.createdAt || question.created_at,
       updatedAt: question.updatedAt || question.updated_at
     }
@@ -116703,17 +116791,57 @@ async function handleGetQuestionPreview(body, req, res) {
       message: `Question with identifier "${idOrSlug}" was not found.`
     });
   }
-  const { data: allCases, error: tcErr } = await supabaseServer.from("TestCase").select("testIndex, input, expectedOutput, explanation, isHidden").eq("problemId", question.id).order("testIndex", { ascending: true });
-  if (tcErr) throw tcErr;
-  const cases = allCases || [];
-  const visibleCases = cases.filter((tc) => !tc.isHidden).map((tc) => ({
-    testIndex: tc.testIndex,
-    input: tc.input,
-    expectedOutput: tc.expectedOutput,
-    explanation: tc.explanation,
-    isHidden: false
-  }));
-  const hiddenCount = cases.filter((tc) => tc.isHidden).length;
+  let visibleCases = [];
+  let totalCount = 0;
+  let hiddenCount = 0;
+  const { data: ptcCases } = await supabaseServer.from("ProblemTestCase").select("id, displayOrder, input, expectedOutput, explanation, isHidden, points").eq("problemId", question.id).order("displayOrder", { ascending: true });
+  if (ptcCases && ptcCases.length > 0) {
+    totalCount = ptcCases.length;
+    hiddenCount = ptcCases.filter((tc) => tc.isHidden).length;
+    visibleCases = ptcCases.filter((tc) => !tc.isHidden).map((tc, idx) => ({
+      testIndex: tc.displayOrder || idx + 1,
+      displayOrder: tc.displayOrder || idx + 1,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      explanation: tc.explanation,
+      isHidden: false,
+      points: tc.points ?? 10
+    }));
+  } else {
+    const { data: legacyCases } = await supabaseServer.from("TestCase").select("testIndex, input, expectedOutput, explanation, isHidden").eq("problemId", question.id).order("testIndex", { ascending: true });
+    const lCases = legacyCases || [];
+    totalCount = lCases.length;
+    hiddenCount = lCases.filter((tc) => tc.isHidden).length;
+    visibleCases = lCases.filter((tc) => !tc.isHidden).map((tc) => ({
+      testIndex: tc.testIndex,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      explanation: tc.explanation,
+      isHidden: false
+    }));
+  }
+  let examples = [];
+  const { data: peList } = await supabaseServer.from("ProblemExample").select("*").eq("problemId", question.id).order("displayOrder", { ascending: true });
+  if (peList && peList.length > 0) {
+    examples = peList.map((pe2, idx) => ({
+      label: `Example ${pe2.displayOrder || idx + 1}`,
+      input: pe2.input,
+      output: pe2.expectedOutput,
+      explanation: pe2.explanation
+    }));
+  } else if (Array.isArray(question.examples)) {
+    examples = question.examples;
+  }
+  let starterCodes = {};
+  const { data: pscList } = await supabaseServer.from("ProblemStarterCode").select("language, code").eq("problemId", question.id);
+  if (pscList && pscList.length > 0) {
+    for (const sc of pscList) {
+      if (sc.language) starterCodes[sc.language] = sc.code;
+    }
+  } else if (question.starterCodes) {
+    starterCodes = question.starterCodes;
+  }
+  const isPub = question.status === "PUBLISHED" || question.status !== "DRAFT" && question.isActive;
   return sendJson(res, 200, {
     success: true,
     message: "Question preview generated (hidden test cases protected).",
@@ -116726,22 +116854,24 @@ async function handleGetQuestionPreview(body, req, res) {
       subdivision: question.subdivision,
       learningUnitId: question.learningUnitId || null,
       beltId: question.beltId || null,
-      status: question.isActive ? "PUBLISHED" : "DRAFT",
+      status: isPub ? "PUBLISHED" : "DRAFT",
+      timeLimitMs: question.timeLimitMs || 2e3,
+      memoryLimitMb: question.memoryLimitMb || 256,
       description: question.description,
       inputFormat: question.inputFormat,
       outputFormat: question.outputFormat,
       constraints: question.explanation || "",
-      examples: Array.isArray(question.examples) ? question.examples : [],
-      starterCodes: question.starterCodes || {},
+      examples,
+      starterCodes,
       testCases: visibleCases,
       visibleTestCases: visibleCases,
       testCaseCount: {
-        total: cases.length,
+        total: totalCount,
         visible: visibleCases.length,
         hidden: hiddenCount
       },
       testCaseMeta: {
-        totalCount: cases.length,
+        totalCount,
         visibleCount: visibleCases.length,
         hiddenCount
       }
@@ -116759,6 +116889,8 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
   const constraints = typeof body.constraints === "string" ? body.constraints.trim() : "";
   const status = typeof body.status === "string" ? body.status.trim().toUpperCase() : "PUBLISHED";
   const isActive = status !== "DRAFT";
+  const timeLimitMs2 = typeof body.timeLimitMs === "number" && body.timeLimitMs > 0 ? body.timeLimitMs : 2e3;
+  const memoryLimitMb = typeof body.memoryLimitMb === "number" && body.memoryLimitMb > 0 ? body.memoryLimitMb : 256;
   const examples = Array.isArray(body.examples) ? body.examples : [];
   const testCases = Array.isArray(body.testCases) ? body.testCases : [];
   if (!title || title.length < 3) {
@@ -116842,7 +116974,13 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
     beltId = `mock-belt-${rawBelt}`;
   }
   const order = typeof body.order === "number" && !isNaN(body.order) ? body.order : 1;
-  const { data: createdProb, error: probErr } = await supabaseServer.from("Problem").insert({
+  const legacyExamples = examples.map((ex, idx) => ({
+    label: ex.label || `Example ${idx + 1}`,
+    input: ex.input || "",
+    output: ex.output || ex.expectedOutput || "",
+    explanation: ex.explanation || ""
+  }));
+  const problemRecord = {
     id: problemId,
     beltId,
     learningUnitId,
@@ -116855,28 +116993,84 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
     inputFormat,
     outputFormat,
     explanation: constraints,
-    examples,
-    starterCodes,
+    timeLimitMs: timeLimitMs2,
+    memoryLimitMb,
+    status: isActive ? "PUBLISHED" : "DRAFT",
     isActive,
+    examples: legacyExamples,
+    starterCodes,
+    createdBy: adminId,
+    updatedBy: adminId,
     createdAt: (/* @__PURE__ */ new Date()).toISOString(),
     updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  }).select().single();
+  };
+  const { data: createdProb, error: probErr } = await supabaseServer.from("Problem").insert(problemRecord).select().single();
   if (probErr) throw probErr;
-  const tcRows = testCases.map((tc, idx) => ({
+  const peRows = examples.map((ex, idx) => ({
+    id: `pe-${problemId}-${idx + 1}`,
+    problemId,
+    input: ex.input || "",
+    expectedOutput: ex.output || ex.expectedOutput || "",
+    explanation: ex.explanation || null,
+    displayOrder: idx + 1,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  if (peRows.length > 0) {
+    await supabaseServer.from("ProblemExample").insert(peRows);
+  }
+  const ptcRows = testCases.map((tc, idx) => ({
+    id: `ptc-${problemId}-${idx + 1}`,
+    problemId,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    isHidden: Boolean(tc.isHidden),
+    displayOrder: tc.displayOrder || tc.testIndex || idx + 1,
+    points: typeof tc.points === "number" ? tc.points : 10,
+    explanation: tc.explanation || tc.description || null,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  await supabaseServer.from("ProblemTestCase").insert(ptcRows);
+  const legacyTcRows = testCases.map((tc, idx) => ({
     id: `tc-${problemId}-${idx + 1}`,
     problemId,
-    testIndex: tc.testIndex || idx + 1,
+    testIndex: tc.testIndex || tc.displayOrder || idx + 1,
     input: tc.input,
     expectedOutput: tc.expectedOutput,
     explanation: tc.explanation || tc.description || null,
     isHidden: Boolean(tc.isHidden)
   }));
-  const { error: tcErr } = await supabaseServer.from("TestCase").insert(tcRows);
-  if (tcErr) throw tcErr;
+  await supabaseServer.from("TestCase").insert(legacyTcRows);
+  const pscRows = Object.entries(starterCodes).map(([lang, code]) => ({
+    id: `psc-${problemId}-${lang}`,
+    problemId,
+    language: lang,
+    code: String(code),
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  if (pscRows.length > 0) {
+    await supabaseServer.from("ProblemStarterCode").insert(pscRows);
+  }
+  await supabaseServer.from("ProblemRevision").insert({
+    id: `rev-${problemId}-1`,
+    problemId,
+    version: 1,
+    snapshot: {
+      problem: problemRecord,
+      examples: peRows,
+      testCases: ptcRows,
+      starterCodes
+    },
+    changedBy: adminId,
+    changeSummary: "Initial question creation",
+    createdAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
   registerCustomSuite(slug, {
     title,
-    testCases: tcRows.map((r) => ({
-      testIndex: r.testIndex,
+    testCases: ptcRows.map((r) => ({
+      testIndex: r.displayOrder,
       input: r.input,
       expectedOutput: r.expectedOutput,
       isHidden: r.isHidden
@@ -116889,21 +117083,22 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
     "QUESTION",
     problemId,
     `${title} (${slug})`,
-    { slug, difficulty, topic, status, testCaseCount: tcRows.length },
+    { slug, difficulty, topic, status: isActive ? "PUBLISHED" : "DRAFT", testCaseCount: ptcRows.length },
     "SUCCESS",
     null,
     clientIp
   );
-  const visibleCount = tcRows.filter((c) => !c.isHidden).length;
-  const hiddenCount = tcRows.filter((c) => c.isHidden).length;
+  const visibleCount = ptcRows.filter((c) => !c.isHidden).length;
+  const hiddenCount = ptcRows.filter((c) => c.isHidden).length;
   return sendJson(res, 201, {
     success: true,
     message: `Question "${title}" created successfully.`,
     data: {
       ...createdProb,
-      testCases: tcRows,
+      examples: peRows,
+      testCases: ptcRows,
       testCaseCount: {
-        total: tcRows.length,
+        total: ptcRows.length,
         visible: visibleCount,
         hidden: hiddenCount
       },
@@ -116931,6 +117126,7 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
     });
   }
   const updates = {
+    updatedBy: adminId,
     updatedAt: (/* @__PURE__ */ new Date()).toISOString()
   };
   if (typeof body.title === "string" && body.title.trim()) updates.title = body.title.trim();
@@ -116940,12 +117136,14 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
   if (typeof body.inputFormat === "string") updates.inputFormat = body.inputFormat.trim();
   if (typeof body.outputFormat === "string") updates.outputFormat = body.outputFormat.trim();
   if (typeof body.constraints === "string") updates.explanation = body.constraints.trim();
-  if (Array.isArray(body.examples)) updates.examples = body.examples;
+  if (typeof body.timeLimitMs === "number" && body.timeLimitMs > 0) updates.timeLimitMs = body.timeLimitMs;
+  if (typeof body.memoryLimitMb === "number" && body.memoryLimitMb > 0) updates.memoryLimitMb = body.memoryLimitMb;
   if (typeof body.status === "string") {
-    updates.isActive = body.status.trim().toUpperCase() === "PUBLISHED";
-  }
-  if (typeof body.isActive === "boolean") {
+    updates.status = body.status.trim().toUpperCase();
+    updates.isActive = updates.status === "PUBLISHED";
+  } else if (typeof body.isActive === "boolean") {
     updates.isActive = body.isActive;
+    updates.status = body.isActive ? "PUBLISHED" : "DRAFT";
   }
   if (body.learningUnitId !== void 0) {
     if (typeof body.learningUnitId === "string" && body.learningUnitId.trim()) {
@@ -116977,31 +117175,105 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
   if (typeof body.order === "number" && !isNaN(body.order)) {
     updates.order = body.order;
   }
-  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update(updates).eq("id", existing.id).select().single();
-  if (updErr) throw updErr;
+  let currentExamples = existing.examples || [];
+  if (Array.isArray(body.examples)) {
+    currentExamples = body.examples.map((ex, idx) => ({
+      label: ex.label || `Example ${idx + 1}`,
+      input: ex.input || "",
+      output: ex.output || ex.expectedOutput || "",
+      explanation: ex.explanation || ""
+    }));
+    updates.examples = currentExamples;
+    await supabaseServer.from("ProblemExample").delete().eq("problemId", existing.id);
+    const peRows = body.examples.map((ex, idx) => ({
+      id: `pe-${existing.id}-${idx + 1}`,
+      problemId: existing.id,
+      input: ex.input || "",
+      expectedOutput: ex.output || ex.expectedOutput || "",
+      explanation: ex.explanation || null,
+      displayOrder: idx + 1,
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    }));
+    if (peRows.length > 0) {
+      await supabaseServer.from("ProblemExample").insert(peRows);
+    }
+  }
+  let currentTestCases = [];
   if (Array.isArray(body.testCases) && body.testCases.length > 0) {
+    await supabaseServer.from("ProblemTestCase").delete().eq("problemId", existing.id);
     await supabaseServer.from("TestCase").delete().eq("problemId", existing.id);
-    const tcRows = body.testCases.map((tc, idx) => ({
+    const ptcRows = body.testCases.map((tc, idx) => ({
+      id: `ptc-${existing.id}-${idx + 1}`,
+      problemId: existing.id,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      isHidden: Boolean(tc.isHidden),
+      displayOrder: tc.displayOrder || tc.testIndex || idx + 1,
+      points: typeof tc.points === "number" ? tc.points : 10,
+      explanation: tc.explanation || tc.description || null,
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    }));
+    await supabaseServer.from("ProblemTestCase").insert(ptcRows);
+    const legacyRows = body.testCases.map((tc, idx) => ({
       id: `tc-${existing.id}-${idx + 1}`,
       problemId: existing.id,
-      testIndex: tc.testIndex || idx + 1,
+      testIndex: tc.testIndex || tc.displayOrder || idx + 1,
       input: tc.input,
       expectedOutput: tc.expectedOutput,
       explanation: tc.explanation || tc.description || null,
       isHidden: Boolean(tc.isHidden)
     }));
-    const { error: insErr } = await supabaseServer.from("TestCase").insert(tcRows);
-    if (insErr) throw insErr;
+    await supabaseServer.from("TestCase").insert(legacyRows);
+    currentTestCases = ptcRows;
     registerCustomSuite(existing.slug, {
       title: updates.title || existing.title,
-      testCases: tcRows.map((r) => ({
-        testIndex: r.testIndex,
+      testCases: ptcRows.map((r) => ({
+        testIndex: r.displayOrder,
         input: r.input,
         expectedOutput: r.expectedOutput,
         isHidden: r.isHidden
       }))
     });
   }
+  let currentStarterCodes = existing.starterCodes || {};
+  if (body.starterCodes && typeof body.starterCodes === "object") {
+    currentStarterCodes = { ...body.starterCodes };
+    updates.starterCodes = currentStarterCodes;
+    await supabaseServer.from("ProblemStarterCode").delete().eq("problemId", existing.id);
+    const pscRows = Object.entries(body.starterCodes).map(([lang, code]) => ({
+      id: `psc-${existing.id}-${lang}`,
+      problemId: existing.id,
+      language: lang,
+      code: String(code),
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    }));
+    if (pscRows.length > 0) {
+      await supabaseServer.from("ProblemStarterCode").insert(pscRows);
+    }
+  }
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update(updates).eq("id", existing.id).select().single();
+  if (updErr) throw updErr;
+  const { data: revList } = await supabaseServer.from("ProblemRevision").select("version").eq("problemId", existing.id);
+  const maxVer = (revList || []).reduce((max, r) => Math.max(max, r.version || 0), 0);
+  const nextVer = maxVer + 1;
+  const changeSummary = typeof body.changeSummary === "string" && body.changeSummary.trim() ? body.changeSummary.trim() : "Updated question details";
+  await supabaseServer.from("ProblemRevision").insert({
+    id: `rev-${existing.id}-${nextVer}`,
+    problemId: existing.id,
+    version: nextVer,
+    snapshot: {
+      problem: updated,
+      examples: currentExamples,
+      testCases: currentTestCases,
+      starterCodes: currentStarterCodes
+    },
+    changedBy: adminId,
+    changeSummary,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
     adminId,
@@ -117009,22 +117281,30 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
     "QUESTION",
     existing.id,
     `${updates.title || existing.title} (${existing.slug})`,
-    updates,
+    { ...updates, revisionVersion: nextVer },
     "SUCCESS",
     null,
     clientIp
   );
-  const { data: currentCases } = await supabaseServer.from("TestCase").select("id, isHidden").eq("problemId", existing.id);
-  const cCases = currentCases || [];
-  const visibleCount = cCases.filter((c) => !c.isHidden).length;
-  const hiddenCount = cCases.filter((c) => c.isHidden).length;
+  let finalCases = currentTestCases;
+  if (finalCases.length === 0) {
+    const { data: dbCases } = await supabaseServer.from("ProblemTestCase").select("*").eq("problemId", existing.id);
+    finalCases = dbCases || [];
+    if (finalCases.length === 0) {
+      const { data: lCases } = await supabaseServer.from("TestCase").select("*").eq("problemId", existing.id);
+      finalCases = lCases || [];
+    }
+  }
+  const visibleCount = finalCases.filter((c) => !c.isHidden).length;
+  const hiddenCount = finalCases.filter((c) => c.isHidden).length;
   return sendJson(res, 200, {
     success: true,
     message: `Question "${updates.title || existing.title}" updated successfully.`,
     data: {
       ...updated,
+      status: updated.status || (updated.isActive ? "PUBLISHED" : "DRAFT"),
       testCaseCount: {
-        total: cCases.length,
+        total: finalCases.length,
         visible: visibleCount,
         hidden: hiddenCount
       }
@@ -117050,7 +117330,14 @@ async function handleDuplicateQuestion(body, adminId, clientIp, res) {
       message: `Question with identifier "${id}" was not found.`
     });
   }
-  const { data: originalCases } = await supabaseServer.from("TestCase").select("*").eq("problemId", original.id).order("testIndex", { ascending: true });
+  let originalCases = [];
+  const { data: ptcCases } = await supabaseServer.from("ProblemTestCase").select("*").eq("problemId", original.id).order("displayOrder", { ascending: true });
+  if (ptcCases && ptcCases.length > 0) {
+    originalCases = ptcCases;
+  } else {
+    const { data: tcCases } = await supabaseServer.from("TestCase").select("*").eq("problemId", original.id).order("testIndex", { ascending: true });
+    originalCases = tcCases || [];
+  }
   const baseSlug = `${original.slug}-copy`;
   let duplicateSlug = baseSlug;
   const isSlugTaken = (allMatching || []).some((p2) => p2.slug === duplicateSlug);
@@ -117059,7 +117346,7 @@ async function handleDuplicateQuestion(body, adminId, clientIp, res) {
   }
   const newProblemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
   const newTitle = `${original.title} (Copy)`;
-  const { data: cloned, error: cloneErr } = await supabaseServer.from("Problem").insert({
+  const clonedProbRecord = {
     id: newProblemId,
     beltId: original.beltId || null,
     learningUnitId: original.learningUnitId || null,
@@ -117072,35 +117359,95 @@ async function handleDuplicateQuestion(body, adminId, clientIp, res) {
     inputFormat: original.inputFormat,
     outputFormat: original.outputFormat,
     explanation: original.explanation,
+    timeLimitMs: original.timeLimitMs || 2e3,
+    memoryLimitMb: original.memoryLimitMb || 256,
     examples: original.examples,
     starterCodes: original.starterCodes,
+    status: "DRAFT",
     isActive: false,
-    // Draft by default
+    createdBy: adminId,
+    updatedBy: adminId,
     createdAt: (/* @__PURE__ */ new Date()).toISOString(),
     updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  }).select().single();
+  };
+  const { data: cloned, error: cloneErr } = await supabaseServer.from("Problem").insert(clonedProbRecord).select().single();
   if (cloneErr) throw cloneErr;
-  const clonedCases = (originalCases || []).map((tc, idx) => ({
-    id: `tc-${newProblemId}-${idx + 1}`,
+  const { data: origExamples } = await supabaseServer.from("ProblemExample").select("*").eq("problemId", original.id);
+  const examplesToClone = origExamples && origExamples.length > 0 ? origExamples : Array.isArray(original.examples) ? original.examples : [];
+  const clonedExampleRows = examplesToClone.map((ex, idx) => ({
+    id: `pe-${newProblemId}-${idx + 1}`,
     problemId: newProblemId,
-    testIndex: tc.testIndex || idx + 1,
+    input: ex.input || "",
+    expectedOutput: ex.expectedOutput || ex.output || "",
+    explanation: ex.explanation || null,
+    displayOrder: ex.displayOrder || idx + 1,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  if (clonedExampleRows.length > 0) {
+    await supabaseServer.from("ProblemExample").insert(clonedExampleRows);
+  }
+  const clonedPtc = originalCases.map((tc, idx) => ({
+    id: `ptc-${newProblemId}-${idx + 1}`,
+    problemId: newProblemId,
     input: tc.input,
     expectedOutput: tc.expectedOutput,
-    explanation: tc.explanation,
-    isHidden: tc.isHidden
+    isHidden: Boolean(tc.isHidden),
+    displayOrder: tc.displayOrder || tc.testIndex || idx + 1,
+    points: tc.points ?? 10,
+    explanation: tc.explanation || tc.description || null,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
   }));
-  if (clonedCases.length > 0) {
-    await supabaseServer.from("TestCase").insert(clonedCases);
+  const clonedLegacyTc = originalCases.map((tc, idx) => ({
+    id: `tc-${newProblemId}-${idx + 1}`,
+    problemId: newProblemId,
+    testIndex: tc.testIndex || tc.displayOrder || idx + 1,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    explanation: tc.explanation || tc.description || null,
+    isHidden: Boolean(tc.isHidden)
+  }));
+  if (clonedPtc.length > 0) {
+    await supabaseServer.from("ProblemTestCase").insert(clonedPtc);
+    await supabaseServer.from("TestCase").insert(clonedLegacyTc);
     registerCustomSuite(duplicateSlug, {
       title: newTitle,
-      testCases: clonedCases.map((r) => ({
-        testIndex: r.testIndex,
+      testCases: clonedPtc.map((r) => ({
+        testIndex: r.displayOrder,
         input: r.input,
         expectedOutput: r.expectedOutput,
         isHidden: r.isHidden
       }))
     });
   }
+  if (original.starterCodes && typeof original.starterCodes === "object") {
+    const pscRows = Object.entries(original.starterCodes).map(([lang, code]) => ({
+      id: `psc-${newProblemId}-${lang}`,
+      problemId: newProblemId,
+      language: lang,
+      code: String(code),
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    }));
+    if (pscRows.length > 0) {
+      await supabaseServer.from("ProblemStarterCode").insert(pscRows);
+    }
+  }
+  await supabaseServer.from("ProblemRevision").insert({
+    id: `rev-${newProblemId}-1`,
+    problemId: newProblemId,
+    version: 1,
+    snapshot: {
+      problem: clonedProbRecord,
+      examples: clonedExampleRows,
+      testCases: clonedPtc,
+      starterCodes: original.starterCodes
+    },
+    changedBy: adminId,
+    changeSummary: `Duplicated from ${original.title}`,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
     adminId,
@@ -117119,7 +117466,7 @@ async function handleDuplicateQuestion(body, adminId, clientIp, res) {
     data: {
       ...cloned,
       status: "DRAFT",
-      testCases: clonedCases
+      testCases: clonedPtc
     }
   });
 }
@@ -117133,7 +117480,7 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
       message: "Question ID or slug is required."
     });
   }
-  const { data: allMatching, error: findErr } = await supabaseServer.from("Problem").select("id, slug, title, isActive");
+  const { data: allMatching, error: findErr } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status");
   if (findErr) throw findErr;
   const existing = (allMatching || []).find((p2) => p2.id === id || p2.slug === id);
   if (!existing) {
@@ -117152,7 +117499,12 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
     nextIsActive = !existing.isActive;
   }
   const nextStatus = nextIsActive ? "PUBLISHED" : "DRAFT";
-  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({ isActive: nextIsActive, updatedAt: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", existing.id).select().single();
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
+    isActive: nextIsActive,
+    status: nextStatus,
+    updatedBy: adminId,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }).eq("id", existing.id).select().single();
   if (updErr) throw updErr;
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -117161,7 +117513,7 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
     "QUESTION",
     existing.id,
     `${existing.title} (${existing.slug})`,
-    { previousStatus: existing.isActive ? "PUBLISHED" : "DRAFT", newStatus: nextStatus },
+    { previousStatus: existing.status || (existing.isActive ? "PUBLISHED" : "DRAFT"), newStatus: nextStatus },
     "SUCCESS",
     null,
     clientIp
@@ -117196,6 +117548,10 @@ async function handleDeleteQuestion(body, req, adminId, clientIp, res) {
     });
   }
   await supabaseServer.from("TestCase").delete().eq("problemId", existing.id);
+  await supabaseServer.from("ProblemTestCase").delete().eq("problemId", existing.id);
+  await supabaseServer.from("ProblemExample").delete().eq("problemId", existing.id);
+  await supabaseServer.from("ProblemStarterCode").delete().eq("problemId", existing.id);
+  await supabaseServer.from("ProblemRevision").delete().eq("problemId", existing.id);
   const { error: delErr } = await supabaseServer.from("Problem").delete().eq("id", existing.id);
   if (delErr) throw delErr;
   unregisterCustomSuite(existing.slug);
@@ -117246,11 +117602,11 @@ async function handleRunQuestionTests(body, adminId, clientIp, res) {
   let rawCases = [];
   if (Array.isArray(body.testCases) && body.testCases.length > 0) {
     rawCases = body.testCases.map((tc, idx) => ({
-      testIndex: typeof tc.testIndex === "number" ? tc.testIndex : idx + 1,
+      testIndex: typeof tc.displayOrder === "number" ? tc.displayOrder : typeof tc.testIndex === "number" ? tc.testIndex : idx + 1,
       input: String(tc.input ?? ""),
       expectedOutput: String(tc.expectedOutput ?? ""),
       isHidden: Boolean(tc.isHidden),
-      description: typeof tc.description === "string" ? tc.description : ""
+      description: typeof tc.description === "string" ? tc.description : tc.explanation || ""
     }));
   } else {
     const idOrSlug = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : typeof body.idOrSlug === "string" && body.idOrSlug.trim() ? body.idOrSlug.trim() : "";
@@ -117271,16 +117627,29 @@ async function handleRunQuestionTests(body, adminId, clientIp, res) {
         message: `Question "${idOrSlug}" was not found.`
       });
     }
-    const { data: dbCases, error: tcErr } = await supabaseServer.from("TestCase").select("*").eq("problemId", found.id).order("testIndex", { ascending: true });
-    if (tcErr) throw tcErr;
-    rawCases = (dbCases || []).map((tc, idx) => ({
-      id: tc.id,
-      testIndex: tc.testIndex ?? idx + 1,
-      input: tc.input || "",
-      expectedOutput: tc.expectedOutput || "",
-      isHidden: Boolean(tc.isHidden),
-      description: tc.description || tc.explanation || ""
-    }));
+    let dbCases = null;
+    const { data: ptcCases } = await supabaseServer.from("ProblemTestCase").select("*").eq("problemId", found.id).order("displayOrder", { ascending: true });
+    if (ptcCases && ptcCases.length > 0) {
+      dbCases = ptcCases.map((tc, idx) => ({
+        id: tc.id,
+        testIndex: tc.displayOrder ?? idx + 1,
+        input: tc.input || "",
+        expectedOutput: tc.expectedOutput || "",
+        isHidden: Boolean(tc.isHidden),
+        description: tc.explanation || ""
+      }));
+    } else {
+      const { data: legacyCases } = await supabaseServer.from("TestCase").select("*").eq("problemId", found.id).order("testIndex", { ascending: true });
+      dbCases = (legacyCases || []).map((tc, idx) => ({
+        id: tc.id,
+        testIndex: tc.testIndex ?? idx + 1,
+        input: tc.input || "",
+        expectedOutput: tc.expectedOutput || "",
+        isHidden: Boolean(tc.isHidden),
+        description: tc.description || tc.explanation || ""
+      }));
+    }
+    rawCases = dbCases || [];
   }
   if (rawCases.length === 0) {
     return sendJson(res, 400, {
@@ -117407,6 +117776,185 @@ async function handleRunQuestionTests(body, adminId, clientIp, res) {
       totalCount: results.length,
       allPassed,
       results
+    }
+  });
+}
+async function handleListQuestionRevisions(body, req, res) {
+  const urlObj = new URL(req.url || "/", "http://localhost");
+  const idOrSlug = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.problemId === "string" && body.problemId.trim() ? body.problemId.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : (urlObj.searchParams.get("id") || urlObj.searchParams.get("problemId") || urlObj.searchParams.get("slug") || "").trim();
+  if (!idOrSlug) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Identifier",
+      message: "Question ID or slug is required to list revisions."
+    });
+  }
+  const question = await findQuestionByIdOrSlug(idOrSlug);
+  if (!question) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Question Not Found",
+      message: `Question "${idOrSlug}" was not found.`
+    });
+  }
+  const { data: revisions, error: revErr } = await supabaseServer.from("ProblemRevision").select("id, problemId, version, changeSummary, changedBy, createdAt, snapshot").eq("problemId", question.id).order("version", { ascending: false });
+  if (revErr) throw revErr;
+  return sendJson(res, 200, {
+    success: true,
+    message: `Found ${(revisions || []).length} revisions for "${question.title}".`,
+    data: revisions || []
+  });
+}
+async function handleRestoreQuestionRevision(body, adminId, clientIp, res) {
+  const problemId = typeof body.problemId === "string" && body.problemId.trim() ? body.problemId.trim() : typeof body.id === "string" && body.id.trim() ? body.id.trim() : "";
+  const revisionId = typeof body.revisionId === "string" && body.revisionId.trim() ? body.revisionId.trim() : typeof body.version === "number" ? String(body.version) : "";
+  if (!problemId || !revisionId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Parameters",
+      message: "Both problemId and revisionId (or version) are required to restore a revision."
+    });
+  }
+  const question = await findQuestionByIdOrSlug(problemId);
+  if (!question) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Question Not Found",
+      message: `Question "${problemId}" was not found.`
+    });
+  }
+  const { data: revList, error: revListErr } = await supabaseServer.from("ProblemRevision").select("*").eq("problemId", question.id);
+  if (revListErr) throw revListErr;
+  const targetRevision = (revList || []).find(
+    (r) => r.id === revisionId || String(r.version) === revisionId
+  );
+  if (!targetRevision) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Revision Not Found",
+      message: `Revision "${revisionId}" does not exist for question "${question.title}".`
+    });
+  }
+  const snapshot = targetRevision.snapshot || {};
+  const snapProb = snapshot.problem || {};
+  const snapExamples = Array.isArray(snapshot.examples) ? snapshot.examples : [];
+  const snapCases = Array.isArray(snapshot.testCases) ? snapshot.testCases : [];
+  const snapStarterCodes = snapshot.starterCodes || {};
+  const restoredUpdates = {
+    title: snapProb.title || question.title,
+    difficulty: snapProb.difficulty || question.difficulty,
+    subdivision: snapProb.subdivision || question.subdivision,
+    description: snapProb.description || question.description,
+    inputFormat: snapProb.inputFormat || question.inputFormat,
+    outputFormat: snapProb.outputFormat || question.outputFormat,
+    explanation: snapProb.explanation || question.explanation,
+    timeLimitMs: snapProb.timeLimitMs || question.timeLimitMs || 2e3,
+    memoryLimitMb: snapProb.memoryLimitMb || question.memoryLimitMb || 256,
+    examples: snapProb.examples || question.examples,
+    starterCodes: snapStarterCodes,
+    updatedBy: adminId,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  const { data: updatedProb, error: probUpdErr } = await supabaseServer.from("Problem").update(restoredUpdates).eq("id", question.id).select().single();
+  if (probUpdErr) throw probUpdErr;
+  await supabaseServer.from("ProblemExample").delete().eq("problemId", question.id);
+  const peRows = snapExamples.map((ex, idx) => ({
+    id: `pe-${question.id}-${idx + 1}`,
+    problemId: question.id,
+    input: ex.input || "",
+    expectedOutput: ex.expectedOutput || ex.output || "",
+    explanation: ex.explanation || null,
+    displayOrder: ex.displayOrder || idx + 1,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  if (peRows.length > 0) {
+    await supabaseServer.from("ProblemExample").insert(peRows);
+  }
+  await supabaseServer.from("ProblemTestCase").delete().eq("problemId", question.id);
+  await supabaseServer.from("TestCase").delete().eq("problemId", question.id);
+  const ptcRows = snapCases.map((tc, idx) => ({
+    id: `ptc-${question.id}-${idx + 1}`,
+    problemId: question.id,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    isHidden: Boolean(tc.isHidden),
+    displayOrder: tc.displayOrder || tc.testIndex || idx + 1,
+    points: tc.points ?? 10,
+    explanation: tc.explanation || tc.description || null,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  await supabaseServer.from("ProblemTestCase").insert(ptcRows);
+  const legacyTcRows = snapCases.map((tc, idx) => ({
+    id: `tc-${question.id}-${idx + 1}`,
+    problemId: question.id,
+    testIndex: tc.testIndex || tc.displayOrder || idx + 1,
+    input: tc.input,
+    expectedOutput: tc.expectedOutput,
+    explanation: tc.explanation || tc.description || null,
+    isHidden: Boolean(tc.isHidden)
+  }));
+  await supabaseServer.from("TestCase").insert(legacyTcRows);
+  registerCustomSuite(question.slug, {
+    title: restoredUpdates.title,
+    testCases: ptcRows.map((r) => ({
+      testIndex: r.displayOrder,
+      input: r.input,
+      expectedOutput: r.expectedOutput,
+      isHidden: r.isHidden
+    }))
+  });
+  await supabaseServer.from("ProblemStarterCode").delete().eq("problemId", question.id);
+  const pscRows = Object.entries(snapStarterCodes).map(([lang, code]) => ({
+    id: `psc-${question.id}-${lang}`,
+    problemId: question.id,
+    language: lang,
+    code: String(code),
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  }));
+  if (pscRows.length > 0) {
+    await supabaseServer.from("ProblemStarterCode").insert(pscRows);
+  }
+  const maxVer = (revList || []).reduce((max, r) => Math.max(max, r.version || 0), 0);
+  const nextVer = maxVer + 1;
+  await supabaseServer.from("ProblemRevision").insert({
+    id: `rev-${question.id}-${nextVer}`,
+    problemId: question.id,
+    version: nextVer,
+    snapshot: {
+      problem: updatedProb,
+      examples: peRows,
+      testCases: ptcRows,
+      starterCodes: snapStarterCodes
+    },
+    changedBy: adminId,
+    changeSummary: `Restored from revision v${targetRevision.version}`,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    "RESTORE_QUESTION_REVISION",
+    "QUESTION",
+    question.id,
+    `${question.title} restored to v${targetRevision.version}`,
+    { restoredFromVersion: targetRevision.version, newVersion: nextVer },
+    "SUCCESS",
+    null,
+    clientIp
+  );
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${question.title}" successfully restored from revision v${targetRevision.version}.`,
+    data: {
+      ...updatedProb,
+      examples: peRows,
+      testCases: ptcRows,
+      starterCodes: snapStarterCodes,
+      restoredFromVersion: targetRevision.version,
+      currentVersion: nextVer
     }
   });
 }

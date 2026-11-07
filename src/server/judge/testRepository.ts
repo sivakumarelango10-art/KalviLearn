@@ -224,21 +224,42 @@ export async function resolveQuestionAsync(
     }
 
     if (problem) {
-      const { data: testCases, error: tcErr } = await supabaseServer
-        .from('TestCase')
-        .select('testIndex, input, expectedOutput, isHidden')
+      // Try normalized ProblemTestCase first, falling back to legacy TestCase
+      let testCases: any[] | null = null
+      const { data: ptcCases, error: ptcErr } = await supabaseServer
+        .from('ProblemTestCase')
+        .select('displayOrder, input, expectedOutput, isHidden')
         .eq('problemId', problem.id)
-        .order('testIndex', { ascending: true })
+        .order('displayOrder', { ascending: true })
 
-      if (!tcErr && testCases && testCases.length > 0) {
-        const rawSuite: RawSuite = {
-          title: problem.title,
-          testCases: testCases.map((tc: any, i: number) => ({
+      if (!ptcErr && ptcCases && ptcCases.length > 0) {
+        testCases = ptcCases.map((tc: any, i: number) => ({
+          testIndex: tc.displayOrder ?? i + 1,
+          input: tc.input,
+          expectedOutput: tc.expectedOutput,
+          isHidden: Boolean(tc.isHidden),
+        }))
+      } else {
+        const { data: legacyCases, error: tcErr } = await supabaseServer
+          .from('TestCase')
+          .select('testIndex, input, expectedOutput, isHidden')
+          .eq('problemId', problem.id)
+          .order('testIndex', { ascending: true })
+
+        if (!tcErr && legacyCases && legacyCases.length > 0) {
+          testCases = legacyCases.map((tc: any, i: number) => ({
             testIndex: tc.testIndex ?? i + 1,
             input: tc.input,
             expectedOutput: tc.expectedOutput,
             isHidden: Boolean(tc.isHidden),
-          })),
+          }))
+        }
+      }
+
+      if (testCases && testCases.length > 0) {
+        const rawSuite: RawSuite = {
+          title: problem.title,
+          testCases,
         }
         // Cache in memory for subsequent rapid evaluation
         customBank[problem.slug] = rawSuite

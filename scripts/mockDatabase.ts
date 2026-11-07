@@ -22,6 +22,10 @@ export interface MockDbState {
   UserProgress: any[]
   Problem: any[]
   TestCase: any[]
+  ProblemExample: any[]
+  ProblemTestCase: any[]
+  ProblemStarterCode: any[]
+  ProblemRevision: any[]
   Module: any[]
   LearningUnit: any[]
   Belt: any[]
@@ -247,8 +251,59 @@ export function createInitialMockDb(): MockDbState {
     admin_audit_logs: [],
     Submission: [],
     UserProgress: [],
-    Problem: seedProblems.map((p) => ({ ...p, learningUnitId: p.learningUnitId || null })),
+    Problem: seedProblems.map((p) => ({
+      ...p,
+      learningUnitId: p.learningUnitId || null,
+      status: p.isActive === false ? 'DRAFT' : 'PUBLISHED',
+      timeLimitMs: 2000,
+      memoryLimitMb: 256,
+      createdBy: superAdminUserId,
+      updatedBy: superAdminUserId,
+    })),
     TestCase: seedTestCases,
+    ProblemExample: seedProblems.flatMap((p) =>
+      (p.examples || []).map((ex: any, idx: number) => ({
+        id: `mock-pe-${p.id}-${idx + 1}`,
+        problemId: p.id,
+        input: ex.input,
+        expectedOutput: ex.output,
+        explanation: ex.explanation || null,
+        displayOrder: idx + 1,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+      }))
+    ),
+    ProblemTestCase: seedTestCases.map((tc, idx) => ({
+      id: tc.id,
+      problemId: tc.problemId,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      isHidden: tc.isHidden,
+      displayOrder: tc.testIndex || idx + 1,
+      points: 10,
+      explanation: (tc as any).explanation || null,
+      createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+      updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
+    })),
+    ProblemStarterCode: seedProblems.flatMap((p) =>
+      Object.entries(p.starterCodes || {}).map(([lang, code]) => ({
+        id: `mock-psc-${p.id}-${lang}`,
+        problemId: p.id,
+        language: lang,
+        code,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+      }))
+    ),
+    ProblemRevision: seedProblems.map((p) => ({
+      id: `mock-rev-${p.id}-1`,
+      problemId: p.id,
+      version: 1,
+      snapshot: { ...p },
+      changedBy: superAdminUserId,
+      changeSummary: 'Initial baseline revision',
+      createdAt: p.createdAt,
+    })),
     Module: (curriculumData as any[]).map((m, idx) => ({
       id: `mock-module-${m.order || idx + 1}`,
       order: m.order || idx + 1,
@@ -321,6 +376,10 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
     let targetKey = tableName
     if (tableName === 'problems' || tableName === 'questions') targetKey = 'Problem'
     if (tableName === 'test_cases' || tableName === 'testcases') targetKey = 'TestCase'
+    if (tableName === 'problem_examples' || tableName === 'ProblemExample' || tableName === 'problem_example') targetKey = 'ProblemExample'
+    if (tableName === 'problem_test_cases' || tableName === 'ProblemTestCase' || tableName === 'problem_test_case') targetKey = 'ProblemTestCase'
+    if (tableName === 'problem_starter_codes' || tableName === 'ProblemStarterCode' || tableName === 'problem_starter_code') targetKey = 'ProblemStarterCode'
+    if (tableName === 'problem_revisions' || tableName === 'ProblemRevision' || tableName === 'problem_revision') targetKey = 'ProblemRevision'
     if (tableName === 'modules' || tableName === 'curriculum_modules') targetKey = 'Module'
     if (tableName === 'learning_units' || tableName === 'learningunits') targetKey = 'LearningUnit'
     if (tableName === 'belts') targetKey = 'Belt'
@@ -689,7 +748,16 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
               }
             }
 
-            (db as any)[tableName] = keepRows
+            (db as any)[targetKey] = keepRows
+            if (targetKey === 'Problem') {
+              for (const del of deletedRows) {
+                db.TestCase = db.TestCase.filter((tc: any) => tc.problemId !== del.id)
+                db.ProblemExample = db.ProblemExample.filter((pe: any) => pe.problemId !== del.id)
+                db.ProblemTestCase = db.ProblemTestCase.filter((ptc: any) => ptc.problemId !== del.id)
+                db.ProblemStarterCode = db.ProblemStarterCode.filter((psc: any) => psc.problemId !== del.id)
+                db.ProblemRevision = db.ProblemRevision.filter((pr: any) => pr.problemId !== del.id)
+              }
+            }
             return Promise.resolve({ data: deletedRows, error: null }).then(onfulfilled, onrejected)
           },
         }
