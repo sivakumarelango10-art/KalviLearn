@@ -8,6 +8,38 @@
 BEGIN;
 
 -- -------------------------------------------------------------------------
+-- 0. Verify Managed Supabase Roles & Prerequisite Schema (20261104 + 20261107)
+-- Aborts clearly if roles or prerequisite tables/columns do not exist yet.
+-- -------------------------------------------------------------------------
+DO $$
+DECLARE
+  v_missing_roles TEXT[];
+BEGIN
+  SELECT array_agg(r) INTO v_missing_roles
+  FROM unnest(ARRAY['anon', 'authenticated', 'service_role']) AS r
+  WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = r);
+
+  IF v_missing_roles IS NOT NULL AND array_length(v_missing_roles, 1) > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: required Supabase role(s) missing: %', array_to_string(v_missing_roles, ', ');
+  END IF;
+
+  IF to_regclass('public."users"') IS NULL
+     OR to_regclass('public."Module"') IS NULL
+     OR to_regclass('public."LearningUnit"') IS NULL
+     OR to_regclass('public."Problem"') IS NULL
+     OR to_regclass('public."ProblemTestCase"') IS NULL THEN
+    RAISE EXCEPTION 'Migration aborted: prerequisite tables missing. Execute 20261104_* and 20261107_problem_normalized_architecture first.';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='Problem' AND column_name='learningUnitId')
+     OR NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='Problem' AND column_name='status')
+     OR NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='Module' AND column_name='status')
+     OR NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='LearningUnit' AND column_name='status') THEN
+    RAISE EXCEPTION 'Migration aborted: prerequisite columns missing on Problem/Module/LearningUnit. Execute 20261104_* and 20261107_problem_normalized_architecture first.';
+  END IF;
+END $$;
+
+-- -------------------------------------------------------------------------
 -- 1. Extend Problem, Module, and LearningUnit for Publication Approval Workflow
 -- Existing published records default to 'APPROVED' so student visibility is preserved.
 -- -------------------------------------------------------------------------
@@ -144,6 +176,22 @@ GRANT ALL ON TABLE public."content_manager_scopes" TO service_role;
 REVOKE UPDATE, DELETE, TRUNCATE ON TABLE public."content_audit_logs" FROM service_role;
 GRANT SELECT, INSERT ON TABLE public."content_audit_logs" TO service_role;
 
+-- Explicit service_role-only RLS policies (zero policies for anon/authenticated)
+DROP POLICY IF EXISTS "service_role_all_cm_assignments" ON public."content_manager_assignments";
+CREATE POLICY "service_role_all_cm_assignments" ON public."content_manager_assignments" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_cm_permissions" ON public."content_manager_permissions";
+CREATE POLICY "service_role_all_cm_permissions" ON public."content_manager_permissions" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_cm_scopes" ON public."content_manager_scopes";
+CREATE POLICY "service_role_all_cm_scopes" ON public."content_manager_scopes" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_select_content_audit" ON public."content_audit_logs";
+CREATE POLICY "service_role_select_content_audit" ON public."content_audit_logs" FOR SELECT TO service_role USING (true);
+
+DROP POLICY IF EXISTS "service_role_insert_content_audit" ON public."content_audit_logs";
+CREATE POLICY "service_role_insert_content_audit" ON public."content_audit_logs" FOR INSERT TO service_role WITH CHECK (true);
+
 CREATE OR REPLACE FUNCTION public.prevent_content_audit_log_mutation()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -154,11 +202,66 @@ BEGIN
 END;
 $$;
 
+REVOKE ALL ON FUNCTION public.prevent_content_audit_log_mutation() FROM PUBLIC, anon, authenticated;
+
 DROP TRIGGER IF EXISTS trg_content_audit_logs_immutable ON public."content_audit_logs";
 CREATE TRIGGER trg_content_audit_logs_immutable
   BEFORE UPDATE OR DELETE ON public."content_audit_logs"
   FOR EACH ROW
   EXECUTE FUNCTION public.prevent_content_audit_log_mutation();
+
+-- Fail-closed check: confirm RLS, zero browser grants, and append-only audit log enforcement
+DO $$
+DECLARE
+  v_unprotected_rls INTEGER;
+  v_exposed_grants INTEGER;
+  v_mutable_audit_grants INTEGER;
+  v_trigger_exists INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO v_unprotected_rls
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname IN (
+      'content_manager_assignments',
+      'content_manager_permissions',
+      'content_manager_scopes',
+      'content_audit_logs'
+    )
+    AND c.relrowsecurity IS DISTINCT FROM true;
+
+  SELECT COUNT(*) INTO v_exposed_grants
+  FROM information_schema.role_table_grants
+  WHERE table_schema = 'public'
+    AND table_name IN (
+      'content_manager_assignments',
+      'content_manager_permissions',
+      'content_manager_scopes',
+      'content_audit_logs'
+    )
+    AND grantee IN ('PUBLIC', 'anon', 'authenticated');
+
+  SELECT COUNT(*) INTO v_mutable_audit_grants
+  FROM information_schema.role_table_grants
+  WHERE table_schema = 'public'
+    AND table_name = 'content_audit_logs'
+    AND grantee = 'service_role'
+    AND privilege_type IN ('UPDATE', 'DELETE', 'TRUNCATE');
+
+  SELECT COUNT(*) INTO v_trigger_exists
+  FROM pg_trigger t
+  JOIN pg_class c ON c.oid = t.tgrelid
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname = 'content_audit_logs'
+    AND t.tgname = 'trg_content_audit_logs_immutable'
+    AND NOT t.tgisinternal;
+
+  IF v_unprotected_rls > 0 OR v_exposed_grants > 0 OR v_mutable_audit_grants > 0 OR v_trigger_exists <> 1 THEN
+    RAISE EXCEPTION 'Migration aborted: Content Manager security check failed (rls=%, exposed=%, mutable_audit=%, trigger=%).',
+      v_unprotected_rls, v_exposed_grants, v_mutable_audit_grants, v_trigger_exists;
+  END IF;
+END $$;
 
 NOTIFY pgrst, 'reload schema';
 

@@ -102,10 +102,17 @@ async function main() {
     CREATE SCHEMA public;
     GRANT ALL ON SCHEMA public TO postgres;
     DO $$ BEGIN
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN
+        CREATE ROLE anon NOLOGIN;
+      END IF;
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN
+        CREATE ROLE authenticated NOLOGIN;
+      END IF;
       IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN
-        CREATE ROLE service_role;
+        CREATE ROLE service_role NOLOGIN BYPASSRLS;
       END IF;
     END $$;
+    GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 
     -- Legacy Problem table (identical to live production Supabase before migration)
     CREATE TABLE public."Problem" (
@@ -321,6 +328,46 @@ async function main() {
   `
   const aclRes = runPgStatements(splitPgStatements(aclSql))
   console.log('PostgreSQL Function ACL (aclexplode output):\n', aclRes.stdout)
+
+  // Step 7B: Verify RLS & Privilege Restrictions on all 6 Newly Created Tables
+  console.log('\n--- Step 7B: Verifying RLS, Revoked Browser Roles & Hidden Test Isolation ---')
+  const rlsSql = `
+    SELECT c.relname AS tbl, c.relrowsecurity AS rls_enabled,
+      has_table_privilege('anon', c.oid, 'SELECT') AS anon_select,
+      has_table_privilege('authenticated', c.oid, 'SELECT') AS auth_select,
+      has_table_privilege('service_role', c.oid, 'SELECT') AS svc_select
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname IN (
+        'ProblemExample',
+        'ProblemTestCase',
+        'ProblemStarterCode',
+        'ProblemRevision',
+        'ProblemMigrationJsonAudit',
+        'OrphanedTestCaseAudit'
+      )
+    ORDER BY c.relname;
+  `
+  const rlsRes = runPgStatements(splitPgStatements(rlsSql))
+  if (rlsRes.status !== 0 || rlsRes.stdout.includes('rls_enabled = "f"') || rlsRes.stdout.includes('anon_select = "t"') || rlsRes.stdout.includes('auth_select = "t"') || !rlsRes.stdout.includes('svc_select = "t"')) {
+    throw new Error(`RLS/Privilege verification failed:\n${rlsRes.stdout}\n${rlsRes.stderr}`)
+  }
+  console.log('  ✓ All 6 new tables have RLS enabled, zero anon/authenticated SELECT, and service_role SELECT enabled.')
+
+  const anonAttempt = runPgStatements([`BEGIN; SET LOCAL ROLE anon; SELECT count(*) FROM public."ProblemTestCase"; ROLLBACK;`])
+  if (!anonAttempt.stderr.includes('permission denied')) {
+    throw new Error(`Expected permission denied for anon on ProblemTestCase, got:\n${anonAttempt.stdout}\n${anonAttempt.stderr}`)
+  }
+  const authRevAttempt = runPgStatements([`BEGIN; SET LOCAL ROLE authenticated; SELECT count(*) FROM public."ProblemRevision"; ROLLBACK;`])
+  if (!authRevAttempt.stderr.includes('permission denied')) {
+    throw new Error(`Expected permission denied for authenticated on ProblemRevision, got:\n${authRevAttempt.stdout}\n${authRevAttempt.stderr}`)
+  }
+  const svcAttempt = runPgStatements([`BEGIN; SET LOCAL ROLE service_role; SELECT count(*) AS cnt FROM public."ProblemTestCase"; COMMIT;`])
+  if (svcAttempt.status !== 0 || !svcAttempt.stdout.includes('cnt = "5"')) {
+    throw new Error(`Expected service_role to read ProblemTestCase cleanly, got:\n${svcAttempt.stdout}\n${svcAttempt.stderr}`)
+  }
+  console.log('  ✓ Live role tests passed: anon/authenticated denied on hidden test cases & revisions; service_role succeeds.')
 
   // Step 8: Testing rollback.sql
   console.log('\n--- Step 8: Testing rollback.sql Against Real PostgreSQL ---')
