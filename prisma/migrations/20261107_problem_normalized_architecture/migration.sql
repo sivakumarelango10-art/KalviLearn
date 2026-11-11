@@ -612,6 +612,114 @@ INSERT INTO temp_duplicate_archive_map (duplicate_id, canonical_id) VALUES
   ('belt-10-q90-pair-sum-exists-v3', 'belt-2-q20-pair-sum-exists-v1')
 ON CONFLICT (duplicate_id) DO NOTHING;
 
+-- 4.3B. Fail-Closed Integrity & Completeness Guard (aborts transaction if inconsistent)
+DO $$
+DECLARE
+  v_canon_count INTEGER;
+  v_dup_count INTEGER;
+  v_self_ref_map INTEGER;
+  v_overlap_count INTEGER;
+  v_broken_targets INTEGER;
+  v_learn_unit_collision INTEGER;
+  v_missing_db_canon_target INTEGER;
+  v_belt_rows INTEGER;
+  v_missing_canonical INTEGER;
+  v_missing_duplicate INTEGER;
+  v_unmapped_practice INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO v_canon_count FROM temp_canonical_active_problems;
+  SELECT COUNT(*) INTO v_dup_count FROM temp_duplicate_archive_map;
+  IF v_canon_count <> 58 OR v_dup_count <> 442 THEN
+    RAISE EXCEPTION 'Migration aborted: expected 58 canonical and 442 duplicate mappings, got % and %.', v_canon_count, v_dup_count;
+  END IF;
+
+  SELECT COUNT(*) INTO v_self_ref_map
+  FROM temp_duplicate_archive_map
+  WHERE duplicate_id = canonical_id;
+  IF v_self_ref_map > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: % self-referencing duplicate mapping(s) detected.', v_self_ref_map;
+  END IF;
+
+  SELECT COUNT(*) INTO v_overlap_count
+  FROM temp_duplicate_archive_map m
+  JOIN temp_canonical_active_problems c ON c.canonical_id = m.duplicate_id;
+  IF v_overlap_count > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: % problem(s) appear in both canonical and duplicate sets.', v_overlap_count;
+  END IF;
+
+  SELECT COUNT(*) INTO v_broken_targets
+  FROM temp_duplicate_archive_map m
+  WHERE NOT EXISTS (
+    SELECT 1 FROM temp_canonical_active_problems c WHERE c.canonical_id = m.canonical_id
+  );
+  IF v_broken_targets > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: % duplicate mapping(s) point outside the verified canonical set.', v_broken_targets;
+  END IF;
+
+  SELECT COUNT(*) INTO v_learn_unit_collision
+  FROM public."Problem" p
+  JOIN temp_duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+  WHERE p."learningUnitId" IS NOT NULL;
+  IF v_learn_unit_collision > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: % Learn Coding question(s) (learningUnitId IS NOT NULL) matched duplicate archive map.', v_learn_unit_collision;
+  END IF;
+
+  SELECT COUNT(*) INTO v_missing_db_canon_target
+  FROM public."Problem" p
+  JOIN temp_duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+  WHERE p."learningUnitId" IS NULL
+    AND NOT EXISTS (
+      SELECT 1 FROM public."Problem" c
+      WHERE (c."id" = m.canonical_id OR c."slug" = m.canonical_id)
+        AND c."learningUnitId" IS NULL
+        AND c."id" <> p."id"
+    );
+  IF v_missing_db_canon_target > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: % matched duplicate(s) point to a missing or self-referencing canonical Problem in DB.', v_missing_db_canon_target;
+  END IF;
+
+  SELECT COUNT(*) INTO v_belt_rows
+  FROM public."Problem"
+  WHERE ("id" LIKE 'belt-%' OR "slug" LIKE 'belt-%')
+    AND "learningUnitId" IS NULL;
+
+  IF v_belt_rows >= 10 THEN
+    SELECT COUNT(*) INTO v_missing_canonical
+    FROM temp_canonical_active_problems c
+    WHERE NOT EXISTS (
+      SELECT 1 FROM public."Problem" p
+      WHERE (p."id" = c.canonical_id OR p."slug" = c.canonical_id)
+        AND p."learningUnitId" IS NULL
+    );
+
+    SELECT COUNT(*) INTO v_missing_duplicate
+    FROM temp_duplicate_archive_map m
+    WHERE NOT EXISTS (
+      SELECT 1 FROM public."Problem" p
+      WHERE (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+        AND p."learningUnitId" IS NULL
+    );
+
+    SELECT COUNT(*) INTO v_unmapped_practice
+    FROM public."Problem" p
+    WHERE p."learningUnitId" IS NULL
+      AND (p."beltId" IS NOT NULL OR p."id" LIKE 'belt-%' OR p."slug" LIKE 'belt-%')
+      AND NOT EXISTS (
+        SELECT 1 FROM temp_canonical_active_problems c
+        WHERE p."id" = c.canonical_id OR p."slug" = c.canonical_id
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM temp_duplicate_archive_map m
+        WHERE p."id" = m.duplicate_id OR p."slug" = m.duplicate_id
+      );
+
+    IF v_missing_canonical > 0 OR v_missing_duplicate > 0 OR v_unmapped_practice > 0 THEN
+      RAISE EXCEPTION 'Migration aborted: production practice mapping mismatch (missing_canonical=%, missing_duplicate=%, unmapped_practice=%).',
+        v_missing_canonical, v_missing_duplicate, v_unmapped_practice;
+    END IF;
+  END IF;
+END $$;
+
 -- 4.4. Apply 58 Canonical Practice Questions (Publish & mark active)
 -- Safeguard: Only update uninitialized rows, never overwrite manual admin status edits
 UPDATE public."Problem" p
@@ -619,22 +727,27 @@ SET
   "isActive" = true,
   "status" = 'PUBLISHED',
   "canonicalProblemId" = NULL,
-  "updatedAt" = COALESCE("updatedAt", "createdAt", timezone('utc'::text, now()))
+  "updatedAt" = COALESCE(p."updatedAt", p."createdAt", timezone('utc'::text, now()))
 FROM temp_canonical_active_problems c
 WHERE (p."id" = c.canonical_id OR p."slug" = c.canonical_id)
+  AND p."learningUnitId" IS NULL
   AND p."canonicalProblemId" IS NULL
   AND (p."status" = 'DRAFT' OR p."status" IS NULL);
 
 -- 4.5. Apply 442 Duplicate Practice Questions (Archive & isolate)
--- Safeguard: Only update uninitialized rows, never overwrite manual admin status edits
+-- Safeguard: Resolves actual canonical PK id and never modifies Learn Coding or manual edits
 UPDATE public."Problem" p
 SET
   "isActive" = false,
   "status" = 'ARCHIVED',
-  "canonicalProblemId" = m.canonical_id,
-  "updatedAt" = COALESCE("updatedAt", "createdAt", timezone('utc'::text, now()))
+  "canonicalProblemId" = c."id",
+  "updatedAt" = COALESCE(p."updatedAt", p."createdAt", timezone('utc'::text, now()))
 FROM temp_duplicate_archive_map m
+JOIN public."Problem" c
+  ON (c."id" = m.canonical_id OR c."slug" = m.canonical_id)
+ AND c."learningUnitId" IS NULL
 WHERE (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+  AND p."learningUnitId" IS NULL
   AND (p."canonicalProblemId" IS NULL OR p."status" = 'DRAFT' OR p."status" IS NULL);
 
 -- 4.6. Preserve Learn Coding curriculum questions
@@ -648,6 +761,41 @@ SET
 WHERE "learningUnitId" IS NOT NULL
   AND "canonicalProblemId" IS NULL
   AND ("status" = 'DRAFT' OR "status" IS NULL);
+
+-- 4.6B. Post-Backfill Referential & Acyclic Integrity Verification
+DO $$
+DECLARE
+  v_self_refs INTEGER;
+  v_invalid_refs INTEGER;
+  v_cyclic_refs INTEGER;
+  v_learn_archived INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO v_self_refs
+  FROM public."Problem"
+  WHERE "canonicalProblemId" = "id";
+
+  SELECT COUNT(*) INTO v_invalid_refs
+  FROM public."Problem" p
+  WHERE p."canonicalProblemId" IS NOT NULL
+    AND NOT EXISTS (
+      SELECT 1 FROM public."Problem" c WHERE c."id" = p."canonicalProblemId"
+    );
+
+  SELECT COUNT(*) INTO v_cyclic_refs
+  FROM public."Problem" p
+  JOIN public."Problem" c ON c."id" = p."canonicalProblemId"
+  WHERE c."canonicalProblemId" IS NOT NULL;
+
+  SELECT COUNT(*) INTO v_learn_archived
+  FROM public."Problem"
+  WHERE "learningUnitId" IS NOT NULL
+    AND "canonicalProblemId" IS NOT NULL;
+
+  IF v_self_refs > 0 OR v_invalid_refs > 0 OR v_cyclic_refs > 0 OR v_learn_archived > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: post-backfill invariant failed (self_refs=%, invalid_refs=%, cyclic_refs=%, learn_with_canonical=%).',
+      v_self_refs, v_invalid_refs, v_cyclic_refs, v_learn_archived;
+  END IF;
+END $$;
 
 -- 4.7. General backfill for limits and timestamps
 UPDATE public."Problem"
