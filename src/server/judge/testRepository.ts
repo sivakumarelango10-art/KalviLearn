@@ -208,7 +208,7 @@ export async function resolveQuestionAsync(
     let problem: any = null
     const { data: bySlug } = await supabaseServer
       .from('Problem')
-      .select('id, slug, title, isActive')
+      .select('id, slug, title, isActive, status')
       .eq('slug', targetSlug)
       .maybeSingle()
 
@@ -217,13 +217,13 @@ export async function resolveQuestionAsync(
     } else {
       const { data: byId } = await supabaseServer
         .from('Problem')
-        .select('id, slug, title, isActive')
+        .select('id, slug, title, isActive, status')
         .eq('id', targetSlug)
         .maybeSingle()
       problem = byId
     }
 
-    if (problem) {
+    if (problem && problem.isActive !== false && (!problem.status || problem.status === 'PUBLISHED')) {
       // Try normalized ProblemTestCase first, falling back to legacy TestCase
       let testCases: any[] | null = null
       const { data: ptcCases, error: ptcErr } = await supabaseServer

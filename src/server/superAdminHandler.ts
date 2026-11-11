@@ -8,6 +8,15 @@ import { selectEngine } from './judge/engines'
 import { outputsMatch } from './judge/compare'
 import { normalizeLanguage } from './judge/questionId'
 import problemsData from '../data/problems.json'
+import {
+  handleListContentManagers,
+  handleSearchUsersForContentManager,
+  handleGrantOrUpdateContentManager,
+  handleRevokeContentManager,
+  handleGetContentManagerActivity,
+  handleListPendingContentApprovals,
+  handleApproveOrRejectContent,
+} from './superAdminContentManagerHandlers'
 
 // Rate limiters: 120 req/min per IP, 60 req/min per authenticated user
 const ipLimiter = new RateLimiter(120, 60_000)
@@ -384,6 +393,33 @@ export default async function handler(
     }
     if (action === 'toggle_learning_unit_status' || action === 'toggle_unit_status') {
       return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res)
+    }
+
+    // 11. Content Manager RBAC & Publication Workflow Approvals
+    const cmDeps = { SUPER_ADMIN_EMAIL, sendJson, recordAdminAudit }
+    if (action === 'list_content_managers' || (method === 'GET' && sub === 'content-managers')) {
+      return await handleListContentManagers(cmDeps, res)
+    }
+    if (action === 'search_users_for_content_manager') {
+      return await handleSearchUsersForContentManager(cmDeps, body, req, res)
+    }
+    if (action === 'grant_content_manager' || action === 'update_content_manager') {
+      return await handleGrantOrUpdateContentManager(cmDeps, body, auth.user.id, clientIp, res)
+    }
+    if (action === 'revoke_content_manager') {
+      return await handleRevokeContentManager(cmDeps, body, auth.user.id, clientIp, res)
+    }
+    if (action === 'get_content_manager_activity' || action === 'list_content_audit_logs') {
+      return await handleGetContentManagerActivity(cmDeps, body, req, res)
+    }
+    if (action === 'list_pending_content_approvals') {
+      return await handleListPendingContentApprovals(cmDeps, res)
+    }
+    if (action === 'approve_publish_content') {
+      return await handleApproveOrRejectContent(cmDeps, 'APPROVE', body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reject_content_review') {
+      return await handleApproveOrRejectContent(cmDeps, 'REJECT', body, auth.user.id, clientIp, res)
     }
 
     // 10. Practice Belts Management
@@ -1988,6 +2024,10 @@ async function handleUpdateUserRole(
     .single()
 
   if (updErr) throw updErr
+
+  if (String(targetUser.role || '').toUpperCase() === 'CONTENT_MANAGER' && newRole !== 'CONTENT_MANAGER') {
+    await supabaseServer.from('content_manager_assignments').update({ is_active: false, revoked_by: SUPER_ADMIN_EMAIL, revoked_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('user_id', targetUserId)
+  }
 
   // If transitioning to MENTOR, ensure profile exists in `mentors`
   if (newRole === 'MENTOR') {

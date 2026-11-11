@@ -106,7 +106,7 @@ export interface AuthenticatedUser {
   id: string
   email: string
   name: string
-  role: 'STUDENT' | 'MENTOR' | 'CAMPUS_MANAGER' | 'ADMIN' | 'SUPERADMIN'
+  role: 'STUDENT' | 'MENTOR' | 'CAMPUS_MANAGER' | 'CONTENT_MANAGER' | 'ADMIN' | 'SUPERADMIN'
   status: string
   /** True only for test-token identities (never a real database user). Must never be persisted as real activity. */
   synthetic?: boolean
@@ -213,6 +213,7 @@ export async function authenticateFeedbackRequest(authHeader?: string): Promise<
       const rawRole = parts[2].toUpperCase()
       let testRole: AuthenticatedUser['role'] = rawRole as AuthenticatedUser['role']
       let testEmail = parts.slice(3).join('_').toLowerCase()
+      if (rawRole === 'CONTENT' && parts[3]?.toUpperCase() === 'MANAGER') { testRole = 'CONTENT_MANAGER'; testEmail = parts.slice(4).join('_').toLowerCase() }
       if (rawRole === 'CAMPUS' && parts[3]?.toUpperCase() === 'MANAGER') {
         testRole = 'CAMPUS_MANAGER'
         testEmail = parts.slice(4).join('_').toLowerCase()

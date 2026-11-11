@@ -25,6 +25,12 @@ export const ProtectedRoute: React.FC = () => {
   }
 
   // Role redirection: Ensure mentors and campus managers/admins are routed to their respective workspaces on initial landing
+  if (user.role === 'CONTENT_MANAGER') {
+    if (location.pathname === '/' || location.pathname === '' || location.pathname === '/dashboard') {
+      return <Navigate to="/content-manager" replace />
+    }
+  }
+
   if (user.role === 'MENTOR') {
     if (location.pathname === '/' || location.pathname === '') {
       return <Navigate to="/mentor" replace />

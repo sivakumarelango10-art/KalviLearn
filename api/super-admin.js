@@ -27934,6 +27934,10 @@ async function authenticateFeedbackRequest(authHeader) {
       const rawRole = parts[2].toUpperCase();
       let testRole = rawRole;
       let testEmail = parts.slice(3).join("_").toLowerCase();
+      if (rawRole === "CONTENT" && parts[3]?.toUpperCase() === "MANAGER") {
+        testRole = "CONTENT_MANAGER";
+        testEmail = parts.slice(4).join("_").toLowerCase();
+      }
       if (rawRole === "CAMPUS" && parts[3]?.toUpperCase() === "MANAGER") {
         testRole = "CAMPUS_MANAGER";
         testEmail = parts.slice(4).join("_").toLowerCase();
@@ -114524,6 +114528,873 @@ var problems_default = [
   }
 ];
 
+// src/lib/contentPermissions.ts
+var CONTENT_MANAGER_ROLE = "CONTENT_MANAGER";
+var CONTENT_PERMISSION_LIST = [
+  "content.dashboard.view",
+  "content.curriculum.view",
+  "content.curriculum.create",
+  "content.curriculum.update",
+  "content.curriculum.reorder",
+  "content.learning_unit.view",
+  "content.learning_unit.create",
+  "content.learning_unit.update",
+  "content.learning_unit.reorder",
+  "content.learning_unit.publish",
+  "content.learning_unit.delete",
+  "content.question.view",
+  "content.question.create",
+  "content.question.update",
+  "content.question.duplicate",
+  "content.question.preview",
+  "content.question.run_tests",
+  "content.question.publish",
+  "content.question.archive",
+  "content.question.delete",
+  "content.example.manage",
+  "content.test_case.manage",
+  "content.hidden_test_case.manage",
+  "content.starter_code.manage",
+  "content.revision.view_own",
+  "content.revision.view_all",
+  "content.revision.restore"
+];
+var CONTENT_PERMISSION_CATALOG = [
+  {
+    id: "content.dashboard.view",
+    label: "View Content Dashboard",
+    description: "Access the Content Manager workspace overview and metrics.",
+    category: "Dashboard",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.curriculum.view",
+    label: "View Curriculum Modules",
+    description: "View assigned curriculum modules and structure.",
+    category: "Curriculum",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.curriculum.create",
+    label: "Create Curriculum Modules",
+    description: "Create new curriculum modules (requires Global scope or elevated approval).",
+    category: "Curriculum",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.curriculum.update",
+    label: "Edit Curriculum Modules",
+    description: "Edit module titles, descriptions, and metadata within scope.",
+    category: "Curriculum",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.curriculum.reorder",
+    label: "Reorder Curriculum Modules",
+    description: "Change display ordering of authorized curriculum modules.",
+    category: "Curriculum",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.learning_unit.view",
+    label: "View Learning Units",
+    description: "View lessons, concepts, and learning unit content.",
+    category: "Learning Units",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.learning_unit.create",
+    label: "Create Learning Units",
+    description: "Create new lessons inside authorized modules.",
+    category: "Learning Units",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.learning_unit.update",
+    label: "Edit Learning Units",
+    description: "Modify lesson text, approach, code snippets, and reading times.",
+    category: "Learning Units",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.learning_unit.reorder",
+    label: "Reorder Learning Units",
+    description: "Reorder lessons inside authorized curriculum modules.",
+    category: "Learning Units",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.view",
+    label: "View Coding Questions",
+    description: "Browse and open coding questions within authorized scope.",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.create",
+    label: "Create Coding Questions",
+    description: "Author new draft coding questions inside authorized learning units.",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.update",
+    label: "Edit Coding Questions",
+    description: "Update coding question title, statements, formats, and limits.",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.duplicate",
+    label: "Duplicate Questions",
+    description: "Clone an existing authorized question into a draft.",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.preview",
+    label: "Preview Questions",
+    description: "Preview how questions render for students (public tests only unless hidden access granted).",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.question.run_tests",
+    label: "Run Question Test Runner",
+    description: "Execute test solutions against question test suites in the sandbox.",
+    category: "Questions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.example.manage",
+    label: "Manage Question Examples",
+    description: "Add, edit, and reorder sample examples.",
+    category: "Examples & Tests",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.test_case.manage",
+    label: "Manage Public Test Cases",
+    description: "Add, edit, reorder, and delete public test cases.",
+    category: "Examples & Tests",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.hidden_test_case.manage",
+    label: "Manage Hidden Test Cases",
+    description: "View, add, edit, and delete hidden evaluation test cases.",
+    category: "Examples & Tests",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.starter_code.manage",
+    label: "Manage Starter Code",
+    description: "Edit programming-language starter code templates.",
+    category: "Examples & Tests",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.revision.view_own",
+    label: "View Own Revisions & Activity",
+    description: "Inspect revision history and audit entries authored by oneself.",
+    category: "Revisions",
+    defaultEnabled: true,
+    isElevated: false
+  },
+  {
+    id: "content.revision.view_all",
+    label: "View All Question Revisions",
+    description: "Inspect revisions authored by any editor across authorized questions.",
+    category: "Revisions",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.revision.restore",
+    label: "Restore Question Revisions",
+    description: "Roll back a question to a previous snapshot revision.",
+    category: "Revisions",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.question.publish",
+    label: "Publish Coding Questions",
+    description: "Publish coding questions directly to live student visibility without Super Admin approval.",
+    category: "Publication & Destructive",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.question.archive",
+    label: "Archive Coding Questions",
+    description: "Archive or unpublish coding questions.",
+    category: "Publication & Destructive",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.question.delete",
+    label: "Delete Coding Questions",
+    description: "Permanently delete coding questions.",
+    category: "Publication & Destructive",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.learning_unit.publish",
+    label: "Publish Learning Units / Modules",
+    description: "Publish learning units or modules directly to live student visibility.",
+    category: "Publication & Destructive",
+    defaultEnabled: false,
+    isElevated: true
+  },
+  {
+    id: "content.learning_unit.delete",
+    label: "Delete Learning Units / Modules",
+    description: "Permanently delete learning units or curriculum modules.",
+    category: "Publication & Destructive",
+    defaultEnabled: false,
+    isElevated: true
+  }
+];
+var DEFAULT_CONTENT_MANAGER_PERMISSIONS = CONTENT_PERMISSION_CATALOG.filter(
+  (p2) => p2.defaultEnabled
+).map((p2) => p2.id);
+var ELEVATED_CONTENT_PERMISSIONS = CONTENT_PERMISSION_CATALOG.filter(
+  (p2) => p2.isElevated
+).map((p2) => p2.id);
+var VALID_PERMISSION_SET = new Set(CONTENT_PERMISSION_LIST);
+function isValidContentPermission(value) {
+  return VALID_PERMISSION_SET.has(value);
+}
+function normalizePermissionsList(raw) {
+  if (!Array.isArray(raw)) return [];
+  const seen = /* @__PURE__ */ new Set();
+  for (const item of raw) {
+    if (typeof item === "string") {
+      const trimmed = item.trim();
+      if (isValidContentPermission(trimmed)) {
+        seen.add(trimmed);
+      }
+    }
+  }
+  return Array.from(seen);
+}
+
+// src/server/contentRbac.ts
+async function recordContentAudit(params) {
+  try {
+    const id = `caudit-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    await supabaseServer.from("content_audit_logs").insert({
+      id,
+      actor_user_id: params.actorUserId,
+      actor_email: params.actorEmail,
+      actor_role: params.actorRole,
+      action: params.action,
+      resource_type: params.resourceType,
+      resource_id: params.resourceId ?? null,
+      resource_label: params.resourceLabel ?? null,
+      permission_used: params.permissionUsed ?? null,
+      previous_values: params.previousValues ?? null,
+      updated_values: params.updatedValues ?? null,
+      change_summary: params.changeSummary ?? null,
+      ip_address: params.ipAddress ?? null,
+      created_at: (/* @__PURE__ */ new Date()).toISOString()
+    });
+  } catch (err) {
+    console.error("[content-audit] Audit log write failure:", err);
+  }
+}
+
+// src/server/superAdminContentManagerHandlers.ts
+async function handleListContentManagers(deps, res) {
+  const [assignRes, permRes, scopeRes, usersRes, modulesRes, unitsRes, auditRes] = await Promise.all([
+    supabaseServer.from("content_manager_assignments").select("*").order("granted_at", { ascending: false }),
+    supabaseServer.from("content_manager_permissions").select("*"),
+    supabaseServer.from("content_manager_scopes").select("*"),
+    supabaseServer.from("users").select("id, email, name, role, status"),
+    supabaseServer.from("Module").select("id, title, order"),
+    supabaseServer.from("LearningUnit").select("id, moduleId, title, order"),
+    supabaseServer.from("content_audit_logs").select("actor_user_id, created_at")
+  ]);
+  if (assignRes.error) throw assignRes.error;
+  if (permRes.error) throw permRes.error;
+  if (scopeRes.error) throw scopeRes.error;
+  if (usersRes.error) throw usersRes.error;
+  const usersById = new Map((usersRes.data || []).map((u) => [u.id, u]));
+  const modulesById = new Map((modulesRes.data || []).map((m) => [m.id, m]));
+  const unitsById = new Map((unitsRes.data || []).map((u) => [u.id, u]));
+  const permsByAssignment = /* @__PURE__ */ new Map();
+  for (const row of permRes.data || []) {
+    const arr = permsByAssignment.get(row.assignment_id) || [];
+    arr.push(row.permission);
+    permsByAssignment.set(row.assignment_id, arr);
+  }
+  const scopesByAssignment = /* @__PURE__ */ new Map();
+  for (const row of scopeRes.data || []) {
+    const aid = row.assignment_id;
+    if (!scopesByAssignment.has(aid)) scopesByAssignment.set(aid, { modules: [], learningUnits: [] });
+    const entry = scopesByAssignment.get(aid);
+    if (row.module_id) {
+      const m = modulesById.get(row.module_id);
+      entry.modules.push({
+        id: row.module_id,
+        title: m?.title || row.module_id,
+        order: m?.order ?? 0
+      });
+    }
+    if (row.learning_unit_id) {
+      const lu = unitsById.get(row.learning_unit_id);
+      entry.learningUnits.push({
+        id: row.learning_unit_id,
+        moduleId: lu?.moduleId || null,
+        title: lu?.title || row.learning_unit_id,
+        order: lu?.order ?? 0
+      });
+    }
+  }
+  const activityCountByUser = /* @__PURE__ */ new Map();
+  for (const row of auditRes.data || []) {
+    const uid = row.actor_user_id;
+    const cur = activityCountByUser.get(uid) || { count: 0, lastAt: null };
+    cur.count++;
+    if (!cur.lastAt || String(row.created_at) > cur.lastAt) {
+      cur.lastAt = row.created_at;
+    }
+    activityCountByUser.set(uid, cur);
+  }
+  const assignments = (assignRes.data || []).map((a) => {
+    const u = usersById.get(a.user_id);
+    const perms = permsByAssignment.get(a.id) || [];
+    const scopeInfo = scopesByAssignment.get(a.id) || { modules: [], learningUnits: [] };
+    const act = activityCountByUser.get(a.user_id) || { count: 0, lastAt: null };
+    return {
+      id: a.id,
+      userId: a.user_id,
+      email: u?.email || "unknown",
+      name: u?.name || null,
+      userRole: u?.role || "STUDENT",
+      userStatus: u?.status || "ACTIVE",
+      previousRole: a.previous_role || "STUDENT",
+      scopeType: a.scope_type || "NONE",
+      isActive: Boolean(a.is_active),
+      permissions: perms,
+      permissionCount: perms.length,
+      moduleIds: scopeInfo.modules.map((m) => m.id),
+      learningUnitIds: scopeInfo.learningUnits.map((lu) => lu.id),
+      assignedModules: scopeInfo.modules,
+      assignedLearningUnits: scopeInfo.learningUnits,
+      grantedBy: a.granted_by || null,
+      grantedAt: a.granted_at || null,
+      revokedBy: a.revoked_by || null,
+      revokedAt: a.revoked_at || null,
+      notes: a.notes || null,
+      activityCount: act.count,
+      lastActivityAt: act.lastAt
+    };
+  });
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: "Content Managers directory retrieved.",
+    data: {
+      assignments,
+      modules: (modulesRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0)),
+      learningUnits: (unitsRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0))
+    }
+  });
+}
+async function handleSearchUsersForContentManager(deps, body, req, res) {
+  const urlObj = new URL(req.url || "/", "http://localhost");
+  const search = typeof body.search === "string" ? body.search.trim().toLowerCase() : (urlObj.searchParams.get("search") || "").trim().toLowerCase();
+  const [usersRes, assignRes] = await Promise.all([
+    supabaseServer.from("users").select("id, email, name, role, status"),
+    supabaseServer.from("content_manager_assignments").select("user_id, is_active")
+  ]);
+  if (usersRes.error) throw usersRes.error;
+  const activeMap = /* @__PURE__ */ new Map();
+  for (const a of assignRes.data || []) {
+    activeMap.set(a.user_id, Boolean(a.is_active));
+  }
+  const users = (usersRes.data || []).filter((u) => {
+    const email = String(u.email || "").toLowerCase();
+    const role = String(u.role || "").toUpperCase();
+    if (email === deps.SUPER_ADMIN_EMAIL || role === "SUPERADMIN") return false;
+    if (!search) return true;
+    return email.includes(search) || String(u.name || "").toLowerCase().includes(search);
+  }).slice(0, 50).map((u) => ({
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role,
+    status: u.status,
+    hasActiveContentManager: activeMap.get(u.id) === true
+  }));
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Found ${users.length} eligible users.`,
+    data: users
+  });
+}
+async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, res) {
+  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const targetEmail = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  if (!userId && !targetEmail) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing User",
+      message: "Either userId or email is required to grant Content Manager access."
+    });
+  }
+  const userQuery = userId ? await supabaseServer.from("users").select("id, email, name, role, status").eq("id", userId).maybeSingle() : await supabaseServer.from("users").select("id, email, name, role, status").eq("email", targetEmail).maybeSingle();
+  if (userQuery.error) throw userQuery.error;
+  const targetUser = userQuery.data;
+  if (!targetUser) {
+    return deps.sendJson(res, 404, {
+      success: false,
+      error: "User Not Found",
+      message: "Selected user was not found in registered users."
+    });
+  }
+  if (String(targetUser.email || "").toLowerCase() === deps.SUPER_ADMIN_EMAIL || String(targetUser.role || "").toUpperCase() === "SUPERADMIN") {
+    return deps.sendJson(res, 403, {
+      success: false,
+      error: "Protected Account",
+      message: "The sole Super Admin account cannot be reassigned to Content Manager."
+    });
+  }
+  if (String(targetUser.status || "").toUpperCase() !== "ACTIVE") {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Inactive User",
+      message: "Cannot grant Content Manager access to an inactive user account."
+    });
+  }
+  const permissions = Array.isArray(body.permissions) ? normalizePermissionsList(body.permissions) : [...DEFAULT_CONTENT_MANAGER_PERMISSIONS];
+  const rawScope = typeof body.scopeType === "string" ? body.scopeType.trim().toUpperCase() : "NONE";
+  const scopeType = rawScope === "GLOBAL" ? "GLOBAL" : rawScope === "SCOPED" ? "SCOPED" : "NONE";
+  const moduleIds = Array.isArray(body.moduleIds) ? Array.from(new Set(body.moduleIds.filter((id) => typeof id === "string" && id.trim().length > 0))) : [];
+  const learningUnitIds = Array.isArray(body.learningUnitIds) ? Array.from(new Set(body.learningUnitIds.filter((id) => typeof id === "string" && id.trim().length > 0))) : [];
+  if (scopeType === "SCOPED") {
+    if (moduleIds.length > 0) {
+      const { data: mods } = await supabaseServer.from("Module").select("id").in("id", moduleIds);
+      if ((mods || []).length !== moduleIds.length) {
+        return deps.sendJson(res, 400, {
+          success: false,
+          error: "Invalid Module Scope",
+          message: "One or more specified moduleIds do not exist."
+        });
+      }
+    }
+    if (learningUnitIds.length > 0) {
+      const { data: units } = await supabaseServer.from("LearningUnit").select("id").in("id", learningUnitIds);
+      if ((units || []).length !== learningUnitIds.length) {
+        return deps.sendJson(res, 400, {
+          success: false,
+          error: "Invalid Learning Unit Scope",
+          message: "One or more specified learningUnitIds do not exist."
+        });
+      }
+    }
+  }
+  const notes = typeof body.notes === "string" ? body.notes.trim() : null;
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { data: existingAssign, error: findAssignErr } = await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", targetUser.id).maybeSingle();
+  if (findAssignErr) throw findAssignErr;
+  let assignmentId;
+  const currentRole = String(targetUser.role || "STUDENT").toUpperCase();
+  const preservedPreviousRole = currentRole !== CONTENT_MANAGER_ROLE ? currentRole : existingAssign?.previous_role || "STUDENT";
+  if (existingAssign) {
+    assignmentId = existingAssign.id;
+    const { error: updErr } = await supabaseServer.from("content_manager_assignments").update({
+      scope_type: scopeType,
+      is_active: true,
+      previous_role: preservedPreviousRole,
+      granted_by: deps.SUPER_ADMIN_EMAIL,
+      granted_at: existingAssign.is_active ? existingAssign.granted_at : now,
+      revoked_by: null,
+      revoked_at: null,
+      notes,
+      updated_at: now
+    }).eq("id", assignmentId);
+    if (updErr) throw updErr;
+  } else {
+    assignmentId = `cma-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const { error: insErr } = await supabaseServer.from("content_manager_assignments").insert({
+      id: assignmentId,
+      user_id: targetUser.id,
+      previous_role: preservedPreviousRole,
+      scope_type: scopeType,
+      is_active: true,
+      granted_by: deps.SUPER_ADMIN_EMAIL,
+      granted_at: now,
+      notes,
+      created_at: now,
+      updated_at: now
+    });
+    if (insErr) throw insErr;
+  }
+  await supabaseServer.from("content_manager_permissions").delete().eq("assignment_id", assignmentId);
+  if (permissions.length > 0) {
+    const permRows = permissions.map((perm, idx) => ({
+      id: `cmp-${assignmentId}-${idx + 1}`,
+      assignment_id: assignmentId,
+      permission: perm,
+      granted_at: now
+    }));
+    const { error: permInsErr } = await supabaseServer.from("content_manager_permissions").insert(permRows);
+    if (permInsErr) throw permInsErr;
+  }
+  await supabaseServer.from("content_manager_scopes").delete().eq("assignment_id", assignmentId);
+  if (scopeType === "SCOPED") {
+    const scopeRows = [];
+    for (const mId of moduleIds) {
+      scopeRows.push({
+        id: `cms-m-${assignmentId}-${mId}`,
+        assignment_id: assignmentId,
+        module_id: mId,
+        learning_unit_id: null,
+        created_at: now
+      });
+    }
+    for (const luId of learningUnitIds) {
+      scopeRows.push({
+        id: `cms-u-${assignmentId}-${luId}`,
+        assignment_id: assignmentId,
+        module_id: null,
+        learning_unit_id: luId,
+        created_at: now
+      });
+    }
+    if (scopeRows.length > 0) {
+      const { error: scInsErr } = await supabaseServer.from("content_manager_scopes").insert(scopeRows);
+      if (scInsErr) throw scInsErr;
+    }
+  }
+  if (currentRole !== CONTENT_MANAGER_ROLE) {
+    const { error: roleUpdErr } = await supabaseServer.from("users").update({ role: CONTENT_MANAGER_ROLE, updatedAt: now }).eq("id", targetUser.id);
+    if (roleUpdErr) throw roleUpdErr;
+  }
+  const auditAction = existingAssign?.is_active ? "UPDATE_CONTENT_MANAGER_ACCESS" : "GRANT_CONTENT_MANAGER_ACCESS";
+  await Promise.all([
+    deps.recordAdminAudit(
+      deps.SUPER_ADMIN_EMAIL,
+      adminId,
+      auditAction,
+      "CONTENT_MANAGER",
+      targetUser.id,
+      targetUser.email,
+      { scopeType, permissionsCount: permissions.length, moduleIds, learningUnitIds },
+      "SUCCESS",
+      null,
+      clientIp
+    ),
+    recordContentAudit({
+      actorUserId: adminId,
+      actorEmail: deps.SUPER_ADMIN_EMAIL,
+      actorRole: "SUPERADMIN",
+      action: auditAction,
+      resourceType: "CONTENT_MANAGER_ACCESS",
+      resourceId: targetUser.id,
+      resourceLabel: targetUser.email,
+      updatedValues: { scopeType, permissions, moduleIds, learningUnitIds },
+      changeSummary: `${existingAssign?.is_active ? "Updated" : "Granted"} Content Manager access for ${targetUser.email} (${scopeType})`,
+      ipAddress: clientIp
+    })
+  ]);
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Content Manager access saved for ${targetUser.email}.`,
+    data: {
+      assignmentId,
+      userId: targetUser.id,
+      email: targetUser.email,
+      role: CONTENT_MANAGER_ROLE,
+      scopeType,
+      permissions,
+      moduleIds,
+      learningUnitIds
+    }
+  });
+}
+async function handleRevokeContentManager(deps, body, adminId, clientIp, res) {
+  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const assignmentId = typeof body.assignmentId === "string" ? body.assignmentId.trim() : "";
+  if (!userId && !assignmentId) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing Identifier",
+      message: "userId or assignmentId is required to revoke Content Manager access."
+    });
+  }
+  const assignQuery = assignmentId ? await supabaseServer.from("content_manager_assignments").select("*").eq("id", assignmentId).maybeSingle() : await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", userId).maybeSingle();
+  if (assignQuery.error) throw assignQuery.error;
+  const assignment = assignQuery.data;
+  if (!assignment) {
+    return deps.sendJson(res, 404, { success: false, error: "Not Found", message: "Content Manager assignment not found." });
+  }
+  const { data: targetUser } = await supabaseServer.from("users").select("id, email, role").eq("id", assignment.user_id).maybeSingle();
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { error: revErr } = await supabaseServer.from("content_manager_assignments").update({
+    is_active: false,
+    revoked_by: deps.SUPER_ADMIN_EMAIL,
+    revoked_at: now,
+    updated_at: now
+  }).eq("id", assignment.id);
+  if (revErr) throw revErr;
+  const prevRoleRaw = String(assignment.previous_role || "STUDENT").toUpperCase();
+  const safeRestoreRole = ["STUDENT", "MENTOR", "CAMPUS_MANAGER", "ADMIN"].includes(prevRoleRaw) ? prevRoleRaw : "STUDENT";
+  const currentUserRole = String(targetUser?.role || "").toUpperCase();
+  const wasRestored = currentUserRole === CONTENT_MANAGER_ROLE;
+  const effectiveRole = wasRestored ? safeRestoreRole : currentUserRole || safeRestoreRole;
+  if (targetUser && wasRestored) {
+    await supabaseServer.from("users").update({ role: safeRestoreRole, updatedAt: now }).eq("id", assignment.user_id);
+  }
+  const label = targetUser?.email || assignment.user_id;
+  await Promise.all([
+    deps.recordAdminAudit(
+      deps.SUPER_ADMIN_EMAIL,
+      adminId,
+      "REVOKE_CONTENT_MANAGER_ACCESS",
+      "CONTENT_MANAGER",
+      assignment.user_id,
+      label,
+      { restoredRole: effectiveRole, wasRestored },
+      "SUCCESS",
+      null,
+      clientIp
+    ),
+    recordContentAudit({
+      actorUserId: adminId,
+      actorEmail: deps.SUPER_ADMIN_EMAIL,
+      actorRole: "SUPERADMIN",
+      action: "REVOKE_CONTENT_MANAGER_ACCESS",
+      resourceType: "CONTENT_MANAGER_ACCESS",
+      resourceId: assignment.user_id,
+      resourceLabel: label,
+      previousValues: { role: currentUserRole || CONTENT_MANAGER_ROLE, isActive: Boolean(assignment.is_active) },
+      updatedValues: { role: effectiveRole, isActive: false },
+      changeSummary: wasRestored ? `Revoked Content Manager access for ${label} (role restored to ${effectiveRole})` : `Revoked Content Manager access for ${label} (preserved role ${effectiveRole})`,
+      ipAddress: clientIp
+    })
+  ]);
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Content Manager access immediately revoked for ${label}.`,
+    data: { userId: assignment.user_id, restoredRole: effectiveRole, wasRestored }
+  });
+}
+async function handleGetContentManagerActivity(deps, body, req, res) {
+  const urlObj = new URL(req.url || "/", "http://localhost");
+  const userId = typeof body.userId === "string" && body.userId.trim() ? body.userId.trim() : (urlObj.searchParams.get("userId") || "").trim();
+  const query = userId ? supabaseServer.from("content_audit_logs").select("*").eq("actor_user_id", userId).order("created_at", { ascending: false }).limit(100) : supabaseServer.from("content_audit_logs").select("*").order("created_at", { ascending: false }).limit(100);
+  const { data, error } = await query;
+  if (error) throw error;
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: "Content management activity logs retrieved.",
+    data: data || []
+  });
+}
+async function handleListPendingContentApprovals(deps, res) {
+  const [probRes, unitRes, usersRes] = await Promise.all([
+    supabaseServer.from("Problem").select("id, slug, title, difficulty, learningUnitId, status, approvalStatus, submittedForReviewAt, submittedForReviewBy, updatedBy, updatedAt"),
+    supabaseServer.from("LearningUnit").select("id, moduleId, title, status, approvalStatus, submittedForReviewAt, submittedForReviewBy, updatedBy, updatedAt"),
+    supabaseServer.from("users").select("id, email, name")
+  ]);
+  if (probRes.error) throw probRes.error;
+  if (unitRes.error) throw unitRes.error;
+  const usersById = new Map((usersRes.data || []).map((u) => [u.id, u]));
+  const pendingQuestions = (probRes.data || []).filter((p2) => p2.approvalStatus === "PENDING_REVIEW" || p2.status === "PENDING_REVIEW").map((p2) => {
+    const submitter = usersById.get(p2.submittedForReviewBy || p2.updatedBy);
+    return {
+      resourceType: "PROBLEM",
+      id: p2.id,
+      slug: p2.slug,
+      title: p2.title,
+      difficulty: p2.difficulty,
+      learningUnitId: p2.learningUnitId,
+      status: p2.status,
+      approvalStatus: p2.approvalStatus || "PENDING_REVIEW",
+      submittedAt: p2.submittedForReviewAt || p2.updatedAt,
+      submittedByEmail: submitter?.email || p2.submittedForReviewBy || "Content Manager",
+      submittedByName: submitter?.name || null
+    };
+  });
+  const pendingUnits = (unitRes.data || []).filter((u) => u.approvalStatus === "PENDING_REVIEW" || u.status === "PENDING_REVIEW").map((u) => {
+    const submitter = usersById.get(u.submittedForReviewBy || u.updatedBy);
+    return {
+      resourceType: "LEARNING_UNIT",
+      id: u.id,
+      moduleId: u.moduleId,
+      title: u.title,
+      status: u.status,
+      approvalStatus: u.approvalStatus || "PENDING_REVIEW",
+      submittedAt: u.submittedForReviewAt || u.updatedAt,
+      submittedByEmail: submitter?.email || u.submittedForReviewBy || "Content Manager",
+      submittedByName: submitter?.name || null
+    };
+  });
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: "Pending publication approvals retrieved.",
+    data: {
+      pendingQuestions,
+      pendingUnits,
+      totalPending: pendingQuestions.length + pendingUnits.length
+    }
+  });
+}
+async function handleApproveOrRejectContent(deps, actionType, body, adminId, clientIp, res) {
+  const resourceType = typeof body.resourceType === "string" ? body.resourceType.trim().toUpperCase() : "PROBLEM";
+  const id = typeof body.id === "string" ? body.id.trim() : "";
+  const reviewNotes = typeof body.reviewNotes === "string" ? body.reviewNotes.trim() : null;
+  if (!id) {
+    return deps.sendJson(res, 400, { success: false, error: "Missing Resource ID", message: "Resource ID is required." });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  if (resourceType === "LEARNING_UNIT") {
+    const { data: unit, error: findErr } = await supabaseServer.from("LearningUnit").select("*").eq("id", id).maybeSingle();
+    if (findErr) throw findErr;
+    if (!unit) return deps.sendJson(res, 404, { success: false, error: "Not Found", message: `Learning Unit "${id}" not found.` });
+    const upd2 = actionType === "APPROVE" ? {
+      status: "PUBLISHED",
+      isActive: true,
+      approvalStatus: "APPROVED",
+      publishedAt: now,
+      publishedBy: adminId,
+      reviewNotes,
+      updatedBy: adminId,
+      updatedAt: now
+    } : {
+      status: unit.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",
+      approvalStatus: "REJECTED",
+      reviewNotes,
+      updatedBy: adminId,
+      updatedAt: now
+    };
+    const { data: updated2, error: updErr2 } = await supabaseServer.from("LearningUnit").update(upd2).eq("id", id).select().single();
+    if (updErr2) throw updErr2;
+    await Promise.all([
+      deps.recordAdminAudit(
+        deps.SUPER_ADMIN_EMAIL,
+        adminId,
+        actionType === "APPROVE" ? "APPROVE_PUBLISH_LEARNING_UNIT" : "REJECT_LEARNING_UNIT_REVIEW",
+        "LEARNING_UNIT",
+        id,
+        unit.title,
+        { reviewNotes },
+        "SUCCESS",
+        null,
+        clientIp
+      ),
+      recordContentAudit({
+        actorUserId: adminId,
+        actorEmail: deps.SUPER_ADMIN_EMAIL,
+        actorRole: "SUPERADMIN",
+        action: actionType === "APPROVE" ? "APPROVE_AND_PUBLISH" : "REJECT_REVIEW",
+        resourceType: "LEARNING_UNIT",
+        resourceId: id,
+        resourceLabel: unit.title,
+        updatedValues: upd2,
+        changeSummary: actionType === "APPROVE" ? `Super Admin approved & published learning unit "${unit.title}"` : `Super Admin requested changes on learning unit "${unit.title}": ${reviewNotes || "No notes"}`,
+        ipAddress: clientIp
+      })
+    ]);
+    return deps.sendJson(res, 200, {
+      success: true,
+      message: actionType === "APPROVE" ? `Learning unit "${unit.title}" approved & published.` : `Review feedback recorded for "${unit.title}".`,
+      data: updated2
+    });
+  }
+  const { data: prob, error: pFindErr } = await supabaseServer.from("Problem").select("*").eq("id", id).maybeSingle();
+  if (pFindErr) throw pFindErr;
+  if (!prob) return deps.sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
+  const upd = actionType === "APPROVE" ? {
+    status: "PUBLISHED",
+    isActive: true,
+    approvalStatus: "APPROVED",
+    publishedAt: now,
+    publishedBy: adminId,
+    reviewNotes,
+    updatedBy: adminId,
+    updatedAt: now
+  } : {
+    status: prob.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",
+    isActive: prob.status === "PUBLISHED",
+    approvalStatus: "REJECTED",
+    reviewNotes,
+    updatedBy: adminId,
+    updatedAt: now
+  };
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update(upd).eq("id", id).select().single();
+  if (updErr) throw updErr;
+  if (actionType === "APPROVE") {
+    const { data: ptc } = await supabaseServer.from("ProblemTestCase").select("*").eq("problemId", id).order("displayOrder", { ascending: true });
+    if (ptc && ptc.length > 0) {
+      registerCustomSuite(prob.slug, {
+        title: prob.title,
+        testCases: ptc.map((r) => ({
+          testIndex: r.displayOrder,
+          input: r.input,
+          expectedOutput: r.expectedOutput,
+          isHidden: Boolean(r.isHidden)
+        }))
+      });
+    }
+  }
+  await Promise.all([
+    deps.recordAdminAudit(
+      deps.SUPER_ADMIN_EMAIL,
+      adminId,
+      actionType === "APPROVE" ? "APPROVE_PUBLISH_QUESTION" : "REJECT_QUESTION_REVIEW",
+      "QUESTION",
+      id,
+      prob.title,
+      { reviewNotes },
+      "SUCCESS",
+      null,
+      clientIp
+    ),
+    recordContentAudit({
+      actorUserId: adminId,
+      actorEmail: deps.SUPER_ADMIN_EMAIL,
+      actorRole: "SUPERADMIN",
+      action: actionType === "APPROVE" ? "APPROVE_AND_PUBLISH" : "REJECT_REVIEW",
+      resourceType: "PROBLEM",
+      resourceId: id,
+      resourceLabel: `${prob.title} (${prob.slug})`,
+      updatedValues: upd,
+      changeSummary: actionType === "APPROVE" ? `Super Admin approved & published question "${prob.title}"` : `Super Admin requested changes on question "${prob.title}": ${reviewNotes || "No notes"}`,
+      ipAddress: clientIp
+    })
+  ]);
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: actionType === "APPROVE" ? `Question "${prob.title}" approved & published.` : `Review feedback recorded for "${prob.title}".`,
+    data: updated
+  });
+}
+
 // src/server/superAdminHandler.ts
 var ipLimiter = new RateLimiter(120, 6e4);
 var userLimiter = new RateLimiter(60, 6e4);
@@ -114822,6 +115693,31 @@ async function handler(req, res) {
     }
     if (action === "toggle_learning_unit_status" || action === "toggle_unit_status") {
       return await handleToggleLearningUnitStatus(body, auth.user.id, clientIp, res);
+    }
+    const cmDeps = { SUPER_ADMIN_EMAIL, sendJson, recordAdminAudit };
+    if (action === "list_content_managers" || method === "GET" && sub === "content-managers") {
+      return await handleListContentManagers(cmDeps, res);
+    }
+    if (action === "search_users_for_content_manager") {
+      return await handleSearchUsersForContentManager(cmDeps, body, req, res);
+    }
+    if (action === "grant_content_manager" || action === "update_content_manager") {
+      return await handleGrantOrUpdateContentManager(cmDeps, body, auth.user.id, clientIp, res);
+    }
+    if (action === "revoke_content_manager") {
+      return await handleRevokeContentManager(cmDeps, body, auth.user.id, clientIp, res);
+    }
+    if (action === "get_content_manager_activity" || action === "list_content_audit_logs") {
+      return await handleGetContentManagerActivity(cmDeps, body, req, res);
+    }
+    if (action === "list_pending_content_approvals") {
+      return await handleListPendingContentApprovals(cmDeps, res);
+    }
+    if (action === "approve_publish_content") {
+      return await handleApproveOrRejectContent(cmDeps, "APPROVE", body, auth.user.id, clientIp, res);
+    }
+    if (action === "reject_content_review") {
+      return await handleApproveOrRejectContent(cmDeps, "REJECT", body, auth.user.id, clientIp, res);
     }
     if (action === "list_belts" || method === "GET" && (sub === "belts" || url.includes("/belts"))) {
       return await handleListBelts(res);
@@ -115968,6 +116864,9 @@ async function handleUpdateUserRole(body, adminId, clientIp, res) {
   }
   const { data: updated, error: updErr } = await supabaseServer.from("users").update({ role: newRole, "updatedAt": (/* @__PURE__ */ new Date()).toISOString() }).eq("id", targetUserId).select("id, email, name, role, status").single();
   if (updErr) throw updErr;
+  if (String(targetUser.role || "").toUpperCase() === "CONTENT_MANAGER" && newRole !== "CONTENT_MANAGER") {
+    await supabaseServer.from("content_manager_assignments").update({ is_active: false, revoked_by: SUPER_ADMIN_EMAIL, revoked_at: (/* @__PURE__ */ new Date()).toISOString(), updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("user_id", targetUserId);
+  }
   if (newRole === "MENTOR") {
     const { data: existingM } = await supabaseServer.from("mentors").select("id").eq("user_id", targetUserId).maybeSingle();
     if (!existingM) {

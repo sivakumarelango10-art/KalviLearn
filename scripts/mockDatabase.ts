@@ -29,6 +29,10 @@ export interface MockDbState {
   Module: any[]
   LearningUnit: any[]
   Belt: any[]
+  content_manager_assignments: any[]
+  content_manager_permissions: any[]
+  content_manager_scopes: any[]
+  content_audit_logs: any[]
 }
 
 export function createInitialMockDb(): MockDbState {
@@ -346,6 +350,10 @@ export function createInitialMockDb(): MockDbState {
       createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
       updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
     })),
+    content_manager_assignments: [],
+    content_manager_permissions: [],
+    content_manager_scopes: [],
+    content_audit_logs: [],
   }
 }
 
@@ -353,11 +361,128 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
   supabaseServerInstance.__isMocked = true
   const db = createInitialMockDb()
 
+  supabaseServerInstance.rpc = async function (fnName: string, args: any) {
+    if (fnName === 'save_question_atomic') {
+      const p_id = args.p_id
+      const existingIdx = db.Problem.findIndex((p: any) => p.id === p_id)
+      const probRecord = {
+        id: p_id,
+        slug: args.p_slug,
+        title: args.p_title,
+        difficulty: args.p_difficulty,
+        status: args.p_status,
+        isActive: args.p_is_active,
+        order: args.p_order,
+        learningUnitId: args.p_learning_unit_id,
+        beltId: args.p_belt_id,
+        subdivision: args.p_subdivision,
+        description: args.p_description,
+        inputFormat: args.p_input_format,
+        outputFormat: args.p_output_format,
+        explanation: args.p_explanation,
+        timeLimitMs: args.p_time_limit_ms,
+        memoryLimitMb: args.p_memory_limit_mb,
+        examples: args.p_examples,
+        starterCodes: args.p_starter_codes,
+        updatedBy: args.p_admin_id,
+        updatedAt: new Date().toISOString(),
+      }
+      if (existingIdx >= 0) {
+        db.Problem[existingIdx] = { ...db.Problem[existingIdx], ...probRecord }
+      } else {
+        db.Problem.push({ ...probRecord, createdAt: new Date().toISOString() })
+      }
+
+      db.ProblemExample = db.ProblemExample.filter((pe: any) => pe.problemId !== p_id)
+      if (Array.isArray(args.p_examples)) {
+        args.p_examples.forEach((ex: any, idx: number) => {
+          db.ProblemExample.push({
+            id: 'pe-' + p_id + '-' + (idx + 1),
+            problemId: p_id,
+            input: ex.input || '',
+            expectedOutput: ex.output || ex.expectedOutput || '',
+            explanation: ex.explanation || null,
+            displayOrder: idx + 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+        })
+      }
+
+      db.ProblemStarterCode = db.ProblemStarterCode.filter((psc: any) => psc.problemId !== p_id)
+      if (args.p_starter_codes && typeof args.p_starter_codes === 'object') {
+        Object.entries(args.p_starter_codes).forEach(([lang, code]) => {
+          db.ProblemStarterCode.push({
+            id: 'psc-' + p_id + '-' + lang,
+            problemId: p_id,
+            language: lang,
+            code: String(code),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+        })
+      }
+
+      db.ProblemTestCase = db.ProblemTestCase.filter((ptc: any) => ptc.problemId !== p_id)
+      db.TestCase = db.TestCase.filter((tc: any) => tc.problemId !== p_id)
+      if (Array.isArray(args.p_test_cases)) {
+        args.p_test_cases.forEach((tc: any, idx: number) => {
+          db.ProblemTestCase.push({
+            id: tc.id || ('ptc-' + p_id + '-' + (idx + 1)),
+            problemId: p_id,
+            input: tc.input || '',
+            expectedOutput: tc.expectedOutput || '',
+            isHidden: Boolean(tc.isHidden),
+            displayOrder: tc.displayOrder || tc.testIndex || idx + 1,
+            points: tc.points ?? 10,
+            explanation: tc.explanation || tc.description || null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          db.TestCase.push({
+            id: 'tc-' + p_id + '-' + (idx + 1),
+            problemId: p_id,
+            testIndex: tc.testIndex || tc.displayOrder || idx + 1,
+            input: tc.input || '',
+            expectedOutput: tc.expectedOutput || '',
+            explanation: tc.explanation || tc.description || null,
+            isHidden: Boolean(tc.isHidden),
+          })
+        })
+      }
+
+      const existingRevs = db.ProblemRevision.filter((r: any) => r.problemId === p_id)
+      const nextVer = existingRevs.reduce((max, r) => Math.max(max, r.version || 0), 0) + 1
+      db.ProblemRevision.push({
+        id: 'rev-' + p_id + '-' + nextVer,
+        problemId: p_id,
+        version: nextVer,
+        snapshot: {
+          problem: probRecord,
+          examples: args.p_examples || [],
+          starterCodes: args.p_starter_codes || {},
+          testCases: args.p_test_cases || [],
+        },
+        changedBy: args.p_admin_id,
+        changeSummary: args.p_change_summary,
+        createdAt: new Date().toISOString(),
+      })
+
+      return { data: { success: true, problemId: p_id, version: nextVer }, error: null }
+    }
+    return { data: null, error: { code: 'PGRST202', message: 'Could not find function ' + fnName } }
+  }
+
   supabaseServerInstance.from = function (tableName: string) {
     if (tableName === 'submissions') {
       // Simulate real PostgreSQL/PostgREST error for lowercase table name
       return {
         delete() {
+        if (tableName === 'content_audit_logs') {
+          const imErr = { code: 'P0001', message: 'content_audit_logs is strictly append-only; DELETE operations are forbidden.' }
+          const errB: any = { eq() { return errB }, then(f: any, r: any) { return Promise.resolve({ data: null, error: imErr }).then(f, r) } }
+          return errB
+        }
           return {
             eq() {
               return Promise.resolve({
@@ -430,6 +555,12 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             }
           }
         }
+        return queryBuilder
+      },
+
+      ilike(col: string, val: any) {
+        const needle = String(val ?? '').replace(/%/g, '').toLowerCase()
+        filters.push((row) => String(row[col] ?? '').toLowerCase().includes(needle))
         return queryBuilder
       },
 
@@ -590,6 +721,11 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
       },
 
       update(updates: any) {
+        if (tableName === 'content_audit_logs') {
+          const imErr = { code: 'P0001', message: 'content_audit_logs is strictly append-only; UPDATE operations are forbidden.' }
+          const errB: any = { eq() { return errB }, select() { return errB }, single() { return Promise.resolve({ data: null, error: imErr }) }, then(f: any, r: any) { return Promise.resolve({ data: null, error: imErr }).then(f, r) } }
+          return errB
+        }
         if (tableName === 'users' && 'updated_at' in updates) {
           const errBuilder: any = {
             select() { return errBuilder },
@@ -731,6 +867,11 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
       },
 
       delete() {
+        if (tableName === 'content_audit_logs') {
+          const imErr = { code: 'P0001', message: 'content_audit_logs is strictly append-only; DELETE operations are forbidden.' }
+          const errB: any = { eq() { return errB }, then(f: any, r: any) { return Promise.resolve({ data: null, error: imErr }).then(f, r) } }
+          return errB
+        }
         const returnBuilder: any = {
           eq(col: string, val: any) {
             filters.push((r) => String(r[col] ?? '') === String(val ?? ''))

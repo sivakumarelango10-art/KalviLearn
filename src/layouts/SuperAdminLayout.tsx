@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard, Building2, UserCog, Users, GraduationCap,
-  ShieldCheck, BookOpen, History, LogOut, Menu, X,
+  ShieldCheck, BookOpen, History, LogOut, Menu, X, FileCheck,
   type LucideIcon,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -16,6 +16,7 @@ const NAV_ITEMS: SuperAdminNavItem[] = [
   { label: 'Mentors', path: '/super-admin/mentors', icon: Users },
   { label: 'Students', path: '/super-admin/students', icon: GraduationCap },
   { label: 'Roles & Access', path: '/super-admin/roles', icon: ShieldCheck, badge: 'RBAC' },
+  { label: 'Content Managers', path: '/super-admin/content-managers', icon: FileCheck, badge: 'ACCESS' },
   { label: 'Content', path: '/super-admin/content', icon: BookOpen, badge: 'CURRICULUM' },
   { label: 'Audit Logs', path: '/super-admin/audit', icon: History, badge: 'APPEND-ONLY' },
 ]

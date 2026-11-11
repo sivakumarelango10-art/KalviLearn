@@ -18,6 +18,7 @@ const FUNCTIONS = [
   'api/integrations/teamsync/tickets.js',
   'api/integrations/teamsync/webhooks.js',
   'api/campus.js',
+  'api/content-manager.js',
 ]
 
 // Child program: import the bundle, then (for execute/submit) send one authenticated-looking request and require JSON.

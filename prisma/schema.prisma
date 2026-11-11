@@ -29,7 +29,13 @@ model Problem {
   title              String
   slug               String               @unique
   difficulty         String               // "Easy" | "Medium" | "Hard"
-  status             String               @default("PUBLISHED") // "DRAFT" | "PUBLISHED" | "ARCHIVED"
+  status                String               @default("PUBLISHED") // "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED"
+  approvalStatus        String               @default("APPROVED") // "DRAFT" | "PENDING_REVIEW" | "APPROVED" | "REJECTED"
+  submittedForReviewAt  DateTime?
+  submittedForReviewBy  String?
+  publishedAt           DateTime?
+  publishedBy           String?
+  reviewNotes           String?              @db.Text
   description        String               @db.Text
   inputFormat        String               @db.Text
   outputFormat       String               @db.Text
@@ -131,36 +137,54 @@ model TestCase {
 }
 
 model Module {
-  id            String         @id @default(uuid())
-  order         Int            @unique
-  title         String
-  description   String?
-  isActive      Boolean        @default(true)
-  status        String         @default("PUBLISHED")
-  learningUnits LearningUnit[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now()) @updatedAt
+  id                   String                @id @default(uuid())
+  order                Int                   @unique
+  title                String
+  description          String?
+  isActive             Boolean               @default(true)
+  status               String                @default("PUBLISHED")
+  approvalStatus       String                @default("APPROVED")
+  submittedForReviewAt DateTime?
+  submittedForReviewBy String?
+  publishedAt          DateTime?
+  publishedBy          String?
+  reviewNotes          String?               @db.Text
+  createdBy            String?
+  updatedBy            String?
+  learningUnits        LearningUnit[]
+  contentManagerScopes ContentManagerScope[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @default(now()) @updatedAt
 }
 
 model LearningUnit {
-  id                 String   @id @default(uuid())
-  moduleId           String
-  module             Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  order              Int
-  title              String
-  content            String   @db.Text
-  codingQuestion     String   @db.Text
-  inputFormat        String   @db.Text
-  outputFormat       String   @db.Text
-  examples           Json
-  codeSnippets       Json?
-  approach           String?  @db.Text
-  readingTimeMinutes Int      @default(2)
-  isActive           Boolean  @default(true)
-  status             String   @default("PUBLISHED")
-  problems           Problem[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @default(now()) @updatedAt
+  id                   String                @id @default(uuid())
+  moduleId             String
+  module               Module                @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order                Int
+  title                String
+  content              String                @db.Text
+  codingQuestion       String                @db.Text
+  inputFormat          String                @db.Text
+  outputFormat         String                @db.Text
+  examples             Json
+  codeSnippets         Json?
+  approach             String?               @db.Text
+  readingTimeMinutes   Int                   @default(2)
+  isActive             Boolean               @default(true)
+  status               String                @default("PUBLISHED")
+  approvalStatus       String                @default("APPROVED")
+  submittedForReviewAt DateTime?
+  submittedForReviewBy String?
+  publishedAt          DateTime?
+  publishedBy          String?
+  reviewNotes          String?               @db.Text
+  createdBy            String?
+  updatedBy            String?
+  problems             Problem[]
+  contentManagerScopes ContentManagerScope[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @default(now()) @updatedAt
 
   @@index([moduleId])
 }
@@ -208,17 +232,18 @@ model Submission {
 model User {
   id             String   @id @default(uuid())
   email          String   @unique
-  role           String   @default("STUDENT") // "STUDENT" | "MENTOR" | "ADMIN"
-  status         String   @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
-  name           String?
+  role                     String                    @default("STUDENT") // "STUDENT" | "MENTOR" | "CAMPUS_MANAGER" | "CONTENT_MANAGER" | "ADMIN" | "SUPERADMIN"
+  status                   String                    @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
+  name                     String?
   // Legacy self-join kept for backward compatibility; new code uses mentor_students table
-  mentorId       String?
-  mentor         User?    @relation("StudentMentor", fields: [mentorId], references: [id], onDelete: SetNull)
-  students       User[]   @relation("StudentMentor")
+  mentorId                 String?
+  mentor                   User?                     @relation("StudentMentor", fields: [mentorId], references: [id], onDelete: SetNull)
+  students                 User[]                    @relation("StudentMentor")
   // Dedicated profile relations
-  studentProfile Student?
-  mentorProfile  Mentor?
-  campusId       String?   @map("campus_id")
+  studentProfile           Student?
+  mentorProfile            Mentor?
+  contentManagerAssignment ContentManagerAssignment?
+  campusId                 String?                   @map("campus_id")
   campus         Campus?   @relation("CampusUsers", fields: [campusId], references: [id], onDelete: SetNull)
   managedCampuses Campus[] @relation("CampusManager")
   createdAt      DateTime @default(now())
@@ -449,4 +474,82 @@ model Campus {
   @@index([status])
   @@index([managerId])
   @@map("campuses")
+}
+
+
+// ─── Content Manager RBAC & Audit ─────────────────────────────────────────────
+
+model ContentManagerAssignment {
+  id           String                     @id @default(uuid())
+  userId       String                     @unique @map("user_id")
+  user         User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  previousRole String                     @default("STUDENT") @map("previous_role") @db.VarChar(50)
+  scopeType    String                     @default("NONE") @map("scope_type") @db.VarChar(20) // "NONE" | "SCOPED" | "GLOBAL"
+  isActive     Boolean                    @default(true) @map("is_active")
+  grantedBy    String?                    @map("granted_by") @db.VarChar(255)
+  grantedAt    DateTime                   @default(now()) @map("granted_at")
+  revokedBy    String?                    @map("revoked_by") @db.VarChar(255)
+  revokedAt    DateTime?                  @map("revoked_at")
+  notes        String?                    @db.Text
+  createdAt    DateTime                   @default(now()) @map("created_at")
+  updatedAt    DateTime                   @default(now()) @updatedAt @map("updated_at")
+  permissions  ContentManagerPermission[]
+  scopes       ContentManagerScope[]
+
+  @@index([isActive])
+  @@index([scopeType])
+  @@map("content_manager_assignments")
+}
+
+model ContentManagerPermission {
+  id           String                   @id @default(uuid())
+  assignmentId String                   @map("assignment_id")
+  assignment   ContentManagerAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  permission   String                   @db.VarChar(100)
+  grantedAt    DateTime                 @default(now()) @map("granted_at")
+
+  @@unique([assignmentId, permission], name: "uq_cm_assignment_permission")
+  @@index([assignmentId])
+  @@index([permission])
+  @@map("content_manager_permissions")
+}
+
+model ContentManagerScope {
+  id             String                   @id @default(uuid())
+  assignmentId   String                   @map("assignment_id")
+  assignment     ContentManagerAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  moduleId       String?                  @map("module_id")
+  module         Module?                  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  learningUnitId String?                  @map("learning_unit_id")
+  learningUnit   LearningUnit?            @relation(fields: [learningUnitId], references: [id], onDelete: Cascade)
+  createdAt      DateTime                 @default(now()) @map("created_at")
+
+  @@unique([assignmentId, moduleId], name: "uq_cm_assignment_module")
+  @@unique([assignmentId, learningUnitId], name: "uq_cm_assignment_unit")
+  @@index([assignmentId])
+  @@index([moduleId])
+  @@index([learningUnitId])
+  @@map("content_manager_scopes")
+}
+
+model ContentAuditLog {
+  id             String   @id @default(uuid())
+  actorUserId    String   @map("actor_user_id")
+  actorEmail     String   @map("actor_email") @db.VarChar(255)
+  actorRole      String   @map("actor_role") @db.VarChar(50)
+  action         String   @db.VarChar(100)
+  resourceType   String   @map("resource_type") @db.VarChar(50)
+  resourceId     String?  @map("resource_id")
+  resourceLabel  String?  @map("resource_label")
+  permissionUsed String?  @map("permission_used") @db.VarChar(100)
+  previousValues Json?    @map("previous_values")
+  updatedValues  Json?    @map("updated_values")
+  changeSummary  String?  @map("change_summary") @db.Text
+  ipAddress      String?  @map("ip_address") @db.VarChar(100)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([actorUserId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt(sort: Desc)])
+  @@map("content_audit_logs")
 }
