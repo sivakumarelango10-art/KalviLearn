@@ -9,18 +9,19 @@
 BEGIN;
 
 -- -------------------------------------------------------------------------
--- 0. Provision Supabase roles if in standalone/test environment
+-- 0. Verify Managed Supabase Roles Exist (Fail-closed if missing)
+-- Production migrations must NEVER create Supabase-managed roles.
 -- -------------------------------------------------------------------------
 DO $$
+DECLARE
+  v_missing_roles TEXT[];
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
-    CREATE ROLE anon;
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
-    CREATE ROLE authenticated;
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
-    CREATE ROLE service_role;
+  SELECT array_agg(r) INTO v_missing_roles
+  FROM unnest(ARRAY['anon', 'authenticated', 'service_role']) AS r
+  WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = r);
+
+  IF v_missing_roles IS NOT NULL AND array_length(v_missing_roles, 1) > 0 THEN
+    RAISE EXCEPTION 'Migration aborted: required Supabase role(s) missing: %', array_to_string(v_missing_roles, ', ');
   END IF;
 END $$;
 
@@ -1260,13 +1261,118 @@ END;
 $$;
 
 -- -------------------------------------------------------------------------
--- 17. Security Hardening: Revoke public RPC access, grant only to service_role
--- Prevents unauthenticated browser/PostgREST RPC exploitation
+-- 17. Security Hardening: Lock down RPCs and all 6 new tables (RLS + Grants)
+-- Prevents direct browser/PostgREST reads or writes of hidden test cases,
+-- revision snapshots, starter code, examples, and migration quarantine logs.
 -- -------------------------------------------------------------------------
 REVOKE ALL ON FUNCTION public.save_question_atomic(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, JSONB, JSONB, JSONB, TEXT, TEXT) FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.save_question_atomic(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, JSONB, JSONB, JSONB, TEXT, TEXT) FROM anon;
 REVOKE ALL ON FUNCTION public.save_question_atomic(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, JSONB, JSONB, JSONB, TEXT, TEXT) FROM authenticated;
 GRANT EXECUTE ON FUNCTION public.save_question_atomic(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, JSONB, JSONB, JSONB, TEXT, TEXT) TO service_role;
+
+REVOKE ALL ON FUNCTION public.safe_jsonb_convert(TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.safe_jsonb_convert(TEXT) TO service_role;
+
+ALTER TABLE public."ProblemExample" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public."ProblemTestCase" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public."ProblemStarterCode" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public."ProblemRevision" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public."ProblemMigrationJsonAudit" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public."OrphanedTestCaseAudit" ENABLE ROW LEVEL SECURITY;
+
+REVOKE ALL ON TABLE public."ProblemExample" FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON TABLE public."ProblemTestCase" FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON TABLE public."ProblemStarterCode" FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON TABLE public."ProblemRevision" FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON TABLE public."ProblemMigrationJsonAudit" FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON TABLE public."OrphanedTestCaseAudit" FROM PUBLIC, anon, authenticated;
+
+REVOKE ALL ON TABLE public."ProblemExample" FROM service_role;
+REVOKE ALL ON TABLE public."ProblemTestCase" FROM service_role;
+REVOKE ALL ON TABLE public."ProblemStarterCode" FROM service_role;
+REVOKE ALL ON TABLE public."ProblemRevision" FROM service_role;
+REVOKE ALL ON TABLE public."ProblemMigrationJsonAudit" FROM service_role;
+REVOKE ALL ON TABLE public."OrphanedTestCaseAudit" FROM service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public."ProblemExample" TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public."ProblemTestCase" TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public."ProblemStarterCode" TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public."ProblemRevision" TO service_role;
+GRANT SELECT, INSERT ON TABLE public."ProblemMigrationJsonAudit" TO service_role;
+GRANT SELECT, INSERT ON TABLE public."OrphanedTestCaseAudit" TO service_role;
+
+-- Explicit service_role-only RLS policies (zero policies for anon/authenticated)
+DROP POLICY IF EXISTS "service_role_all_problem_example" ON public."ProblemExample";
+CREATE POLICY "service_role_all_problem_example" ON public."ProblemExample" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_problem_test_case" ON public."ProblemTestCase";
+CREATE POLICY "service_role_all_problem_test_case" ON public."ProblemTestCase" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_problem_starter_code" ON public."ProblemStarterCode";
+CREATE POLICY "service_role_all_problem_starter_code" ON public."ProblemStarterCode" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_problem_revision" ON public."ProblemRevision";
+CREATE POLICY "service_role_all_problem_revision" ON public."ProblemRevision" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_json_audit" ON public."ProblemMigrationJsonAudit";
+CREATE POLICY "service_role_all_json_audit" ON public."ProblemMigrationJsonAudit" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "service_role_all_orphan_audit" ON public."OrphanedTestCaseAudit";
+CREATE POLICY "service_role_all_orphan_audit" ON public."OrphanedTestCaseAudit" FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- Fail-closed check: verify RLS is enabled and browser roles hold zero privileges
+DO $$
+DECLARE
+  v_unprotected_rls INTEGER;
+  v_exposed_grants INTEGER;
+  v_missing_service_grants INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO v_unprotected_rls
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname IN (
+      'ProblemExample',
+      'ProblemTestCase',
+      'ProblemStarterCode',
+      'ProblemRevision',
+      'ProblemMigrationJsonAudit',
+      'OrphanedTestCaseAudit'
+    )
+    AND c.relrowsecurity IS DISTINCT FROM true;
+
+  SELECT COUNT(*) INTO v_exposed_grants
+  FROM information_schema.role_table_grants
+  WHERE table_schema = 'public'
+    AND table_name IN (
+      'ProblemExample',
+      'ProblemTestCase',
+      'ProblemStarterCode',
+      'ProblemRevision',
+      'ProblemMigrationJsonAudit',
+      'OrphanedTestCaseAudit'
+    )
+    AND grantee IN ('PUBLIC', 'anon', 'authenticated');
+
+  SELECT COUNT(DISTINCT table_name) INTO v_missing_service_grants
+  FROM information_schema.role_table_grants
+  WHERE table_schema = 'public'
+    AND table_name IN (
+      'ProblemExample',
+      'ProblemTestCase',
+      'ProblemStarterCode',
+      'ProblemRevision',
+      'ProblemMigrationJsonAudit',
+      'OrphanedTestCaseAudit'
+    )
+    AND grantee = 'service_role'
+    AND privilege_type = 'SELECT';
+
+  IF v_unprotected_rls > 0 OR v_exposed_grants > 0 OR v_missing_service_grants <> 6 THEN
+    RAISE EXCEPTION 'Migration aborted: table security invariant failed (unprotected_rls=%, exposed_grants=%, service_tables=%).',
+      v_unprotected_rls, v_exposed_grants, v_missing_service_grants;
+  END IF;
+END $$;
 
 -- 18. Reload PostgREST schema cache so Supabase immediately recognizes the new architecture
 NOTIFY pgrst, 'reload schema';

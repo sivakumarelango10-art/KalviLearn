@@ -5,6 +5,7 @@
 BEGIN;
 
 DROP TRIGGER IF EXISTS trg_content_audit_logs_immutable ON public."content_audit_logs";
+REVOKE ALL ON FUNCTION public.prevent_content_audit_log_mutation() FROM PUBLIC, anon, authenticated, service_role;
 DROP TABLE IF EXISTS public."content_audit_logs" CASCADE;
 DROP FUNCTION IF EXISTS public.prevent_content_audit_log_mutation();
 DROP TABLE IF EXISTS public."content_manager_scopes" CASCADE;
