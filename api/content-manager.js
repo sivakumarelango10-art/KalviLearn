@@ -19410,10 +19410,10 @@ def _execute_case(code, input_str, max_output_chars=1000000):
     fake_stdout = io.StringIO()
     sys.stdin = fake_stdin
     sys.stdout = fake_stdout
-
+    
     # Fresh namespace for user code execution
     ns = {'__builtins__': builtins, '__name__': '__main__'}
-
+    
     try:
         compiled = compile(code, '<submission>', 'exec')
         exec(compiled, ns)
@@ -21689,7 +21689,7 @@ var PostgrestQueryBuilder = class {
   * @remarks
   * When using `count` with `.range()` or `.limit()`, the returned `count` is the total number of rows
   * that match your filters, not the number of rows in the current page. Use this to build pagination UI.
-
+  
   * - By default, Supabase projects return a maximum of 1,000 rows. This setting can be changed in your project's [API settings](/dashboard/project/_/settings/api). It's recommended that you keep it low to limit the payload size of accidental or malicious requests. You can use `range()` queries to paginate through your data.
   * - `select()` can be combined with [Filters](/docs/reference/javascript/using-filters)
   * - `select()` can be combined with [Modifiers](/docs/reference/javascript/using-modifiers)
@@ -21948,7 +21948,7 @@ var PostgrestQueryBuilder = class {
   *       name
   *     )
   *   `)
-  *
+  *   
   * ```
   *
   * @exampleSql Query referenced tables through a join table
@@ -22017,7 +22017,7 @@ var PostgrestQueryBuilder = class {
   *     "status": 200,
   *     "statusText": "OK"
   *   }
-  *
+  *   
   * ```
   *
   * @exampleDescription Query the same referenced table multiple times
@@ -22108,7 +22108,7 @@ var PostgrestQueryBuilder = class {
   *         )
   *       )
   *     `)
-  *
+  *   
   * ```
   *
   * @exampleSql Query nested foreign tables through a join table
@@ -22196,7 +22196,7 @@ var PostgrestQueryBuilder = class {
   *     "status": 200,
   *     "statusText": "OK"
   *   }
-  *
+  *   
   * ```
   *
   * @exampleDescription Filtering through referenced tables
@@ -71771,7 +71771,62 @@ async function resolveContentManagerContext(authUser) {
     console.error("[content-rbac] Failed to inspect content_manager_assignments:", assignErr);
     return { authorized: false, statusCode: 503, error: "Unable to verify Content Manager permissions." };
   }
-  if (!assignment || assignment.is_active !== true) {
+  if (!assignment) {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: "Access Denied: Your Content Manager assignment is inactive or has been revoked."
+    };
+  }
+  const assignmentStatus = String(assignment.status || "").toUpperCase();
+  if (assignmentStatus === "SUSPENDED") {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: "Access Denied: Your Content Manager access is currently suspended."
+    };
+  }
+  if (assignmentStatus === "REVOKED") {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: "Access Denied: Your Content Manager assignment has been revoked."
+    };
+  }
+  if (assignmentStatus === "INVITED") {
+    if (!authUser.synthetic) {
+      const now = (/* @__PURE__ */ new Date()).toISOString();
+      const { error: actErr } = await supabaseServer.from("content_manager_assignments").update({
+        status: "ACTIVE",
+        is_active: true,
+        updated_at: now
+      }).eq("id", assignment.id).eq("status", "INVITED");
+      if (actErr) {
+        return { authorized: false, statusCode: 503, error: "Unable to activate Content Manager invitation." };
+      }
+      assignment.is_active = true;
+      assignment.status = "ACTIVE";
+      await recordContentAudit({
+        actorUserId: dbUser.id,
+        actorEmail: dbUser.email,
+        actorRole: CONTENT_MANAGER_ROLE,
+        action: "ACCEPT_CONTENT_MANAGER_INVITE",
+        resourceType: "CONTENT_MANAGER_ACCESS",
+        resourceId: dbUser.id,
+        resourceLabel: dbUser.email,
+        previousValues: { status: "INVITED", isActive: false },
+        updatedValues: { status: "ACTIVE", isActive: true },
+        changeSummary: `${dbUser.email} accepted Content Manager invitation via verified authentication`
+      });
+    } else {
+      return {
+        authorized: false,
+        statusCode: 403,
+        error: "Access Denied: Your Content Manager invitation is pending acceptance."
+      };
+    }
+  }
+  if (assignment.is_active !== true) {
     return {
       authorized: false,
       statusCode: 403,
@@ -71991,8 +72046,11 @@ var PROHIBITED_SUPER_ADMIN_ACTIONS = /* @__PURE__ */ new Set([
   "assign_user_campus",
   "list_audit_logs",
   "list_content_managers",
+  "create_content_manager",
   "grant_content_manager",
   "update_content_manager",
+  "suspend_content_manager",
+  "reactivate_content_manager",
   "revoke_content_manager",
   "search_users_for_content_manager",
   "approve_publish_content",

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   UserCog,
+  UserPlus,
   Search,
-  Plus,
   ShieldCheck,
   Globe,
   Shield,
@@ -11,21 +11,31 @@ import {
   CheckCircle2,
   XCircle,
   Edit2,
-  Trash2,
+  PauseCircle,
+  PlayCircle,
   History,
   Clock,
   Check,
   X,
   AlertTriangle,
   FileCheck,
+  Mail,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import {
   AdminContentManagerAssignment,
+  AdminContentManagerStats,
   AdminEligibleContentUser,
   AdminPendingContentApproval,
+  ContentManagerLifecycleStatus,
   fetchContentManagersDirectory,
   searchUsersForContentManager,
+  createContentManagerAccount,
   grantOrUpdateContentManager,
+  suspendContentManagerAccess,
+  reactivateContentManagerAccess,
   revokeContentManagerAccess,
   fetchContentManagerActivity,
   fetchPendingContentApprovals,
@@ -38,11 +48,58 @@ import {
   CONTENT_PERMISSION_LIST,
   ContentScopeType,
 } from '@/lib/contentPermissions'
-import { cn } from '@/lib/utils'
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PAGE_SIZE = 10
+
+function formatDateTime(iso: string | null | undefined, fallback = '—') {
+  if (!iso) return fallback
+  const dt = new Date(iso)
+  if (Number.isNaN(dt.getTime())) return fallback
+  return dt.toLocaleString()
+}
+
+function StatusBadge({ status, reason }: { status: ContentManagerLifecycleStatus; reason?: string | null }) {
+  if (status === 'ACTIVE') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/50 text-emerald-400 border border-emerald-800/60 text-[10px] font-semibold">
+        <CheckCircle2 className="w-3 h-3" /> Active
+      </span>
+    )
+  }
+  if (status === 'SUSPENDED') {
+    return (
+      <div className="space-y-0.5">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-950/50 text-amber-300 border border-amber-800/60 text-[10px] font-semibold">
+          <PauseCircle className="w-3 h-3" /> Suspended
+        </span>
+        {reason && (
+          <div className="text-[10px] text-amber-300/80 max-w-[160px] truncate" title={reason}>
+            {reason}
+          </div>
+        )}
+      </div>
+    )
+  }
+  if (status === 'INVITED') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-950/50 text-sky-300 border border-sky-800/60 text-[10px] font-semibold">
+        <Mail className="w-3 h-3" /> Invited
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-950/40 text-red-400 border border-red-900/60 text-[10px] font-semibold">
+      <XCircle className="w-3 h-3" /> Revoked
+    </span>
+  )
+}
 
 export const SuperAdminContentManagersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'managers' | 'approvals' | 'audit'>('managers')
   const [assignments, setAssignments] = useState<AdminContentManagerAssignment[]>([])
+  const [stats, setStats] = useState<AdminContentManagerStats | null>(null)
+  const [campuses, setCampuses] = useState<Array<{ id: string; name: string; code: string; status?: string }>>([])
   const [modules, setModules] = useState<Array<{ id: string; title: string; order: number }>>([])
   const [learningUnits, setLearningUnits] = useState<Array<{ id: string; moduleId: string; title: string; order: number }>>([])
   const [pendingApprovals, setPendingApprovals] = useState<AdminPendingContentApproval[]>([])
@@ -50,12 +107,24 @@ export const SuperAdminContentManagersPage: React.FC = () => {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [directoryLoadError, setDirectoryLoadError] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
-  const [searchFilter, setSearchFilter] = useState('')
 
-  // Grant / Edit Modal
+  // Search / Filter / Sort / Pagination
+  const [searchFilter, setSearchFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'ALL' | ContentManagerLifecycleStatus>('ALL')
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | ContentScopeType>('ALL')
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
+  const [page, setPage] = useState(1)
+
+  // Dual-mode Add / Edit Modal
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAssignment, setEditingAssignment] = useState<AdminContentManagerAssignment | null>(null)
+  const [addMode, setAddMode] = useState<'create' | 'existing'>('create')
+  const [fullName, setFullName] = useState('')
+  const [emailInput, setEmailInput] = useState('')
+  const [selectedCampusId, setSelectedCampusId] = useState('')
+  const [creationMode, setCreationMode] = useState<'DIRECT' | 'INVITE'>('DIRECT')
   const [userQuery, setUserQuery] = useState('')
   const [userResults, setUserResults] = useState<AdminEligibleContentUser[]>([])
   const [searchingUsers, setSearchingUsers] = useState(false)
@@ -65,6 +134,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   const [selectedModuleIds, setSelectedModuleIds] = useState<string[]>([])
   const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([])
   const [notes, setNotes] = useState('')
+  const [modalError, setModalError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
   // Activity Modal
@@ -72,19 +142,26 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   const [userActivityLogs, setUserActivityLogs] = useState<any[]>([])
   const [loadingActivity, setLoadingActivity] = useState(false)
 
-  // Revoke Confirmation
+  // Lifecycle Action Modals
+  const [suspendTarget, setSuspendTarget] = useState<AdminContentManagerAssignment | null>(null)
+  const [suspensionReason, setSuspensionReason] = useState('')
+  const [reactivateTarget, setReactivateTarget] = useState<AdminContentManagerAssignment | null>(null)
   const [revokeTarget, setRevokeTarget] = useState<AdminContentManagerAssignment | null>(null)
-  const [revoking, setRevoking] = useState(false)
+  const [lifecycleBusy, setLifecycleBusy] = useState(false)
 
   // Reject Modal
   const [rejectTarget, setRejectTarget] = useState<AdminPendingContentApproval | null>(null)
   const [rejectNotes, setRejectNotes] = useState('')
 
-  const categories = Array.from(new Set(CONTENT_PERMISSION_CATALOG.map((p) => p.category)))
+  const categories = useMemo(
+    () => Array.from(new Set(CONTENT_PERMISSION_CATALOG.map((p) => p.category))),
+    []
+  )
 
   const loadAll = async () => {
     setLoading(true)
     setError(null)
+    setDirectoryLoadError(null)
     const [dirRes, appRes, audRes] = await Promise.all([
       fetchContentManagersDirectory(),
       fetchPendingContentApprovals(),
@@ -92,10 +169,14 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     ])
     if (dirRes.success && dirRes.data) {
       setAssignments(dirRes.data.assignments || [])
+      setStats(dirRes.data.stats || null)
+      setCampuses(dirRes.data.campuses || [])
       setModules(dirRes.data.modules || [])
       setLearningUnits(dirRes.data.learningUnits || [])
     } else {
-      setError(dirRes.error || 'Failed to load Content Managers directory.')
+      const msg = dirRes.error || dirRes.message || 'Failed to load Content Managers directory.'
+      setDirectoryLoadError(msg)
+      setError(msg)
     }
     if (appRes.success && appRes.data) {
       setPendingApprovals([...(appRes.data.pendingQuestions || []), ...(appRes.data.pendingUnits || [])])
@@ -111,8 +192,17 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     loadAll()
   }, [])
 
-  const openGrantModal = () => {
+  useEffect(() => {
+    setPage(1)
+  }, [searchFilter, statusFilter, scopeFilter, sortOrder])
+
+  const openAddModal = () => {
     setEditingAssignment(null)
+    setAddMode('create')
+    setFullName('')
+    setEmailInput('')
+    setSelectedCampusId('')
+    setCreationMode('DIRECT')
     setSelectedUser(null)
     setUserQuery('')
     setUserResults([])
@@ -121,18 +211,22 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setSelectedModuleIds([])
     setSelectedUnitIds([])
     setNotes('')
+    setModalError(null)
     setIsModalOpen(true)
-    handleUserSearch('')
   }
 
   const openEditModal = (a: AdminContentManagerAssignment) => {
     setEditingAssignment(a)
+    setFullName(a.name || '')
+    setEmailInput(a.email || '')
+    setSelectedCampusId(a.campusId || '')
     setSelectedUser({ id: a.userId, email: a.email, name: a.name })
     setSelectedPermissions(a.permissions || [])
     setScopeType(a.scopeType || 'NONE')
     setSelectedModuleIds(a.moduleIds || [])
     setSelectedUnitIds(a.learningUnitIds || [])
     setNotes(a.notes || '')
+    setModalError(null)
     setIsModalOpen(true)
   }
 
@@ -140,66 +234,189 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setUserQuery(query)
     setSearchingUsers(true)
     const res = await searchUsersForContentManager(query)
-    setSearchingUsers(false)
     if (res.success && res.data) {
       setUserResults(res.data)
     }
+    setSearchingUsers(false)
   }
 
-  const togglePerm = (permId: string) => {
+  const switchAddMode = (mode: 'create' | 'existing') => {
+    setAddMode(mode)
+    setModalError(null)
+    if (mode === 'existing' && userResults.length === 0) {
+      handleUserSearch('')
+    }
+  }
+
+  const togglePerm = (perm: string) => {
     setSelectedPermissions((prev) =>
-      prev.includes(permId) ? prev.filter((p) => p !== permId) : [...prev, permId]
+      prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
     )
   }
 
-  const toggleModuleScope = (modId: string) => {
-    setSelectedModuleIds((prev) => (prev.includes(modId) ? prev.filter((id) => id !== modId) : [...prev, modId]))
+  const toggleModule = (id: string) => {
+    setSelectedModuleIds((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
+    )
   }
 
-  const toggleUnitScope = (unitId: string) => {
-    setSelectedUnitIds((prev) => (prev.includes(unitId) ? prev.filter((id) => id !== unitId) : [...prev, unitId]))
+  const toggleUnit = (id: string) => {
+    setSelectedUnitIds((prev) =>
+      prev.includes(id) ? prev.filter((u) => u !== id) : [...prev, id]
+    )
   }
 
   const handleSaveAssignment = async (e: React.FormEvent) => {
     e.preventDefault()
+    setModalError(null)
+    setError(null)
+    setSuccessMsg(null)
+
+    if (editingAssignment) {
+      const trimmedName = fullName.trim()
+      if (!trimmedName || trimmedName.length > 100) {
+        setModalError('Full name is required and must be 100 characters or fewer.')
+        return
+      }
+      setSaving(true)
+      const res = await grantOrUpdateContentManager({
+        userId: editingAssignment.userId,
+        name: trimmedName,
+        campusId: selectedCampusId || null,
+        permissions: selectedPermissions,
+        scopeType,
+        moduleIds: selectedModuleIds,
+        learningUnitIds: selectedUnitIds,
+        notes: notes.trim() || null,
+      })
+      setSaving(false)
+      if (!res.success) {
+        setModalError(res.message || res.error || 'Failed to update Content Manager.')
+        return
+      }
+      setSuccessMsg(`Updated Content Manager "${editingAssignment.email}".`)
+      setIsModalOpen(false)
+      await loadAll()
+      return
+    }
+
+    if (addMode === 'create') {
+      const trimmedName = fullName.trim()
+      const trimmedEmail = emailInput.trim().toLowerCase()
+      if (!trimmedName || !trimmedEmail) {
+        setModalError('Full name and email address are required.')
+        return
+      }
+      if (trimmedName.length > 100) {
+        setModalError('Full name must be 100 characters or fewer.')
+        return
+      }
+      if (!EMAIL_REGEX.test(trimmedEmail) || trimmedEmail.length > 255) {
+        setModalError('Please enter a valid email address.')
+        return
+      }
+
+      setSaving(true)
+      const res = await createContentManagerAccount({
+        name: trimmedName,
+        email: trimmedEmail,
+        campusId: selectedCampusId || null,
+        creationMode,
+        permissions: selectedPermissions,
+        scopeType,
+        moduleIds: selectedModuleIds,
+        learningUnitIds: selectedUnitIds,
+        notes: notes.trim() || null,
+      })
+      setSaving(false)
+      if (!res.success) {
+        setModalError(res.message || res.error || 'Failed to create Content Manager account.')
+        return
+      }
+      setSuccessMsg(res.message || `Created Content Manager account for ${trimmedEmail}.`)
+      setIsModalOpen(false)
+      await loadAll()
+      return
+    }
+
+    // Assign Existing User mode
     if (!selectedUser) {
-      setError('Please select a registered user.')
+      setModalError('Please select a registered user from the list.')
       return
     }
     setSaving(true)
-    setError(null)
     const res = await grantOrUpdateContentManager({
       userId: selectedUser.id,
-      email: selectedUser.email,
+      preventDuplicateAssignment: true,
       permissions: selectedPermissions,
       scopeType,
-      moduleIds: scopeType === 'SCOPED' ? selectedModuleIds : [],
-      learningUnitIds: scopeType === 'SCOPED' ? selectedUnitIds : [],
+      moduleIds: selectedModuleIds,
+      learningUnitIds: selectedUnitIds,
       notes: notes.trim() || null,
     })
     setSaving(false)
+    if (!res.success) {
+      setModalError(res.message || res.error || 'Failed to assign Content Manager access.')
+      return
+    }
+    setSuccessMsg(`Content Manager access assigned for ${selectedUser.email}.`)
+    setIsModalOpen(false)
+    await loadAll()
+  }
+
+  const handleSuspend = async () => {
+    if (!suspendTarget) return
+    setLifecycleBusy(true)
+    setError(null)
+    const res = await suspendContentManagerAccess({
+      assignmentId: suspendTarget.id,
+      userId: suspendTarget.userId,
+      reason: suspensionReason.trim() || null,
+    })
+    setLifecycleBusy(false)
     if (res.success) {
-      setSuccessMsg(
-        `Content Manager access ${editingAssignment ? 'updated' : 'granted'} for ${selectedUser.email} (${scopeType}).`
-      )
-      setIsModalOpen(false)
-      loadAll()
+      setSuccessMsg(res.message || `Suspended Content Manager access for ${suspendTarget.email}.`)
+      setSuspendTarget(null)
+      setSuspensionReason('')
+      await loadAll()
     } else {
-      setError(res.error || 'Failed to save Content Manager assignment.')
+      setError(res.message || res.error || 'Failed to suspend Content Manager.')
+    }
+  }
+
+  const handleReactivate = async () => {
+    if (!reactivateTarget) return
+    setLifecycleBusy(true)
+    setError(null)
+    const res = await reactivateContentManagerAccess({
+      assignmentId: reactivateTarget.id,
+      userId: reactivateTarget.userId,
+    })
+    setLifecycleBusy(false)
+    if (res.success) {
+      setSuccessMsg(res.message || `Reactivated Content Manager access for ${reactivateTarget.email}.`)
+      setReactivateTarget(null)
+      await loadAll()
+    } else {
+      setError(res.message || res.error || 'Failed to reactivate Content Manager.')
     }
   }
 
   const handleRevoke = async () => {
     if (!revokeTarget) return
-    setRevoking(true)
-    const res = await revokeContentManagerAccess({ userId: revokeTarget.userId, assignmentId: revokeTarget.id })
-    setRevoking(false)
-    setRevokeTarget(null)
+    setLifecycleBusy(true)
+    setError(null)
+    const res = await revokeContentManagerAccess({
+      userId: revokeTarget.userId,
+      assignmentId: revokeTarget.id,
+    })
+    setLifecycleBusy(false)
     if (res.success) {
-      setSuccessMsg(`Content Manager access immediately revoked for ${revokeTarget.email}.`)
-      loadAll()
+      setSuccessMsg(res.message || `Permanently revoked Content Manager access for ${revokeTarget.email}.`)
+      setRevokeTarget(null)
+      await loadAll()
     } else {
-      setError(res.error || 'Failed to revoke access.')
+      setError(res.message || res.error || 'Failed to revoke Content Manager access.')
     }
   }
 
@@ -207,48 +424,78 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setActivityModalUser({ id: a.userId, email: a.email })
     setLoadingActivity(true)
     const res = await fetchContentManagerActivity(a.userId)
+    setUserActivityLogs(res.success && res.data ? res.data : [])
     setLoadingActivity(false)
-    if (res.success && res.data) {
-      setUserActivityLogs(res.data)
-    } else {
-      setUserActivityLogs([])
-    }
   }
 
   const handleApprove = async (item: AdminPendingContentApproval) => {
-    const res = await approvePublishContent({ resourceType: item.resourceType, id: item.id })
+    setError(null)
+    const res = await approvePublishContent({
+      resourceType: item.resourceType,
+      id: item.id,
+      reviewNotes: 'Approved by Super Admin',
+    })
     if (res.success) {
-      setSuccessMsg(`Approved & published "${item.title}".`)
-      loadAll()
+      setSuccessMsg(`Approved and published ${item.title}.`)
+      await loadAll()
     } else {
-      setError(res.error || 'Approval failed.')
+      setError(res.message || res.error || 'Approval failed.')
     }
   }
 
   const handleReject = async () => {
     if (!rejectTarget) return
+    setError(null)
     const res = await rejectContentReview({
       resourceType: rejectTarget.resourceType,
       id: rejectTarget.id,
-      reviewNotes: rejectNotes.trim() || 'Changes requested by Super Admin',
+      reviewNotes: rejectNotes.trim() || 'Needs further revisions',
     })
-    setRejectTarget(null)
-    setRejectNotes('')
     if (res.success) {
-      setSuccessMsg(`Returned "${rejectTarget.title}" with feedback.`)
-      loadAll()
+      setSuccessMsg(`Returned ${rejectTarget.title} to Draft with review feedback.`)
+      setRejectTarget(null)
+      setRejectNotes('')
+      await loadAll()
     } else {
-      setError(res.error || 'Rejection failed.')
+      setError(res.message || res.error || 'Rejection failed.')
     }
   }
 
-  const filteredAssignments = assignments.filter((a) => {
-    if (!searchFilter.trim()) return true
-    const s = searchFilter.toLowerCase()
-    return a.email.toLowerCase().includes(s) || String(a.name || '').toLowerCase().includes(s)
-  })
+  const computedStats: AdminContentManagerStats = useMemo(() => {
+    if (stats) return stats
+    return {
+      total: assignments.length,
+      active: assignments.filter((a) => a.status === 'ACTIVE').length,
+      suspended: assignments.filter((a) => a.status === 'SUSPENDED').length,
+      revoked: assignments.filter((a) => a.status === 'REVOKED').length,
+      invited: assignments.filter((a) => a.status === 'INVITED').length,
+      pendingApprovals: pendingApprovals.length,
+      totalContentEdits: assignments.reduce((acc, a) => acc + (a.contentEditCount || 0), 0),
+    }
+  }, [stats, assignments, pendingApprovals.length])
 
-  const activeCount = assignments.filter((a) => a.isActive).length
+  const filteredAndSorted = useMemo(() => {
+    const q = searchFilter.trim().toLowerCase()
+    const filtered = assignments.filter((a) => {
+      if (statusFilter !== 'ALL' && a.status !== statusFilter) return false
+      if (scopeFilter !== 'ALL' && a.scopeType !== scopeFilter) return false
+      if (!q) return true
+      return (
+        a.email.toLowerCase().includes(q) ||
+        String(a.name || '').toLowerCase().includes(q) ||
+        String(a.campusName || '').toLowerCase().includes(q)
+      )
+    })
+    return [...filtered].sort((a, b) => {
+      const ta = new Date(a.createdAt || a.grantedAt || 0).getTime()
+      const tb = new Date(b.createdAt || b.grantedAt || 0).getTime()
+      return sortOrder === 'newest' ? tb - ta : ta - tb
+    })
+  }, [assignments, searchFilter, statusFilter, scopeFilter, sortOrder])
+
+  const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const paginatedAssignments = filteredAndSorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   return (
     <div className="space-y-6">
@@ -260,7 +507,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-white tracking-tight">Content Manager Management</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
-            Grant scoped curriculum permissions, audit content edits, and approve pending publications.
+            Create and manage Content Manager accounts, scoped curriculum permissions, suspension lifecycle, and publication approvals.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -275,25 +522,34 @@ export const SuperAdminContentManagersPage: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={openGrantModal}
+            onClick={openAddModal}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-xs font-semibold shadow"
           >
-            <Plus className="w-4 h-4" />
-            Grant Content Manager
+            <UserPlus className="w-4 h-4" />
+            + Add Content Manager
           </button>
         </div>
       </div>
 
       {/* Banners */}
       {error && (
-        <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             {error}
           </span>
-          <button onClick={() => setError(null)} className="text-neutral-400 hover:text-white">
-            Dismiss
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={loadAll}
+              className="px-2.5 py-1 rounded bg-red-900/50 hover:bg-red-800/60 text-white font-semibold"
+            >
+              Retry
+            </button>
+            <button type="button" onClick={() => setError(null)} className="text-neutral-400 hover:text-white">
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
       {successMsg && (
@@ -302,25 +558,41 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             {successMsg}
           </span>
-          <button onClick={() => setSuccessMsg(null)} className="text-neutral-400 hover:text-white">
+          <button type="button" onClick={() => setSuccessMsg(null)} className="text-neutral-400 hover:text-white">
             Dismiss
           </button>
         </div>
       )}
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-[#080808] border border-white/10">
-          <div className="text-xs text-neutral-400">Active Content Managers</div>
-          <div className="text-2xl font-bold text-white mt-1">{activeCount}</div>
+      {/* Summary KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Total Managers</div>
+          <div className="text-xl font-bold text-white mt-1">{computedStats.total}</div>
         </div>
-        <div className="p-4 rounded-xl bg-[#080808] border border-white/10">
-          <div className="text-xs text-neutral-400">Pending Publication Reviews</div>
-          <div className="text-2xl font-bold text-amber-300 mt-1">{pendingApprovals.length}</div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Active</div>
+          <div className="text-xl font-bold text-emerald-400 mt-1">{computedStats.active}</div>
         </div>
-        <div className="p-4 rounded-xl bg-[#080808] border border-white/10">
-          <div className="text-xs text-neutral-400">Recent Content Edits</div>
-          <div className="text-2xl font-bold text-emerald-400 mt-1">{auditLogs.length}</div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Suspended</div>
+          <div className="text-xl font-bold text-amber-300 mt-1">{computedStats.suspended}</div>
+        </div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Revoked</div>
+          <div className="text-xl font-bold text-red-400 mt-1">{computedStats.revoked}</div>
+        </div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Pending Invites</div>
+          <div className="text-xl font-bold text-sky-300 mt-1">{computedStats.invited}</div>
+        </div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Pending Reviews</div>
+          <div className="text-xl font-bold text-amber-400 mt-1">{pendingApprovals.length}</div>
+        </div>
+        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
+          <div className="text-[11px] text-neutral-400">Total Edits</div>
+          <div className="text-xl font-bold text-indigo-300 mt-1">{computedStats.totalContentEdits}</div>
         </div>
       </div>
 
@@ -370,16 +642,50 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       {/* TAB 1: CONTENT MANAGERS DIRECTORY */}
       {activeTab === 'managers' && (
         <div className="space-y-4">
-          <div className="bg-[#080808] p-3 rounded-xl border border-white/10">
-            <div className="relative max-w-md">
+          {/* Toolbar: Search + Status Filter + Scope Filter + Sort */}
+          <div className="bg-[#080808] p-3.5 rounded-xl border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder="Search Content Managers by name or email..."
+                placeholder="Search Content Managers by name, email, or campus..."
                 className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white"
               />
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                aria-label="Filter by status"
+                className="bg-black border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-neutral-200"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="ACTIVE">Active</option>
+                <option value="SUSPENDED">Suspended</option>
+                <option value="INVITED">Invited</option>
+                <option value="REVOKED">Revoked</option>
+              </select>
+              <select
+                value={scopeFilter}
+                onChange={(e) => setScopeFilter(e.target.value as any)}
+                aria-label="Filter by scope"
+                className="bg-black border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-neutral-200"
+              >
+                <option value="ALL">All Scopes</option>
+                <option value="GLOBAL">Global</option>
+                <option value="SCOPED">Scoped</option>
+                <option value="NONE">None</option>
+              </select>
+              <button
+                type="button"
+                onClick={() => setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))}
+                className="inline-flex items-center gap-1.5 bg-black border border-white/10 hover:border-white/25 rounded-lg px-2.5 py-1.5 text-xs text-neutral-200"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
+                {sortOrder === 'newest' ? 'Created: Newest' : 'Created: Oldest'}
+              </button>
             </div>
           </div>
 
@@ -388,99 +694,175 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
-                    <th className="py-3.5 px-4">User</th>
+                    <th className="py-3.5 px-4">Manager</th>
+                    <th className="py-3.5 px-4">Email</th>
                     <th className="py-3.5 px-4">Status</th>
                     <th className="py-3.5 px-4">Scope</th>
-                    <th className="py-3.5 px-4">Permission Summary</th>
-                    <th className="py-3.5 px-4">Granted / Revoked</th>
-                    <th className="py-3.5 px-4">Activity</th>
+                    <th className="py-3.5 px-4">Assigned Modules</th>
+                    <th className="py-3.5 px-4">Permissions</th>
+                    <th className="py-3.5 px-4">Created At</th>
+                    <th className="py-3.5 px-4">Granted By</th>
+                    <th className="py-3.5 px-4">Last Activity</th>
                     <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-neutral-200">
-                  {filteredAssignments.length === 0 ? (
+                  {loading && assignments.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-neutral-500">
-                        No Content Managers assigned yet. Click "Grant Content Manager" to add one.
+                      <td colSpan={10} className="py-12 text-center text-neutral-400">
+                        Loading Content Managers...
+                      </td>
+                    </tr>
+                  ) : directoryLoadError && assignments.length === 0 ? (
+                    <tr>
+                      <td colSpan={10} className="py-12 text-center text-red-300 space-y-2">
+                        <div>{directoryLoadError}</div>
+                        <button
+                          type="button"
+                          onClick={loadAll}
+                          className="px-3 py-1.5 rounded-lg bg-red-900/50 hover:bg-red-800/60 text-white text-xs font-semibold"
+                        >
+                          Retry Loading Directory
+                        </button>
+                      </td>
+                    </tr>
+                  ) : paginatedAssignments.length === 0 ? (
+                    <tr>
+                      <td colSpan={10} className="py-12 text-center text-neutral-500">
+                        {assignments.length === 0
+                          ? 'No Content Managers added yet. Click "+ Add Content Manager" to create or assign one.'
+                          : 'No Content Managers match the active search or filter criteria.'}
                       </td>
                     </tr>
                   ) : (
-                    filteredAssignments.map((a) => (
+                    paginatedAssignments.map((a) => (
                       <tr key={a.id} className="hover:bg-white/[0.02]">
                         <td className="py-3.5 px-4">
                           <div className="font-semibold text-white">{a.name || 'Registered User'}</div>
-                          <div className="font-mono text-[11px] text-neutral-400">{a.email}</div>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {a.isActive ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/50 text-emerald-400 border border-emerald-800/60 text-[10px] font-semibold">
-                              <CheckCircle2 className="w-3 h-3" /> Active
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-950/40 text-red-400 border border-red-900/60 text-[10px] font-semibold">
-                              <XCircle className="w-3 h-3" /> Revoked
-                            </span>
+                          {a.campusName && (
+                            <div className="text-[10px] text-neutral-400 mt-0.5">Campus: {a.campusName}</div>
                           )}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <div className="flex items-center gap-1.5">
-                            {a.scopeType === 'GLOBAL' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/50 text-[10px] font-bold">
-                                <Globe className="w-3 h-3" /> GLOBAL
-                              </span>
-                            ) : a.scopeType === 'SCOPED' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/40 text-amber-300 border border-amber-800/50 text-[10px] font-bold">
-                                <Shield className="w-3 h-3" /> SCOPED ({a.moduleIds.length}m · {a.learningUnitIds.length}u)
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-neutral-700 text-[10px] font-bold">
-                                <Lock className="w-3 h-3" /> NONE
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <div className="font-semibold text-white">{a.permissionCount} permissions</div>
-                          <div className="text-[10px] text-neutral-400 mt-0.5">
-                            {a.permissions.includes('content.question.publish') ? 'Can Publish' : 'Draft / Review Only'}
-                            {a.permissions.includes('content.question.delete') ? ' · Can Delete' : ''}
-                          </div>
-                        </td>
-                        <td className="py-3.5 px-4 text-[11px] text-neutral-400">
-                          <div>Granted by {a.grantedBy || 'Super Admin'}</div>
-                          {a.grantedAt && <div>{new Date(a.grantedAt).toLocaleDateString()}</div>}
-                          {!a.isActive && a.revokedAt && (
-                            <div className="text-red-400">
-                              Revoked {new Date(a.revokedAt).toLocaleDateString()} by {a.revokedBy}
+                          {a.notes && (
+                            <div className="text-[10px] text-neutral-500 mt-0.5 max-w-[180px] truncate" title={a.notes}>
+                              {a.notes}
                             </div>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 text-[11px] text-neutral-400">
+                        <td className="py-3.5 px-4">
+                          <div className="font-mono text-[11px] text-neutral-300">{a.email}</div>
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <StatusBadge status={a.status} reason={a.suspensionReason} />
+                        </td>
+                        <td className="py-3.5 px-4">
+                          {a.scopeType === 'GLOBAL' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/40 text-amber-300 border border-amber-800/60 font-semibold text-[10px]">
+                              <Globe className="w-3 h-3" /> GLOBAL
+                            </span>
+                          )}
+                          {a.scopeType === 'SCOPED' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-950/40 text-blue-300 border border-blue-800/60 font-semibold text-[10px]">
+                              <Shield className="w-3 h-3" /> SCOPED
+                            </span>
+                          )}
+                          {a.scopeType === 'NONE' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-white/10 font-semibold text-[10px]">
+                              <Lock className="w-3 h-3" /> NONE
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 max-w-[200px]">
+                          {a.scopeType === 'GLOBAL' ? (
+                            <span className="text-[11px] text-amber-300/90">All Curriculum Modules</span>
+                          ) : a.scopeType === 'NONE' ? (
+                            <span className="text-[11px] text-neutral-500">No modules assigned</span>
+                          ) : (
+                            <div className="space-y-0.5 text-[11px]">
+                              {a.assignedModules.length > 0 && (
+                                <div className="text-neutral-200 truncate" title={a.assignedModules.map((m) => m.title).join(', ')}>
+                                  {a.assignedModules.map((m) => m.title).join(', ')}
+                                </div>
+                              )}
+                              {a.assignedLearningUnits.length > 0 && (
+                                <div className="text-neutral-400 text-[10px]">
+                                  +{a.assignedLearningUnits.length} unit(s)
+                                </div>
+                              )}
+                              {a.assignedModules.length === 0 && a.assignedLearningUnits.length === 0 && (
+                                <span className="text-neutral-500">0 modules selected</span>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <span className="font-semibold text-white">{a.permissionCount}</span>
+                          <span className="text-neutral-500 ml-1">perms</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-[11px] text-neutral-400 whitespace-nowrap">
+                          {formatDateTime(a.createdAt || a.grantedAt)}
+                        </td>
+                        <td className="py-3.5 px-4 text-[11px]">
+                          <div className="text-neutral-300">{a.grantedBy || 'Super Admin'}</div>
+                          {a.updatedBy && a.updatedAt && (
+                            <div className="text-[10px] text-neutral-500">Edited by {a.updatedBy}</div>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4">
                           <button
                             type="button"
                             onClick={() => openActivityModal(a)}
-                            className="inline-flex items-center gap-1 text-[#FF6266] hover:underline font-medium"
+                            className="inline-flex flex-col items-start text-left hover:text-[#FF6266]"
                           >
-                            <History className="w-3.5 h-3.5" />
-                            {a.activityCount} edits
+                            <span className="inline-flex items-center gap-1 text-neutral-300 text-[11px]">
+                              <History className="w-3 h-3" />
+                              {a.activityCount} actions
+                            </span>
+                            <span className="text-[10px] text-neutral-500">
+                              {a.lastActivityAt ? formatDateTime(a.lastActivityAt) : 'No edits yet'}
+                            </span>
                           </button>
                         </td>
-                        <td className="py-3.5 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                          <div className="inline-flex items-center gap-1.5">
                             <button
                               type="button"
                               onClick={() => openEditModal(a)}
-                              className="px-2.5 py-1 rounded bg-[#181818] hover:bg-[#222] border border-white/10 text-neutral-200 text-[11px] font-semibold flex items-center gap-1"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#181818] hover:bg-white/10 border border-white/10 text-[11px] font-medium"
+                              title="Edit profile, permissions & scope"
                             >
-                              <Edit2 className="w-3 h-3" /> Configure
+                              <Edit2 className="w-3 h-3" /> Edit
                             </button>
-                            {a.isActive && (
+                            {(a.status === 'ACTIVE' || a.status === 'INVITED') && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSuspensionReason('')
+                                  setSuspendTarget(a)
+                                }}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-950/30 hover:bg-amber-900/50 border border-amber-800/50 text-amber-300 text-[11px] font-medium"
+                                title="Suspend access temporarily"
+                              >
+                                <PauseCircle className="w-3 h-3" /> Suspend
+                              </button>
+                            )}
+                            {a.status === 'SUSPENDED' && (
+                              <button
+                                type="button"
+                                onClick={() => setReactivateTarget(a)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-800/60 text-emerald-300 text-[11px] font-medium"
+                                title="Reactivate suspended access"
+                              >
+                                <PlayCircle className="w-3 h-3" /> Reactivate
+                              </button>
+                            )}
+                            {a.status !== 'REVOKED' && (
                               <button
                                 type="button"
                                 onClick={() => setRevokeTarget(a)}
-                                className="px-2.5 py-1 rounded bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 text-red-300 text-[11px] font-semibold flex items-center gap-1"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-950/30 hover:bg-red-900/50 border border-red-900/50 text-red-400 text-[11px] font-medium"
+                                title="Permanently revoke Content Manager access"
                               >
-                                <Trash2 className="w-3 h-3" /> Revoke
+                                <ShieldCheck className="w-3 h-3" /> Revoke
                               </button>
                             )}
                           </div>
@@ -491,6 +873,37 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Footer */}
+            {filteredAndSorted.length > 0 && (
+              <div className="px-4 py-3 border-t border-white/10 bg-black/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-400">
+                <div>
+                  Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filteredAndSorted.length)} of{' '}
+                  {filteredAndSorted.length} Content Manager{filteredAndSorted.length === 1 ? '' : 's'}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={safePage <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-white/10 bg-black text-neutral-300 disabled:opacity-40"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" /> Prev
+                  </button>
+                  <span className="text-neutral-300">
+                    Page {safePage} of {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={safePage >= totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-white/10 bg-black text-neutral-300 disabled:opacity-40"
+                  >
+                    Next <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -575,7 +988,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </div>
       )}
 
-      {/* GRANT / CONFIGURE MODAL */}
+      {/* ADD / EDIT CONTENT MANAGER MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
           <form
@@ -585,10 +998,12 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             <div className="p-5 border-b border-white/10 flex items-center justify-between bg-[#161616]">
               <div>
                 <h2 className="text-lg font-bold text-white">
-                  {editingAssignment ? `Configure Access: ${editingAssignment.email}` : 'Grant Content Manager Access'}
+                  {editingAssignment ? `Edit Content Manager: ${editingAssignment.name || editingAssignment.email}` : 'Add Content Manager'}
                 </h2>
                 <p className="text-xs text-neutral-400">
-                  Select an existing registered user, configure granular permissions, and restrict curriculum scope.
+                  {editingAssignment
+                    ? 'Update profile details, granular permissions, and curriculum access scope without altering Auth identity.'
+                    : 'Create a new Content Manager account using KalviLearn provisioning or assign an existing user.'}
                 </p>
               </div>
               <button type="button" onClick={() => setIsModalOpen(false)} className="text-neutral-400 hover:text-white">
@@ -597,114 +1012,280 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Step 1: User Selection */}
-              {!editingAssignment && (
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
-                    1. Select Registered User
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={userQuery}
-                      onChange={(e) => handleUserSearch(e.target.value)}
-                      placeholder="Search by email or name..."
-                      className="flex-1 bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-                  <div className="max-h-40 overflow-y-auto rounded-xl border border-white/10 bg-black/60 divide-y divide-white/5">
-                    {searchingUsers ? (
-                      <div className="p-4 text-center text-xs text-neutral-500">Searching users...</div>
-                    ) : userResults.length === 0 ? (
-                      <div className="p-4 text-center text-xs text-neutral-500">No matching eligible users found.</div>
-                    ) : (
-                      userResults.map((u) => {
-                        const isSel = selectedUser?.id === u.id
-                        return (
-                          <button
-                            key={u.id}
-                            type="button"
-                            onClick={() => setSelectedUser({ id: u.id, email: u.email, name: u.name })}
-                            className={cn(
-                              'w-full px-3.5 py-2 flex items-center justify-between text-left text-xs transition',
-                              isSel ? 'bg-[#1F0B0B] text-white' : 'hover:bg-white/[0.04] text-neutral-300'
-                            )}
-                          >
-                            <div>
-                              <div className="font-semibold">{u.name || 'Registered User'}</div>
-                              <div className="font-mono text-[11px] text-neutral-400">{u.email}</div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded bg-white/5 text-[10px] font-mono">{u.role}</span>
-                              {isSel && <CheckCircle2 className="w-4 h-4 text-[#FF6266]" />}
-                            </div>
-                          </button>
-                        )
-                      })
-                    )}
-                  </div>
+              {modalError && (
+                <div className="p-3 rounded-xl bg-red-950/50 border border-red-800/70 text-red-200 text-xs flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+                  <span>{modalError}</span>
                 </div>
               )}
 
-              {/* Step 2: Scope Selection */}
+              {/* Step 1: Account Creation vs Existing User OR Profile Edit */}
+              {editingAssignment ? (
+                <div className="space-y-4 p-4 rounded-xl bg-black/50 border border-white/10">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div>
+                      <div className="text-xs font-bold uppercase tracking-wider text-neutral-300">
+                        1. Account Profile & Audit Metadata
+                      </div>
+                      <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
+                        Auth Email (Locked): <span className="text-white">{editingAssignment.email}</span>
+                      </div>
+                    </div>
+                    <div className="text-right text-[11px] text-neutral-400">
+                      <div>Created: {formatDateTime(editingAssignment.createdAt || editingAssignment.grantedAt)}</div>
+                      {editingAssignment.updatedAt && (
+                        <div>
+                          Last updated: {formatDateTime(editingAssignment.updatedAt)}
+                          {editingAssignment.updatedBy ? ` by ${editingAssignment.updatedBy}` : ''}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs text-neutral-300 mb-1">Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={100}
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Content Manager full name"
+                        className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-neutral-300 mb-1">Assigned Campus (Optional)</label>
+                      <select
+                        value={selectedCampusId}
+                        onChange={(e) => setSelectedCampusId(e.target.value)}
+                        className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                      >
+                        <option value="">No specific campus (Platform-wide)</option>
+                        {campuses.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name} ({c.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Mode Switcher */}
+                  <div className="flex gap-2 p-1 rounded-xl bg-black border border-white/10 w-fit">
+                    <button
+                      type="button"
+                      onClick={() => switchAddMode('create')}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        addMode === 'create'
+                          ? 'bg-[#ED2A2B] text-white'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      Create New Content Manager
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => switchAddMode('existing')}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        addMode === 'existing'
+                          ? 'bg-[#ED2A2B] text-white'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      Assign Existing User
+                    </button>
+                  </div>
+
+                  {addMode === 'create' ? (
+                    <div className="space-y-4 p-4 rounded-xl bg-black/50 border border-white/10">
+                      <div className="text-xs font-bold uppercase tracking-wider text-neutral-300">
+                        1. New Content Manager Account Details (Google OAuth / KalviLearn Provisioning)
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Full Name *</label>
+                          <input
+                            type="text"
+                            required
+                            maxLength={100}
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            placeholder="e.g. Ananya Sharma"
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Email Address (Google OAuth) *</label>
+                          <input
+                            type="email"
+                            required
+                            maxLength={255}
+                            value={emailInput}
+                            onChange={(e) => setEmailInput(e.target.value)}
+                            placeholder="e.g. ananya.content@kalvilearn.edu"
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Assigned Campus (Optional)</label>
+                          <select
+                            value={selectedCampusId}
+                            onChange={(e) => setSelectedCampusId(e.target.value)}
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          >
+                            <option value="">No specific campus (Platform-wide)</option>
+                            {campuses.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.name} ({c.code})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Account Provisioning Mode</label>
+                          <select
+                            value={creationMode}
+                            onChange={(e) => setCreationMode(e.target.value as 'DIRECT' | 'INVITE')}
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          >
+                            <option value="DIRECT">Active Immediately (Google OAuth Sign-In)</option>
+                            <option value="INVITE">Invited (Send Supabase Invite if configured + Allow OAuth)</option>
+                          </select>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-neutral-400">
+                        Matches Campus Manager &amp; Mentor provisioning: the user is registered directly in <code className="text-neutral-200">public.users</code> and authenticates securely via Google OAuth without plaintext passwords.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
+                        1. Select Existing Registered User
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={userQuery}
+                          onChange={(e) => handleUserSearch(e.target.value)}
+                          placeholder="Search by email, name, or role..."
+                          className="flex-1 bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                        />
+                      </div>
+                      <div className="max-h-44 overflow-y-auto rounded-xl border border-white/10 bg-black/60 divide-y divide-white/5">
+                        {searchingUsers ? (
+                          <div className="p-4 text-xs text-neutral-400">Searching registered users...</div>
+                        ) : userResults.length === 0 ? (
+                          <div className="p-4 text-xs text-neutral-500">No eligible users found matching your query.</div>
+                        ) : (
+                          userResults.map((u) => (
+                            <button
+                              type="button"
+                              key={u.id}
+                              onClick={() => setSelectedUser({ id: u.id, email: u.email, name: u.name })}
+                              className={`w-full px-3 py-2.5 text-left flex items-center justify-between text-xs transition ${
+                                selectedUser?.id === u.id
+                                  ? 'bg-[#2a0e0e] text-white'
+                                  : 'hover:bg-white/5 text-neutral-300'
+                              }`}
+                            >
+                              <div>
+                                <div className="font-semibold text-white">{u.name || 'Unnamed User'}</div>
+                                <div className="font-mono text-[11px] text-neutral-400">{u.email}</div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="px-2 py-0.5 rounded bg-white/5 text-[10px] font-mono">{u.role}</span>
+                                {u.assignmentStatus && u.assignmentStatus !== 'REVOKED' && (
+                                  <span className="px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 text-[10px]">
+                                    CM ({u.assignmentStatus})
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Step 2: Curriculum Scope */}
               <div className="space-y-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
-                  2. Curriculum Access Scope
+                  2. Curriculum Scope Assignment
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
-                    { id: 'SCOPED', title: 'Scoped Modules / Units', desc: 'Restrict solely to checked modules or units (Recommended).' },
-                    { id: 'GLOBAL', title: 'Global Content Access', desc: 'Manage all curriculum modules, lessons, and questions.' },
-                    { id: 'NONE', title: 'No Scope (Locked)', desc: 'Safest default until modules or units are assigned.' },
+                    {
+                      value: 'SCOPED' as ContentScopeType,
+                      title: 'SCOPED (Recommended)',
+                      desc: 'Restrict editing strictly to selected Modules and Learning Units.',
+                    },
+                    {
+                      value: 'NONE' as ContentScopeType,
+                      title: 'NONE (Zero Content Access)',
+                      desc: 'Role active but blocked from all modules until assigned.',
+                    },
+                    {
+                      value: 'GLOBAL' as ContentScopeType,
+                      title: 'GLOBAL (All Modules)',
+                      desc: 'Full curriculum access across all modules and questions.',
+                    },
                   ].map((opt) => (
                     <button
-                      key={opt.id}
                       type="button"
-                      onClick={() => setScopeType(opt.id as ContentScopeType)}
-                      className={cn(
-                        'p-3 rounded-xl border text-left transition',
-                        scopeType === opt.id
+                      key={opt.value}
+                      onClick={() => setScopeType(opt.value)}
+                      className={`p-3 rounded-xl border text-left transition ${
+                        scopeType === opt.value
                           ? 'bg-[#1F0B0B] border-[#ED2A2B] text-white'
-                          : 'bg-black/50 border-white/10 text-neutral-400 hover:border-white/25'
-                      )}
+                          : 'bg-black/40 border-white/10 text-neutral-400 hover:border-white/25'
+                      }`}
                     >
                       <div className="text-xs font-bold">{opt.title}</div>
-                      <div className="text-[11px] text-neutral-400 mt-0.5">{opt.desc}</div>
+                      <div className="text-[11px] mt-1 text-neutral-400">{opt.desc}</div>
                     </button>
                   ))}
                 </div>
 
                 {scopeType === 'SCOPED' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                     <div className="p-3 rounded-xl bg-black/50 border border-white/10 space-y-2">
-                      <div className="text-xs font-semibold text-white">Authorized Modules ({selectedModuleIds.length})</div>
-                      <div className="max-h-40 overflow-y-auto space-y-1">
+                      <div className="text-xs font-semibold text-white">Assigned Modules ({selectedModuleIds.length})</div>
+                      <div className="max-h-44 overflow-y-auto space-y-1.5">
                         {modules.map((m) => (
-                          <label key={m.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer py-1">
+                          <label key={m.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={selectedModuleIds.includes(m.id)}
-                              onChange={() => toggleModuleScope(m.id)}
+                              onChange={() => toggleModule(m.id)}
                               className="accent-[#ED2A2B]"
                             />
-                            <span className="truncate">M{m.order}: {m.title}</span>
+                            <span>
+                              {m.order}. {m.title}
+                            </span>
                           </label>
                         ))}
                       </div>
                     </div>
 
                     <div className="p-3 rounded-xl bg-black/50 border border-white/10 space-y-2">
-                      <div className="text-xs font-semibold text-white">Specific Learning Units ({selectedUnitIds.length})</div>
-                      <div className="max-h-40 overflow-y-auto space-y-1">
-                        {learningUnits.map((u) => (
-                          <label key={u.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer py-1">
+                      <div className="text-xs font-semibold text-white">
+                        Specific Learning Units ({selectedUnitIds.length})
+                      </div>
+                      <div className="max-h-44 overflow-y-auto space-y-1.5">
+                        {learningUnits.map((lu) => (
+                          <label key={lu.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
                             <input
                               type="checkbox"
-                              checked={selectedUnitIds.includes(u.id)}
-                              onChange={() => toggleUnitScope(u.id)}
+                              checked={selectedUnitIds.includes(lu.id)}
+                              onChange={() => toggleUnit(lu.id)}
                               className="accent-[#ED2A2B]"
                             />
-                            <span className="truncate">{u.order}. {u.title}</span>
+                            <span className="truncate">{lu.title}</span>
                           </label>
                         ))}
                       </div>
@@ -716,7 +1297,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               {/* Step 3: Granular Permissions */}
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-neutral-300">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
                     3. Granular Permissions ({selectedPermissions.length} selected)
                   </label>
                   <div className="flex gap-2">
@@ -733,6 +1314,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                       className="px-2.5 py-1 rounded bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/50 text-[11px] text-amber-300"
                     >
                       Grant All Content Perms
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPermissions([])}
+                      className="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] text-neutral-400"
+                    >
+                      Clear All
                     </button>
                   </div>
                 </div>
@@ -789,10 +1377,16 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               </button>
               <button
                 type="submit"
-                disabled={saving || !selectedUser}
+                disabled={saving || (!editingAssignment && addMode === 'existing' && !selectedUser)}
                 className="px-5 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-xs font-semibold disabled:opacity-40"
               >
-                {saving ? 'Saving...' : 'Save Content Manager Access'}
+                {saving
+                  ? 'Saving...'
+                  : editingAssignment
+                    ? 'Save Changes'
+                    : addMode === 'create'
+                      ? 'Create Content Manager'
+                      : 'Assign Content Manager Access'}
               </button>
             </div>
           </form>
@@ -829,6 +1423,83 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </div>
       )}
 
+      {/* Suspend Confirmation Modal */}
+      {suspendTarget && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-2xl bg-[#121212] border border-amber-800/60 p-6 space-y-4">
+            <div className="flex items-center gap-2 text-amber-300">
+              <PauseCircle className="w-5 h-5" />
+              <h3 className="text-base font-bold text-white">Suspend Content Manager Access</h3>
+            </div>
+            <p className="text-xs text-neutral-300 leading-relaxed">
+              Temporarily suspend <strong className="text-white">{suspendTarget.email}</strong>? Their access to{' '}
+              <code className="text-amber-300">/content-manager</code> is blocked immediately, while all configured permissions, module scopes, Auth identity, and authored content are preserved for later reactivation.
+            </p>
+            <div>
+              <label className="block text-xs text-neutral-300 mb-1">Suspension Reason (Optional)</label>
+              <input
+                type="text"
+                value={suspensionReason}
+                onChange={(e) => setSuspensionReason(e.target.value)}
+                placeholder="e.g. Temporary leave / Quarterly review"
+                className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setSuspendTarget(null)}
+                className="px-3.5 py-2 rounded-lg border border-white/15 text-xs text-neutral-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={lifecycleBusy}
+                onClick={handleSuspend}
+                className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-black"
+              >
+                {lifecycleBusy ? 'Suspending...' : 'Confirm Suspend'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reactivate Confirmation Modal */}
+      {reactivateTarget && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-2xl bg-[#121212] border border-emerald-800/60 p-6 space-y-4">
+            <div className="flex items-center gap-2 text-emerald-400">
+              <PlayCircle className="w-5 h-5" />
+              <h3 className="text-base font-bold text-white">Reactivate Content Manager Access</h3>
+            </div>
+            <p className="text-xs text-neutral-300 leading-relaxed">
+              Reactivate <strong className="text-white">{reactivateTarget.email}</strong>? Their prior{' '}
+              <strong>{reactivateTarget.scopeType}</strong> scope and{' '}
+              <strong>{reactivateTarget.permissionCount}</strong> saved permission(s) will be restored immediately.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setReactivateTarget(null)}
+                className="px-3.5 py-2 rounded-lg border border-white/15 text-xs text-neutral-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={lifecycleBusy}
+                onClick={handleReactivate}
+                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white"
+              >
+                {lifecycleBusy ? 'Reactivating...' : 'Confirm Reactivate'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Revoke Modal */}
       {revokeTarget && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -838,9 +1509,8 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               <h3 className="text-base font-bold text-white">Revoke Content Manager Access</h3>
             </div>
             <p className="text-xs text-neutral-300 leading-relaxed">
-              Immediately revoke Content Manager permissions for <strong className="text-white">{revokeTarget.email}</strong>?
-              Their account will immediately lose access to <code className="text-[#FF6266]">/content-manager</code> and restore to{' '}
-              <strong>{revokeTarget.previousRole}</strong>.
+              Permanently revoke Content Manager permissions for <strong className="text-white">{revokeTarget.email}</strong>?
+              They will immediately lose access to <code className="text-[#FF6266]">/content-manager</code> and their user role will restore safely (preserving Auth identity, authored content, and audit logs).
             </p>
             <div className="flex justify-end gap-2">
               <button
@@ -852,11 +1522,11 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               </button>
               <button
                 type="button"
-                disabled={revoking}
+                disabled={lifecycleBusy}
                 onClick={handleRevoke}
                 className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white"
               >
-                {revoking ? 'Revoking...' : 'Confirm Revoke'}
+                {lifecycleBusy ? 'Revoking...' : 'Confirm Revoke'}
               </button>
             </div>
           </div>

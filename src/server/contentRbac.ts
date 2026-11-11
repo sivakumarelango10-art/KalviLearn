@@ -130,7 +130,67 @@ export async function resolveContentManagerContext(
     return { authorized: false, statusCode: 503, error: 'Unable to verify Content Manager permissions.' }
   }
 
-  if (!assignment || assignment.is_active !== true) {
+  if (!assignment) {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: 'Access Denied: Your Content Manager assignment is inactive or has been revoked.',
+    }
+  }
+
+  const assignmentStatus = String((assignment as any).status || '').toUpperCase()
+  if (assignmentStatus === 'SUSPENDED') {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: 'Access Denied: Your Content Manager access is currently suspended.',
+    }
+  }
+  if (assignmentStatus === 'REVOKED') {
+    return {
+      authorized: false,
+      statusCode: 403,
+      error: 'Access Denied: Your Content Manager assignment has been revoked.',
+    }
+  }
+  if (assignmentStatus === 'INVITED') {
+    if (!authUser.synthetic) {
+      const now = new Date().toISOString()
+      const { error: actErr } = await supabaseServer
+        .from('content_manager_assignments')
+        .update({
+          status: 'ACTIVE',
+          is_active: true,
+          updated_at: now,
+        })
+        .eq('id', assignment.id)
+        .eq('status', 'INVITED')
+      if (actErr) {
+        return { authorized: false, statusCode: 503, error: 'Unable to activate Content Manager invitation.' }
+      }
+      assignment.is_active = true
+      ;(assignment as any).status = 'ACTIVE'
+      await recordContentAudit({
+        actorUserId: dbUser.id,
+        actorEmail: dbUser.email,
+        actorRole: CONTENT_MANAGER_ROLE,
+        action: 'ACCEPT_CONTENT_MANAGER_INVITE',
+        resourceType: 'CONTENT_MANAGER_ACCESS',
+        resourceId: dbUser.id,
+        resourceLabel: dbUser.email,
+        previousValues: { status: 'INVITED', isActive: false },
+        updatedValues: { status: 'ACTIVE', isActive: true },
+        changeSummary: `${dbUser.email} accepted Content Manager invitation via verified authentication`,
+      })
+    } else {
+      return {
+        authorized: false,
+        statusCode: 403,
+        error: 'Access Denied: Your Content Manager invitation is pending acceptance.',
+      }
+    }
+  }
+  if (assignment.is_active !== true) {
     return {
       authorized: false,
       statusCode: 403,

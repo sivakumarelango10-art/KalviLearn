@@ -114827,168 +114827,38 @@ async function recordContentAudit(params) {
 }
 
 // src/server/superAdminContentManagerHandlers.ts
-async function handleListContentManagers(deps, res) {
-  const [assignRes, permRes, scopeRes, usersRes, modulesRes, unitsRes, auditRes] = await Promise.all([
-    supabaseServer.from("content_manager_assignments").select("*").order("granted_at", { ascending: false }),
-    supabaseServer.from("content_manager_permissions").select("*"),
-    supabaseServer.from("content_manager_scopes").select("*"),
-    supabaseServer.from("users").select("id, email, name, role, status"),
-    supabaseServer.from("Module").select("id, title, order"),
-    supabaseServer.from("LearningUnit").select("id, moduleId, title, order"),
-    supabaseServer.from("content_audit_logs").select("actor_user_id, created_at")
-  ]);
-  if (assignRes.error) throw assignRes.error;
-  if (permRes.error) throw permRes.error;
-  if (scopeRes.error) throw scopeRes.error;
-  if (usersRes.error) throw usersRes.error;
-  const usersById = new Map((usersRes.data || []).map((u) => [u.id, u]));
-  const modulesById = new Map((modulesRes.data || []).map((m) => [m.id, m]));
-  const unitsById = new Map((unitsRes.data || []).map((u) => [u.id, u]));
-  const permsByAssignment = /* @__PURE__ */ new Map();
-  for (const row of permRes.data || []) {
-    const arr = permsByAssignment.get(row.assignment_id) || [];
-    arr.push(row.permission);
-    permsByAssignment.set(row.assignment_id, arr);
-  }
-  const scopesByAssignment = /* @__PURE__ */ new Map();
-  for (const row of scopeRes.data || []) {
-    const aid = row.assignment_id;
-    if (!scopesByAssignment.has(aid)) scopesByAssignment.set(aid, { modules: [], learningUnits: [] });
-    const entry = scopesByAssignment.get(aid);
-    if (row.module_id) {
-      const m = modulesById.get(row.module_id);
-      entry.modules.push({
-        id: row.module_id,
-        title: m?.title || row.module_id,
-        order: m?.order ?? 0
-      });
-    }
-    if (row.learning_unit_id) {
-      const lu = unitsById.get(row.learning_unit_id);
-      entry.learningUnits.push({
-        id: row.learning_unit_id,
-        moduleId: lu?.moduleId || null,
-        title: lu?.title || row.learning_unit_id,
-        order: lu?.order ?? 0
-      });
-    }
-  }
-  const activityCountByUser = /* @__PURE__ */ new Map();
-  for (const row of auditRes.data || []) {
-    const uid = row.actor_user_id;
-    const cur = activityCountByUser.get(uid) || { count: 0, lastAt: null };
-    cur.count++;
-    if (!cur.lastAt || String(row.created_at) > cur.lastAt) {
-      cur.lastAt = row.created_at;
-    }
-    activityCountByUser.set(uid, cur);
-  }
-  const assignments = (assignRes.data || []).map((a) => {
-    const u = usersById.get(a.user_id);
-    const perms = permsByAssignment.get(a.id) || [];
-    const scopeInfo = scopesByAssignment.get(a.id) || { modules: [], learningUnits: [] };
-    const act = activityCountByUser.get(a.user_id) || { count: 0, lastAt: null };
-    return {
-      id: a.id,
-      userId: a.user_id,
-      email: u?.email || "unknown",
-      name: u?.name || null,
-      userRole: u?.role || "STUDENT",
-      userStatus: u?.status || "ACTIVE",
-      previousRole: a.previous_role || "STUDENT",
-      scopeType: a.scope_type || "NONE",
-      isActive: Boolean(a.is_active),
-      permissions: perms,
-      permissionCount: perms.length,
-      moduleIds: scopeInfo.modules.map((m) => m.id),
-      learningUnitIds: scopeInfo.learningUnits.map((lu) => lu.id),
-      assignedModules: scopeInfo.modules,
-      assignedLearningUnits: scopeInfo.learningUnits,
-      grantedBy: a.granted_by || null,
-      grantedAt: a.granted_at || null,
-      revokedBy: a.revoked_by || null,
-      revokedAt: a.revoked_at || null,
-      notes: a.notes || null,
-      activityCount: act.count,
-      lastActivityAt: act.lastAt
-    };
-  });
-  return deps.sendJson(res, 200, {
-    success: true,
-    message: "Content Managers directory retrieved.",
-    data: {
-      assignments,
-      modules: (modulesRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0)),
-      learningUnits: (unitsRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0))
-    }
-  });
+var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var CONTENT_EDIT_ACTIONS = /* @__PURE__ */ new Set([
+  "CREATE_QUESTION",
+  "UPDATE_QUESTION",
+  "CREATE_TEST_CASE",
+  "UPDATE_TEST_CASE",
+  "DELETE_TEST_CASE",
+  "REORDER_TEST_CASES",
+  "CREATE_MODULE",
+  "UPDATE_MODULE",
+  "CREATE_LEARNING_UNIT",
+  "UPDATE_LEARNING_UNIT",
+  "SUBMIT_CONTENT_FOR_REVIEW",
+  "PUBLISH_QUESTION",
+  "UNPUBLISH_QUESTION",
+  "RESTORE_PROBLEM_REVISION"
+]);
+function isStatusActive(status) {
+  return String(status || "").toUpperCase() === "ACTIVE";
 }
-async function handleSearchUsersForContentManager(deps, body, req, res) {
-  const urlObj = new URL(req.url || "/", "http://localhost");
-  const search = typeof body.search === "string" ? body.search.trim().toLowerCase() : (urlObj.searchParams.get("search") || "").trim().toLowerCase();
-  const [usersRes, assignRes] = await Promise.all([
-    supabaseServer.from("users").select("id, email, name, role, status"),
-    supabaseServer.from("content_manager_assignments").select("user_id, is_active")
-  ]);
-  if (usersRes.error) throw usersRes.error;
-  const activeMap = /* @__PURE__ */ new Map();
-  for (const a of assignRes.data || []) {
-    activeMap.set(a.user_id, Boolean(a.is_active));
+function deriveAssignmentStatus(a) {
+  const raw = String(a?.status || "").toUpperCase();
+  if (raw === "ACTIVE" || raw === "SUSPENDED" || raw === "INVITED" || raw === "REVOKED") {
+    if (!a?.is_active && raw === "ACTIVE") {
+      return a?.revoked_at ? "REVOKED" : "SUSPENDED";
+    }
+    return raw;
   }
-  const users = (usersRes.data || []).filter((u) => {
-    const email = String(u.email || "").toLowerCase();
-    const role = String(u.role || "").toUpperCase();
-    if (email === deps.SUPER_ADMIN_EMAIL || role === "SUPERADMIN") return false;
-    if (!search) return true;
-    return email.includes(search) || String(u.name || "").toLowerCase().includes(search);
-  }).slice(0, 50).map((u) => ({
-    id: u.id,
-    email: u.email,
-    name: u.name,
-    role: u.role,
-    status: u.status,
-    hasActiveContentManager: activeMap.get(u.id) === true
-  }));
-  return deps.sendJson(res, 200, {
-    success: true,
-    message: `Found ${users.length} eligible users.`,
-    data: users
-  });
+  if (a?.is_active === true) return "ACTIVE";
+  return a?.revoked_at ? "REVOKED" : "SUSPENDED";
 }
-async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, res) {
-  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
-  const targetEmail = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  if (!userId && !targetEmail) {
-    return deps.sendJson(res, 400, {
-      success: false,
-      error: "Missing User",
-      message: "Either userId or email is required to grant Content Manager access."
-    });
-  }
-  const userQuery = userId ? await supabaseServer.from("users").select("id, email, name, role, status").eq("id", userId).maybeSingle() : await supabaseServer.from("users").select("id, email, name, role, status").eq("email", targetEmail).maybeSingle();
-  if (userQuery.error) throw userQuery.error;
-  const targetUser = userQuery.data;
-  if (!targetUser) {
-    return deps.sendJson(res, 404, {
-      success: false,
-      error: "User Not Found",
-      message: "Selected user was not found in registered users."
-    });
-  }
-  if (String(targetUser.email || "").toLowerCase() === deps.SUPER_ADMIN_EMAIL || String(targetUser.role || "").toUpperCase() === "SUPERADMIN") {
-    return deps.sendJson(res, 403, {
-      success: false,
-      error: "Protected Account",
-      message: "The sole Super Admin account cannot be reassigned to Content Manager."
-    });
-  }
-  if (String(targetUser.status || "").toUpperCase() !== "ACTIVE") {
-    return deps.sendJson(res, 400, {
-      success: false,
-      error: "Inactive User",
-      message: "Cannot grant Content Manager access to an inactive user account."
-    });
-  }
+async function parseAndValidateScopeAndPermissions(deps, body, res) {
   const permissions = Array.isArray(body.permissions) ? normalizePermissionsList(body.permissions) : [...DEFAULT_CONTENT_MANAGER_PERMISSIONS];
   const rawScope = typeof body.scopeType === "string" ? body.scopeType.trim().toUpperCase() : "NONE";
   const scopeType = rawScope === "GLOBAL" ? "GLOBAL" : rawScope === "SCOPED" ? "SCOPED" : "NONE";
@@ -114998,61 +114868,29 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
     if (moduleIds.length > 0) {
       const { data: mods } = await supabaseServer.from("Module").select("id").in("id", moduleIds);
       if ((mods || []).length !== moduleIds.length) {
-        return deps.sendJson(res, 400, {
+        deps.sendJson(res, 400, {
           success: false,
           error: "Invalid Module Scope",
           message: "One or more specified moduleIds do not exist."
         });
+        return { ok: false };
       }
     }
     if (learningUnitIds.length > 0) {
       const { data: units } = await supabaseServer.from("LearningUnit").select("id").in("id", learningUnitIds);
       if ((units || []).length !== learningUnitIds.length) {
-        return deps.sendJson(res, 400, {
+        deps.sendJson(res, 400, {
           success: false,
           error: "Invalid Learning Unit Scope",
           message: "One or more specified learningUnitIds do not exist."
         });
+        return { ok: false };
       }
     }
   }
-  const notes = typeof body.notes === "string" ? body.notes.trim() : null;
-  const now = (/* @__PURE__ */ new Date()).toISOString();
-  const { data: existingAssign, error: findAssignErr } = await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", targetUser.id).maybeSingle();
-  if (findAssignErr) throw findAssignErr;
-  let assignmentId;
-  const currentRole = String(targetUser.role || "STUDENT").toUpperCase();
-  const preservedPreviousRole = currentRole !== CONTENT_MANAGER_ROLE ? currentRole : existingAssign?.previous_role || "STUDENT";
-  if (existingAssign) {
-    assignmentId = existingAssign.id;
-    const { error: updErr } = await supabaseServer.from("content_manager_assignments").update({
-      scope_type: scopeType,
-      is_active: true,
-      previous_role: preservedPreviousRole,
-      granted_by: deps.SUPER_ADMIN_EMAIL,
-      granted_at: existingAssign.is_active ? existingAssign.granted_at : now,
-      revoked_by: null,
-      revoked_at: null,
-      notes,
-      updated_at: now
-    }).eq("id", assignmentId);
-    if (updErr) throw updErr;
-  } else {
-    assignmentId = `cma-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    const { error: insErr } = await supabaseServer.from("content_manager_assignments").insert({
-      id: assignmentId,
-      user_id: targetUser.id,
-      previous_role: preservedPreviousRole,
-      scope_type: scopeType,
-      is_active: true,
-      granted_by: deps.SUPER_ADMIN_EMAIL,
-      granted_at: now,
-      notes,
-      created_at: now,
-      updated_at: now
-    });
-    if (insErr) throw insErr;
-  }
+  return { ok: true, permissions, scopeType, moduleIds, learningUnitIds };
+}
+async function replacePermissionsAndScopes(assignmentId, permissions, scopeType, moduleIds, learningUnitIds, now) {
   await supabaseServer.from("content_manager_permissions").delete().eq("assignment_id", assignmentId);
   if (permissions.length > 0) {
     const permRows = permissions.map((perm, idx) => ({
@@ -115090,11 +114928,561 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
       if (scInsErr) throw scInsErr;
     }
   }
-  if (currentRole !== CONTENT_MANAGER_ROLE) {
-    const { error: roleUpdErr } = await supabaseServer.from("users").update({ role: CONTENT_MANAGER_ROLE, updatedAt: now }).eq("id", targetUser.id);
+}
+async function resolveOptionalCampusId(deps, rawCampusId, res) {
+  if (rawCampusId === void 0 || rawCampusId === null || rawCampusId === "") {
+    return { ok: true, campusId: null };
+  }
+  if (typeof rawCampusId !== "string") {
+    deps.sendJson(res, 400, {
+      success: false,
+      error: "Invalid Campus",
+      message: "campusId must be a valid string."
+    });
+    return { ok: false };
+  }
+  const trimmed = rawCampusId.trim();
+  if (!trimmed) return { ok: true, campusId: null };
+  const { data: campus, error } = await supabaseServer.from("campuses").select("id, status").eq("id", trimmed).maybeSingle();
+  if (error) throw error;
+  if (!campus) {
+    deps.sendJson(res, 400, {
+      success: false,
+      error: "Invalid Campus",
+      message: "Selected campus was not found."
+    });
+    return { ok: false };
+  }
+  return { ok: true, campusId: campus.id };
+}
+async function handleListContentManagers(deps, res) {
+  const [assignRes, permRes, scopeRes, usersRes, campusesRes, modulesRes, unitsRes, auditRes, pendingProbRes, pendingModRes, pendingUnitRes] = await Promise.all([
+    supabaseServer.from("content_manager_assignments").select("*").order("created_at", { ascending: false }),
+    supabaseServer.from("content_manager_permissions").select("*"),
+    supabaseServer.from("content_manager_scopes").select("*"),
+    supabaseServer.from("users").select("id, email, name, role, status, campus_id, createdAt, updatedAt"),
+    supabaseServer.from("campuses").select("id, name, code, status"),
+    supabaseServer.from("Module").select("id, title, order"),
+    supabaseServer.from("LearningUnit").select("id, moduleId, title, order"),
+    supabaseServer.from("content_audit_logs").select("actor_user_id, action, created_at"),
+    supabaseServer.from("Problem").select("id").eq("approvalStatus", "PENDING_REVIEW"),
+    supabaseServer.from("Module").select("id").eq("approvalStatus", "PENDING_REVIEW"),
+    supabaseServer.from("LearningUnit").select("id").eq("approvalStatus", "PENDING_REVIEW")
+  ]);
+  if (assignRes.error) throw assignRes.error;
+  if (permRes.error) throw permRes.error;
+  if (scopeRes.error) throw scopeRes.error;
+  if (usersRes.error) throw usersRes.error;
+  if (campusesRes.error) throw campusesRes.error;
+  if (modulesRes.error) throw modulesRes.error;
+  if (unitsRes.error) throw unitsRes.error;
+  if (auditRes.error) throw auditRes.error;
+  const usersById = new Map((usersRes.data || []).map((u) => [u.id, u]));
+  const campusesById = new Map((campusesRes.data || []).map((c) => [c.id, c]));
+  const modulesById = new Map((modulesRes.data || []).map((m) => [m.id, m]));
+  const unitsById = new Map((unitsRes.data || []).map((u) => [u.id, u]));
+  const permsByAssignment = /* @__PURE__ */ new Map();
+  for (const row of permRes.data || []) {
+    const arr = permsByAssignment.get(row.assignment_id) || [];
+    arr.push(row.permission);
+    permsByAssignment.set(row.assignment_id, arr);
+  }
+  const scopesByAssignment = /* @__PURE__ */ new Map();
+  for (const row of scopeRes.data || []) {
+    const aid = row.assignment_id;
+    if (!scopesByAssignment.has(aid)) scopesByAssignment.set(aid, { modules: [], learningUnits: [] });
+    const entry = scopesByAssignment.get(aid);
+    if (row.module_id) {
+      const m = modulesById.get(row.module_id);
+      entry.modules.push({
+        id: row.module_id,
+        title: m?.title || row.module_id,
+        order: m?.order ?? 0
+      });
+    }
+    if (row.learning_unit_id) {
+      const lu = unitsById.get(row.learning_unit_id);
+      entry.learningUnits.push({
+        id: row.learning_unit_id,
+        moduleId: lu?.moduleId || null,
+        title: lu?.title || row.learning_unit_id,
+        order: lu?.order ?? 0
+      });
+    }
+  }
+  const activityCountByUser = /* @__PURE__ */ new Map();
+  for (const row of auditRes.data || []) {
+    const uid = row.actor_user_id;
+    const cur = activityCountByUser.get(uid) || { count: 0, editCount: 0, lastAt: null };
+    cur.count++;
+    if (CONTENT_EDIT_ACTIONS.has(String(row.action || "").toUpperCase())) {
+      cur.editCount++;
+    }
+    if (!cur.lastAt || String(row.created_at) > cur.lastAt) {
+      cur.lastAt = row.created_at;
+    }
+    activityCountByUser.set(uid, cur);
+  }
+  const assignments = (assignRes.data || []).map((a) => {
+    const u = usersById.get(a.user_id);
+    const campus = u?.campus_id ? campusesById.get(u.campus_id) : null;
+    const perms = permsByAssignment.get(a.id) || [];
+    const scopeInfo = scopesByAssignment.get(a.id) || { modules: [], learningUnits: [] };
+    const act = activityCountByUser.get(a.user_id) || { count: 0, editCount: 0, lastAt: null };
+    const status = deriveAssignmentStatus(a);
+    return {
+      id: a.id,
+      userId: a.user_id,
+      email: u?.email || "unknown",
+      name: u?.name || null,
+      campusId: u?.campus_id || null,
+      campusName: campus?.name || null,
+      userRole: u?.role || "STUDENT",
+      userStatus: u?.status || "ACTIVE",
+      userCreatedAt: u?.createdAt || null,
+      previousRole: a.previous_role || "STUDENT",
+      scopeType: a.scope_type || "NONE",
+      status,
+      isActive: isStatusActive(status),
+      permissions: perms,
+      permissionCount: perms.length,
+      moduleIds: scopeInfo.modules.map((m) => m.id),
+      learningUnitIds: scopeInfo.learningUnits.map((lu) => lu.id),
+      assignedModules: scopeInfo.modules,
+      assignedLearningUnits: scopeInfo.learningUnits,
+      grantedBy: a.granted_by || null,
+      grantedAt: a.granted_at || null,
+      invitedBy: a.invited_by || null,
+      invitedAt: a.invited_at || null,
+      suspendedBy: a.suspended_by || null,
+      suspendedAt: a.suspended_at || null,
+      suspensionReason: a.suspension_reason || null,
+      revokedBy: a.revoked_by || null,
+      revokedAt: a.revoked_at || null,
+      updatedBy: a.updated_by || null,
+      createdAt: a.created_at || a.granted_at || u?.createdAt || null,
+      updatedAt: a.updated_at || u?.updatedAt || a.granted_at || null,
+      notes: a.notes || null,
+      activityCount: act.count,
+      contentEditCount: act.editCount,
+      lastActivityAt: act.lastAt
+    };
+  });
+  const pendingApprovals = (pendingProbRes.data || []).length + (pendingModRes.data || []).length + (pendingUnitRes.data || []).length;
+  const stats = {
+    total: assignments.length,
+    active: assignments.filter((a) => a.status === "ACTIVE").length,
+    suspended: assignments.filter((a) => a.status === "SUSPENDED").length,
+    revoked: assignments.filter((a) => a.status === "REVOKED").length,
+    invited: assignments.filter((a) => a.status === "INVITED").length,
+    pendingApprovals,
+    totalContentEdits: assignments.reduce((acc, a) => acc + (a.contentEditCount || 0), 0)
+  };
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: "Content Managers directory retrieved.",
+    data: {
+      assignments,
+      stats,
+      campuses: (campusesRes.data || []).filter((c) => !c.status || c.status === "ACTIVE"),
+      modules: (modulesRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0)),
+      learningUnits: (unitsRes.data || []).sort((a, b2) => (a.order || 0) - (b2.order || 0))
+    }
+  });
+}
+async function handleSearchUsersForContentManager(deps, body, req, res) {
+  const urlObj = new URL(req.url || "/", "http://localhost");
+  const search = typeof body.search === "string" ? body.search.trim().toLowerCase() : (urlObj.searchParams.get("search") || "").trim().toLowerCase();
+  const [usersRes, assignRes] = await Promise.all([
+    supabaseServer.from("users").select("id, email, name, role, status, campus_id"),
+    supabaseServer.from("content_manager_assignments").select("user_id, is_active, status")
+  ]);
+  if (usersRes.error) throw usersRes.error;
+  if (assignRes.error) throw assignRes.error;
+  const assignMap = /* @__PURE__ */ new Map();
+  for (const a of assignRes.data || []) {
+    const st = deriveAssignmentStatus(a);
+    assignMap.set(a.user_id, {
+      isActive: isStatusActive(st),
+      status: st
+    });
+  }
+  const users = (usersRes.data || []).filter((u) => {
+    const email = String(u.email || "").toLowerCase();
+    const role = String(u.role || "").toUpperCase();
+    if (email === deps.SUPER_ADMIN_EMAIL || role === "SUPERADMIN") return false;
+    if (!search) return true;
+    return email.includes(search) || String(u.name || "").toLowerCase().includes(search) || role.toLowerCase().includes(search);
+  }).slice(0, 50).map((u) => {
+    const a = assignMap.get(u.id);
+    return {
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      role: u.role,
+      status: u.status,
+      campusId: u.campus_id || null,
+      hasActiveContentManager: a?.isActive === true,
+      assignmentStatus: a?.status || null
+    };
+  });
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Found ${users.length} eligible users.`,
+    data: users
+  });
+}
+async function handleCreateContentManager(deps, body, adminId, clientIp, res) {
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const rawMode = typeof body.creationMode === "string" ? body.creationMode.trim().toUpperCase() : "DIRECT";
+  const creationMode = rawMode === "INVITE" ? "INVITE" : "DIRECT";
+  if (!name || !email) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing Fields",
+      message: "Full name and email address are required to create a Content Manager."
+    });
+  }
+  if (name.length > 100) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Validation Error",
+      message: "Content Manager name must be 100 characters or fewer."
+    });
+  }
+  if (!EMAIL_REGEX.test(email) || email.length > 255) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Validation Error",
+      message: "Please provide a valid email address (255 characters or fewer)."
+    });
+  }
+  if (email === deps.SUPER_ADMIN_EMAIL) {
+    return deps.sendJson(res, 403, {
+      success: false,
+      error: "Protected Account",
+      message: "The sole Super Admin account cannot be reassigned to Content Manager."
+    });
+  }
+  const campusCheck = await resolveOptionalCampusId(deps, body.campusId, res);
+  if (!campusCheck.ok) return;
+  const scopePermCheck = await parseAndValidateScopeAndPermissions(deps, body, res);
+  if (!scopePermCheck.ok) return;
+  const { permissions, scopeType, moduleIds, learningUnitIds } = scopePermCheck;
+  const { data: existingUsers, error: existingErr } = await supabaseServer.from("users").select("id, email, role").ilike("email", email);
+  if (existingErr) throw existingErr;
+  const exactDuplicate = (existingUsers || []).find(
+    (u) => String(u.email || "").trim().toLowerCase() === email
+  );
+  if (exactDuplicate) {
+    return deps.sendJson(res, 409, {
+      success: false,
+      error: "Duplicate Email",
+      message: `An account with email "${email}" already exists. Use "Assign Existing User" to grant Content Manager access instead.`
+    });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const assignmentStatus = creationMode === "INVITE" ? "INVITED" : "ACTIVE";
+  const assignmentIsActive = isStatusActive(assignmentStatus);
+  const notes = typeof body.notes === "string" && body.notes.trim() ? body.notes.trim() : null;
+  const authAdmin = supabaseServer?.auth?.admin;
+  let invitedAuthUid = null;
+  let authInviteSent = false;
+  if (creationMode === "INVITE") {
+    const canCallAuthAdmin = Boolean(supabaseServer?.__isMocked || hasPrivilegedServerKey());
+    if (!canCallAuthAdmin || !authAdmin || typeof authAdmin.inviteUserByEmail !== "function") {
+      return deps.sendJson(res, 503, {
+        success: false,
+        error: "Auth Invite Unavailable",
+        message: "Supabase Auth invitation API is unavailable in this configuration. Use Active Direct Provisioning (Google OAuth) or configure SUPABASE_SECRET_KEY."
+      });
+    }
+    if (typeof authAdmin.listUsers === "function") {
+      const listRes = await authAdmin.listUsers({ page: 1, perPage: 1e3 });
+      if (listRes?.error) {
+        return deps.sendJson(res, 503, {
+          success: false,
+          error: "Auth Verification Failed",
+          message: `Unable to verify existing Supabase Auth identities before inviting: ${listRes.error.message || "Unknown Auth error"}`
+        });
+      }
+      const existingAuthUser = (listRes?.data?.users || []).find(
+        (au) => String(au?.email || "").trim().toLowerCase() === email
+      );
+      if (existingAuthUser) {
+        return deps.sendJson(res, 409, {
+          success: false,
+          error: "Duplicate Auth Identity",
+          message: `An authentication identity with email "${email}" already exists in Supabase Auth. Use Active Direct Provisioning or Assign Existing User.`
+        });
+      }
+    }
+    const inviteRes = await authAdmin.inviteUserByEmail(email, {
+      data: { name, role: CONTENT_MANAGER_ROLE }
+    });
+    if (inviteRes?.error || !inviteRes?.data?.user?.id) {
+      const errMsg = String(inviteRes?.error?.message || "Supabase Auth did not return an invited user record.");
+      const errCode = String(inviteRes?.error?.code || "");
+      const isDuplicateAuth = inviteRes?.error?.status === 422 || errCode === "email_exists" || /already.*registered|already.*exists/i.test(errMsg);
+      return deps.sendJson(res, isDuplicateAuth ? 409 : 502, {
+        success: false,
+        error: isDuplicateAuth ? "Duplicate Auth Identity" : "Auth Invite Failed",
+        message: isDuplicateAuth ? `An authentication identity with email "${email}" already exists in Supabase Auth.` : `Failed to send Supabase Auth invitation for "${email}": ${errMsg}`
+      });
+    }
+    invitedAuthUid = String(inviteRes.data.user.id);
+    authInviteSent = true;
+  }
+  let createdUser = null;
+  try {
+    const { data: insertedUser, error: userInsertErr } = await supabaseServer.from("users").insert({
+      email,
+      name,
+      role: CONTENT_MANAGER_ROLE,
+      status: "ACTIVE",
+      campus_id: campusCheck.campusId,
+      createdAt: now,
+      updatedAt: now
+    }).select("id, email, name, role, status, campus_id, createdAt").single();
+    if (userInsertErr) {
+      if (userInsertErr.code === "23505") {
+        if (invitedAuthUid && typeof authAdmin?.deleteUser === "function") {
+          await authAdmin.deleteUser(invitedAuthUid).catch(() => void 0);
+        }
+        return deps.sendJson(res, 409, {
+          success: false,
+          error: "Duplicate Email",
+          message: `An account with email "${email}" already exists.`
+        });
+      }
+      throw userInsertErr;
+    }
+    createdUser = insertedUser;
+    if (invitedAuthUid && createdUser?.id) {
+      await supabaseServer.from("users").update({ authUid: invitedAuthUid }).eq("id", createdUser.id).is("authUid", null);
+    }
+    const assignmentId = `cma-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const { error: assignErr } = await supabaseServer.from("content_manager_assignments").insert({
+      id: assignmentId,
+      user_id: createdUser.id,
+      previous_role: CONTENT_MANAGER_ROLE,
+      scope_type: scopeType,
+      status: assignmentStatus,
+      is_active: assignmentIsActive,
+      granted_by: deps.SUPER_ADMIN_EMAIL,
+      granted_at: now,
+      invited_by: creationMode === "INVITE" ? deps.SUPER_ADMIN_EMAIL : null,
+      invited_at: creationMode === "INVITE" ? now : null,
+      updated_by: deps.SUPER_ADMIN_EMAIL,
+      notes,
+      created_at: now,
+      updated_at: now
+    });
+    if (assignErr) throw assignErr;
+    await replacePermissionsAndScopes(assignmentId, permissions, scopeType, moduleIds, learningUnitIds, now);
+    await Promise.all([
+      deps.recordAdminAudit(
+        deps.SUPER_ADMIN_EMAIL,
+        adminId,
+        "CREATE_CONTENT_MANAGER_ACCOUNT",
+        "CONTENT_MANAGER",
+        createdUser.id,
+        email,
+        {
+          name,
+          campusId: campusCheck.campusId,
+          creationMode,
+          assignmentStatus,
+          isActive: assignmentIsActive,
+          scopeType,
+          permissionsCount: permissions.length,
+          moduleIds,
+          learningUnitIds,
+          authInviteSent
+        },
+        "SUCCESS",
+        null,
+        clientIp
+      ),
+      recordContentAudit({
+        actorUserId: adminId,
+        actorEmail: deps.SUPER_ADMIN_EMAIL,
+        actorRole: "SUPERADMIN",
+        action: "CREATE_CONTENT_MANAGER_ACCOUNT",
+        resourceType: "CONTENT_MANAGER_ACCESS",
+        resourceId: createdUser.id,
+        resourceLabel: email,
+        updatedValues: {
+          name,
+          email,
+          role: CONTENT_MANAGER_ROLE,
+          status: assignmentStatus,
+          isActive: assignmentIsActive,
+          scopeType,
+          permissions,
+          moduleIds,
+          learningUnitIds
+        },
+        changeSummary: `Created Content Manager account for ${email} (${assignmentStatus}, ${scopeType})`,
+        ipAddress: clientIp
+      })
+    ]);
+    return deps.sendJson(res, 201, {
+      success: true,
+      message: creationMode === "INVITE" ? `Supabase Auth invitation sent to ${email}. Account provisioned as INVITED and will activate upon invite acceptance.` : `Content Manager account created for ${email}. They can now sign in via Google OAuth.`,
+      data: {
+        assignmentId,
+        userId: createdUser.id,
+        email: createdUser.email,
+        name: createdUser.name,
+        campusId: createdUser.campus_id || null,
+        role: CONTENT_MANAGER_ROLE,
+        status: assignmentStatus,
+        isActive: assignmentIsActive,
+        scopeType,
+        permissions,
+        moduleIds,
+        learningUnitIds,
+        authInviteSent
+      }
+    });
+  } catch (err) {
+    if (createdUser?.id) {
+      await supabaseServer.from("users").delete().eq("id", createdUser.id);
+    }
+    if (invitedAuthUid && typeof authAdmin?.deleteUser === "function") {
+      await authAdmin.deleteUser(invitedAuthUid).catch(() => void 0);
+    }
+    throw err;
+  }
+}
+async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, res) {
+  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const targetEmail = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  if (!userId && !targetEmail) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing User",
+      message: "Either userId or email is required to grant Content Manager access."
+    });
+  }
+  const userQuery = userId ? await supabaseServer.from("users").select("id, email, name, role, status, campus_id").eq("id", userId).maybeSingle() : await supabaseServer.from("users").select("id, email, name, role, status, campus_id").eq("email", targetEmail).maybeSingle();
+  if (userQuery.error) throw userQuery.error;
+  const targetUser = userQuery.data;
+  if (!targetUser) {
+    return deps.sendJson(res, 404, {
+      success: false,
+      error: "User Not Found",
+      message: "Selected user was not found in registered users."
+    });
+  }
+  if (String(targetUser.email || "").toLowerCase() === deps.SUPER_ADMIN_EMAIL || String(targetUser.role || "").toUpperCase() === "SUPERADMIN") {
+    return deps.sendJson(res, 403, {
+      success: false,
+      error: "Protected Account",
+      message: "The sole Super Admin account cannot be reassigned to Content Manager."
+    });
+  }
+  if (String(targetUser.status || "").toUpperCase() !== "ACTIVE") {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Inactive User",
+      message: "Cannot grant Content Manager access to an inactive user account."
+    });
+  }
+  const updatedName = typeof body.name === "string" ? body.name.trim() : void 0;
+  if (updatedName !== void 0 && (!updatedName || updatedName.length > 100)) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Validation Error",
+      message: "Content Manager name must be between 1 and 100 characters."
+    });
+  }
+  let resolvedCampusId = void 0;
+  if ("campusId" in body) {
+    const campusCheck = await resolveOptionalCampusId(deps, body.campusId, res);
+    if (!campusCheck.ok) return;
+    resolvedCampusId = campusCheck.campusId;
+  }
+  const scopePermCheck = await parseAndValidateScopeAndPermissions(deps, body, res);
+  if (!scopePermCheck.ok) return;
+  const { permissions, scopeType, moduleIds, learningUnitIds } = scopePermCheck;
+  const notes = typeof body.notes === "string" ? body.notes.trim() : null;
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { data: existingAssign, error: findAssignErr } = await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", targetUser.id).maybeSingle();
+  if (findAssignErr) throw findAssignErr;
+  if (body.preventDuplicateAssignment === true && existingAssign) {
+    const existingStatus2 = deriveAssignmentStatus(existingAssign);
+    if (existingStatus2 !== "REVOKED") {
+      return deps.sendJson(res, 409, {
+        success: false,
+        error: "Duplicate Assignment",
+        message: `${targetUser.email} already has a Content Manager assignment (${existingStatus2}). Manage or edit their existing entry instead.`
+      });
+    }
+  }
+  let assignmentId;
+  const currentRole = String(targetUser.role || "STUDENT").toUpperCase();
+  const preservedPreviousRole = currentRole !== CONTENT_MANAGER_ROLE ? currentRole : existingAssign?.previous_role || "STUDENT";
+  const existingStatus = existingAssign ? deriveAssignmentStatus(existingAssign) : null;
+  const preserveSuspendedOnEdit = existingAssign && existingStatus === "SUSPENDED" && body.reactivate !== true;
+  const nextStatus = preserveSuspendedOnEdit ? "SUSPENDED" : existingStatus === "INVITED" ? "INVITED" : "ACTIVE";
+  const nextIsActive = isStatusActive(nextStatus);
+  if (existingAssign) {
+    assignmentId = existingAssign.id;
+    const { error: updErr } = await supabaseServer.from("content_manager_assignments").update({
+      scope_type: scopeType,
+      status: nextStatus,
+      is_active: nextIsActive,
+      previous_role: preservedPreviousRole,
+      granted_by: existingAssign.is_active ? existingAssign.granted_by || deps.SUPER_ADMIN_EMAIL : deps.SUPER_ADMIN_EMAIL,
+      granted_at: existingAssign.is_active ? existingAssign.granted_at : now,
+      suspended_by: preserveSuspendedOnEdit ? existingAssign.suspended_by : null,
+      suspended_at: preserveSuspendedOnEdit ? existingAssign.suspended_at : null,
+      suspension_reason: preserveSuspendedOnEdit ? existingAssign.suspension_reason : null,
+      revoked_by: null,
+      revoked_at: null,
+      updated_by: deps.SUPER_ADMIN_EMAIL,
+      notes,
+      updated_at: now
+    }).eq("id", assignmentId);
+    if (updErr) throw updErr;
+  } else {
+    assignmentId = `cma-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const { error: insErr } = await supabaseServer.from("content_manager_assignments").insert({
+      id: assignmentId,
+      user_id: targetUser.id,
+      previous_role: preservedPreviousRole,
+      scope_type: scopeType,
+      status: "ACTIVE",
+      is_active: true,
+      granted_by: deps.SUPER_ADMIN_EMAIL,
+      granted_at: now,
+      updated_by: deps.SUPER_ADMIN_EMAIL,
+      notes,
+      created_at: now,
+      updated_at: now
+    });
+    if (insErr) throw insErr;
+  }
+  await replacePermissionsAndScopes(assignmentId, permissions, scopeType, moduleIds, learningUnitIds, now);
+  const userUpdates = {};
+  if (currentRole !== CONTENT_MANAGER_ROLE && !preserveSuspendedOnEdit) {
+    userUpdates.role = CONTENT_MANAGER_ROLE;
+  }
+  if (updatedName !== void 0 && updatedName !== targetUser.name) {
+    userUpdates.name = updatedName;
+  }
+  if (resolvedCampusId !== void 0 && resolvedCampusId !== (targetUser.campus_id || null)) {
+    userUpdates.campus_id = resolvedCampusId;
+  }
+  if (Object.keys(userUpdates).length > 0) {
+    userUpdates.updatedAt = now;
+    const { error: roleUpdErr } = await supabaseServer.from("users").update(userUpdates).eq("id", targetUser.id);
     if (roleUpdErr) throw roleUpdErr;
   }
-  const auditAction = existingAssign?.is_active ? "UPDATE_CONTENT_MANAGER_ACCESS" : "GRANT_CONTENT_MANAGER_ACCESS";
+  const auditAction = existingAssign?.is_active || preserveSuspendedOnEdit ? "UPDATE_CONTENT_MANAGER_ACCESS" : "GRANT_CONTENT_MANAGER_ACCESS";
   await Promise.all([
     deps.recordAdminAudit(
       deps.SUPER_ADMIN_EMAIL,
@@ -115103,7 +115491,7 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
       "CONTENT_MANAGER",
       targetUser.id,
       targetUser.email,
-      { scopeType, permissionsCount: permissions.length, moduleIds, learningUnitIds },
+      { scopeType, status: nextStatus, permissionsCount: permissions.length, moduleIds, learningUnitIds, updatedName, resolvedCampusId },
       "SUCCESS",
       null,
       clientIp
@@ -115116,8 +115504,8 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
       resourceType: "CONTENT_MANAGER_ACCESS",
       resourceId: targetUser.id,
       resourceLabel: targetUser.email,
-      updatedValues: { scopeType, permissions, moduleIds, learningUnitIds },
-      changeSummary: `${existingAssign?.is_active ? "Updated" : "Granted"} Content Manager access for ${targetUser.email} (${scopeType})`,
+      updatedValues: { scopeType, status: nextStatus, permissions, moduleIds, learningUnitIds, name: updatedName ?? targetUser.name },
+      changeSummary: `${existingAssign?.is_active || preserveSuspendedOnEdit ? "Updated" : "Granted"} Content Manager access for ${targetUser.email} (${scopeType})`,
       ipAddress: clientIp
     })
   ]);
@@ -115128,11 +115516,180 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
       assignmentId,
       userId: targetUser.id,
       email: targetUser.email,
+      name: updatedName ?? targetUser.name,
+      campusId: resolvedCampusId !== void 0 ? resolvedCampusId : targetUser.campus_id || null,
       role: CONTENT_MANAGER_ROLE,
+      status: nextStatus,
       scopeType,
       permissions,
       moduleIds,
-      learningUnitIds
+      learningUnitIds,
+      updatedBy: deps.SUPER_ADMIN_EMAIL,
+      updatedAt: now
+    }
+  });
+}
+async function handleSuspendContentManager(deps, body, adminId, clientIp, res) {
+  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const assignmentId = typeof body.assignmentId === "string" ? body.assignmentId.trim() : "";
+  const reason = typeof body.reason === "string" && body.reason.trim() ? body.reason.trim() : typeof body.suspensionReason === "string" && body.suspensionReason.trim() ? body.suspensionReason.trim() : null;
+  if (!userId && !assignmentId) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing Identifier",
+      message: "userId or assignmentId is required to suspend Content Manager access."
+    });
+  }
+  const assignQuery = assignmentId ? await supabaseServer.from("content_manager_assignments").select("*").eq("id", assignmentId).maybeSingle() : await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", userId).maybeSingle();
+  if (assignQuery.error) throw assignQuery.error;
+  const assignment = assignQuery.data;
+  if (!assignment) {
+    return deps.sendJson(res, 404, { success: false, error: "Not Found", message: "Content Manager assignment not found." });
+  }
+  const currentStatus = deriveAssignmentStatus(assignment);
+  if (currentStatus === "REVOKED") {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Already Revoked",
+      message: "Revoked Content Manager assignments cannot be suspended."
+    });
+  }
+  const { data: targetUser } = await supabaseServer.from("users").select("id, email, role").eq("id", assignment.user_id).maybeSingle();
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { error: suspErr } = await supabaseServer.from("content_manager_assignments").update({
+    status: "SUSPENDED",
+    is_active: false,
+    suspended_by: deps.SUPER_ADMIN_EMAIL,
+    suspended_at: now,
+    suspension_reason: reason,
+    updated_by: deps.SUPER_ADMIN_EMAIL,
+    updated_at: now
+  }).eq("id", assignment.id);
+  if (suspErr) throw suspErr;
+  const label = targetUser?.email || assignment.user_id;
+  await Promise.all([
+    deps.recordAdminAudit(
+      deps.SUPER_ADMIN_EMAIL,
+      adminId,
+      "SUSPEND_CONTENT_MANAGER_ACCESS",
+      "CONTENT_MANAGER",
+      assignment.user_id,
+      label,
+      { previousStatus: currentStatus, reason },
+      "SUCCESS",
+      null,
+      clientIp
+    ),
+    recordContentAudit({
+      actorUserId: adminId,
+      actorEmail: deps.SUPER_ADMIN_EMAIL,
+      actorRole: "SUPERADMIN",
+      action: "SUSPEND_CONTENT_MANAGER_ACCESS",
+      resourceType: "CONTENT_MANAGER_ACCESS",
+      resourceId: assignment.user_id,
+      resourceLabel: label,
+      previousValues: { status: currentStatus, isActive: Boolean(assignment.is_active) },
+      updatedValues: { status: "SUSPENDED", isActive: false, suspensionReason: reason },
+      changeSummary: `Suspended Content Manager access for ${label}${reason ? ` (${reason})` : ""}`,
+      ipAddress: clientIp
+    })
+  ]);
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Content Manager access suspended for ${label}. Permissions and scopes have been preserved.`,
+    data: {
+      assignmentId: assignment.id,
+      userId: assignment.user_id,
+      status: "SUSPENDED",
+      isActive: false,
+      suspendedBy: deps.SUPER_ADMIN_EMAIL,
+      suspendedAt: now,
+      suspensionReason: reason
+    }
+  });
+}
+async function handleReactivateContentManager(deps, body, adminId, clientIp, res) {
+  const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const assignmentId = typeof body.assignmentId === "string" ? body.assignmentId.trim() : "";
+  if (!userId && !assignmentId) {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Missing Identifier",
+      message: "userId or assignmentId is required to reactivate Content Manager access."
+    });
+  }
+  const assignQuery = assignmentId ? await supabaseServer.from("content_manager_assignments").select("*").eq("id", assignmentId).maybeSingle() : await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", userId).maybeSingle();
+  if (assignQuery.error) throw assignQuery.error;
+  const assignment = assignQuery.data;
+  if (!assignment) {
+    return deps.sendJson(res, 404, { success: false, error: "Not Found", message: "Content Manager assignment not found." });
+  }
+  const currentStatus = deriveAssignmentStatus(assignment);
+  if (currentStatus === "REVOKED") {
+    return deps.sendJson(res, 400, {
+      success: false,
+      error: "Revoked Assignment",
+      message: "Revoked Content Manager assignments cannot be reactivated directly. Explicitly reassign access instead."
+    });
+  }
+  const { data: targetUser } = await supabaseServer.from("users").select("id, email, role, status").eq("id", assignment.user_id).maybeSingle();
+  if (!targetUser) {
+    return deps.sendJson(res, 404, { success: false, error: "User Not Found", message: "Associated user account was not found." });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const preservedScopeType = assignment.scope_type || "NONE";
+  const { error: reactErr } = await supabaseServer.from("content_manager_assignments").update({
+    status: "ACTIVE",
+    is_active: true,
+    suspended_by: null,
+    suspended_at: null,
+    suspension_reason: null,
+    updated_by: deps.SUPER_ADMIN_EMAIL,
+    updated_at: now
+  }).eq("id", assignment.id);
+  if (reactErr) throw reactErr;
+  if (String(targetUser.role || "").toUpperCase() !== CONTENT_MANAGER_ROLE) {
+    await supabaseServer.from("users").update({ role: CONTENT_MANAGER_ROLE, updatedAt: now }).eq("id", assignment.user_id);
+  }
+  const label = targetUser.email || assignment.user_id;
+  await Promise.all([
+    deps.recordAdminAudit(
+      deps.SUPER_ADMIN_EMAIL,
+      adminId,
+      "REACTIVATE_CONTENT_MANAGER_ACCESS",
+      "CONTENT_MANAGER",
+      assignment.user_id,
+      label,
+      { previousStatus: currentStatus, preservedScopeType },
+      "SUCCESS",
+      null,
+      clientIp
+    ),
+    recordContentAudit({
+      actorUserId: adminId,
+      actorEmail: deps.SUPER_ADMIN_EMAIL,
+      actorRole: "SUPERADMIN",
+      action: "REACTIVATE_CONTENT_MANAGER_ACCESS",
+      resourceType: "CONTENT_MANAGER_ACCESS",
+      resourceId: assignment.user_id,
+      resourceLabel: label,
+      previousValues: { status: currentStatus, isActive: Boolean(assignment.is_active) },
+      updatedValues: { status: "ACTIVE", isActive: true, scopeType: preservedScopeType },
+      changeSummary: `Reactivated Content Manager access for ${label} (preserved ${preservedScopeType} scope)`,
+      ipAddress: clientIp
+    })
+  ]);
+  return deps.sendJson(res, 200, {
+    success: true,
+    message: `Content Manager access reactivated for ${label}. Prior permissions and ${preservedScopeType} scope restored.`,
+    data: {
+      assignmentId: assignment.id,
+      userId: assignment.user_id,
+      status: "ACTIVE",
+      isActive: true,
+      scopeType: preservedScopeType,
+      updatedBy: deps.SUPER_ADMIN_EMAIL,
+      updatedAt: now
     }
   });
 }
@@ -115155,9 +115712,14 @@ async function handleRevokeContentManager(deps, body, adminId, clientIp, res) {
   const { data: targetUser } = await supabaseServer.from("users").select("id, email, role").eq("id", assignment.user_id).maybeSingle();
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const { error: revErr } = await supabaseServer.from("content_manager_assignments").update({
+    status: "REVOKED",
     is_active: false,
+    suspended_by: null,
+    suspended_at: null,
+    suspension_reason: null,
     revoked_by: deps.SUPER_ADMIN_EMAIL,
     revoked_at: now,
+    updated_by: deps.SUPER_ADMIN_EMAIL,
     updated_at: now
   }).eq("id", assignment.id);
   if (revErr) throw revErr;
@@ -115191,16 +115753,16 @@ async function handleRevokeContentManager(deps, body, adminId, clientIp, res) {
       resourceType: "CONTENT_MANAGER_ACCESS",
       resourceId: assignment.user_id,
       resourceLabel: label,
-      previousValues: { role: currentUserRole || CONTENT_MANAGER_ROLE, isActive: Boolean(assignment.is_active) },
-      updatedValues: { role: effectiveRole, isActive: false },
+      previousValues: { role: currentUserRole || CONTENT_MANAGER_ROLE, status: deriveAssignmentStatus(assignment), isActive: Boolean(assignment.is_active) },
+      updatedValues: { role: effectiveRole, status: "REVOKED", isActive: false },
       changeSummary: wasRestored ? `Revoked Content Manager access for ${label} (role restored to ${effectiveRole})` : `Revoked Content Manager access for ${label} (preserved role ${effectiveRole})`,
       ipAddress: clientIp
     })
   ]);
   return deps.sendJson(res, 200, {
     success: true,
-    message: `Content Manager access immediately revoked for ${label}.`,
-    data: { userId: assignment.user_id, restoredRole: effectiveRole, wasRestored }
+    message: `Content Manager access permanently revoked for ${label}.`,
+    data: { userId: assignment.user_id, status: "REVOKED", restoredRole: effectiveRole, wasRestored }
   });
 }
 async function handleGetContentManagerActivity(deps, body, req, res) {
@@ -115404,7 +115966,7 @@ function resetSuperAdminRateLimitsForTesting() {
 }
 var SUPER_ADMIN_EMAIL = "sgjitbros@gmail.com";
 var SUPER_ADMIN_ROLE = "SUPERADMIN";
-var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var EMAIL_REGEX2 = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 var ALLOWED_TARGET_ROLES = /* @__PURE__ */ new Set(["STUDENT", "MENTOR", "CAMPUS_MANAGER", "ADMIN"]);
 function sendJson(res, statusCode, payload) {
   if (typeof res.status === "function" && typeof res.json === "function") {
@@ -115701,8 +116263,17 @@ async function handler(req, res) {
     if (action === "search_users_for_content_manager") {
       return await handleSearchUsersForContentManager(cmDeps, body, req, res);
     }
+    if (action === "create_content_manager") {
+      return await handleCreateContentManager(cmDeps, body, auth.user.id, clientIp, res);
+    }
     if (action === "grant_content_manager" || action === "update_content_manager") {
       return await handleGrantOrUpdateContentManager(cmDeps, body, auth.user.id, clientIp, res);
+    }
+    if (action === "suspend_content_manager") {
+      return await handleSuspendContentManager(cmDeps, body, auth.user.id, clientIp, res);
+    }
+    if (action === "reactivate_content_manager") {
+      return await handleReactivateContentManager(cmDeps, body, auth.user.id, clientIp, res);
     }
     if (action === "revoke_content_manager") {
       return await handleRevokeContentManager(cmDeps, body, auth.user.id, clientIp, res);
@@ -116114,7 +116685,7 @@ async function handleProvisionManager(body, adminId, clientIp, res) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const campusId = typeof body.campusId === "string" && body.campusId !== "NONE" ? body.campusId.trim() : null;
-  if (!email || !EMAIL_REGEX.test(email)) {
+  if (!email || !EMAIL_REGEX2.test(email)) {
     return sendJson(res, 400, {
       success: false,
       error: "Invalid Email",
@@ -116266,7 +116837,7 @@ async function handleProvisionMentor(body, adminId, clientIp, res) {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const campusId = typeof body.campusId === "string" && body.campusId !== "NONE" ? body.campusId.trim() : null;
   const maxStudents = typeof body.maxStudents === "number" && body.maxStudents > 0 ? body.maxStudents : 30;
-  if (!email || !EMAIL_REGEX.test(email)) {
+  if (!email || !EMAIL_REGEX2.test(email)) {
     return sendJson(res, 400, {
       success: false,
       error: "Invalid Email",
@@ -116514,7 +117085,7 @@ async function handleEnrollStudent(body, adminId, clientIp, res) {
       message: "Student name is required and must not exceed 100 characters."
     });
   }
-  if (!email || !EMAIL_REGEX.test(email) || email.length > 255) {
+  if (!email || !EMAIL_REGEX2.test(email) || email.length > 255) {
     return sendJson(res, 400, {
       success: false,
       error: "Invalid Email",

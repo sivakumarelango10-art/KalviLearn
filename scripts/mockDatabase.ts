@@ -29,6 +29,7 @@ export interface MockDbState {
   Module: any[]
   LearningUnit: any[]
   Belt: any[]
+  auth_users: any[]
   content_manager_assignments: any[]
   content_manager_permissions: any[]
   content_manager_scopes: any[]
@@ -350,6 +351,9 @@ export function createInitialMockDb(): MockDbState {
       createdAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
       updatedAt: new Date('2026-09-01T00:00:00.000Z').toISOString(),
     })),
+    auth_users: [
+      { id: 'auth-superadmin-uid-1', email: 'sgjitbros@gmail.com' },
+    ],
     content_manager_assignments: [],
     content_manager_permissions: [],
     content_manager_scopes: [],
@@ -360,6 +364,48 @@ export function createInitialMockDb(): MockDbState {
 export function installMockSupabaseServer(supabaseServerInstance: any) {
   supabaseServerInstance.__isMocked = true
   const db = createInitialMockDb()
+  ;(db as any).__authControl = { failInvite: false, disableAdmin: false }
+
+  supabaseServerInstance.auth = {
+    admin: {
+      async listUsers(params?: { page?: number; perPage?: number }) {
+        if ((db as any).__authControl.disableAdmin) {
+          return { data: null, error: { message: 'Auth admin API unavailable' } }
+        }
+        const page = Math.max(1, params?.page || 1)
+        const perPage = Math.max(1, params?.perPage || 1000)
+        const slice = db.auth_users.slice((page - 1) * perPage, page * perPage)
+        return { data: { users: slice }, error: null }
+      },
+      async inviteUserByEmail(email: string, options?: { data?: Record<string, unknown> }) {
+        if ((db as any).__authControl.disableAdmin) {
+          return { data: { user: null }, error: { message: 'Auth admin API unavailable', status: 503 } }
+        }
+        if ((db as any).__authControl.failInvite) {
+          return { data: { user: null }, error: { message: 'Simulated SMTP invite failure', status: 500 } }
+        }
+        const normalized = String(email || '').trim().toLowerCase()
+        if (db.auth_users.some((u: any) => String(u.email || '').trim().toLowerCase() === normalized)) {
+          return {
+            data: { user: null },
+            error: { message: 'A user with this email address has already been registered', code: 'email_exists', status: 422 },
+          }
+        }
+        const created = {
+          id: `auth-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          email: normalized,
+          user_metadata: options?.data || {},
+          invited_at: new Date().toISOString(),
+        }
+        db.auth_users.push(created)
+        return { data: { user: created }, error: null }
+      },
+      async deleteUser(uid: string) {
+        db.auth_users = db.auth_users.filter((u: any) => u.id !== uid)
+        return { data: { user: null }, error: null }
+      },
+    },
+  }
 
   supabaseServerInstance.rpc = async function (fnName: string, args: any) {
     if (fnName === 'save_question_atomic') {
@@ -672,8 +718,33 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
               }
               break
             }
+            const emailLower = String(row.email || '').trim().toLowerCase()
+            if (emailLower && tableRows.some((r) => String(r.email || '').trim().toLowerCase() === emailLower)) {
+              insertError = {
+                code: '23505',
+                message: `duplicate key value violates unique constraint "users_email_key"`,
+              }
+              break
+            }
             row.createdAt = row.createdAt || new Date().toISOString()
             row.updatedAt = row.updatedAt || new Date().toISOString()
+          }
+
+          if (tableName === 'content_manager_assignments') {
+            const exists = tableRows.some((r) => r.user_id === row.user_id)
+            if (exists) {
+              insertError = {
+                code: '23505',
+                message: `duplicate key value violates unique constraint "content_manager_assignments_user_id_key"`,
+              }
+              break
+            }
+            const nowIso = new Date().toISOString()
+            row.status = row.status || 'ACTIVE'
+            row.is_active = row.is_active !== undefined ? row.is_active : true
+            row.granted_at = row.granted_at || nowIso
+            row.created_at = row.created_at || nowIso
+            row.updated_at = row.updated_at || nowIso
           }
 
           if (targetKey === 'Problem') {
