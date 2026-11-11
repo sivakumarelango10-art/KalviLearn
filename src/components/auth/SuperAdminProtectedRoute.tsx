@@ -22,6 +22,6 @@ export const SuperAdminProtectedRoute: React.FC = () => {
 
   if (isLoading || (user && verified === null)) return <div className="min-h-screen bg-[#090909] text-slate-300 flex items-center justify-center text-sm">Verifying administrator access…</div>
   if (!user) return <Navigate to="/login" replace state={{ from: { pathname: location.pathname } }} />
-  if (!verified) return <Navigate to="/dashboard" replace />
+  if (!verified) return <Navigate to={user.role === 'CONTENT_MANAGER' ? '/content-manager' : '/dashboard'} replace />
   return <Outlet />
 }

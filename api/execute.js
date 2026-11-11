@@ -154348,6 +154348,10 @@ async function authenticateFeedbackRequest(authHeader) {
       const rawRole = parts[2].toUpperCase();
       let testRole = rawRole;
       let testEmail = parts.slice(3).join("_").toLowerCase();
+      if (rawRole === "CONTENT" && parts[3]?.toUpperCase() === "MANAGER") {
+        testRole = "CONTENT_MANAGER";
+        testEmail = parts.slice(4).join("_").toLowerCase();
+      }
       if (rawRole === "CAMPUS" && parts[3]?.toUpperCase() === "MANAGER") {
         testRole = "CAMPUS_MANAGER";
         testEmail = parts.slice(4).join("_").toLowerCase();
@@ -154591,14 +154595,14 @@ async function resolveQuestionAsync(identifier) {
   const targetSlug = id.startsWith("custom:") ? id.slice("custom:".length) : id;
   try {
     let problem = null;
-    const { data: bySlug } = await supabaseServer.from("Problem").select("id, slug, title, isActive").eq("slug", targetSlug).maybeSingle();
+    const { data: bySlug } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status").eq("slug", targetSlug).maybeSingle();
     if (bySlug) {
       problem = bySlug;
     } else {
-      const { data: byId } = await supabaseServer.from("Problem").select("id, slug, title, isActive").eq("id", targetSlug).maybeSingle();
+      const { data: byId } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status").eq("id", targetSlug).maybeSingle();
       problem = byId;
     }
-    if (problem) {
+    if (problem && problem.isActive !== false && (!problem.status || problem.status === "PUBLISHED")) {
       let testCases = null;
       const { data: ptcCases, error: ptcErr } = await supabaseServer.from("ProblemTestCase").select("displayOrder, input, expectedOutput, isHidden").eq("problemId", problem.id).order("displayOrder", { ascending: true });
       if (!ptcErr && ptcCases && ptcCases.length > 0) {

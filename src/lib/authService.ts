@@ -66,7 +66,10 @@ function clearCachedVerification() {
  * Optimized for sub-millisecond response time using instant in-memory whitelist,
  * localStorage session validation, and non-blocking background synchronization.
  */
-export async function verifyUserInDatabase(rawEmail: string): Promise<VerificationResult> {
+export async function verifyUserInDatabase(
+  rawEmail: string,
+  options?: { bypassCache?: boolean }
+): Promise<VerificationResult> {
   if (!rawEmail) {
     return { allowed: false, reason: 'ACCOUNT_NOT_REGISTERED' }
   }
@@ -74,7 +77,7 @@ export async function verifyUserInDatabase(rawEmail: string): Promise<Verificati
   const normalizedEmail = rawEmail.trim().toLowerCase()
 
   // 1. Instant Cache Check (Memory / SessionStorage / LocalStorage) -> 0ms
-  const cachedUser = getCachedVerification(normalizedEmail)
+  const cachedUser = options?.bypassCache ? null : getCachedVerification(normalizedEmail)
   if (cachedUser) {
     return { allowed: true, user: cachedUser }
   }

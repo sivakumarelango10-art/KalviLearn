@@ -21896,6 +21896,10 @@ async function authenticateFeedbackRequest(authHeader) {
       const rawRole = parts[2].toUpperCase();
       let testRole = rawRole;
       let testEmail = parts.slice(3).join("_").toLowerCase();
+      if (rawRole === "CONTENT" && parts[3]?.toUpperCase() === "MANAGER") {
+        testRole = "CONTENT_MANAGER";
+        testEmail = parts.slice(4).join("_").toLowerCase();
+      }
       if (rawRole === "CAMPUS" && parts[3]?.toUpperCase() === "MANAGER") {
         testRole = "CAMPUS_MANAGER";
         testEmail = parts.slice(4).join("_").toLowerCase();

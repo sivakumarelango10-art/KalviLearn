@@ -732,7 +732,7 @@ export interface AdminQuestion {
   beltId?: string | null
   beltOrder?: number
   learningUnitId?: string | null
-  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED' | 'PENDING_REVIEW'
   description: string
   inputFormat?: string
   outputFormat?: string
@@ -767,7 +767,7 @@ export interface AdminQuestionInput {
   constraints?: string
   timeLimitMs?: number
   memoryLimitMb?: number
-  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED' | 'PENDING_REVIEW'
   examples?: AdminQuestionExample[]
   starterCodes?: Record<string, string>
   learningUnitId?: string | null
@@ -1328,3 +1328,129 @@ export async function updateBelt(payload: {
 
 
 
+
+// ─── 11. Content Manager RBAC & Publication Approvals ────────────────────────
+
+export interface AdminContentManagerAssignment {
+  id: string
+  userId: string
+  email: string
+  name: string | null
+  userRole: string
+  userStatus: string
+  previousRole: string
+  scopeType: 'NONE' | 'SCOPED' | 'GLOBAL'
+  isActive: boolean
+  permissions: string[]
+  permissionCount: number
+  moduleIds: string[]
+  learningUnitIds: string[]
+  assignedModules: Array<{ id: string; title: string; order: number }>
+  assignedLearningUnits: Array<{ id: string; moduleId: string | null; title: string; order: number }>
+  grantedBy: string | null
+  grantedAt: string | null
+  revokedBy: string | null
+  revokedAt: string | null
+  notes: string | null
+  activityCount: number
+  lastActivityAt: string | null
+}
+
+export interface AdminEligibleContentUser {
+  id: string
+  email: string
+  name: string | null
+  role: string
+  status: string
+  hasActiveContentManager: boolean
+}
+
+export interface AdminPendingContentApproval {
+  resourceType: 'PROBLEM' | 'LEARNING_UNIT'
+  id: string
+  slug?: string
+  moduleId?: string
+  title: string
+  difficulty?: string
+  learningUnitId?: string | null
+  status: string
+  approvalStatus: string
+  submittedAt: string
+  submittedByEmail: string
+  submittedByName: string | null
+}
+
+export async function fetchContentManagersDirectory(): Promise<{
+  success: boolean
+  data?: {
+    assignments: AdminContentManagerAssignment[]
+    modules: Array<{ id: string; title: string; order: number }>
+    learningUnits: Array<{ id: string; moduleId: string; title: string; order: number }>
+  }
+  error?: string
+}> {
+  return callSuperAdminApi('/api/super-admin/content-managers', {}, 'list_content_managers', 'POST')
+}
+
+export async function searchUsersForContentManager(search: string): Promise<{
+  success: boolean
+  data?: AdminEligibleContentUser[]
+  error?: string
+}> {
+  return callSuperAdminApi('/api/super-admin/content-managers', { search }, 'search_users_for_content_manager', 'POST')
+}
+
+export async function grantOrUpdateContentManager(payload: {
+  userId?: string
+  email?: string
+  permissions: string[]
+  scopeType: 'NONE' | 'SCOPED' | 'GLOBAL'
+  moduleIds?: string[]
+  learningUnitIds?: string[]
+  notes?: string | null
+}): Promise<{ success: boolean; data?: any; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'grant_content_manager', 'POST')
+}
+
+export async function revokeContentManagerAccess(payload: {
+  userId?: string
+  assignmentId?: string
+}): Promise<{ success: boolean; data?: any; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'revoke_content_manager', 'POST')
+}
+
+export async function fetchContentManagerActivity(userId?: string): Promise<{
+  success: boolean
+  data?: any[]
+  error?: string
+}> {
+  return callSuperAdminApi('/api/super-admin/content-managers', { userId }, 'get_content_manager_activity', 'POST')
+}
+
+export async function fetchPendingContentApprovals(): Promise<{
+  success: boolean
+  data?: {
+    pendingQuestions: AdminPendingContentApproval[]
+    pendingUnits: AdminPendingContentApproval[]
+    totalPending: number
+  }
+  error?: string
+}> {
+  return callSuperAdminApi('/api/super-admin/content-managers', {}, 'list_pending_content_approvals', 'POST')
+}
+
+export async function approvePublishContent(payload: {
+  resourceType: 'PROBLEM' | 'LEARNING_UNIT'
+  id: string
+  reviewNotes?: string
+}): Promise<{ success: boolean; data?: any; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'approve_publish_content', 'POST')
+}
+
+export async function rejectContentReview(payload: {
+  resourceType: 'PROBLEM' | 'LEARNING_UNIT'
+  id: string
+  reviewNotes?: string
+}): Promise<{ success: boolean; data?: any; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'reject_content_review', 'POST')
+}

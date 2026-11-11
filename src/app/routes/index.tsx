@@ -4,12 +4,35 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { MentorProtectedRoute } from '@/components/auth/MentorProtectedRoute'
 import { CampusManagerProtectedRoute } from '@/components/auth/CampusManagerProtectedRoute'
 import { SuperAdminProtectedRoute } from '@/components/auth/SuperAdminProtectedRoute'
+import { ContentManagerProtectedRoute } from '@/components/auth/ContentManagerProtectedRoute'
 import { AppLayout } from '@/layouts/AppLayout'
 import { MentorLayout } from '@/layouts/MentorLayout'
 import { CampusManagerLayout } from '@/layouts/CampusManagerLayout'
 import { SuperAdminLayout } from '@/layouts/SuperAdminLayout'
+import { ContentManagerLayout } from '@/layouts/ContentManagerLayout'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary'
+
+const ContentManagerDashboardPage = lazyWithRetry(
+  () => import('@/pages/content-manager/ContentManagerDashboardPage').then((m) => ({ default: m.ContentManagerDashboardPage })),
+  'ContentManagerDashboardPage'
+)
+const ContentManagerCurriculumPage = lazyWithRetry(
+  () => import('@/pages/content-manager/ContentManagerCurriculumPage').then((m) => ({ default: m.ContentManagerCurriculumPage })),
+  'ContentManagerCurriculumPage'
+)
+const ContentManagerQuestionsPage = lazyWithRetry(
+  () => import('@/pages/content-manager/ContentManagerQuestionsPage').then((m) => ({ default: m.ContentManagerQuestionsPage })),
+  'ContentManagerQuestionsPage'
+)
+const ContentManagerRevisionsPage = lazyWithRetry(
+  () => import('@/pages/content-manager/ContentManagerRevisionsPage').then((m) => ({ default: m.ContentManagerRevisionsPage })),
+  'ContentManagerRevisionsPage'
+)
+const ContentManagerProfilePage = lazyWithRetry(
+  () => import('@/pages/content-manager/ContentManagerProfilePage').then((m) => ({ default: m.ContentManagerProfilePage })),
+  'ContentManagerProfilePage'
+)
 
 // Safe code-split dynamic route imports with automatic deployment recovery
 const LoginPage = lazyWithRetry(
@@ -415,6 +438,13 @@ export const router = createBrowserRouter([
             element: withSuspense(<SuperAdminPracticeCodingPage />),
           },
           {
+            path: 'content-managers',
+            element: withSuspense(createElement(lazyWithRetry(
+              () => import('@/pages/super-admin/SuperAdminContentManagersPage').then((m) => ({ default: m.SuperAdminContentManagersPage })),
+              'SuperAdminContentManagersPage'
+            ))),
+          },
+          {
             path: 'audit',
             element: withSuspense(createElement(lazyWithRetry(
               () => import('@/pages/super-admin/SuperAdminAuditPage').then((m) => ({ default: m.SuperAdminAuditPage })),
@@ -424,6 +454,50 @@ export const router = createBrowserRouter([
           {
             path: '*',
             element: <Navigate to="/super-admin/dashboard" replace />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/content-manager',
+    element: <ContentManagerProtectedRoute />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        element: <ContentManagerLayout />,
+        children: [
+          {
+            index: true,
+            element: withSuspense(<ContentManagerDashboardPage />),
+          },
+          {
+            path: 'dashboard',
+            element: withSuspense(<ContentManagerDashboardPage />),
+          },
+          {
+            path: 'curriculum',
+            element: withSuspense(<ContentManagerCurriculumPage focusMode="curriculum" />),
+          },
+          {
+            path: 'learning-units',
+            element: withSuspense(<ContentManagerCurriculumPage focusMode="learning-units" />),
+          },
+          {
+            path: 'questions',
+            element: withSuspense(<ContentManagerQuestionsPage />),
+          },
+          {
+            path: 'revisions',
+            element: withSuspense(<ContentManagerRevisionsPage />),
+          },
+          {
+            path: 'profile',
+            element: withSuspense(<ContentManagerProfilePage />),
+          },
+          {
+            path: '*',
+            element: <Navigate to="/content-manager" replace />,
           },
         ],
       },

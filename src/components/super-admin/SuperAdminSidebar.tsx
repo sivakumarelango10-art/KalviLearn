@@ -11,6 +11,7 @@ import {
   LogOut,
   ShieldAlert,
   BookOpen,
+  FileCheck,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/common/BrandLogo'
 import { cn } from '@/lib/utils'
@@ -57,6 +58,12 @@ const NAV_ITEMS = [
     path: '/super-admin/roles',
     icon: ShieldCheck,
     badge: 'RBAC',
+  },
+  {
+    label: 'Content Managers',
+    path: '/super-admin/content-managers',
+    icon: FileCheck,
+    badge: 'Access',
   },
   {
     label: 'Content',

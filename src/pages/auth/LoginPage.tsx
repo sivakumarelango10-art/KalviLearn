@@ -21,6 +21,8 @@ export const LoginPage: React.FC = () => {
       ? '/super-admin/dashboard'
       : user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN'
       ? '/campus/dashboard'
+      : user?.role === 'CONTENT_MANAGER'
+      ? '/content-manager'
       : user?.role === 'MENTOR'
       ? '/mentor'
       : '/dashboard'
@@ -31,6 +33,8 @@ export const LoginPage: React.FC = () => {
       targetDestination = stateFrom.startsWith('/super-admin') ? stateFrom : '/super-admin/dashboard'
     } else if (user?.role === 'CAMPUS_MANAGER' || user?.role === 'ADMIN') {
       targetDestination = stateFrom.startsWith('/campus') ? stateFrom : '/campus/dashboard'
+    } else if (user?.role === 'CONTENT_MANAGER') {
+      targetDestination = stateFrom.startsWith('/content-manager') ? stateFrom : '/content-manager'
     } else if (user?.role === 'MENTOR') {
       targetDestination = stateFrom.startsWith('/mentor') ? stateFrom : '/mentor'
     } else {

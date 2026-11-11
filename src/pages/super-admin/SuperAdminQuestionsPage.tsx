@@ -47,6 +47,19 @@ import {
   fetchAdminQuestionRevisions,
   restoreAdminQuestionRevision,
 } from '@/lib/superAdminService'
+import {
+  fetchCmQuestions,
+  fetchCmQuestionById,
+  fetchCmQuestionPreview,
+  createCmQuestion,
+  updateCmQuestion,
+  duplicateCmQuestion,
+  toggleCmQuestionStatus,
+  deleteCmQuestion,
+  runCmQuestionTests,
+  fetchCmQuestionRevisions,
+  restoreCmQuestionRevision,
+} from '@/lib/contentManagerService'
 import { CODING_TOPICS } from '@/coding/topics'
 import { cn } from '@/lib/utils'
 
@@ -76,7 +89,7 @@ interface QuestionFormData {
   subdivision: string
   beltId?: string | null
   learningUnitId?: string | null
-  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+  status?: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED' | 'PENDING_REVIEW'
   description: string
   inputFormat: string
   outputFormat: string
@@ -151,6 +164,9 @@ export interface SuperAdminQuestionsPageProps {
   customDescription?: string
   isEmbedded?: boolean
   unitTitle?: string
+  apiMode?: 'super-admin' | 'content-manager'
+  grantedPermissions?: string[]
+  scopedUnits?: Array<{ id: string; title: string; moduleId?: string }>
 }
 
 export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = ({
@@ -163,7 +179,40 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   customDescription,
   isEmbedded,
   unitTitle,
+  apiMode = 'super-admin',
+  grantedPermissions = [],
+  scopedUnits,
 }) => {
+  const isCmMode = apiMode === 'content-manager'
+  const permSet = new Set(grantedPermissions)
+  const hasPerm = (p: string) => !isCmMode || permSet.has(p)
+  const canCreateQ = hasPerm('content.question.create')
+  const canUpdateQ = hasPerm('content.question.update')
+  const canDuplicateQ = hasPerm('content.question.duplicate') && canCreateQ
+  const canPreviewQ = hasPerm('content.question.preview')
+  const canRunTestsQ = hasPerm('content.question.run_tests')
+  const canManageExamplesQ = hasPerm('content.example.manage')
+  const canManagePublicTestsQ = hasPerm('content.test_case.manage')
+  const canManageHiddenTestsQ = hasPerm('content.hidden_test_case.manage')
+  const canManageStarterCodeQ = hasPerm('content.starter_code.manage')
+  const canPublishQ = hasPerm('content.question.publish')
+  const canArchiveQ = hasPerm('content.question.archive')
+  const canDeleteQ = hasPerm('content.question.delete')
+  const canRestoreRevQ = hasPerm('content.revision.restore')
+
+  const qApi = {
+    fetchList: isCmMode ? fetchCmQuestions : fetchAdminQuestions,
+    fetchById: isCmMode ? fetchCmQuestionById : fetchAdminQuestionById,
+    fetchPreview: isCmMode ? fetchCmQuestionPreview : fetchAdminQuestionPreview,
+    create: isCmMode ? createCmQuestion : createAdminQuestion,
+    update: isCmMode ? updateCmQuestion : updateAdminQuestion,
+    duplicate: isCmMode ? duplicateCmQuestion : duplicateAdminQuestion,
+    toggleStatus: isCmMode ? toggleCmQuestionStatus : toggleAdminQuestionStatus,
+    remove: isCmMode ? deleteCmQuestion : deleteAdminQuestion,
+    runTests: isCmMode ? runCmQuestionTests : runAdminQuestionTests,
+    fetchRevisions: isCmMode ? fetchCmQuestionRevisions : fetchAdminQuestionRevisions,
+    restoreRevision: isCmMode ? restoreCmQuestionRevision : restoreAdminQuestionRevision,
+  }
   const [questions, setQuestions] = useState<AdminQuestion[]>([])
   const [stats, setStats] = useState<AdminQuestionsDashboardStats>({
     total: 0,
@@ -275,12 +324,12 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     try {
       setLoading(true)
       setError(null)
-      const res = await fetchAdminQuestions({
+      const res = await qApi.fetchList({
         search: search.trim() || undefined,
         difficulty: difficultyFilter !== 'ALL' ? difficultyFilter : undefined,
         topic: topicFilter !== 'ALL' ? topicFilter : undefined,
         status: statusFilter !== 'ALL' ? statusFilter : undefined,
-        belt: learningUnitId ? undefined : (beltFilter !== 'ALL' ? beltFilter : undefined),
+        belt: learningUnitId ? undefined : (beltFilter !== 'ALL' ? String(beltFilter) : undefined),
         learningUnitId: learningUnitId || undefined,
         page,
         limit: isEmbedded ? 50 : 15,
@@ -384,7 +433,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setActionLoading(true)
     setError(null)
     try {
-      const res = await fetchAdminQuestionById(q.id)
+      const res = await qApi.fetchById(q.id)
       if (!res.success || !res.data) {
         setError(res.error || 'Failed to load question details for editing.')
         return
@@ -433,7 +482,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
       // Fetch revisions in background
       setRevisionsLoading(true)
-      fetchAdminQuestionRevisions(question.id)
+      qApi.fetchRevisions(question.id)
         .then((r: any) => {
           if (r.success && r.data) setRevisions(r.data)
         })
@@ -449,7 +498,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const handleOpenPreview = async (q: AdminQuestion) => {
     setPreviewQuestion(null)
     try {
-      const res = await fetchAdminQuestionPreview(q.id)
+      const res = await qApi.fetchPreview(q.id)
       if (res.success && res.data) {
         setPreviewQuestion(res.data)
       } else {
@@ -465,7 +514,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setAdminPreviewQuestion(null)
     setActionLoading(true)
     try {
-      const res = await fetchAdminQuestionById(q.id)
+      const res = await qApi.fetchById(q.id)
       if (res.success && res.data) {
         setAdminPreviewQuestion(res.data)
       } else {
@@ -482,7 +531,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const handleOpenTestRunner = async (q: AdminQuestion) => {
     try {
       setActionLoading(true)
-      const res = await fetchAdminQuestionById(q.id)
+      const res = await qApi.fetchById(q.id)
       const targetQ = res.success && res.data ? res.data : q
       setTestRunnerModalQuestion(targetQ)
       setRunnerLanguage('python')
@@ -509,7 +558,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const handleDuplicate = async (q: AdminQuestion) => {
     setActionLoading(true)
     try {
-      const res = await duplicateAdminQuestion(q.id)
+      const res = await qApi.duplicate(q.id)
       if (res.success && res.data) {
         setSuccessMsg(`Question duplicated as draft: "${res.data.title}"`)
         loadQuestions()
@@ -527,7 +576,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const handleToggleStatus = async (q: AdminQuestion) => {
     setActionLoading(true)
     try {
-      const res = await toggleAdminQuestionStatus(q.id, !q.isActive)
+      const res = await qApi.toggleStatus(q.id, !q.isActive)
       if (res.success) {
         setSuccessMsg(
           `Question "${q.title}" ${!q.isActive ? 'published to Arena' : 'reverted to draft'}.`
@@ -548,7 +597,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     if (!questionToDelete) return
     setActionLoading(true)
     try {
-      const res = await deleteAdminQuestion(questionToDelete.id)
+      const res = await qApi.remove(questionToDelete.id)
       if (res.success) {
         setSuccessMsg(`Question "${questionToDelete.title}" deleted successfully.`)
         setQuestionToDelete(null)
@@ -564,7 +613,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   }
 
   // Form Validation & Save
-  const handleSaveQuestion = async (publishImmediate?: boolean) => {
+  const handleSaveQuestion = async (publishImmediate?: boolean, submitForReview = false) => {
     const errors: Record<string, string> = {}
     if (!formData.title.trim()) errors.title = 'Title is required.'
     if (!formData.slug.trim()) {
@@ -594,13 +643,15 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
     setActionLoading(true)
     try {
-      const activeState = publishImmediate !== undefined ? publishImmediate : formData.isActive
+      const activeState = submitForReview ? false : (publishImmediate !== undefined ? publishImmediate : formData.isActive)
+      const resolvedStatus = submitForReview ? 'PENDING_REVIEW' : (publishImmediate === false ? 'DRAFT' : (formData.status || (activeState ? 'PUBLISHED' : 'DRAFT')))
       const payload = {
         title: formData.title.trim(),
         slug: formData.slug.trim(),
         difficulty: formData.difficulty,
         subdivision: formData.subdivision,
-        status: formData.status || (activeState ? 'PUBLISHED' : 'DRAFT'),
+        status: resolvedStatus as QuestionFormData['status'],
+        submitForReview,
         description: formData.description.trim(),
         inputFormat: formData.inputFormat.trim(),
         outputFormat: formData.outputFormat.trim(),
@@ -609,7 +660,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         memoryLimitMb: formData.memoryLimitMb || 256,
         changeSummary: formData.changeSummary?.trim() || undefined,
         isActive: activeState,
-        examples: formData.examples.filter((e) => e.input.trim() && e.output.trim()),
+        examples: (!isEditing || canManageExamplesQ) ? formData.examples.filter((e) => e.input.trim() && e.output.trim()) : undefined,
         testCases: formData.testCases.map((tc, idx) => ({
           input: tc.input.trim(),
           expectedOutput: tc.expectedOutput.trim(),
@@ -618,7 +669,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
           displayOrder: idx + 1,
           description: tc.description?.trim(),
         })),
-        starterCodes: formData.starterCodes,
+        starterCodes: (!isEditing || canManageStarterCodeQ) ? formData.starterCodes : undefined,
         // Scope question to lesson and nullify beltId
         learningUnitId: learningUnitId || formData.learningUnitId || undefined,
         beltId: (learningUnitId || formData.learningUnitId) ? null : (formData.beltId || undefined),
@@ -626,9 +677,9 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
       let res
       if (isEditing && formData.id) {
-        res = await updateAdminQuestion(formData.id, payload)
+        res = await qApi.update(formData.id, payload)
       } else {
-        res = await createAdminQuestion(payload)
+        res = await qApi.create(payload)
       }
 
       if (res.success) {
@@ -710,7 +761,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
     setRestoringRevisionId(rev.id)
     try {
-      const res = await restoreAdminQuestionRevision(formData.id, rev.id)
+      const res = await qApi.restoreRevision(formData.id, rev.id)
       if (res.success && res.data) {
         const q = res.data
         setFormData((prev) => ({
@@ -738,7 +789,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         }))
         setSuccessMsg(`Question successfully restored to revision v${rev.version}.`)
         // Refresh revisions
-        const revRes = await fetchAdminQuestionRevisions(formData.id)
+        const revRes = await qApi.fetchRevisions(formData.id)
         if (revRes.success && revRes.data) setRevisions(revRes.data)
       } else {
         setError(res.error || 'Failed to restore revision.')
@@ -855,7 +906,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         description: tc.description,
       }))
 
-      const res = await runAdminQuestionTests({
+      const res = await qApi.runTests({
         id: formData.id,
         code: runnerCode || (formData.starterCodes?.[runnerLanguage] || ''),
         language: runnerLanguage,
@@ -882,7 +933,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setRunnerFilter(filterToUse)
     setRunnerLoading(true)
     try {
-      const res = await runAdminQuestionTests({
+      const res = await qApi.runTests({
         id: testRunnerModalQuestion.id,
         slug: testRunnerModalQuestion.slug,
         code: runnerCode,
@@ -945,14 +996,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               >
                 <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
               </button>
-              <button
+              {canCreateQ && (<button
                 type="button"
                 onClick={handleOpenAdd}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-all shadow-md shadow-emerald-950/30"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add New Question</span>
-              </button>
+              </button>)}
             </div>
           </div>
 
@@ -1075,47 +1126,47 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
                       {/* Actions */}
                       <div className="flex items-center gap-1 self-end sm:self-center shrink-0">
-                        <button
+                        {canPreviewQ && (<button
                           type="button"
                           onClick={() => handleOpenPreview(q)}
                           title="Learner Preview (Hides hidden test cases)"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </button>)}
+                        {(!isCmMode || (canPreviewQ && canManageHiddenTestsQ)) && (<button
                           type="button"
                           onClick={() => handleOpenAdminPreview(q)}
                           title="Admin Full Inspection (All public & hidden test cases)"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-emerald-400 border border-neutral-800 transition-colors"
                         >
                           <ShieldCheck className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </button>)}
+                        {canRunTestsQ && (<button
                           type="button"
                           onClick={() => handleOpenTestRunner(q)}
                           title="Run Test Cases"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-blue-400 border border-neutral-800 transition-colors"
                         >
                           <Play className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </button>)}
+                        {canUpdateQ && (<button
                           type="button"
                           onClick={() => handleOpenEdit(q)}
                           title="Edit Question"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-amber-400 border border-neutral-800 transition-colors"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </button>)}
+                        {canDuplicateQ && (<button
                           type="button"
                           onClick={() => handleDuplicate(q)}
                           title="Duplicate as Draft"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
                         >
                           <Copy className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </button>)}
+                        {(canPublishQ || canArchiveQ) && (<button
                           type="button"
                           onClick={() => handleToggleStatus(q)}
                           title={q.isActive ? 'Unpublish to Draft' : 'Publish Question'}
@@ -1127,15 +1178,15 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           )}
                         >
                           {q.isActive ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
-                        </button>
-                        <button
+                        </button>)}
+                        {canDeleteQ && (<button
                           type="button"
                           onClick={() => setQuestionToDelete(q)}
                           title="Delete Question"
                           className="p-1.5 rounded bg-neutral-900 hover:bg-red-950/60 text-neutral-400 hover:text-red-400 border border-neutral-800 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        </button>)}
                       </div>
                     </div>
 
@@ -1215,13 +1266,13 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
             Refresh
           </button>
-          <button
+          {canCreateQ && (<button
             onClick={handleOpenAdd}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-sm font-semibold transition-all shadow-md shadow-red-950/30"
           >
             <Plus className="w-4 h-4" />
             Create Question
-          </button>
+          </button>)}
         </div>
       </div>
 
@@ -1335,7 +1386,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             </select>
           </div>
 
-          {/* Belt Filter */}
+          {!isCmMode && (
           <div className="md:col-span-2">
             <select
               value={beltFilter}
@@ -1354,6 +1405,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             </select>
           </div>
 
+          )}
           {/* Status Filter */}
           <div className="md:col-span-2">
             <select
@@ -1509,42 +1561,42 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right relative">
                         <div className="flex items-center justify-end gap-1">
-                          <button
+                          {canPreviewQ && (<button
                             onClick={() => handleOpenPreview(q)}
                             title="Student Preview (Student View)"
                             className="p-1.5 rounded hover:bg-[#262626] text-neutral-400 hover:text-white transition-colors"
                           >
                             <Eye className="w-4 h-4" />
-                          </button>
-                          <button
+                          </button>)}
+                          {(!isCmMode || (canPreviewQ && canManageHiddenTestsQ)) && (<button
                             onClick={() => handleOpenAdminPreview(q)}
                             title="Super Admin Full Preview (All Public & Hidden Tests)"
                             className="p-1.5 rounded hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-colors"
                           >
                             <ShieldCheck className="w-4 h-4" />
-                          </button>
-                          <button
+                          </button>)}
+                          {canRunTestsQ && (<button
                             onClick={() => handleOpenTestRunner(q)}
                             title="Admin Test Runner (Run Public & Hidden Tests)"
                             className="p-1.5 rounded hover:bg-blue-950/40 text-neutral-400 hover:text-blue-400 transition-colors"
                           >
                             <Terminal className="w-4 h-4" />
-                          </button>
-                          <button
+                          </button>)}
+                          {canUpdateQ && (<button
                             onClick={() => handleOpenEdit(q)}
                             title="Edit Question"
                             className="p-1.5 rounded hover:bg-[#262626] text-neutral-400 hover:text-white transition-colors"
                           >
                             <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
+                          </button>)}
+                          {canDuplicateQ && (<button
                             onClick={() => handleDuplicate(q)}
                             title="Duplicate as Draft"
                             className="p-1.5 rounded hover:bg-[#262626] text-neutral-400 hover:text-white transition-colors"
                           >
                             <Copy className="w-4 h-4" />
-                          </button>
-                          <button
+                          </button>)}
+                          {(canPublishQ || canArchiveQ) && (<button
                             onClick={() => handleToggleStatus(q)}
                             title={q.isActive ? 'Unpublish to Draft' : 'Publish Question'}
                             className={cn(
@@ -1555,14 +1607,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                             )}
                           >
                             {q.isActive ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
-                          </button>
-                          <button
+                          </button>)}
+                          {canDeleteQ && (<button
                             onClick={() => setQuestionToDelete(q)}
                             title="Delete Question"
                             className="p-1.5 rounded hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </button>)}
                         </div>
                       </td>
                     </tr>
@@ -1808,9 +1860,10 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         }}
                         className="w-full bg-[#181818] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-sm text-white outline-none"
                       >
-                        <option value="PUBLISHED">Published (Visible to Students)</option>
-                        <option value="DRAFT">Draft (Admin Only)</option>
-                        <option value="ARCHIVED">Archived</option>
+                        {(canPublishQ || formData.status === 'PUBLISHED') && <option value="PUBLISHED">Published (Visible to Students)</option>}
+                        <option value="DRAFT">Draft (Admin / Studio Only)</option>
+                        <option value="PENDING_REVIEW">Pending Review (Submitted)</option>
+                        {(canArchiveQ || formData.status === 'ARCHIVED') && <option value="ARCHIVED">Archived</option>}
                       </select>
                     </div>
 
@@ -1840,7 +1893,21 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
                       Question Association
                     </h4>
-                    {learningUnitId || formData.learningUnitId ? (
+                    {isCmMode && !learningUnitId && scopedUnits && scopedUnits.length > 0 ? (
+                      <div>
+                        <label className="block text-xs font-medium text-neutral-400 mb-1">Authorized Learning Unit</label>
+                        <select
+                          value={formData.learningUnitId || ''}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, learningUnitId: e.target.value || null, beltId: e.target.value ? null : prev.beltId }))}
+                          className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none"
+                        >
+                          <option value="">Select Learning Unit...</option>
+                          {scopedUnits.map((u) => (
+                            <option key={u.id} value={u.id}>{u.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : learningUnitId || formData.learningUnitId ? (
                       <div className="flex items-center gap-2 text-xs text-neutral-300">
                         <span className="px-2.5 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800 text-indigo-300 font-semibold">
                           Learn Coding Curriculum
@@ -2002,6 +2069,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     </p>
                     <button
                       type="button"
+                      disabled={!canManageExamplesQ}
                       onClick={handleAddExample}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222] hover:bg-[#333] text-neutral-200 text-xs font-semibold transition-colors"
                     >
@@ -2114,22 +2182,22 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <button
+                      {canManagePublicTestsQ && (<button
                         type="button"
                         onClick={() => handleAddTestCase(false)}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222] hover:bg-[#333] text-emerald-400 text-xs font-semibold border border-emerald-900/50"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         + Public Test
-                      </button>
-                      <button
+                      </button>)}
+                      {canManageHiddenTestsQ && (<button
                         type="button"
                         onClick={() => handleAddTestCase(true)}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold hover:bg-amber-900/40"
                       >
                         <Lock className="w-3.5 h-3.5" />
                         + Hidden Test
-                      </button>
+                      </button>)}
                     </div>
                   </div>
 
@@ -2263,6 +2331,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                   </div>
 
                   {/* SECTION 2: HIDDEN TEST CASES */}
+                  {canManageHiddenTestsQ ? (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between pb-1 border-b border-[#262626]">
                       <div className="flex items-center gap-2">
@@ -2390,6 +2459,12 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       })
                     )}
                   </div>
+                  ) : (
+                    <div className="p-4 rounded-xl border border-[#2e2e2e] bg-[#161616] text-xs text-neutral-400 flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Hidden test case management requires the <code className="text-amber-300">content.hidden_test_case.manage</code> permission. Existing hidden test cases remain safely preserved on the server.</span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -2455,7 +2530,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           <textarea
                             rows={6}
                             value={code}
-                            onChange={(e) => handleUpdateStarterCode(lang, e.target.value)}
+                            readOnly={!canManageStarterCodeQ}
+                            onChange={(e) => canManageStarterCodeQ && handleUpdateStarterCode(lang, e.target.value)}
                             placeholder={`Starter code template for ${lang}...`}
                             className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded p-3 text-xs text-neutral-200 font-mono outline-none"
                           />
@@ -2768,7 +2844,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                               >
                                 View Snapshot
                               </button>
-                              <button
+                              {canRestoreRevQ && (<button
                                 type="button"
                                 disabled={restoringRevisionId === rev.id}
                                 onClick={() => handleRestoreRevision(rev)}
@@ -2776,7 +2852,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                               >
                                 <RefreshCw className={cn('w-3.5 h-3.5', restoringRevisionId === rev.id && 'animate-spin')} />
                                 {restoringRevisionId === rev.id ? 'Restoring...' : 'Restore This Version'}
-                              </button>
+                              </button>)}
                             </div>
                           </div>
                         </div>
@@ -2815,13 +2891,13 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     {formData.isActive ? 'Will Publish' : 'Save as Draft'}
                   </strong>
                 </span>
-                <button
+                {canPublishQ && (<button
                   type="button"
                   onClick={() => setFormData((prev) => ({ ...prev, isActive: !prev.isActive }))}
                   className="text-xs underline text-neutral-400 hover:text-white"
                 >
                   Toggle
-                </button>
+                </button>)}
               </div>
 
               <div className="flex items-center gap-2">
@@ -2840,14 +2916,25 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 >
                   Save as Draft
                 </button>
-                <button
-                  type="button"
-                  disabled={actionLoading}
-                  onClick={() => handleSaveQuestion(true)}
-                  className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-xs font-semibold disabled:opacity-40 shadow-md shadow-red-950/40"
-                >
-                  {actionLoading ? 'Saving...' : isEditing ? 'Update & Publish' : 'Publish Question'}
-                </button>
+                {canPublishQ ? (
+                  <button
+                    type="button"
+                    disabled={actionLoading}
+                    onClick={() => handleSaveQuestion(true)}
+                    className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-xs font-semibold disabled:opacity-40 shadow-md shadow-red-950/40"
+                  >
+                    {actionLoading ? 'Saving...' : isEditing ? 'Update & Publish' : 'Publish Question'}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={actionLoading}
+                    onClick={() => handleSaveQuestion(false, true)}
+                    className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold disabled:opacity-40 shadow-md"
+                  >
+                    {actionLoading ? 'Submitting...' : 'Submit for Review'}
+                  </button>
+                )}
               </div>
             </div>
           </div>

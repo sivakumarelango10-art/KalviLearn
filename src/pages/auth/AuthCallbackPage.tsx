@@ -96,7 +96,7 @@ export const AuthCallbackPage: React.FC = () => {
         }
         setStatusMessage(`Authorizing profile for ${email}...`)
 
-        const result = await verifyUserInDatabase(email)
+        const result = await verifyUserInDatabase(email, { bypassCache: true })
 
         if (isCancelled) return
 
@@ -135,6 +135,8 @@ export const AuthCallbackPage: React.FC = () => {
             navigate('/super-admin/dashboard', { replace: true })
           } else if (role === 'CAMPUS_MANAGER' || role === 'ADMIN') {
             navigate('/campus/dashboard', { replace: true })
+          } else if (role === 'CONTENT_MANAGER') {
+            navigate('/content-manager', { replace: true })
           } else if (role === 'MENTOR') {
             navigate('/mentor', { replace: true })
           } else {
