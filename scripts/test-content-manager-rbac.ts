@@ -573,8 +573,246 @@ async function main() {
   assert(auditDelErr, 'Deleting from content_audit_logs must fail')
   console.log('  ✓ content_audit_logs UPDATE and DELETE strictly rejected.')
 
+  // Test 16: Direct Content Manager Creation (Option A) + Scoped Login & Question Authoring
+  console.log('Test 16: Direct Content Manager Account Creation (Option A) & Auth Compatibility')
+  const defaultCampus = db.campuses[0]
+  const directEmail = 'direct.author@kalvilearn.test'
+  const createDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Direct Content Author',
+    email: directEmail,
+    campusId: defaultCampus?.id || null,
+    creationMode: 'DIRECT',
+    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.test_case.manage', 'content.module.view'],
+    scopeType: 'SCOPED',
+    moduleIds: [mod1.id],
+    notes: 'Provisioned directly via Super Admin + Add Content Manager',
+  })
+  assert.strictEqual(createDirectRes.status, 201, `Expected 201 on create_content_manager, got ${createDirectRes.status}: ${createDirectRes.body?.message}`)
+  const directUserId = createDirectRes.body.data.userId
+  const directAssignId = createDirectRes.body.data.assignmentId
+  assert.strictEqual(createDirectRes.body.data.status, 'ACTIVE')
+  assert.strictEqual(createDirectRes.body.data.role, 'CONTENT_MANAGER')
+
+  // Verify the created user authenticates directly via existing role-based session
+  const DIRECT_CM_TOKEN = `test_auth_CONTENT_MANAGER_${directEmail}`
+  const directMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(directMe.status, 200)
+  assert.strictEqual(directMe.body.data.email, directEmail)
+  assert.strictEqual(directMe.body.data.scopeType, 'SCOPED')
+
+  // Verify direct user can create authored content inside assigned scope
+  const directQ = await callContentManager(DIRECT_CM_TOKEN, 'create_question', {
+    title: 'Direct CM Authored Question',
+    slug: 'direct-cm-authored-q',
+    difficulty: 'Easy',
+    description: 'Created by directly provisioned CM',
+    learningUnitId: unitInMod1.id,
+    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
+  })
+  assert.strictEqual(directQ.status, 201)
+  const directQId = directQ.body.data.id
+  console.log('  ✓ Option A creates user + RBAC records + scoped login + content authoring cleanly.')
+
+  // Test 17: Duplicate Email, Duplicate Existing Assignment & Protected Super Admin Guards
+  console.log('Test 17: Duplicate Email (409), Duplicate Assignment (409) & Protected Account (403) Guards')
+  const dupEmailRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Duplicate Author',
+    email: directEmail.toUpperCase(),
+    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
+    scopeType: 'NONE',
+  })
+  assert.strictEqual(dupEmailRes.status, 409, 'Duplicate email on create_content_manager must return 409')
+
+  const dupAssignRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
+    userId: directUserId,
+    preventDuplicateAssignment: true,
+    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
+    scopeType: 'NONE',
+  })
+  assert.strictEqual(dupAssignRes.status, 409, 'Duplicate active assignment via Option B must return 409')
+
+  const protectedCreate = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Blocked Super Admin Clone',
+    email: 'sgjitbros@gmail.com',
+    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
+    scopeType: 'NONE',
+  })
+  assert.strictEqual(protectedCreate.status, 403, 'Protected Super Admin email must return 403')
+  console.log('  ✓ 409 duplicate guards and 403 Super Admin protection verified.')
+
+  // Test 18: Invited Provisioning Mode, Fail-Closed Auth Guards, Duplicate auth.users Guard & Activation
+  console.log('Test 18: Invited Provisioning Mode, Auth Failure Guards & Status/is_active Invariants')
+  const invitedEmail = 'invited.author@kalvilearn.test'
+  const createInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Invited Content Author',
+    email: invitedEmail,
+    creationMode: 'INVITE',
+    permissions: ['content.question.view', 'content.module.view'],
+    scopeType: 'NONE',
+    notes: 'Pending invite acceptance',
+  })
+  assert.strictEqual(createInviteRes.status, 201)
+  assert.strictEqual(createInviteRes.body.data.status, 'INVITED')
+  assert.strictEqual(createInviteRes.body.data.isActive, false, 'INVITED status must enforce isActive === false')
+  assert.strictEqual(createInviteRes.body.data.authInviteSent, true)
+  const invAssignRow = db.content_manager_assignments.find((a: any) => a.id === createInviteRes.body.data.assignmentId)
+  assert.strictEqual(invAssignRow?.status, 'INVITED')
+  assert.strictEqual(invAssignRow?.is_active, false, 'DB row for INVITED must strictly keep is_active = false')
+  assert(db.auth_users.some((au: any) => au.email === invitedEmail), 'Supabase Auth user created on INVITE')
+
+  // Unaccepted INVITED user must NOT have active API access until accepted/activated
+  const invitedMePending = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
+  assert.strictEqual(invitedMePending.status, 403, 'Pending INVITED assignment (is_active=false) must fail closed (403)')
+
+  // Duplicate auth.users email check even when absent from public.users
+  db.auth_users.push({ id: 'auth-only-dup-1', email: 'only.in.auth@kalvilearn.test' })
+  const dupAuthInvite = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Dup Auth User',
+    email: 'only.in.auth@kalvilearn.test',
+    creationMode: 'INVITE',
+    permissions: ['content.question.view'],
+    scopeType: 'NONE',
+  })
+  assert.strictEqual(dupAuthInvite.status, 409, 'Duplicate auth.users identity must return 409 Conflict')
+  assert(!db.users.some((u: any) => u.email === 'only.in.auth@kalvilearn.test'), 'Failed duplicate auth check must leave zero public.users rows')
+
+  // Auth invite failure/unavailability must NEVER report silent success
+  ;(db as any).__authControl.failInvite = true
+  const failedInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Failed Invite User',
+    email: 'failed.invite@kalvilearn.test',
+    creationMode: 'INVITE',
+    permissions: ['content.question.view'],
+    scopeType: 'NONE',
+  })
+  ;(db as any).__authControl.failInvite = false
+  assert.strictEqual(failedInviteRes.status, 502, 'Auth invite failure must return explicit 502 error')
+  assert(!db.users.some((u: any) => u.email === 'failed.invite@kalvilearn.test'), 'Failed auth invite must create zero public.users rows')
+
+  // Activating INVITED user transitions atomically to ACTIVE + is_active = true without escalating scope
+  const activateInvRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
+    assignmentId: createInviteRes.body.data.assignmentId,
+  })
+  assert.strictEqual(activateInvRes.status, 200)
+  assert.strictEqual(activateInvRes.body.data.status, 'ACTIVE')
+  assert.strictEqual(activateInvRes.body.data.isActive, true)
+  assert.strictEqual(activateInvRes.body.data.scopeType, 'NONE', 'Activation must keep configured NONE scope')
+  const activatedMe = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
+  assert.strictEqual(activatedMe.status, 200)
+  console.log('  ✓ INVITED (is_active=false), Auth fail-closed 502/409, zero orphan rollback, and safe activation verified.')
+
+  // Test 19: Edit Profile, Permissions & Scope + Verify Directory Stats
+  console.log('Test 19: Edit Content Manager Profile/Permissions/Scope & Directory Stats')
+  const editRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
+    userId: directUserId,
+    name: 'Direct Content Author Updated',
+    campusId: null,
+    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.module.view', 'content.unit.edit'],
+    scopeType: 'SCOPED',
+    moduleIds: [mod1.id],
+    notes: 'Updated notes and profile',
+  })
+  assert.strictEqual(editRes.status, 200)
+  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.email, directEmail, 'Email/Auth identity must remain unchanged')
+  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.name, 'Direct Content Author Updated')
+
+  const pendingInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Pending Invited Author',
+    email: 'pending.invite2@kalvilearn.test',
+    creationMode: 'INVITE',
+    permissions: ['content.question.view'],
+    scopeType: 'NONE',
+  })
+  assert.strictEqual(pendingInviteRes.status, 201)
+
+  const dirRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'list_content_managers')
+  assert.strictEqual(dirRes.status, 200)
+  assert(dirRes.body.data.stats.total >= 5)
+  assert(dirRes.body.data.stats.active >= 2)
+  assert(dirRes.body.data.stats.invited >= 1)
+  const pendingInvEntry = dirRes.body.data.assignments.find((a: any) => a.id === pendingInviteRes.body.data.assignmentId)
+  assert.strictEqual(pendingInvEntry?.status, 'INVITED')
+  assert.strictEqual(pendingInvEntry?.isActive, false, 'Directory listing must report isActive=false for INVITED status')
+  const dirEntry = dirRes.body.data.assignments.find((a: any) => a.id === directAssignId)
+  assert(dirEntry && dirEntry.updatedBy === 'sgjitbros@gmail.com' && dirEntry.name === 'Direct Content Author Updated')
+  console.log('  ✓ Edit preserved Auth email, saved updatedBy/updatedAt, and updated directory stats.')
+
+  // Test 20: Suspend Preserves Permissions/Scope/Content & Immediately Blocks /content-manager
+  console.log('Test 20: Suspension Lifecycle, Permission Preservation & Immediate 403')
+  const suspendRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'suspend_content_manager', {
+    assignmentId: directAssignId,
+    reason: 'Temporary curriculum freeze',
+  })
+  assert.strictEqual(suspendRes.status, 200)
+  assert.strictEqual(suspendRes.body.data.status, 'SUSPENDED')
+
+  // Immediately blocked on /api/content-manager
+  const suspendedMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(suspendedMe.status, 403, 'Suspended Content Manager must immediately receive 403')
+
+  // Editing metadata while suspended must preserve SUSPENDED state
+  const editWhileSuspended = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
+    userId: directUserId,
+    name: 'Direct Content Author While Suspended',
+    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.module.view'],
+    scopeType: 'SCOPED',
+    moduleIds: [mod1.id],
+    notes: 'Edited while suspended',
+  })
+  assert.strictEqual(editWhileSuspended.status, 200)
+  assert.strictEqual(editWhileSuspended.body.data.status, 'SUSPENDED', 'Editing a suspended manager must not accidentally unsuspend')
+
+  // Authored content and permissions remain intact in DB
+  assert(db.Problem.some((p: any) => p.id === directQId), 'Authored question must be preserved during suspension')
+  assert.strictEqual(db.content_manager_scopes.filter((s: any) => s.assignment_id === directAssignId).length, 1, 'Scopes preserved during suspension')
+  console.log('  ✓ Suspended user blocked immediately (403) while permissions, scopes & authored content preserved.')
+
+  // Test 21: Reactivate Restores Exact Prior Scope (Never Auto-Grants GLOBAL)
+  console.log('Test 21: Reactivation Lifecycle & Exact Scope Restoration')
+  const reactivateRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
+    assignmentId: directAssignId,
+  })
+  assert.strictEqual(reactivateRes.status, 200)
+  assert.strictEqual(reactivateRes.body.data.status, 'ACTIVE')
+  assert.strictEqual(reactivateRes.body.data.scopeType, 'SCOPED', 'Reactivation must restore exact SCOPED access and NEVER upgrade to GLOBAL')
+
+  const postReactivateMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(postReactivateMe.status, 200, 'Reactivated Content Manager must regain access immediately')
+  assert.strictEqual(postReactivateMe.body.data.scopeType, 'SCOPED')
+  console.log('  ✓ Reactivated manager regained SCOPED access cleanly with saved permissions.')
+
+  // Test 22: Permanent Revoke Safely Downgrades Direct User, Preserves Content/Audit, Blocks Reactivate (400)
+  console.log('Test 22: Revoke Preserves Content/Audit, Downgrades Direct User, Blocks Reactivate (400)')
+  const revokeDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', {
+    assignmentId: directAssignId,
+  })
+  assert.strictEqual(revokeDirectRes.status, 200)
+  assert.strictEqual(revokeDirectRes.body.data.status, 'REVOKED')
+  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.role, 'STUDENT', 'Revoked Option A user safely downgraded to STUDENT')
+  assert(db.Problem.some((p: any) => p.id === directQId), 'Authored question preserved after revoke')
+  assert(db.content_audit_logs.length >= 8, 'Audit history preserved after revoke')
+
+  const postRevokeDirectMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(postRevokeDirectMe.status, 403, 'Revoked direct user immediately blocked from /content-manager')
+
+  const reactivateRevoked = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
+    assignmentId: directAssignId,
+  })
+  assert.strictEqual(reactivateRevoked.status, 400, 'Reactivating permanently REVOKED assignment must fail with 400')
+  console.log('  ✓ Permanent revoke preserved content/audit, safely downgraded role, and blocked direct reactivate (400).')
+
+  // Test 23: Non-Super-Admin Privilege Escalation Protection
+  console.log('Test 23: Non-Super-Admin Users Blocked from Content Manager Lifecycle Actions (403)')
+  for (const action of ['create_content_manager', 'suspend_content_manager', 'reactivate_content_manager']) {
+    const blockedSa = await callSuperAdmin(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })
+    assert.strictEqual(blockedSa.status, 403, `Non-super-admin must receive 403 for ${action} on /api/super-admin`)
+    const blockedCm = await callContentManager(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })
+    assert.strictEqual(blockedCm.status, 403, `Content manager must receive 403 for ${action} on /api/content-manager`)
+  }
+  console.log('  ✓ All new lifecycle actions strictly restricted to verified Super Admin.')
+
   console.log('\n======================================================================')
-  console.log('ALL 15 CONTENT MANAGER RBAC & SECURITY SUITES PASSED 100%!')
+  console.log('ALL 23 CONTENT MANAGER USER MANAGEMENT, RBAC & SECURITY SUITES PASSED 100%!')
   console.log('======================================================================')
 }
 

@@ -1331,15 +1331,21 @@ export async function updateBelt(payload: {
 
 // ─── 11. Content Manager RBAC & Publication Approvals ────────────────────────
 
+export type ContentManagerLifecycleStatus = 'ACTIVE' | 'SUSPENDED' | 'INVITED' | 'REVOKED'
+
 export interface AdminContentManagerAssignment {
   id: string
   userId: string
   email: string
   name: string | null
+  campusId: string | null
+  campusName: string | null
   userRole: string
   userStatus: string
+  userCreatedAt: string | null
   previousRole: string
   scopeType: 'NONE' | 'SCOPED' | 'GLOBAL'
+  status: ContentManagerLifecycleStatus
   isActive: boolean
   permissions: string[]
   permissionCount: number
@@ -1349,11 +1355,30 @@ export interface AdminContentManagerAssignment {
   assignedLearningUnits: Array<{ id: string; moduleId: string | null; title: string; order: number }>
   grantedBy: string | null
   grantedAt: string | null
+  invitedBy: string | null
+  invitedAt: string | null
+  suspendedBy: string | null
+  suspendedAt: string | null
+  suspensionReason: string | null
   revokedBy: string | null
   revokedAt: string | null
+  updatedBy: string | null
+  createdAt: string | null
+  updatedAt: string | null
   notes: string | null
   activityCount: number
+  contentEditCount: number
   lastActivityAt: string | null
+}
+
+export interface AdminContentManagerStats {
+  total: number
+  active: number
+  suspended: number
+  revoked: number
+  invited: number
+  pendingApprovals: number
+  totalContentEdits: number
 }
 
 export interface AdminEligibleContentUser {
@@ -1362,7 +1387,9 @@ export interface AdminEligibleContentUser {
   name: string | null
   role: string
   status: string
+  campusId: string | null
   hasActiveContentManager: boolean
+  assignmentStatus: ContentManagerLifecycleStatus | null
 }
 
 export interface AdminPendingContentApproval {
@@ -1384,9 +1411,12 @@ export async function fetchContentManagersDirectory(): Promise<{
   success: boolean
   data?: {
     assignments: AdminContentManagerAssignment[]
+    stats?: AdminContentManagerStats
+    campuses?: Array<{ id: string; name: string; code: string; status?: string }>
     modules: Array<{ id: string; title: string; order: number }>
     learningUnits: Array<{ id: string; moduleId: string; title: string; order: number }>
   }
+  message?: string
   error?: string
 }> {
   return callSuperAdminApi('/api/super-admin/content-managers', {}, 'list_content_managers', 'POST')
@@ -1395,33 +1425,72 @@ export async function fetchContentManagersDirectory(): Promise<{
 export async function searchUsersForContentManager(search: string): Promise<{
   success: boolean
   data?: AdminEligibleContentUser[]
+  message?: string
   error?: string
 }> {
   return callSuperAdminApi('/api/super-admin/content-managers', { search }, 'search_users_for_content_manager', 'POST')
 }
 
-export async function grantOrUpdateContentManager(payload: {
-  userId?: string
-  email?: string
+export async function createContentManagerAccount(payload: {
+  name: string
+  email: string
+  campusId?: string | null
+  creationMode?: 'DIRECT' | 'INVITE'
   permissions: string[]
   scopeType: 'NONE' | 'SCOPED' | 'GLOBAL'
   moduleIds?: string[]
   learningUnitIds?: string[]
   notes?: string | null
-}): Promise<{ success: boolean; data?: any; error?: string }> {
-  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'grant_content_manager', 'POST')
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'create_content_manager', 'POST')
+}
+
+export async function grantOrUpdateContentManager(payload: {
+  userId?: string
+  email?: string
+  name?: string
+  campusId?: string | null
+  preventDuplicateAssignment?: boolean
+  permissions: string[]
+  scopeType: 'NONE' | 'SCOPED' | 'GLOBAL'
+  moduleIds?: string[]
+  learningUnitIds?: string[]
+  notes?: string | null
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
+  return callSuperAdminApi(
+    '/api/super-admin/content-managers',
+    payload,
+    payload.preventDuplicateAssignment ? 'grant_content_manager' : 'update_content_manager',
+    'POST'
+  )
+}
+
+export async function suspendContentManagerAccess(payload: {
+  userId?: string
+  assignmentId?: string
+  reason?: string | null
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'suspend_content_manager', 'POST')
+}
+
+export async function reactivateContentManagerAccess(payload: {
+  userId?: string
+  assignmentId?: string
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
+  return callSuperAdminApi('/api/super-admin/content-managers', payload, 'reactivate_content_manager', 'POST')
 }
 
 export async function revokeContentManagerAccess(payload: {
   userId?: string
   assignmentId?: string
-}): Promise<{ success: boolean; data?: any; error?: string }> {
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
   return callSuperAdminApi('/api/super-admin/content-managers', payload, 'revoke_content_manager', 'POST')
 }
 
 export async function fetchContentManagerActivity(userId?: string): Promise<{
   success: boolean
   data?: any[]
+  message?: string
   error?: string
 }> {
   return callSuperAdminApi('/api/super-admin/content-managers', { userId }, 'get_content_manager_activity', 'POST')
@@ -1434,6 +1503,7 @@ export async function fetchPendingContentApprovals(): Promise<{
     pendingUnits: AdminPendingContentApproval[]
     totalPending: number
   }
+  message?: string
   error?: string
 }> {
   return callSuperAdminApi('/api/super-admin/content-managers', {}, 'list_pending_content_approvals', 'POST')
@@ -1443,7 +1513,7 @@ export async function approvePublishContent(payload: {
   resourceType: 'PROBLEM' | 'LEARNING_UNIT'
   id: string
   reviewNotes?: string
-}): Promise<{ success: boolean; data?: any; error?: string }> {
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
   return callSuperAdminApi('/api/super-admin/content-managers', payload, 'approve_publish_content', 'POST')
 }
 
@@ -1451,6 +1521,6 @@ export async function rejectContentReview(payload: {
   resourceType: 'PROBLEM' | 'LEARNING_UNIT'
   id: string
   reviewNotes?: string
-}): Promise<{ success: boolean; data?: any; error?: string }> {
+}): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
   return callSuperAdminApi('/api/super-admin/content-managers', payload, 'reject_content_review', 'POST')
 }

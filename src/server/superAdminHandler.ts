@@ -11,7 +11,10 @@ import problemsData from '../data/problems.json'
 import {
   handleListContentManagers,
   handleSearchUsersForContentManager,
+  handleCreateContentManager,
   handleGrantOrUpdateContentManager,
+  handleSuspendContentManager,
+  handleReactivateContentManager,
   handleRevokeContentManager,
   handleGetContentManagerActivity,
   handleListPendingContentApprovals,
@@ -403,8 +406,17 @@ export default async function handler(
     if (action === 'search_users_for_content_manager') {
       return await handleSearchUsersForContentManager(cmDeps, body, req, res)
     }
+    if (action === 'create_content_manager') {
+      return await handleCreateContentManager(cmDeps, body, auth.user.id, clientIp, res)
+    }
     if (action === 'grant_content_manager' || action === 'update_content_manager') {
       return await handleGrantOrUpdateContentManager(cmDeps, body, auth.user.id, clientIp, res)
+    }
+    if (action === 'suspend_content_manager') {
+      return await handleSuspendContentManager(cmDeps, body, auth.user.id, clientIp, res)
+    }
+    if (action === 'reactivate_content_manager') {
+      return await handleReactivateContentManager(cmDeps, body, auth.user.id, clientIp, res)
     }
     if (action === 'revoke_content_manager') {
       return await handleRevokeContentManager(cmDeps, body, auth.user.id, clientIp, res)
