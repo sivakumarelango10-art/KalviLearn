@@ -114645,17 +114645,76 @@ async function resolveOptionalCampusId(deps, rawCampusId, res) {
   }
   return { ok: true, campusId: campus.id };
 }
+function normalizeOptionalProfileField(raw, maxLen) {
+  if (raw === void 0 || raw === null) return null;
+  const s = typeof raw === "string" ? raw.trim() : "";
+  if (!s) return null;
+  return s.slice(0, maxLen);
+}
+async function ensureContentManagerProfile(input) {
+  const now = input.now || (/* @__PURE__ */ new Date()).toISOString();
+  const { data: existing, error: selErr } = await supabaseServer.from("content_managers").select("*").eq("user_id", input.userId).maybeSingle();
+  if (selErr) throw selErr;
+  const nextManagerCode = normalizeOptionalProfileField(input.managerCode, 30);
+  const nextDepartment = normalizeOptionalProfileField(input.department, 100);
+  const nextDesignation = normalizeOptionalProfileField(input.designation, 100);
+  if (existing) {
+    if (!input.allowUpdateExisting) {
+      return existing;
+    }
+    const updates = {};
+    if (input.name !== void 0 && input.name !== existing.name) {
+      updates.name = input.name;
+    }
+    if (input.email !== void 0 && input.email && input.email.toLowerCase() !== String(existing.email || "").toLowerCase()) {
+      updates.email = input.email.toLowerCase();
+    }
+    if (input.hasManagerCodeField && nextManagerCode !== (existing.manager_code || null)) {
+      updates.manager_code = nextManagerCode;
+    }
+    if (input.hasDepartmentField && nextDepartment !== (existing.department || null)) {
+      updates.department = nextDepartment;
+    }
+    if (input.hasDesignationField && nextDesignation !== (existing.designation || null)) {
+      updates.designation = nextDesignation;
+    }
+    if (Object.keys(updates).length === 0) {
+      return existing;
+    }
+    updates.updated_at = now;
+    const { data: updated, error: updErr } = await supabaseServer.from("content_managers").update(updates).eq("id", existing.id).select("*").single();
+    if (updErr) throw updErr;
+    return updated;
+  }
+  const profileId = `cmp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+  const { data: inserted, error: insErr } = await supabaseServer.from("content_managers").insert({
+    id: profileId,
+    user_id: input.userId,
+    name: input.name ?? null,
+    email: input.email ? input.email.toLowerCase() : null,
+    manager_code: nextManagerCode,
+    department: nextDepartment,
+    designation: nextDesignation,
+    created_at: now,
+    updated_at: now
+  }).select("*").single();
+  if (insErr) throw insErr;
+  return inserted;
+}
 async function handleListContentManagers(deps, res) {
-  const [assignRes, usersRes, campusesRes, auditRes] = await Promise.all([
+  const [assignRes, profilesRes, usersRes, campusesRes, auditRes] = await Promise.all([
     supabaseServer.from("content_manager_assignments").select("*").order("created_at", { ascending: false }),
+    supabaseServer.from("content_managers").select("*"),
     supabaseServer.from("users").select("id, email, name, role, status, campus_id, createdAt, updatedAt"),
     supabaseServer.from("campuses").select("id, name, code, status"),
     supabaseServer.from("content_audit_logs").select("actor_user_id, action, created_at")
   ]);
   if (assignRes.error) throw assignRes.error;
+  if (profilesRes.error) throw profilesRes.error;
   if (usersRes.error) throw usersRes.error;
   if (campusesRes.error) throw campusesRes.error;
   if (auditRes.error) throw auditRes.error;
+  const profilesByUserId = new Map((profilesRes.data || []).map((p2) => [p2.user_id, p2]));
   const usersById = new Map((usersRes.data || []).map((u) => [u.id, u]));
   const campusesById = new Map((campusesRes.data || []).map((c) => [c.id, c]));
   const activityCountByUser = /* @__PURE__ */ new Map();
@@ -114673,14 +114732,19 @@ async function handleListContentManagers(deps, res) {
   }
   const assignments = (assignRes.data || []).map((a) => {
     const u = usersById.get(a.user_id);
+    const p2 = profilesByUserId.get(a.user_id);
     const campus = u?.campus_id ? campusesById.get(u.campus_id) : null;
     const act = activityCountByUser.get(a.user_id) || { count: 0, editCount: 0, lastAt: null };
     const status = deriveAssignmentStatus(a);
     return {
       id: a.id,
       userId: a.user_id,
-      email: u?.email || "unknown",
-      name: u?.name || null,
+      profileId: p2?.id || null,
+      email: u?.email || p2?.email || "unknown",
+      name: p2?.name || u?.name || null,
+      managerCode: p2?.manager_code || null,
+      department: p2?.department || null,
+      designation: p2?.designation || null,
       campusId: u?.campus_id || null,
       campusName: campus?.name || null,
       userRole: u?.role || "STUDENT",
@@ -114913,6 +114977,19 @@ async function handleCreateContentManager(deps, body, adminId, clientIp, res) {
       updated_at: now
     });
     if (assignErr) throw assignErr;
+    const cmProfile = await ensureContentManagerProfile({
+      userId: createdUser.id,
+      name,
+      email,
+      managerCode: body.managerCode,
+      department: body.department,
+      designation: body.designation,
+      hasManagerCodeField: "managerCode" in body,
+      hasDepartmentField: "department" in body,
+      hasDesignationField: "designation" in body,
+      allowUpdateExisting: false,
+      now
+    });
     await Promise.all([
       deps.recordAdminAudit(
         deps.SUPER_ADMIN_EMAIL,
@@ -114959,9 +115036,13 @@ async function handleCreateContentManager(deps, body, adminId, clientIp, res) {
       message: creationMode === "INVITE" ? `Supabase Auth invitation sent to ${email}. Account provisioned as INVITED and will activate upon invite acceptance.` : `Content Manager account created for ${email}. They can now sign in via Google OAuth.`,
       data: {
         assignmentId,
+        profileId: cmProfile?.id || null,
         userId: createdUser.id,
         email: createdUser.email,
         name: createdUser.name,
+        managerCode: cmProfile?.manager_code || null,
+        department: cmProfile?.department || null,
+        designation: cmProfile?.designation || null,
         campusId: createdUser.campus_id || null,
         role: CONTENT_MANAGER_ROLE,
         status: assignmentStatus,
@@ -115102,6 +115183,19 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
     const { error: roleUpdErr } = await supabaseServer.from("users").update(userUpdates).eq("id", targetUser.id);
     if (roleUpdErr) throw roleUpdErr;
   }
+  const cmProfile = await ensureContentManagerProfile({
+    userId: targetUser.id,
+    name: updatedName ?? targetUser.name,
+    email: targetUser.email,
+    managerCode: body.managerCode,
+    department: body.department,
+    designation: body.designation,
+    hasManagerCodeField: "managerCode" in body,
+    hasDepartmentField: "department" in body,
+    hasDesignationField: "designation" in body,
+    allowUpdateExisting: Boolean(existingAssign),
+    now
+  });
   const auditAction = existingAssign?.is_active || preserveSuspendedOnEdit ? "UPDATE_CONTENT_MANAGER_ACCESS" : "GRANT_CONTENT_MANAGER_ACCESS";
   await Promise.all([
     deps.recordAdminAudit(
@@ -115134,9 +115228,13 @@ async function handleGrantOrUpdateContentManager(deps, body, adminId, clientIp, 
     message: `Content Manager access saved for ${targetUser.email}.`,
     data: {
       assignmentId,
+      profileId: cmProfile?.id || null,
       userId: targetUser.id,
       email: targetUser.email,
       name: updatedName ?? targetUser.name,
+      managerCode: cmProfile?.manager_code || null,
+      department: cmProfile?.department || null,
+      designation: cmProfile?.designation || null,
       campusId: resolvedCampusId !== void 0 ? resolvedCampusId : targetUser.campus_id || null,
       role: CONTENT_MANAGER_ROLE,
       status: nextStatus,
@@ -115270,6 +115368,13 @@ async function handleReactivateContentManager(deps, body, adminId, clientIp, res
   if (String(targetUser.role || "").toUpperCase() !== CONTENT_MANAGER_ROLE) {
     await supabaseServer.from("users").update({ role: CONTENT_MANAGER_ROLE, updatedAt: now }).eq("id", assignment.user_id);
   }
+  await ensureContentManagerProfile({
+    userId: assignment.user_id,
+    name: targetUser.name || null,
+    email: targetUser.email || null,
+    allowUpdateExisting: false,
+    now
+  });
   const label = targetUser.email || assignment.user_id;
   await Promise.all([
     deps.recordAdminAudit(

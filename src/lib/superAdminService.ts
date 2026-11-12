@@ -55,8 +55,12 @@ export interface AdminCampus {
 
 export interface AdminCampusManager {
   id: string
+  profileId?: string | null
   email: string
   name: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
   role: string
   status: string
   campus_id: string | null
@@ -1336,8 +1340,12 @@ export type ContentManagerLifecycleStatus = 'ACTIVE' | 'SUSPENDED' | 'INVITED' |
 export interface AdminContentManagerAssignment {
   id: string
   userId: string
+  profileId?: string | null
   email: string
   name: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
   campusId: string | null
   campusName: string | null
   userRole: string
@@ -1411,6 +1419,9 @@ export async function createContentManagerAccount(payload: {
   name: string
   email: string
   campusId?: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
   creationMode?: 'DIRECT' | 'INVITE'
   notes?: string | null
 }): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {
@@ -1422,6 +1433,9 @@ export async function grantOrUpdateContentManager(payload: {
   email?: string
   name?: string
   campusId?: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
   preventDuplicateAssignment?: boolean
   notes?: string | null
 }): Promise<{ success: boolean; data?: any; message?: string; error?: string }> {

@@ -106,6 +106,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   const [fullName, setFullName] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [selectedCampusId, setSelectedCampusId] = useState('')
+  const [managerCode, setManagerCode] = useState('')
+  const [department, setDepartment] = useState('')
+  const [designation, setDesignation] = useState('')
   const [creationMode, setCreationMode] = useState<'DIRECT' | 'INVITE'>('DIRECT')
   const [userQuery, setUserQuery] = useState('')
   const [userResults, setUserResults] = useState<AdminEligibleContentUser[]>([])
@@ -165,6 +168,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setFullName('')
     setEmailInput('')
     setSelectedCampusId('')
+    setManagerCode('')
+    setDepartment('')
+    setDesignation('')
     setCreationMode('DIRECT')
     setSelectedUser(null)
     setUserQuery('')
@@ -179,6 +185,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setFullName(a.name || '')
     setEmailInput(a.email || '')
     setSelectedCampusId(a.campusId || '')
+    setManagerCode(a.managerCode || '')
+    setDepartment(a.department || '')
+    setDesignation(a.designation || '')
     setSelectedUser({ id: a.userId, email: a.email, name: a.name })
     setNotes(a.notes || '')
     setModalError(null)
@@ -220,6 +229,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         userId: editingAssignment.userId,
         name: trimmedName,
         campusId: selectedCampusId || null,
+        managerCode: managerCode.trim() || null,
+        department: department.trim() || null,
+        designation: designation.trim() || null,
         notes: notes.trim() || null,
       })
       setSaving(false)
@@ -254,6 +266,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         name: trimmedName,
         email: trimmedEmail,
         campusId: selectedCampusId || null,
+        managerCode: managerCode.trim() || null,
+        department: department.trim() || null,
+        designation: designation.trim() || null,
         creationMode,
         notes: notes.trim() || null,
       })
@@ -276,6 +291,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setSaving(true)
     const res = await grantOrUpdateContentManager({
       userId: selectedUser.id,
+      managerCode: managerCode.trim() || null,
+      department: department.trim() || null,
+      designation: designation.trim() || null,
       preventDuplicateAssignment: true,
       notes: notes.trim() || null,
     })
@@ -554,9 +572,10 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                   <tr className="border-b border-white/10 bg-black/60 text-neutral-400 uppercase tracking-wider font-semibold">
                     <th className="py-3.5 px-4">Manager</th>
                     <th className="py-3.5 px-4">Email</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4">Access Profile</th>
-                    <th className="py-3.5 px-4">Created At</th>
+                    <th className="py-3.5 px-4">Department / Designation</th>
+                    <th className="py-3.5 px-4">Assignment Status</th>
+                    <th className="py-3.5 px-4">Access Status</th>
+                    <th className="py-3.5 px-4">Created Date</th>
                     <th className="py-3.5 px-4">Granted By</th>
                     <th className="py-3.5 px-4">Last Activity</th>
                     <th className="py-3.5 px-4 text-right">Actions</th>
@@ -565,13 +584,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 <tbody className="divide-y divide-white/5 text-neutral-200">
                   {loading && assignments.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-neutral-400">
+                      <td colSpan={9} className="py-12 text-center text-neutral-400">
                         Loading Content Managers...
                       </td>
                     </tr>
                   ) : directoryLoadError && assignments.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-red-300 space-y-2">
+                      <td colSpan={9} className="py-12 text-center text-red-300 space-y-2">
                         <div>{directoryLoadError}</div>
                         <button
                           type="button"
@@ -584,7 +603,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                     </tr>
                   ) : paginatedAssignments.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-neutral-500">
+                      <td colSpan={9} className="py-12 text-center text-neutral-500">
                         {assignments.length === 0
                           ? 'No Content Managers added yet. Click "+ Add Content Manager" to create or assign one.'
                           : 'No Content Managers match the active search or filter criteria.'}
@@ -594,7 +613,14 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                     paginatedAssignments.map((a) => (
                       <tr key={a.id} className="hover:bg-white/[0.02]">
                         <td className="py-3.5 px-4">
-                          <div className="font-semibold text-white">{a.name || 'Registered User'}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-white">{a.name || 'Registered User'}</span>
+                            {a.managerCode && (
+                              <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-neutral-300">
+                                {a.managerCode}
+                              </span>
+                            )}
+                          </div>
                           {a.campusName && (
                             <div className="text-[10px] text-neutral-400 mt-0.5">Campus: {a.campusName}</div>
                           )}
@@ -608,11 +634,23 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                           <div className="font-mono text-[11px] text-neutral-300">{a.email}</div>
                         </td>
                         <td className="py-3.5 px-4">
+                          {a.department || a.designation ? (
+                            <div>
+                              <div className="text-neutral-200 font-medium">{a.department || '—'}</div>
+                              {a.designation && (
+                                <div className="text-[10px] text-neutral-400">{a.designation}</div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-neutral-500">—</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4">
                           <StatusBadge status={a.status} reason={a.suspensionReason} />
                         </td>
                         <td className="py-3.5 px-4">
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-950/40 text-indigo-300 border border-indigo-800/60 text-[10px] font-semibold">
-                            <Layers className="w-3 h-3" /> Standard Content Access
+                            <Layers className="w-3 h-3" /> {a.isActive ? 'GLOBAL Active' : a.status}
                           </span>
                         </td>
                         <td className="py-3.5 px-4 text-[11px] text-neutral-400 whitespace-nowrap">
@@ -824,16 +862,49 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                         onChange={(e) => setSelectedCampusId(e.target.value)}
                         className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
                       >
-                        <option value="">Platform-wide (No specific campus)</option>
-                        {campuses.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.name} ({c.code})
-                          </option>
-                        ))}
-                      </select>
+                          <option value="">Platform-wide (No specific campus)</option>
+                          {campuses.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.name} ({c.code})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-neutral-300 mb-1">Manager Code (Optional)</label>
+                        <input
+                          type="text"
+                          maxLength={30}
+                          value={managerCode}
+                          onChange={(e) => setManagerCode(e.target.value)}
+                          placeholder="e.g. CM-2026-01"
+                          className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-neutral-300 mb-1">Department (Optional)</label>
+                        <input
+                          type="text"
+                          maxLength={100}
+                          value={department}
+                          onChange={(e) => setDepartment(e.target.value)}
+                          placeholder="e.g. Curriculum & Coding"
+                          className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs text-neutral-300 mb-1">Designation (Optional)</label>
+                        <input
+                          type="text"
+                          maxLength={100}
+                          value={designation}
+                          onChange={(e) => setDesignation(e.target.value)}
+                          placeholder="e.g. Lead Content Architect"
+                          className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
               ) : (
                 <div className="space-y-4">
                   {/* Option Switcher */}
@@ -910,6 +981,39 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                             <option value="DIRECT">Active Immediately (Google OAuth Sign-In)</option>
                             <option value="INVITE">Send Email Invite (Activates Upon Acceptance)</option>
                           </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Manager Code (Optional)</label>
+                          <input
+                            type="text"
+                            maxLength={30}
+                            value={managerCode}
+                            onChange={(e) => setManagerCode(e.target.value)}
+                            placeholder="e.g. CM-2026-01"
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-300 mb-1">Department (Optional)</label>
+                          <input
+                            type="text"
+                            maxLength={100}
+                            value={department}
+                            onChange={(e) => setDepartment(e.target.value)}
+                            placeholder="e.g. Curriculum & Coding"
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-xs text-neutral-300 mb-1">Designation (Optional)</label>
+                          <input
+                            type="text"
+                            maxLength={100}
+                            value={designation}
+                            onChange={(e) => setDesignation(e.target.value)}
+                            placeholder="e.g. Lead Content Architect"
+                            className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                          />
                         </div>
                       </div>
                     </div>
