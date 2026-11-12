@@ -1,13 +1,20 @@
 /**
- * KalviLearn — Comprehensive Automated Test Suite for Content Manager Dashboard & RBAC
+ * KalviLearn — Simplified Unified Content Manager & RBAC Verification Suite
  *
- * Covers all 25 verification criteria across server RBAC, scope isolation (IDOR prevention),
- * granular permission enforcement, publication workflow, hidden test case protection,
- * Super Admin access management, immediate revocation, student visibility safety, and audit logging.
+ * Verifies the simplified single fixed Content Manager role profile across:
+ *   1. Authentication & role gates (/api/content-manager vs /api/super-admin)
+ *   2. Sole Super Admin protection (sgjitbros@gmail.com)
+ *   3. Unified fixed capabilities & GLOBAL curriculum access (zero permission/scope table writes)
+ *   4. Area A: Curriculum Modules & Learning Units create/edit/reorder/publish
+ *   5. Area B: Practice Coding Questions retaining Belt (beltId) & separation from Learn Coding
+ *   6. Area C: Learn Coding Questions associated with LearningUnit & separation from Practice
+ *   7. Examples, public & hidden test cases, multi-language starter codes (Python/Java/C++/JS) & test runner
+ *   8. Student security (DRAFT isolation, student preview omitting hidden test expected outputs)
+ *   9. Direct (Option A) & Invited (Option A INVITE) provisioning, duplicate 409 & Auth 502 fail-closed guards
+ *  10. Lifecycle enforcement: SUSPENDED -> immediate 403, Reactivate -> ACTIVE, REVOKED -> role restoration & 400 guard
+ *  11. Append-only content_audit_logs immutability
  */
 
-import fs from 'fs'
-import path from 'path'
 import assert from 'assert'
 import { EventEmitter } from 'events'
 
@@ -19,10 +26,7 @@ import superAdminHandler, { resetSuperAdminRateLimitsForTesting } from '../src/s
 import contentManagerHandler, { resetContentManagerRateLimitsForTesting } from '../src/server/contentManagerHandler'
 import { installMockSupabaseServer } from './mockDatabase'
 import { resolveQuestionAsync } from '../src/server/judge/testRepository'
-import {
-  DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-  CONTENT_PERMISSION_LIST,
-} from '../src/lib/contentPermissions'
+import { FIXED_CONTENT_MANAGER_PERMISSIONS, FIXED_CONTENT_MANAGER_AREAS } from '../src/lib/contentPermissions'
 
 function createMockReqRes(options: {
   method?: string
@@ -92,8 +96,20 @@ async function callSuperAdmin(token: string | null, action: string, body: Record
   return getResult()
 }
 
-async function callContentManager(token: string | null, action: string, body: Record<string, unknown> = {}, method: 'GET' | 'POST' = 'POST') {
-  const url = action === 'me' ? '/api/content-manager/me' : action === 'dashboard' ? '/api/content-manager/dashboard' : action === 'list_my_revisions' ? '/api/content-manager/revisions' : '/api/content-manager'
+async function callContentManager(
+  token: string | null,
+  action: string,
+  body: Record<string, unknown> = {},
+  method: 'GET' | 'POST' = 'POST'
+) {
+  const url =
+    action === 'me'
+      ? '/api/content-manager/me'
+      : action === 'dashboard'
+        ? '/api/content-manager/dashboard'
+        : action === 'list_my_revisions'
+          ? '/api/content-manager/revisions'
+          : '/api/content-manager'
   const { req, res, getResult } = createMockReqRes({
     method,
     url,
@@ -106,7 +122,7 @@ async function callContentManager(token: string | null, action: string, body: Re
 
 async function main() {
   console.log('======================================================================')
-  console.log('KALVILEARN — CONTENT MANAGER RBAC & WORKFLOW VERIFICATION SUITE')
+  console.log('KALVILEARN — SIMPLIFIED CONTENT MANAGER & RBAC VERIFICATION SUITE')
   console.log('======================================================================\n')
 
   const db = installMockSupabaseServer(supabaseServer)
@@ -143,7 +159,8 @@ async function main() {
   const mod2 = db.Module[1]
   const unitInMod1 = db.LearningUnit.find((u) => u.moduleId === mod1.id)!
   const unitInMod2 = db.LearningUnit.find((u) => u.moduleId === mod2.id)!
-  assert(mod1 && mod2 && unitInMod1 && unitInMod2, 'Baseline modules & units must exist in mockDb')
+  const belt1 = db.Belt[0]
+  assert(mod1 && mod2 && unitInMod1 && unitInMod2 && belt1, 'Baseline modules, units, and belts must exist in mockDb')
 
   // Test 1: Unauthenticated & Non-Content-Manager access rejected
   console.log('Test 1: Authentication & role gate on /api/content-manager')
@@ -153,150 +170,168 @@ async function main() {
   assert.strictEqual(studentCmRes.status, 403, 'Student calling /api/content-manager must return 403')
   const mentorCmRes = await callContentManager(MENTOR_TOKEN, 'me', {}, 'GET')
   assert.strictEqual(mentorCmRes.status, 403, 'Mentor calling /api/content-manager must return 403')
-  console.log('  ✓ Unauthenticated (401) and Student/Mentor (403) strictly blocked.')
+  console.log('  OK Unauthenticated (401) and Student/Mentor (403) strictly blocked.')
 
-  // Test 2: Self-promotion & non-Super-Admin granting Content Manager access rejected
-  console.log('Test 2: Non-Super Admin cannot grant Content Manager access or view user directory')
+  // Test 2: Non-Super-Admin blocked from Super Admin CM APIs & CM blocked from Super Admin/student/role endpoints
+  console.log('Test 2: Strict Super Admin & student-boundary enforcement')
   const nonAdminGrant = await callSuperAdmin(STUDENT_TOKEN, 'grant_content_manager', { userId: STUDENT_USER.id })
-  assert.strictEqual(nonAdminGrant.status, 403, 'Student attempting Super Admin grant_content_manager must get 403')
-  console.log('  ✓ Self-grant and non-Super-Admin RBAC mutations rejected (403).')
-
-  // Test 3: Super Admin cannot convert sgjitbros@gmail.com to Content Manager
-  console.log('Test 3: Sole Super Admin account protection')
+  assert.strictEqual(nonAdminGrant.status, 403, 'Student calling grant_content_manager must get 403')
   const protectSuper = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
     email: 'sgjitbros@gmail.com',
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'GLOBAL',
   })
-  assert.strictEqual(protectSuper.status, 403, 'Sole Super Admin cannot be downgraded to Content Manager')
-  console.log('  ✓ sgjitbros@gmail.com protected from Content Manager reassignment (403).')
+  assert.strictEqual(protectSuper.status, 403, 'Sole Super Admin cannot be converted to Content Manager')
+  console.log('  OK Non-Super-Admin blocked (403) and sgjitbros@gmail.com protected (403).')
 
-  // Test 4: Safest default NONE scope blocks all modules/units until scope configured
-  console.log('Test 4: Granting Content Manager with safest default NONE scope')
-  const grantNone = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
+  // Test 3: Grant Content Manager assigns unified fixed access without permission/scope table rows
+  console.log('Test 3: Granting Content Manager assigns unified fixed access (GLOBAL, zero permission/scope writes)')
+  const grantRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
     userId: STUDENT_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'NONE',
+    notes: 'Simplified unified CM assignment',
   })
-  assert.strictEqual(grantNone.status, 200)
+  assert.strictEqual(grantRes.status, 200)
+  assert.strictEqual(grantRes.body.data.scopeType, 'GLOBAL')
   assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'CONTENT_MANAGER')
-  const listNone = await callContentManager(CM_TOKEN, 'list_curriculum_modules')
-  assert.strictEqual(listNone.status, 200)
-  assert.strictEqual(listNone.body.data.modules.length, 0, 'NONE scope must see 0 modules')
-  const createUnitNone = await callContentManager(CM_TOKEN, 'create_learning_unit', {
-    moduleId: mod1.id,
-    title: 'Blocked Unit',
-    concept: 'Blocked',
-  })
-  assert.strictEqual(createUnitNone.status, 403, 'NONE scope cannot create learning unit')
-  console.log('  ✓ NONE scope grants zero curriculum visibility and returns 403 on mutations.')
-
-  // Test 5: Scoped Assignment -> Strictly isolated to Module 1, blocked from Module 2 (IDOR prevention)
-  console.log('Test 5: Scoped Module Assignment & IDOR Protection')
-  const grantScoped = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: STUDENT_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'SCOPED',
-    moduleIds: [mod1.id],
-    learningUnitIds: [],
-    notes: 'Scoped to Module 1 only',
-  })
-  assert.strictEqual(grantScoped.status, 200)
+  assert.strictEqual(db.content_manager_permissions.length, 0, 'Must NOT write content_manager_permissions rows')
+  assert.strictEqual(db.content_manager_scopes.length, 0, 'Must NOT write content_manager_scopes rows')
 
   const meRes = await callContentManager(CM_TOKEN, 'me', {}, 'GET')
   assert.strictEqual(meRes.status, 200)
-  assert.strictEqual(meRes.body.data.scopeType, 'SCOPED')
-  assert.deepStrictEqual(meRes.body.data.assignedModuleIds, [mod1.id])
+  assert.strictEqual(meRes.body.data.scopeType, 'GLOBAL')
+  assert.deepStrictEqual(meRes.body.data.permissions, [...FIXED_CONTENT_MANAGER_PERMISSIONS])
+  assert.strictEqual(FIXED_CONTENT_MANAGER_AREAS.length, 3)
 
   const dashRes = await callContentManager(CM_TOKEN, 'dashboard', {}, 'GET')
   assert.strictEqual(dashRes.status, 200)
-  assert.strictEqual(dashRes.body.data.stats.assignedModulesCount, 1, 'Dashboard must show only 1 assigned module')
+  assert(typeof dashRes.body.data.stats.totalModules === 'number')
+  assert(typeof dashRes.body.data.stats.totalLearningUnits === 'number')
+  assert(typeof dashRes.body.data.stats.totalPracticeQuestions === 'number')
+  assert(typeof dashRes.body.data.stats.totalLearnCodingQuestions === 'number')
+  console.log('  OK Unified GLOBAL access, 3 fixed capability areas, and overview KPIs verified.')
 
-  const currRes = await callContentManager(CM_TOKEN, 'list_curriculum_modules')
-  assert.strictEqual(currRes.status, 200)
-  assert.strictEqual(currRes.body.data.modules.length, 1)
-  assert.strictEqual(currRes.body.data.modules[0].id, mod1.id)
-
-  // IDOR attempt: Edit Module 2 or Unit in Module 2
-  const idorMod = await callContentManager(CM_TOKEN, 'update_curriculum_module', {
-    id: mod2.id,
-    title: 'Hacked Mod 2',
-  })
-  assert.strictEqual(idorMod.status, 403, 'Modifying unrelated module must return 403')
-  const idorUnit = await callContentManager(CM_TOKEN, 'update_learning_unit', {
-    id: unitInMod2.id,
-    title: 'Hacked Unit 2',
-  })
-  assert.strictEqual(idorUnit.status, 403, 'Modifying unrelated learning unit must return 403')
-  const idorQuestion = await callContentManager(CM_TOKEN, 'create_question', {
-    title: 'Unauthorized Unit Q',
-    slug: 'unauth-unit-q',
-    difficulty: 'Easy',
-    description: 'Attempt IDOR',
-    learningUnitId: unitInMod2.id,
-    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
-  })
-  assert.strictEqual(idorQuestion.status, 403, 'Creating question inside unauthorized unit must return 403')
-  console.log('  ✓ Scoped visibility & cross-module IDOR attempts rejected with 403.')
-
-  // Test 6: Content Manager CANNOT access Super Admin endpoints or prohibited actions
-  console.log('Test 6: Content Manager blocked from Super Admin APIs, user roles, students, mentors')
+  // Test 4: Content Manager CANNOT access Super Admin APIs, role changes, student data, or non-allowlisted actions
+  console.log('Test 4: Content Manager blocked from Super Admin APIs, user roles, students, mentors')
   const cmTrySuperAdmin = await callSuperAdmin(CM_TOKEN, 'list_students')
   assert.strictEqual(cmTrySuperAdmin.status, 403, 'CM calling /api/super-admin must return 403')
-  const cmTryRoleChange = await callContentManager(CM_TOKEN, 'update_user_role', { userId: OTHER_STUDENT.id, role: 'SUPERADMIN' })
-  assert.strictEqual(cmTryRoleChange.status, 403, 'CM attempting role escalation via CM handler must return 403')
+  const cmTryRoleChange = await callContentManager(CM_TOKEN, 'update_user_role', {
+    userId: OTHER_STUDENT.id,
+    role: 'SUPERADMIN',
+  })
+  assert.strictEqual(cmTryRoleChange.status, 403, 'CM attempting non-allowlisted role escalation must return 403')
   const cmTryStudents = await callContentManager(CM_TOKEN, 'list_students')
   assert.strictEqual(cmTryStudents.status, 403, 'CM attempting list_students must return 403')
-  console.log('  ✓ Super Admin, role escalation, and student/mentor endpoints blocked (403).')
+  console.log('  OK Super Admin, role escalation, and student endpoints blocked (403).')
 
-  // Test 7: Authorized Curriculum & Learning Unit CRUD within Scope
-  console.log('Test 7: Authorized Module edit, Learning Unit create/edit/reorder within Scope')
-  const editMod1 = await callContentManager(CM_TOKEN, 'update_curriculum_module', {
-    id: mod1.id,
-    description: 'Updated by Content Manager within scope',
-  })
-  assert.strictEqual(editMod1.status, 200)
+  // Test 5: Area A — Curriculum Management (View all, Create/Edit Module, Create/Edit/Reorder/Publish Learning Unit)
+  console.log('Test 5: Area A — Curriculum Modules & Learning Units CRUD + Reorder + Publish')
+  const listMods = await callContentManager(CM_TOKEN, 'list_curriculum_modules')
+  assert.strictEqual(listMods.status, 200)
+  assert.strictEqual(listMods.body.data.modules.length, db.Module.length, 'Active CM must see ALL curriculum modules')
 
-  const createLu = await callContentManager(CM_TOKEN, 'create_learning_unit', {
-    moduleId: mod1.id,
-    title: 'CM New Lesson',
-    concept: 'Lesson concept markdown',
+  const createdMod = await callContentManager(CM_TOKEN, 'create_curriculum_module', {
+    title: 'CM Algorithms Module',
+    description: 'Sorting, searching, and complexity',
+    status: 'PUBLISHED',
   })
-  assert.strictEqual(createLu.status, 201)
-  assert.strictEqual(createLu.body.data.status, 'DRAFT', 'Without publish permission, unit saves as DRAFT')
-  const createdUnitId = createLu.body.data.id
+  assert.strictEqual(createdMod.status, 201)
+  const newModId = createdMod.body.data.id
+
+  const editedMod = await callContentManager(CM_TOKEN, 'update_curriculum_module', {
+    id: newModId,
+    description: 'Updated description by CM',
+  })
+  assert.strictEqual(editedMod.status, 200)
+
+  const lu1 = await callContentManager(CM_TOKEN, 'create_learning_unit', {
+    moduleId: newModId,
+    title: 'Binary Search Lesson',
+    concept: '## Binary Search\nDivide search interval in half.',
+    readingTime: '12 min',
+    status: 'PUBLISHED',
+  })
+  assert.strictEqual(lu1.status, 201)
+  const lu1Id = lu1.body.data.id
+
+  const lu2 = await callContentManager(CM_TOKEN, 'create_learning_unit', {
+    moduleId: newModId,
+    title: 'Two Pointers Lesson',
+    concept: '## Two Pointers\nLinear time scanning.',
+    status: 'DRAFT',
+  })
+  assert.strictEqual(lu2.status, 201)
+  const lu2Id = lu2.body.data.id
 
   const editLu = await callContentManager(CM_TOKEN, 'update_learning_unit', {
-    id: createdUnitId,
-    concept: 'Updated lesson concept',
+    id: lu2Id,
+    concept: '## Two Pointers Updated\nSorted array scan in O(n).',
+    status: 'PUBLISHED',
   })
   assert.strictEqual(editLu.status, 200)
-  console.log('  ✓ Module edit and Learning Unit create/edit succeeded within scope as DRAFT.')
 
-  // Test 8: Question CRUD, Examples, Public & Hidden Test Cases, Starter Code, Test Runner, Publication Gating
-  console.log('Test 8: Question lifecycle, 7-tab persistence, test runner, and publication gating')
-  // 8a. Attempting direct publish without content.question.publish fails 403
-  const directPub = await callContentManager(CM_TOKEN, 'create_question', {
-    title: 'Direct Publish Attempt',
-    slug: 'direct-publish-attempt',
-    difficulty: 'Easy',
-    description: 'Should be blocked without publish perm',
-    status: 'PUBLISHED',
-    learningUnitId: unitInMod1.id,
-    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
+  const reorderLu = await callContentManager(CM_TOKEN, 'reorder_learning_units', {
+    moduleId: newModId,
+    orders: [
+      { id: lu2Id, order: 1 },
+      { id: lu1Id, order: 2 },
+    ],
   })
-  assert.strictEqual(directPub.status, 403, 'Direct publish without content.question.publish must fail with 403')
+  assert.strictEqual(reorderLu.status, 200)
+  console.log('  OK Module create/edit and Learning Unit create/edit/reorder/publish succeeded.')
 
-  // 8b. Create as Draft succeeds
-  const createQ = await callContentManager(CM_TOKEN, 'create_question', {
-    title: 'CM Scoped Addition',
-    slug: 'cm-scoped-addition',
+  // Test 6: Area B — Practice Coding Questions retain Belt (beltId) & stay separate from Learn Coding
+  console.log('Test 6: Area B — Practice Coding Questions (Belt relationship + filter separation)')
+  const beltsRes = await callContentManager(CM_TOKEN, 'list_belts')
+  assert.strictEqual(beltsRes.status, 200)
+  assert(beltsRes.body.data.length >= 1, 'list_belts must return existing belts')
+
+  const createPractice = await callContentManager(CM_TOKEN, 'create_question', {
+    title: 'CM Belt Practice Two Sum Variant',
+    slug: 'cm-practice-two-sum-variant',
     difficulty: 'Easy',
-    description: 'Add two numbers and print result.',
-    inputFormat: 'Two integers a and b',
+    description: 'Read n and array, compute max element.',
+    inputFormat: 'First line n, second line n ints',
+    outputFormat: 'Single integer max',
+    beltId: belt1.id,
+    status: 'DRAFT',
+    examples: [{ label: 'Ex1', input: '3\n1 9 4', output: '9', explanation: 'Max is 9' }],
+    testCases: [
+      { input: '3\n1 9 4', expectedOutput: '9', isHidden: false },
+      { input: '4\n-5 -2 -9 -1', expectedOutput: '-1', isHidden: true },
+    ],
+    starterCodes: {
+      python: 'n = int(input())\narr = list(map(int, input().split()))\nprint(max(arr))',
+      javascript: 'const fs=require("fs");const nums=fs.readFileSync(0,"utf8").trim().split(/\\s+/).map(Number);console.log(Math.max(...nums.slice(1)));',
+      java: 'import java.util.*; class Solution { public static void main(String[] args) {} }',
+      cpp: '#include <iostream>\nusing namespace std;\nint main(){return 0;}',
+    },
+  })
+  assert.strictEqual(createPractice.status, 201)
+  const practiceId = createPractice.body.data.id
+  const practiceRow = db.Problem.find((p: any) => p.id === practiceId)
+  assert.strictEqual(practiceRow?.beltId, belt1.id, 'Practice question must retain beltId')
+  assert.strictEqual(practiceRow?.learningUnitId, null, 'Practice question must NOT set learningUnitId')
+
+  const editPractice = await callContentManager(CM_TOKEN, 'update_question', {
+    id: practiceId,
+    title: 'CM Belt Practice Max Element',
+    beltId: belt1.id,
+    status: 'PUBLISHED',
+  })
+  assert.strictEqual(editPractice.status, 200)
+  assert.strictEqual(db.Problem.find((p: any) => p.id === practiceId)?.beltId, belt1.id, 'Editing Practice question must preserve beltId')
+  console.log('  OK Practice question created/edited with Belt relationship retained.')
+
+  // Test 7: Area C — Learn Coding Lesson Questions (LearningUnit linked) + 7-Tab Persistence & Test Runner
+  console.log('Test 7: Area C — Learn Coding Questions (LearningUnit linked), 7-Tab Persistence, Runner & Student Preview Security')
+  const createLearnCoding = await callContentManager(CM_TOKEN, 'create_question', {
+    title: 'CM Learn Coding Addition',
+    slug: 'cm-learn-coding-addition',
+    difficulty: 'Easy',
+    description: 'Add two integers a and b.',
+    inputFormat: 'Two space-separated integers a and b',
     outputFormat: 'Single integer a + b',
-    learningUnitId: unitInMod1.id,
-    examples: [{ label: 'Ex1', input: '2 3', output: '5', explanation: '2+3=5' }],
+    learningUnitId: lu1Id,
+    status: 'DRAFT',
+    examples: [{ label: 'Ex1', input: '2 3', output: '5', explanation: '2 + 3 = 5' }],
     testCases: [
       { input: '2 3', expectedOutput: '5', isHidden: false },
       { input: '10 20', expectedOutput: '30', isHidden: true },
@@ -304,19 +339,34 @@ async function main() {
     starterCodes: {
       python: 'a, b = map(int, input().split())\nprint(a + b)',
       javascript: 'const fs=require("fs");const [a,b]=fs.readFileSync(0,"utf8").trim().split(/\\s+/).map(Number);console.log(a+b);',
+      java: 'import java.util.*; class Solution { public static void main(String[] args) {} }',
+      cpp: '#include <iostream>\nusing namespace std;\nint main(){return 0;}',
     },
   })
-  assert.strictEqual(createQ.status, 201)
-  const qId = createQ.body.data.id
-  assert.strictEqual(createQ.body.data.status, 'DRAFT')
+  assert.strictEqual(createLearnCoding.status, 201)
+  const learnQId = createLearnCoding.body.data.id
+  const learnQRow = db.Problem.find((p: any) => p.id === learnQId)
+  assert.strictEqual(learnQRow?.learningUnitId, lu1Id, 'Learn Coding question must link to learningUnitId')
+  assert.strictEqual(learnQRow?.beltId, null, 'Learn Coding question must NOT overwrite Practice beltId')
 
-  // 8c. Draft question is NOT visible to student testRepository!
-  const studentDraftLookup = await resolveQuestionAsync('cm-scoped-addition')
-  assert('error' in studentDraftLookup, 'DRAFT question must NOT be exposed in student testRepository')
+  // Verify Practice vs Learn Coding filtering separates them cleanly
+  const practiceListRes = await callContentManager(CM_TOKEN, 'list_questions', { questionType: 'PRACTICE', beltId: belt1.id })
+  assert.strictEqual(practiceListRes.status, 200)
+  assert(practiceListRes.body.data.questions.some((q: any) => q.id === practiceId), 'PRACTICE list must include created practice question')
+  assert(!practiceListRes.body.data.questions.some((q: any) => q.id === learnQId), 'PRACTICE list must NOT include Learn Coding question')
 
-  // 8d. Run tests via Content Manager test runner (JavaScript engine in sandbox!)
+  const learnListRes = await callContentManager(CM_TOKEN, 'list_questions', { questionType: 'LEARN_CODING' })
+  assert.strictEqual(learnListRes.status, 200)
+  assert(learnListRes.body.data.questions.some((q: any) => q.id === learnQId), 'LEARN_CODING list must include created learn coding question')
+  assert(!learnListRes.body.data.questions.some((q: any) => q.id === practiceId), 'LEARN_CODING list must NOT include Practice question')
+
+  // Draft question is NOT visible to student testRepository!
+  const studentDraftLookup = await resolveQuestionAsync('cm-learn-coding-addition')
+  assert('error' in studentDraftLookup, 'DRAFT Learn Coding question must NOT be exposed in student testRepository')
+
+  // Run public + hidden tests via CM test runner
   const runTests = await callContentManager(CM_TOKEN, 'run_question_tests', {
-    id: qId,
+    id: learnQId,
     language: 'javascript',
     code: 'const fs=require("fs");const [a,b]=fs.readFileSync(0,"utf8").trim().split(/\\s+/).map(Number);console.log(a+b);',
     filter: 'all',
@@ -325,152 +375,172 @@ async function main() {
   assert.strictEqual(runTests.body.data.status, 'ACCEPTED')
   assert.strictEqual(runTests.body.data.passedTests, 2)
 
-  // 8e. Update examples, starterCode, and test cases
-  const updQ = await callContentManager(CM_TOKEN, 'update_question', {
-    id: qId,
-    title: 'CM Scoped Addition v2',
-    examples: [{ label: 'Ex1', input: '4 5', output: '9', explanation: '4+5=9' }],
-    starterCodes: {
-      python: 'print(sum(map(int, input().split())))',
-    },
-    changeSummary: 'Updated example and starter code',
-  })
-  assert.strictEqual(updQ.status, 200)
+  // Normalized DB records check (Examples, TestCases incl. hidden, StarterCodes across 4 langs, Revisions)
+  assert.strictEqual(db.ProblemExample.filter((e: any) => e.problemId === learnQId).length, 1)
+  assert.strictEqual(db.ProblemTestCase.filter((t: any) => t.problemId === learnQId).length, 2)
+  assert.strictEqual(db.ProblemStarterCode.filter((s: any) => s.problemId === learnQId).length, 4)
 
-  // 8f. Duplicate as draft
-  const dupQ = await callContentManager(CM_TOKEN, 'duplicate_question', { id: qId })
+  // Edit & publish Learn Coding question + verify Duplicate creates DRAFT
+  const publishLearn = await callContentManager(CM_TOKEN, 'update_question', {
+    id: learnQId,
+    title: 'CM Learn Coding Addition Published',
+    status: 'PUBLISHED',
+    changeSummary: 'Ready for students',
+  })
+  assert.strictEqual(publishLearn.status, 200)
+  assert.strictEqual(publishLearn.body.data.status, 'PUBLISHED')
+
+  const dupQ = await callContentManager(CM_TOKEN, 'duplicate_question', { id: learnQId })
   assert.strictEqual(dupQ.status, 201)
   assert.strictEqual(dupQ.body.data.status, 'DRAFT')
 
-  // 8g. Submit for review (DRAFT -> PENDING_REVIEW)
-  const subRev = await callContentManager(CM_TOKEN, 'submit_question_for_review', {
-    id: qId,
-    changeSummary: 'Ready for Super Admin publication review',
-  })
-  assert.strictEqual(subRev.status, 200)
-  assert.strictEqual(subRev.body.data.approvalStatus, 'PENDING_REVIEW')
-
-  // 8h. Delete without content.question.delete fails 403
-  const tryDel = await callContentManager(CM_TOKEN, 'delete_question', { id: qId })
-  assert.strictEqual(tryDel.status, 403, 'Delete without content.question.delete must return 403')
-
-  // 8i. Restore revision without content.revision.restore fails 403
-  const revs = await callContentManager(CM_TOKEN, 'list_question_revisions', { id: qId })
-  assert.strictEqual(revs.status, 200)
-  assert(revs.body.data.length >= 2)
-  const tryRestore = await callContentManager(CM_TOKEN, 'restore_question_revision', {
-    problemId: qId,
-    revisionId: revs.body.data[0].id,
-  })
-  assert.strictEqual(tryRestore.status, 403, 'Restore without content.revision.restore must return 403')
-  console.log('  ✓ Question create/edit/duplicate/tests/submit-review passed; publish/delete/restore gated (403).')
-
-  // Test 9: Super Admin Reviews & Approves -> Student TestRepository Now Serves Question (still keeping hidden tests hidden in preview!)
-  console.log('Test 9: Super Admin Publication Approval Workflow & Student Preview Security')
-  const pendingRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'list_pending_content_approvals')
-  assert.strictEqual(pendingRes.status, 200)
-  assert(pendingRes.body.data.pendingQuestions.some((p: any) => p.id === qId), 'Question must appear in pending queue')
-
-  const approveRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'approve_publish_content', {
-    resourceType: 'PROBLEM',
-    id: qId,
-  })
-  assert.strictEqual(approveRes.status, 200)
-  assert.strictEqual(approveRes.body.data.status, 'PUBLISHED')
-  assert.strictEqual(approveRes.body.data.approvalStatus, 'APPROVED')
-
-  // Student lookup succeeds now!
-  const studentPublishedLookup = await resolveQuestionAsync('cm-scoped-addition')
-  assert('suite' in studentPublishedLookup, 'Published question must resolve for student judge')
-
-  // Student preview NEVER leaks hidden test cases
-  const previewRes = await callContentManager(CM_TOKEN, 'get_question_preview', { id: qId })
+  // Published Learn Coding question resolves for student judge, and student preview NEVER reveals hidden expected outputs
+  const studentPublishedLookup = await resolveQuestionAsync('cm-learn-coding-addition')
+  assert('suite' in studentPublishedLookup, 'Published Learn Coding question must resolve for student judge')
+  const previewRes = await callContentManager(CM_TOKEN, 'get_question_preview', { id: learnQId })
   assert.strictEqual(previewRes.status, 200)
   assert.strictEqual(previewRes.body.data.publicTestCases.length, 1)
   assert.strictEqual(previewRes.body.data.publicTestCases.every((t: any) => !t.isHidden), true)
-  console.log('  ✓ Super Admin approval published question; student preview hides hidden test cases.')
+  console.log('  OK Practice vs Learn Coding separation, 7-tab persistence, test runner, and student security verified.')
 
-  // Test 10: Hidden Test Case Permission Restriction & Preservation
-  console.log('Test 10: Stripping & Preserving Hidden Test Cases when content.hidden_test_case.manage is Revoked')
-  const restrictedPerms = DEFAULT_CONTENT_MANAGER_PERMISSIONS.filter((p) => p !== 'content.hidden_test_case.manage')
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: STUDENT_USER.id,
-    permissions: restrictedPerms,
-    scopeType: 'SCOPED',
-    moduleIds: [mod1.id],
+  // Test 8: Super Admin Option A Direct Provisioning + Duplicate & Fail-Closed Auth Guards
+  console.log('Test 8: Option A Direct Provisioning, Invites, Duplicate 409 & Fail-Closed Auth 502')
+  const defaultCampus = db.campuses[0]
+  const directEmail = 'direct.author@kalvilearn.test'
+  const createDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Direct Content Author',
+    email: directEmail,
+    campusId: defaultCampus?.id || null,
+    creationMode: 'DIRECT',
+    notes: 'Direct simplified onboarding',
   })
+  assert.strictEqual(createDirectRes.status, 201)
+  const directUserId = createDirectRes.body.data.userId
+  const directAssignId = createDirectRes.body.data.assignmentId
+  assert.strictEqual(createDirectRes.body.data.status, 'ACTIVE')
+  assert.strictEqual(createDirectRes.body.data.scopeType, 'GLOBAL')
 
-  const getQNoHidden = await callContentManager(CM_TOKEN, 'get_question', { id: qId })
-  assert.strictEqual(getQNoHidden.status, 200)
-  assert.strictEqual(getQNoHidden.body.data.testCases.length, 1, 'Hidden test case must be stripped from get_question')
-  assert.strictEqual(getQNoHidden.body.data.testCases[0].isHidden, false)
+  const DIRECT_CM_TOKEN = `test_auth_CONTENT_MANAGER_${directEmail}`
+  const directMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(directMe.status, 200)
+  assert.strictEqual(directMe.body.data.scopeType, 'GLOBAL')
 
-  // Revisions snapshot also stripped of hidden tests!
-  const revNoHidden = await callContentManager(CM_TOKEN, 'list_question_revisions', { id: qId })
-  assert.strictEqual(revNoHidden.status, 200)
-  for (const r of revNoHidden.body.data) {
-    assert(r.snapshot.testCases.every((tc: any) => !tc.isHidden), 'Revision snapshot must strip hidden tests')
-  }
-
-  // Attempting to run hidden tests returns 403
-  const runHiddenBlocked = await callContentManager(CM_TOKEN, 'run_question_tests', {
-    id: qId,
-    language: 'javascript',
-    code: 'console.log(5)',
-    filter: 'hidden',
+  const directQ = await callContentManager(DIRECT_CM_TOKEN, 'create_question', {
+    title: 'Direct CM Question',
+    slug: 'direct-cm-question',
+    difficulty: 'Easy',
+    description: 'Created by directly provisioned CM',
+    learningUnitId: unitInMod2.id,
+    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
   })
-  assert.strictEqual(runHiddenBlocked.status, 403, 'Running hidden filter without permission must return 403')
+  assert.strictEqual(directQ.status, 201)
+  const directQId = directQ.body.data.id
 
-  // Updating public test case must NOT wipe existing hidden test case in DB
-  const updPublicOnly = await callContentManager(CM_TOKEN, 'update_question', {
-    id: qId,
-    testCases: [{ input: '7 8', expectedOutput: '15', isHidden: false }],
+  // Duplicate email (409) & duplicate assignment (409)
+  const dupEmailRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Duplicate Author',
+    email: directEmail.toUpperCase(),
   })
-  assert.strictEqual(updPublicOnly.status, 200)
-  const dbPtcAfter = db.ProblemTestCase.filter((t: any) => t.problemId === qId)
-  assert.strictEqual(dbPtcAfter.length, 2, 'Hidden test case in DB must remain preserved!')
-  assert(dbPtcAfter.some((t: any) => t.isHidden === true), 'Preserved hidden test case verified in DB')
-  console.log('  ✓ Hidden test cases stripped in APIs/revisions and preserved intact on public-only save.')
-
-  // Test 11: Audit Logs & Global Scope Module Creation
-  console.log('Test 11: Content Audit Logging & Global Scope Verification')
-  const myRevs = await callContentManager(CM_TOKEN, 'list_my_revisions', {}, 'GET')
-  assert.strictEqual(myRevs.status, 200)
-  assert(myRevs.body.data.auditLogs.length >= 5, 'Content audit trail must log every edit')
-
-  // Upgrade to GLOBAL + ALL permissions
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: STUDENT_USER.id,
-    permissions: [...CONTENT_PERMISSION_LIST],
-    scopeType: 'GLOBAL',
+  assert.strictEqual(dupEmailRes.status, 409)
+  const dupAssignRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
+    userId: directUserId,
+    preventDuplicateAssignment: true,
   })
-  const createGlobalMod = await callContentManager(CM_TOKEN, 'create_curriculum_module', {
-    title: 'Global Module Created by CM',
-    description: 'Now permitted globally',
-  })
-  assert.strictEqual(createGlobalMod.status, 201)
-  console.log('  ✓ Audit trail complete; GLOBAL scope + module creation verified.')
+  assert.strictEqual(dupAssignRes.status, 409)
 
-  // Test 12: Immediate Revocation Takes Effect Instantly
-  console.log('Test 12: Immediate Revocation Enforcement')
-  const revokeRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', {
-    userId: STUDENT_USER.id,
+  // INVITE mode + pending 403 + Auth fail-closed 502 + duplicate auth.users 409
+  const invitedEmail = 'invited.author@kalvilearn.test'
+  const createInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Invited Content Author',
+    email: invitedEmail,
+    creationMode: 'INVITE',
+    notes: 'Pending invite acceptance',
   })
-  assert.strictEqual(revokeRes.status, 200)
-  assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'STUDENT', 'User role restored to previous STUDENT role')
+  assert.strictEqual(createInviteRes.status, 201)
+  assert.strictEqual(createInviteRes.body.data.status, 'INVITED')
+  assert.strictEqual(createInviteRes.body.data.isActive, false)
 
-  // Call immediately with the SAME CM_TOKEN (simulating active session after revocation)
-  const postRevokeMe = await callContentManager(CM_TOKEN, 'me', {}, 'GET')
-  assert.strictEqual(postRevokeMe.status, 403, 'Revoked Content Manager must immediately lose access (403)')
-  const postRevokeWrite = await callContentManager(CM_TOKEN, 'update_curriculum_module', {
-    id: mod1.id,
-    title: 'Should Fail',
+  const invitedMePending = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
+  assert.strictEqual(invitedMePending.status, 403, 'Pending INVITED assignment must fail closed (403)')
+
+  db.auth_users.push({ id: 'auth-only-dup-1', email: 'only.in.auth@kalvilearn.test' })
+  const dupAuthInvite = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Dup Auth User',
+    email: 'only.in.auth@kalvilearn.test',
+    creationMode: 'INVITE',
   })
-  assert.strictEqual(postRevokeWrite.status, 403, 'Revoked Content Manager mutations blocked immediately (403)')
-  console.log('  ✓ Revoked Content Manager blocked immediately on next request (403) and role restored.')
+  assert.strictEqual(dupAuthInvite.status, 409)
+  assert(!db.users.some((u: any) => u.email === 'only.in.auth@kalvilearn.test'))
+  ;(db as any).__authControl.failInvite = true
+  const failedInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
+    name: 'Failed Invite User',
+    email: 'failed.invite@kalvilearn.test',
+    creationMode: 'INVITE',
+  })
+  ;(db as any).__authControl.failInvite = false
+  assert.strictEqual(failedInviteRes.status, 502)
+  assert(!db.users.some((u: any) => u.email === 'failed.invite@kalvilearn.test'))
 
-  // Test 13: Role Preservation & Restoration Across MENTOR, CAMPUS_MANAGER, Re-grants, and Legitimate Role Changes
-  console.log('Test 13: Role Preservation & Restoration Edge Cases (Mentor, Campus Manager, Re-grant, Override Guard)')
+  const activateInvRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
+    assignmentId: createInviteRes.body.data.assignmentId,
+  })
+  assert.strictEqual(activateInvRes.status, 200)
+  assert.strictEqual(activateInvRes.body.data.status, 'ACTIVE')
+  assert.strictEqual(activateInvRes.body.data.isActive, true)
+  const activatedMe = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
+  assert.strictEqual(activatedMe.status, 200)
+  console.log('  OK Direct/Invite provisioning, duplicate guards (409), Auth 502 fail-closed, and activation verified.')
+
+  // Test 9: Lifecycle — Edit Profile, Suspend -> 403, Reactivate -> ACTIVE, Revoke -> Role Restoration & 400
+  console.log('Test 9: Account Lifecycle (Edit Profile, Suspend, Reactivate, Revoke, Role Restoration)')
+  const editRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
+    userId: directUserId,
+    name: 'Direct Content Author Updated',
+    campusId: null,
+    notes: 'Updated notes only',
+  })
+  assert.strictEqual(editRes.status, 200)
+  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.name, 'Direct Content Author Updated')
+
+  const suspendRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'suspend_content_manager', {
+    assignmentId: directAssignId,
+    reason: 'Temporary leave',
+  })
+  assert.strictEqual(suspendRes.status, 200)
+  assert.strictEqual(suspendRes.body.data.status, 'SUSPENDED')
+
+  const suspendedMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
+  assert.strictEqual(suspendedMe.status, 403, 'Suspended Content Manager must receive 403 immediately')
+
+  const editWhileSuspended = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
+    userId: directUserId,
+    name: 'Direct Content Author While Suspended',
+  })
+  assert.strictEqual(editWhileSuspended.status, 200)
+  assert.strictEqual(editWhileSuspended.body.data.status, 'SUSPENDED', 'Editing while suspended must preserve SUSPENDED')
+  assert(db.Problem.some((p: any) => p.id === directQId), 'Authored content preserved during suspension')
+
+  const reactivateRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
+    assignmentId: directAssignId,
+  })
+  assert.strictEqual(reactivateRes.status, 200)
+  assert.strictEqual(reactivateRes.body.data.status, 'ACTIVE')
+  assert.strictEqual((await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')).status, 200)
+
+  const revokeDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', {
+    assignmentId: directAssignId,
+  })
+  assert.strictEqual(revokeDirectRes.status, 200)
+  assert.strictEqual(revokeDirectRes.body.data.status, 'REVOKED')
+  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.role, 'STUDENT')
+  assert.strictEqual((await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')).status, 403)
+  assert.strictEqual(
+    (await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', { assignmentId: directAssignId })).status,
+    400,
+    'Reactivating REVOKED assignment must fail with 400'
+  )
+
+  // Mentor/Campus Manager role restoration & override guard
   const MENTOR_USER = {
     id: 'user-cm-mentor-1',
     email: 'mentor.author@kalvilearn.test',
@@ -480,339 +550,37 @@ async function main() {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
-  const CAMPUS_USER = {
-    id: 'user-cm-campus-1',
-    email: 'campus.author@kalvilearn.test',
-    name: 'Campus Author',
-    role: 'CAMPUS_MANAGER',
-    status: 'ACTIVE',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-  db.users.push(MENTOR_USER, CAMPUS_USER)
-
-  // Grant to Mentor -> revoke -> restores MENTOR
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: MENTOR_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    // Omit scopeType to verify safest default NONE
-  })
-  assert.strictEqual(db.users.find((u: any) => u.id === MENTOR_USER.id)?.role, 'CONTENT_MANAGER')
-  const mentorMe = await callContentManager('test_auth_CONTENT_MANAGER_mentor.author@kalvilearn.test', 'me', {}, 'GET')
-  assert.strictEqual(mentorMe.body.data.scopeType, 'NONE', 'Omitted scopeType must default safely to NONE')
+  db.users.push(MENTOR_USER)
+  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', { userId: MENTOR_USER.id })
   const revMentor = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', { userId: MENTOR_USER.id })
   assert.strictEqual(revMentor.body.data.restoredRole, 'MENTOR')
   assert.strictEqual(db.users.find((u: any) => u.id === MENTOR_USER.id)?.role, 'MENTOR')
+  console.log('  OK Suspend (403), Reactivate (ACTIVE), Revoke (role restore + 400 guard) verified.')
 
-  // Grant to Campus Manager -> revoke -> restores CAMPUS_MANAGER
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: CAMPUS_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'SCOPED',
-    learningUnitIds: [unitInMod1.id],
-  })
-  assert.strictEqual(db.users.find((u: any) => u.id === CAMPUS_USER.id)?.role, 'CONTENT_MANAGER')
-  const revCampus = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', { userId: CAMPUS_USER.id })
-  assert.strictEqual(revCampus.body.data.restoredRole, 'CAMPUS_MANAGER')
-  assert.strictEqual(db.users.find((u: any) => u.id === CAMPUS_USER.id)?.role, 'CAMPUS_MANAGER')
-
-  // Re-grant after user was legitimately promoted (STUDENT -> MENTOR -> CONTENT_MANAGER -> revoke must restore MENTOR, not stale STUDENT)
-  const updToMentor = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_user_role', { userId: STUDENT_USER.id, newRole: 'MENTOR' })
-  assert.strictEqual(updToMentor.status, 200)
-  assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'MENTOR')
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: STUDENT_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'SCOPED',
-    learningUnitIds: [unitInMod1.id],
-  })
-  assert.strictEqual(db.content_manager_assignments.find((a: any) => a.user_id === STUDENT_USER.id)?.previous_role, 'MENTOR', 'Re-grant must capture fresh previous_role = MENTOR')
-  // Legitimate role change while active via update_user_role to CAMPUS_MANAGER -> subsequent revoke must NOT overwrite CAMPUS_MANAGER!
-  const updToCampus = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_user_role', { userId: STUDENT_USER.id, newRole: 'CAMPUS_MANAGER' })
-  assert.strictEqual(updToCampus.status, 200)
-  assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'CAMPUS_MANAGER')
-  const postRoleChangeRevoke = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', { userId: STUDENT_USER.id })
-  assert.strictEqual(postRoleChangeRevoke.status, 200)
-  assert.strictEqual(postRoleChangeRevoke.body.data.wasRestored, false)
-  assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'CAMPUS_MANAGER', 'Legitimately changed role must NEVER be overwritten by revoke')
-  console.log('  ✓ Mentor/Campus Manager restoration, re-grant previousRole capture, and override guard verified.')
-
-  // Test 14: Unit-Level Scope Isolation (Unit-only manager cannot edit parent Module or sibling Unit)
-  console.log('Test 14: Granular Learning-Unit-Only Scope Isolation')
-  await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: CAMPUS_USER.id,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'SCOPED',
-    moduleIds: [],
-    learningUnitIds: [unitInMod1.id],
-  })
-  const unitCmToken = 'test_auth_CONTENT_MANAGER_campus.author@kalvilearn.test'
-  const siblingUnit = db.LearningUnit.find((u: any) => u.moduleId === mod1.id && u.id !== unitInMod1.id)
-  const tryEditParentMod = await callContentManager(unitCmToken, 'update_curriculum_module', { id: mod1.id, title: 'Bypass Parent Mod' })
-  assert.strictEqual(tryEditParentMod.status, 403, 'Unit-only manager must NOT mutate parent Module (403)')
-  if (siblingUnit) {
-    const tryEditSibling = await callContentManager(unitCmToken, 'update_learning_unit', { id: siblingUnit.id, title: 'Bypass Sibling' })
-    assert.strictEqual(tryEditSibling.status, 403, 'Unit-only manager must NOT mutate sibling LearningUnit (403)')
-  }
-  const createUnitQ = await callContentManager(unitCmToken, 'create_question', {
-    title: 'Unit Scoped Q',
-    slug: 'unit-scoped-q-1',
-    difficulty: 'Easy',
-    description: 'Scoped to assigned unit only',
-    learningUnitId: unitInMod1.id,
-    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
-  })
-  assert.strictEqual(createUnitQ.status, 201, 'Unit-scoped manager can create question inside authorized unit')
-  console.log('  ✓ Learning-unit-only scope allows authorized unit Qs while blocking parent Module & sibling units (403).')
-
-  // Test 15: Append-Only Content Audit Log Immutability
-  console.log('Test 15: Append-Only Audit Log Immutability')
-  const { error: auditUpdErr } = await supabaseServer.from('content_audit_logs').update({ change_summary: 'Tampered' }).eq('actor_user_id', STUDENT_USER.id)
+  // Test 10: Append-only audit logs + zero legacy permission/scope rows + non-SA guard on lifecycle routes
+  console.log('Test 10: Audit Immutability, Super Admin Action Guards & Zero Permission/Scope Table Usage')
+  const { error: auditUpdErr } = await supabaseServer
+    .from('content_audit_logs')
+    .update({ change_summary: 'Tampered' })
+    .eq('actor_user_id', STUDENT_USER.id)
   assert(auditUpdErr, 'Updating content_audit_logs must fail')
-  const { error: auditDelErr } = await supabaseServer.from('content_audit_logs').delete().eq('actor_user_id', STUDENT_USER.id)
+  const { error: auditDelErr } = await supabaseServer
+    .from('content_audit_logs')
+    .delete()
+    .eq('actor_user_id', STUDENT_USER.id)
   assert(auditDelErr, 'Deleting from content_audit_logs must fail')
-  console.log('  ✓ content_audit_logs UPDATE and DELETE strictly rejected.')
 
-  // Test 16: Direct Content Manager Creation (Option A) + Scoped Login & Question Authoring
-  console.log('Test 16: Direct Content Manager Account Creation (Option A) & Auth Compatibility')
-  const defaultCampus = db.campuses[0]
-  const directEmail = 'direct.author@kalvilearn.test'
-  const createDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Direct Content Author',
-    email: directEmail,
-    campusId: defaultCampus?.id || null,
-    creationMode: 'DIRECT',
-    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.test_case.manage', 'content.module.view'],
-    scopeType: 'SCOPED',
-    moduleIds: [mod1.id],
-    notes: 'Provisioned directly via Super Admin + Add Content Manager',
-  })
-  assert.strictEqual(createDirectRes.status, 201, `Expected 201 on create_content_manager, got ${createDirectRes.status}: ${createDirectRes.body?.message}`)
-  const directUserId = createDirectRes.body.data.userId
-  const directAssignId = createDirectRes.body.data.assignmentId
-  assert.strictEqual(createDirectRes.body.data.status, 'ACTIVE')
-  assert.strictEqual(createDirectRes.body.data.role, 'CONTENT_MANAGER')
-
-  // Verify the created user authenticates directly via existing role-based session
-  const DIRECT_CM_TOKEN = `test_auth_CONTENT_MANAGER_${directEmail}`
-  const directMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
-  assert.strictEqual(directMe.status, 200)
-  assert.strictEqual(directMe.body.data.email, directEmail)
-  assert.strictEqual(directMe.body.data.scopeType, 'SCOPED')
-
-  // Verify direct user can create authored content inside assigned scope
-  const directQ = await callContentManager(DIRECT_CM_TOKEN, 'create_question', {
-    title: 'Direct CM Authored Question',
-    slug: 'direct-cm-authored-q',
-    difficulty: 'Easy',
-    description: 'Created by directly provisioned CM',
-    learningUnitId: unitInMod1.id,
-    testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
-  })
-  assert.strictEqual(directQ.status, 201)
-  const directQId = directQ.body.data.id
-  console.log('  ✓ Option A creates user + RBAC records + scoped login + content authoring cleanly.')
-
-  // Test 17: Duplicate Email, Duplicate Existing Assignment & Protected Super Admin Guards
-  console.log('Test 17: Duplicate Email (409), Duplicate Assignment (409) & Protected Account (403) Guards')
-  const dupEmailRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Duplicate Author',
-    email: directEmail.toUpperCase(),
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'NONE',
-  })
-  assert.strictEqual(dupEmailRes.status, 409, 'Duplicate email on create_content_manager must return 409')
-
-  const dupAssignRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'grant_content_manager', {
-    userId: directUserId,
-    preventDuplicateAssignment: true,
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'NONE',
-  })
-  assert.strictEqual(dupAssignRes.status, 409, 'Duplicate active assignment via Option B must return 409')
-
-  const protectedCreate = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Blocked Super Admin Clone',
-    email: 'sgjitbros@gmail.com',
-    permissions: DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-    scopeType: 'NONE',
-  })
-  assert.strictEqual(protectedCreate.status, 403, 'Protected Super Admin email must return 403')
-  console.log('  ✓ 409 duplicate guards and 403 Super Admin protection verified.')
-
-  // Test 18: Invited Provisioning Mode, Fail-Closed Auth Guards, Duplicate auth.users Guard & Activation
-  console.log('Test 18: Invited Provisioning Mode, Auth Failure Guards & Status/is_active Invariants')
-  const invitedEmail = 'invited.author@kalvilearn.test'
-  const createInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Invited Content Author',
-    email: invitedEmail,
-    creationMode: 'INVITE',
-    permissions: ['content.question.view', 'content.module.view'],
-    scopeType: 'NONE',
-    notes: 'Pending invite acceptance',
-  })
-  assert.strictEqual(createInviteRes.status, 201)
-  assert.strictEqual(createInviteRes.body.data.status, 'INVITED')
-  assert.strictEqual(createInviteRes.body.data.isActive, false, 'INVITED status must enforce isActive === false')
-  assert.strictEqual(createInviteRes.body.data.authInviteSent, true)
-  const invAssignRow = db.content_manager_assignments.find((a: any) => a.id === createInviteRes.body.data.assignmentId)
-  assert.strictEqual(invAssignRow?.status, 'INVITED')
-  assert.strictEqual(invAssignRow?.is_active, false, 'DB row for INVITED must strictly keep is_active = false')
-  assert(db.auth_users.some((au: any) => au.email === invitedEmail), 'Supabase Auth user created on INVITE')
-
-  // Unaccepted INVITED user must NOT have active API access until accepted/activated
-  const invitedMePending = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
-  assert.strictEqual(invitedMePending.status, 403, 'Pending INVITED assignment (is_active=false) must fail closed (403)')
-
-  // Duplicate auth.users email check even when absent from public.users
-  db.auth_users.push({ id: 'auth-only-dup-1', email: 'only.in.auth@kalvilearn.test' })
-  const dupAuthInvite = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Dup Auth User',
-    email: 'only.in.auth@kalvilearn.test',
-    creationMode: 'INVITE',
-    permissions: ['content.question.view'],
-    scopeType: 'NONE',
-  })
-  assert.strictEqual(dupAuthInvite.status, 409, 'Duplicate auth.users identity must return 409 Conflict')
-  assert(!db.users.some((u: any) => u.email === 'only.in.auth@kalvilearn.test'), 'Failed duplicate auth check must leave zero public.users rows')
-
-  // Auth invite failure/unavailability must NEVER report silent success
-  ;(db as any).__authControl.failInvite = true
-  const failedInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Failed Invite User',
-    email: 'failed.invite@kalvilearn.test',
-    creationMode: 'INVITE',
-    permissions: ['content.question.view'],
-    scopeType: 'NONE',
-  })
-  ;(db as any).__authControl.failInvite = false
-  assert.strictEqual(failedInviteRes.status, 502, 'Auth invite failure must return explicit 502 error')
-  assert(!db.users.some((u: any) => u.email === 'failed.invite@kalvilearn.test'), 'Failed auth invite must create zero public.users rows')
-
-  // Activating INVITED user transitions atomically to ACTIVE + is_active = true without escalating scope
-  const activateInvRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
-    assignmentId: createInviteRes.body.data.assignmentId,
-  })
-  assert.strictEqual(activateInvRes.status, 200)
-  assert.strictEqual(activateInvRes.body.data.status, 'ACTIVE')
-  assert.strictEqual(activateInvRes.body.data.isActive, true)
-  assert.strictEqual(activateInvRes.body.data.scopeType, 'NONE', 'Activation must keep configured NONE scope')
-  const activatedMe = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
-  assert.strictEqual(activatedMe.status, 200)
-  console.log('  ✓ INVITED (is_active=false), Auth fail-closed 502/409, zero orphan rollback, and safe activation verified.')
-
-  // Test 19: Edit Profile, Permissions & Scope + Verify Directory Stats
-  console.log('Test 19: Edit Content Manager Profile/Permissions/Scope & Directory Stats')
-  const editRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
-    userId: directUserId,
-    name: 'Direct Content Author Updated',
-    campusId: null,
-    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.module.view', 'content.unit.edit'],
-    scopeType: 'SCOPED',
-    moduleIds: [mod1.id],
-    notes: 'Updated notes and profile',
-  })
-  assert.strictEqual(editRes.status, 200)
-  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.email, directEmail, 'Email/Auth identity must remain unchanged')
-  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.name, 'Direct Content Author Updated')
-
-  const pendingInviteRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'create_content_manager', {
-    name: 'Pending Invited Author',
-    email: 'pending.invite2@kalvilearn.test',
-    creationMode: 'INVITE',
-    permissions: ['content.question.view'],
-    scopeType: 'NONE',
-  })
-  assert.strictEqual(pendingInviteRes.status, 201)
-
-  const dirRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'list_content_managers')
-  assert.strictEqual(dirRes.status, 200)
-  assert(dirRes.body.data.stats.total >= 5)
-  assert(dirRes.body.data.stats.active >= 2)
-  assert(dirRes.body.data.stats.invited >= 1)
-  const pendingInvEntry = dirRes.body.data.assignments.find((a: any) => a.id === pendingInviteRes.body.data.assignmentId)
-  assert.strictEqual(pendingInvEntry?.status, 'INVITED')
-  assert.strictEqual(pendingInvEntry?.isActive, false, 'Directory listing must report isActive=false for INVITED status')
-  const dirEntry = dirRes.body.data.assignments.find((a: any) => a.id === directAssignId)
-  assert(dirEntry && dirEntry.updatedBy === 'sgjitbros@gmail.com' && dirEntry.name === 'Direct Content Author Updated')
-  console.log('  ✓ Edit preserved Auth email, saved updatedBy/updatedAt, and updated directory stats.')
-
-  // Test 20: Suspend Preserves Permissions/Scope/Content & Immediately Blocks /content-manager
-  console.log('Test 20: Suspension Lifecycle, Permission Preservation & Immediate 403')
-  const suspendRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'suspend_content_manager', {
-    assignmentId: directAssignId,
-    reason: 'Temporary curriculum freeze',
-  })
-  assert.strictEqual(suspendRes.status, 200)
-  assert.strictEqual(suspendRes.body.data.status, 'SUSPENDED')
-
-  // Immediately blocked on /api/content-manager
-  const suspendedMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
-  assert.strictEqual(suspendedMe.status, 403, 'Suspended Content Manager must immediately receive 403')
-
-  // Editing metadata while suspended must preserve SUSPENDED state
-  const editWhileSuspended = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'update_content_manager', {
-    userId: directUserId,
-    name: 'Direct Content Author While Suspended',
-    permissions: ['content.question.view', 'content.question.create', 'content.question.edit', 'content.module.view'],
-    scopeType: 'SCOPED',
-    moduleIds: [mod1.id],
-    notes: 'Edited while suspended',
-  })
-  assert.strictEqual(editWhileSuspended.status, 200)
-  assert.strictEqual(editWhileSuspended.body.data.status, 'SUSPENDED', 'Editing a suspended manager must not accidentally unsuspend')
-
-  // Authored content and permissions remain intact in DB
-  assert(db.Problem.some((p: any) => p.id === directQId), 'Authored question must be preserved during suspension')
-  assert.strictEqual(db.content_manager_scopes.filter((s: any) => s.assignment_id === directAssignId).length, 1, 'Scopes preserved during suspension')
-  console.log('  ✓ Suspended user blocked immediately (403) while permissions, scopes & authored content preserved.')
-
-  // Test 21: Reactivate Restores Exact Prior Scope (Never Auto-Grants GLOBAL)
-  console.log('Test 21: Reactivation Lifecycle & Exact Scope Restoration')
-  const reactivateRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
-    assignmentId: directAssignId,
-  })
-  assert.strictEqual(reactivateRes.status, 200)
-  assert.strictEqual(reactivateRes.body.data.status, 'ACTIVE')
-  assert.strictEqual(reactivateRes.body.data.scopeType, 'SCOPED', 'Reactivation must restore exact SCOPED access and NEVER upgrade to GLOBAL')
-
-  const postReactivateMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
-  assert.strictEqual(postReactivateMe.status, 200, 'Reactivated Content Manager must regain access immediately')
-  assert.strictEqual(postReactivateMe.body.data.scopeType, 'SCOPED')
-  console.log('  ✓ Reactivated manager regained SCOPED access cleanly with saved permissions.')
-
-  // Test 22: Permanent Revoke Safely Downgrades Direct User, Preserves Content/Audit, Blocks Reactivate (400)
-  console.log('Test 22: Revoke Preserves Content/Audit, Downgrades Direct User, Blocks Reactivate (400)')
-  const revokeDirectRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'revoke_content_manager', {
-    assignmentId: directAssignId,
-  })
-  assert.strictEqual(revokeDirectRes.status, 200)
-  assert.strictEqual(revokeDirectRes.body.data.status, 'REVOKED')
-  assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.role, 'STUDENT', 'Revoked Option A user safely downgraded to STUDENT')
-  assert(db.Problem.some((p: any) => p.id === directQId), 'Authored question preserved after revoke')
-  assert(db.content_audit_logs.length >= 8, 'Audit history preserved after revoke')
-
-  const postRevokeDirectMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
-  assert.strictEqual(postRevokeDirectMe.status, 403, 'Revoked direct user immediately blocked from /content-manager')
-
-  const reactivateRevoked = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', {
-    assignmentId: directAssignId,
-  })
-  assert.strictEqual(reactivateRevoked.status, 400, 'Reactivating permanently REVOKED assignment must fail with 400')
-  console.log('  ✓ Permanent revoke preserved content/audit, safely downgraded role, and blocked direct reactivate (400).')
-
-  // Test 23: Non-Super-Admin Privilege Escalation Protection
-  console.log('Test 23: Non-Super-Admin Users Blocked from Content Manager Lifecycle Actions (403)')
   for (const action of ['create_content_manager', 'suspend_content_manager', 'reactivate_content_manager']) {
-    const blockedSa = await callSuperAdmin(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })
-    assert.strictEqual(blockedSa.status, 403, `Non-super-admin must receive 403 for ${action} on /api/super-admin`)
-    const blockedCm = await callContentManager(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })
-    assert.strictEqual(blockedCm.status, 403, `Content manager must receive 403 for ${action} on /api/content-manager`)
+    assert.strictEqual((await callSuperAdmin(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })).status, 403)
+    assert.strictEqual((await callContentManager(CM_TOKEN, action, { email: 'evil@kalvilearn.test', name: 'Evil' })).status, 403)
   }
-  console.log('  ✓ All new lifecycle actions strictly restricted to verified Super Admin.')
+
+  assert.strictEqual(db.content_manager_permissions.length, 0, 'Zero rows should exist in content_manager_permissions')
+  assert.strictEqual(db.content_manager_scopes.length, 0, 'Zero rows should exist in content_manager_scopes')
+  console.log('  OK Audit logs append-only, lifecycle routes Super-Admin-only, and zero granular permission/scope rows written.')
 
   console.log('\n======================================================================')
-  console.log('ALL 23 CONTENT MANAGER USER MANAGEMENT, RBAC & SECURITY SUITES PASSED 100%!')
+  console.log('ALL 10 SIMPLIFIED CONTENT MANAGER & RBAC SUITES PASSED 100%!')
   console.log('======================================================================')
 }
 

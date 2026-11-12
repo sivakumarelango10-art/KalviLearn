@@ -1,8 +1,12 @@
 /**
- * KalviLearn Content Manager RBAC — Granular Permission Registry
+ * KalviLearn Content Manager Access Profile
  *
- * Canonical permission identifiers shared by both server-side authorization
- * enforcement and client-side UI capability gating.
+ * Single fixed capability profile shared by all active CONTENT_MANAGER accounts.
+ * Every active Content Manager receives uniform access to:
+ * - Curriculum Modules & Learning Units (Learn)
+ * - Practice Coding Questions (Belts)
+ * - Learn Coding Lesson Questions (Learning Units)
+ * - Associated examples, public/hidden test cases, starter codes, and test runner
  */
 
 export const CONTENT_MANAGER_ROLE = 'CONTENT_MANAGER' as const
@@ -33,10 +37,8 @@ export const CONTENT_PERMISSION_LIST = [
   'content.question.delete',
 
   'content.example.manage',
-
   'content.test_case.manage',
   'content.hidden_test_case.manage',
-
   'content.starter_code.manage',
 
   'content.revision.view_own',
@@ -45,251 +47,52 @@ export const CONTENT_PERMISSION_LIST = [
 ] as const
 
 export type ContentPermission = (typeof CONTENT_PERMISSION_LIST)[number]
-
 export type ContentScopeType = 'NONE' | 'SCOPED' | 'GLOBAL'
 
-export interface ContentPermissionDefinition {
-  id: ContentPermission
-  label: string
+export const FIXED_CONTENT_MANAGER_PERMISSIONS: ContentPermission[] = [...CONTENT_PERMISSION_LIST]
+
+export interface ContentCapabilityArea {
+  id: string
+  title: string
   description: string
-  category:
-    | 'Dashboard'
-    | 'Curriculum'
-    | 'Learning Units'
-    | 'Questions'
-    | 'Examples & Tests'
-    | 'Revisions'
-    | 'Publication & Destructive'
-  defaultEnabled: boolean
-  isElevated: boolean
+  capabilities: string[]
 }
 
-export const CONTENT_PERMISSION_CATALOG: ContentPermissionDefinition[] = [
+export const FIXED_CONTENT_MANAGER_AREAS: ContentCapabilityArea[] = [
   {
-    id: 'content.dashboard.view',
-    label: 'View Content Dashboard',
-    description: 'Access the Content Manager workspace overview and metrics.',
-    category: 'Dashboard',
-    defaultEnabled: true,
-    isElevated: false,
+    id: 'curriculum',
+    title: 'Learn — Curriculum Management',
+    description: 'Create, edit, organize, and publish educational modules and lessons.',
+    capabilities: [
+      'View, add, edit, and reorder curriculum modules',
+      'Add, edit, and reorder Learning Units within modules',
+      'Edit lesson concepts, approaches, reading times, and explanations',
+      'Manage standard Draft / Published lifecycle for modules and lessons',
+    ],
   },
   {
-    id: 'content.curriculum.view',
-    label: 'View Curriculum Modules',
-    description: 'View assigned curriculum modules and structure.',
-    category: 'Curriculum',
-    defaultEnabled: true,
-    isElevated: false,
+    id: 'practice',
+    title: 'Practice — Coding Question Management',
+    description: 'Author and maintain Belt-based Practice coding problems.',
+    capabilities: [
+      'View, add, edit, and duplicate Practice coding questions',
+      'Preserve and assign Belt relationships (Belt 1–10)',
+      'Manage descriptions, constraints, input/output formats, and examples',
+      'Manage public & hidden test cases, multi-language starter code, and run tests',
+    ],
   },
   {
-    id: 'content.curriculum.create',
-    label: 'Create Curriculum Modules',
-    description: 'Create new curriculum modules (requires Global scope or elevated approval).',
-    category: 'Curriculum',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.curriculum.update',
-    label: 'Edit Curriculum Modules',
-    description: 'Edit module titles, descriptions, and metadata within scope.',
-    category: 'Curriculum',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.curriculum.reorder',
-    label: 'Reorder Curriculum Modules',
-    description: 'Change display ordering of authorized curriculum modules.',
-    category: 'Curriculum',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.learning_unit.view',
-    label: 'View Learning Units',
-    description: 'View lessons, concepts, and learning unit content.',
-    category: 'Learning Units',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.learning_unit.create',
-    label: 'Create Learning Units',
-    description: 'Create new lessons inside authorized modules.',
-    category: 'Learning Units',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.learning_unit.update',
-    label: 'Edit Learning Units',
-    description: 'Modify lesson text, approach, code snippets, and reading times.',
-    category: 'Learning Units',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.learning_unit.reorder',
-    label: 'Reorder Learning Units',
-    description: 'Reorder lessons inside authorized curriculum modules.',
-    category: 'Learning Units',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.view',
-    label: 'View Coding Questions',
-    description: 'Browse and open coding questions within authorized scope.',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.create',
-    label: 'Create Coding Questions',
-    description: 'Author new draft coding questions inside authorized learning units.',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.update',
-    label: 'Edit Coding Questions',
-    description: 'Update coding question title, statements, formats, and limits.',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.duplicate',
-    label: 'Duplicate Questions',
-    description: 'Clone an existing authorized question into a draft.',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.preview',
-    label: 'Preview Questions',
-    description: 'Preview how questions render for students (public tests only unless hidden access granted).',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.question.run_tests',
-    label: 'Run Question Test Runner',
-    description: 'Execute test solutions against question test suites in the sandbox.',
-    category: 'Questions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.example.manage',
-    label: 'Manage Question Examples',
-    description: 'Add, edit, and reorder sample examples.',
-    category: 'Examples & Tests',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.test_case.manage',
-    label: 'Manage Public Test Cases',
-    description: 'Add, edit, reorder, and delete public test cases.',
-    category: 'Examples & Tests',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.hidden_test_case.manage',
-    label: 'Manage Hidden Test Cases',
-    description: 'View, add, edit, and delete hidden evaluation test cases.',
-    category: 'Examples & Tests',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.starter_code.manage',
-    label: 'Manage Starter Code',
-    description: 'Edit programming-language starter code templates.',
-    category: 'Examples & Tests',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.revision.view_own',
-    label: 'View Own Revisions & Activity',
-    description: 'Inspect revision history and audit entries authored by oneself.',
-    category: 'Revisions',
-    defaultEnabled: true,
-    isElevated: false,
-  },
-  {
-    id: 'content.revision.view_all',
-    label: 'View All Question Revisions',
-    description: 'Inspect revisions authored by any editor across authorized questions.',
-    category: 'Revisions',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.revision.restore',
-    label: 'Restore Question Revisions',
-    description: 'Roll back a question to a previous snapshot revision.',
-    category: 'Revisions',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.question.publish',
-    label: 'Publish Coding Questions',
-    description: 'Publish coding questions directly to live student visibility without Super Admin approval.',
-    category: 'Publication & Destructive',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.question.archive',
-    label: 'Archive Coding Questions',
-    description: 'Archive or unpublish coding questions.',
-    category: 'Publication & Destructive',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.question.delete',
-    label: 'Delete Coding Questions',
-    description: 'Permanently delete coding questions.',
-    category: 'Publication & Destructive',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.learning_unit.publish',
-    label: 'Publish Learning Units / Modules',
-    description: 'Publish learning units or modules directly to live student visibility.',
-    category: 'Publication & Destructive',
-    defaultEnabled: false,
-    isElevated: true,
-  },
-  {
-    id: 'content.learning_unit.delete',
-    label: 'Delete Learning Units / Modules',
-    description: 'Permanently delete learning units or curriculum modules.',
-    category: 'Publication & Destructive',
-    defaultEnabled: false,
-    isElevated: true,
+    id: 'learn-coding',
+    title: 'Learn Coding — Lesson Question Management',
+    description: 'Author and maintain coding problems attached directly to Learning Units.',
+    capabilities: [
+      'View Learn Coding curriculum modules and lessons',
+      'Add and edit coding questions associated with a Learning Unit',
+      'Manage Python, Java, C++, and JavaScript starter code & examples',
+      'Manage public & hidden test cases, run test suites, and save changes',
+    ],
   },
 ]
-
-export const DEFAULT_CONTENT_MANAGER_PERMISSIONS: ContentPermission[] = CONTENT_PERMISSION_CATALOG.filter(
-  (p) => p.defaultEnabled
-).map((p) => p.id)
-
-export const ELEVATED_CONTENT_PERMISSIONS: ContentPermission[] = CONTENT_PERMISSION_CATALOG.filter(
-  (p) => p.isElevated
-).map((p) => p.id)
 
 const VALID_PERMISSION_SET = new Set<string>(CONTENT_PERMISSION_LIST)
 
@@ -298,17 +101,15 @@ export function isValidContentPermission(value: string): value is ContentPermiss
 }
 
 export function normalizePermissionsList(raw: unknown): ContentPermission[] {
-  if (!Array.isArray(raw)) return []
+  if (!Array.isArray(raw)) return [...FIXED_CONTENT_MANAGER_PERMISSIONS]
   const seen = new Set<ContentPermission>()
   for (const item of raw) {
     if (typeof item === 'string') {
       const trimmed = item.trim()
-      if (isValidContentPermission(trimmed)) {
-        seen.add(trimmed)
-      }
+      if (isValidContentPermission(trimmed)) seen.add(trimmed)
     }
   }
-  return Array.from(seen)
+  return seen.size > 0 ? Array.from(seen) : [...FIXED_CONTENT_MANAGER_PERMISSIONS]
 }
 
 export function hasContentPermission(

@@ -13,12 +13,10 @@ import {
   RefreshCw,
   CheckCircle2,
   AlertTriangle,
-  Send,
   Globe,
   Lock,
   X,
 } from 'lucide-react'
-import { useContentManager } from '@/contexts/ContentManagerContext'
 import {
   fetchCmCurriculumModules,
   createCmCurriculumModule,
@@ -28,12 +26,12 @@ import {
   deleteCmCurriculumModule,
   createCmLearningUnit,
   updateCmLearningUnit,
-  submitCmLearningUnitForReview,
   reorderCmLearningUnits,
   toggleCmLearningUnitStatus,
   deleteCmLearningUnit,
 } from '@/lib/contentManagerService'
 import type { AdminCurriculumModule, AdminLearningUnit } from '@/lib/superAdminService'
+import { FIXED_CONTENT_MANAGER_PERMISSIONS } from '@/lib/contentPermissions'
 import { SuperAdminQuestionsPage } from '@/pages/super-admin/SuperAdminQuestionsPage'
 import { cn } from '@/lib/utils'
 
@@ -44,7 +42,6 @@ interface ContentManagerCurriculumPageProps {
 export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPageProps> = ({
   focusMode = 'curriculum',
 }) => {
-  const { profile, hasPermission } = useContentManager()
   const [modules, setModules] = useState<Array<AdminCurriculumModule & { canManageModule?: boolean; approvalStatus?: string }>>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -78,14 +75,14 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
 
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'module' | 'unit'; id: string; title: string } | null>(null)
 
-  const canCreateMod = hasPermission('content.curriculum.create') && profile?.scopeType === 'GLOBAL'
-  const canUpdateMod = hasPermission('content.curriculum.update')
-  const canReorderMod = hasPermission('content.curriculum.reorder')
-  const canCreateUnit = hasPermission('content.learning_unit.create')
-  const canUpdateUnit = hasPermission('content.learning_unit.update')
-  const canReorderUnit = hasPermission('content.learning_unit.reorder')
-  const canPublishUnit = hasPermission('content.learning_unit.publish')
-  const canDeleteUnit = hasPermission('content.learning_unit.delete')
+  const canCreateMod = true
+  const canUpdateMod = true
+  const canReorderMod = true
+  const canCreateUnit = true
+  const canUpdateUnit = true
+  const canReorderUnit = true
+  const canPublishUnit = true
+  const canDeleteUnit = false
 
   const loadCurriculum = async () => {
     setLoading(true)
@@ -212,21 +209,20 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
     setError(null)
     const res = editingUnit
       ? await updateCmLearningUnit(editingUnit.id, {
-          ...unitForm,
-          ...(submitForReview ? { status: 'PENDING_REVIEW' } : {}),
-        })
+        status: submitForReview ? 'PUBLISHED' : 'DRAFT',
+      })
       : await createCmLearningUnit({
           moduleId: activeModuleIdForUnit!,
           ...unitForm,
-          submitForReview,
+          status: submitForReview ? 'PUBLISHED' : 'DRAFT',
         })
     setSavingUnit(false)
     if (res.success) {
       setSuccessMsg(
         submitForReview
-          ? `Lesson "${unitForm.title}" submitted for Super Admin review.`
+          ? `Lesson "${unitForm.title}" saved and published.`
           : editingUnit
-          ? `Lesson "${unitForm.title}" updated.`
+          ? `Lesson "${unitForm.title}" saved.`
           : `Lesson "${unitForm.title}" saved as Draft.`
       )
       setIsUnitModalOpen(false)
@@ -270,19 +266,6 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
     }
   }
 
-  if (!hasPermission('content.curriculum.view') && !hasPermission('content.learning_unit.view')) {
-    return (
-      <div className="p-8 rounded-2xl border border-[#681717] bg-[#1F0B0B]/30 text-center space-y-3">
-        <Lock className="w-8 h-8 text-[#FF6266] mx-auto" />
-        <h2 className="text-lg font-bold text-white">Curriculum Access Restricted</h2>
-        <p className="text-sm text-neutral-400">
-          Your assignment does not include <code className="text-[#FF6266]">content.curriculum.view</code> or{' '}
-          <code className="text-[#FF6266]">content.learning_unit.view</code>.
-        </p>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -299,7 +282,7 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
             </h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
-            Author, structure, reorder, and submit lessons for publication approval strictly within your authorized scope.
+            Author, structure, reorder, and publish modules, learning units, and lesson explanations.
           </p>
         </div>
 
@@ -604,21 +587,6 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
                         <Edit2 className="w-3.5 h-3.5" /> Edit Lesson
                       </button>
                     )}
-                    {canUpdateUnit && !canPublishUnit && selectedUnit.status !== 'PUBLISHED' && (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const r = await submitCmLearningUnitForReview(selectedUnit.id)
-                          if (r.success) {
-                            setSuccessMsg(`"${selectedUnit.title}" submitted for review.`)
-                            loadCurriculum()
-                          } else setError(r.error || 'Submission failed.')
-                        }}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white"
-                      >
-                        <Send className="w-3.5 h-3.5" /> Submit for Review
-                      </button>
-                    )}
                     {canPublishUnit && (
                       <button
                         type="button"
@@ -644,15 +612,14 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
               </div>
 
               {/* Embedded Full 7-Tab Coding Question Manager scoped to this Unit */}
-              {hasPermission('content.question.view') && (
-                <SuperAdminQuestionsPage
-                  isEmbedded
-                  learningUnitId={selectedUnit.id}
-                  unitTitle={selectedUnit.title}
-                  apiMode="content-manager"
-                  grantedPermissions={profile?.permissions || []}
-                />
-              )}
+              <SuperAdminQuestionsPage
+                isEmbedded
+                learningUnitId={selectedUnit.id}
+                unitTitle={selectedUnit.title}
+                apiMode="content-manager"
+                questionMode="learn-coding"
+                grantedPermissions={[...FIXED_CONTENT_MANAGER_PERMISSIONS]}
+              />
             </>
           ) : (
             <div className="p-12 rounded-2xl bg-[#080808] border border-dashed border-white/10 text-center text-xs text-neutral-400">
@@ -787,9 +754,9 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
                 type="button"
                 disabled={savingUnit}
                 onClick={() => handleSaveUnit(true)}
-                className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold"
+                className="px-4 py-2 rounded-lg bg-[#ED2A2B] hover:bg-[#d62425] text-white text-xs font-semibold"
               >
-                Submit for Review
+                Save &amp; Publish
               </button>
             </div>
           </div>
