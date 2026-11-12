@@ -605,6 +605,19 @@ export async function updateUserRole(
   )
 }
 
+export async function deleteUserAccount(
+  userId: string,
+  confirmEmail: string,
+  reason: string
+): Promise<{ success: boolean; data?: unknown; message?: string; error?: string }> {
+  return callSuperAdminApi(
+    '/api/super-admin/roles',
+    { userId, confirmEmail, reason },
+    'delete_user',
+    'POST'
+  )
+}
+
 export async function updateUserDetails(
   userId: string,
   updates: {

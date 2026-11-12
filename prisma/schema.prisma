@@ -246,10 +246,14 @@ model User {
   campusId                 String?                   @map("campus_id")
   campus         Campus?   @relation("CampusUsers", fields: [campusId], references: [id], onDelete: SetNull)
   managedCampuses Campus[] @relation("CampusManager")
+  deletedAt      DateTime? @map("deleted_at")
+  deletedBy      String?   @map("deleted_by")
+  deletionReason String?   @map("deletion_reason") @db.Text
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   @@index([mentorId])
+  @@index([deletedAt])
   @@map("users")
 }
 
