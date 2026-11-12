@@ -84,7 +84,9 @@ async function run() {
   console.log('Running Super Admin Delete User & UI Validation Suite...')
 
   const { installMockSupabaseServer } = await import('./mockDatabase')
-  const { supabaseServer } = await import('../src/server/feedbackAuth')
+  const { supabaseServer, supabaseAuthServer, authenticateFeedbackRequest, clearAuthCacheForTesting } = await import(
+    '../src/server/feedbackAuth'
+  )
   const { default: superAdminHandler, SUPER_ADMIN_EMAIL } = await import(
     '../src/server/superAdminHandler'
   )
@@ -405,6 +407,120 @@ async function run() {
     assert.equal(cma.is_active, false)
   }
   console.log('  [PASS] 8. Content Manager assignment revoked & history preserved')
+
+  // 9. Deterministic mocked JWT verification: invalid, forged, unsigned -> 401; network/infra error -> 503
+  {
+    const origGetUser = supabaseAuthServer.auth.getUser.bind(supabaseAuthServer.auth)
+    try {
+      clearAuthCacheForTesting()
+      ;(supabaseAuthServer.auth as any).getUser = async (jwt: string) => {
+        if (jwt === 'network-down-token') {
+          return { data: { user: null }, error: { status: 0, message: 'fetch failed' } }
+        }
+        return { data: { user: null }, error: { status: 401, message: 'invalid JWT: unable to parse or verify signature' } }
+      }
+
+      const invalidRes = await authenticateFeedbackRequest('Bearer not-a-real-jwt')
+      assert.equal(invalidRes.authenticated, false)
+      assert.equal(invalidRes.statusCode, 401)
+
+      const unsignedJwt =
+        'Bearer ' +
+        Buffer.from(JSON.stringify({ alg: 'none' })).toString('base64url') +
+        '.' +
+        Buffer.from(JSON.stringify({ sub: studentUserId, role: 'authenticated', email: 'x@y.z' })).toString('base64url') +
+        '.'
+      const unsignedRes = await authenticateFeedbackRequest(unsignedJwt)
+      assert.equal(unsignedRes.authenticated, false)
+      assert.equal(unsignedRes.statusCode, 401)
+
+      const forgedJwt =
+        'Bearer ' +
+        Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url') +
+        '.' +
+        Buffer.from(JSON.stringify({ sub: studentUserId, role: 'SUPERADMIN' })).toString('base64url') +
+        '.forgedsignature'
+      const forgedRes = await authenticateFeedbackRequest(forgedJwt)
+      assert.equal(forgedRes.authenticated, false)
+      assert.equal(forgedRes.statusCode, 401)
+
+      const infraRes = await authenticateFeedbackRequest('Bearer network-down-token')
+      assert.equal(infraRes.authenticated, false)
+      assert.equal(infraRes.statusCode, 503)
+    } finally {
+      ;(supabaseAuthServer.auth as any).getUser = origGetUser
+      clearAuthCacheForTesting()
+    }
+  }
+  console.log('  [PASS] 9. Deterministic invalid/unsigned/forged JWTs -> 401, infra failure -> 503')
+
+  // 10. Deleted account cannot access protected endpoints (including in-process authCache invalidation)
+  {
+    const targetId = 'user-cached-to-delete'
+    const targetAuthUid = 'auth-uid-cached-to-delete'
+    const targetEmail = 'cached-delete@kalvilearn.test'
+    db.users.push({
+      id: targetId,
+      email: targetEmail,
+      name: 'Cached Delete User',
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      authUid: targetAuthUid,
+      campus_id: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+
+    const origGetUser = supabaseAuthServer.auth.getUser.bind(supabaseAuthServer.auth)
+    try {
+      clearAuthCacheForTesting()
+      ;(supabaseAuthServer.auth as any).getUser = async () => ({
+        data: {
+          user: {
+            id: targetAuthUid,
+            email: targetEmail,
+            email_confirmed_at: new Date().toISOString(),
+            app_metadata: { provider: 'google', providers: ['google'] },
+          },
+        },
+        error: null,
+      })
+
+      const beforeDelete = await authenticateFeedbackRequest('Bearer valid-session-jwt-for-cached-user')
+      assert.equal(beforeDelete.authenticated, true)
+      assert.equal(beforeDelete.user?.id, targetId)
+
+      const { req, res } = createMockReqRes({
+        headers: { Authorization: `Bearer ${superAdminToken}` },
+        body: {
+          action: 'delete_user',
+          userId: targetId,
+          confirmEmail: targetEmail,
+          reason: 'Verify immediate access & cache revocation',
+        },
+      })
+      await superAdminHandler(req, res)
+      assert.equal(res.getResult().statusCode, 200)
+
+      // Even with the exact same JWT, authCache was invalidated and DB status=INACTIVE blocks with 403
+      const afterDelete = await authenticateFeedbackRequest('Bearer valid-session-jwt-for-cached-user')
+      assert.equal(afterDelete.authenticated, false)
+      assert.equal(afterDelete.statusCode, 403)
+      assert.match(afterDelete.error || '', /inactive/i)
+
+      // Calling a protected endpoint with that deleted user's JWT fails with 403
+      const { req: epReq, res: epRes } = createMockReqRes({
+        headers: { Authorization: 'Bearer valid-session-jwt-for-cached-user' },
+        body: { action: 'list_users_roles' },
+      })
+      await superAdminHandler(epReq, epRes)
+      assert.equal(epRes.getResult().statusCode, 403)
+    } finally {
+      ;(supabaseAuthServer.auth as any).getUser = origGetUser
+      clearAuthCacheForTesting()
+    }
+  }
+  console.log('  [PASS] 10. Deleted account blocked from protected endpoints & authCache invalidated immediately')
 
   console.log('All Super Admin Delete User tests passed!')
 }

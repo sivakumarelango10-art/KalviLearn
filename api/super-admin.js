@@ -27867,6 +27867,14 @@ var authCache = /* @__PURE__ */ new Map();
 function tokenKey(token) {
   return crypto2.createHash("sha256").update(token).digest("hex");
 }
+function invalidateAuthCacheForUser(userId) {
+  if (!userId) return;
+  for (const [key, entry] of authCache.entries()) {
+    if (entry.user.id === userId) {
+      authCache.delete(key);
+    }
+  }
+}
 var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function toValidUuid(rawId, seed) {
   if (rawId && UUID_REGEX.test(rawId)) {
@@ -117636,6 +117644,7 @@ async function handleDeleteUser(body, adminId, callerEmail, clientIp, res) {
       updated_at: now
     }).eq("id", cmAssignment.id);
   }
+  invalidateAuthCacheForUser(targetUserId);
   let sessionRevoked = false;
   let authLoginBlocked = false;
   const authUid = targetUser.authUid || null;

@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError } from './feedbackAuth'
+import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError, invalidateAuthCacheForUser } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
 import { resolveRoute } from './routeResolver'
@@ -2848,6 +2848,7 @@ async function handleDeleteUser(
   }
 
   // 3. Revoke active sessions & prevent future auth logins without deleting auth.users
+  invalidateAuthCacheForUser(targetUserId)
   let sessionRevoked = false
   let authLoginBlocked = false
   const authUid = (targetUser as { authUid?: string | null }).authUid || null
