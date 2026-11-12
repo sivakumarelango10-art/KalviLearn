@@ -191,6 +191,7 @@ async function main() {
   assert.strictEqual(grantRes.status, 200)
   assert.strictEqual(grantRes.body.data.scopeType, 'GLOBAL')
   assert.strictEqual(db.users.find((u: any) => u.id === STUDENT_USER.id)?.role, 'CONTENT_MANAGER')
+  assert.strictEqual(db.content_managers.filter((p: any) => p.user_id === STUDENT_USER.id).length, 1, 'Grant must create one content_managers profile')
   assert.strictEqual(db.content_manager_permissions.length, 0, 'Must NOT write content_manager_permissions rows')
   assert.strictEqual(db.content_manager_scopes.length, 0, 'Must NOT write content_manager_scopes rows')
 
@@ -411,6 +412,9 @@ async function main() {
     name: 'Direct Content Author',
     email: directEmail,
     campusId: defaultCampus?.id || null,
+    managerCode: 'CM-DIR-01',
+    department: 'DSA & Algorithms',
+    designation: 'Lead Author',
     creationMode: 'DIRECT',
     notes: 'Direct simplified onboarding',
   })
@@ -419,11 +423,15 @@ async function main() {
   const directAssignId = createDirectRes.body.data.assignmentId
   assert.strictEqual(createDirectRes.body.data.status, 'ACTIVE')
   assert.strictEqual(createDirectRes.body.data.scopeType, 'GLOBAL')
+  assert.strictEqual(createDirectRes.body.data.managerCode, 'CM-DIR-01')
+  assert.strictEqual(db.content_managers.filter((p: any) => p.user_id === directUserId).length, 1, 'Direct create must link content_managers profile')
 
   const DIRECT_CM_TOKEN = `test_auth_CONTENT_MANAGER_${directEmail}`
   const directMe = await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')
   assert.strictEqual(directMe.status, 200)
   assert.strictEqual(directMe.body.data.scopeType, 'GLOBAL')
+  assert.strictEqual(directMe.body.data.managerCode, 'CM-DIR-01')
+  assert.strictEqual(directMe.body.data.department, 'DSA & Algorithms')
 
   const directQ = await callContentManager(DIRECT_CM_TOKEN, 'create_question', {
     title: 'Direct CM Question',
@@ -459,6 +467,7 @@ async function main() {
   assert.strictEqual(createInviteRes.status, 201)
   assert.strictEqual(createInviteRes.body.data.status, 'INVITED')
   assert.strictEqual(createInviteRes.body.data.isActive, false)
+  assert.strictEqual(db.content_managers.filter((p: any) => p.user_id === createInviteRes.body.data.userId).length, 1, 'Invite must create content_managers profile')
 
   const invitedMePending = await callContentManager(`test_auth_CONTENT_MANAGER_${invitedEmail}`, 'me', {}, 'GET')
   assert.strictEqual(invitedMePending.status, 403, 'Pending INVITED assignment must fail closed (403)')
@@ -497,10 +506,15 @@ async function main() {
     userId: directUserId,
     name: 'Direct Content Author Updated',
     campusId: null,
+    managerCode: 'CM-DIR-99',
+    department: 'Competitive Coding',
+    designation: 'Principal Content Author',
     notes: 'Updated notes only',
   })
   assert.strictEqual(editRes.status, 200)
   assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.name, 'Direct Content Author Updated')
+  assert.strictEqual(db.content_managers.find((p: any) => p.user_id === directUserId)?.manager_code, 'CM-DIR-99')
+  assert.strictEqual(db.content_managers.find((p: any) => p.user_id === directUserId)?.department, 'Competitive Coding')
 
   const suspendRes = await callSuperAdmin(SUPER_ADMIN_TOKEN, 'suspend_content_manager', {
     assignmentId: directAssignId,
@@ -533,6 +547,7 @@ async function main() {
   assert.strictEqual(revokeDirectRes.status, 200)
   assert.strictEqual(revokeDirectRes.body.data.status, 'REVOKED')
   assert.strictEqual(db.users.find((u: any) => u.id === directUserId)?.role, 'STUDENT')
+  assert.strictEqual(db.content_managers.filter((p: any) => p.user_id === directUserId).length, 1, 'Revoke must preserve content_managers profile history')
   assert.strictEqual((await callContentManager(DIRECT_CM_TOKEN, 'me', {}, 'GET')).status, 403)
   assert.strictEqual(
     (await callSuperAdmin(SUPER_ADMIN_TOKEN, 'reactivate_content_manager', { assignmentId: directAssignId })).status,

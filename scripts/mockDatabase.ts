@@ -15,6 +15,7 @@ export interface MockDbState {
   campuses: any[]
   users: any[]
   mentors: any[]
+  content_managers: any[]
   students: any[]
   mentor_students: any[]
   admin_audit_logs: any[]
@@ -251,6 +252,7 @@ export function createInitialMockDb(): MockDbState {
       },
     ],
     mentors: [],
+    content_managers: [],
     students: [],
     mentor_students: [],
     admin_audit_logs: [],
@@ -728,6 +730,26 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             }
             row.createdAt = row.createdAt || new Date().toISOString()
             row.updatedAt = row.updatedAt || new Date().toISOString()
+          }
+
+          if (tableName === 'content_managers') {
+            if (tableRows.some((r) => r.user_id === row.user_id)) {
+              insertError = {
+                code: '23505',
+                message: `duplicate key value violates unique constraint "content_managers_user_id_key"`,
+              }
+              break
+            }
+            if (row.manager_code && tableRows.some((r) => r.manager_code === row.manager_code)) {
+              insertError = {
+                code: '23505',
+                message: `duplicate key value violates unique constraint "content_managers_manager_code_key"`,
+              }
+              break
+            }
+            const nowIso = new Date().toISOString()
+            row.created_at = row.created_at || nowIso
+            row.updated_at = row.updated_at || nowIso
           }
 
           if (tableName === 'content_manager_assignments') {

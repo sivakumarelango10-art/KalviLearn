@@ -274,13 +274,23 @@ export default async function handler(
 
   try {
     if (action === 'me') {
+      const { data: cmProfile } = await supabaseServer
+        .from('content_managers')
+        .select('id, manager_code, department, designation')
+        .eq('user_id', ctx.userId)
+        .maybeSingle()
+
       return sendJson(res, 200, {
         success: true,
         message: 'Content Manager context verified.',
         data: {
           userId: ctx.userId,
+          profileId: cmProfile?.id || null,
           email: ctx.email,
           name: ctx.name,
+          managerCode: cmProfile?.manager_code || null,
+          department: cmProfile?.department || null,
+          designation: cmProfile?.designation || null,
           role: ctx.role,
           assignmentId: ctx.assignmentId,
           scopeType: ctx.scopeType,
