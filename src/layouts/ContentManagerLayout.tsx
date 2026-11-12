@@ -3,16 +3,13 @@ import { Link, NavLink, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard,
   BookOpen,
-  Layers,
+  Trophy,
   Code2,
-  History,
   UserCheck,
   LogOut,
   Menu,
   X,
-  Globe,
-  Shield,
-  Lock,
+  CheckCircle2,
   type LucideIcon,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -23,15 +20,13 @@ type NavItem = {
   path: string
   icon: LucideIcon
   end?: boolean
-  badge?: string
 }
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Overview', path: '/content-manager', icon: LayoutDashboard, end: true },
   { label: 'Curriculum', path: '/content-manager/curriculum', icon: BookOpen },
-  { label: 'Learning Units', path: '/content-manager/learning-units', icon: Layers },
-  { label: 'Coding Questions', path: '/content-manager/questions', icon: Code2 },
-  { label: 'My Revisions', path: '/content-manager/revisions', icon: History },
+  { label: 'Practice Questions', path: '/content-manager/practice-questions', icon: Trophy },
+  { label: 'Learn Coding Questions', path: '/content-manager/learn-coding-questions', icon: Code2 },
   { label: 'My Profile', path: '/content-manager/profile', icon: UserCheck },
 ]
 
@@ -39,15 +34,6 @@ export const ContentManagerLayout: React.FC = () => {
   const { logout } = useAuth()
   const { profile } = useContentManager()
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  const scopeBadge =
-    profile?.scopeType === 'GLOBAL'
-      ? { label: 'GLOBAL', icon: Globe, style: 'border-emerald-800/70 bg-emerald-950/50 text-emerald-300' }
-      : profile?.scopeType === 'SCOPED'
-      ? { label: 'SCOPED', icon: Shield, style: 'border-amber-800/70 bg-amber-950/50 text-amber-300' }
-      : { label: 'RESTRICTED', icon: Lock, style: 'border-[#681717] bg-[#1F0B0B] text-[#FF6266]' }
-
-  const ScopeIcon = scopeBadge.icon
 
   const sidebar = (
     <aside className="flex h-full w-[264px] shrink-0 flex-col border-r border-white/[0.08] bg-[#080808] text-slate-300">
@@ -64,9 +50,9 @@ export const ContentManagerLayout: React.FC = () => {
             </span>
           </span>
         </Link>
-        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[9px] font-bold tracking-wider ${scopeBadge.style}`}>
-          <ScopeIcon className="h-2.5 w-2.5" />
-          {scopeBadge.label}
+        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-800/70 bg-emerald-950/50 px-2.5 py-0.5 text-[9px] font-bold tracking-wider text-emerald-300">
+          <CheckCircle2 className="h-2.5 w-2.5" />
+          ACTIVE
         </span>
       </div>
 
@@ -101,9 +87,8 @@ export const ContentManagerLayout: React.FC = () => {
           </div>
           <div className="truncate text-xs font-semibold text-white">{profile?.name || profile?.email}</div>
           <div className="truncate text-[11px] text-slate-400">{profile?.email}</div>
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
-            <span>Permissions:</span>
-            <span className="font-mono font-bold text-[#FF6266]">{profile?.permissions.length ?? 0} active</span>
+          <div className="mt-1.5 text-[10px] font-medium text-emerald-400">
+            Standard Content Access
           </div>
         </div>
         <button
@@ -150,8 +135,8 @@ export const ContentManagerLayout: React.FC = () => {
             <Menu className="h-5 w-5" />
             <span>Content Studio</span>
           </button>
-          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${scopeBadge.style}`}>
-            {scopeBadge.label}
+          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300">
+            ACTIVE
           </span>
         </header>
 

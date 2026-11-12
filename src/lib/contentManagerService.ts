@@ -46,8 +46,11 @@ export interface ContentAuditLogEntry {
 export interface ContentManagerDashboardData {
   scopeType: ContentScopeType
   stats: {
+    totalModules: number
     assignedModulesCount: number
     totalLearningUnits: number
+    totalPracticeQuestions: number
+    totalLearnCodingQuestions: number
     totalCodingQuestions: number
     draftQuestions: number
     publishedQuestions: number | null
@@ -287,12 +290,28 @@ export async function deleteCmLearningUnit(id: string) {
   return callContentManagerApi<void>('/api/content-manager/curriculum', { id }, 'delete_learning_unit', 'POST')
 }
 
+export async function fetchCmBelts() {
+  return callContentManagerApi<Array<{
+    id: string
+    order: number
+    name: string
+    title: string
+    color: string
+    description: string
+    problemCount: number
+    publishedCount: number
+    draftCount: number
+  }>>('/api/content-manager/belts', {}, 'list_belts', 'GET')
+}
+
 export async function fetchCmQuestions(params: {
   search?: string
   difficulty?: string
   topic?: string
   status?: string
   belt?: string
+  beltId?: string
+  questionType?: 'PRACTICE' | 'LEARN_CODING' | 'ALL'
   learningUnitId?: string
   onlyLearningUnits?: boolean
   onlyBelts?: boolean

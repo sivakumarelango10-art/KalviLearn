@@ -4,9 +4,6 @@ import {
   UserPlus,
   Search,
   ShieldCheck,
-  Globe,
-  Shield,
-  Lock,
   RefreshCw,
   CheckCircle2,
   XCircle,
@@ -15,20 +12,18 @@ import {
   PlayCircle,
   History,
   Clock,
-  Check,
   X,
   AlertTriangle,
-  FileCheck,
   Mail,
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
+  Layers,
 } from 'lucide-react'
 import {
   AdminContentManagerAssignment,
   AdminContentManagerStats,
   AdminEligibleContentUser,
-  AdminPendingContentApproval,
   ContentManagerLifecycleStatus,
   fetchContentManagersDirectory,
   searchUsersForContentManager,
@@ -38,16 +33,7 @@ import {
   reactivateContentManagerAccess,
   revokeContentManagerAccess,
   fetchContentManagerActivity,
-  fetchPendingContentApprovals,
-  approvePublishContent,
-  rejectContentReview,
 } from '@/lib/superAdminService'
-import {
-  CONTENT_PERMISSION_CATALOG,
-  DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-  CONTENT_PERMISSION_LIST,
-  ContentScopeType,
-} from '@/lib/contentPermissions'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PAGE_SIZE = 10
@@ -96,13 +82,10 @@ function StatusBadge({ status, reason }: { status: ContentManagerLifecycleStatus
 }
 
 export const SuperAdminContentManagersPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'managers' | 'approvals' | 'audit'>('managers')
+  const [activeTab, setActiveTab] = useState<'managers' | 'audit'>('managers')
   const [assignments, setAssignments] = useState<AdminContentManagerAssignment[]>([])
   const [stats, setStats] = useState<AdminContentManagerStats | null>(null)
   const [campuses, setCampuses] = useState<Array<{ id: string; name: string; code: string; status?: string }>>([])
-  const [modules, setModules] = useState<Array<{ id: string; title: string; order: number }>>([])
-  const [learningUnits, setLearningUnits] = useState<Array<{ id: string; moduleId: string; title: string; order: number }>>([])
-  const [pendingApprovals, setPendingApprovals] = useState<AdminPendingContentApproval[]>([])
   const [auditLogs, setAuditLogs] = useState<any[]>([])
 
   const [loading, setLoading] = useState(true)
@@ -113,11 +96,10 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   // Search / Filter / Sort / Pagination
   const [searchFilter, setSearchFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState<'ALL' | ContentManagerLifecycleStatus>('ALL')
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | ContentScopeType>('ALL')
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
   const [page, setPage] = useState(1)
 
-  // Dual-mode Add / Edit Modal
+  // Dual-mode Add / Edit Profile Modal
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAssignment, setEditingAssignment] = useState<AdminContentManagerAssignment | null>(null)
   const [addMode, setAddMode] = useState<'create' | 'existing'>('create')
@@ -129,10 +111,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   const [userResults, setUserResults] = useState<AdminEligibleContentUser[]>([])
   const [searchingUsers, setSearchingUsers] = useState(false)
   const [selectedUser, setSelectedUser] = useState<{ id: string; email: string; name: string | null } | null>(null)
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([...DEFAULT_CONTENT_MANAGER_PERMISSIONS])
-  const [scopeType, setScopeType] = useState<ContentScopeType>('SCOPED')
-  const [selectedModuleIds, setSelectedModuleIds] = useState<string[]>([])
-  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([])
   const [notes, setNotes] = useState('')
   const [modalError, setModalError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -149,37 +127,22 @@ export const SuperAdminContentManagersPage: React.FC = () => {
   const [revokeTarget, setRevokeTarget] = useState<AdminContentManagerAssignment | null>(null)
   const [lifecycleBusy, setLifecycleBusy] = useState(false)
 
-  // Reject Modal
-  const [rejectTarget, setRejectTarget] = useState<AdminPendingContentApproval | null>(null)
-  const [rejectNotes, setRejectNotes] = useState('')
-
-  const categories = useMemo(
-    () => Array.from(new Set(CONTENT_PERMISSION_CATALOG.map((p) => p.category))),
-    []
-  )
-
   const loadAll = async () => {
     setLoading(true)
     setError(null)
     setDirectoryLoadError(null)
-    const [dirRes, appRes, audRes] = await Promise.all([
+    const [dirRes, audRes] = await Promise.all([
       fetchContentManagersDirectory(),
-      fetchPendingContentApprovals(),
       fetchContentManagerActivity(),
     ])
     if (dirRes.success && dirRes.data) {
       setAssignments(dirRes.data.assignments || [])
       setStats(dirRes.data.stats || null)
       setCampuses(dirRes.data.campuses || [])
-      setModules(dirRes.data.modules || [])
-      setLearningUnits(dirRes.data.learningUnits || [])
     } else {
       const msg = dirRes.error || dirRes.message || 'Failed to load Content Managers directory.'
       setDirectoryLoadError(msg)
       setError(msg)
-    }
-    if (appRes.success && appRes.data) {
-      setPendingApprovals([...(appRes.data.pendingQuestions || []), ...(appRes.data.pendingUnits || [])])
     }
     if (audRes.success && audRes.data) {
       setAuditLogs(audRes.data)
@@ -194,7 +157,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
 
   useEffect(() => {
     setPage(1)
-  }, [searchFilter, statusFilter, scopeFilter, sortOrder])
+  }, [searchFilter, statusFilter, sortOrder])
 
   const openAddModal = () => {
     setEditingAssignment(null)
@@ -206,10 +169,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setSelectedUser(null)
     setUserQuery('')
     setUserResults([])
-    setSelectedPermissions([...DEFAULT_CONTENT_MANAGER_PERMISSIONS])
-    setScopeType('SCOPED')
-    setSelectedModuleIds([])
-    setSelectedUnitIds([])
     setNotes('')
     setModalError(null)
     setIsModalOpen(true)
@@ -221,10 +180,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setEmailInput(a.email || '')
     setSelectedCampusId(a.campusId || '')
     setSelectedUser({ id: a.userId, email: a.email, name: a.name })
-    setSelectedPermissions(a.permissions || [])
-    setScopeType(a.scopeType || 'NONE')
-    setSelectedModuleIds(a.moduleIds || [])
-    setSelectedUnitIds(a.learningUnitIds || [])
     setNotes(a.notes || '')
     setModalError(null)
     setIsModalOpen(true)
@@ -248,24 +203,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     }
   }
 
-  const togglePerm = (perm: string) => {
-    setSelectedPermissions((prev) =>
-      prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
-    )
-  }
-
-  const toggleModule = (id: string) => {
-    setSelectedModuleIds((prev) =>
-      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-    )
-  }
-
-  const toggleUnit = (id: string) => {
-    setSelectedUnitIds((prev) =>
-      prev.includes(id) ? prev.filter((u) => u !== id) : [...prev, id]
-    )
-  }
-
   const handleSaveAssignment = async (e: React.FormEvent) => {
     e.preventDefault()
     setModalError(null)
@@ -283,18 +220,14 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         userId: editingAssignment.userId,
         name: trimmedName,
         campusId: selectedCampusId || null,
-        permissions: selectedPermissions,
-        scopeType,
-        moduleIds: selectedModuleIds,
-        learningUnitIds: selectedUnitIds,
         notes: notes.trim() || null,
       })
       setSaving(false)
       if (!res.success) {
-        setModalError(res.message || res.error || 'Failed to update Content Manager.')
+        setModalError(res.message || res.error || 'Failed to update Content Manager profile.')
         return
       }
-      setSuccessMsg(`Updated Content Manager "${editingAssignment.email}".`)
+      setSuccessMsg(`Updated profile for "${editingAssignment.email}".`)
       setIsModalOpen(false)
       await loadAll()
       return
@@ -322,10 +255,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         email: trimmedEmail,
         campusId: selectedCampusId || null,
         creationMode,
-        permissions: selectedPermissions,
-        scopeType,
-        moduleIds: selectedModuleIds,
-        learningUnitIds: selectedUnitIds,
         notes: notes.trim() || null,
       })
       setSaving(false)
@@ -339,7 +268,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       return
     }
 
-    // Assign Existing User mode
+    // Option 2: Assign Existing User
     if (!selectedUser) {
       setModalError('Please select a registered user from the list.')
       return
@@ -348,10 +277,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     const res = await grantOrUpdateContentManager({
       userId: selectedUser.id,
       preventDuplicateAssignment: true,
-      permissions: selectedPermissions,
-      scopeType,
-      moduleIds: selectedModuleIds,
-      learningUnitIds: selectedUnitIds,
       notes: notes.trim() || null,
     })
     setSaving(false)
@@ -359,7 +284,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       setModalError(res.message || res.error || 'Failed to assign Content Manager access.')
       return
     }
-    setSuccessMsg(`Content Manager access assigned for ${selectedUser.email}.`)
+    setSuccessMsg(`Assigned Content Manager role to ${selectedUser.email}.`)
     setIsModalOpen(false)
     await loadAll()
   }
@@ -412,7 +337,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     })
     setLifecycleBusy(false)
     if (res.success) {
-      setSuccessMsg(res.message || `Permanently revoked Content Manager access for ${revokeTarget.email}.`)
+      setSuccessMsg(res.message || `Revoked Content Manager access for ${revokeTarget.email}.`)
       setRevokeTarget(null)
       await loadAll()
     } else {
@@ -428,39 +353,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
     setLoadingActivity(false)
   }
 
-  const handleApprove = async (item: AdminPendingContentApproval) => {
-    setError(null)
-    const res = await approvePublishContent({
-      resourceType: item.resourceType,
-      id: item.id,
-      reviewNotes: 'Approved by Super Admin',
-    })
-    if (res.success) {
-      setSuccessMsg(`Approved and published ${item.title}.`)
-      await loadAll()
-    } else {
-      setError(res.message || res.error || 'Approval failed.')
-    }
-  }
-
-  const handleReject = async () => {
-    if (!rejectTarget) return
-    setError(null)
-    const res = await rejectContentReview({
-      resourceType: rejectTarget.resourceType,
-      id: rejectTarget.id,
-      reviewNotes: rejectNotes.trim() || 'Needs further revisions',
-    })
-    if (res.success) {
-      setSuccessMsg(`Returned ${rejectTarget.title} to Draft with review feedback.`)
-      setRejectTarget(null)
-      setRejectNotes('')
-      await loadAll()
-    } else {
-      setError(res.message || res.error || 'Rejection failed.')
-    }
-  }
-
   const computedStats: AdminContentManagerStats = useMemo(() => {
     if (stats) return stats
     return {
@@ -469,16 +361,14 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       suspended: assignments.filter((a) => a.status === 'SUSPENDED').length,
       revoked: assignments.filter((a) => a.status === 'REVOKED').length,
       invited: assignments.filter((a) => a.status === 'INVITED').length,
-      pendingApprovals: pendingApprovals.length,
       totalContentEdits: assignments.reduce((acc, a) => acc + (a.contentEditCount || 0), 0),
     }
-  }, [stats, assignments, pendingApprovals.length])
+  }, [stats, assignments])
 
   const filteredAndSorted = useMemo(() => {
     const q = searchFilter.trim().toLowerCase()
     const filtered = assignments.filter((a) => {
       if (statusFilter !== 'ALL' && a.status !== statusFilter) return false
-      if (scopeFilter !== 'ALL' && a.scopeType !== scopeFilter) return false
       if (!q) return true
       return (
         a.email.toLowerCase().includes(q) ||
@@ -491,7 +381,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       const tb = new Date(b.createdAt || b.grantedAt || 0).getTime()
       return sortOrder === 'newest' ? tb - ta : ta - tb
     })
-  }, [assignments, searchFilter, statusFilter, scopeFilter, sortOrder])
+  }, [assignments, searchFilter, statusFilter, sortOrder])
 
   const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / PAGE_SIZE))
   const safePage = Math.min(page, totalPages)
@@ -507,7 +397,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-white tracking-tight">Content Manager Management</h1>
           </div>
           <p className="text-sm text-neutral-400 mt-1">
-            Create and manage Content Manager accounts, scoped curriculum permissions, suspension lifecycle, and publication approvals.
+            Add and manage Content Managers. Every active Content Manager automatically receives full Curriculum, Practice Question, and Learn Coding authoring access.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -565,7 +455,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
       )}
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
           <div className="text-[11px] text-neutral-400">Total Managers</div>
           <div className="text-xl font-bold text-white mt-1">{computedStats.total}</div>
@@ -587,11 +477,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
           <div className="text-xl font-bold text-sky-300 mt-1">{computedStats.invited}</div>
         </div>
         <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
-          <div className="text-[11px] text-neutral-400">Pending Reviews</div>
-          <div className="text-xl font-bold text-amber-400 mt-1">{pendingApprovals.length}</div>
-        </div>
-        <div className="p-3.5 rounded-xl bg-[#080808] border border-white/10">
-          <div className="text-[11px] text-neutral-400">Total Edits</div>
+          <div className="text-[11px] text-neutral-400">Total Content Edits</div>
           <div className="text-xl font-bold text-indigo-300 mt-1">{computedStats.totalContentEdits}</div>
         </div>
       </div>
@@ -611,23 +497,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab('approvals')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold border transition flex items-center gap-2 ${
-            activeTab === 'approvals'
-              ? 'bg-[#1F0B0B] border-[#681717] text-[#FF6266]'
-              : 'bg-[#080808] border-white/10 text-neutral-400 hover:text-white'
-          }`}
-        >
-          <FileCheck className="w-3.5 h-3.5" />
-          Publication Approvals
-          {pendingApprovals.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-black font-bold text-[10px]">
-              {pendingApprovals.length}
-            </span>
-          )}
-        </button>
-        <button
-          type="button"
           onClick={() => setActiveTab('audit')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold border transition ${
             activeTab === 'audit'
@@ -635,14 +504,14 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               : 'bg-[#080808] border-white/10 text-neutral-400 hover:text-white'
           }`}
         >
-          Global Content Audit ({auditLogs.length})
+          Content Audit Log ({auditLogs.length})
         </button>
       </div>
 
       {/* TAB 1: CONTENT MANAGERS DIRECTORY */}
       {activeTab === 'managers' && (
         <div className="space-y-4">
-          {/* Toolbar: Search + Status Filter + Scope Filter + Sort */}
+          {/* Toolbar */}
           <div className="bg-[#080808] p-3.5 rounded-xl border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -667,17 +536,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 <option value="INVITED">Invited</option>
                 <option value="REVOKED">Revoked</option>
               </select>
-              <select
-                value={scopeFilter}
-                onChange={(e) => setScopeFilter(e.target.value as any)}
-                aria-label="Filter by scope"
-                className="bg-black border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-neutral-200"
-              >
-                <option value="ALL">All Scopes</option>
-                <option value="GLOBAL">Global</option>
-                <option value="SCOPED">Scoped</option>
-                <option value="NONE">None</option>
-              </select>
               <button
                 type="button"
                 onClick={() => setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))}
@@ -697,9 +555,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                     <th className="py-3.5 px-4">Manager</th>
                     <th className="py-3.5 px-4">Email</th>
                     <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4">Scope</th>
-                    <th className="py-3.5 px-4">Assigned Modules</th>
-                    <th className="py-3.5 px-4">Permissions</th>
+                    <th className="py-3.5 px-4">Access Profile</th>
                     <th className="py-3.5 px-4">Created At</th>
                     <th className="py-3.5 px-4">Granted By</th>
                     <th className="py-3.5 px-4">Last Activity</th>
@@ -709,13 +565,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 <tbody className="divide-y divide-white/5 text-neutral-200">
                   {loading && assignments.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="py-12 text-center text-neutral-400">
+                      <td colSpan={8} className="py-12 text-center text-neutral-400">
                         Loading Content Managers...
                       </td>
                     </tr>
                   ) : directoryLoadError && assignments.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="py-12 text-center text-red-300 space-y-2">
+                      <td colSpan={8} className="py-12 text-center text-red-300 space-y-2">
                         <div>{directoryLoadError}</div>
                         <button
                           type="button"
@@ -728,7 +584,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                     </tr>
                   ) : paginatedAssignments.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="py-12 text-center text-neutral-500">
+                      <td colSpan={8} className="py-12 text-center text-neutral-500">
                         {assignments.length === 0
                           ? 'No Content Managers added yet. Click "+ Add Content Manager" to create or assign one.'
                           : 'No Content Managers match the active search or filter criteria.'}
@@ -755,48 +611,9 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                           <StatusBadge status={a.status} reason={a.suspensionReason} />
                         </td>
                         <td className="py-3.5 px-4">
-                          {a.scopeType === 'GLOBAL' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/40 text-amber-300 border border-amber-800/60 font-semibold text-[10px]">
-                              <Globe className="w-3 h-3" /> GLOBAL
-                            </span>
-                          )}
-                          {a.scopeType === 'SCOPED' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-950/40 text-blue-300 border border-blue-800/60 font-semibold text-[10px]">
-                              <Shield className="w-3 h-3" /> SCOPED
-                            </span>
-                          )}
-                          {a.scopeType === 'NONE' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-white/10 font-semibold text-[10px]">
-                              <Lock className="w-3 h-3" /> NONE
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3.5 px-4 max-w-[200px]">
-                          {a.scopeType === 'GLOBAL' ? (
-                            <span className="text-[11px] text-amber-300/90">All Curriculum Modules</span>
-                          ) : a.scopeType === 'NONE' ? (
-                            <span className="text-[11px] text-neutral-500">No modules assigned</span>
-                          ) : (
-                            <div className="space-y-0.5 text-[11px]">
-                              {a.assignedModules.length > 0 && (
-                                <div className="text-neutral-200 truncate" title={a.assignedModules.map((m) => m.title).join(', ')}>
-                                  {a.assignedModules.map((m) => m.title).join(', ')}
-                                </div>
-                              )}
-                              {a.assignedLearningUnits.length > 0 && (
-                                <div className="text-neutral-400 text-[10px]">
-                                  +{a.assignedLearningUnits.length} unit(s)
-                                </div>
-                              )}
-                              {a.assignedModules.length === 0 && a.assignedLearningUnits.length === 0 && (
-                                <span className="text-neutral-500">0 modules selected</span>
-                              )}
-                            </div>
-                          )}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="font-semibold text-white">{a.permissionCount}</span>
-                          <span className="text-neutral-500 ml-1">perms</span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-950/40 text-indigo-300 border border-indigo-800/60 text-[10px] font-semibold">
+                            <Layers className="w-3 h-3" /> Standard Content Access
+                          </span>
                         </td>
                         <td className="py-3.5 px-4 text-[11px] text-neutral-400 whitespace-nowrap">
                           {formatDateTime(a.createdAt || a.grantedAt)}
@@ -828,7 +645,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                               type="button"
                               onClick={() => openEditModal(a)}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#181818] hover:bg-white/10 border border-white/10 text-[11px] font-medium"
-                              title="Edit profile, permissions & scope"
+                              title="Edit basic profile"
                             >
                               <Edit2 className="w-3 h-3" /> Edit
                             </button>
@@ -860,7 +677,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                                 type="button"
                                 onClick={() => setRevokeTarget(a)}
                                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-950/30 hover:bg-red-900/50 border border-red-900/50 text-red-400 text-[11px] font-medium"
-                                title="Permanently revoke Content Manager access"
+                                title="Revoke Content Manager access"
                               >
                                 <ShieldCheck className="w-3 h-3" /> Revoke
                               </button>
@@ -908,55 +725,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 2: PENDING PUBLICATION APPROVALS */}
-      {activeTab === 'approvals' && (
-        <div className="space-y-3">
-          {pendingApprovals.length === 0 ? (
-            <div className="p-10 text-center bg-[#080808] border border-dashed border-white/10 rounded-2xl text-xs text-neutral-500">
-              No pending publication requests from Content Managers.
-            </div>
-          ) : (
-            pendingApprovals.map((item) => (
-              <div
-                key={`${item.resourceType}-${item.id}`}
-                className="p-4 rounded-xl bg-[#080808] border border-amber-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/70 text-[10px] font-bold">
-                      {item.resourceType}
-                    </span>
-                    <span className="text-sm font-bold text-white">{item.title}</span>
-                    {item.slug && <span className="text-xs font-mono text-neutral-500">{item.slug}</span>}
-                  </div>
-                  <div className="text-xs text-neutral-400">
-                    Submitted by <strong className="text-white">{item.submittedByEmail}</strong> ·{' '}
-                    {new Date(item.submittedAt).toLocaleString()}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setRejectTarget(item)}
-                    className="px-3 py-1.5 rounded-lg bg-[#181818] hover:bg-red-950/40 border border-white/10 hover:border-red-800/60 text-xs font-semibold text-neutral-300 hover:text-red-300"
-                  >
-                    Request Changes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleApprove(item)}
-                    className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white flex items-center gap-1.5"
-                  >
-                    <Check className="w-3.5 h-3.5" /> Approve & Publish
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* TAB 3: GLOBAL CONTENT AUDIT LOGS */}
+      {/* TAB 2: GLOBAL CONTENT AUDIT LOGS */}
       {activeTab === 'audit' && (
         <div className="space-y-2.5">
           {auditLogs.length === 0 ? (
@@ -978,9 +747,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                   <span>({log.actor_role})</span>
                   <span>·</span>
                   <span>{log.resource_type}</span>
-                  {log.permission_used && (
-                    <span className="px-2 py-0.2 rounded bg-white/5 text-neutral-300">{log.permission_used}</span>
-                  )}
                 </div>
               </div>
             ))
@@ -993,7 +759,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
           <form
             onSubmit={handleSaveAssignment}
-            className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-2xl bg-[#121212] border border-white/15 shadow-2xl overflow-hidden"
+            className="w-full max-w-2xl max-h-[92vh] flex flex-col rounded-2xl bg-[#121212] border border-white/15 shadow-2xl overflow-hidden"
           >
             <div className="p-5 border-b border-white/10 flex items-center justify-between bg-[#161616]">
               <div>
@@ -1002,8 +768,8 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 </h2>
                 <p className="text-xs text-neutral-400">
                   {editingAssignment
-                    ? 'Update profile details, granular permissions, and curriculum access scope without altering Auth identity.'
-                    : 'Create a new Content Manager account using KalviLearn provisioning or assign an existing user.'}
+                    ? 'Update profile details without altering authentication identity.'
+                    : 'Every Content Manager receives standard Curriculum, Practice Question, and Learn Coding authoring access automatically.'}
                 </p>
               </div>
               <button type="button" onClick={() => setIsModalOpen(false)} className="text-neutral-400 hover:text-white">
@@ -1011,7 +777,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-6 space-y-5">
               {modalError && (
                 <div className="p-3 rounded-xl bg-red-950/50 border border-red-800/70 text-red-200 text-xs flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
@@ -1019,14 +785,11 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Step 1: Account Creation vs Existing User OR Profile Edit */}
               {editingAssignment ? (
                 <div className="space-y-4 p-4 rounded-xl bg-black/50 border border-white/10">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
                     <div>
-                      <div className="text-xs font-bold uppercase tracking-wider text-neutral-300">
-                        1. Account Profile & Audit Metadata
-                      </div>
+                      <div className="text-xs font-bold uppercase tracking-wider text-neutral-300">Account Profile</div>
                       <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
                         Auth Email (Locked): <span className="text-white">{editingAssignment.email}</span>
                       </div>
@@ -1035,7 +798,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                       <div>Created: {formatDateTime(editingAssignment.createdAt || editingAssignment.grantedAt)}</div>
                       {editingAssignment.updatedAt && (
                         <div>
-                          Last updated: {formatDateTime(editingAssignment.updatedAt)}
+                          Updated: {formatDateTime(editingAssignment.updatedAt)}
                           {editingAssignment.updatedBy ? ` by ${editingAssignment.updatedBy}` : ''}
                         </div>
                       )}
@@ -1055,13 +818,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-neutral-300 mb-1">Assigned Campus (Optional)</label>
+                      <label className="block text-xs text-neutral-300 mb-1">Campus (Optional)</label>
                       <select
                         value={selectedCampusId}
                         onChange={(e) => setSelectedCampusId(e.target.value)}
                         className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
                       >
-                        <option value="">No specific campus (Platform-wide)</option>
+                        <option value="">Platform-wide (No specific campus)</option>
                         {campuses.map((c) => (
                           <option key={c.id} value={c.id}>
                             {c.name} ({c.code})
@@ -1073,15 +836,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* Mode Switcher */}
+                  {/* Option Switcher */}
                   <div className="flex gap-2 p-1 rounded-xl bg-black border border-white/10 w-fit">
                     <button
                       type="button"
                       onClick={() => switchAddMode('create')}
                       className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
-                        addMode === 'create'
-                          ? 'bg-[#ED2A2B] text-white'
-                          : 'text-neutral-400 hover:text-white'
+                        addMode === 'create' ? 'bg-[#ED2A2B] text-white' : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       Create New Content Manager
@@ -1090,9 +851,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                       type="button"
                       onClick={() => switchAddMode('existing')}
                       className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
-                        addMode === 'existing'
-                          ? 'bg-[#ED2A2B] text-white'
-                          : 'text-neutral-400 hover:text-white'
+                        addMode === 'existing' ? 'bg-[#ED2A2B] text-white' : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       Assign Existing User
@@ -1101,9 +860,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
 
                   {addMode === 'create' ? (
                     <div className="space-y-4 p-4 rounded-xl bg-black/50 border border-white/10">
-                      <div className="text-xs font-bold uppercase tracking-wider text-neutral-300">
-                        1. New Content Manager Account Details (Google OAuth / KalviLearn Provisioning)
-                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs text-neutral-300 mb-1">Full Name *</label>
@@ -1130,13 +886,13 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs text-neutral-300 mb-1">Assigned Campus (Optional)</label>
+                          <label className="block text-xs text-neutral-300 mb-1">Campus (Optional)</label>
                           <select
                             value={selectedCampusId}
                             onChange={(e) => setSelectedCampusId(e.target.value)}
                             className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
                           >
-                            <option value="">No specific campus (Platform-wide)</option>
+                            <option value="">Platform-wide (No specific campus)</option>
                             {campuses.map((c) => (
                               <option key={c.id} value={c.id}>
                                 {c.name} ({c.code})
@@ -1145,36 +901,31 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-xs text-neutral-300 mb-1">Account Provisioning Mode</label>
+                          <label className="block text-xs text-neutral-300 mb-1">Provisioning Mode</label>
                           <select
                             value={creationMode}
                             onChange={(e) => setCreationMode(e.target.value as 'DIRECT' | 'INVITE')}
                             className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
                           >
                             <option value="DIRECT">Active Immediately (Google OAuth Sign-In)</option>
-                            <option value="INVITE">Invited (Send Supabase Invite if configured + Allow OAuth)</option>
+                            <option value="INVITE">Send Email Invite (Activates Upon Acceptance)</option>
                           </select>
                         </div>
                       </div>
-                      <p className="text-[11px] text-neutral-400">
-                        Matches Campus Manager &amp; Mentor provisioning: the user is registered directly in <code className="text-neutral-200">public.users</code> and authenticates securely via Google OAuth without plaintext passwords.
-                      </p>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
-                        1. Select Existing Registered User
+                        Select Registered User
                       </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={userQuery}
-                          onChange={(e) => handleUserSearch(e.target.value)}
-                          placeholder="Search by email, name, or role..."
-                          className="flex-1 bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
-                        />
-                      </div>
-                      <div className="max-h-44 overflow-y-auto rounded-xl border border-white/10 bg-black/60 divide-y divide-white/5">
+                      <input
+                        type="text"
+                        value={userQuery}
+                        onChange={(e) => handleUserSearch(e.target.value)}
+                        placeholder="Search by email, name, or role..."
+                        className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
+                      />
+                      <div className="max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-black/60 divide-y divide-white/5">
                         {searchingUsers ? (
                           <div className="p-4 text-xs text-neutral-400">Searching registered users...</div>
                         ) : userResults.length === 0 ? (
@@ -1186,9 +937,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                               key={u.id}
                               onClick={() => setSelectedUser({ id: u.id, email: u.email, name: u.name })}
                               className={`w-full px-3 py-2.5 text-left flex items-center justify-between text-xs transition ${
-                                selectedUser?.id === u.id
-                                  ? 'bg-[#2a0e0e] text-white'
-                                  : 'hover:bg-white/5 text-neutral-300'
+                                selectedUser?.id === u.id ? 'bg-[#2a0e0e] text-white' : 'hover:bg-white/5 text-neutral-300'
                               }`}
                             >
                               <div>
@@ -1212,156 +961,17 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Step 2: Curriculum Scope */}
-              <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
-                  2. Curriculum Scope Assignment
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    {
-                      value: 'SCOPED' as ContentScopeType,
-                      title: 'SCOPED (Recommended)',
-                      desc: 'Restrict editing strictly to selected Modules and Learning Units.',
-                    },
-                    {
-                      value: 'NONE' as ContentScopeType,
-                      title: 'NONE (Zero Content Access)',
-                      desc: 'Role active but blocked from all modules until assigned.',
-                    },
-                    {
-                      value: 'GLOBAL' as ContentScopeType,
-                      title: 'GLOBAL (All Modules)',
-                      desc: 'Full curriculum access across all modules and questions.',
-                    },
-                  ].map((opt) => (
-                    <button
-                      type="button"
-                      key={opt.value}
-                      onClick={() => setScopeType(opt.value)}
-                      className={`p-3 rounded-xl border text-left transition ${
-                        scopeType === opt.value
-                          ? 'bg-[#1F0B0B] border-[#ED2A2B] text-white'
-                          : 'bg-black/40 border-white/10 text-neutral-400 hover:border-white/25'
-                      }`}
-                    >
-                      <div className="text-xs font-bold">{opt.title}</div>
-                      <div className="text-[11px] mt-1 text-neutral-400">{opt.desc}</div>
-                    </button>
-                  ))}
-                </div>
-
-                {scopeType === 'SCOPED' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div className="p-3 rounded-xl bg-black/50 border border-white/10 space-y-2">
-                      <div className="text-xs font-semibold text-white">Assigned Modules ({selectedModuleIds.length})</div>
-                      <div className="max-h-44 overflow-y-auto space-y-1.5">
-                        {modules.map((m) => (
-                          <label key={m.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={selectedModuleIds.includes(m.id)}
-                              onChange={() => toggleModule(m.id)}
-                              className="accent-[#ED2A2B]"
-                            />
-                            <span>
-                              {m.order}. {m.title}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-black/50 border border-white/10 space-y-2">
-                      <div className="text-xs font-semibold text-white">
-                        Specific Learning Units ({selectedUnitIds.length})
-                      </div>
-                      <div className="max-h-44 overflow-y-auto space-y-1.5">
-                        {learningUnits.map((lu) => (
-                          <label key={lu.id} className="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={selectedUnitIds.includes(lu.id)}
-                              onChange={() => toggleUnit(lu.id)}
-                              className="accent-[#ED2A2B]"
-                            />
-                            <span className="truncate">{lu.title}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Step 3: Granular Permissions */}
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300">
-                    3. Granular Permissions ({selectedPermissions.length} selected)
-                  </label>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPermissions([...DEFAULT_CONTENT_MANAGER_PERMISSIONS])}
-                      className="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] text-neutral-300"
-                    >
-                      Apply Safe Defaults
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPermissions([...CONTENT_PERMISSION_LIST])}
-                      className="px-2.5 py-1 rounded bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/50 text-[11px] text-amber-300"
-                    >
-                      Grant All Content Perms
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPermissions([])}
-                      className="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] text-neutral-400"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {categories.map((cat) => (
-                    <div key={cat} className="p-3.5 rounded-xl bg-black/50 border border-white/10 space-y-2">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#FF6266]">{cat}</div>
-                      {CONTENT_PERMISSION_CATALOG.filter((p) => p.category === cat).map((perm) => (
-                        <label key={perm.id} className="flex items-start gap-2 text-xs cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={selectedPermissions.includes(perm.id)}
-                            onChange={() => togglePerm(perm.id)}
-                            className="mt-0.5 accent-[#ED2A2B]"
-                          />
-                          <div>
-                            <div className={perm.isElevated ? 'text-amber-300 font-medium' : 'text-neutral-200'}>
-                              {perm.label}
-                              {perm.isElevated && (
-                                <span className="ml-1.5 text-[9px] px-1 py-0.2 rounded bg-amber-950/60 border border-amber-800/60">
-                                  ELEVATED
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-[10px] font-mono text-neutral-500">{perm.id}</div>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  ))}
-                </div>
+              <div className="p-3.5 rounded-xl bg-indigo-950/20 border border-indigo-800/40 text-xs text-indigo-200">
+                <strong>Fixed Content Access:</strong> Active Content Managers automatically receive full access to Curriculum Modules &amp; Learning Units, Practice Coding Questions, and Learn Coding Questions. User accounts and platform settings remain strictly restricted.
               </div>
 
               <div>
-                <label className="block text-xs text-neutral-300 mb-1">Assignment Notes (Optional)</label>
+                <label className="block text-xs text-neutral-300 mb-1">Admin Notes (Optional)</label>
                 <input
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Authoring Python Loops & Recursion curriculum"
+                  placeholder="e.g. DSA curriculum & coding question author"
                   className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
                 />
               </div>
@@ -1386,7 +996,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                     ? 'Save Changes'
                     : addMode === 'create'
                       ? 'Create Content Manager'
-                      : 'Assign Content Manager Access'}
+                      : 'Assign Content Manager'}
               </button>
             </div>
           </form>
@@ -1423,7 +1033,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </div>
       )}
 
-      {/* Suspend Confirmation Modal */}
+      {/* Suspend Modal */}
       {suspendTarget && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
           <div className="w-full max-w-md rounded-2xl bg-[#121212] border border-amber-800/60 p-6 space-y-4">
@@ -1433,7 +1043,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
             </div>
             <p className="text-xs text-neutral-300 leading-relaxed">
               Temporarily suspend <strong className="text-white">{suspendTarget.email}</strong>? Their access to{' '}
-              <code className="text-amber-300">/content-manager</code> is blocked immediately, while all configured permissions, module scopes, Auth identity, and authored content are preserved for later reactivation.
+              <code className="text-amber-300">/content-manager</code> is blocked immediately while their Auth identity and authored content are preserved for reactivation.
             </p>
             <div>
               <label className="block text-xs text-neutral-300 mb-1">Suspension Reason (Optional)</label>
@@ -1441,7 +1051,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 type="text"
                 value={suspensionReason}
                 onChange={(e) => setSuspensionReason(e.target.value)}
-                placeholder="e.g. Temporary leave / Quarterly review"
+                placeholder="e.g. Temporary leave / Account review"
                 className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
               />
             </div>
@@ -1466,7 +1076,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
         </div>
       )}
 
-      {/* Reactivate Confirmation Modal */}
+      {/* Reactivate Modal */}
       {reactivateTarget && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
           <div className="w-full max-w-md rounded-2xl bg-[#121212] border border-emerald-800/60 p-6 space-y-4">
@@ -1475,9 +1085,7 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               <h3 className="text-base font-bold text-white">Reactivate Content Manager Access</h3>
             </div>
             <p className="text-xs text-neutral-300 leading-relaxed">
-              Reactivate <strong className="text-white">{reactivateTarget.email}</strong>? Their prior{' '}
-              <strong>{reactivateTarget.scopeType}</strong> scope and{' '}
-              <strong>{reactivateTarget.permissionCount}</strong> saved permission(s) will be restored immediately.
+              Reactivate <strong className="text-white">{reactivateTarget.email}</strong>? They will immediately regain Content Studio access to Curriculum, Practice Questions, and Learn Coding Questions.
             </p>
             <div className="flex justify-end gap-2">
               <button
@@ -1509,8 +1117,8 @@ export const SuperAdminContentManagersPage: React.FC = () => {
               <h3 className="text-base font-bold text-white">Revoke Content Manager Access</h3>
             </div>
             <p className="text-xs text-neutral-300 leading-relaxed">
-              Permanently revoke Content Manager permissions for <strong className="text-white">{revokeTarget.email}</strong>?
-              They will immediately lose access to <code className="text-[#FF6266]">/content-manager</code> and their user role will restore safely (preserving Auth identity, authored content, and audit logs).
+              Permanently revoke Content Manager access for <strong className="text-white">{revokeTarget.email}</strong>?
+              They will immediately lose access to <code className="text-[#FF6266]">/content-manager</code> while preserving Auth identity, authored content, and audit logs.
             </p>
             <div className="flex justify-end gap-2">
               <button
@@ -1527,38 +1135,6 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                 className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white"
               >
                 {lifecycleBusy ? 'Revoking...' : 'Confirm Revoke'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reject Modal */}
-      {rejectTarget && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-2xl bg-[#121212] border border-white/15 p-6 space-y-4">
-            <h3 className="text-base font-bold text-white">Request Changes: {rejectTarget.title}</h3>
-            <textarea
-              rows={3}
-              value={rejectNotes}
-              onChange={(e) => setRejectNotes(e.target.value)}
-              placeholder="Provide feedback or required revisions..."
-              className="w-full bg-black border border-white/15 rounded-lg px-3 py-2 text-xs text-white"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setRejectTarget(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-white/15 text-xs text-neutral-300"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleReject}
-                className="px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white"
-              >
-                Return to Draft
               </button>
             </div>
           </div>

@@ -31,9 +31,10 @@ REVOKE ALL ON FUNCTION public.safe_jsonb_convert(TEXT) FROM PUBLIC, anon, authen
 DROP FUNCTION IF EXISTS public.save_question_atomic(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, JSONB, JSONB, JSONB, TEXT, TEXT);
 DROP FUNCTION IF EXISTS public.safe_jsonb_convert(TEXT);
 
--- 2. Drop Audit and Quarantine Tables
+-- 2. Drop Audit, Quarantine, and Any Leftover Private Staging Schema
 DROP TABLE IF EXISTS public."ProblemMigrationJsonAudit" CASCADE;
 DROP TABLE IF EXISTS public."OrphanedTestCaseAudit" CASCADE;
+DROP SCHEMA IF EXISTS kalvilearn_migration_staging CASCADE;
 
 -- 3. Drop Normalized Child Tables (automatically removes their RLS and grants)
 DROP TABLE IF EXISTS public."ProblemRevision" CASCADE;

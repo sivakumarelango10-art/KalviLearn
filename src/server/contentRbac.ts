@@ -1,12 +1,11 @@
 /**
- * KalviLearn Server-Side Content Manager RBAC, Scope & Audit Enforcement
+ * KalviLearn Server-Side Content Manager Authorization & Audit Enforcement
  *
- * Security Invariants:
- * 1. Always queries live database user role + content_manager_assignments (revocation takes effect immediately).
- * 2. Never falls back to client-supplied roles, IDs, or permissions.
- * 3. Enforces granular per-action permissions via requirePermission().
- * 4. Enforces module & learning unit scope on every read/write/reorder/test/revision call (IDOR prevention).
- * 5. Strips hidden test cases when caller lacks `content.hidden_test_case.manage`.
+ * Simplified Fixed-Profile Model:
+ * 1. Valid Supabase Auth JWT + live `public.users` row (`role = 'CONTENT_MANAGER'`, `status = 'ACTIVE'`).
+ * 2. Live `public.content_manager_assignments` check (`status = 'ACTIVE'` and `is_active = true`; immediate 403 on SUSPENDED/REVOKED).
+ * 3. Single fixed educational content profile covering Curriculum, Practice Questions (Belts), Learn Coding Questions (Units), Examples, Test Cases & Starter Codes.
+ * 4. Strictly forbids Super Admin, role management, student/mentor/campus operations, and platform settings.
  */
 
 import { supabaseServer } from './feedbackAuth'
@@ -15,8 +14,8 @@ import {
   ContentPermission,
   ContentScopeType,
   CONTENT_MANAGER_ROLE,
+  FIXED_CONTENT_MANAGER_PERMISSIONS,
   hasContentPermission,
-  normalizePermissionsList,
 } from '../lib/contentPermissions'
 
 export interface ContentManagerContext {
@@ -49,13 +48,13 @@ export class PermissionDeniedError extends Error {
 }
 
 /**
- * Authoritative live check of Content Manager role, assignment status, permissions, and scopes.
- * Queries the database directly so access revocation and permission updates take effect immediately.
+ * Central authorization helper (`requireContentManager`):
+ * Verifies valid user identity, `CONTENT_MANAGER` role, and an `ACTIVE` assignment
+ * in `public.content_manager_assignments` without querying legacy permission/scope tables.
  */
-export async function resolveContentManagerContext(
+export async function requireContentManager(
   authUser: AuthenticatedUser
 ): Promise<ContentAuthResolution> {
-  // Explicitly reject non-CONTENT_MANAGER accounts (including STUDENT, MENTOR, CAMPUS_MANAGER, SUPERADMIN)
   const tokenRole = (authUser.role || '').toUpperCase().trim()
   if (tokenRole !== CONTENT_MANAGER_ROLE) {
     return {
@@ -65,7 +64,7 @@ export async function resolveContentManagerContext(
     }
   }
 
-  // 1. Live lookup on `users` table (never rely on cached JWT claim for revocation)
+  // 1. Live lookup on `users` table
   type DbUserRow = { id: string; email: string; name: string | null; role: string; status: string }
   let dbUser: DbUserRow | null = null
 
@@ -127,7 +126,7 @@ export async function resolveContentManagerContext(
 
   if (assignErr) {
     console.error('[content-rbac] Failed to inspect content_manager_assignments:', assignErr)
-    return { authorized: false, statusCode: 503, error: 'Unable to verify Content Manager permissions.' }
+    return { authorized: false, statusCode: 503, error: 'Unable to verify Content Manager access.' }
   }
 
   if (!assignment) {
@@ -198,42 +197,6 @@ export async function resolveContentManagerContext(
     }
   }
 
-  // 3. Load granular permissions and scopes concurrently
-  const [permRes, scopeRes] = await Promise.all([
-    supabaseServer
-      .from('content_manager_permissions')
-      .select('permission')
-      .eq('assignment_id', assignment.id),
-    supabaseServer
-      .from('content_manager_scopes')
-      .select('module_id, learning_unit_id')
-      .eq('assignment_id', assignment.id),
-  ])
-
-  if (permRes.error || scopeRes.error) {
-    console.error('[content-rbac] Failed loading permissions/scopes:', permRes.error || scopeRes.error)
-    return { authorized: false, statusCode: 503, error: 'Unable to load Content Manager permissions.' }
-  }
-
-  const normalizedPerms = normalizePermissionsList(
-    (permRes.data || []).map((row: any) => row.permission)
-  )
-  const assignedModuleIds = new Set<string>()
-  const assignedLearningUnitIds = new Set<string>()
-
-  for (const row of scopeRes.data || []) {
-    if (typeof (row as any).module_id === 'string' && (row as any).module_id) {
-      assignedModuleIds.add((row as any).module_id)
-    }
-    if (typeof (row as any).learning_unit_id === 'string' && (row as any).learning_unit_id) {
-      assignedLearningUnitIds.add((row as any).learning_unit_id)
-    }
-  }
-
-  const rawScopeType = String(assignment.scope_type || 'NONE').toUpperCase()
-  const scopeType: ContentScopeType =
-    rawScopeType === 'GLOBAL' ? 'GLOBAL' : rawScopeType === 'SCOPED' ? 'SCOPED' : 'NONE'
-
   return {
     authorized: true,
     ctx: {
@@ -243,10 +206,10 @@ export async function resolveContentManagerContext(
       role: CONTENT_MANAGER_ROLE,
       assignmentId: assignment.id,
       isActive: true,
-      scopeType,
-      permissions: new Set(normalizedPerms),
-      assignedModuleIds,
-      assignedLearningUnitIds,
+      scopeType: 'GLOBAL',
+      permissions: new Set<ContentPermission>(FIXED_CONTENT_MANAGER_PERMISSIONS),
+      assignedModuleIds: new Set<string>(),
+      assignedLearningUnitIds: new Set<string>(),
       grantedBy: assignment.granted_by || null,
       grantedAt: assignment.granted_at || null,
       notes: assignment.notes || null,
@@ -254,23 +217,19 @@ export async function resolveContentManagerContext(
   }
 }
 
-/**
- * Throws PermissionDeniedError (403) if the caller lacks the exact granular permission.
- */
+export const resolveContentManagerContext = requireContentManager
+
 export function requirePermission(
   ctx: ContentManagerContext,
   permission: ContentPermission
 ): void {
   if (!hasContentPermission(ctx.permissions, permission)) {
     throw new PermissionDeniedError(
-      `Access Denied: Missing required permission "${permission}".`
+      `Access Denied: Missing required capability "${permission}".`
     )
   }
 }
 
-/**
- * Verifies the caller has at least one of the specified permissions.
- */
 export function requireAnyPermission(
   ctx: ContentManagerContext,
   permissions: readonly ContentPermission[]
@@ -282,35 +241,21 @@ export function requireAnyPermission(
   }
 }
 
-/**
- * Checks whether a Content Manager can mutate/manage a specific Module.
- * Note: Unit-only scoped users cannot mutate the parent Module itself.
- */
-export function canManageModule(ctx: ContentManagerContext, moduleId: string): boolean {
-  if (ctx.scopeType === 'GLOBAL') return true
-  if (ctx.scopeType === 'NONE') return false
-  return ctx.assignedModuleIds.has(moduleId)
+export function canManageModule(_ctx: ContentManagerContext, _moduleId: string): boolean {
+  return true
 }
 
-export function requireModuleManageScope(ctx: ContentManagerContext, moduleId: string): void {
-  if (!canManageModule(ctx, moduleId)) {
-    throw new PermissionDeniedError(
-      `Scope Denied: You do not have Content Manager scope for module "${moduleId}".`
-    )
-  }
+export function requireModuleManageScope(_ctx: ContentManagerContext, _moduleId: string): void {
+  // Unified fixed capability grants full educational module access to all active Content Managers
 }
 
-/**
- * Checks whether a Content Manager can view/manage a Learning Unit.
- * Allowed if GLOBAL, if unitId is explicitly assigned, or if its parent moduleId is assigned.
- */
 export async function canAccessLearningUnit(
-  ctx: ContentManagerContext,
+  _ctx: ContentManagerContext,
   learningUnitId: string,
   knownModuleId?: string | null
 ): Promise<{ allowed: boolean; moduleId: string | null }> {
   let moduleId = knownModuleId ?? null
-  if (!moduleId) {
+  if (!moduleId && learningUnitId) {
     const { data: unit } = await supabaseServer
       .from('LearningUnit')
       .select('id, moduleId')
@@ -318,17 +263,7 @@ export async function canAccessLearningUnit(
       .maybeSingle()
     moduleId = unit?.moduleId ?? null
   }
-
-  if (ctx.scopeType === 'GLOBAL') return { allowed: true, moduleId }
-  if (ctx.scopeType === 'NONE') return { allowed: false, moduleId }
-
-  if (ctx.assignedLearningUnitIds.has(learningUnitId)) {
-    return { allowed: true, moduleId }
-  }
-  if (moduleId && ctx.assignedModuleIds.has(moduleId)) {
-    return { allowed: true, moduleId }
-  }
-  return { allowed: false, moduleId }
+  return { allowed: true, moduleId }
 }
 
 export async function requireLearningUnitScope(
@@ -336,81 +271,34 @@ export async function requireLearningUnitScope(
   learningUnitId: string,
   knownModuleId?: string | null
 ): Promise<string | null> {
-  const { allowed, moduleId } = await canAccessLearningUnit(ctx, learningUnitId, knownModuleId)
-  if (!allowed) {
-    throw new PermissionDeniedError(
-      `Scope Denied: You do not have Content Manager scope for learning unit "${learningUnitId}".`
-    )
-  }
+  const { moduleId } = await canAccessLearningUnit(ctx, learningUnitId, knownModuleId)
   return moduleId
 }
 
-/**
- * Checks whether a Content Manager can access/mutate a Coding Question.
- * - GLOBAL scope: allowed for all curriculum & practice questions.
- * - SCOPED scope: allowed ONLY if the question's learningUnitId falls within an assigned unit or assigned module.
- *   Unlinked belt questions (learningUnitId === null) are NOT editable by SCOPED managers.
- * - NONE scope: denied.
- */
 export async function canAccessQuestion(
-  ctx: ContentManagerContext,
-  question: { id?: string; learningUnitId?: string | null; beltId?: string | null }
+  _ctx: ContentManagerContext,
+  _question: { id?: string; learningUnitId?: string | null; beltId?: string | null }
 ): Promise<boolean> {
-  if (ctx.scopeType === 'GLOBAL') return true
-  if (ctx.scopeType === 'NONE') return false
-
-  if (question.learningUnitId) {
-    const { allowed } = await canAccessLearningUnit(ctx, question.learningUnitId)
-    return allowed
-  }
-
-  return false
+  return true
 }
 
 export async function requireQuestionScope(
-  ctx: ContentManagerContext,
-  question: { id?: string; learningUnitId?: string | null; beltId?: string | null }
+  _ctx: ContentManagerContext,
+  _question: { id?: string; learningUnitId?: string | null; beltId?: string | null }
 ): Promise<void> {
-  const allowed = await canAccessQuestion(ctx, question)
-  if (!allowed) {
-    throw new PermissionDeniedError(
-      `Scope Denied: Question "${question.id || 'unknown'}" is outside your assigned curriculum scope.`
-    )
-  }
+  // Unified fixed capability grants access to both Practice and Learn Coding questions
 }
 
-/**
- * Strips hidden test case payloads if caller does not hold `content.hidden_test_case.manage`.
- */
 export function sanitizeTestCasesForContext(
-  ctx: ContentManagerContext,
+  _ctx: ContentManagerContext,
   testCases: any[]
 ): { sanitized: any[]; hiddenCount: number } {
-  const canViewHidden = hasContentPermission(ctx.permissions, 'content.hidden_test_case.manage')
   const hiddenCount = testCases.filter((tc) => Boolean(tc?.isHidden)).length
-  if (canViewHidden) {
-    return { sanitized: testCases, hiddenCount }
-  }
-  return {
-    sanitized: testCases.filter((tc) => !tc?.isHidden),
-    hiddenCount,
-  }
+  return { sanitized: testCases, hiddenCount }
 }
 
-/**
- * Protects hidden test cases inside historical ProblemRevision snapshots.
- */
-export function sanitizeRevisionForContext(ctx: ContentManagerContext, revision: any): any {
-  const canViewHidden = hasContentPermission(ctx.permissions, 'content.hidden_test_case.manage')
-  if (canViewHidden || !revision?.snapshot) return revision
-  const snapshot = { ...revision.snapshot }
-  if (Array.isArray(snapshot.testCases)) {
-    snapshot.testCases = snapshot.testCases.filter((tc: any) => !tc?.isHidden)
-  }
-  return {
-    ...revision,
-    snapshot,
-  }
+export function sanitizeRevisionForContext(_ctx: ContentManagerContext, revision: any): any {
+  return revision
 }
 
 /**

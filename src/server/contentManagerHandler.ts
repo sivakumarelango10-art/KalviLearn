@@ -24,7 +24,7 @@ import { hasContentPermission, CONTENT_PERMISSION_LIST } from '../lib/contentPer
 import {
   ContentManagerContext,
   PermissionDeniedError,
-  resolveContentManagerContext,
+  requireContentManager,
   requirePermission,
   requireAnyPermission,
   canManageModule,
@@ -37,6 +37,38 @@ import {
   sanitizeRevisionForContext,
   recordContentAudit,
 } from './contentRbac'
+
+const ALLOWED_CONTENT_ACTIONS = new Set<string>([
+  'me',
+  'dashboard',
+  'list_belts',
+  'list_curriculum_modules',
+  'create_curriculum_module',
+  'update_curriculum_module',
+  'reorder_curriculum_modules',
+  'toggle_module_status',
+  'delete_curriculum_module',
+  'create_learning_unit',
+  'update_learning_unit',
+  'reorder_learning_units',
+  'toggle_learning_unit_status',
+  'toggle_unit_status',
+  'submit_learning_unit_for_review',
+  'delete_learning_unit',
+  'list_questions',
+  'get_question',
+  'get_question_preview',
+  'create_question',
+  'update_question',
+  'submit_question_for_review',
+  'duplicate_question',
+  'toggle_question_status',
+  'delete_question',
+  'run_question_tests',
+  'list_question_revisions',
+  'restore_question_revision',
+  'list_my_revisions',
+])
 
 const ipLimiter = new RateLimiter(120, 60_000)
 const userLimiter = new RateLimiter(60, 60_000)
@@ -178,8 +210,8 @@ export default async function handler(
     })
   }
 
-  // 2. Authoritatively resolve live CONTENT_MANAGER assignment, permissions, and scope
-  const resolution = await resolveContentManagerContext(auth.user)
+  // 2. Central Content Manager authorization check (`requireContentManager`)
+  const resolution = await requireContentManager(auth.user)
   if (!resolution.authorized) {
     return sendJson(res, resolution.statusCode, {
       success: false,
@@ -211,6 +243,7 @@ export default async function handler(
   if (!action) {
     if (sub === 'me' || url.includes('/me')) action = 'me'
     else if (sub === 'dashboard' || url.includes('/dashboard')) action = 'dashboard'
+    else if (sub === 'belts' || url.includes('/belts')) action = 'list_belts'
     else if (sub === 'curriculum' || sub.startsWith('curriculum/')) {
       if (method === 'GET') action = 'list_curriculum_modules'
     } else if (sub === 'questions' || sub.startsWith('questions/')) {
@@ -221,7 +254,7 @@ export default async function handler(
     }
   }
 
-  // Explicitly deny prohibited Super Admin or user/campus management operations
+  // Explicitly deny prohibited Super Admin, user/campus management, or non-allowlisted actions
   if (
     PROHIBITED_SUPER_ADMIN_ACTIONS.has(action) ||
     sub.startsWith('students') ||
@@ -229,7 +262,8 @@ export default async function handler(
     sub.startsWith('campuses') ||
     sub.startsWith('managers') ||
     sub.startsWith('roles') ||
-    sub.startsWith('content-managers')
+    sub.startsWith('content-managers') ||
+    (action && !ALLOWED_CONTENT_ACTIONS.has(action))
   ) {
     return sendJson(res, 403, {
       success: false,
@@ -263,6 +297,9 @@ export default async function handler(
 
     if (action === 'dashboard') {
       return await handleGetDashboard(ctx, res)
+    }
+    if (action === 'list_belts') {
+      return await handleListBelts(res)
     }
 
     // Curriculum & Learning Units
@@ -367,7 +404,63 @@ export default async function handler(
   }
 }
 
-// ─── Helper: Question Lookup ─────────────────────────────────────────────────
+// ─── Helper: Belt & Question Lookups ─────────────────────────────────────────
+
+async function resolveBeltId(rawBeltId: unknown): Promise<string | null> {
+  const { data: belts, error } = await supabaseServer
+    .from('Belt')
+    .select('id, order, name, title')
+    .order('order', { ascending: true })
+  if (error || !belts || belts.length === 0) {
+    return typeof rawBeltId === 'string' && rawBeltId.trim() ? rawBeltId.trim() : null
+  }
+  const str = typeof rawBeltId === 'string' ? rawBeltId.trim() : ''
+  if (str) {
+    const exact = belts.find((b: any) => b.id === str)
+    if (exact) return exact.id
+    const orderMatch = str.match(/(\d+)$/)
+    if (orderMatch) {
+      const targetOrder = Number.parseInt(orderMatch[1], 10)
+      const byOrder = belts.find((b: any) => b.order === targetOrder)
+      if (byOrder) return byOrder.id
+    }
+  }
+  return belts[0].id
+}
+
+async function handleListBelts(res: ServerResponse) {
+  const [beltsRes, probRes] = await Promise.all([
+    supabaseServer.from('Belt').select('*').order('order', { ascending: true }),
+    supabaseServer.from('Problem').select('id, beltId, learningUnitId, status, isActive'),
+  ])
+  if (beltsRes.error) throw beltsRes.error
+  if (probRes.error) throw probRes.error
+
+  const practiceProbs = (probRes.data || []).filter((p: any) => !p.learningUnitId)
+  const enriched = (beltsRes.data || []).map((b: any) => {
+    const forBelt = practiceProbs.filter((p: any) => p.beltId === b.id)
+    const publishedCount = forBelt.filter(
+      (p: any) => p.status === 'PUBLISHED' || (p.status !== 'DRAFT' && p.status !== 'ARCHIVED' && p.isActive)
+    ).length
+    return {
+      id: b.id,
+      order: b.order,
+      name: b.name,
+      title: b.title,
+      color: b.color || '#EAB308',
+      description: b.description || '',
+      problemCount: forBelt.length,
+      publishedCount,
+      draftCount: forBelt.length - publishedCount,
+    }
+  })
+
+  return sendJson(res, 200, {
+    success: true,
+    message: 'Practice belts retrieved.',
+    data: enriched,
+  })
+}
 
 async function findQuestionByIdOrSlug(idOrSlug: string): Promise<any | null> {
   const { data: byId, error: idErr } = await supabaseServer
@@ -476,14 +569,22 @@ async function handleGetDashboard(ctx: ContentManagerContext, res: ServerRespons
       updatedAt: q.updatedAt,
     }))
 
+  const totalModules = visibleModules.length
+  const totalLearningUnits = visibleUnits.length
+  const totalPracticeQuestions = visibleQuestions.filter((q: any) => !q.learningUnitId).length
+  const totalLearnCodingQuestions = visibleQuestions.filter((q: any) => Boolean(q.learningUnitId)).length
+
   return sendJson(res, 200, {
     success: true,
     message: 'Content Manager dashboard overview retrieved.',
     data: {
       scopeType: ctx.scopeType,
       stats: {
-        assignedModulesCount: visibleModules.length,
-        totalLearningUnits: visibleUnits.length,
+        totalModules,
+        assignedModulesCount: totalModules,
+        totalLearningUnits,
+        totalPracticeQuestions,
+        totalLearnCodingQuestions,
         totalCodingQuestions: visibleQuestions.length,
         draftQuestions,
         publishedQuestions: canSeePublished ? publishedQuestions : null,
@@ -1338,6 +1439,10 @@ async function handleListQuestions(
   const topic = typeof body.topic === 'string' ? body.topic.trim() : (urlObj.searchParams.get('topic') || 'ALL').trim()
   const statusFilter = typeof body.status === 'string' ? body.status.trim().toUpperCase() : (urlObj.searchParams.get('status') || 'ALL').trim().toUpperCase()
   const learningUnitId = typeof body.learningUnitId === 'string' ? body.learningUnitId.trim() : (urlObj.searchParams.get('learningUnitId') || '').trim()
+  const questionTypeRaw = typeof body.questionType === 'string' ? body.questionType.trim().toUpperCase() : (urlObj.searchParams.get('questionType') || 'ALL').trim().toUpperCase()
+  const beltParam = typeof body.beltId === 'string' && body.beltId.trim()
+    ? body.beltId.trim()
+    : (typeof body.belt === 'string' && body.belt.trim() ? body.belt.trim() : (urlObj.searchParams.get('beltId') || urlObj.searchParams.get('belt') || '').trim())
   const requestedPage = Number.parseInt(String(body.page ?? urlObj.searchParams.get('page') ?? '1'), 10)
   const requestedLimit = Number.parseInt(String(body.limit ?? urlObj.searchParams.get('limit') ?? '50'), 10)
   const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1
@@ -1345,6 +1450,11 @@ async function handleListQuestions(
 
   if (learningUnitId) {
     await requireLearningUnitScope(ctx, learningUnitId)
+  }
+
+  let resolvedFilterBeltId = ''
+  if (beltParam && beltParam !== 'ALL') {
+    resolvedFilterBeltId = (await resolveBeltId(beltParam)) || beltParam
   }
 
   const { data: allProblems, error: problemsError } = await supabaseServer
@@ -1356,12 +1466,18 @@ async function handleListQuestions(
 
   const scopedProblems = []
   for (const p of allProblems || []) {
+    if (questionTypeRaw === 'PRACTICE' && p.learningUnitId) continue
+    if ((questionTypeRaw === 'LEARN_CODING' || questionTypeRaw === 'LEARN-CODING') && !p.learningUnitId) continue
     if (await canAccessQuestion(ctx, p)) {
       scopedProblems.push(p)
     }
   }
 
-  const statsSubset = learningUnitId ? scopedProblems.filter((p: any) => p.learningUnitId === learningUnitId) : scopedProblems
+  const statsSubset = learningUnitId
+    ? scopedProblems.filter((p: any) => p.learningUnitId === learningUnitId)
+    : resolvedFilterBeltId
+      ? scopedProblems.filter((p: any) => p.beltId === resolvedFilterBeltId)
+      : scopedProblems
   let totalPublished = 0
   let totalDraft = 0
   const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 }
@@ -1379,6 +1495,7 @@ async function handleListQuestions(
 
   const filtered = scopedProblems.filter((problem: any) => {
     if (learningUnitId && problem.learningUnitId !== learningUnitId) return false
+    if (resolvedFilterBeltId && problem.beltId !== resolvedFilterBeltId) return false
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
     const st = String(problem.status || '').toUpperCase()
@@ -1870,7 +1987,7 @@ async function handleCreateQuestion(
     explanation: ex.explanation || '',
   }))
 
-  const beltId = learningUnitId ? null : (typeof body.beltId === 'string' && body.beltId.trim() ? body.beltId.trim() : 'mock-belt-1')
+  const beltId = learningUnitId ? null : await resolveBeltId(body.beltId)
   const order = typeof body.order === 'number' && !isNaN(body.order) ? body.order : 1
 
   const { data: createdProb, error: probErr } = await supabaseServer
@@ -2054,6 +2171,9 @@ async function handleUpdateQuestion(
   if (typeof body.timeLimitMs === 'number' && body.timeLimitMs > 0) updates.timeLimitMs = body.timeLimitMs
   if (typeof body.memoryLimitMb === 'number' && body.memoryLimitMb > 0) updates.memoryLimitMb = body.memoryLimitMb
   if (typeof body.order === 'number' && !isNaN(body.order)) updates.order = body.order
+  if ('beltId' in body && !updates.learningUnitId && !(existing.learningUnitId && body.learningUnitId === undefined)) {
+    updates.beltId = body.beltId ? await resolveBeltId(body.beltId) : null
+  }
 
   // Validate moving between learning units
   if (body.learningUnitId !== undefined && body.learningUnitId !== existing.learningUnitId) {

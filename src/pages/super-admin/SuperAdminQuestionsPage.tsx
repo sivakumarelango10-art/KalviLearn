@@ -167,6 +167,8 @@ export interface SuperAdminQuestionsPageProps {
   apiMode?: 'super-admin' | 'content-manager'
   grantedPermissions?: string[]
   scopedUnits?: Array<{ id: string; title: string; moduleId?: string }>
+  questionMode?: 'practice' | 'learn-coding' | 'all'
+  availableBelts?: Array<{ id: string; order: number; name: string; title: string }>
 }
 
 export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = ({
@@ -182,6 +184,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   apiMode = 'super-admin',
   grantedPermissions = [],
   scopedUnits,
+  questionMode = 'all',
+  availableBelts,
 }) => {
   const isCmMode = apiMode === 'content-manager'
   const permSet = new Set(grantedPermissions)
@@ -329,7 +333,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         difficulty: difficultyFilter !== 'ALL' ? difficultyFilter : undefined,
         topic: topicFilter !== 'ALL' ? topicFilter : undefined,
         status: statusFilter !== 'ALL' ? statusFilter : undefined,
-        belt: learningUnitId ? undefined : (beltFilter !== 'ALL' ? String(beltFilter) : undefined),
+        belt: learningUnitId || questionMode === 'learn-coding' ? undefined : (beltFilter !== 'ALL' ? String(beltFilter) : undefined),
+        questionType: questionMode === 'practice' ? 'PRACTICE' : questionMode === 'learn-coding' ? 'LEARN_CODING' : undefined,
         learningUnitId: learningUnitId || undefined,
         page,
         limit: isEmbedded ? 50 : 15,
@@ -356,7 +361,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
   useEffect(() => {
     loadQuestions()
-  }, [difficultyFilter, topicFilter, statusFilter, beltFilter, page, learningUnitId])
+  }, [difficultyFilter, topicFilter, statusFilter, beltFilter, page, learningUnitId, questionMode])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -398,7 +403,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     setFormData({
       ...DEFAULT_FORM,
       subdivision: initialTopic || DEFAULT_FORM.subdivision,
-      beltId: learningUnitId ? null : (initialBelt ? String(initialBelt) : DEFAULT_FORM.beltId),
+      beltId: learningUnitId || questionMode === 'learn-coding' ? null : (initialBelt ? String(initialBelt) : (availableBelts?.[0]?.id || DEFAULT_FORM.beltId)),
       learningUnitId: learningUnitId || null,
       examples: [
         {
@@ -621,6 +626,9 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(formData.slug.trim())) {
       errors.slug = 'Slug must only contain lowercase letters, numbers, and single hyphens.'
     }
+    if (isCmMode && questionMode === 'learn-coding' && !(learningUnitId || formData.learningUnitId)) {
+      errors.learningUnitId = 'Please select a Learning Unit for this Learn Coding question.'
+    }
     if (!formData.description.trim()) errors.description = 'Problem description is required.'
     if (!formData.testCases || formData.testCases.length === 0) {
       errors.testCases = 'At least 1 test case is required.'
@@ -636,7 +644,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors)
       // Switch to the tab with errors
-      if (errors.title || errors.slug || errors.description) setEditorTab('info')
+      if (errors.title || errors.slug || errors.description || errors.learningUnitId) setEditorTab('info')
       else if (errors.testCases) setEditorTab('testcases')
       return
     }
@@ -1386,7 +1394,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             </select>
           </div>
 
-          {!isCmMode && (
+          {(!isCmMode || questionMode === 'practice') && (
           <div className="md:col-span-2">
             <select
               value={beltFilter}
@@ -1893,21 +1901,26 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
                       Question Association
                     </h4>
-                    {isCmMode && !learningUnitId && scopedUnits && scopedUnits.length > 0 ? (
+                    {questionMode !== 'practice' && (isCmMode && !learningUnitId && (questionMode === 'learn-coding' || (scopedUnits && scopedUnits.length > 0))) ? (
                       <div>
-                        <label className="block text-xs font-medium text-neutral-400 mb-1">Authorized Learning Unit</label>
+                        <label className="block text-xs font-medium text-neutral-400 mb-1">
+                          Learning Unit {questionMode === 'learn-coding' ? '*' : ''}
+                        </label>
                         <select
                           value={formData.learningUnitId || ''}
                           onChange={(e) => setFormData((prev) => ({ ...prev, learningUnitId: e.target.value || null, beltId: e.target.value ? null : prev.beltId }))}
                           className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none"
                         >
                           <option value="">Select Learning Unit...</option>
-                          {scopedUnits.map((u) => (
+                          {(scopedUnits || []).map((u) => (
                             <option key={u.id} value={u.id}>{u.title}</option>
                           ))}
                         </select>
+                        {formErrors.learningUnitId && (
+                          <p className="text-xs text-red-400 mt-1">{formErrors.learningUnitId}</p>
+                        )}
                       </div>
-                    ) : learningUnitId || formData.learningUnitId ? (
+                    ) : questionMode !== 'practice' && (learningUnitId || formData.learningUnitId) ? (
                       <div className="flex items-center gap-2 text-xs text-neutral-300">
                         <span className="px-2.5 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800 text-indigo-300 font-semibold">
                           Learn Coding Curriculum
@@ -1921,15 +1934,21 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                             Belt Practice Assignment
                           </label>
                           <select
-                            value={formData.beltId || 'mock-belt-1'}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, beltId: e.target.value }))}
+                            value={formData.beltId || availableBelts?.[0]?.id || 'mock-belt-1'}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, beltId: e.target.value, learningUnitId: null }))}
                             className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none"
                           >
-                            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-                              <option key={num} value={`mock-belt-${num}`}>
-                                Belt {num}
-                              </option>
-                            ))}
+                            {availableBelts && availableBelts.length > 0
+                              ? availableBelts.map((b) => (
+                                  <option key={b.id} value={b.id}>
+                                    Belt {b.order} — {b.title || b.name}
+                                  </option>
+                                ))
+                              : Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                                  <option key={num} value={`mock-belt-${num}`}>
+                                    Belt {num}
+                                  </option>
+                                ))}
                           </select>
                         </div>
                       </div>

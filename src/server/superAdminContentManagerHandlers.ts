@@ -9,9 +9,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { supabaseServer, hasPrivilegedServerKey } from './feedbackAuth'
 import {
   CONTENT_MANAGER_ROLE,
-  DEFAULT_CONTENT_MANAGER_PERMISSIONS,
-  normalizePermissionsList,
-  ContentScopeType,
+  FIXED_CONTENT_MANAGER_PERMISSIONS,
 } from '../lib/contentPermissions'
 import { recordContentAudit } from './contentRbac'
 import { registerCustomSuite } from './judge/testRepository'
@@ -68,108 +66,6 @@ function deriveAssignmentStatus(a: any): 'ACTIVE' | 'SUSPENDED' | 'INVITED' | 'R
   return a?.revoked_at ? 'REVOKED' : 'SUSPENDED'
 }
 
-async function parseAndValidateScopeAndPermissions(
-  deps: SuperAdminDeps,
-  body: Record<string, unknown>,
-  res: ServerResponse
-): Promise<{
-  ok: true
-  permissions: string[]
-  scopeType: ContentScopeType
-  moduleIds: string[]
-  learningUnitIds: string[]
-} | { ok: false }> {
-  const permissions = Array.isArray(body.permissions)
-    ? normalizePermissionsList(body.permissions)
-    : [...DEFAULT_CONTENT_MANAGER_PERMISSIONS]
-
-  const rawScope = typeof body.scopeType === 'string' ? body.scopeType.trim().toUpperCase() : 'NONE'
-  const scopeType: ContentScopeType =
-    rawScope === 'GLOBAL' ? 'GLOBAL' : rawScope === 'SCOPED' ? 'SCOPED' : 'NONE'
-
-  const moduleIds = Array.isArray(body.moduleIds)
-    ? Array.from(new Set(body.moduleIds.filter((id): id is string => typeof id === 'string' && id.trim().length > 0)))
-    : []
-  const learningUnitIds = Array.isArray(body.learningUnitIds)
-    ? Array.from(new Set(body.learningUnitIds.filter((id): id is string => typeof id === 'string' && id.trim().length > 0)))
-    : []
-
-  if (scopeType === 'SCOPED') {
-    if (moduleIds.length > 0) {
-      const { data: mods } = await supabaseServer.from('Module').select('id').in('id', moduleIds)
-      if ((mods || []).length !== moduleIds.length) {
-        deps.sendJson(res, 400, {
-          success: false,
-          error: 'Invalid Module Scope',
-          message: 'One or more specified moduleIds do not exist.',
-        })
-        return { ok: false }
-      }
-    }
-    if (learningUnitIds.length > 0) {
-      const { data: units } = await supabaseServer.from('LearningUnit').select('id').in('id', learningUnitIds)
-      if ((units || []).length !== learningUnitIds.length) {
-        deps.sendJson(res, 400, {
-          success: false,
-          error: 'Invalid Learning Unit Scope',
-          message: 'One or more specified learningUnitIds do not exist.',
-        })
-        return { ok: false }
-      }
-    }
-  }
-
-  return { ok: true, permissions, scopeType, moduleIds, learningUnitIds }
-}
-
-async function replacePermissionsAndScopes(
-  assignmentId: string,
-  permissions: string[],
-  scopeType: ContentScopeType,
-  moduleIds: string[],
-  learningUnitIds: string[],
-  now: string
-) {
-  await supabaseServer.from('content_manager_permissions').delete().eq('assignment_id', assignmentId)
-  if (permissions.length > 0) {
-    const permRows = permissions.map((perm, idx) => ({
-      id: `cmp-${assignmentId}-${idx + 1}`,
-      assignment_id: assignmentId,
-      permission: perm,
-      granted_at: now,
-    }))
-    const { error: permInsErr } = await supabaseServer.from('content_manager_permissions').insert(permRows)
-    if (permInsErr) throw permInsErr
-  }
-
-  await supabaseServer.from('content_manager_scopes').delete().eq('assignment_id', assignmentId)
-  if (scopeType === 'SCOPED') {
-    const scopeRows: any[] = []
-    for (const mId of moduleIds) {
-      scopeRows.push({
-        id: `cms-m-${assignmentId}-${mId}`,
-        assignment_id: assignmentId,
-        module_id: mId,
-        learning_unit_id: null,
-        created_at: now,
-      })
-    }
-    for (const luId of learningUnitIds) {
-      scopeRows.push({
-        id: `cms-u-${assignmentId}-${luId}`,
-        assignment_id: assignmentId,
-        module_id: null,
-        learning_unit_id: luId,
-        created_at: now,
-      })
-    }
-    if (scopeRows.length > 0) {
-      const { error: scInsErr } = await supabaseServer.from('content_manager_scopes').insert(scopeRows)
-      if (scInsErr) throw scInsErr
-    }
-  }
-}
-
 async function resolveOptionalCampusId(
   deps: SuperAdminDeps,
   rawCampusId: unknown,
@@ -210,64 +106,20 @@ export async function handleListContentManagers(
   deps: SuperAdminDeps,
   res: ServerResponse
 ) {
-  const [assignRes, permRes, scopeRes, usersRes, campusesRes, modulesRes, unitsRes, auditRes, pendingProbRes, pendingModRes, pendingUnitRes] = await Promise.all([
+  const [assignRes, usersRes, campusesRes, auditRes] = await Promise.all([
     supabaseServer.from('content_manager_assignments').select('*').order('created_at', { ascending: false }),
-    supabaseServer.from('content_manager_permissions').select('*'),
-    supabaseServer.from('content_manager_scopes').select('*'),
     supabaseServer.from('users').select('id, email, name, role, status, campus_id, createdAt, updatedAt'),
     supabaseServer.from('campuses').select('id, name, code, status'),
-    supabaseServer.from('Module').select('id, title, order'),
-    supabaseServer.from('LearningUnit').select('id, moduleId, title, order'),
     supabaseServer.from('content_audit_logs').select('actor_user_id, action, created_at'),
-    supabaseServer.from('Problem').select('id').eq('approvalStatus', 'PENDING_REVIEW'),
-    supabaseServer.from('Module').select('id').eq('approvalStatus', 'PENDING_REVIEW'),
-    supabaseServer.from('LearningUnit').select('id').eq('approvalStatus', 'PENDING_REVIEW'),
   ])
 
   if (assignRes.error) throw assignRes.error
-  if (permRes.error) throw permRes.error
-  if (scopeRes.error) throw scopeRes.error
   if (usersRes.error) throw usersRes.error
   if (campusesRes.error) throw campusesRes.error
-  if (modulesRes.error) throw modulesRes.error
-  if (unitsRes.error) throw unitsRes.error
   if (auditRes.error) throw auditRes.error
 
   const usersById = new Map<string, any>((usersRes.data || []).map((u: any) => [u.id, u]))
   const campusesById = new Map<string, any>((campusesRes.data || []).map((c: any) => [c.id, c]))
-  const modulesById = new Map<string, any>((modulesRes.data || []).map((m: any) => [m.id, m]))
-  const unitsById = new Map<string, any>((unitsRes.data || []).map((u: any) => [u.id, u]))
-
-  const permsByAssignment = new Map<string, string[]>()
-  for (const row of permRes.data || []) {
-    const arr = permsByAssignment.get((row as any).assignment_id) || []
-    arr.push((row as any).permission)
-    permsByAssignment.set((row as any).assignment_id, arr)
-  }
-
-  const scopesByAssignment = new Map<string, { modules: any[]; learningUnits: any[] }>()
-  for (const row of scopeRes.data || []) {
-    const aid = (row as any).assignment_id
-    if (!scopesByAssignment.has(aid)) scopesByAssignment.set(aid, { modules: [], learningUnits: [] })
-    const entry = scopesByAssignment.get(aid)!
-    if ((row as any).module_id) {
-      const m = modulesById.get((row as any).module_id)
-      entry.modules.push({
-        id: (row as any).module_id,
-        title: m?.title || (row as any).module_id,
-        order: m?.order ?? 0,
-      })
-    }
-    if ((row as any).learning_unit_id) {
-      const lu = unitsById.get((row as any).learning_unit_id)
-      entry.learningUnits.push({
-        id: (row as any).learning_unit_id,
-        moduleId: lu?.moduleId || null,
-        title: lu?.title || (row as any).learning_unit_id,
-        order: lu?.order ?? 0,
-      })
-    }
-  }
 
   const activityCountByUser = new Map<string, { count: number; editCount: number; lastAt: string | null }>()
   for (const row of auditRes.data || []) {
@@ -286,8 +138,6 @@ export async function handleListContentManagers(
   const assignments = (assignRes.data || []).map((a: any) => {
     const u = usersById.get(a.user_id)
     const campus = u?.campus_id ? campusesById.get(u.campus_id) : null
-    const perms = permsByAssignment.get(a.id) || []
-    const scopeInfo = scopesByAssignment.get(a.id) || { modules: [], learningUnits: [] }
     const act = activityCountByUser.get(a.user_id) || { count: 0, editCount: 0, lastAt: null }
     const status = deriveAssignmentStatus(a)
 
@@ -302,15 +152,9 @@ export async function handleListContentManagers(
       userStatus: u?.status || 'ACTIVE',
       userCreatedAt: u?.createdAt || null,
       previousRole: a.previous_role || 'STUDENT',
-      scopeType: a.scope_type || 'NONE',
+      scopeType: 'GLOBAL' as const,
       status,
       isActive: isStatusActive(status),
-      permissions: perms,
-      permissionCount: perms.length,
-      moduleIds: scopeInfo.modules.map((m) => m.id),
-      learningUnitIds: scopeInfo.learningUnits.map((lu) => lu.id),
-      assignedModules: scopeInfo.modules,
-      assignedLearningUnits: scopeInfo.learningUnits,
       grantedBy: a.granted_by || null,
       grantedAt: a.granted_at || null,
       invitedBy: a.invited_by || null,
@@ -330,18 +174,12 @@ export async function handleListContentManagers(
     }
   })
 
-  const pendingApprovals =
-    (pendingProbRes.data || []).length +
-    (pendingModRes.data || []).length +
-    (pendingUnitRes.data || []).length
-
   const stats = {
     total: assignments.length,
     active: assignments.filter((a) => a.status === 'ACTIVE').length,
     suspended: assignments.filter((a) => a.status === 'SUSPENDED').length,
     revoked: assignments.filter((a) => a.status === 'REVOKED').length,
     invited: assignments.filter((a) => a.status === 'INVITED').length,
-    pendingApprovals,
     totalContentEdits: assignments.reduce((acc, a) => acc + (a.contentEditCount || 0), 0),
   }
 
@@ -352,8 +190,6 @@ export async function handleListContentManagers(
       assignments,
       stats,
       campuses: (campusesRes.data || []).filter((c: any) => !c.status || c.status === 'ACTIVE'),
-      modules: (modulesRes.data || []).sort((a: any, b: any) => (a.order || 0) - (b.order || 0)),
-      learningUnits: (unitsRes.data || []).sort((a: any, b: any) => (a.order || 0) - (b.order || 0)),
     },
   })
 }
@@ -462,10 +298,6 @@ export async function handleCreateContentManager(
 
   const campusCheck = await resolveOptionalCampusId(deps, body.campusId, res)
   if (!campusCheck.ok) return
-
-  const scopePermCheck = await parseAndValidateScopeAndPermissions(deps, body, res)
-  if (!scopePermCheck.ok) return
-  const { permissions, scopeType, moduleIds, learningUnitIds } = scopePermCheck
 
   // Duplicate email check (case-insensitive)
   const { data: existingUsers, error: existingErr } = await supabaseServer
@@ -595,7 +427,7 @@ export async function handleCreateContentManager(
         id: assignmentId,
         user_id: createdUser.id,
         previous_role: CONTENT_MANAGER_ROLE,
-        scope_type: scopeType,
+        scope_type: 'GLOBAL',
         status: assignmentStatus,
         is_active: assignmentIsActive,
         granted_by: deps.SUPER_ADMIN_EMAIL,
@@ -608,8 +440,6 @@ export async function handleCreateContentManager(
         updated_at: now,
       })
     if (assignErr) throw assignErr
-
-    await replacePermissionsAndScopes(assignmentId, permissions, scopeType, moduleIds, learningUnitIds, now)
 
     await Promise.all([
       deps.recordAdminAudit(
@@ -625,10 +455,7 @@ export async function handleCreateContentManager(
           creationMode,
           assignmentStatus,
           isActive: assignmentIsActive,
-          scopeType,
-          permissionsCount: permissions.length,
-          moduleIds,
-          learningUnitIds,
+          accessProfile: 'FIXED_CONTENT_MANAGER',
           authInviteSent,
         },
         'SUCCESS',
@@ -649,12 +476,9 @@ export async function handleCreateContentManager(
           role: CONTENT_MANAGER_ROLE,
           status: assignmentStatus,
           isActive: assignmentIsActive,
-          scopeType,
-          permissions,
-          moduleIds,
-          learningUnitIds,
+          scopeType: 'GLOBAL',
         },
-        changeSummary: `Created Content Manager account for ${email} (${assignmentStatus}, ${scopeType})`,
+        changeSummary: `Created Content Manager account for ${email} (${assignmentStatus})`,
         ipAddress: clientIp,
       }),
     ])
@@ -673,10 +497,8 @@ export async function handleCreateContentManager(
         role: CONTENT_MANAGER_ROLE,
         status: assignmentStatus,
         isActive: assignmentIsActive,
-        scopeType,
-        permissions,
-        moduleIds,
-        learningUnitIds,
+        scopeType: 'GLOBAL',
+        permissions: [...FIXED_CONTENT_MANAGER_PERMISSIONS],
         authInviteSent,
       },
     })
@@ -759,10 +581,6 @@ export async function handleGrantOrUpdateContentManager(
     resolvedCampusId = campusCheck.campusId
   }
 
-  const scopePermCheck = await parseAndValidateScopeAndPermissions(deps, body, res)
-  if (!scopePermCheck.ok) return
-  const { permissions, scopeType, moduleIds, learningUnitIds } = scopePermCheck
-
   const notes = typeof body.notes === 'string' ? body.notes.trim() : null
   const now = new Date().toISOString()
 
@@ -799,7 +617,7 @@ export async function handleGrantOrUpdateContentManager(
     const { error: updErr } = await supabaseServer
       .from('content_manager_assignments')
       .update({
-        scope_type: scopeType,
+        scope_type: 'GLOBAL',
         status: nextStatus,
         is_active: nextIsActive,
         previous_role: preservedPreviousRole,
@@ -824,7 +642,7 @@ export async function handleGrantOrUpdateContentManager(
         id: assignmentId,
         user_id: targetUser.id,
         previous_role: preservedPreviousRole,
-        scope_type: scopeType,
+        scope_type: 'GLOBAL',
         status: 'ACTIVE',
         is_active: true,
         granted_by: deps.SUPER_ADMIN_EMAIL,
@@ -836,8 +654,6 @@ export async function handleGrantOrUpdateContentManager(
       })
     if (insErr) throw insErr
   }
-
-  await replacePermissionsAndScopes(assignmentId, permissions, scopeType, moduleIds, learningUnitIds, now)
 
   // Update users row (role and optional profile fields, never altering email or Auth identity)
   const userUpdates: Record<string, unknown> = {}
@@ -870,7 +686,7 @@ export async function handleGrantOrUpdateContentManager(
       'CONTENT_MANAGER',
       targetUser.id,
       targetUser.email,
-      { scopeType, status: nextStatus, permissionsCount: permissions.length, moduleIds, learningUnitIds, updatedName, resolvedCampusId },
+      { status: nextStatus, updatedName, resolvedCampusId },
       'SUCCESS',
       null,
       clientIp
@@ -883,8 +699,8 @@ export async function handleGrantOrUpdateContentManager(
       resourceType: 'CONTENT_MANAGER_ACCESS',
       resourceId: targetUser.id,
       resourceLabel: targetUser.email,
-      updatedValues: { scopeType, status: nextStatus, permissions, moduleIds, learningUnitIds, name: updatedName ?? targetUser.name },
-      changeSummary: `${existingAssign?.is_active || preserveSuspendedOnEdit ? 'Updated' : 'Granted'} Content Manager access for ${targetUser.email} (${scopeType})`,
+      updatedValues: { status: nextStatus, scopeType: 'GLOBAL', name: updatedName ?? targetUser.name },
+      changeSummary: `${existingAssign?.is_active || preserveSuspendedOnEdit ? 'Updated' : 'Granted'} Content Manager access for ${targetUser.email}`,
       ipAddress: clientIp,
     }),
   ])
@@ -900,10 +716,9 @@ export async function handleGrantOrUpdateContentManager(
       campusId: resolvedCampusId !== undefined ? resolvedCampusId : (targetUser.campus_id || null),
       role: CONTENT_MANAGER_ROLE,
       status: nextStatus,
-      scopeType,
-      permissions,
-      moduleIds,
-      learningUnitIds,
+      isActive: nextIsActive,
+      scopeType: 'GLOBAL',
+      permissions: [...FIXED_CONTENT_MANAGER_PERMISSIONS],
       updatedBy: deps.SUPER_ADMIN_EMAIL,
       updatedAt: now,
     },
@@ -1063,14 +878,13 @@ export async function handleReactivateContentManager(
   }
 
   const now = new Date().toISOString()
-  // Never auto-grant GLOBAL scope during reactivation — keep exact previously configured scope_type
-  const preservedScopeType = assignment.scope_type || 'NONE'
 
   const { error: reactErr } = await supabaseServer
     .from('content_manager_assignments')
     .update({
       status: 'ACTIVE',
       is_active: true,
+      scope_type: 'GLOBAL',
       suspended_by: null,
       suspended_at: null,
       suspension_reason: null,
@@ -1096,7 +910,7 @@ export async function handleReactivateContentManager(
       'CONTENT_MANAGER',
       assignment.user_id,
       label,
-      { previousStatus: currentStatus, preservedScopeType },
+      { previousStatus: currentStatus },
       'SUCCESS',
       null,
       clientIp
@@ -1110,21 +924,21 @@ export async function handleReactivateContentManager(
       resourceId: assignment.user_id,
       resourceLabel: label,
       previousValues: { status: currentStatus, isActive: Boolean(assignment.is_active) },
-      updatedValues: { status: 'ACTIVE', isActive: true, scopeType: preservedScopeType },
-      changeSummary: `Reactivated Content Manager access for ${label} (preserved ${preservedScopeType} scope)`,
+      updatedValues: { status: 'ACTIVE', isActive: true },
+      changeSummary: `Reactivated Content Manager access for ${label}`,
       ipAddress: clientIp,
     }),
   ])
 
   return deps.sendJson(res, 200, {
     success: true,
-    message: `Content Manager access reactivated for ${label}. Prior permissions and ${preservedScopeType} scope restored.`,
+    message: `Content Manager access reactivated for ${label}.`,
     data: {
       assignmentId: assignment.id,
       userId: assignment.user_id,
       status: 'ACTIVE',
       isActive: true,
-      scopeType: preservedScopeType,
+      scopeType: 'GLOBAL',
       updatedBy: deps.SUPER_ADMIN_EMAIL,
       updatedAt: now,
     },

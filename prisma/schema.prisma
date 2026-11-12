@@ -484,7 +484,7 @@ model ContentManagerAssignment {
   userId           String                     @unique @map("user_id")
   user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
   previousRole     String                     @default("STUDENT") @map("previous_role") @db.VarChar(50)
-  scopeType        String                     @default("NONE") @map("scope_type") @db.VarChar(20) // "NONE" | "SCOPED" | "GLOBAL"
+  scopeType        String                     @default("GLOBAL") @map("scope_type") @db.VarChar(20) // Unified access: "GLOBAL" (legacy "NONE" | "SCOPED" supported in DB)
   status           String                     @default("ACTIVE") @db.VarChar(20) // "ACTIVE" | "SUSPENDED" | "INVITED" | "REVOKED"
   isActive         Boolean                    @default(true) @map("is_active")
   grantedBy        String?                    @map("granted_by") @db.VarChar(255)

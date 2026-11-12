@@ -95,18 +95,33 @@ ALTER TABLE public."Problem" ADD COLUMN IF NOT EXISTS "updatedBy" TEXT;
 -- Invariant: 58 active canonical + 442 archived duplicates = 500 practice problems.
 -- =========================================================================
 
--- 4.1. Temporary mapping tables (scoped to transaction, dropped on COMMIT)
-CREATE TEMP TABLE IF NOT EXISTS temp_canonical_active_problems (
-  canonical_id TEXT PRIMARY KEY
-) ON COMMIT DROP;
+-- 4.1. Private Persistent Staging Tables (survives multi-statement HTTP / pooler execution; dropped before COMMIT)
+CREATE SCHEMA IF NOT EXISTS kalvilearn_migration_staging;
+REVOKE ALL ON SCHEMA kalvilearn_migration_staging FROM PUBLIC, anon, authenticated;
+GRANT USAGE ON SCHEMA kalvilearn_migration_staging TO service_role;
 
-CREATE TEMP TABLE IF NOT EXISTS temp_duplicate_archive_map (
+CREATE TABLE IF NOT EXISTS kalvilearn_migration_staging.canonical_active_problems (
+  canonical_id TEXT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS kalvilearn_migration_staging.duplicate_archive_map (
   duplicate_id TEXT PRIMARY KEY,
   canonical_id TEXT NOT NULL
-) ON COMMIT DROP;
+);
+
+ALTER TABLE kalvilearn_migration_staging.canonical_active_problems ENABLE ROW LEVEL SECURITY;
+ALTER TABLE kalvilearn_migration_staging.duplicate_archive_map ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE kalvilearn_migration_staging.canonical_active_problems FROM PUBLIC, anon, authenticated, service_role;
+REVOKE ALL ON TABLE kalvilearn_migration_staging.duplicate_archive_map FROM PUBLIC, anon, authenticated, service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON TABLE kalvilearn_migration_staging.canonical_active_problems TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON TABLE kalvilearn_migration_staging.duplicate_archive_map TO service_role;
+
+TRUNCATE TABLE
+  kalvilearn_migration_staging.canonical_active_problems,
+  kalvilearn_migration_staging.duplicate_archive_map;
 
 -- 4.2. Populate 58 verified canonical practice questions
-INSERT INTO temp_canonical_active_problems (canonical_id) VALUES
+INSERT INTO kalvilearn_migration_staging.canonical_active_problems (canonical_id) VALUES
   ('belt-1-q1-arithmetic-check-v1'),
   ('belt-1-q2-absolute-difference-v1'),
   ('belt-1-q3-largest-of-three-v1'),
@@ -168,7 +183,7 @@ INSERT INTO temp_canonical_active_problems (canonical_id) VALUES
 ON CONFLICT (canonical_id) DO NOTHING;
 
 -- 4.3. Populate 442 verified duplicate-to-canonical mappings
-INSERT INTO temp_duplicate_archive_map (duplicate_id, canonical_id) VALUES
+INSERT INTO kalvilearn_migration_staging.duplicate_archive_map (duplicate_id, canonical_id) VALUES
   ('belt-1-q11-arithmetic-check-v2', 'belt-1-q1-arithmetic-check-v1'),
   ('belt-1-q12-absolute-difference-v2', 'belt-1-q2-absolute-difference-v1'),
   ('belt-1-q13-largest-of-three-v2', 'belt-1-q3-largest-of-three-v1'),
@@ -628,30 +643,30 @@ DECLARE
   v_missing_duplicate INTEGER;
   v_unmapped_practice INTEGER;
 BEGIN
-  SELECT COUNT(*) INTO v_canon_count FROM temp_canonical_active_problems;
-  SELECT COUNT(*) INTO v_dup_count FROM temp_duplicate_archive_map;
+  SELECT COUNT(*) INTO v_canon_count FROM kalvilearn_migration_staging.canonical_active_problems;
+  SELECT COUNT(*) INTO v_dup_count FROM kalvilearn_migration_staging.duplicate_archive_map;
   IF v_canon_count <> 58 OR v_dup_count <> 442 THEN
     RAISE EXCEPTION 'Migration aborted: expected 58 canonical and 442 duplicate mappings, got % and %.', v_canon_count, v_dup_count;
   END IF;
 
   SELECT COUNT(*) INTO v_self_ref_map
-  FROM temp_duplicate_archive_map
+  FROM kalvilearn_migration_staging.duplicate_archive_map
   WHERE duplicate_id = canonical_id;
   IF v_self_ref_map > 0 THEN
     RAISE EXCEPTION 'Migration aborted: % self-referencing duplicate mapping(s) detected.', v_self_ref_map;
   END IF;
 
   SELECT COUNT(*) INTO v_overlap_count
-  FROM temp_duplicate_archive_map m
-  JOIN temp_canonical_active_problems c ON c.canonical_id = m.duplicate_id;
+  FROM kalvilearn_migration_staging.duplicate_archive_map m
+  JOIN kalvilearn_migration_staging.canonical_active_problems c ON c.canonical_id = m.duplicate_id;
   IF v_overlap_count > 0 THEN
     RAISE EXCEPTION 'Migration aborted: % problem(s) appear in both canonical and duplicate sets.', v_overlap_count;
   END IF;
 
   SELECT COUNT(*) INTO v_broken_targets
-  FROM temp_duplicate_archive_map m
+  FROM kalvilearn_migration_staging.duplicate_archive_map m
   WHERE NOT EXISTS (
-    SELECT 1 FROM temp_canonical_active_problems c WHERE c.canonical_id = m.canonical_id
+    SELECT 1 FROM kalvilearn_migration_staging.canonical_active_problems c WHERE c.canonical_id = m.canonical_id
   );
   IF v_broken_targets > 0 THEN
     RAISE EXCEPTION 'Migration aborted: % duplicate mapping(s) point outside the verified canonical set.', v_broken_targets;
@@ -659,7 +674,7 @@ BEGIN
 
   SELECT COUNT(*) INTO v_learn_unit_collision
   FROM public."Problem" p
-  JOIN temp_duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+  JOIN kalvilearn_migration_staging.duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
   WHERE p."learningUnitId" IS NOT NULL;
   IF v_learn_unit_collision > 0 THEN
     RAISE EXCEPTION 'Migration aborted: % Learn Coding question(s) (learningUnitId IS NOT NULL) matched duplicate archive map.', v_learn_unit_collision;
@@ -667,7 +682,7 @@ BEGIN
 
   SELECT COUNT(*) INTO v_missing_db_canon_target
   FROM public."Problem" p
-  JOIN temp_duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
+  JOIN kalvilearn_migration_staging.duplicate_archive_map m ON (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
   WHERE p."learningUnitId" IS NULL
     AND NOT EXISTS (
       SELECT 1 FROM public."Problem" c
@@ -686,7 +701,7 @@ BEGIN
 
   IF v_belt_rows >= 10 THEN
     SELECT COUNT(*) INTO v_missing_canonical
-    FROM temp_canonical_active_problems c
+    FROM kalvilearn_migration_staging.canonical_active_problems c
     WHERE NOT EXISTS (
       SELECT 1 FROM public."Problem" p
       WHERE (p."id" = c.canonical_id OR p."slug" = c.canonical_id)
@@ -694,7 +709,7 @@ BEGIN
     );
 
     SELECT COUNT(*) INTO v_missing_duplicate
-    FROM temp_duplicate_archive_map m
+    FROM kalvilearn_migration_staging.duplicate_archive_map m
     WHERE NOT EXISTS (
       SELECT 1 FROM public."Problem" p
       WHERE (p."id" = m.duplicate_id OR p."slug" = m.duplicate_id)
@@ -706,11 +721,11 @@ BEGIN
     WHERE p."learningUnitId" IS NULL
       AND (p."beltId" IS NOT NULL OR p."id" LIKE 'belt-%' OR p."slug" LIKE 'belt-%')
       AND NOT EXISTS (
-        SELECT 1 FROM temp_canonical_active_problems c
+        SELECT 1 FROM kalvilearn_migration_staging.canonical_active_problems c
         WHERE p."id" = c.canonical_id OR p."slug" = c.canonical_id
       )
       AND NOT EXISTS (
-        SELECT 1 FROM temp_duplicate_archive_map m
+        SELECT 1 FROM kalvilearn_migration_staging.duplicate_archive_map m
         WHERE p."id" = m.duplicate_id OR p."slug" = m.duplicate_id
       );
 
@@ -729,7 +744,7 @@ SET
   "status" = 'PUBLISHED',
   "canonicalProblemId" = NULL,
   "updatedAt" = COALESCE(p."updatedAt", p."createdAt", timezone('utc'::text, now()))
-FROM temp_canonical_active_problems c
+FROM kalvilearn_migration_staging.canonical_active_problems c
 WHERE (p."id" = c.canonical_id OR p."slug" = c.canonical_id)
   AND p."learningUnitId" IS NULL
   AND p."canonicalProblemId" IS NULL
@@ -743,7 +758,7 @@ SET
   "status" = 'ARCHIVED',
   "canonicalProblemId" = c."id",
   "updatedAt" = COALESCE(p."updatedAt", p."createdAt", timezone('utc'::text, now()))
-FROM temp_duplicate_archive_map m
+FROM kalvilearn_migration_staging.duplicate_archive_map m
 JOIN public."Problem" c
   ON (c."id" = m.canonical_id OR c."slug" = m.canonical_id)
  AND c."learningUnitId" IS NULL
@@ -797,6 +812,9 @@ BEGIN
       v_self_refs, v_invalid_refs, v_cyclic_refs, v_learn_archived;
   END IF;
 END $$;
+
+-- 4.6C. Clean up private migration staging schema inside transaction
+DROP SCHEMA IF EXISTS kalvilearn_migration_staging CASCADE;
 
 -- 4.7. General backfill for limits and timestamps
 UPDATE public."Problem"

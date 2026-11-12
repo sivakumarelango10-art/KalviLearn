@@ -71465,247 +71465,8 @@ var CONTENT_PERMISSION_LIST = [
   "content.revision.view_all",
   "content.revision.restore"
 ];
-var CONTENT_PERMISSION_CATALOG = [
-  {
-    id: "content.dashboard.view",
-    label: "View Content Dashboard",
-    description: "Access the Content Manager workspace overview and metrics.",
-    category: "Dashboard",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.curriculum.view",
-    label: "View Curriculum Modules",
-    description: "View assigned curriculum modules and structure.",
-    category: "Curriculum",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.curriculum.create",
-    label: "Create Curriculum Modules",
-    description: "Create new curriculum modules (requires Global scope or elevated approval).",
-    category: "Curriculum",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.curriculum.update",
-    label: "Edit Curriculum Modules",
-    description: "Edit module titles, descriptions, and metadata within scope.",
-    category: "Curriculum",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.curriculum.reorder",
-    label: "Reorder Curriculum Modules",
-    description: "Change display ordering of authorized curriculum modules.",
-    category: "Curriculum",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.learning_unit.view",
-    label: "View Learning Units",
-    description: "View lessons, concepts, and learning unit content.",
-    category: "Learning Units",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.learning_unit.create",
-    label: "Create Learning Units",
-    description: "Create new lessons inside authorized modules.",
-    category: "Learning Units",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.learning_unit.update",
-    label: "Edit Learning Units",
-    description: "Modify lesson text, approach, code snippets, and reading times.",
-    category: "Learning Units",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.learning_unit.reorder",
-    label: "Reorder Learning Units",
-    description: "Reorder lessons inside authorized curriculum modules.",
-    category: "Learning Units",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.view",
-    label: "View Coding Questions",
-    description: "Browse and open coding questions within authorized scope.",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.create",
-    label: "Create Coding Questions",
-    description: "Author new draft coding questions inside authorized learning units.",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.update",
-    label: "Edit Coding Questions",
-    description: "Update coding question title, statements, formats, and limits.",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.duplicate",
-    label: "Duplicate Questions",
-    description: "Clone an existing authorized question into a draft.",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.preview",
-    label: "Preview Questions",
-    description: "Preview how questions render for students (public tests only unless hidden access granted).",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.question.run_tests",
-    label: "Run Question Test Runner",
-    description: "Execute test solutions against question test suites in the sandbox.",
-    category: "Questions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.example.manage",
-    label: "Manage Question Examples",
-    description: "Add, edit, and reorder sample examples.",
-    category: "Examples & Tests",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.test_case.manage",
-    label: "Manage Public Test Cases",
-    description: "Add, edit, reorder, and delete public test cases.",
-    category: "Examples & Tests",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.hidden_test_case.manage",
-    label: "Manage Hidden Test Cases",
-    description: "View, add, edit, and delete hidden evaluation test cases.",
-    category: "Examples & Tests",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.starter_code.manage",
-    label: "Manage Starter Code",
-    description: "Edit programming-language starter code templates.",
-    category: "Examples & Tests",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.revision.view_own",
-    label: "View Own Revisions & Activity",
-    description: "Inspect revision history and audit entries authored by oneself.",
-    category: "Revisions",
-    defaultEnabled: true,
-    isElevated: false
-  },
-  {
-    id: "content.revision.view_all",
-    label: "View All Question Revisions",
-    description: "Inspect revisions authored by any editor across authorized questions.",
-    category: "Revisions",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.revision.restore",
-    label: "Restore Question Revisions",
-    description: "Roll back a question to a previous snapshot revision.",
-    category: "Revisions",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.question.publish",
-    label: "Publish Coding Questions",
-    description: "Publish coding questions directly to live student visibility without Super Admin approval.",
-    category: "Publication & Destructive",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.question.archive",
-    label: "Archive Coding Questions",
-    description: "Archive or unpublish coding questions.",
-    category: "Publication & Destructive",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.question.delete",
-    label: "Delete Coding Questions",
-    description: "Permanently delete coding questions.",
-    category: "Publication & Destructive",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.learning_unit.publish",
-    label: "Publish Learning Units / Modules",
-    description: "Publish learning units or modules directly to live student visibility.",
-    category: "Publication & Destructive",
-    defaultEnabled: false,
-    isElevated: true
-  },
-  {
-    id: "content.learning_unit.delete",
-    label: "Delete Learning Units / Modules",
-    description: "Permanently delete learning units or curriculum modules.",
-    category: "Publication & Destructive",
-    defaultEnabled: false,
-    isElevated: true
-  }
-];
-var DEFAULT_CONTENT_MANAGER_PERMISSIONS = CONTENT_PERMISSION_CATALOG.filter(
-  (p2) => p2.defaultEnabled
-).map((p2) => p2.id);
-var ELEVATED_CONTENT_PERMISSIONS = CONTENT_PERMISSION_CATALOG.filter(
-  (p2) => p2.isElevated
-).map((p2) => p2.id);
+var FIXED_CONTENT_MANAGER_PERMISSIONS = [...CONTENT_PERMISSION_LIST];
 var VALID_PERMISSION_SET = new Set(CONTENT_PERMISSION_LIST);
-function isValidContentPermission(value) {
-  return VALID_PERMISSION_SET.has(value);
-}
-function normalizePermissionsList(raw) {
-  if (!Array.isArray(raw)) return [];
-  const seen = /* @__PURE__ */ new Set();
-  for (const item of raw) {
-    if (typeof item === "string") {
-      const trimmed = item.trim();
-      if (isValidContentPermission(trimmed)) {
-        seen.add(trimmed);
-      }
-    }
-  }
-  return Array.from(seen);
-}
 function hasContentPermission(permissions, required) {
   if (!permissions) return false;
   if (permissions instanceof Set) return permissions.has(required);
@@ -71721,7 +71482,7 @@ var PermissionDeniedError = class extends Error {
     this.statusCode = statusCode;
   }
 };
-async function resolveContentManagerContext(authUser) {
+async function requireContentManager(authUser) {
   const tokenRole = (authUser.role || "").toUpperCase().trim();
   if (tokenRole !== CONTENT_MANAGER_ROLE) {
     return {
@@ -71769,7 +71530,7 @@ async function resolveContentManagerContext(authUser) {
   const { data: assignment, error: assignErr } = await supabaseServer.from("content_manager_assignments").select("*").eq("user_id", dbUser.id).maybeSingle();
   if (assignErr) {
     console.error("[content-rbac] Failed to inspect content_manager_assignments:", assignErr);
-    return { authorized: false, statusCode: 503, error: "Unable to verify Content Manager permissions." };
+    return { authorized: false, statusCode: 503, error: "Unable to verify Content Manager access." };
   }
   if (!assignment) {
     return {
@@ -71833,29 +71594,6 @@ async function resolveContentManagerContext(authUser) {
       error: "Access Denied: Your Content Manager assignment is inactive or has been revoked."
     };
   }
-  const [permRes, scopeRes] = await Promise.all([
-    supabaseServer.from("content_manager_permissions").select("permission").eq("assignment_id", assignment.id),
-    supabaseServer.from("content_manager_scopes").select("module_id, learning_unit_id").eq("assignment_id", assignment.id)
-  ]);
-  if (permRes.error || scopeRes.error) {
-    console.error("[content-rbac] Failed loading permissions/scopes:", permRes.error || scopeRes.error);
-    return { authorized: false, statusCode: 503, error: "Unable to load Content Manager permissions." };
-  }
-  const normalizedPerms = normalizePermissionsList(
-    (permRes.data || []).map((row) => row.permission)
-  );
-  const assignedModuleIds = /* @__PURE__ */ new Set();
-  const assignedLearningUnitIds = /* @__PURE__ */ new Set();
-  for (const row of scopeRes.data || []) {
-    if (typeof row.module_id === "string" && row.module_id) {
-      assignedModuleIds.add(row.module_id);
-    }
-    if (typeof row.learning_unit_id === "string" && row.learning_unit_id) {
-      assignedLearningUnitIds.add(row.learning_unit_id);
-    }
-  }
-  const rawScopeType = String(assignment.scope_type || "NONE").toUpperCase();
-  const scopeType = rawScopeType === "GLOBAL" ? "GLOBAL" : rawScopeType === "SCOPED" ? "SCOPED" : "NONE";
   return {
     authorized: true,
     ctx: {
@@ -71865,10 +71603,10 @@ async function resolveContentManagerContext(authUser) {
       role: CONTENT_MANAGER_ROLE,
       assignmentId: assignment.id,
       isActive: true,
-      scopeType,
-      permissions: new Set(normalizedPerms),
-      assignedModuleIds,
-      assignedLearningUnitIds,
+      scopeType: "GLOBAL",
+      permissions: new Set(FIXED_CONTENT_MANAGER_PERMISSIONS),
+      assignedModuleIds: /* @__PURE__ */ new Set(),
+      assignedLearningUnitIds: /* @__PURE__ */ new Set(),
       grantedBy: assignment.granted_by || null,
       grantedAt: assignment.granted_at || null,
       notes: assignment.notes || null
@@ -71878,7 +71616,7 @@ async function resolveContentManagerContext(authUser) {
 function requirePermission(ctx, permission) {
   if (!hasContentPermission(ctx.permissions, permission)) {
     throw new PermissionDeniedError(
-      `Access Denied: Missing required permission "${permission}".`
+      `Access Denied: Missing required capability "${permission}".`
     );
   }
 }
@@ -71889,82 +71627,34 @@ function requireAnyPermission(ctx, permissions) {
     );
   }
 }
-function canManageModule(ctx, moduleId) {
-  if (ctx.scopeType === "GLOBAL") return true;
-  if (ctx.scopeType === "NONE") return false;
-  return ctx.assignedModuleIds.has(moduleId);
+function canManageModule(_ctx, _moduleId) {
+  return true;
 }
-function requireModuleManageScope(ctx, moduleId) {
-  if (!canManageModule(ctx, moduleId)) {
-    throw new PermissionDeniedError(
-      `Scope Denied: You do not have Content Manager scope for module "${moduleId}".`
-    );
-  }
+function requireModuleManageScope(_ctx, _moduleId) {
 }
-async function canAccessLearningUnit(ctx, learningUnitId, knownModuleId) {
+async function canAccessLearningUnit(_ctx, learningUnitId, knownModuleId) {
   let moduleId = knownModuleId ?? null;
-  if (!moduleId) {
+  if (!moduleId && learningUnitId) {
     const { data: unit } = await supabaseServer.from("LearningUnit").select("id, moduleId").eq("id", learningUnitId).maybeSingle();
     moduleId = unit?.moduleId ?? null;
   }
-  if (ctx.scopeType === "GLOBAL") return { allowed: true, moduleId };
-  if (ctx.scopeType === "NONE") return { allowed: false, moduleId };
-  if (ctx.assignedLearningUnitIds.has(learningUnitId)) {
-    return { allowed: true, moduleId };
-  }
-  if (moduleId && ctx.assignedModuleIds.has(moduleId)) {
-    return { allowed: true, moduleId };
-  }
-  return { allowed: false, moduleId };
+  return { allowed: true, moduleId };
 }
 async function requireLearningUnitScope(ctx, learningUnitId, knownModuleId) {
-  const { allowed, moduleId } = await canAccessLearningUnit(ctx, learningUnitId, knownModuleId);
-  if (!allowed) {
-    throw new PermissionDeniedError(
-      `Scope Denied: You do not have Content Manager scope for learning unit "${learningUnitId}".`
-    );
-  }
+  const { moduleId } = await canAccessLearningUnit(ctx, learningUnitId, knownModuleId);
   return moduleId;
 }
-async function canAccessQuestion(ctx, question) {
-  if (ctx.scopeType === "GLOBAL") return true;
-  if (ctx.scopeType === "NONE") return false;
-  if (question.learningUnitId) {
-    const { allowed } = await canAccessLearningUnit(ctx, question.learningUnitId);
-    return allowed;
-  }
-  return false;
+async function canAccessQuestion(_ctx, _question) {
+  return true;
 }
-async function requireQuestionScope(ctx, question) {
-  const allowed = await canAccessQuestion(ctx, question);
-  if (!allowed) {
-    throw new PermissionDeniedError(
-      `Scope Denied: Question "${question.id || "unknown"}" is outside your assigned curriculum scope.`
-    );
-  }
+async function requireQuestionScope(_ctx, _question) {
 }
-function sanitizeTestCasesForContext(ctx, testCases) {
-  const canViewHidden = hasContentPermission(ctx.permissions, "content.hidden_test_case.manage");
+function sanitizeTestCasesForContext(_ctx, testCases) {
   const hiddenCount = testCases.filter((tc) => Boolean(tc?.isHidden)).length;
-  if (canViewHidden) {
-    return { sanitized: testCases, hiddenCount };
-  }
-  return {
-    sanitized: testCases.filter((tc) => !tc?.isHidden),
-    hiddenCount
-  };
+  return { sanitized: testCases, hiddenCount };
 }
-function sanitizeRevisionForContext(ctx, revision) {
-  const canViewHidden = hasContentPermission(ctx.permissions, "content.hidden_test_case.manage");
-  if (canViewHidden || !revision?.snapshot) return revision;
-  const snapshot = { ...revision.snapshot };
-  if (Array.isArray(snapshot.testCases)) {
-    snapshot.testCases = snapshot.testCases.filter((tc) => !tc?.isHidden);
-  }
-  return {
-    ...revision,
-    snapshot
-  };
+function sanitizeRevisionForContext(_ctx, revision) {
+  return revision;
 }
 async function recordContentAudit(params) {
   try {
@@ -71991,6 +71681,37 @@ async function recordContentAudit(params) {
 }
 
 // src/server/contentManagerHandler.ts
+var ALLOWED_CONTENT_ACTIONS = /* @__PURE__ */ new Set([
+  "me",
+  "dashboard",
+  "list_belts",
+  "list_curriculum_modules",
+  "create_curriculum_module",
+  "update_curriculum_module",
+  "reorder_curriculum_modules",
+  "toggle_module_status",
+  "delete_curriculum_module",
+  "create_learning_unit",
+  "update_learning_unit",
+  "reorder_learning_units",
+  "toggle_learning_unit_status",
+  "toggle_unit_status",
+  "submit_learning_unit_for_review",
+  "delete_learning_unit",
+  "list_questions",
+  "get_question",
+  "get_question_preview",
+  "create_question",
+  "update_question",
+  "submit_question_for_review",
+  "duplicate_question",
+  "toggle_question_status",
+  "delete_question",
+  "run_question_tests",
+  "list_question_revisions",
+  "restore_question_revision",
+  "list_my_revisions"
+]);
 var ipLimiter = new RateLimiter(120, 6e4);
 var userLimiter = new RateLimiter(60, 6e4);
 function resetContentManagerRateLimitsForTesting() {
@@ -72106,7 +71827,7 @@ async function handler(req, res) {
       message: auth.error || "Authentication required."
     });
   }
-  const resolution = await resolveContentManagerContext(auth.user);
+  const resolution = await requireContentManager(auth.user);
   if (!resolution.authorized) {
     return sendJson(res, resolution.statusCode, {
       success: false,
@@ -72133,6 +71854,7 @@ async function handler(req, res) {
   if (!action) {
     if (sub === "me" || url.includes("/me")) action = "me";
     else if (sub === "dashboard" || url.includes("/dashboard")) action = "dashboard";
+    else if (sub === "belts" || url.includes("/belts")) action = "list_belts";
     else if (sub === "curriculum" || sub.startsWith("curriculum/")) {
       if (method === "GET") action = "list_curriculum_modules";
     } else if (sub === "questions" || sub.startsWith("questions/")) {
@@ -72142,7 +71864,7 @@ async function handler(req, res) {
       if (method === "GET") action = "list_my_revisions";
     }
   }
-  if (PROHIBITED_SUPER_ADMIN_ACTIONS.has(action) || sub.startsWith("students") || sub.startsWith("mentors") || sub.startsWith("campuses") || sub.startsWith("managers") || sub.startsWith("roles") || sub.startsWith("content-managers")) {
+  if (PROHIBITED_SUPER_ADMIN_ACTIONS.has(action) || sub.startsWith("students") || sub.startsWith("mentors") || sub.startsWith("campuses") || sub.startsWith("managers") || sub.startsWith("roles") || sub.startsWith("content-managers") || action && !ALLOWED_CONTENT_ACTIONS.has(action)) {
     return sendJson(res, 403, {
       success: false,
       error: "Forbidden",
@@ -72173,6 +71895,9 @@ async function handler(req, res) {
     }
     if (action === "dashboard") {
       return await handleGetDashboard(ctx, res);
+    }
+    if (action === "list_belts") {
+      return await handleListBelts(res);
     }
     if (action === "list_curriculum_modules") {
       return await handleListCurriculumModules(ctx, body, req, res);
@@ -72271,6 +71996,55 @@ async function handler(req, res) {
     });
   }
 }
+async function resolveBeltId(rawBeltId) {
+  const { data: belts, error } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+  if (error || !belts || belts.length === 0) {
+    return typeof rawBeltId === "string" && rawBeltId.trim() ? rawBeltId.trim() : null;
+  }
+  const str = typeof rawBeltId === "string" ? rawBeltId.trim() : "";
+  if (str) {
+    const exact = belts.find((b2) => b2.id === str);
+    if (exact) return exact.id;
+    const orderMatch = str.match(/(\d+)$/);
+    if (orderMatch) {
+      const targetOrder = Number.parseInt(orderMatch[1], 10);
+      const byOrder = belts.find((b2) => b2.order === targetOrder);
+      if (byOrder) return byOrder.id;
+    }
+  }
+  return belts[0].id;
+}
+async function handleListBelts(res) {
+  const [beltsRes, probRes] = await Promise.all([
+    supabaseServer.from("Belt").select("*").order("order", { ascending: true }),
+    supabaseServer.from("Problem").select("id, beltId, learningUnitId, status, isActive")
+  ]);
+  if (beltsRes.error) throw beltsRes.error;
+  if (probRes.error) throw probRes.error;
+  const practiceProbs = (probRes.data || []).filter((p2) => !p2.learningUnitId);
+  const enriched = (beltsRes.data || []).map((b2) => {
+    const forBelt = practiceProbs.filter((p2) => p2.beltId === b2.id);
+    const publishedCount = forBelt.filter(
+      (p2) => p2.status === "PUBLISHED" || p2.status !== "DRAFT" && p2.status !== "ARCHIVED" && p2.isActive
+    ).length;
+    return {
+      id: b2.id,
+      order: b2.order,
+      name: b2.name,
+      title: b2.title,
+      color: b2.color || "#EAB308",
+      description: b2.description || "",
+      problemCount: forBelt.length,
+      publishedCount,
+      draftCount: forBelt.length - publishedCount
+    };
+  });
+  return sendJson(res, 200, {
+    success: true,
+    message: "Practice belts retrieved.",
+    data: enriched
+  });
+}
 async function findQuestionByIdOrSlug(idOrSlug) {
   const { data: byId, error: idErr } = await supabaseServer.from("Problem").select("*").eq("id", idOrSlug).maybeSingle();
   if (idErr) throw idErr;
@@ -72345,14 +72119,21 @@ async function handleGetDashboard(ctx, res) {
     approvalStatus: q2.approvalStatus || "APPROVED",
     updatedAt: q2.updatedAt
   }));
+  const totalModules = visibleModules.length;
+  const totalLearningUnits = visibleUnits.length;
+  const totalPracticeQuestions = visibleQuestions.filter((q2) => !q2.learningUnitId).length;
+  const totalLearnCodingQuestions = visibleQuestions.filter((q2) => Boolean(q2.learningUnitId)).length;
   return sendJson(res, 200, {
     success: true,
     message: "Content Manager dashboard overview retrieved.",
     data: {
       scopeType: ctx.scopeType,
       stats: {
-        assignedModulesCount: visibleModules.length,
-        totalLearningUnits: visibleUnits.length,
+        totalModules,
+        assignedModulesCount: totalModules,
+        totalLearningUnits,
+        totalPracticeQuestions,
+        totalLearnCodingQuestions,
         totalCodingQuestions: visibleQuestions.length,
         draftQuestions,
         publishedQuestions: canSeePublished ? publishedQuestions : null,
@@ -72982,6 +72763,8 @@ async function handleListQuestions(ctx, body, req, res) {
   const topic = typeof body.topic === "string" ? body.topic.trim() : (urlObj.searchParams.get("topic") || "ALL").trim();
   const statusFilter = typeof body.status === "string" ? body.status.trim().toUpperCase() : (urlObj.searchParams.get("status") || "ALL").trim().toUpperCase();
   const learningUnitId = typeof body.learningUnitId === "string" ? body.learningUnitId.trim() : (urlObj.searchParams.get("learningUnitId") || "").trim();
+  const questionTypeRaw = typeof body.questionType === "string" ? body.questionType.trim().toUpperCase() : (urlObj.searchParams.get("questionType") || "ALL").trim().toUpperCase();
+  const beltParam = typeof body.beltId === "string" && body.beltId.trim() ? body.beltId.trim() : typeof body.belt === "string" && body.belt.trim() ? body.belt.trim() : (urlObj.searchParams.get("beltId") || urlObj.searchParams.get("belt") || "").trim();
   const requestedPage = Number.parseInt(String(body.page ?? urlObj.searchParams.get("page") ?? "1"), 10);
   const requestedLimit = Number.parseInt(String(body.limit ?? urlObj.searchParams.get("limit") ?? "50"), 10);
   const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
@@ -72989,15 +72772,21 @@ async function handleListQuestions(ctx, body, req, res) {
   if (learningUnitId) {
     await requireLearningUnitScope(ctx, learningUnitId);
   }
+  let resolvedFilterBeltId = "";
+  if (beltParam && beltParam !== "ALL") {
+    resolvedFilterBeltId = await resolveBeltId(beltParam) || beltParam;
+  }
   const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt").order("createdAt", { ascending: false });
   if (problemsError) throw problemsError;
   const scopedProblems = [];
   for (const p2 of allProblems || []) {
+    if (questionTypeRaw === "PRACTICE" && p2.learningUnitId) continue;
+    if ((questionTypeRaw === "LEARN_CODING" || questionTypeRaw === "LEARN-CODING") && !p2.learningUnitId) continue;
     if (await canAccessQuestion(ctx, p2)) {
       scopedProblems.push(p2);
     }
   }
-  const statsSubset = learningUnitId ? scopedProblems.filter((p2) => p2.learningUnitId === learningUnitId) : scopedProblems;
+  const statsSubset = learningUnitId ? scopedProblems.filter((p2) => p2.learningUnitId === learningUnitId) : resolvedFilterBeltId ? scopedProblems.filter((p2) => p2.beltId === resolvedFilterBeltId) : scopedProblems;
   let totalPublished = 0;
   let totalDraft = 0;
   const difficultyCounts = { Easy: 0, Medium: 0, Hard: 0 };
@@ -73013,6 +72802,7 @@ async function handleListQuestions(ctx, body, req, res) {
   }
   const filtered = scopedProblems.filter((problem) => {
     if (learningUnitId && problem.learningUnitId !== learningUnitId) return false;
+    if (resolvedFilterBeltId && problem.beltId !== resolvedFilterBeltId) return false;
     if (difficulty !== "ALL" && problem.difficulty !== difficulty) return false;
     if (topic !== "ALL" && (problem.subdivision || "General") !== topic) return false;
     const st = String(problem.status || "").toUpperCase();
@@ -73387,7 +73177,7 @@ async function handleCreateQuestion(ctx, body, clientIp, res) {
     output: ex.output || ex.expectedOutput || "",
     explanation: ex.explanation || ""
   }));
-  const beltId = learningUnitId ? null : typeof body.beltId === "string" && body.beltId.trim() ? body.beltId.trim() : "mock-belt-1";
+  const beltId = learningUnitId ? null : await resolveBeltId(body.beltId);
   const order = typeof body.order === "number" && !isNaN(body.order) ? body.order : 1;
   const { data: createdProb, error: probErr } = await supabaseServer.from("Problem").insert({
     id: problemId,
@@ -73542,6 +73332,9 @@ async function handleUpdateQuestion(ctx, body, clientIp, res) {
   if (typeof body.timeLimitMs === "number" && body.timeLimitMs > 0) updates.timeLimitMs = body.timeLimitMs;
   if (typeof body.memoryLimitMb === "number" && body.memoryLimitMb > 0) updates.memoryLimitMb = body.memoryLimitMb;
   if (typeof body.order === "number" && !isNaN(body.order)) updates.order = body.order;
+  if ("beltId" in body && !updates.learningUnitId && !(existing.learningUnitId && body.learningUnitId === void 0)) {
+    updates.beltId = body.beltId ? await resolveBeltId(body.beltId) : null;
+  }
   if (body.learningUnitId !== void 0 && body.learningUnitId !== existing.learningUnitId) {
     if (typeof body.learningUnitId === "string" && body.learningUnitId.trim()) {
       const targetLid = body.learningUnitId.trim();

@@ -481,11 +481,19 @@ export const router = createBrowserRouter([
           },
           {
             path: 'learning-units',
-            element: withSuspense(<ContentManagerCurriculumPage focusMode="learning-units" />),
+            element: <Navigate to="/content-manager/curriculum" replace />,
+          },
+          {
+            path: 'practice-questions',
+            element: withSuspense(<ContentManagerQuestionsPage questionMode="practice" />),
+          },
+          {
+            path: 'learn-coding-questions',
+            element: withSuspense(<ContentManagerQuestionsPage questionMode="learn-coding" />),
           },
           {
             path: 'questions',
-            element: withSuspense(<ContentManagerQuestionsPage />),
+            element: withSuspense(<ContentManagerQuestionsPage questionMode="all" />),
           },
           {
             path: 'revisions',
