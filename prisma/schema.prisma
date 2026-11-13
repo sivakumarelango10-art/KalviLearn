@@ -242,6 +242,7 @@ model User {
   // Dedicated profile relations
   studentProfile           Student?
   mentorProfile            Mentor?
+  campusManagerProfile     CampusManager?
   contentManagerProfile    ContentManager?
   contentManagerAssignment ContentManagerAssignment?
   campusId                 String?                   @map("campus_id")
@@ -296,6 +297,23 @@ model Mentor {
 
   @@index([userId])
   @@map("mentors")
+}
+
+model CampusManager {
+  id          String   @id @default(uuid())
+  userId      String   @unique @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String?
+  email       String?
+  managerCode String?  @unique @map("manager_code") @db.VarChar(30)
+  department  String?
+  designation String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([email])
+  @@map("campus_managers")
 }
 
 model ContentManager {

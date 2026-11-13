@@ -15,6 +15,7 @@ export interface MockDbState {
   campuses: any[]
   users: any[]
   mentors: any[]
+  campus_managers: any[]
   content_managers: any[]
   students: any[]
   mentor_students: any[]
@@ -252,6 +253,19 @@ export function createInitialMockDb(): MockDbState {
       },
     ],
     mentors: [],
+    campus_managers: [
+      {
+        id: 'cmg-seed-0004',
+        user_id: '00000000-0000-4000-a000-000000000004',
+        name: 'Automated Test Manager',
+        email: 'synthetic.campus@kalvilearn.test',
+        manager_code: 'CMG-TEST01',
+        department: 'Campus Operations',
+        designation: 'Campus Manager',
+        created_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        updated_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+      },
+    ],
     content_managers: [],
     students: [],
     mentor_students: [],
@@ -732,18 +746,18 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             row.updatedAt = row.updatedAt || new Date().toISOString()
           }
 
-          if (tableName === 'content_managers') {
+          if (tableName === 'campus_managers' || tableName === 'content_managers') {
             if (tableRows.some((r) => r.user_id === row.user_id)) {
               insertError = {
                 code: '23505',
-                message: `duplicate key value violates unique constraint "content_managers_user_id_key"`,
+                message: `duplicate key value violates unique constraint "${tableName}_user_id_key"`,
               }
               break
             }
             if (row.manager_code && tableRows.some((r) => r.manager_code === row.manager_code)) {
               insertError = {
                 code: '23505',
-                message: `duplicate key value violates unique constraint "content_managers_manager_code_key"`,
+                message: `duplicate key value violates unique constraint "${tableName}_manager_code_key"`,
               }
               break
             }
