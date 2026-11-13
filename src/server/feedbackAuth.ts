@@ -175,6 +175,11 @@ const SYNTHETIC_TEST_ROSTER: Record<string, { id: string; role: AuthenticatedUse
     role: 'CAMPUS_MANAGER',
     name: 'Automated Test Manager',
   },
+  'synthetic.content@kalvilearn.test': {
+    id: '00000000-0000-4000-a000-000000000005',
+    role: 'CONTENT_MANAGER',
+    name: 'Automated Test Content Manager',
+  },
   'sgjitbros@gmail.com': {
     id: '00000000-0000-0000-0000-000000000001',
     role: 'SUPERADMIN',

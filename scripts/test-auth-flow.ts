@@ -36,6 +36,8 @@ function resolvePortalPath(role: string): string {
     return '/super-admin/dashboard'
   } else if (normalized === 'CAMPUS_MANAGER' || normalized === 'ADMIN') {
     return '/campus/dashboard'
+  } else if (normalized === 'CONTENT_MANAGER') {
+    return '/content-manager'
   } else if (normalized === 'MENTOR') {
     return '/mentor'
   } else {
@@ -161,6 +163,14 @@ async function runTests() {
     assert(
       resolvePortalPath('ADMIN') === '/campus/dashboard',
       'ADMIN role routes deterministically to /campus/dashboard'
+    )
+    assert(
+      resolvePortalPath('CONTENT_MANAGER') === '/content-manager',
+      'CONTENT_MANAGER role routes deterministically to /content-manager'
+    )
+    assert(
+      resolvePortalPath('content_manager') === '/content-manager',
+      'CONTENT_MANAGER case-insensitive role routes to /content-manager'
     )
     assert(
       resolvePortalPath('SUPERADMIN') === '/super-admin/dashboard',
