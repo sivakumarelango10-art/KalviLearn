@@ -53,7 +53,7 @@ function runtime(tool: 'python' | 'java' | 'javac' | 'g++'): string | null {
   if (!runtimeCache.has(tool)) {
     const found =
       tool === 'python'
-        ? probe(['python3', 'python'], ['--version'])
+        ? probe(process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'], ['--version'])
         : tool === 'java'
           ? probe(['java'], ['-version'])
           : tool === 'javac'

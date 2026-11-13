@@ -71042,7 +71042,7 @@ function probe(candidates, args) {
 }
 function runtime(tool) {
   if (!runtimeCache.has(tool)) {
-    const found = tool === "python" ? probe(["python3", "python"], ["--version"]) : tool === "java" ? probe(["java"], ["-version"]) : tool === "javac" ? probe(["javac"], ["-version"]) : probe(["g++"], ["--version"]);
+    const found = tool === "python" ? probe(process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"], ["--version"]) : tool === "java" ? probe(["java"], ["-version"]) : tool === "javac" ? probe(["javac"], ["-version"]) : probe(["g++"], ["--version"]);
     runtimeCache.set(tool, found);
   }
   return runtimeCache.get(tool) ?? null;
