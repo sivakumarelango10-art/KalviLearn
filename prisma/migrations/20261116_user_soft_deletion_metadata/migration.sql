@@ -12,9 +12,9 @@ ALTER TABLE public."users"
   ADD COLUMN IF NOT EXISTS "deleted_by" TEXT,
   ADD COLUMN IF NOT EXISTS "deletion_reason" TEXT;
 
-CREATE INDEX IF NOT EXISTS "idx_users_deleted_at"
-  ON public."users"("deleted_at")
-  WHERE "deleted_at" IS NOT NULL;
+-- Standard B-tree index reconciling with Prisma schema: @@index([deletedAt]) -> "users_deleted_at_idx"
+CREATE INDEX IF NOT EXISTS "users_deleted_at_idx"
+  ON public."users"("deleted_at");
 
 NOTIFY pgrst, 'reload schema';
 
