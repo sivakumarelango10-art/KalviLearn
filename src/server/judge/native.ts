@@ -211,7 +211,12 @@ export const nativeEngine: JudgeEngine = {
       await Promise.all(Array.from({ length: Math.min(CONCURRENCY, job.inputs.length - 1) }, worker))
       return { kind: 'ran', cases: results }
     } finally {
-      rmSync(dir, { recursive: true, force: true })
+      rmSync(dir, {
+        recursive: true,
+        force: true,
+        maxRetries: 5,
+        retryDelay: 100,
+      })
     }
   },
 }

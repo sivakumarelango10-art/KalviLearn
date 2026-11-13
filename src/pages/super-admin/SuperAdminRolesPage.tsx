@@ -12,12 +12,15 @@ import {
   Mail,
   Building2,
   Lock,
+  Trash2,
 } from 'lucide-react'
 import {
   fetchUserRolesDirectory,
   updateUserRole,
+  deleteUserAccount,
   AdminUserRole,
 } from '@/lib/superAdminService'
+import { DeleteUserModal } from '@/components/super-admin/DeleteUserModal'
 
 const ROLE_COLORS: Record<string, string> = {
   SUPERADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
@@ -41,6 +44,10 @@ export const SuperAdminRolesPage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<AdminUserRole | null>(null)
   const [newRole, setNewRole] = useState<'STUDENT' | 'MENTOR' | 'CAMPUS_MANAGER' | 'ADMIN'>('STUDENT')
   const [submitting, setSubmitting] = useState(false)
+
+  const [deleteTargetUser, setDeleteTargetUser] = useState<AdminUserRole | null>(null)
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const loadData = async () => {
     setLoading(true)
@@ -75,6 +82,26 @@ export const SuperAdminRolesPage: React.FC = () => {
       setError(res.error || 'Failed to update user role.')
     }
     setSubmitting(false)
+  }
+
+  const handleDeleteUserConfirm = async (reason: string, confirmEmail: string) => {
+    if (!deleteTargetUser) return
+    setDeleteSubmitting(true)
+    setDeleteError(null)
+    setError(null)
+
+    const res = await deleteUserAccount(deleteTargetUser.id, confirmEmail, reason)
+    if (res.success) {
+      setSuccessMsg(
+        res.message ||
+          `Account for ${deleteTargetUser.name || deleteTargetUser.email} has been safely deactivated.`
+      )
+      setDeleteTargetUser(null)
+      await loadData()
+    } else {
+      setDeleteError(res.error || 'Failed to delete user account.')
+    }
+    setDeleteSubmitting(false)
   }
 
   const filtered = users.filter((u) => {
@@ -278,18 +305,32 @@ export const SuperAdminRolesPage: React.FC = () => {
                         {isProtected ? (
                           <span className="text-[11px] text-neutral-500 italic">Protected</span>
                         ) : (
-                          <button
-                            onClick={() => {
-                              setSelectedUser(u)
-                              const targetRole = SUPPORTED_ROLES.includes(u.role as any)
-                                ? (u.role as typeof newRole)
-                                : 'STUDENT'
-                              setNewRole(targetRole)
-                            }}
-                            className="px-2.5 py-1 text-xs rounded-lg bg-[#141414] hover:bg-[#202020] text-neutral-200 transition-colors font-medium"
-                          >
-                            Change Role
-                          </button>
+                          <div className="inline-flex items-center justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedUser(u)
+                                const targetRole = SUPPORTED_ROLES.includes(u.role as any)
+                                  ? (u.role as typeof newRole)
+                                  : 'STUDENT'
+                                setNewRole(targetRole)
+                              }}
+                              className="px-2.5 py-1 text-xs rounded-lg bg-[#141414] hover:bg-[#202020] text-neutral-200 transition-colors font-medium"
+                            >
+                              Change Role
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDeleteError(null)
+                                setDeleteTargetUser(u)
+                              }}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg bg-red-950/50 hover:bg-red-900/60 text-[#FF6266] border border-red-900/50 transition-colors font-medium"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Delete User</span>
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -369,7 +410,20 @@ export const SuperAdminRolesPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Delete User Confirmation Modal */}
+      <DeleteUserModal
+        user={deleteTargetUser}
+        submitting={deleteSubmitting}
+        error={deleteError}
+        onClose={() => {
+          if (!deleteSubmitting) {
+            setDeleteTargetUser(null)
+            setDeleteError(null)
+          }
+        }}
+        onConfirm={handleDeleteUserConfirm}
+      />
     </div>
   )
 }
-

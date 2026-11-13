@@ -27867,6 +27867,14 @@ var authCache = /* @__PURE__ */ new Map();
 function tokenKey(token) {
   return crypto2.createHash("sha256").update(token).digest("hex");
 }
+function invalidateAuthCacheForUser(userId) {
+  if (!userId) return;
+  for (const [key, entry] of authCache.entries()) {
+    if (entry.user.id === userId) {
+      authCache.delete(key);
+    }
+  }
+}
 var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function toValidUuid(rawId, seed) {
   if (rawId && UUID_REGEX.test(rawId)) {
@@ -71164,7 +71172,12 @@ var nativeEngine = {
       await Promise.all(Array.from({ length: Math.min(CONCURRENCY, job.inputs.length - 1) }, worker));
       return { kind: "ran", cases: results };
     } finally {
-      rmSync(dir, { recursive: true, force: true });
+      rmSync(dir, {
+        recursive: true,
+        force: true,
+        maxRetries: 5,
+        retryDelay: 100
+      });
     }
   }
 };
@@ -115901,6 +115914,9 @@ async function handler(req, res) {
     if (action === "toggle_user_status") {
       return await handleToggleUserStatus(body, auth.user.id, clientIp, res);
     }
+    if (action === "delete_user" || method === "DELETE" && (sub === "users" || url.includes("/users"))) {
+      return await handleDeleteUser(body, auth.user.id, callerEmail, clientIp, res);
+    }
     if (action === "assign_user_campus") {
       return await handleAssignUserCampus(body, auth.user.id, clientIp, res);
     }
@@ -116458,7 +116474,7 @@ async function ensureCampusManagerProfile(input) {
 }
 async function handleListManagers(res) {
   const [managersRes, campusesRes, profilesRes] = await Promise.all([
-    supabaseServer.from("users").select("id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt").in("role", ["CAMPUS_MANAGER", "ADMIN"]).order("name", { ascending: true }),
+    supabaseServer.from("users").select("id, email, name, role, status, campus_id, deleted_at, created_at:createdAt, updated_at:updatedAt").in("role", ["CAMPUS_MANAGER", "ADMIN"]).order("name", { ascending: true }),
     supabaseServer.from("campuses").select("id, name, code, manager_id"),
     supabaseServer.from("campus_managers").select("*")
   ]);
@@ -116468,6 +116484,7 @@ async function handleListManagers(res) {
   const campuses = campusesRes.data || [];
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]));
   const managers = (managersRes.data || []).filter((m) => {
+    if (m.deleted_at) return false;
     if (m.role === "CAMPUS_MANAGER") return true;
     const managesCampus = campuses.some((c) => c.manager_id === m.id);
     return Boolean(m.campus_id || managesCampus);
@@ -117371,13 +117388,13 @@ async function handleDeleteStudent(body, req, adminId, clientIp, res) {
 }
 async function handleListUserRoles(res) {
   const [usersRes, campusesRes] = await Promise.all([
-    supabaseServer.from("users").select("id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt").order("email", { ascending: true }),
+    supabaseServer.from("users").select("id, email, name, role, status, campus_id, deleted_at, created_at:createdAt, updated_at:updatedAt").order("email", { ascending: true }),
     supabaseServer.from("campuses").select("id, name, code")
   ]);
   if (usersRes.error) throw usersRes.error;
   const campuses = campusesRes.data || [];
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]));
-  const enriched = (usersRes.data || []).map((u) => ({
+  const enriched = (usersRes.data || []).filter((u) => !u.deleted_at).map((u) => ({
     ...u,
     created_at: u.created_at || u.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
     updated_at: u.updated_at || u.updatedAt || (/* @__PURE__ */ new Date()).toISOString(),
@@ -117959,6 +117976,170 @@ async function handleToggleUserStatus(body, adminId, clientIp, res) {
     success: true,
     message: `Account for ${targetUser.name || targetEmail} is now ${nextStatus}.`,
     data: updated
+  });
+}
+async function handleDeleteUser(body, adminId, callerEmail, clientIp, res) {
+  const targetUserId = typeof body.userId === "string" ? body.userId.trim() : "";
+  const confirmEmail = typeof body.confirmEmail === "string" ? body.confirmEmail.trim().toLowerCase() : "";
+  const reason = typeof body.reason === "string" ? body.reason.trim() : "";
+  if (!targetUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing User ID",
+      message: "User ID is required."
+    });
+  }
+  if (!reason || reason.length < 3) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Deletion Reason Required",
+      message: "Please provide a deletion reason (at least 3 characters)."
+    });
+  }
+  if (!confirmEmail) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Email Confirmation Required",
+      message: "Please type the target user email to confirm deletion."
+    });
+  }
+  const { data: targetUser, error: findErr } = await supabaseServer.from("users").select("id, email, name, role, status, authUid, campus_id, deleted_at").eq("id", targetUserId).maybeSingle();
+  if (findErr) throw findErr;
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "User Not Found",
+      message: "The target user could not be found."
+    });
+  }
+  const targetEmail = (targetUser.email || "").toLowerCase().trim();
+  const targetRole = (targetUser.role || "STUDENT").toUpperCase().trim();
+  if (targetUser.deleted_at) {
+    return sendJson(res, 409, {
+      success: false,
+      error: "Already Deleted",
+      message: `Account for ${targetUser.name || targetEmail} has already been deleted.`
+    });
+  }
+  if (targetEmail === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Protected Account",
+      message: `Forbidden: The protected Super Administrator account (${SUPER_ADMIN_EMAIL}) cannot be deleted.`
+    });
+  }
+  if (targetUserId === adminId) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Self-Deletion Forbidden",
+      message: "Forbidden: You cannot delete your own currently logged-in Super Admin account."
+    });
+  }
+  if (targetRole === SUPER_ADMIN_ROLE) {
+    const { data: otherAdmins, error: adminCountErr } = await supabaseServer.from("users").select("id, status, deleted_at").eq("role", SUPER_ADMIN_ROLE).eq("status", "ACTIVE").neq("id", targetUserId);
+    if (adminCountErr) throw adminCountErr;
+    const activeOthers = (otherAdmins || []).filter((a) => !a.deleted_at);
+    if (activeOthers.length === 0) {
+      return sendJson(res, 403, {
+        success: false,
+        error: "Last Super Admin Protected",
+        message: "Forbidden: Cannot delete the last active Super Administrator account."
+      });
+    }
+  }
+  if (confirmEmail !== targetEmail) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Email Confirmation Mismatch",
+      message: `Confirmation email "${confirmEmail}" does not match "${targetEmail}".`
+    });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { data: updatedUser, error: updErr } = await supabaseServer.from("users").update({
+    status: "INACTIVE",
+    deleted_at: now,
+    deleted_by: callerEmail,
+    deletion_reason: reason,
+    updatedAt: now
+  }).eq("id", targetUserId).select("id, email, name, role, status, deleted_at, deleted_by, deletion_reason").single();
+  if (updErr) throw updErr;
+  const { data: studentProfile } = await supabaseServer.from("students").select("id").eq("user_id", targetUserId).maybeSingle();
+  if (studentProfile?.id) {
+    await supabaseServer.from("students").update({ status: "INACTIVE", updated_at: now }).eq("id", studentProfile.id);
+    await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: now, updated_at: now }).eq("student_id", studentProfile.id).eq("status", "ACTIVE");
+  }
+  const { data: mentorProfile } = await supabaseServer.from("mentors").select("id").eq("user_id", targetUserId).maybeSingle();
+  if (mentorProfile?.id) {
+    await supabaseServer.from("mentors").update({ status: "INACTIVE", updated_at: now }).eq("id", mentorProfile.id);
+    await supabaseServer.from("mentor_students").update({ status: "INACTIVE", unassigned_at: now, updated_at: now }).eq("mentor_id", mentorProfile.id).eq("status", "ACTIVE");
+  }
+  await supabaseServer.from("campuses").update({ manager_id: null, updated_at: now }).eq("manager_id", targetUserId);
+  const { data: cmAssignment } = await supabaseServer.from("content_manager_assignments").select("id, status, is_active").eq("user_id", targetUserId).maybeSingle();
+  if (cmAssignment && (cmAssignment.status === "ACTIVE" || cmAssignment.is_active === true)) {
+    await supabaseServer.from("content_manager_assignments").update({
+      status: "REVOKED",
+      is_active: false,
+      revoked_by: callerEmail,
+      revoked_at: now,
+      updated_by: callerEmail,
+      updated_at: now
+    }).eq("id", cmAssignment.id);
+  }
+  invalidateAuthCacheForUser(targetUserId);
+  let sessionRevoked = false;
+  let authLoginBlocked = false;
+  const authUid = targetUser.authUid || null;
+  if (authUid && supabaseServer.auth?.admin) {
+    try {
+      const authAdmin = supabaseServer.auth.admin;
+      if (typeof authAdmin.signOut === "function") {
+        await authAdmin.signOut(authUid, "global");
+        sessionRevoked = true;
+      }
+      if (typeof authAdmin.updateUserById === "function") {
+        await authAdmin.updateUserById(authUid, { ban_duration: "876000h" });
+        authLoginBlocked = true;
+      }
+    } catch (authErr) {
+      console.warn("[superadmin-delete-user] Auth session/ban notice:", authErr);
+    }
+  }
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    "DELETE_USER",
+    "USER",
+    targetUserId,
+    `${targetUser.name || targetEmail} (${targetEmail})`,
+    {
+      role: targetRole,
+      previousStatus: targetUser.status,
+      campusId: targetUser.campus_id || null,
+      reason,
+      softDeleted: true,
+      sessionRevoked,
+      authLoginBlocked,
+      preservedRecords: [
+        "UserProgress",
+        "Submission",
+        "mentor_students",
+        "content_manager_assignments",
+        "content_managers",
+        "admin_audit_logs"
+      ]
+    },
+    "SUCCESS",
+    null,
+    clientIp
+  );
+  return sendJson(res, 200, {
+    success: true,
+    message: `Account for "${targetUser.name || targetEmail}" (${targetEmail}) has been safely deactivated and removed from active listings.`,
+    data: {
+      ...updatedUser,
+      sessionRevoked,
+      authLoginBlocked
+    }
   });
 }
 async function handleAssignUserCampus(body, adminId, clientIp, res) {
