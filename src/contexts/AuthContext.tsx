@@ -110,7 +110,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         const email = session.user.email
-        const result = await verifyUserInDatabase(email)
+        const result = await verifyUserInDatabase({
+          email,
+          authUid: session.user.id,
+          accessToken: session.access_token,
+        })
 
         if (!isMounted) return
 
@@ -163,7 +167,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (!email) return
 
           setIsLoading(true)
-          const result = await verifyUserInDatabase(email)
+          const result = await verifyUserInDatabase({
+            email: session.user.email,
+            authUid: session.user.id,
+            accessToken: session.access_token,
+          })
 
           if (result.allowed && result.user) {
             const googleName = session?.user?.user_metadata?.full_name || session?.user?.user_metadata?.name
