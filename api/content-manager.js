@@ -72183,7 +72183,7 @@ async function handleListCurriculumModules(ctx, body, req, res) {
   const rawModules = modulesRes.data || [];
   const rawUnits = (unitsRes.data || []).map((unit) => ({
     ...unit,
-    concept: unit.concept ?? unit.content
+    concept: unit.content ?? unit.concept ?? ""
   }));
   const authorizedUnitsByModule = /* @__PURE__ */ new Map();
   for (const u of rawUnits) {
@@ -72567,50 +72567,52 @@ async function handleUpdateLearningUnit(ctx, body, clientIp, res) {
     updatedAt: now
   };
   if (typeof body.title === "string" && body.title.trim()) updates.title = body.title.trim();
-  if (typeof body.concept === "string") updates.content = body.concept.trim();
-  else if (typeof body.content === "string") updates.content = body.content.trim();
+  const conceptVal = typeof body.concept === "string" ? body.concept.trim() : typeof body.content === "string" ? body.content.trim() : void 0;
+  if (conceptVal !== void 0) updates.content = conceptVal;
   if (typeof body.approach === "string") updates.approach = body.approach;
   if (typeof body.codingQuestion === "string") updates.codingQuestion = body.codingQuestion;
   if (typeof body.inputFormat === "string") updates.inputFormat = body.inputFormat;
   if (typeof body.outputFormat === "string") updates.outputFormat = body.outputFormat;
-  if (typeof body.readingTimeMinutes === "number") updates.readingTimeMinutes = body.readingTimeMinutes;
+  if (typeof body.readingTimeMinutes === "number" && !isNaN(body.readingTimeMinutes)) {
+    updates.readingTimeMinutes = Math.max(1, body.readingTimeMinutes);
+  } else if (typeof body.readingTimeMinutes === "string" && body.readingTimeMinutes.trim() && !isNaN(Number(body.readingTimeMinutes))) {
+    updates.readingTimeMinutes = Math.max(1, parseInt(body.readingTimeMinutes, 10));
+  }
   if (typeof body.order === "number") updates.order = body.order;
   if (Array.isArray(body.examples)) updates.examples = body.examples;
   if (body.codeSnippets !== void 0) updates.codeSnippets = body.codeSnippets;
   if (typeof body.status === "string") {
     const reqStatus = body.status.trim().toUpperCase();
     const canPub = hasContentPermission(ctx.permissions, "content.learning_unit.publish");
-    if (reqStatus !== existing.status) {
-      if (reqStatus === "PUBLISHED") {
-        if (!canPub) {
-          return sendJson(res, 403, {
-            success: false,
-            error: "Permission Denied",
-            message: 'Missing permission "content.learning_unit.publish". Submit for Super Admin review instead.'
-          });
-        }
-        updates.status = "PUBLISHED";
-        updates.isActive = true;
-        updates.approvalStatus = "APPROVED";
-        updates.publishedBy = ctx.userId;
-        updates.publishedAt = now;
-      } else if (reqStatus === "PENDING_REVIEW") {
-        updates.status = existing.status === "PUBLISHED" ? "PUBLISHED" : "PENDING_REVIEW";
-        updates.approvalStatus = "PENDING_REVIEW";
-        updates.submittedForReviewBy = ctx.userId;
-        updates.submittedForReviewAt = now;
-      } else if (reqStatus === "DRAFT" && existing.status === "PUBLISHED") {
-        if (!canPub) {
-          return sendJson(res, 403, {
-            success: false,
-            error: "Permission Denied",
-            message: 'Missing permission "content.learning_unit.publish" to unpublish a live unit.'
-          });
-        }
-        updates.status = "DRAFT";
-        updates.isActive = false;
-        updates.approvalStatus = "DRAFT";
+    if (reqStatus === "PUBLISHED") {
+      if (!canPub) {
+        return sendJson(res, 403, {
+          success: false,
+          error: "Permission Denied",
+          message: 'Missing permission "content.learning_unit.publish". Submit for Super Admin review instead.'
+        });
       }
+      updates.status = "PUBLISHED";
+      updates.isActive = true;
+      updates.approvalStatus = "APPROVED";
+      updates.publishedBy = ctx.userId;
+      updates.publishedAt = now;
+    } else if (reqStatus === "PENDING_REVIEW") {
+      updates.status = existing.status === "PUBLISHED" ? "PUBLISHED" : "PENDING_REVIEW";
+      updates.approvalStatus = "PENDING_REVIEW";
+      updates.submittedForReviewBy = ctx.userId;
+      updates.submittedForReviewAt = now;
+    } else if (reqStatus === "DRAFT") {
+      if (existing.status === "PUBLISHED" && !canPub) {
+        return sendJson(res, 403, {
+          success: false,
+          error: "Permission Denied",
+          message: 'Missing permission "content.learning_unit.publish" to unpublish a live unit.'
+        });
+      }
+      updates.status = "DRAFT";
+      updates.isActive = false;
+      updates.approvalStatus = "DRAFT";
     }
   }
   const { data: updated, error: updErr } = await supabaseServer.from("LearningUnit").update(updates).eq("id", id).select().single();
@@ -72632,7 +72634,7 @@ async function handleUpdateLearningUnit(ctx, body, clientIp, res) {
   return sendJson(res, 200, {
     success: true,
     message: "Learning Unit updated successfully.",
-    data: { ...updated, concept: updated.content }
+    data: { ...updated, concept: updated.content ?? updated.concept ?? "" }
   });
 }
 async function handleSubmitLearningUnitForReview(ctx, body, clientIp, res) {

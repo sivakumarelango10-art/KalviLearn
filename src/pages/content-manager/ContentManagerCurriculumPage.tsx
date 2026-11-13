@@ -209,23 +209,34 @@ export const ContentManagerCurriculumPage: React.FC<ContentManagerCurriculumPage
     setError(null)
     const res = editingUnit
       ? await updateCmLearningUnit(editingUnit.id, {
-        status: submitForReview ? 'PUBLISHED' : 'DRAFT',
-      })
+          ...unitForm,
+          title: unitForm.title.trim(),
+          status: submitForReview ? 'PUBLISHED' : 'DRAFT',
+        })
       : await createCmLearningUnit({
           moduleId: activeModuleIdForUnit!,
           ...unitForm,
+          title: unitForm.title.trim(),
           status: submitForReview ? 'PUBLISHED' : 'DRAFT',
         })
     setSavingUnit(false)
     if (res.success) {
+      const savedTitle = unitForm.title.trim()
       setSuccessMsg(
         submitForReview
-          ? `Lesson "${unitForm.title}" saved and published.`
+          ? `Lesson "${savedTitle}" saved and published.`
           : editingUnit
-          ? `Lesson "${unitForm.title}" saved.`
-          : `Lesson "${unitForm.title}" saved as Draft.`
+          ? `Lesson "${savedTitle}" saved.`
+          : `Lesson "${savedTitle}" saved as Draft.`
       )
       setIsUnitModalOpen(false)
+      setEditingUnit(null)
+      if (res.data?.id) {
+        setSelectedUnitId(res.data.id)
+      }
+      if (activeModuleIdForUnit) {
+        setExpandedModules((prev) => ({ ...prev, [activeModuleIdForUnit]: true }))
+      }
       loadCurriculum()
     } else {
       setError(res.error || 'Failed to save learning unit.')
