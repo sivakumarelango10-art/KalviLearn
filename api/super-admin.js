@@ -71034,7 +71034,7 @@ function probe(candidates, args) {
 }
 function runtime(tool) {
   if (!runtimeCache.has(tool)) {
-    const found = tool === "python" ? probe(["python3", "python"], ["--version"]) : tool === "java" ? probe(["java"], ["-version"]) : tool === "javac" ? probe(["javac"], ["-version"]) : probe(["g++"], ["--version"]);
+    const found = tool === "python" ? probe(process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"], ["--version"]) : tool === "java" ? probe(["java"], ["-version"]) : tool === "javac" ? probe(["javac"], ["-version"]) : probe(["g++"], ["--version"]);
     runtimeCache.set(tool, found);
   }
   return runtimeCache.get(tool) ?? null;
@@ -115847,8 +115847,14 @@ async function handler(req, res) {
     if (action === "list_managers" || method === "GET" && (sub === "managers" || url.includes("/managers"))) {
       return await handleListManagers(res);
     }
+    if (action === "get_manager" || action === "get_manager_details") {
+      return await handleGetManager(body, req.query || {}, res);
+    }
     if (action === "provision_manager") {
       return await handleProvisionManager(body, auth.user.id, clientIp, res);
+    }
+    if (action === "update_manager" || action === "edit_manager") {
+      return await handleUpdateManager(body, auth.user.id, clientIp, res);
     }
     if (action === "assign_manager_campus") {
       return await handleAssignManagerCampus(body, auth.user.id, clientIp, res);
@@ -116382,18 +116388,98 @@ async function handleAssignCampusManager(body, adminId, clientIp, res) {
     data: updated
   });
 }
+function normalizeOptionalProfileField2(raw, maxLen) {
+  if (raw === void 0 || raw === null) return null;
+  const s = typeof raw === "string" ? raw.trim() : "";
+  if (!s) return null;
+  return s.slice(0, maxLen);
+}
+async function ensureCampusManagerProfile(input) {
+  if (input.email && input.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL) {
+    return null;
+  }
+  const { data: userCheck } = await supabaseServer.from("users").select("email, role").eq("id", input.userId).maybeSingle();
+  if (userCheck) {
+    const userEmail = (userCheck.email || "").toLowerCase().trim();
+    const userRole = (userCheck.role || "").toUpperCase().trim();
+    if (userEmail === SUPER_ADMIN_EMAIL || userRole === "SUPERADMIN") {
+      return null;
+    }
+  }
+  const now = input.now || (/* @__PURE__ */ new Date()).toISOString();
+  const { data: existing, error: selErr } = await supabaseServer.from("campus_managers").select("*").eq("user_id", input.userId).maybeSingle();
+  if (selErr) throw selErr;
+  const nextManagerCode = normalizeOptionalProfileField2(input.managerCode, 30);
+  const nextDepartment = normalizeOptionalProfileField2(input.department, 100);
+  const nextDesignation = normalizeOptionalProfileField2(input.designation, 100);
+  if (existing) {
+    if (!input.allowUpdateExisting) {
+      return existing;
+    }
+    const updates = {};
+    if (input.name !== void 0 && input.name !== existing.name) {
+      updates.name = input.name;
+    }
+    if (input.email !== void 0 && input.email && input.email.toLowerCase() !== String(existing.email || "").toLowerCase()) {
+      updates.email = input.email.toLowerCase();
+    }
+    if (input.hasManagerCodeField && nextManagerCode !== (existing.manager_code || null)) {
+      updates.manager_code = nextManagerCode;
+    }
+    if (input.hasDepartmentField && nextDepartment !== (existing.department || null)) {
+      updates.department = nextDepartment;
+    }
+    if (input.hasDesignationField && nextDesignation !== (existing.designation || null)) {
+      updates.designation = nextDesignation;
+    }
+    if (Object.keys(updates).length === 0) {
+      return existing;
+    }
+    updates.updated_at = now;
+    const { data: updated, error: updErr } = await supabaseServer.from("campus_managers").update(updates).eq("id", existing.id).select("*").single();
+    if (updErr) throw updErr;
+    return updated;
+  }
+  const generatedCode = `CMG-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  const profileId = `cmg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+  const { data: inserted, error: insErr } = await supabaseServer.from("campus_managers").insert({
+    id: profileId,
+    user_id: input.userId,
+    name: input.name ?? null,
+    email: input.email ? input.email.toLowerCase() : null,
+    manager_code: nextManagerCode || generatedCode,
+    department: nextDepartment || "Campus Operations",
+    designation: nextDesignation || "Campus Manager",
+    created_at: now,
+    updated_at: now
+  }).select("*").single();
+  if (insErr) throw insErr;
+  return inserted;
+}
 async function handleListManagers(res) {
-  const [managersRes, campusesRes] = await Promise.all([
+  const [managersRes, campusesRes, profilesRes] = await Promise.all([
     supabaseServer.from("users").select("id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt").in("role", ["CAMPUS_MANAGER", "ADMIN"]).order("name", { ascending: true }),
-    supabaseServer.from("campuses").select("id, name, code, manager_id")
+    supabaseServer.from("campuses").select("id, name, code, manager_id"),
+    supabaseServer.from("campus_managers").select("*")
   ]);
   if (managersRes.error) throw managersRes.error;
+  const profiles = !profilesRes.error && Array.isArray(profilesRes.data) ? profilesRes.data : [];
+  const profileMap = new Map(profiles.map((p2) => [p2.user_id, p2]));
   const campuses = campusesRes.data || [];
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]));
-  const managers = (managersRes.data || []).map((m) => {
+  const managers = (managersRes.data || []).filter((m) => {
+    if (m.role === "CAMPUS_MANAGER") return true;
+    const managesCampus = campuses.some((c) => c.manager_id === m.id);
+    return Boolean(m.campus_id || managesCampus);
+  }).map((m) => {
     const assignedCampus = m.campus_id ? campusMap[m.campus_id] : campuses.find((c) => c.manager_id === m.id);
+    const p2 = profileMap.get(m.id);
     return {
       ...m,
+      profileId: p2?.id || null,
+      managerCode: p2?.manager_code || null,
+      department: p2?.department || null,
+      designation: p2?.designation || null,
       created_at: m.created_at || m.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
       updated_at: m.updated_at || m.updatedAt || (/* @__PURE__ */ new Date()).toISOString(),
       campus: assignedCampus ? { id: assignedCampus.id, name: assignedCampus.name, code: assignedCampus.code } : null
@@ -116414,6 +116500,13 @@ async function handleProvisionManager(body, adminId, clientIp, res) {
       success: false,
       error: "Invalid Email",
       message: "A valid email address is required."
+    });
+  }
+  if (email === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Operation Forbidden",
+      message: "Forbidden: Super Administrator account cannot be provisioned as a Campus Manager."
     });
   }
   if (!name || name.length > 100) {
@@ -116449,6 +116542,30 @@ async function handleProvisionManager(body, adminId, clientIp, res) {
   if (campusId) {
     await supabaseServer.from("campuses").update({ manager_id: userId }).eq("id", campusId);
   }
+  let cmProfile;
+  try {
+    cmProfile = await ensureCampusManagerProfile({
+      userId,
+      name,
+      email,
+      managerCode: body.managerCode,
+      department: body.department,
+      designation: body.designation,
+      hasManagerCodeField: "managerCode" in body,
+      hasDepartmentField: "department" in body,
+      hasDesignationField: "designation" in body,
+      allowUpdateExisting: true
+    });
+  } catch (profErr) {
+    if (profErr?.code === "23505" || String(profErr?.message || "").includes("unique") || String(profErr?.message || "").includes("already in use")) {
+      return sendJson(res, 409, {
+        success: false,
+        error: "Conflict",
+        message: "A campus manager with this manager code or user ID is already in use."
+      });
+    }
+    throw profErr;
+  }
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
     adminId,
@@ -116456,7 +116573,15 @@ async function handleProvisionManager(body, adminId, clientIp, res) {
     "USER",
     userId,
     `${name} (${email})`,
-    { email, name, role: "CAMPUS_MANAGER", campusId },
+    {
+      email,
+      name,
+      role: "CAMPUS_MANAGER",
+      campusId,
+      managerCode: cmProfile?.manager_code || null,
+      department: cmProfile?.department || null,
+      designation: cmProfile?.designation || null
+    },
     "SUCCESS",
     null,
     clientIp
@@ -116464,7 +116589,162 @@ async function handleProvisionManager(body, adminId, clientIp, res) {
   return sendJson(res, 201, {
     success: true,
     message: `Campus manager "${name}" provisioned successfully.`,
-    data: { id: userId, email, name, role: "CAMPUS_MANAGER", campusId }
+    data: {
+      id: userId,
+      profileId: cmProfile?.id || null,
+      email,
+      name,
+      role: "CAMPUS_MANAGER",
+      campusId,
+      managerCode: cmProfile?.manager_code || null,
+      department: cmProfile?.department || null,
+      designation: cmProfile?.designation || null
+    }
+  });
+}
+async function handleUpdateManager(body, adminId, clientIp, res) {
+  const managerId = typeof body.managerId === "string" ? body.managerId.trim() : typeof body.id === "string" ? body.id.trim() : "";
+  if (!managerId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Manager ID",
+      message: "Manager ID is required."
+    });
+  }
+  const { data: targetUser, error: findErr } = await supabaseServer.from("users").select("id, email, name, role, status, campus_id").eq("id", managerId).maybeSingle();
+  if (findErr) throw findErr;
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Manager Not Found",
+      message: "Campus manager does not exist."
+    });
+  }
+  if ((targetUser.email || "").toLowerCase().trim() === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: "Operation Forbidden",
+      message: "Forbidden: Super Administrator account cannot be modified as a Campus Manager."
+    });
+  }
+  const name = typeof body.name === "string" ? body.name.trim() : targetUser.name;
+  const campusId = "campusId" in body ? typeof body.campusId === "string" && body.campusId !== "NONE" ? body.campusId.trim() : null : targetUser.campus_id;
+  const { error: updErr } = await supabaseServer.from("users").update({
+    name,
+    campus_id: campusId,
+    "updatedAt": (/* @__PURE__ */ new Date()).toISOString()
+  }).eq("id", managerId);
+  if (updErr) throw updErr;
+  if ("campusId" in body && campusId !== targetUser.campus_id) {
+    await supabaseServer.from("campuses").update({ manager_id: null, updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("manager_id", managerId);
+    if (campusId) {
+      await supabaseServer.from("campuses").update({ manager_id: managerId, updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", campusId);
+    }
+  }
+  let cmProfile;
+  try {
+    cmProfile = await ensureCampusManagerProfile({
+      userId: managerId,
+      name,
+      email: targetUser.email,
+      managerCode: body.managerCode,
+      department: body.department,
+      designation: body.designation,
+      hasManagerCodeField: "managerCode" in body,
+      hasDepartmentField: "department" in body,
+      hasDesignationField: "designation" in body,
+      allowUpdateExisting: true
+    });
+  } catch (profErr) {
+    if (profErr?.code === "23505" || String(profErr?.message || "").includes("unique") || String(profErr?.message || "").includes("already in use")) {
+      return sendJson(res, 409, {
+        success: false,
+        error: "Conflict",
+        message: "A campus manager with this manager code is already in use."
+      });
+    }
+    throw profErr;
+  }
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    "UPDATE_CAMPUS_MANAGER",
+    "USER",
+    managerId,
+    `${name || targetUser.name} (${targetUser.email})`,
+    {
+      name,
+      campusId,
+      managerCode: cmProfile?.manager_code || null,
+      department: cmProfile?.department || null,
+      designation: cmProfile?.designation || null
+    },
+    "SUCCESS",
+    null,
+    clientIp
+  );
+  return sendJson(res, 200, {
+    success: true,
+    message: "Campus manager updated successfully.",
+    data: {
+      id: managerId,
+      profileId: cmProfile?.id || null,
+      email: targetUser.email,
+      name,
+      role: targetUser.role,
+      status: targetUser.status,
+      campus_id: campusId,
+      managerCode: cmProfile?.manager_code || null,
+      department: cmProfile?.department || null,
+      designation: cmProfile?.designation || null
+    }
+  });
+}
+async function handleGetManager(body, query, res) {
+  const queryObj = query && typeof query === "object" ? query : {};
+  const managerId = (typeof body.managerId === "string" ? body.managerId.trim() : "") || (typeof queryObj.managerId === "string" ? queryObj.managerId.trim() : "") || (typeof queryObj.id === "string" ? queryObj.id.trim() : "");
+  if (!managerId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Manager ID",
+      message: "Manager ID is required."
+    });
+  }
+  const [userRes, profileRes, campusesRes] = await Promise.all([
+    supabaseServer.from("users").select("id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt").eq("id", managerId).maybeSingle(),
+    supabaseServer.from("campus_managers").select("*").eq("user_id", managerId).maybeSingle(),
+    supabaseServer.from("campuses").select("id, name, code, manager_id")
+  ]);
+  if (userRes.error) throw userRes.error;
+  if (!userRes.data) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Manager Not Found",
+      message: "Campus manager does not exist."
+    });
+  }
+  const u = userRes.data;
+  const p2 = profileRes.data || null;
+  const campuses = campusesRes.data || [];
+  const assignedCampus = u.campus_id ? campuses.find((c) => c.id === u.campus_id) : campuses.find((c) => c.manager_id === u.id);
+  return sendJson(res, 200, {
+    success: true,
+    message: "Campus manager details retrieved.",
+    data: {
+      id: u.id,
+      profileId: p2?.id || null,
+      email: u.email,
+      name: u.name,
+      role: u.role,
+      status: u.status,
+      campus_id: u.campus_id,
+      managerCode: p2?.manager_code || null,
+      department: p2?.department || null,
+      designation: p2?.designation || null,
+      campus: assignedCampus ? { id: assignedCampus.id, name: assignedCampus.name, code: assignedCampus.code } : null,
+      created_at: p2?.created_at || u.created_at,
+      updated_at: p2?.updated_at || u.updated_at
+    }
   });
 }
 async function handleAssignManagerCampus(body, adminId, clientIp, res) {
@@ -116483,6 +116763,12 @@ async function handleAssignManagerCampus(body, adminId, clientIp, res) {
   if (campusId) {
     await supabaseServer.from("campuses").update({ manager_id: managerId, updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", campusId);
   }
+  await ensureCampusManagerProfile({
+    userId: managerId,
+    name: user.name,
+    email: user.email,
+    allowUpdateExisting: false
+  });
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
     adminId,
@@ -116511,8 +116797,14 @@ async function handleToggleManagerStatus(body, adminId, clientIp, res) {
       message: "Manager ID is required."
     });
   }
-  const { data: user, error } = await supabaseServer.from("users").update({ status, "updatedAt": (/* @__PURE__ */ new Date()).toISOString() }).eq("id", managerId).select("id, email, name, status").single();
+  const { data: user, error } = await supabaseServer.from("users").update({ status, "updatedAt": (/* @__PURE__ */ new Date()).toISOString() }).eq("id", managerId).select("id, email, name, status, role").single();
   if (error) throw error;
+  await ensureCampusManagerProfile({
+    userId: managerId,
+    name: user.name,
+    email: user.email,
+    allowUpdateExisting: false
+  });
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
     adminId,
@@ -117162,6 +117454,14 @@ async function handleUpdateUserRole(body, adminId, clientIp, res) {
   if (String(targetUser.role || "").toUpperCase() === "CONTENT_MANAGER" && newRole !== "CONTENT_MANAGER") {
     await supabaseServer.from("content_manager_assignments").update({ is_active: false, revoked_by: SUPER_ADMIN_EMAIL, revoked_at: (/* @__PURE__ */ new Date()).toISOString(), updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("user_id", targetUserId);
   }
+  if (newRole === "CAMPUS_MANAGER") {
+    await ensureCampusManagerProfile({
+      userId: targetUserId,
+      name: targetUser.name,
+      email: targetUser.email,
+      allowUpdateExisting: true
+    });
+  }
   if (newRole === "MENTOR") {
     const { data: existingM } = await supabaseServer.from("mentors").select("id").eq("user_id", targetUserId).maybeSingle();
     if (!existingM) {
@@ -117295,6 +117595,28 @@ async function handleUpdateUser(body, adminId, clientIp, res) {
   };
   const { data: updated, error: updErr } = await supabaseServer.from("users").update(updatePayload).eq("id", targetUserId).select("id, email, name, role, status, campus_id").single();
   if (updErr) throw updErr;
+  if (newRole === "CAMPUS_MANAGER") {
+    await ensureCampusManagerProfile({
+      userId: targetUserId,
+      name: newName,
+      email: targetUser.email,
+      allowUpdateExisting: true
+    });
+  } else if (newRole === "ADMIN" && (newCampusId || targetUser.campus_id)) {
+    await ensureCampusManagerProfile({
+      userId: targetUserId,
+      name: newName,
+      email: targetUser.email,
+      allowUpdateExisting: true
+    });
+  } else if (targetUser.role === "CAMPUS_MANAGER") {
+    await ensureCampusManagerProfile({
+      userId: targetUserId,
+      name: newName,
+      email: targetUser.email,
+      allowUpdateExisting: true
+    });
+  }
   if (newRole === "MENTOR") {
     const { data: existingM } = await supabaseServer.from("mentors").select("id").eq("user_id", targetUserId).maybeSingle();
     if (existingM) {
@@ -117476,6 +117798,12 @@ async function handleTransferRole(body, adminId, clientIp, res) {
     if (effectiveCampusId) {
       await supabaseServer.from("campuses").update({ manager_id: destinationUserId, updated_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", effectiveCampusId);
     }
+    await ensureCampusManagerProfile({
+      userId: destinationUserId,
+      name: destUser.name,
+      email: destUser.email,
+      allowUpdateExisting: true
+    });
   } else if (roleToTransfer === "MENTOR") {
     const { data: existingM } = await supabaseServer.from("mentors").select("id").eq("user_id", destinationUserId).maybeSingle();
     if (!existingM) {
@@ -117535,6 +117863,13 @@ async function handleTransferRole(body, adminId, clientIp, res) {
         campus_id: sourceUser.campus_id
       });
     }
+  } else if (sourceNewRole === "CAMPUS_MANAGER") {
+    await ensureCampusManagerProfile({
+      userId: sourceUserId,
+      name: sourceUser.name,
+      email: sourceUser.email,
+      allowUpdateExisting: true
+    });
   }
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,

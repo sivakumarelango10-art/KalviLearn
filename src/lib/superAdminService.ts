@@ -420,11 +420,42 @@ export async function provisionCampusManager(payload: {
   email: string
   name: string
   campusId?: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
 }): Promise<{ success: boolean; data?: unknown; error?: string }> {
   return callSuperAdminApi(
     '/api/super-admin/managers',
     payload,
     'provision_manager',
+    'POST'
+  )
+}
+
+export async function updateCampusManager(payload: {
+  managerId: string
+  name?: string
+  email?: string
+  campusId?: string | null
+  managerCode?: string | null
+  department?: string | null
+  designation?: string | null
+}): Promise<{ success: boolean; data?: AdminCampusManager; error?: string }> {
+  return callSuperAdminApi<AdminCampusManager>(
+    '/api/super-admin/managers',
+    payload,
+    'update_manager',
+    'POST'
+  )
+}
+
+export async function fetchCampusManagerDetails(
+  managerId: string
+): Promise<{ success: boolean; data?: AdminCampusManager; error?: string }> {
+  return callSuperAdminApi<AdminCampusManager>(
+    '/api/super-admin/managers',
+    { managerId },
+    'get_manager',
     'POST'
   )
 }

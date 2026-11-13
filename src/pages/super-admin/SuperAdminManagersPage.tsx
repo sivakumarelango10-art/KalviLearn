@@ -231,7 +231,12 @@ export const SuperAdminManagersPage: React.FC = () => {
                 filtered.map((mgr) => (
                   <tr key={mgr.id} className="hover:bg-[#141414]/40 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-white">
-                      {mgr.name || 'Unnamed Manager'}
+                      <div>{mgr.name || 'Unnamed Manager'}</div>
+                      {mgr.managerCode && (
+                        <div className="text-[11px] font-mono text-neutral-400 font-normal">
+                          {mgr.managerCode}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3.5 px-4 text-neutral-300 font-mono">
                       <div className="flex items-center gap-1.5">
