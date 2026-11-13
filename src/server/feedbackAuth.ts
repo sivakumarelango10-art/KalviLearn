@@ -130,6 +130,15 @@ function tokenKey(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex')
 }
 
+export function invalidateAuthCacheForUser(userId: string): void {
+  if (!userId) return
+  for (const [key, entry] of authCache.entries()) {
+    if (entry.user.id === userId) {
+      authCache.delete(key)
+    }
+  }
+}
+
 export function clearAuthCacheForTesting(): void {
   authCache.clear()
 }

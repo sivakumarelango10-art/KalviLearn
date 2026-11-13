@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError } from './feedbackAuth'
+import { authenticateFeedbackRequest, supabaseServer, getPrivilegedServerKeyError, invalidateAuthCacheForUser } from './feedbackAuth'
 import { applyCors, getClientIp, RateLimiter, readJsonBody, PayloadTooLargeError } from './httpSecurity'
 import { formatErrorMessage } from '../lib/errorUtils'
 import { resolveRoute } from './routeResolver'
@@ -302,6 +302,9 @@ export default async function handler(
     }
     if (action === 'toggle_user_status') {
       return await handleToggleUserStatus(body, auth.user.id, clientIp, res)
+    }
+    if (action === 'delete_user' || (method === 'DELETE' && (sub === 'users' || url.includes('/users')))) {
+      return await handleDeleteUser(body, auth.user.id, callerEmail, clientIp, res)
     }
     if (action === 'assign_user_campus') {
       return await handleAssignUserCampus(body, auth.user.id, clientIp, res)
@@ -923,7 +926,7 @@ async function handleListManagers(res: ServerResponse) {
   const [managersRes, campusesRes] = await Promise.all([
     supabaseServer
       .from('users')
-      .select('id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt')
+      .select('id, email, name, role, status, campus_id, deleted_at, created_at:createdAt, updated_at:updatedAt')
       .in('role', ['CAMPUS_MANAGER', 'ADMIN'])
       .order('name', { ascending: true }),
     supabaseServer.from('campuses').select('id, name, code, manager_id'),
@@ -934,7 +937,9 @@ async function handleListManagers(res: ServerResponse) {
   const campuses = campusesRes.data || []
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]))
 
-  const managers = (managersRes.data || []).map((m: any) => {
+  const managers = (managersRes.data || [])
+    .filter((m: any) => !m.deleted_at)
+    .map((m: any) => {
     const assignedCampus = m.campus_id ? campusMap[m.campus_id] : campuses.find((c) => c.manager_id === m.id)
     return {
       ...m,
@@ -1914,7 +1919,7 @@ async function handleListUserRoles(res: ServerResponse) {
   const [usersRes, campusesRes] = await Promise.all([
     supabaseServer
       .from('users')
-      .select('id, email, name, role, status, campus_id, created_at:createdAt, updated_at:updatedAt')
+      .select('id, email, name, role, status, campus_id, deleted_at, created_at:createdAt, updated_at:updatedAt')
       .order('email', { ascending: true }),
     supabaseServer.from('campuses').select('id, name, code'),
   ])
@@ -1924,7 +1929,9 @@ async function handleListUserRoles(res: ServerResponse) {
   const campuses = campusesRes.data || []
   const campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]))
 
-  const enriched = (usersRes.data || []).map((u: any) => ({
+  const enriched = (usersRes.data || [])
+    .filter((u: any) => !u.deleted_at)
+    .map((u: any) => ({
     ...u,
     created_at: u.created_at || u.createdAt || new Date().toISOString(),
     updated_at: u.updated_at || u.updatedAt || new Date().toISOString(),
@@ -2646,6 +2653,262 @@ async function handleToggleUserStatus(
     success: true,
     message: `Account for ${targetUser.name || targetEmail} is now ${nextStatus}.`,
     data: updated,
+  })
+}
+
+async function handleDeleteUser(
+  body: Record<string, unknown>,
+  adminId: string,
+  callerEmail: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const targetUserId = typeof body.userId === 'string' ? body.userId.trim() : ''
+  const confirmEmail = typeof body.confirmEmail === 'string' ? body.confirmEmail.trim().toLowerCase() : ''
+  const reason = typeof body.reason === 'string' ? body.reason.trim() : ''
+
+  if (!targetUserId) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing User ID',
+      message: 'User ID is required.',
+    })
+  }
+
+  if (!reason || reason.length < 3) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Deletion Reason Required',
+      message: 'Please provide a deletion reason (at least 3 characters).',
+    })
+  }
+
+  if (!confirmEmail) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Email Confirmation Required',
+      message: 'Please type the target user email to confirm deletion.',
+    })
+  }
+
+  const { data: targetUser, error: findErr } = await supabaseServer
+    .from('users')
+    .select('id, email, name, role, status, authUid, campus_id, deleted_at')
+    .eq('id', targetUserId)
+    .maybeSingle()
+
+  if (findErr) throw findErr
+  if (!targetUser) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'User Not Found',
+      message: 'The target user could not be found.',
+    })
+  }
+
+  const targetEmail = (targetUser.email || '').toLowerCase().trim()
+  const targetRole = (targetUser.role || 'STUDENT').toUpperCase().trim()
+
+  if (targetUser.deleted_at) {
+    return sendJson(res, 409, {
+      success: false,
+      error: 'Already Deleted',
+      message: `Account for ${targetUser.name || targetEmail} has already been deleted.`,
+    })
+  }
+
+  // Critical Protection 1: Protected sole Super Admin account
+  if (targetEmail === SUPER_ADMIN_EMAIL) {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Protected Account',
+      message: `Forbidden: The protected Super Administrator account (${SUPER_ADMIN_EMAIL}) cannot be deleted.`,
+    })
+  }
+
+  // Critical Protection 2: Self-deletion prevention
+  if (targetUserId === adminId) {
+    return sendJson(res, 403, {
+      success: false,
+      error: 'Self-Deletion Forbidden',
+      message: 'Forbidden: You cannot delete your own currently logged-in Super Admin account.',
+    })
+  }
+
+  // Critical Protection 3: Last active Super Admin protection
+  if (targetRole === SUPER_ADMIN_ROLE) {
+    const { data: otherAdmins, error: adminCountErr } = await supabaseServer
+      .from('users')
+      .select('id, status, deleted_at')
+      .eq('role', SUPER_ADMIN_ROLE)
+      .eq('status', 'ACTIVE')
+      .neq('id', targetUserId)
+
+    if (adminCountErr) throw adminCountErr
+    const activeOthers = (otherAdmins || []).filter((a: any) => !a.deleted_at)
+    if (activeOthers.length === 0) {
+      return sendJson(res, 403, {
+        success: false,
+        error: 'Last Super Admin Protected',
+        message: 'Forbidden: Cannot delete the last active Super Administrator account.',
+      })
+    }
+  }
+
+  if (confirmEmail !== targetEmail) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Email Confirmation Mismatch',
+      message: `Confirmation email "${confirmEmail}" does not match "${targetEmail}".`,
+    })
+  }
+
+  const now = new Date().toISOString()
+
+  // 1. Safe soft deletion on public.users (preserves identity, role, email, and FK history)
+  const { data: updatedUser, error: updErr } = await supabaseServer
+    .from('users')
+    .update({
+      status: 'INACTIVE',
+      deleted_at: now,
+      deleted_by: callerEmail,
+      deletion_reason: reason,
+      updatedAt: now,
+    })
+    .eq('id', targetUserId)
+    .select('id, email, name, role, status, deleted_at, deleted_by, deletion_reason')
+    .single()
+
+  if (updErr) throw updErr
+
+  // 2. Role-specific access revocation (strictly preserving academic & historical records)
+  const { data: studentProfile } = await supabaseServer
+    .from('students')
+    .select('id')
+    .eq('user_id', targetUserId)
+    .maybeSingle()
+
+  if (studentProfile?.id) {
+    await supabaseServer
+      .from('students')
+      .update({ status: 'INACTIVE', updated_at: now })
+      .eq('id', studentProfile.id)
+
+    await supabaseServer
+      .from('mentor_students')
+      .update({ status: 'INACTIVE', unassigned_at: now, updated_at: now })
+      .eq('student_id', studentProfile.id)
+      .eq('status', 'ACTIVE')
+  }
+
+  const { data: mentorProfile } = await supabaseServer
+    .from('mentors')
+    .select('id')
+    .eq('user_id', targetUserId)
+    .maybeSingle()
+
+  if (mentorProfile?.id) {
+    await supabaseServer
+      .from('mentors')
+      .update({ status: 'INACTIVE', updated_at: now })
+      .eq('id', mentorProfile.id)
+
+    await supabaseServer
+      .from('mentor_students')
+      .update({ status: 'INACTIVE', unassigned_at: now, updated_at: now })
+      .eq('mentor_id', mentorProfile.id)
+      .eq('status', 'ACTIVE')
+  }
+
+  // Unassign campus manager link if this user was managing a campus
+  await supabaseServer
+    .from('campuses')
+    .update({ manager_id: null, updated_at: now })
+    .eq('manager_id', targetUserId)
+
+  // Revoke active Content Manager assignment while preserving assignment & profile history
+  const { data: cmAssignment } = await supabaseServer
+    .from('content_manager_assignments')
+    .select('id, status, is_active')
+    .eq('user_id', targetUserId)
+    .maybeSingle()
+
+  if (cmAssignment && (cmAssignment.status === 'ACTIVE' || cmAssignment.is_active === true)) {
+    await supabaseServer
+      .from('content_manager_assignments')
+      .update({
+        status: 'REVOKED',
+        is_active: false,
+        revoked_by: callerEmail,
+        revoked_at: now,
+        updated_by: callerEmail,
+        updated_at: now,
+      })
+      .eq('id', cmAssignment.id)
+  }
+
+  // 3. Revoke active sessions & prevent future auth logins without deleting auth.users
+  invalidateAuthCacheForUser(targetUserId)
+  let sessionRevoked = false
+  let authLoginBlocked = false
+  const authUid = (targetUser as { authUid?: string | null }).authUid || null
+  if (authUid && supabaseServer.auth?.admin) {
+    try {
+      const authAdmin = supabaseServer.auth.admin as unknown as {
+        signOut?: (jwtOrUid: string, scope?: string) => Promise<unknown>
+        updateUserById?: (uid: string, attrs: Record<string, unknown>) => Promise<unknown>
+      }
+      if (typeof authAdmin.signOut === 'function') {
+        await authAdmin.signOut(authUid, 'global')
+        sessionRevoked = true
+      }
+      if (typeof authAdmin.updateUserById === 'function') {
+        await authAdmin.updateUserById(authUid, { ban_duration: '876000h' })
+        authLoginBlocked = true
+      }
+    } catch (authErr) {
+      console.warn('[superadmin-delete-user] Auth session/ban notice:', authErr)
+    }
+  }
+
+  // 4. Mandatory append-only audit log
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'DELETE_USER',
+    'USER',
+    targetUserId,
+    `${targetUser.name || targetEmail} (${targetEmail})`,
+    {
+      role: targetRole,
+      previousStatus: targetUser.status,
+      campusId: targetUser.campus_id || null,
+      reason,
+      softDeleted: true,
+      sessionRevoked,
+      authLoginBlocked,
+      preservedRecords: [
+        'UserProgress',
+        'Submission',
+        'mentor_students',
+        'content_manager_assignments',
+        'content_managers',
+        'admin_audit_logs',
+      ],
+    },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Account for "${targetUser.name || targetEmail}" (${targetEmail}) has been safely deactivated and removed from active listings.`,
+    data: {
+      ...(updatedUser as Record<string, unknown>),
+      sessionRevoked,
+      authLoginBlocked,
+    },
   })
 }
 
