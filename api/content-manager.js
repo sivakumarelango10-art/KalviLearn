@@ -71444,6 +71444,112 @@ function normalizeLanguage(raw) {
   return null;
 }
 
+// src/server/questionSorting.ts
+function buildBeltOrderMap(beltsData) {
+  const map = /* @__PURE__ */ new Map();
+  if (Array.isArray(beltsData)) {
+    for (const b2 of beltsData) {
+      if (b2 && b2.id) {
+        const orderNum = typeof b2.order === "number" ? b2.order : Number.parseInt(String(b2.order), 10);
+        map.set(b2.id, Number.isFinite(orderNum) ? orderNum : 999);
+      }
+    }
+  }
+  for (let i = 1; i <= 10; i++) {
+    if (!map.has(`mock-belt-${i}`)) {
+      map.set(`mock-belt-${i}`, i);
+    }
+  }
+  return map;
+}
+function getProblemBeltOrder(problem, beltOrderMap) {
+  if (problem.beltId && beltOrderMap.has(problem.beltId)) {
+    return beltOrderMap.get(problem.beltId);
+  }
+  if (typeof problem.beltId === "string") {
+    const m = problem.beltId.match(/belt[^\d]*(\d+)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.slug === "string") {
+    const m = problem.slug.match(/^belt-(\d+)-/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (problem.learningUnitId) {
+    return 9999;
+  }
+  return 999;
+}
+function extractVariantNumber(problem) {
+  if (typeof problem.slug === "string") {
+    const m = problem.slug.match(/[-_]v(\d+)(?:[-_]|$)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.title === "string") {
+    const m = problem.title.match(/variant\s*(\d+)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.variant === "string") {
+    const m = problem.variant.match(/(\d+)/);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  return 0;
+}
+function compareProblemsHierarchically(a, b2, beltOrderMap) {
+  const beltOrderA = getProblemBeltOrder(a, beltOrderMap);
+  const beltOrderB = getProblemBeltOrder(b2, beltOrderMap);
+  if (beltOrderA !== beltOrderB) {
+    return beltOrderA - beltOrderB;
+  }
+  if (a.learningUnitId && b2.learningUnitId && a.learningUnitId !== b2.learningUnitId) {
+    const luDiff = String(a.learningUnitId).localeCompare(String(b2.learningUnitId));
+    if (luDiff !== 0) return luDiff;
+  }
+  const orderA = typeof a.order === "number" ? a.order : Number.parseInt(String(a.order ?? 0), 10) || 0;
+  const orderB = typeof b2.order === "number" ? b2.order : Number.parseInt(String(b2.order ?? 0), 10) || 0;
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+  const varA = extractVariantNumber(a);
+  const varB = extractVariantNumber(b2);
+  if (varA !== varB) {
+    return varA - varB;
+  }
+  const subA = String(a.subdivision || "");
+  const subB = String(b2.subdivision || "");
+  const subDiff = subA.localeCompare(subB);
+  if (subDiff !== 0) return subDiff;
+  const titleA = String(a.title || "");
+  const titleB = String(b2.title || "");
+  const titleDiff = titleA.localeCompare(titleB);
+  if (titleDiff !== 0) return titleDiff;
+  return String(a.id || "").localeCompare(String(b2.id || ""));
+}
+function resolvePublicationStatus(status, isActive, approvalStatus) {
+  const st = String(status || "").toUpperCase();
+  const appSt = String(approvalStatus || "").toUpperCase();
+  if (st === "ARCHIVED") return "ARCHIVED";
+  if (st === "PENDING_REVIEW" || appSt === "PENDING_REVIEW") return "PENDING_REVIEW";
+  if (st === "PUBLISHED") return "PUBLISHED";
+  if (st === "DRAFT") return "DRAFT";
+  if (isActive === false) return "DRAFT";
+  return "PUBLISHED";
+}
+
 // src/lib/contentPermissions.ts
 var CONTENT_MANAGER_ROLE = "CONTENT_MANAGER";
 var CONTENT_PERMISSION_LIST = [
@@ -71716,6 +71822,7 @@ var ALLOWED_CONTENT_ACTIONS = /* @__PURE__ */ new Set([
   "submit_question_for_review",
   "duplicate_question",
   "toggle_question_status",
+  "restore_question",
   "delete_question",
   "run_question_tests",
   "list_question_revisions",
@@ -71973,6 +72080,9 @@ async function handler(req, res) {
     }
     if (action === "toggle_question_status") {
       return await handleToggleQuestionStatus(ctx, body, clientIp, res);
+    }
+    if (action === "restore_question") {
+      return await handleRestoreQuestion(ctx, body, clientIp, res);
     }
     if (action === "delete_question") {
       return await handleDeleteQuestion(ctx, body, clientIp, res);
@@ -72791,10 +72901,15 @@ async function handleListQuestions(ctx, body, req, res) {
   if (beltParam && beltParam !== "ALL") {
     resolvedFilterBeltId = await resolveBeltId(beltParam) || beltParam;
   }
-  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt").order("createdAt", { ascending: false });
-  if (problemsError) throw problemsError;
+  const [problemsRes, beltsRes] = await Promise.all([
+    supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, canonicalProblemId, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt"),
+    supabaseServer.from("Belt").select("id, order, name, title")
+  ]);
+  if (problemsRes.error) throw problemsRes.error;
+  const beltOrderMap = buildBeltOrderMap(beltsRes?.data);
+  const allProblems = problemsRes.data || [];
   const scopedProblems = [];
-  for (const p2 of allProblems || []) {
+  for (const p2 of allProblems) {
     if (questionTypeRaw === "PRACTICE" && p2.learningUnitId) continue;
     if ((questionTypeRaw === "LEARN_CODING" || questionTypeRaw === "LEARN-CODING") && !p2.learningUnitId) continue;
     if (await canAccessQuestion(ctx, p2)) {
@@ -72817,7 +72932,13 @@ async function handleListQuestions(ctx, body, req, res) {
   }
   const filtered = scopedProblems.filter((problem) => {
     if (learningUnitId && problem.learningUnitId !== learningUnitId) return false;
-    if (resolvedFilterBeltId && problem.beltId !== resolvedFilterBeltId) return false;
+    if (resolvedFilterBeltId) {
+      const pBeltOrder = getProblemBeltOrder(problem, beltOrderMap);
+      const filterBeltOrder = beltOrderMap.get(resolvedFilterBeltId);
+      const matchesBeltId = problem.beltId === resolvedFilterBeltId;
+      const matchesBeltOrder = filterBeltOrder !== void 0 && pBeltOrder === filterBeltOrder;
+      if (!matchesBeltId && !matchesBeltOrder) return false;
+    }
     if (difficulty !== "ALL" && problem.difficulty !== difficulty) return false;
     if (topic !== "ALL" && (problem.subdivision || "General") !== topic) return false;
     const st = String(problem.status || "").toUpperCase();
@@ -72834,6 +72955,7 @@ async function handleListQuestions(ctx, body, req, res) {
     }
     return true;
   });
+  filtered.sort((a, b2) => compareProblemsHierarchically(a, b2, beltOrderMap));
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / limit));
   const currentPage = Math.min(page, totalPages);
@@ -72861,17 +72983,19 @@ async function handleListQuestions(ctx, body, req, res) {
     const rawCounts = testCaseCounts.get(problem.id) || { total: 0, visible: 0, hidden: 0 };
     const effectiveCounts = canSeeHiddenCount ? rawCounts : { total: rawCounts.visible, visible: rawCounts.visible, hidden: 0 };
     const examples = Array.isArray(problem.examples) ? problem.examples : [];
-    const st = String(problem.status || "").toUpperCase();
-    const resolvedStatus = st || (problem.isActive ? "PUBLISHED" : "DRAFT");
+    const inferredBeltOrder = getProblemBeltOrder(problem, beltOrderMap);
+    const resolvedStatus = resolvePublicationStatus(problem.status, problem.isActive, problem.approvalStatus);
     return {
       id: problem.id,
       slug: problem.slug,
       title: problem.title,
+      order: typeof problem.order === "number" ? problem.order : Number.parseInt(String(problem.order ?? 0), 10) || 0,
       difficulty: problem.difficulty,
       topic: problem.subdivision || "General",
       subdivision: problem.subdivision,
       learningUnitId: problem.learningUnitId || null,
-      beltId: problem.beltId || null,
+      beltId: problem.learningUnitId ? problem.beltId || null : problem.beltId || "mock-belt-" + inferredBeltOrder,
+      beltOrder: inferredBeltOrder,
       status: resolvedStatus,
       approvalStatus: problem.approvalStatus || "APPROVED",
       isActive: Boolean(problem.isActive),
@@ -73731,6 +73855,22 @@ async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
   if (!existing) return sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
   await requireQuestionScope(ctx, existing);
   const requestedStatus = typeof body.status === "string" ? body.status.toUpperCase() : "";
+  if (typeof body.isActive === "boolean" && requestedStatus) {
+    if (body.isActive && ["DRAFT", "ARCHIVED", "PENDING_REVIEW"].includes(requestedStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: `A question cannot be active while status is ${requestedStatus}.`
+      });
+    }
+    if (!body.isActive && requestedStatus === "PUBLISHED") {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: "A question cannot be inactive while status is PUBLISHED."
+      });
+    }
+  }
   const nextActive = requestedStatus ? requestedStatus === "PUBLISHED" : typeof body.isActive === "boolean" ? body.isActive : !(existing.status === "PUBLISHED" || existing.isActive);
   if (nextActive) {
     requirePermission(ctx, "content.question.publish");
@@ -73739,10 +73879,11 @@ async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
   }
   const finalStatus = requestedStatus || (nextActive ? "PUBLISHED" : "DRAFT");
   const now = (/* @__PURE__ */ new Date()).toISOString();
+  const approvalStatus = nextActive ? "APPROVED" : finalStatus === "ARCHIVED" ? existing.approvalStatus || "DRAFT" : finalStatus === "PENDING_REVIEW" ? "PENDING_REVIEW" : "DRAFT";
   const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
     isActive: nextActive,
     status: finalStatus,
-    approvalStatus: nextActive ? "APPROVED" : finalStatus === "ARCHIVED" ? "REJECTED" : "DRAFT",
+    approvalStatus,
     publishedAt: nextActive ? now : existing.publishedAt,
     publishedBy: nextActive ? ctx.userId : existing.publishedBy,
     updatedBy: ctx.userId,
@@ -73767,6 +73908,51 @@ async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
   return sendJson(res, 200, {
     success: true,
     message: `Question "${existing.title}" is now ${finalStatus}.`,
+    data: updated
+  });
+}
+async function handleRestoreQuestion(ctx, body, clientIp, res) {
+  if (!assertPrivilegedDatabaseAccess(res)) return;
+  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : "";
+  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID is required." });
+  const existing = await findQuestionByIdOrSlug(id);
+  if (!existing) return sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
+  await requireQuestionScope(ctx, existing);
+  requireAnyPermission(ctx, ["content.question.archive", "content.question.create", "content.question.update"]);
+  const currentStatus = String(existing.status || "").toUpperCase();
+  if (currentStatus !== "ARCHIVED") {
+    return sendJson(res, 409, {
+      success: false,
+      error: "Conflict",
+      message: "Only archived questions can be restored to draft."
+    });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
+    isActive: false,
+    status: "DRAFT",
+    approvalStatus: "DRAFT",
+    updatedBy: ctx.userId,
+    updatedAt: now
+  }).eq("id", existing.id).select().single();
+  if (updErr) throw updErr;
+  await recordContentAudit({
+    actorUserId: ctx.userId,
+    actorEmail: ctx.email,
+    actorRole: ctx.role,
+    action: "RESTORE_QUESTION",
+    resourceType: "PROBLEM",
+    resourceId: existing.id,
+    resourceLabel: `${existing.title} (${existing.slug})`,
+    permissionUsed: "content.question.archive",
+    previousValues: { status: existing.status, isActive: existing.isActive },
+    updatedValues: { status: "DRAFT", isActive: false },
+    changeSummary: `Restored question "${existing.title}" from archived to draft`,
+    ipAddress: clientIp
+  });
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" restored to draft.`,
     data: updated
   });
 }

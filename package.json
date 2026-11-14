@@ -63,6 +63,8 @@
     "test:content-manager": "npx tsx scripts/test-content-manager-rbac.ts",
     "test:super-admin": "npx tsx scripts/test-super-admin.ts",
     "test:super-admin-questions": "npx tsx scripts/test-super-admin-questions.ts",
+    "test:question-lifecycle": "npx tsx scripts/test-super-admin-question-lifecycle.ts",
+    "test:question-sorting-and-drafts": "npx tsx scripts/test-question-sorting-and-drafts.ts",
     "test:super-admin-session": "npx tsx scripts/test-super-admin-session.ts",
     "test:curriculum": "npx tsx scripts/test-curriculum-management.ts",
     "verify:curriculum:live": "npx tsx scripts/verify-supabase-curriculum-live.ts"

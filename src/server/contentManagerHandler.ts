@@ -20,6 +20,12 @@ import { registerCustomSuite, unregisterCustomSuite } from './judge/testReposito
 import { selectEngine } from './judge/engines'
 import { outputsMatch } from './judge/compare'
 import { normalizeLanguage } from './judge/questionId'
+import {
+  buildBeltOrderMap,
+  compareProblemsHierarchically,
+  getProblemBeltOrder,
+  resolvePublicationStatus,
+} from './questionSorting'
 import { hasContentPermission, CONTENT_PERMISSION_LIST } from '../lib/contentPermissions'
 import {
   ContentManagerContext,
@@ -63,6 +69,7 @@ const ALLOWED_CONTENT_ACTIONS = new Set<string>([
   'submit_question_for_review',
   'duplicate_question',
   'toggle_question_status',
+  'restore_question',
   'delete_question',
   'run_question_tests',
   'list_question_revisions',
@@ -374,6 +381,9 @@ export default async function handler(
     }
     if (action === 'toggle_question_status') {
       return await handleToggleQuestionStatus(ctx, body, clientIp, res)
+    }
+    if (action === 'restore_question') {
+      return await handleRestoreQuestion(ctx, body, clientIp, res)
     }
     if (action === 'delete_question') {
       return await handleDeleteQuestion(ctx, body, clientIp, res)
@@ -1467,15 +1477,22 @@ async function handleListQuestions(
     resolvedFilterBeltId = (await resolveBeltId(beltParam)) || beltParam
   }
 
-  const { data: allProblems, error: problemsError } = await supabaseServer
-    .from('Problem')
-    .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt')
-    .order('createdAt', { ascending: false })
+  const [problemsRes, beltsRes] = await Promise.all([
+    supabaseServer
+      .from('Problem')
+      .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, canonicalProblemId, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt'),
+    supabaseServer
+      .from('Belt')
+      .select('id, order, name, title'),
+  ])
 
-  if (problemsError) throw problemsError
+  if (problemsRes.error) throw problemsRes.error
+
+  const beltOrderMap = buildBeltOrderMap(beltsRes?.data)
+  const allProblems = problemsRes.data || []
 
   const scopedProblems = []
-  for (const p of allProblems || []) {
+  for (const p of allProblems) {
     if (questionTypeRaw === 'PRACTICE' && p.learningUnitId) continue
     if ((questionTypeRaw === 'LEARN_CODING' || questionTypeRaw === 'LEARN-CODING') && !p.learningUnitId) continue
     if (await canAccessQuestion(ctx, p)) {
@@ -1505,7 +1522,13 @@ async function handleListQuestions(
 
   const filtered = scopedProblems.filter((problem: any) => {
     if (learningUnitId && problem.learningUnitId !== learningUnitId) return false
-    if (resolvedFilterBeltId && problem.beltId !== resolvedFilterBeltId) return false
+    if (resolvedFilterBeltId) {
+      const pBeltOrder = getProblemBeltOrder(problem, beltOrderMap)
+      const filterBeltOrder = beltOrderMap.get(resolvedFilterBeltId)
+      const matchesBeltId = problem.beltId === resolvedFilterBeltId
+      const matchesBeltOrder = filterBeltOrder !== undefined && pBeltOrder === filterBeltOrder
+      if (!matchesBeltId && !matchesBeltOrder) return false
+    }
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
     const st = String(problem.status || '').toUpperCase()
@@ -1523,6 +1546,10 @@ async function handleListQuestions(
     }
     return true
   })
+
+  // Hierarchical sort BEFORE pagination slice:
+  // 1. Parent Belt numeric order -> 2. Problem numeric order -> 3. Variant sequence -> 4. Subdivision -> 5. Title / ID
+  filtered.sort((a: any, b: any) => compareProblemsHierarchically(a, b, beltOrderMap))
 
   const total = filtered.length
   const totalPages = Math.max(1, Math.ceil(total / limit))
@@ -1555,18 +1582,20 @@ async function handleListQuestions(
       ? rawCounts
       : { total: rawCounts.visible, visible: rawCounts.visible, hidden: 0 }
     const examples = Array.isArray(problem.examples) ? problem.examples : []
-    const st = String(problem.status || '').toUpperCase()
-    const resolvedStatus = st || (problem.isActive ? 'PUBLISHED' : 'DRAFT')
+    const inferredBeltOrder = getProblemBeltOrder(problem, beltOrderMap)
+    const resolvedStatus = resolvePublicationStatus(problem.status, problem.isActive, problem.approvalStatus)
 
     return {
       id: problem.id,
       slug: problem.slug,
       title: problem.title,
+      order: typeof problem.order === 'number' ? problem.order : (Number.parseInt(String(problem.order ?? 0), 10) || 0),
       difficulty: problem.difficulty,
       topic: problem.subdivision || 'General',
       subdivision: problem.subdivision,
       learningUnitId: problem.learningUnitId || null,
-      beltId: problem.beltId || null,
+      beltId: problem.learningUnitId ? (problem.beltId || null) : (problem.beltId || 'mock-belt-' + inferredBeltOrder),
+      beltOrder: inferredBeltOrder,
       status: resolvedStatus,
       approvalStatus: problem.approvalStatus || 'APPROVED',
       isActive: Boolean(problem.isActive),
@@ -2652,6 +2681,23 @@ async function handleToggleQuestionStatus(
   await requireQuestionScope(ctx, existing)
 
   const requestedStatus = typeof body.status === 'string' ? body.status.toUpperCase() : ''
+  if (typeof body.isActive === 'boolean' && requestedStatus) {
+    if (body.isActive && ['DRAFT', 'ARCHIVED', 'PENDING_REVIEW'].includes(requestedStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: `A question cannot be active while status is ${requestedStatus}.`,
+      })
+    }
+    if (!body.isActive && requestedStatus === 'PUBLISHED') {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: 'A question cannot be inactive while status is PUBLISHED.',
+      })
+    }
+  }
+
   const nextActive = requestedStatus
     ? requestedStatus === 'PUBLISHED'
     : typeof body.isActive === 'boolean'
@@ -2666,13 +2712,20 @@ async function handleToggleQuestionStatus(
 
   const finalStatus = requestedStatus || (nextActive ? 'PUBLISHED' : 'DRAFT')
   const now = new Date().toISOString()
+  const approvalStatus = nextActive
+    ? 'APPROVED'
+    : finalStatus === 'ARCHIVED'
+    ? (existing.approvalStatus || 'DRAFT')
+    : finalStatus === 'PENDING_REVIEW'
+    ? 'PENDING_REVIEW'
+    : 'DRAFT'
 
   const { data: updated, error: updErr } = await supabaseServer
     .from('Problem')
     .update({
       isActive: nextActive,
       status: finalStatus,
-      approvalStatus: nextActive ? 'APPROVED' : finalStatus === 'ARCHIVED' ? 'REJECTED' : 'DRAFT',
+      approvalStatus,
       publishedAt: nextActive ? now : existing.publishedAt,
       publishedBy: nextActive ? ctx.userId : existing.publishedBy,
       updatedBy: ctx.userId,
@@ -2703,6 +2756,69 @@ async function handleToggleQuestionStatus(
   return sendJson(res, 200, {
     success: true,
     message: `Question "${existing.title}" is now ${finalStatus}.`,
+    data: updated,
+  })
+}
+
+async function handleRestoreQuestion(
+  ctx: ContentManagerContext,
+  body: Record<string, unknown>,
+  clientIp: string,
+  res: ServerResponse
+) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+  const id = typeof body.id === 'string' && body.id.trim() ? body.id.trim() : ''
+  if (!id) return sendJson(res, 400, { success: false, error: 'Missing Question ID', message: 'Question ID is required.' })
+
+  const existing = await findQuestionByIdOrSlug(id)
+  if (!existing) return sendJson(res, 404, { success: false, error: 'Not Found', message: `Question "${id}" not found.` })
+
+  await requireQuestionScope(ctx, existing)
+  requireAnyPermission(ctx, ['content.question.archive', 'content.question.create', 'content.question.update'])
+
+  const currentStatus = String(existing.status || '').toUpperCase()
+  if (currentStatus !== 'ARCHIVED') {
+    return sendJson(res, 409, {
+      success: false,
+      error: 'Conflict',
+      message: 'Only archived questions can be restored to draft.',
+    })
+  }
+
+  const now = new Date().toISOString()
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Problem')
+    .update({
+      isActive: false,
+      status: 'DRAFT',
+      approvalStatus: 'DRAFT',
+      updatedBy: ctx.userId,
+      updatedAt: now,
+    })
+    .eq('id', existing.id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordContentAudit({
+    actorUserId: ctx.userId,
+    actorEmail: ctx.email,
+    actorRole: ctx.role,
+    action: 'RESTORE_QUESTION',
+    resourceType: 'PROBLEM',
+    resourceId: existing.id,
+    resourceLabel: `${existing.title} (${existing.slug})`,
+    permissionUsed: 'content.question.archive',
+    previousValues: { status: existing.status, isActive: existing.isActive },
+    updatedValues: { status: 'DRAFT', isActive: false },
+    changeSummary: `Restored question "${existing.title}" from archived to draft`,
+    ipAddress: clientIp,
+  })
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" restored to draft.`,
     data: updated,
   })
 }
