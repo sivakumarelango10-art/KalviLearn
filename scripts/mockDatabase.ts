@@ -698,6 +698,19 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             row.id = `mock-${tableName}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
           }
 
+          if (tableName === 'Problem' || tableName === 'problems') {
+            if (row.beltId !== null && row.beltId !== undefined) {
+              const beltExists = db.Belt.some((b) => b.id === row.beltId)
+              if (!beltExists) {
+                insertError = {
+                  code: '23503',
+                  message: 'insert or update on table "Problem" violates foreign key constraint "Problem_beltId_fkey"',
+                }
+                break
+              }
+            }
+          }
+
           if (tableName === 'campuses') {
             const exists = tableRows.some((r) => r.code === row.code)
             if (exists) {
@@ -818,6 +831,28 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
           const imErr = { code: 'P0001', message: 'content_audit_logs is strictly append-only; UPDATE operations are forbidden.' }
           const errB: any = { eq() { return errB }, select() { return errB }, single() { return Promise.resolve({ data: null, error: imErr }) }, then(f: any, r: any) { return Promise.resolve({ data: null, error: imErr }).then(f, r) } }
           return errB
+        }
+        if ((tableName === 'Problem' || tableName === 'problems') && updates.beltId !== null && updates.beltId !== undefined) {
+          const beltExists = db.Belt.some((b) => b.id === updates.beltId)
+          if (!beltExists) {
+            const errBuilder: any = {
+              eq() { return errBuilder },
+              select() { return errBuilder },
+              single() {
+                return Promise.resolve({
+                  data: null,
+                  error: { code: '23503', message: 'insert or update on table "Problem" violates foreign key constraint "Problem_beltId_fkey"' },
+                })
+              },
+              then(onfulfilled: any, onrejected: any) {
+                return Promise.resolve({
+                  data: null,
+                  error: { code: '23503', message: 'insert or update on table "Problem" violates foreign key constraint "Problem_beltId_fkey"' },
+                }).then(onfulfilled, onrejected)
+              },
+            }
+            return errBuilder
+          }
         }
         if (tableName === 'users' && 'updated_at' in updates) {
           const errBuilder: any = {

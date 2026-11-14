@@ -592,6 +592,141 @@ async function main() {
     assert.strictEqual(checkPairSum.canonicalProblemId, null)
   })
 
+  // ─── 9. TARGETED LOOKUP, PENDING_REVIEW & COMBINATION SAFETY ────────────────
+  console.log('\n--- 9. Targeted Lookup, PENDING_REVIEW & Status Combination Safety ---')
+
+  // Setup an archived problem for slug lookup test
+  const testSlugArchived = `targeted-archived-slug-${Date.now()}`
+  db.Problem.push({
+    id: `prob-slug-${Date.now()}`,
+    beltId: 'mock-belt-1',
+    order: 50,
+    slug: testSlugArchived,
+    title: 'Targeted Slug Test Problem',
+    difficulty: 'Easy',
+    subdivision: 'General',
+    status: 'ARCHIVED',
+    isActive: false,
+    canonicalProblemId: 'canonical-orig-1',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+
+  await runTest('9.1 Super Admin restores question targeted by slug (200 OK)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'restore_question', slug: testSlugArchived },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.status, 'DRAFT')
+    assert.strictEqual(out.data.data.isActive, false)
+    assert.strictEqual(out.data.data.approvalStatus, 'DRAFT')
+
+    const updated = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    assert.strictEqual(updated.status, 'DRAFT')
+    assert.strictEqual(updated.isActive, false)
+    assert.strictEqual(updated.approvalStatus, 'DRAFT')
+    assert.strictEqual(updated.canonicalProblemId, 'canonical-orig-1', 'Must preserve canonicalProblemId')
+  })
+
+  await runTest('9.2 Super Admin toggle_question_status rejects ARCHIVED + isActive=true (400)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'toggle_question_status', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+    assert.ok(out.data.message.includes('cannot be active while status is ARCHIVED'))
+  })
+
+  await runTest('9.3 Content Manager toggle_question_status rejects ARCHIVED + isActive=true (400)', async () => {
+    resetContentManagerRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'toggle_question_status', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+    assert.ok(out.data.message.includes('cannot be active while status is ARCHIVED'))
+  })
+
+  await runTest('9.4 Content Manager update_question rejects ARCHIVED + isActive=true (400)', async () => {
+    resetContentManagerRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'update_question', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+  })
+
+  await runTest('9.5 PENDING_REVIEW consistency: status and approvalStatus remain synchronized on update', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    // Super admin updates to PENDING_REVIEW
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'update_question', slug: testSlugArchived, status: 'PENDING_REVIEW' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.status, 'PENDING_REVIEW')
+    assert.strictEqual(out.data.data.approvalStatus, 'PENDING_REVIEW')
+    assert.strictEqual(out.data.data.isActive, false)
+
+    const updated = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    assert.strictEqual(updated.status, 'PENDING_REVIEW')
+    assert.strictEqual(updated.approvalStatus, 'PENDING_REVIEW')
+    assert.strictEqual(updated.isActive, false)
+  })
+
+  await runTest('9.6 Content Manager restore auditing records actual authorizing permission in permissionUsed', async () => {
+    resetContentManagerRateLimitsForTesting()
+    // Archive the test question first
+    const targetQ = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    targetQ.status = 'ARCHIVED'
+    targetQ.isActive = false
+
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'restore_question', slug: testSlugArchived },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+
+    // Inspect the audit log entry created for this restoration
+    const cmLogs = db.content_audit_logs || []
+    const restoreAudit = cmLogs.find(
+      (l: any) => l.action === 'RESTORE_QUESTION' && (l.resource_id === targetQ.id || l.resource_label?.includes(testSlugArchived))
+    )
+    assert.ok(restoreAudit, 'Must record audit log for RESTORE_QUESTION')
+    // Candidate permissions: ['content.question.archive', 'content.question.update', 'content.question.create']
+    assert.ok(
+      ['content.question.archive', 'content.question.update', 'content.question.create'].includes(restoreAudit.permission_used),
+      `permission_used must be an actual authorizing permission, got: ${restoreAudit.permission_used}`
+    )
+  })
+
   console.log('\n======================================================================')
   console.log(`RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)
   console.log('======================================================================')

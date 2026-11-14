@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   Terminal,
@@ -35,6 +35,7 @@ import {
   LucideIcon,
 } from 'lucide-react'
 import { SuperAdminQuestionsPage } from './SuperAdminQuestionsPage'
+import { fetchBelts, AdminBelt } from '../../lib/superAdminService'
 import { cn } from '@/lib/utils'
 
 export interface PracticeTopicItem {
@@ -353,6 +354,17 @@ export const SuperAdminPracticeCodingPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
   const [activeScopedTopic, setActiveScopedTopic] = useState<PracticeTopicItem | null>(null)
+  const [availableBelts, setAvailableBelts] = useState<AdminBelt[]>([])
+
+  useEffect(() => {
+    fetchBelts()
+      .then((res) => {
+        if (res.success && res.data?.belts) {
+          setAvailableBelts(res.data.belts)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   // Edit Modal State
   const [editingTopic, setEditingTopic] = useState<PracticeTopicItem | null>(null)
@@ -477,6 +489,7 @@ export const SuperAdminPracticeCodingPage: React.FC = () => {
           backLabel="Back to Practice Coding"
           customTitle={`Practice Topic: ${selectedTopic.title}`}
           customDescription={`Manage questions, test cases, and difficulty parameters for "${selectedTopic.title}". Only questions for this topic are displayed.`}
+          availableBelts={availableBelts}
         />
       </div>
     )
