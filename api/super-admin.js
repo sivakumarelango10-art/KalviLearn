@@ -39,7 +39,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// node_modules/tslib/tslib.es6.mjs
+// ../KalviLearn/node_modules/tslib/tslib.es6.mjs
 var tslib_es6_exports = {};
 __export(tslib_es6_exports, {
   __addDisposableResource: () => __addDisposableResource,
@@ -478,7 +478,7 @@ function __rewriteRelativeImportExtension(path, preserveJsx) {
 }
 var extendStatics, __assign, __createBinding, __setModuleDefault, ownKeys, _SuppressedError, tslib_es6_default;
 var init_tslib_es6 = __esm({
-  "node_modules/tslib/tslib.es6.mjs"() {
+  "../KalviLearn/node_modules/tslib/tslib.es6.mjs"() {
     extendStatics = function(d, b2) {
       extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b3) {
         d2.__proto__ = b3;
@@ -564,9 +564,9 @@ var init_tslib_es6 = __esm({
   }
 });
 
-// node_modules/@supabase/functions-js/dist/main/helper.js
+// ../KalviLearn/node_modules/@supabase/functions-js/dist/main/helper.js
 var require_helper = __commonJS({
-  "node_modules/@supabase/functions-js/dist/main/helper.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/functions-js/dist/main/helper.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.resolveFetch = void 0;
@@ -580,9 +580,9 @@ var require_helper = __commonJS({
   }
 });
 
-// node_modules/@supabase/functions-js/dist/main/types.js
+// ../KalviLearn/node_modules/@supabase/functions-js/dist/main/types.js
 var require_types = __commonJS({
-  "node_modules/@supabase/functions-js/dist/main/types.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/functions-js/dist/main/types.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FunctionRegion = exports.FunctionsHttpError = exports.FunctionsRelayError = exports.FunctionsFetchError = exports.FunctionsError = void 0;
@@ -640,9 +640,9 @@ var require_types = __commonJS({
   }
 });
 
-// node_modules/@supabase/functions-js/dist/main/FunctionsClient.js
+// ../KalviLearn/node_modules/@supabase/functions-js/dist/main/FunctionsClient.js
 var require_FunctionsClient = __commonJS({
-  "node_modules/@supabase/functions-js/dist/main/FunctionsClient.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/functions-js/dist/main/FunctionsClient.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FunctionsClient = void 0;
@@ -926,9 +926,9 @@ var require_FunctionsClient = __commonJS({
   }
 });
 
-// node_modules/@supabase/functions-js/dist/main/index.js
+// ../KalviLearn/node_modules/@supabase/functions-js/dist/main/index.js
 var require_main = __commonJS({
-  "node_modules/@supabase/functions-js/dist/main/index.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/functions-js/dist/main/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FunctionRegion = exports.FunctionsRelayError = exports.FunctionsHttpError = exports.FunctionsFetchError = exports.FunctionsError = exports.FunctionsClient = void 0;
@@ -955,9 +955,9 @@ var require_main = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/websocket-factory.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/websocket-factory.js
 var require_websocket_factory = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/websocket-factory.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/websocket-factory.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WebSocketFactory = void 0;
@@ -1066,9 +1066,9 @@ Suggested solution: ${env.workaround}`;
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/version.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/version.js
 var require_version = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/version.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/version.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.version = void 0;
@@ -1076,9 +1076,9 @@ var require_version = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/constants.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/constants.js
 var require_constants = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/constants.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/constants.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CONNECTION_STATE = exports.TRANSPORTS = exports.CHANNEL_EVENTS = exports.CHANNEL_STATES = exports.SOCKET_STATES = exports.MAX_PUSH_BUFFER_SIZE = exports.WS_CLOSE_NORMAL = exports.POSTGRES_CHANGES_WAIT_ERROR_GRACE = exports.DEFAULT_POSTGRES_CHANGES_WAIT_TIMEOUT = exports.DEFAULT_TIMEOUT = exports.VERSION = exports.DEFAULT_VSN = exports.VSN_2_0_0 = exports.VSN_1_0_0 = exports.DEFAULT_VERSION = void 0;
@@ -1126,9 +1126,9 @@ var require_constants = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/serializer.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/serializer.js
 var require_serializer = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/serializer.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/serializer.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Serializer = class {
@@ -1280,9 +1280,9 @@ var require_serializer = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/transformers.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/transformers.js
 var require_transformers = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/transformers.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/transformers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.httpEndpointURL = exports.toTimestampString = exports.toArray = exports.toJson = exports.toNumber = exports.toBoolean = exports.convertCell = exports.convertColumn = exports.convertChangeData = exports.PostgresTypes = void 0;
@@ -1459,9 +1459,9 @@ var require_transformers = __commonJS({
   }
 });
 
-// node_modules/@supabase/phoenix/priv/static/phoenix.cjs.js
+// ../KalviLearn/node_modules/@supabase/phoenix/priv/static/phoenix.cjs.js
 var require_phoenix_cjs = __commonJS({
-  "node_modules/@supabase/phoenix/priv/static/phoenix.cjs.js"(exports, module2) {
+  "../KalviLearn/node_modules/@supabase/phoenix/priv/static/phoenix.cjs.js"(exports, module2) {
     "use strict";
     var __defProp2 = Object.defineProperty;
     var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -3311,9 +3311,9 @@ var require_phoenix_cjs = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/phoenix/presenceAdapter.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/presenceAdapter.js
 var require_presenceAdapter = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/phoenix/presenceAdapter.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/presenceAdapter.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var phoenix_1 = require_phoenix_cjs();
@@ -3411,9 +3411,9 @@ var require_presenceAdapter = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/RealtimePresence.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimePresence.js
 var require_RealtimePresence = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/RealtimePresence.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimePresence.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.REALTIME_PRESENCE_LISTEN_EVENTS = void 0;
@@ -3455,9 +3455,9 @@ var require_RealtimePresence = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/lib/normalizeChannelError.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/normalizeChannelError.js
 var require_normalizeChannelError = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/lib/normalizeChannelError.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/lib/normalizeChannelError.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.normalizeChannelError = normalizeChannelError;
@@ -3481,9 +3481,9 @@ var require_normalizeChannelError = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/phoenix/channelAdapter.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/channelAdapter.js
 var require_channelAdapter = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/phoenix/channelAdapter.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/channelAdapter.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var constants_1 = require_constants();
@@ -3588,9 +3588,9 @@ var require_channelAdapter = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/RealtimePostgresFilterBuilder.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimePostgresFilterBuilder.js
 var require_RealtimePostgresFilterBuilder = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/RealtimePostgresFilterBuilder.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimePostgresFilterBuilder.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.postgresChangesFilter = exports.RealtimePostgresFilterBuilder = void 0;
@@ -3712,9 +3712,9 @@ var require_RealtimePostgresFilterBuilder = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/RealtimeChannel.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimeChannel.js
 var require_RealtimeChannel = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/RealtimeChannel.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimeChannel.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.REALTIME_CHANNEL_STATES = exports.REALTIME_SUBSCRIBE_STATES = exports.REALTIME_LISTEN_TYPES = exports.REALTIME_POSTGRES_CHANGES_LISTEN_EVENT = exports.postgresChangesFilter = exports.RealtimePostgresFilterBuilder = void 0;
@@ -4467,9 +4467,9 @@ var require_RealtimeChannel = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/phoenix/socketAdapter.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/socketAdapter.js
 var require_socketAdapter = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/phoenix/socketAdapter.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/phoenix/socketAdapter.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var phoenix_1 = require_phoenix_cjs();
@@ -4588,9 +4588,9 @@ var require_socketAdapter = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
 var require_RealtimeClient = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
@@ -5264,9 +5264,9 @@ var require_RealtimeClient = __commonJS({
   }
 });
 
-// node_modules/@supabase/realtime-js/dist/main/index.js
+// ../KalviLearn/node_modules/@supabase/realtime-js/dist/main/index.js
 var require_main2 = __commonJS({
-  "node_modules/@supabase/realtime-js/dist/main/index.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/realtime-js/dist/main/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WebSocketFactory = exports.REALTIME_CHANNEL_STATES = exports.REALTIME_SUBSCRIBE_STATES = exports.REALTIME_PRESENCE_LISTEN_EVENTS = exports.REALTIME_POSTGRES_CHANGES_LISTEN_EVENT = exports.REALTIME_LISTEN_TYPES = exports.postgresChangesFilter = exports.RealtimePostgresFilterBuilder = exports.RealtimeClient = exports.RealtimeChannel = exports.RealtimePresence = void 0;
@@ -5303,9 +5303,9 @@ var require_main2 = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/version.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/version.js
 var require_version2 = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/version.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/version.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.version = void 0;
@@ -5313,9 +5313,9 @@ var require_version2 = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/constants.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/constants.js
 var require_constants2 = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/constants.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/constants.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.JWKS_TTL = exports.PKCE_MAX_CONCURRENT_FLOWS = exports.PKCE_FLOW_ID_PARAM = exports.BASE64URL_REGEX = exports.API_VERSIONS = exports.API_VERSION_HEADER_NAME = exports.NETWORK_FAILURE = exports.DEFAULT_HEADERS = exports.AUDIENCE = exports.STORAGE_KEY = exports.GOTRUE_URL = exports.REFRESH_FAILURE_COOLDOWN_MS = exports.EXPIRY_MARGIN_MS = exports.AUTO_REFRESH_TICK_THRESHOLD = exports.AUTO_REFRESH_TICK_DURATION_MS = void 0;
@@ -5347,9 +5347,9 @@ var require_constants2 = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/errors.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/errors.js
 var require_errors = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/errors.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/errors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AuthInvalidJwtError = exports.AuthWeakPasswordError = exports.AuthRefreshDiscardedError = exports.AuthRetryableFetchError = exports.AuthPKCECodeVerifierMissingError = exports.AuthPKCEGrantCodeExchangeError = exports.AuthImplicitGrantRedirectError = exports.AuthInvalidCredentialsError = exports.AuthInvalidTokenResponseError = exports.AuthSessionMissingError = exports.CustomAuthError = exports.AuthUnknownError = exports.AuthApiError = exports.AuthError = void 0;
@@ -5505,9 +5505,9 @@ var require_errors = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/base64url.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/base64url.js
 var require_base64url = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/base64url.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/base64url.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.byteToBase64URL = byteToBase64URL;
@@ -5695,9 +5695,9 @@ var require_base64url = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/helpers.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/helpers.js
 var require_helpers = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/helpers.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/helpers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.pkceVerifierSlotKey = exports.Deferred = exports.removeItemAsync = exports.getItemAsync = exports.setItemAsync = exports.looksLikeFetchResponse = exports.resolveFetch = exports.supportsLocalStorage = exports.isBrowser = void 0;
@@ -6111,9 +6111,9 @@ var require_helpers = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/fetch.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/fetch.js
 var require_fetch = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/fetch.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/fetch.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.handleError = handleError2;
@@ -6298,9 +6298,9 @@ var require_fetch = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/types.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/types.js
 var require_types2 = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/types.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/types.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SIGN_OUT_SCOPES = void 0;
@@ -6308,9 +6308,9 @@ var require_types2 = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/GoTrueAdminApi.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/GoTrueAdminApi.js
 var require_GoTrueAdminApi = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/GoTrueAdminApi.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/GoTrueAdminApi.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
@@ -7394,9 +7394,9 @@ var require_GoTrueAdminApi = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/local-storage.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/local-storage.js
 var require_local_storage = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/local-storage.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/local-storage.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.memoryLocalStorageAdapter = memoryLocalStorageAdapter;
@@ -7416,9 +7416,9 @@ var require_local_storage = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/locks.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/locks.js
 var require_locks = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/locks.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/locks.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ProcessLockAcquireTimeoutError = exports.NavigatorLockAcquireTimeoutError = exports.LockAcquireTimeoutError = exports.internals = void 0;
@@ -7592,9 +7592,9 @@ var require_locks = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/polyfills.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/polyfills.js
 var require_polyfills = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/polyfills.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/polyfills.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.polyfillGlobalThis = polyfillGlobalThis;
@@ -7619,9 +7619,9 @@ var require_polyfills = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/web3/ethereum.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/web3/ethereum.js
 var require_ethereum = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/web3/ethereum.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/web3/ethereum.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getAddress = getAddress;
@@ -7697,9 +7697,9 @@ ${suffix}`;
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/webauthn.errors.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/webauthn.errors.js
 var require_webauthn_errors = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/webauthn.errors.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/webauthn.errors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WebAuthnUnknownError = exports.WebAuthnError = void 0;
@@ -7888,9 +7888,9 @@ var require_webauthn_errors = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/lib/webauthn.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/webauthn.js
 var require_webauthn = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/lib/webauthn.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/lib/webauthn.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WebAuthnApi = exports.DEFAULT_REQUEST_OPTIONS = exports.DEFAULT_CREATION_OPTIONS = exports.webAuthnAbortService = exports.WebAuthnAbortService = exports.identifyAuthenticationError = exports.identifyRegistrationError = exports.isWebAuthnError = exports.WebAuthnError = void 0;
@@ -8447,9 +8447,9 @@ var require_webauthn = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/GoTrueClient.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js
 var require_GoTrueClient = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/GoTrueClient.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
@@ -13663,9 +13663,9 @@ var require_GoTrueClient = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/AuthAdminApi.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/AuthAdminApi.js
 var require_AuthAdminApi = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/AuthAdminApi.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/AuthAdminApi.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
@@ -13675,9 +13675,9 @@ var require_AuthAdminApi = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/AuthClient.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/AuthClient.js
 var require_AuthClient = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/AuthClient.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/AuthClient.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
@@ -13687,9 +13687,9 @@ var require_AuthClient = __commonJS({
   }
 });
 
-// node_modules/@supabase/auth-js/dist/main/index.js
+// ../KalviLearn/node_modules/@supabase/auth-js/dist/main/index.js
 var require_main3 = __commonJS({
-  "node_modules/@supabase/auth-js/dist/main/index.js"(exports) {
+  "../KalviLearn/node_modules/@supabase/auth-js/dist/main/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.processLock = exports.lockInternals = exports.NavigatorLockAcquireTimeoutError = exports.navigatorLock = exports.AuthClient = exports.AuthAdminApi = exports.GoTrueClient = exports.GoTrueAdminApi = void 0;
@@ -14963,9 +14963,9 @@ ${body}
   }
 });
 
-// node_modules/ws/lib/constants.js
+// ../KalviLearn/node_modules/ws/lib/constants.js
 var require_constants3 = __commonJS({
-  "node_modules/ws/lib/constants.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/constants.js"(exports, module2) {
     "use strict";
     var BINARY_TYPES = ["nodebuffer", "arraybuffer", "fragments"];
     var hasBlob = typeof Blob !== "undefined";
@@ -14986,9 +14986,9 @@ var require_constants3 = __commonJS({
   }
 });
 
-// node_modules/ws/lib/buffer-util.js
+// ../KalviLearn/node_modules/ws/lib/buffer-util.js
 var require_buffer_util = __commonJS({
-  "node_modules/ws/lib/buffer-util.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/buffer-util.js"(exports, module2) {
     "use strict";
     var { EMPTY_BUFFER } = require_constants3();
     var FastBuffer = Buffer[Symbol.species];
@@ -15061,9 +15061,9 @@ var require_buffer_util = __commonJS({
   }
 });
 
-// node_modules/ws/lib/limiter.js
+// ../KalviLearn/node_modules/ws/lib/limiter.js
 var require_limiter = __commonJS({
-  "node_modules/ws/lib/limiter.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/limiter.js"(exports, module2) {
     "use strict";
     var kDone = Symbol("kDone");
     var kRun = Symbol("kRun");
@@ -15111,9 +15111,9 @@ var require_limiter = __commonJS({
   }
 });
 
-// node_modules/ws/lib/permessage-deflate.js
+// ../KalviLearn/node_modules/ws/lib/permessage-deflate.js
 var require_permessage_deflate = __commonJS({
-  "node_modules/ws/lib/permessage-deflate.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/permessage-deflate.js"(exports, module2) {
     "use strict";
     var zlib = __require("zlib");
     var bufferUtil = require_buffer_util();
@@ -15494,9 +15494,9 @@ var require_permessage_deflate = __commonJS({
   }
 });
 
-// node_modules/ws/lib/validation.js
+// ../KalviLearn/node_modules/ws/lib/validation.js
 var require_validation = __commonJS({
-  "node_modules/ws/lib/validation.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/validation.js"(exports, module2) {
     "use strict";
     var { isUtf8 } = __require("buffer");
     var { hasBlob } = require_constants3();
@@ -15695,9 +15695,9 @@ var require_validation = __commonJS({
   }
 });
 
-// node_modules/ws/lib/receiver.js
+// ../KalviLearn/node_modules/ws/lib/receiver.js
 var require_receiver = __commonJS({
-  "node_modules/ws/lib/receiver.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/receiver.js"(exports, module2) {
     "use strict";
     var { Writable } = __require("stream");
     var PerMessageDeflate2 = require_permessage_deflate();
@@ -16318,9 +16318,9 @@ var require_receiver = __commonJS({
   }
 });
 
-// node_modules/ws/lib/sender.js
+// ../KalviLearn/node_modules/ws/lib/sender.js
 var require_sender = __commonJS({
-  "node_modules/ws/lib/sender.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/sender.js"(exports, module2) {
     "use strict";
     var { Duplex } = __require("stream");
     var { randomFillSync } = __require("crypto");
@@ -16811,9 +16811,9 @@ var require_sender = __commonJS({
   }
 });
 
-// node_modules/ws/lib/event-target.js
+// ../KalviLearn/node_modules/ws/lib/event-target.js
 var require_event_target = __commonJS({
-  "node_modules/ws/lib/event-target.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/event-target.js"(exports, module2) {
     "use strict";
     var { kForOnEventAttribute, kListener } = require_constants3();
     var kCode = Symbol("kCode");
@@ -17040,9 +17040,9 @@ var require_event_target = __commonJS({
   }
 });
 
-// node_modules/ws/lib/extension.js
+// ../KalviLearn/node_modules/ws/lib/extension.js
 var require_extension = __commonJS({
-  "node_modules/ws/lib/extension.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/extension.js"(exports, module2) {
     "use strict";
     var { tokenChars } = require_validation();
     function push(dest, name, elem) {
@@ -17193,9 +17193,9 @@ var require_extension = __commonJS({
   }
 });
 
-// node_modules/ws/lib/websocket.js
+// ../KalviLearn/node_modules/ws/lib/websocket.js
 var require_websocket = __commonJS({
-  "node_modules/ws/lib/websocket.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/websocket.js"(exports, module2) {
     "use strict";
     var EventEmitter = __require("events");
     var https = __require("https");
@@ -18102,9 +18102,9 @@ var require_websocket = __commonJS({
   }
 });
 
-// node_modules/ws/lib/stream.js
+// ../KalviLearn/node_modules/ws/lib/stream.js
 var require_stream = __commonJS({
-  "node_modules/ws/lib/stream.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/stream.js"(exports, module2) {
     "use strict";
     var WebSocket3 = require_websocket();
     var { Duplex } = __require("stream");
@@ -18200,9 +18200,9 @@ var require_stream = __commonJS({
   }
 });
 
-// node_modules/ws/lib/subprotocol.js
+// ../KalviLearn/node_modules/ws/lib/subprotocol.js
 var require_subprotocol = __commonJS({
-  "node_modules/ws/lib/subprotocol.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/subprotocol.js"(exports, module2) {
     "use strict";
     var { tokenChars } = require_validation();
     function parse(header) {
@@ -18245,9 +18245,9 @@ var require_subprotocol = __commonJS({
   }
 });
 
-// node_modules/ws/lib/websocket-server.js
+// ../KalviLearn/node_modules/ws/lib/websocket-server.js
 var require_websocket_server = __commonJS({
-  "node_modules/ws/lib/websocket-server.js"(exports, module2) {
+  "../KalviLearn/node_modules/ws/lib/websocket-server.js"(exports, module2) {
     "use strict";
     var EventEmitter = __require("events");
     var http = __require("http");
@@ -18646,7 +18646,7 @@ var require_websocket_server = __commonJS({
   }
 });
 
-// node_modules/ws/wrapper.mjs
+// ../KalviLearn/node_modules/ws/wrapper.mjs
 var wrapper_exports = {};
 __export(wrapper_exports, {
   PerMessageDeflate: () => import_permessage_deflate.default,
@@ -18661,7 +18661,7 @@ __export(wrapper_exports, {
 });
 var import_stream, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
 var init_wrapper = __esm({
-  "node_modules/ws/wrapper.mjs"() {
+  "../KalviLearn/node_modules/ws/wrapper.mjs"() {
     import_stream = __toESM(require_stream(), 1);
     import_extension = __toESM(require_extension(), 1);
     import_permessage_deflate = __toESM(require_permessage_deflate(), 1);
@@ -18674,7 +18674,7 @@ var init_wrapper = __esm({
   }
 });
 
-// node_modules/pyodide/pyodide.mjs
+// ../KalviLearn/node_modules/pyodide/pyodide.mjs
 var pyodide_exports = {};
 __export(pyodide_exports, {
   loadPyodide: () => dt,
@@ -19037,7 +19037,7 @@ async function dt(e = {}) {
 }
 var Q, o, R, W, N, I, S, ee, te, F, v, b, E, A, re, M, f, $, x, se, B, L, w, T, _, O, pe, G, ge, Y, U;
 var init_pyodide = __esm({
-  "node_modules/pyodide/pyodide.mjs"() {
+  "../KalviLearn/node_modules/pyodide/pyodide.mjs"() {
     Q = Object.defineProperty;
     o = (e, t) => Q(e, "name", { value: t, configurable: true });
     R = ((e) => typeof __require < "u" ? __require : typeof Proxy < "u" ? new Proxy(e, { get: (t, n) => (typeof __require < "u" ? __require : t)[n] }) : e)(function(e) {
@@ -19670,7 +19670,7 @@ var init_codeRunnerCore = __esm({
 // src/server/feedbackAuth.ts
 import crypto2 from "crypto";
 
-// node_modules/@supabase/supabase-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/supabase-js/dist/index.mjs
 var dist_exports = {};
 __export(dist_exports, {
   FunctionRegion: () => import_functions_js.FunctionRegion,
@@ -19684,16 +19684,16 @@ __export(dist_exports, {
   createClient: () => createClient
 });
 
-// node_modules/@supabase/supabase-js/dist/tracingRegistry.mjs
+// ../KalviLearn/node_modules/@supabase/supabase-js/dist/tracingRegistry.mjs
 var EXTRACTOR_KEY = Symbol.for("@supabase/supabase-js.traceContextExtractor");
 function getTraceContextExtractor() {
   return globalThis[EXTRACTOR_KEY];
 }
 
-// node_modules/@supabase/supabase-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/supabase-js/dist/index.mjs
 var import_functions_js = __toESM(require_main(), 1);
 
-// node_modules/@supabase/postgrest-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/postgrest-js/dist/index.mjs
 var PostgrestError = class extends Error {
   /**
   * @example
@@ -23591,10 +23591,10 @@ var PostgrestClient = class PostgrestClient2 {
   }
 };
 
-// node_modules/@supabase/supabase-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/supabase-js/dist/index.mjs
 var import_realtime_js = __toESM(require_main2(), 1);
 
-// node_modules/iceberg-js/dist/index.mjs
+// ../KalviLearn/node_modules/iceberg-js/dist/index.mjs
 var IcebergError = class extends Error {
   constructor(message, opts) {
     super(message);
@@ -24127,7 +24127,7 @@ var IcebergRestCatalog = class {
   }
 };
 
-// node_modules/@supabase/storage-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/storage-js/dist/index.mjs
 function _typeof2(o2) {
   "@babel/helpers - typeof";
   return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o$1) {
@@ -26945,7 +26945,7 @@ var StorageClient = class extends StorageBucketApi {
   }
 };
 
-// node_modules/@supabase/supabase-js/dist/index.mjs
+// ../KalviLearn/node_modules/@supabase/supabase-js/dist/index.mjs
 var import_auth_js = __toESM(require_main3(), 1);
 __reExport(dist_exports, __toESM(require_main2(), 1));
 __reExport(dist_exports, __toESM(require_main3(), 1));
@@ -115965,6 +115965,9 @@ async function handler(req, res) {
     if (action === "toggle_question_status") {
       return await handleToggleQuestionStatus(body, auth.user.id, clientIp, res);
     }
+    if (action === "restore_question") {
+      return await handleRestoreQuestion(body, auth.user.id, clientIp, res);
+    }
     if (action === "delete_question" || method === "DELETE" && (sub === "questions" || url.includes("/questions"))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res);
     }
@@ -118247,7 +118250,8 @@ async function handleListQuestions(body, req, res) {
   const difficultyCounts = { Easy: 0, Medium: 0, Hard: 0 };
   const topicCounts = {};
   for (const problem of statsSubset) {
-    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.isActive;
+    const st = String(problem.status || "").toUpperCase();
+    const isPub = st === "PUBLISHED" || !["DRAFT", "PENDING_REVIEW", "ARCHIVED"].includes(st) && problem.isActive;
     if (isPub) totalPublished++;
     else totalDraft++;
     const diff = problem.difficulty || "Easy";
@@ -118261,9 +118265,12 @@ async function handleListQuestions(body, req, res) {
     if (!learningUnitId && onlyBelts && problem.learningUnitId) return false;
     if (difficulty !== "ALL" && problem.difficulty !== difficulty) return false;
     if (topic !== "ALL" && (problem.subdivision || "General") !== topic) return false;
-    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.isActive;
+    const st = String(problem.status || "").toUpperCase();
+    const isPub = st === "PUBLISHED" || !["DRAFT", "PENDING_REVIEW", "ARCHIVED"].includes(st) && problem.isActive;
     if (status === "PUBLISHED" && !isPub) return false;
-    if (status === "DRAFT" && isPub) return false;
+    if (status === "DRAFT" && (isPub || st === "PENDING_REVIEW" || st === "ARCHIVED")) return false;
+    if (status === "PENDING_REVIEW" && st !== "PENDING_REVIEW" && problem.approvalStatus !== "PENDING_REVIEW") return false;
+    if (status === "ARCHIVED" && st !== "ARCHIVED") return false;
     if (belt !== "ALL" && !learningUnitId) {
       if (problem.learningUnitId) return false;
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ""), 10);
@@ -118856,9 +118863,25 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
   if (typeof body.status === "string") {
     updates.status = body.status.trim().toUpperCase();
     updates.isActive = updates.status === "PUBLISHED";
+    if (updates.status === "PUBLISHED") {
+      updates.approvalStatus = "APPROVED";
+      updates.publishedAt = (/* @__PURE__ */ new Date()).toISOString();
+      updates.publishedBy = adminId;
+    } else if (updates.status === "ARCHIVED") {
+      updates.approvalStatus = "REJECTED";
+    } else {
+      updates.approvalStatus = "DRAFT";
+    }
   } else if (typeof body.isActive === "boolean") {
     updates.isActive = body.isActive;
     updates.status = body.isActive ? "PUBLISHED" : "DRAFT";
+    if (updates.isActive) {
+      updates.approvalStatus = "APPROVED";
+      updates.publishedAt = (/* @__PURE__ */ new Date()).toISOString();
+      updates.publishedBy = adminId;
+    } else {
+      updates.approvalStatus = "DRAFT";
+    }
   }
   if (body.learningUnitId !== void 0) {
     if (typeof body.learningUnitId === "string" && body.learningUnitId.trim()) {
@@ -119206,20 +119229,35 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
     });
   }
   let nextIsActive;
+  let nextStatus;
   if (typeof body.isActive === "boolean") {
     nextIsActive = body.isActive;
+    if (requestedStatus) {
+      nextStatus = requestedStatus;
+    } else {
+      nextStatus = nextIsActive ? "PUBLISHED" : "DRAFT";
+    }
   } else if (requestedStatus) {
     nextIsActive = requestedStatus === "PUBLISHED";
+    nextStatus = requestedStatus;
   } else {
     nextIsActive = !existing.isActive;
+    nextStatus = nextIsActive ? "PUBLISHED" : "DRAFT";
   }
-  const nextStatus = nextIsActive ? "PUBLISHED" : "DRAFT";
-  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const approvalStatus = nextIsActive ? "APPROVED" : nextStatus === "ARCHIVED" ? "REJECTED" : "DRAFT";
+  const updatePayload = {
     isActive: nextIsActive,
     status: nextStatus,
+    approvalStatus,
     updatedBy: adminId,
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  }).eq("id", existing.id).select().single();
+    updatedAt: now
+  };
+  if (nextIsActive) {
+    updatePayload.publishedAt = now;
+    updatePayload.publishedBy = adminId;
+  }
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update(updatePayload).eq("id", existing.id).select().single();
   if (updErr) throw updErr;
   await recordAdminAudit(
     SUPER_ADMIN_EMAIL,
@@ -119239,6 +119277,57 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
     data: {
       ...updated,
       status: nextStatus
+    }
+  });
+}
+async function handleRestoreQuestion(body, adminId, clientIp, res) {
+  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : "";
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: "Missing Identifier",
+      message: "Question ID or slug is required."
+    });
+  }
+  const { data: allMatching, error: findErr } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status, canonicalProblemId");
+  if (findErr) throw findErr;
+  const existing = (allMatching || []).find((p2) => p2.id === id || p2.slug === id);
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: "Question Not Found",
+      message: `Question with identifier "${id}" was not found.`
+    });
+  }
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
+    isActive: false,
+    status: "DRAFT",
+    approvalStatus: "DRAFT",
+    updatedBy: adminId,
+    updatedAt: now
+  }).eq("id", existing.id).select().single();
+  if (updErr) throw updErr;
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    "RESTORE_QUESTION",
+    "QUESTION",
+    existing.id,
+    `${existing.title} (${existing.slug})`,
+    { previousStatus: existing.status || (existing.isActive ? "PUBLISHED" : "DRAFT"), newStatus: "DRAFT" },
+    "SUCCESS",
+    null,
+    clientIp
+  );
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" has been restored to draft.`,
+    data: {
+      ...updated,
+      status: "DRAFT",
+      isActive: false,
+      approvalStatus: "DRAFT"
     }
   });
 }

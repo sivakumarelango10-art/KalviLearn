@@ -362,6 +362,9 @@ export default async function handler(
     if (action === 'toggle_question_status') {
       return await handleToggleQuestionStatus(body, auth.user.id, clientIp, res)
     }
+    if (action === 'restore_question') {
+      return await handleRestoreQuestion(body, auth.user.id, clientIp, res)
+    }
     if (action === 'delete_question' || (method === 'DELETE' && (sub === 'questions' || url.includes('/questions')))) {
       return await handleDeleteQuestion(body, req, auth.user.id, clientIp, res)
     }
@@ -3518,7 +3521,8 @@ async function handleListQuestions(
   const topicCounts: Record<string, number> = {}
 
   for (const problem of statsSubset) {
-    const isPub = problem.status === 'PUBLISHED' || (problem.status !== 'DRAFT' && problem.isActive)
+    const st = String(problem.status || '').toUpperCase()
+    const isPub = st === 'PUBLISHED' || (!['DRAFT', 'PENDING_REVIEW', 'ARCHIVED'].includes(st) && problem.isActive)
     if (isPub) totalPublished++
     else totalDraft++
 
@@ -3535,9 +3539,12 @@ async function handleListQuestions(
     if (!learningUnitId && onlyBelts && problem.learningUnitId) return false
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
-    const isPub = problem.status === 'PUBLISHED' || (problem.status !== 'DRAFT' && problem.isActive)
+    const st = String(problem.status || '').toUpperCase()
+    const isPub = st === 'PUBLISHED' || (!['DRAFT', 'PENDING_REVIEW', 'ARCHIVED'].includes(st) && problem.isActive)
     if (status === 'PUBLISHED' && !isPub) return false
-    if (status === 'DRAFT' && isPub) return false
+    if (status === 'DRAFT' && (isPub || st === 'PENDING_REVIEW' || st === 'ARCHIVED')) return false
+    if (status === 'PENDING_REVIEW' && st !== 'PENDING_REVIEW' && problem.approvalStatus !== 'PENDING_REVIEW') return false
+    if (status === 'ARCHIVED' && st !== 'ARCHIVED') return false
 
     if (belt !== 'ALL' && !learningUnitId) {
       if (problem.learningUnitId) return false
@@ -4322,9 +4329,25 @@ async function handleUpdateQuestion(
   if (typeof body.status === 'string') {
     updates.status = body.status.trim().toUpperCase()
     updates.isActive = updates.status === 'PUBLISHED'
+    if (updates.status === 'PUBLISHED') {
+      updates.approvalStatus = 'APPROVED'
+      updates.publishedAt = new Date().toISOString()
+      updates.publishedBy = adminId
+    } else if (updates.status === 'ARCHIVED') {
+      updates.approvalStatus = 'REJECTED'
+    } else {
+      updates.approvalStatus = 'DRAFT'
+    }
   } else if (typeof body.isActive === 'boolean') {
     updates.isActive = body.isActive
     updates.status = body.isActive ? 'PUBLISHED' : 'DRAFT'
+    if (updates.isActive) {
+      updates.approvalStatus = 'APPROVED'
+      updates.publishedAt = new Date().toISOString()
+      updates.publishedBy = adminId
+    } else {
+      updates.approvalStatus = 'DRAFT'
+    }
   }
 
   if (body.learningUnitId !== undefined) {
@@ -4783,23 +4806,39 @@ async function handleToggleQuestionStatus(
   }
 
   let nextIsActive: boolean
+  let nextStatus: string
   if (typeof body.isActive === 'boolean') {
     nextIsActive = body.isActive
+    if (requestedStatus) {
+      nextStatus = requestedStatus
+    } else {
+      nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+    }
   } else if (requestedStatus) {
     nextIsActive = requestedStatus === 'PUBLISHED'
+    nextStatus = requestedStatus
   } else {
     nextIsActive = !existing.isActive
+    nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
   }
-  const nextStatus = nextIsActive ? 'PUBLISHED' : 'DRAFT'
+
+  const now = new Date().toISOString()
+  const approvalStatus = nextIsActive ? 'APPROVED' : nextStatus === 'ARCHIVED' ? 'REJECTED' : 'DRAFT'
+  const updatePayload: Record<string, any> = {
+    isActive: nextIsActive,
+    status: nextStatus,
+    approvalStatus,
+    updatedBy: adminId,
+    updatedAt: now,
+  }
+  if (nextIsActive) {
+    updatePayload.publishedAt = now
+    updatePayload.publishedBy = adminId
+  }
 
   const { data: updated, error: updErr } = await supabaseServer
     .from('Problem')
-    .update({
-      isActive: nextIsActive,
-      status: nextStatus,
-      updatedBy: adminId,
-      updatedAt: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq('id', existing.id)
     .select()
     .single()
@@ -4825,6 +4864,80 @@ async function handleToggleQuestionStatus(
     data: {
       ...updated,
       status: nextStatus,
+    },
+  })
+}
+
+async function handleRestoreQuestion(
+  body: Record<string, unknown>,
+  adminId: string,
+  clientIp: string,
+  res: ServerResponse
+) {
+  const id = typeof body.id === 'string' && body.id.trim()
+    ? body.id.trim()
+    : (typeof body.slug === 'string' && body.slug.trim() ? body.slug.trim() : '')
+
+  if (!id) {
+    return sendJson(res, 400, {
+      success: false,
+      error: 'Missing Identifier',
+      message: 'Question ID or slug is required.',
+    })
+  }
+
+  const { data: allMatching, error: findErr } = await supabaseServer
+    .from('Problem')
+    .select('id, slug, title, isActive, status, canonicalProblemId')
+
+  if (findErr) throw findErr
+
+  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
+  if (!existing) {
+    return sendJson(res, 404, {
+      success: false,
+      error: 'Question Not Found',
+      message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  const now = new Date().toISOString()
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Problem')
+    .update({
+      isActive: false,
+      status: 'DRAFT',
+      approvalStatus: 'DRAFT',
+      updatedBy: adminId,
+      updatedAt: now,
+    })
+    .eq('id', existing.id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordAdminAudit(
+    SUPER_ADMIN_EMAIL,
+    adminId,
+    'RESTORE_QUESTION',
+    'QUESTION',
+    existing.id,
+    `${existing.title} (${existing.slug})`,
+    { previousStatus: existing.status || (existing.isActive ? 'PUBLISHED' : 'DRAFT'), newStatus: 'DRAFT' },
+    'SUCCESS',
+    null,
+    clientIp
+  )
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" has been restored to draft.`,
+    data: {
+      ...updated,
+      status: 'DRAFT',
+      isActive: false,
+      approvalStatus: 'DRAFT',
     },
   })
 }

@@ -27,6 +27,8 @@ import {
   Clock,
   Cpu,
   Languages,
+  Archive,
+  RotateCcw,
   History as HistoryIcon,
 } from 'lucide-react'
 import {
@@ -42,6 +44,7 @@ import {
   updateAdminQuestion,
   duplicateAdminQuestion,
   toggleAdminQuestionStatus,
+  restoreAdminQuestion,
   deleteAdminQuestion,
   runAdminQuestionTests,
   fetchAdminQuestionRevisions,
@@ -55,6 +58,7 @@ import {
   updateCmQuestion,
   duplicateCmQuestion,
   toggleCmQuestionStatus,
+  restoreCmQuestion,
   deleteCmQuestion,
   runCmQuestionTests,
   fetchCmQuestionRevisions,
@@ -212,6 +216,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     update: isCmMode ? updateCmQuestion : updateAdminQuestion,
     duplicate: isCmMode ? duplicateCmQuestion : duplicateAdminQuestion,
     toggleStatus: isCmMode ? toggleCmQuestionStatus : toggleAdminQuestionStatus,
+    restoreQuestion: isCmMode ? restoreCmQuestion : restoreAdminQuestion,
     remove: isCmMode ? deleteCmQuestion : deleteAdminQuestion,
     runTests: isCmMode ? runCmQuestionTests : runAdminQuestionTests,
     fetchRevisions: isCmMode ? fetchCmQuestionRevisions : fetchAdminQuestionRevisions,
@@ -597,6 +602,24 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     }
   }
 
+  // Restore / Unarchive Question
+  const handleRestoreQuestion = async (q: AdminQuestion) => {
+    setActionLoading(true)
+    try {
+      const res = await qApi.restoreQuestion(q.id)
+      if (res.success) {
+        setSuccessMsg(`Question "${q.title}" restored to draft.`)
+        loadQuestions()
+      } else {
+        setError(res.error || 'Failed to restore question.')
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Error restoring question.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   // Delete Question
   const handleDeleteConfirm = async () => {
     if (!questionToDelete) return
@@ -651,8 +674,20 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
     setActionLoading(true)
     try {
-      const activeState = submitForReview ? false : (publishImmediate !== undefined ? publishImmediate : formData.isActive)
-      const resolvedStatus = submitForReview ? 'PENDING_REVIEW' : (publishImmediate === false ? 'DRAFT' : (formData.status || (activeState ? 'PUBLISHED' : 'DRAFT')))
+      const activeState = submitForReview
+        ? false
+        : publishImmediate === true
+        ? true
+        : publishImmediate === false
+        ? false
+        : formData.isActive
+      const resolvedStatus = submitForReview
+        ? 'PENDING_REVIEW'
+        : publishImmediate === true
+        ? 'PUBLISHED'
+        : publishImmediate === false
+        ? 'DRAFT'
+        : (formData.status || (activeState ? 'PUBLISHED' : 'DRAFT'))
       const payload = {
         title: formData.title.trim(),
         slug: formData.slug.trim(),
@@ -1121,7 +1156,15 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         >
                           {q.difficulty}
                         </span>
-                        {q.isActive ? (
+                        {q.status === 'ARCHIVED' ? (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-950/40 text-rose-400 border border-rose-800/60 shrink-0">
+                            <Archive className="w-2.5 h-2.5" /> Archived
+                          </span>
+                        ) : q.status === 'PENDING_REVIEW' ? (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60 shrink-0">
+                            <Clock className="w-2.5 h-2.5" /> Pending Review
+                          </span>
+                        ) : (q.isActive || q.status === 'PUBLISHED') ? (
                           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 shrink-0">
                             <Globe className="w-2.5 h-2.5" /> Published
                           </span>
@@ -1174,10 +1217,20 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>)}
+                        {q.status === 'ARCHIVED' && (canArchiveQ || canUpdateQ) && (
+                          <button
+                            type="button"
+                            onClick={() => handleRestoreQuestion(q)}
+                            title="Restore to Draft (Unarchive)"
+                            className="p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-cyan-400 border border-neutral-800 transition-colors"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                         {(canPublishQ || canArchiveQ) && (<button
                           type="button"
                           onClick={() => handleToggleStatus(q)}
-                          title={q.isActive ? 'Unpublish to Draft' : 'Publish Question'}
+                          title={q.isActive ? 'Unpublish to Draft' : (q.status === 'ARCHIVED' ? 'Publish Question (from Archived)' : 'Publish Question')}
                           className={cn(
                             'p-1.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors',
                             q.isActive
@@ -1427,6 +1480,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               <option value="ALL">All Status</option>
               <option value="PUBLISHED">Published</option>
               <option value="DRAFT">Draft</option>
+              <option value="PENDING_REVIEW">Pending Review</option>
+              <option value="ARCHIVED">Archived</option>
             </select>
           </div>
         </div>
@@ -1555,7 +1610,15 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
                       {/* Status */}
                       <td className="py-3.5 px-4 text-center">
-                        {q.isActive ? (
+                        {q.status === 'ARCHIVED' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-950/40 text-rose-400 border border-rose-800/60">
+                            <Archive className="w-3 h-3" /> Archived
+                          </span>
+                        ) : q.status === 'PENDING_REVIEW' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60">
+                            <Clock className="w-3 h-3" /> Pending Review
+                          </span>
+                        ) : (q.isActive || q.status === 'PUBLISHED') ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60">
                             <Globe className="w-3 h-3" /> Published
                           </span>
@@ -1604,9 +1667,18 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           >
                             <Copy className="w-4 h-4" />
                           </button>)}
+                          {q.status === 'ARCHIVED' && (canArchiveQ || canUpdateQ) && (
+                            <button
+                              onClick={() => handleRestoreQuestion(q)}
+                              title="Restore to Draft (Unarchive)"
+                              className="p-1.5 rounded hover:bg-[#262626] text-neutral-400 hover:text-cyan-400 transition-colors"
+                            >
+                              <RotateCcw className="w-4 h-4" />
+                            </button>
+                          )}
                           {(canPublishQ || canArchiveQ) && (<button
                             onClick={() => handleToggleStatus(q)}
-                            title={q.isActive ? 'Unpublish to Draft' : 'Publish Question'}
+                            title={q.isActive ? 'Unpublish to Draft' : (q.status === 'ARCHIVED' ? 'Publish Question (from Archived)' : 'Publish Question')}
                             className={cn(
                               'p-1.5 rounded hover:bg-[#262626] transition-colors',
                               q.isActive
@@ -2912,7 +2984,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 </span>
                 {canPublishQ && (<button
                   type="button"
-                  onClick={() => setFormData((prev) => ({ ...prev, isActive: !prev.isActive }))}
+                  onClick={() => setFormData((prev) => {
+                    const nextActive = !prev.isActive
+                    return {
+                      ...prev,
+                      isActive: nextActive,
+                      status: nextActive ? 'PUBLISHED' : 'DRAFT',
+                    }
+                  })}
                   className="text-xs underline text-neutral-400 hover:text-white"
                 >
                   Toggle
@@ -3177,12 +3256,16 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 <span
                   className={cn(
                     'px-2.5 py-0.5 rounded-full text-xs font-semibold border',
-                    adminPreviewQuestion.isActive
+                    adminPreviewQuestion.status === 'ARCHIVED'
+                      ? 'bg-rose-950/40 text-rose-400 border-rose-800/60'
+                      : adminPreviewQuestion.status === 'PENDING_REVIEW'
+                      ? 'bg-amber-950/40 text-amber-400 border-amber-800/60'
+                      : (adminPreviewQuestion.isActive || adminPreviewQuestion.status === 'PUBLISHED')
                       ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60'
                       : 'bg-neutral-900 text-neutral-400 border-neutral-700'
                   )}
                 >
-                  {adminPreviewQuestion.isActive ? 'Status: Published' : 'Status: Draft'}
+                  Status: {adminPreviewQuestion.status || (adminPreviewQuestion.isActive ? 'PUBLISHED' : 'DRAFT')}
                 </span>
                 {adminPreviewQuestion.createdAt && (
                   <span className="text-xs text-neutral-500">

@@ -63,6 +63,7 @@ const ALLOWED_CONTENT_ACTIONS = new Set<string>([
   'submit_question_for_review',
   'duplicate_question',
   'toggle_question_status',
+  'restore_question',
   'delete_question',
   'run_question_tests',
   'list_question_revisions',
@@ -374,6 +375,9 @@ export default async function handler(
     }
     if (action === 'toggle_question_status') {
       return await handleToggleQuestionStatus(ctx, body, clientIp, res)
+    }
+    if (action === 'restore_question') {
+      return await handleRestoreQuestion(ctx, body, clientIp, res)
     }
     if (action === 'delete_question') {
       return await handleDeleteQuestion(ctx, body, clientIp, res)
@@ -2705,6 +2709,60 @@ async function handleToggleQuestionStatus(
   return sendJson(res, 200, {
     success: true,
     message: `Question "${existing.title}" is now ${finalStatus}.`,
+    data: updated,
+  })
+}
+
+async function handleRestoreQuestion(
+  ctx: ContentManagerContext,
+  body: Record<string, unknown>,
+  clientIp: string,
+  res: ServerResponse
+) {
+  if (!assertPrivilegedDatabaseAccess(res)) return
+  const id = typeof body.id === 'string' && body.id.trim() ? body.id.trim() : ''
+  if (!id) return sendJson(res, 400, { success: false, error: 'Missing Question ID', message: 'Question ID is required.' })
+
+  const existing = await findQuestionByIdOrSlug(id)
+  if (!existing) return sendJson(res, 404, { success: false, error: 'Not Found', message: `Question "${id}" not found.` })
+
+  await requireQuestionScope(ctx, existing)
+  requireAnyPermission(ctx, ['content.question.archive', 'content.question.create', 'content.question.update'])
+
+  const now = new Date().toISOString()
+  const { data: updated, error: updErr } = await supabaseServer
+    .from('Problem')
+    .update({
+      isActive: false,
+      status: 'DRAFT',
+      approvalStatus: 'DRAFT',
+      updatedBy: ctx.userId,
+      updatedAt: now,
+    })
+    .eq('id', existing.id)
+    .select()
+    .single()
+
+  if (updErr) throw updErr
+
+  await recordContentAudit({
+    actorUserId: ctx.userId,
+    actorEmail: ctx.email,
+    actorRole: ctx.role,
+    action: 'RESTORE_QUESTION',
+    resourceType: 'PROBLEM',
+    resourceId: existing.id,
+    resourceLabel: `${existing.title} (${existing.slug})`,
+    permissionUsed: 'content.question.archive',
+    previousValues: { status: existing.status, isActive: existing.isActive },
+    updatedValues: { status: 'DRAFT', isActive: false },
+    changeSummary: `Restored question "${existing.title}" from archived to draft`,
+    ipAddress: clientIp,
+  })
+
+  return sendJson(res, 200, {
+    success: true,
+    message: `Question "${existing.title}" restored to draft.`,
     data: updated,
   })
 }

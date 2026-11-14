@@ -948,16 +948,34 @@ export async function duplicateAdminQuestion(
 
 export async function toggleAdminQuestionStatus(
   id: string,
-  isActive?: boolean
+  isActive?: boolean,
+  status?: string
 ): Promise<{
   success: boolean
-  data?: { id: string; slug: string; isActive: boolean }
+  data?: { id: string; slug: string; isActive: boolean; status?: string }
   error?: string
+  message?: string
 }> {
   return callSuperAdminApi(
     '/api/super-admin/questions',
-    { id, isActive },
+    { id, isActive, status },
     'toggle_question_status',
+    'POST'
+  )
+}
+
+export async function restoreAdminQuestion(
+  id: string
+): Promise<{
+  success: boolean
+  data?: AdminQuestion
+  error?: string
+  message?: string
+}> {
+  return callSuperAdminApi(
+    '/api/super-admin/questions',
+    { id },
+    'restore_question',
     'POST'
   )
 }

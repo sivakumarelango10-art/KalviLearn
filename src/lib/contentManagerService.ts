@@ -352,8 +352,12 @@ export async function duplicateCmQuestion(id: string) {
   return callContentManagerApi<AdminQuestion>('/api/content-manager/questions', { id }, 'duplicate_question', 'POST')
 }
 
-export async function toggleCmQuestionStatus(id: string, isActive?: boolean) {
-  return callContentManagerApi<AdminQuestion>('/api/content-manager/questions', { id, isActive }, 'toggle_question_status', 'POST')
+export async function toggleCmQuestionStatus(id: string, isActive?: boolean, status?: string) {
+  return callContentManagerApi<AdminQuestion>('/api/content-manager/questions', { id, isActive, status }, 'toggle_question_status', 'POST')
+}
+
+export async function restoreCmQuestion(id: string) {
+  return callContentManagerApi<AdminQuestion>('/api/content-manager/questions', { id }, 'restore_question', 'POST')
 }
 
 export async function deleteCmQuestion(id: string) {
