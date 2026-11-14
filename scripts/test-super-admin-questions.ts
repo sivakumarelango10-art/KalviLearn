@@ -1851,6 +1851,264 @@ if lines:
     assert.strictEqual(revCount, 0, 'ProblemRevision records must be cascade deleted')
   })
 
+  console.log('\n--- 17. Belt Foreign Key Integrity & Dashboard Statistics ---')
+
+  await runTest('17.1 List belts returns all 10 belts with accurate per-belt status counts', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_belts' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    const belts = out.data.data.belts
+    assert.strictEqual(belts.length, 10, 'Must return exactly 10 belts')
+    for (let i = 0; i < 10; i++) {
+      assert.strictEqual(belts[i].order, i + 1)
+      assert.ok(belts[i].id, 'Belt must have an ID')
+      assert.strictEqual(typeof belts[i].publishedCount, 'number')
+      assert.strictEqual(typeof belts[i].draftCount, 'number')
+      assert.strictEqual(typeof belts[i].archivedCount, 'number')
+      assert.strictEqual(typeof belts[i].pendingReviewCount, 'number')
+    }
+    const stats = out.data.data.stats
+    assert.strictEqual(stats.totalBelts, 10)
+    assert.strictEqual(typeof stats.totalProblems, 'number')
+    assert.strictEqual(typeof stats.publishedProblems, 'number')
+    assert.strictEqual(typeof stats.draftProblems, 'number')
+    assert.strictEqual(typeof stats.archivedProblems, 'number')
+    assert.strictEqual(typeof stats.pendingReviewProblems, 'number')
+  })
+
+  const beltQuestionIds: string[] = []
+  await runTest('17.2 Create questions for all 10 belts with valid Belt IDs (201)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    for (const b of db.Belt) {
+      const slug = `belt-${b.order}-fk-test-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`
+      const { req, res } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: {
+          action: 'create_question',
+          beltId: b.id,
+          title: `Belt ${b.order} FK Test Question`,
+          slug,
+          difficulty: 'Easy',
+          subdivision: 'General',
+          description: `Test problem verifying foreign key for Belt ${b.order}`,
+          inputFormat: 'n',
+          outputFormat: 'result',
+          constraints: 'None',
+          status: 'PUBLISHED',
+          examples: [{ label: 'Ex 1', input: '1', output: '1' }],
+          testCases: [{ input: '1', expectedOutput: '1', isHidden: false }],
+        },
+      })
+      await superAdminHandler(req, res)
+      const out = res.getOutput()
+      assert.strictEqual(out.statusCode, 201, `Creation for Belt ${b.order} (${b.id}) must return 201`)
+      assert.strictEqual(out.data.success, true)
+      assert.strictEqual(out.data.data.beltId, b.id, `Created question must have beltId matching ${b.id}`)
+      beltQuestionIds.push(out.data.data.id)
+
+      // Verify db persistence and foreign key match
+      const persisted = db.Problem.find((p: any) => p.id === out.data.data.id)
+      assert.ok(persisted, 'Problem must be persisted in database')
+      assert.strictEqual(persisted.beltId, b.id, 'Persisted beltId must match Belt.id')
+    }
+  })
+
+  await runTest('17.3 Reject question creation with invalid beltId (400 Invalid Belt ID)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        beltId: 'mock-belt-999',
+        title: 'Invalid Belt Test',
+        slug: 'invalid-belt-test-slug',
+        difficulty: 'Easy',
+        subdivision: 'General',
+        description: 'Should fail due to invalid Belt ID',
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400, 'Must return 400 for invalid beltId')
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Belt ID')
+    assert.ok(out.data.message.includes('mock-belt-999'))
+  })
+
+  await runTest('17.4 Reject question creation with empty beltId string (400 Missing Belt Selection)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        beltId: '   ',
+        title: 'Empty Belt Test',
+        slug: 'empty-belt-test-slug',
+        difficulty: 'Easy',
+        subdivision: 'General',
+        description: 'Should fail due to empty Belt ID',
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400, 'Must return 400 for empty beltId')
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Missing Belt Selection')
+  })
+
+  await runTest('17.5 Reject question update with invalid beltId (400 Invalid Belt ID)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const targetQId = beltQuestionIds[0]
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: targetQId,
+        beltId: 'non-existent-belt-uuid-12345',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400, 'Must return 400 for invalid beltId on update')
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Belt ID')
+  })
+
+  await runTest('17.6 Reject question update with empty beltId string (400 Missing Belt Selection)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const targetQId = beltQuestionIds[0]
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: targetQId,
+        beltId: '',
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400, 'Must return 400 for empty beltId on update')
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Missing Belt Selection')
+  })
+
+  await runTest('17.7 Successfully update question to another valid Belt ID (200)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const targetQId = beltQuestionIds[0]
+    const belt2 = db.Belt.find((b: any) => b.order === 2)
+    assert.ok(belt2, 'Belt 2 must exist')
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: targetQId,
+        beltId: belt2.id,
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.beltId, belt2.id, 'beltId must be updated to Belt 2 id')
+
+    const persisted = db.Problem.find((p: any) => p.id === targetQId)
+    assert.strictEqual(persisted.beltId, belt2.id)
+  })
+
+  await runTest('17.8 Mock database enforces Problem_beltId_fkey foreign key constraint', async () => {
+    const rawInsert = await supabaseServer.from('Problem').insert({
+      id: 'raw-fk-test-prob',
+      beltId: 'fake-nonexistent-belt-id',
+      order: 99,
+      slug: 'raw-fk-test-prob',
+      title: 'Raw FK Test',
+      difficulty: 'Easy',
+      subdivision: 'General',
+      description: 'Testing DB FK error code',
+      inputFormat: '',
+      outputFormat: '',
+      status: 'PUBLISHED',
+      isActive: true,
+      createdBy: 'test-admin-id',
+      createdAt: new Date().toISOString(),
+    })
+    assert.ok(rawInsert.error, 'Direct insert with non-existent beltId must fail')
+    assert.strictEqual(rawInsert.error.code, '23503', 'Must return PostgreSQL foreign key violation code 23503')
+    assert.ok(rawInsert.error.message.includes('Problem_beltId_fkey'), 'Message must reference Problem_beltId_fkey')
+  })
+
+  await runTest('17.9 Dashboard statistics strictly segregate draft from archived records', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const draftSlug = `stats-draft-prob-${Date.now()}`
+    const archSlug = `stats-archived-prob-${Date.now()}`
+    const b1 = db.Belt[0]
+
+    const { req: createDraftReq, res: createDraftRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        beltId: b1.id,
+        title: 'Stats Test Draft Problem',
+        slug: draftSlug,
+        difficulty: 'Easy',
+        subdivision: 'General',
+        description: 'Draft problem for stats verification',
+        status: 'DRAFT',
+        isActive: false,
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(createDraftReq, createDraftRes)
+    assert.strictEqual(createDraftRes.getOutput().statusCode, 201)
+
+    // Directly insert an ARCHIVED problem to simulate production state (like 442 archived problems)
+    db.Problem.push({
+      id: `archived-${Date.now()}`,
+      beltId: b1.id,
+      order: 999,
+      slug: archSlug,
+      title: 'Stats Test Archived Problem',
+      difficulty: 'Hard',
+      subdivision: 'General',
+      status: 'ARCHIVED',
+      isActive: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+
+    const { req: listReq, res: listRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'list_questions' },
+    })
+    await superAdminHandler(listReq, listRes)
+    const listOut = listRes.getOutput()
+    assert.strictEqual(listOut.statusCode, 200)
+    const s = listOut.data.data.stats
+
+    // Verify stats invariants
+    assert.strictEqual(typeof s.total, 'number')
+    assert.strictEqual(typeof s.published, 'number')
+    assert.strictEqual(typeof s.draft, 'number')
+    assert.strictEqual(typeof s.archived, 'number')
+    assert.strictEqual(typeof s.pendingReview, 'number')
+
+    // Archived must NOT be lumped into drafts
+    assert.ok(s.archived >= 1, 'archived count must be at least 1')
+    assert.strictEqual(
+      s.total,
+      s.published + s.draft + s.archived + (s.pendingReview || 0),
+      'published + draft + archived + pendingReview must equal total'
+    )
+  })
+
 
   console.log('\n======================================================================')
   console.log(`RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)

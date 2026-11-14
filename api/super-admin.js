@@ -118357,13 +118357,21 @@ async function handleListQuestions(body, req, res) {
   const statsSubset = learningUnitId ? problems.filter((p2) => p2.learningUnitId === learningUnitId) : problems;
   let totalPublished = 0;
   let totalDraft = 0;
+  let totalArchived = 0;
+  let totalPendingReview = 0;
   const difficultyCounts = { Easy: 0, Medium: 0, Hard: 0 };
   const topicCounts = {};
   for (const problem of statsSubset) {
     const rawSt = String(problem.status || "").toUpperCase();
-    const isPub = rawSt === "PUBLISHED" || rawSt !== "DRAFT" && rawSt !== "PENDING_REVIEW" && rawSt !== "ARCHIVED" && problem.isActive;
-    if (isPub) totalPublished++;
-    else totalDraft++;
+    const rawAppSt = String(problem.approvalStatus || "").toUpperCase();
+    const isArchived = rawSt === "ARCHIVED";
+    const isPending = rawSt === "PENDING_REVIEW" || rawAppSt === "PENDING_REVIEW";
+    const isPub = !isArchived && !isPending && (rawSt === "PUBLISHED" || rawSt !== "DRAFT" && Boolean(problem.isActive));
+    const isDraft = !isArchived && !isPending && !isPub;
+    if (isArchived) totalArchived++;
+    else if (isPending) totalPendingReview++;
+    else if (isPub) totalPublished++;
+    else if (isDraft) totalDraft++;
     const diff = problem.difficulty || "Easy";
     if (diff in difficultyCounts) difficultyCounts[diff]++;
     const problemTopic = problem.subdivision || "General";
@@ -118466,6 +118474,8 @@ async function handleListQuestions(body, req, res) {
         total: statsSubset.length,
         published: totalPublished,
         draft: totalDraft,
+        archived: totalArchived,
+        pendingReview: totalPendingReview,
         easy: difficultyCounts.Easy || 0,
         medium: difficultyCounts.Medium || 0,
         hard: difficultyCounts.Hard || 0,
@@ -118802,12 +118812,43 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
       });
     }
   }
-  const rawBelt = body.beltId || body.belt;
-  let beltId = learningUnitId ? null : "mock-belt-1";
-  if (typeof rawBelt === "string" && rawBelt.trim()) {
-    beltId = rawBelt.trim().startsWith("mock-belt-") || rawBelt.trim().length > 10 ? rawBelt.trim() : `mock-belt-${rawBelt.trim().replace(/[^0-9]/g, "") || "1"}`;
-  } else if (typeof rawBelt === "number" && !isNaN(rawBelt)) {
-    beltId = `mock-belt-${rawBelt}`;
+  let beltId = null;
+  if (learningUnitId) {
+    beltId = null;
+  } else {
+    const rawBelt = body.beltId !== void 0 ? body.beltId : body.belt;
+    if (rawBelt !== void 0) {
+      if (typeof rawBelt === "string" && !rawBelt.trim()) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Missing Belt Selection",
+          message: "A valid Practice Belt selection is required."
+        });
+      }
+      const candidateStr = String(rawBelt).trim();
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      const matchedBelt = (belts || []).find((b2) => b2.id === candidateStr);
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Invalid Belt ID",
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`
+        });
+      }
+      beltId = matchedBelt.id;
+    } else {
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      if (!belts || belts.length === 0) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Missing Belt Selection",
+          message: "No practice belts exist in the system."
+        });
+      }
+      beltId = belts[0].id;
+    }
   }
   const order = typeof body.order === "number" && !isNaN(body.order) ? body.order : 1;
   const legacyExamples = examples.map((ex, idx) => ({
@@ -118816,6 +118857,10 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
     output: ex.output || ex.expectedOutput || "",
     explanation: ex.explanation || ""
   }));
+  const reqStatus = typeof body.status === "string" && body.status.trim() ? body.status.trim().toUpperCase() : "";
+  const finalStatus = reqStatus || (isActive ? "PUBLISHED" : "DRAFT");
+  const approvalStatus = finalStatus === "PUBLISHED" ? "APPROVED" : finalStatus === "PENDING_REVIEW" ? "PENDING_REVIEW" : "DRAFT";
+  const isFinalActive = finalStatus === "PUBLISHED";
   const problemRecord = {
     id: problemId,
     beltId,
@@ -118831,8 +118876,11 @@ async function handleCreateQuestion(body, adminId, clientIp, res) {
     explanation: constraints,
     timeLimitMs: timeLimitMs2,
     memoryLimitMb,
-    status: isActive ? "PUBLISHED" : "DRAFT",
-    isActive,
+    status: finalStatus,
+    approvalStatus,
+    isActive: isFinalActive,
+    publishedAt: isFinalActive ? (/* @__PURE__ */ new Date()).toISOString() : null,
+    publishedBy: isFinalActive ? adminId : null,
     examples: legacyExamples,
     starterCodes,
     createdBy: adminId,
@@ -119018,6 +119066,12 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
     } else {
       updates.approvalStatus = "DRAFT";
     }
+  } else if (body.submitForReview === true || body.approvalStatus === "PENDING_REVIEW") {
+    updates.approvalStatus = "PENDING_REVIEW";
+    if (existing.status !== "PUBLISHED") {
+      updates.status = "PENDING_REVIEW";
+      updates.isActive = false;
+    }
   }
   if (body.learningUnitId !== void 0) {
     if (typeof body.learningUnitId === "string" && body.learningUnitId.trim()) {
@@ -119037,13 +119091,28 @@ async function handleUpdateQuestion(body, adminId, clientIp, res) {
     }
   }
   if (body.beltId !== void 0 || body.belt !== void 0) {
-    const rawBelt = body.beltId || body.belt;
-    if (typeof rawBelt === "string" && rawBelt.trim()) {
-      updates.beltId = rawBelt.trim();
-    } else if (typeof rawBelt === "number" && !isNaN(rawBelt)) {
-      updates.beltId = `mock-belt-${rawBelt}`;
-    } else if (rawBelt === null) {
+    const rawBelt = body.beltId !== void 0 ? body.beltId : body.belt;
+    if (rawBelt === null) {
       updates.beltId = null;
+    } else if (typeof rawBelt === "string" && !rawBelt.trim()) {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Missing Belt Selection",
+        message: "A valid Practice Belt selection is required."
+      });
+    } else {
+      const candidateStr = String(rawBelt).trim();
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      const matchedBelt = (belts || []).find((b2) => b2.id === candidateStr);
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Invalid Belt ID",
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`
+        });
+      }
+      updates.beltId = matchedBelt.id;
     }
   }
   if (typeof body.order === "number" && !isNaN(body.order)) {
@@ -119354,14 +119423,7 @@ async function handleToggleQuestionStatus(body, adminId, clientIp, res) {
       message: "Question ID or slug is required."
     });
   }
-  let existing = null;
-  const { data: byId } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status, approvalStatus, canonicalProblemId").eq("id", id).maybeSingle();
-  if (byId) {
-    existing = byId;
-  } else {
-    const { data: bySlug } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status, approvalStatus, canonicalProblemId").eq("slug", id).maybeSingle();
-    if (bySlug) existing = bySlug;
-  }
+  const existing = await findQuestionByIdOrSlug(id);
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
@@ -119448,14 +119510,7 @@ async function handleRestoreQuestion(body, adminId, clientIp, res) {
       message: "Question ID or slug is required."
     });
   }
-  let existing = null;
-  const { data: byId } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status, approvalStatus, canonicalProblemId").eq("id", id).maybeSingle();
-  if (byId) {
-    existing = byId;
-  } else {
-    const { data: bySlug } = await supabaseServer.from("Problem").select("id, slug, title, isActive, status, approvalStatus, canonicalProblemId").eq("slug", id).maybeSingle();
-    if (bySlug) existing = bySlug;
-  }
+  const existing = await findQuestionByIdOrSlug(id);
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
@@ -120653,7 +120708,7 @@ async function handleToggleLearningUnitStatus(body, adminId, clientIp, res) {
 async function handleListBelts(res) {
   const [beltsRes, problemsRes] = await Promise.all([
     supabaseServer.from("Belt").select("*").order("order", { ascending: true }),
-    supabaseServer.from("Problem").select("id, beltId, isActive, slug")
+    supabaseServer.from("Problem").select("id, beltId, isActive, slug, status, approvalStatus")
   ]);
   let rawBelts = beltsRes.data || [];
   if (rawBelts.length === 0) {
@@ -120673,9 +120728,28 @@ async function handleListBelts(res) {
     const beltProbs = allProblems.filter(
       (p2) => p2.beltId === b2.id || p2.beltId === `mock-belt-${bOrder}` || p2.slug && p2.slug.startsWith(`belt-${bOrder}-`)
     );
-    const totalCount = beltProbs.length > 0 ? beltProbs.length : problems_default[bOrder - 1]?.problems?.length || 0;
-    const publishedCount = beltProbs.length > 0 ? beltProbs.filter((p2) => p2.isActive).length : totalCount;
-    const draftCount = totalCount - publishedCount;
+    let beltPub = 0;
+    let beltDraft = 0;
+    let beltArchived = 0;
+    let beltPending = 0;
+    for (const p2 of beltProbs) {
+      const rawSt = String(p2.status || "").toUpperCase();
+      const rawAppSt = String(p2.approvalStatus || "").toUpperCase();
+      const isArchived = rawSt === "ARCHIVED";
+      const isPending = rawSt === "PENDING_REVIEW" || rawAppSt === "PENDING_REVIEW";
+      const isPub = !isArchived && !isPending && (rawSt === "PUBLISHED" || rawSt !== "DRAFT" && Boolean(p2.isActive));
+      const isDraft = !isArchived && !isPending && !isPub;
+      if (isArchived) beltArchived++;
+      else if (isPending) beltPending++;
+      else if (isPub) beltPub++;
+      else if (isDraft) beltDraft++;
+    }
+    const fallbackTotal = problems_default[bOrder - 1]?.problems?.length || 0;
+    const totalCount = beltProbs.length > 0 ? beltProbs.length : fallbackTotal;
+    const publishedCount = beltProbs.length > 0 ? beltPub : totalCount;
+    const draftCount = beltProbs.length > 0 ? beltDraft : 0;
+    const archivedCount = beltArchived;
+    const pendingReviewCount = beltPending;
     return {
       id: b2.id,
       order: b2.order,
@@ -120685,7 +120759,9 @@ async function handleListBelts(res) {
       color: b2.color || "#EAB308",
       problemCount: totalCount,
       publishedCount,
-      draftCount
+      draftCount,
+      archivedCount,
+      pendingReviewCount
     };
   });
   belts.sort((a, b2) => a.order - b2.order);
@@ -120698,7 +120774,9 @@ async function handleListBelts(res) {
         totalBelts: belts.length,
         totalProblems: belts.reduce((sum, b2) => sum + b2.problemCount, 0),
         publishedProblems: belts.reduce((sum, b2) => sum + b2.publishedCount, 0),
-        draftProblems: belts.reduce((sum, b2) => sum + b2.draftCount, 0)
+        draftProblems: belts.reduce((sum, b2) => sum + b2.draftCount, 0),
+        archivedProblems: belts.reduce((sum, b2) => sum + (b2.archivedCount || 0), 0),
+        pendingReviewProblems: belts.reduce((sum, b2) => sum + (b2.pendingReviewCount || 0), 0)
       }
     }
   });

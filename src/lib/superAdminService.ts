@@ -839,6 +839,8 @@ export interface AdminQuestionsDashboardStats {
   total: number
   published: number
   draft: number
+  archived?: number
+  pendingReview?: number
   easy: number
   medium: number
   hard: number
@@ -1346,6 +1348,8 @@ export interface AdminBelt {
   problemCount: number
   publishedCount: number
   draftCount: number
+  archivedCount?: number
+  pendingReviewCount?: number
 }
 
 export interface AdminBeltsStats {
@@ -1353,6 +1357,8 @@ export interface AdminBeltsStats {
   totalProblems: number
   publishedProblems: number
   draftProblems: number
+  archivedProblems?: number
+  pendingReviewProblems?: number
 }
 
 export async function fetchBelts(): Promise<{
