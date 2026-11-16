@@ -3559,7 +3559,6 @@ async function handleListQuestions(
     if (!learningUnitId && onlyBelts && problem.learningUnitId) return false
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
-
     const rawSt = String(problem.status || '').toUpperCase()
     const isPub = rawSt === 'PUBLISHED' || (rawSt !== 'DRAFT' && rawSt !== 'PENDING_REVIEW' && rawSt !== 'ARCHIVED' && problem.isActive)
     if (status === 'PUBLISHED' && !isPub) return false
@@ -4966,7 +4965,6 @@ async function handleToggleQuestionStatus(
     : nextStatus === 'PENDING_REVIEW'
     ? 'PENDING_REVIEW'
     : 'DRAFT'
-
   const updatePayload: Record<string, any> = {
     isActive: nextIsActive,
     status: nextStatus,
