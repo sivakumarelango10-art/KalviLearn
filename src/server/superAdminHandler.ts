@@ -4137,45 +4137,28 @@ async function handleCreateQuestion(
     beltId = null
   } else {
     const rawBelt = body.beltId !== undefined ? body.beltId : body.belt
-    if (rawBelt !== undefined) {
-      if (typeof rawBelt === 'string' && !rawBelt.trim()) {
-        return sendJson(res, 400, {
-          success: false,
-          error: 'Missing Belt Selection',
-          message: 'A valid Practice Belt selection is required.',
-        })
-      }
-      const candidateStr = String(rawBelt).trim()
-      const { data: belts, error: beltErr } = await supabaseServer
-        .from('Belt')
-        .select('id, order, name, title')
-        .order('order', { ascending: true })
-      if (beltErr) throw beltErr
-      const matchedBelt = (belts || []).find((b: any) => b.id === candidateStr)
-      if (!matchedBelt) {
-        return sendJson(res, 400, {
-          success: false,
-          error: 'Invalid Belt ID',
-          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`,
-        })
-      }
-      beltId = matchedBelt.id
-    } else {
-      // Fallback for requests omitting beltId on practice questions
-      const { data: belts, error: beltErr } = await supabaseServer
-        .from('Belt')
-        .select('id, order, name, title')
-        .order('order', { ascending: true })
-      if (beltErr) throw beltErr
-      if (!belts || belts.length === 0) {
-        return sendJson(res, 400, {
-          success: false,
-          error: 'Missing Belt Selection',
-          message: 'No practice belts exist in the system.',
-        })
-      }
-      beltId = belts[0].id
+    if (rawBelt === undefined || rawBelt === null || (typeof rawBelt === 'string' && !rawBelt.trim())) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Missing Belt Selection',
+        message: 'A valid Practice Belt selection is required for practice questions.',
+      })
     }
+    const candidateStr = String(rawBelt).trim()
+    const { data: belts, error: beltErr } = await supabaseServer
+      .from('Belt')
+      .select('id, order, name, title')
+      .order('order', { ascending: true })
+    if (beltErr) throw beltErr
+    const matchedBelt = (belts || []).find((b: any) => b.id === candidateStr)
+    if (!matchedBelt) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Belt ID',
+        message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`,
+      })
+    }
+    beltId = matchedBelt.id
   }
 
   const order = typeof body.order === 'number' && !isNaN(body.order) ? body.order : 1
@@ -4479,14 +4462,18 @@ async function handleUpdateQuestion(
 
   if (body.beltId !== undefined || body.belt !== undefined) {
     const rawBelt = body.beltId !== undefined ? body.beltId : body.belt
-    if (rawBelt === null) {
+    const isTargetingLearningUnit = updates.learningUnitId
+      ? true
+      : (existing.learningUnitId && body.learningUnitId === undefined)
+    if (rawBelt === null || (typeof rawBelt === 'string' && !rawBelt.trim())) {
+      if (!isTargetingLearningUnit) {
+        return sendJson(res, 400, {
+          success: false,
+          error: 'Missing Belt Selection',
+          message: 'A valid Practice Belt selection is required for practice questions.',
+        })
+      }
       updates.beltId = null
-    } else if (typeof rawBelt === 'string' && !rawBelt.trim()) {
-      return sendJson(res, 400, {
-        success: false,
-        error: 'Missing Belt Selection',
-        message: 'A valid Practice Belt selection is required.',
-      })
     } else {
       const candidateStr = String(rawBelt).trim()
       const { data: belts, error: beltErr } = await supabaseServer
