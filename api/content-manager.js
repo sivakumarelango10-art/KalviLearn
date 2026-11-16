@@ -71444,6 +71444,112 @@ function normalizeLanguage(raw) {
   return null;
 }
 
+// src/server/questionSorting.ts
+function buildBeltOrderMap(beltsData) {
+  const map = /* @__PURE__ */ new Map();
+  if (Array.isArray(beltsData)) {
+    for (const b2 of beltsData) {
+      if (b2 && b2.id) {
+        const orderNum = typeof b2.order === "number" ? b2.order : Number.parseInt(String(b2.order), 10);
+        map.set(b2.id, Number.isFinite(orderNum) ? orderNum : 999);
+      }
+    }
+  }
+  for (let i = 1; i <= 10; i++) {
+    if (!map.has(`mock-belt-${i}`)) {
+      map.set(`mock-belt-${i}`, i);
+    }
+  }
+  return map;
+}
+function getProblemBeltOrder(problem, beltOrderMap) {
+  if (problem.beltId && beltOrderMap.has(problem.beltId)) {
+    return beltOrderMap.get(problem.beltId);
+  }
+  if (typeof problem.beltId === "string") {
+    const m = problem.beltId.match(/belt[^\d]*(\d+)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.slug === "string") {
+    const m = problem.slug.match(/^belt-(\d+)-/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (problem.learningUnitId) {
+    return 9999;
+  }
+  return 999;
+}
+function extractVariantNumber(problem) {
+  if (typeof problem.slug === "string") {
+    const m = problem.slug.match(/[-_]v(\d+)(?:[-_]|$)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.title === "string") {
+    const m = problem.title.match(/variant\s*(\d+)/i);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  if (typeof problem.variant === "string") {
+    const m = problem.variant.match(/(\d+)/);
+    if (m) {
+      const parsed = Number.parseInt(m[1], 10);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  return 0;
+}
+function compareProblemsHierarchically(a, b2, beltOrderMap) {
+  const beltOrderA = getProblemBeltOrder(a, beltOrderMap);
+  const beltOrderB = getProblemBeltOrder(b2, beltOrderMap);
+  if (beltOrderA !== beltOrderB) {
+    return beltOrderA - beltOrderB;
+  }
+  if (a.learningUnitId && b2.learningUnitId && a.learningUnitId !== b2.learningUnitId) {
+    const luDiff = String(a.learningUnitId).localeCompare(String(b2.learningUnitId));
+    if (luDiff !== 0) return luDiff;
+  }
+  const orderA = typeof a.order === "number" ? a.order : Number.parseInt(String(a.order ?? 0), 10) || 0;
+  const orderB = typeof b2.order === "number" ? b2.order : Number.parseInt(String(b2.order ?? 0), 10) || 0;
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+  const varA = extractVariantNumber(a);
+  const varB = extractVariantNumber(b2);
+  if (varA !== varB) {
+    return varA - varB;
+  }
+  const subA = String(a.subdivision || "");
+  const subB = String(b2.subdivision || "");
+  const subDiff = subA.localeCompare(subB);
+  if (subDiff !== 0) return subDiff;
+  const titleA = String(a.title || "");
+  const titleB = String(b2.title || "");
+  const titleDiff = titleA.localeCompare(titleB);
+  if (titleDiff !== 0) return titleDiff;
+  return String(a.id || "").localeCompare(String(b2.id || ""));
+}
+function resolvePublicationStatus(status, isActive, approvalStatus) {
+  const st = String(status || "").toUpperCase();
+  const appSt = String(approvalStatus || "").toUpperCase();
+  if (st === "ARCHIVED") return "ARCHIVED";
+  if (st === "PENDING_REVIEW" || appSt === "PENDING_REVIEW") return "PENDING_REVIEW";
+  if (st === "PUBLISHED") return "PUBLISHED";
+  if (st === "DRAFT") return "DRAFT";
+  if (isActive === false) return "DRAFT";
+  return "PUBLISHED";
+}
+
 // src/lib/contentPermissions.ts
 var CONTENT_MANAGER_ROLE = "CONTENT_MANAGER";
 var CONTENT_PERMISSION_LIST = [
@@ -72036,16 +72142,29 @@ async function resolveBeltId(rawBeltId) {
 async function handleListBelts(res) {
   const [beltsRes, probRes] = await Promise.all([
     supabaseServer.from("Belt").select("*").order("order", { ascending: true }),
-    supabaseServer.from("Problem").select("id, beltId, learningUnitId, status, isActive")
+    supabaseServer.from("Problem").select("id, beltId, learningUnitId, status, isActive, approvalStatus")
   ]);
   if (beltsRes.error) throw beltsRes.error;
   if (probRes.error) throw probRes.error;
   const practiceProbs = (probRes.data || []).filter((p2) => !p2.learningUnitId);
   const enriched = (beltsRes.data || []).map((b2) => {
     const forBelt = practiceProbs.filter((p2) => p2.beltId === b2.id);
-    const publishedCount = forBelt.filter(
-      (p2) => p2.status === "PUBLISHED" || p2.status !== "DRAFT" && p2.status !== "ARCHIVED" && p2.isActive
-    ).length;
+    let beltPub = 0;
+    let beltDraft = 0;
+    let beltArchived = 0;
+    let beltPending = 0;
+    for (const p2 of forBelt) {
+      const rawSt = String(p2.status || "").toUpperCase();
+      const rawAppSt = String(p2.approvalStatus || "").toUpperCase();
+      const isArchived = rawSt === "ARCHIVED";
+      const isPending = rawSt === "PENDING_REVIEW" || rawAppSt === "PENDING_REVIEW";
+      const isPub = !isArchived && !isPending && (rawSt === "PUBLISHED" || rawSt !== "DRAFT" && Boolean(p2.isActive));
+      const isDraft = !isArchived && !isPending && !isPub;
+      if (isArchived) beltArchived++;
+      else if (isPending) beltPending++;
+      else if (isPub) beltPub++;
+      else if (isDraft) beltDraft++;
+    }
     return {
       id: b2.id,
       order: b2.order,
@@ -72054,8 +72173,10 @@ async function handleListBelts(res) {
       color: b2.color || "#EAB308",
       description: b2.description || "",
       problemCount: forBelt.length,
-      publishedCount,
-      draftCount: forBelt.length - publishedCount
+      publishedCount: beltPub,
+      draftCount: beltDraft,
+      archivedCount: beltArchived,
+      pendingReviewCount: beltPending
     };
   });
   return sendJson(res, 200, {
@@ -72797,10 +72918,15 @@ async function handleListQuestions(ctx, body, req, res) {
   if (beltParam && beltParam !== "ALL") {
     resolvedFilterBeltId = await resolveBeltId(beltParam) || beltParam;
   }
-  const { data: allProblems, error: problemsError } = await supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt").order("createdAt", { ascending: false });
-  if (problemsError) throw problemsError;
+  const [problemsRes, beltsRes] = await Promise.all([
+    supabaseServer.from("Problem").select("id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, canonicalProblemId, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdBy, updatedBy, createdAt, updatedAt"),
+    supabaseServer.from("Belt").select("id, order, name, title")
+  ]);
+  if (problemsRes.error) throw problemsRes.error;
+  const beltOrderMap = buildBeltOrderMap(beltsRes?.data);
+  const allProblems = problemsRes.data || [];
   const scopedProblems = [];
-  for (const p2 of allProblems || []) {
+  for (const p2 of allProblems) {
     if (questionTypeRaw === "PRACTICE" && p2.learningUnitId) continue;
     if ((questionTypeRaw === "LEARN_CODING" || questionTypeRaw === "LEARN-CODING") && !p2.learningUnitId) continue;
     if (await canAccessQuestion(ctx, p2)) {
@@ -72810,12 +72936,21 @@ async function handleListQuestions(ctx, body, req, res) {
   const statsSubset = learningUnitId ? scopedProblems.filter((p2) => p2.learningUnitId === learningUnitId) : resolvedFilterBeltId ? scopedProblems.filter((p2) => p2.beltId === resolvedFilterBeltId) : scopedProblems;
   let totalPublished = 0;
   let totalDraft = 0;
+  let totalArchived = 0;
+  let totalPendingReview = 0;
   const difficultyCounts = { Easy: 0, Medium: 0, Hard: 0 };
   const topicCounts = {};
   for (const problem of statsSubset) {
-    const isPub = problem.status === "PUBLISHED" || problem.status !== "DRAFT" && problem.status !== "PENDING_REVIEW" && problem.status !== "ARCHIVED" && problem.isActive;
-    if (isPub) totalPublished++;
-    else totalDraft++;
+    const rawSt = String(problem.status || "").toUpperCase();
+    const rawAppSt = String(problem.approvalStatus || "").toUpperCase();
+    const isArchived = rawSt === "ARCHIVED";
+    const isPending = rawSt === "PENDING_REVIEW" || rawAppSt === "PENDING_REVIEW";
+    const isPub = !isArchived && !isPending && (rawSt === "PUBLISHED" || rawSt !== "DRAFT" && Boolean(problem.isActive));
+    const isDraft = !isArchived && !isPending && !isPub;
+    if (isArchived) totalArchived++;
+    else if (isPending) totalPendingReview++;
+    else if (isPub) totalPublished++;
+    else if (isDraft) totalDraft++;
     const diff = problem.difficulty || "Easy";
     if (diff in difficultyCounts) difficultyCounts[diff]++;
     const problemTopic = problem.subdivision || "General";
@@ -72823,7 +72958,13 @@ async function handleListQuestions(ctx, body, req, res) {
   }
   const filtered = scopedProblems.filter((problem) => {
     if (learningUnitId && problem.learningUnitId !== learningUnitId) return false;
-    if (resolvedFilterBeltId && problem.beltId !== resolvedFilterBeltId) return false;
+    if (resolvedFilterBeltId) {
+      const pBeltOrder = getProblemBeltOrder(problem, beltOrderMap);
+      const filterBeltOrder = beltOrderMap.get(resolvedFilterBeltId);
+      const matchesBeltId = problem.beltId === resolvedFilterBeltId;
+      const matchesBeltOrder = filterBeltOrder !== void 0 && pBeltOrder === filterBeltOrder;
+      if (!matchesBeltId && !matchesBeltOrder) return false;
+    }
     if (difficulty !== "ALL" && problem.difficulty !== difficulty) return false;
     if (topic !== "ALL" && (problem.subdivision || "General") !== topic) return false;
     const st = String(problem.status || "").toUpperCase();
@@ -72840,6 +72981,7 @@ async function handleListQuestions(ctx, body, req, res) {
     }
     return true;
   });
+  filtered.sort((a, b2) => compareProblemsHierarchically(a, b2, beltOrderMap));
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / limit));
   const currentPage = Math.min(page, totalPages);
@@ -72867,17 +73009,19 @@ async function handleListQuestions(ctx, body, req, res) {
     const rawCounts = testCaseCounts.get(problem.id) || { total: 0, visible: 0, hidden: 0 };
     const effectiveCounts = canSeeHiddenCount ? rawCounts : { total: rawCounts.visible, visible: rawCounts.visible, hidden: 0 };
     const examples = Array.isArray(problem.examples) ? problem.examples : [];
-    const st = String(problem.status || "").toUpperCase();
-    const resolvedStatus = st || (problem.isActive ? "PUBLISHED" : "DRAFT");
+    const inferredBeltOrder = getProblemBeltOrder(problem, beltOrderMap);
+    const resolvedStatus = resolvePublicationStatus(problem.status, problem.isActive, problem.approvalStatus);
     return {
       id: problem.id,
       slug: problem.slug,
       title: problem.title,
+      order: typeof problem.order === "number" ? problem.order : Number.parseInt(String(problem.order ?? 0), 10) || 0,
       difficulty: problem.difficulty,
       topic: problem.subdivision || "General",
       subdivision: problem.subdivision,
       learningUnitId: problem.learningUnitId || null,
-      beltId: problem.beltId || null,
+      beltId: problem.learningUnitId ? problem.beltId || null : problem.beltId || "mock-belt-" + inferredBeltOrder,
+      beltOrder: inferredBeltOrder,
       status: resolvedStatus,
       approvalStatus: problem.approvalStatus || "APPROVED",
       isActive: Boolean(problem.isActive),
@@ -72902,6 +73046,8 @@ async function handleListQuestions(ctx, body, req, res) {
         total: statsSubset.length,
         published: totalPublished,
         draft: totalDraft,
+        archived: totalArchived,
+        pendingReview: totalPendingReview,
         easy: difficultyCounts.Easy || 0,
         medium: difficultyCounts.Medium || 0,
         hard: difficultyCounts.Hard || 0,
@@ -73198,7 +73344,42 @@ async function handleCreateQuestion(ctx, body, clientIp, res) {
     output: ex.output || ex.expectedOutput || "",
     explanation: ex.explanation || ""
   }));
-  const beltId = learningUnitId ? null : await resolveBeltId(body.beltId);
+  let beltId = null;
+  if (!learningUnitId) {
+    const rawBelt = body.beltId !== void 0 ? body.beltId : body.belt;
+    if (rawBelt !== void 0) {
+      if (typeof rawBelt === "string" && !rawBelt.trim()) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Missing Belt Selection",
+          message: "A valid Practice Belt selection is required."
+        });
+      }
+      const candidateStr = String(rawBelt).trim();
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      const matchedBelt = (belts || []).find((b2) => b2.id === candidateStr);
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Invalid Belt ID",
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`
+        });
+      }
+      beltId = matchedBelt.id;
+    } else {
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      if (!belts || belts.length === 0) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Missing Belt Selection",
+          message: "No practice belts exist in the system."
+        });
+      }
+      beltId = belts[0].id;
+    }
+  }
   const order = typeof body.order === "number" && !isNaN(body.order) ? body.order : 1;
   const { data: createdProb, error: probErr } = await supabaseServer.from("Problem").insert({
     id: problemId,
@@ -73354,7 +73535,29 @@ async function handleUpdateQuestion(ctx, body, clientIp, res) {
   if (typeof body.memoryLimitMb === "number" && body.memoryLimitMb > 0) updates.memoryLimitMb = body.memoryLimitMb;
   if (typeof body.order === "number" && !isNaN(body.order)) updates.order = body.order;
   if ("beltId" in body && !updates.learningUnitId && !(existing.learningUnitId && body.learningUnitId === void 0)) {
-    updates.beltId = body.beltId ? await resolveBeltId(body.beltId) : null;
+    const rawBelt = body.beltId;
+    if (rawBelt === null) {
+      updates.beltId = null;
+    } else if (typeof rawBelt === "string" && !rawBelt.trim()) {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Missing Belt Selection",
+        message: "A valid Practice Belt selection is required."
+      });
+    } else {
+      const candidateStr = String(rawBelt).trim();
+      const { data: belts, error: beltErr } = await supabaseServer.from("Belt").select("id, order, name, title").order("order", { ascending: true });
+      if (beltErr) throw beltErr;
+      const matchedBelt = (belts || []).find((b2) => b2.id === candidateStr);
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: "Invalid Belt ID",
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`
+        });
+      }
+      updates.beltId = matchedBelt.id;
+    }
   }
   if (body.learningUnitId !== void 0 && body.learningUnitId !== existing.learningUnitId) {
     if (typeof body.learningUnitId === "string" && body.learningUnitId.trim()) {
@@ -73372,6 +73575,23 @@ async function handleUpdateQuestion(ctx, body, clientIp, res) {
   const canPublish = hasContentPermission(ctx.permissions, "content.question.publish");
   const canArchive = hasContentPermission(ctx.permissions, "content.question.archive");
   const existingStatus = String(existing.status || (existing.isActive ? "PUBLISHED" : "DRAFT")).toUpperCase();
+  if (typeof body.isActive === "boolean" && typeof body.status === "string") {
+    const reqStatus = body.status.trim().toUpperCase();
+    if (body.isActive && ["DRAFT", "ARCHIVED", "PENDING_REVIEW"].includes(reqStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: `A question cannot be active while status is ${reqStatus}.`
+      });
+    }
+    if (!body.isActive && reqStatus === "PUBLISHED") {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: "A question cannot be inactive while status is PUBLISHED."
+      });
+    }
+  }
   if (typeof body.status === "string") {
     const reqStatus = body.status.trim().toUpperCase();
     if (reqStatus !== existingStatus) {
@@ -73403,6 +73623,9 @@ async function handleUpdateQuestion(ctx, body, clientIp, res) {
         updates.approvalStatus = "PENDING_REVIEW";
         updates.submittedForReviewAt = now;
         updates.submittedForReviewBy = ctx.userId;
+        if (existingStatus !== "PUBLISHED") {
+          updates.isActive = false;
+        }
       } else if (reqStatus === "DRAFT") {
         if (existingStatus === "PUBLISHED" && !canPublish && !canArchive) {
           return sendJson(res, 403, {
@@ -73416,7 +73639,7 @@ async function handleUpdateQuestion(ctx, body, clientIp, res) {
         updates.approvalStatus = "DRAFT";
       }
     }
-  } else if (body.submitForReview === true) {
+  } else if (body.submitForReview === true || body.approvalStatus === "PENDING_REVIEW") {
     updates.approvalStatus = "PENDING_REVIEW";
     updates.submittedForReviewAt = now;
     updates.submittedForReviewBy = ctx.userId;
@@ -73731,12 +73954,28 @@ async function handleDuplicateQuestion(ctx, body, clientIp, res) {
 }
 async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
   if (!assertPrivilegedDatabaseAccess(res)) return;
-  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : "";
-  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID is required." });
+  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : "";
+  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID or slug is required." });
   const existing = await findQuestionByIdOrSlug(id);
   if (!existing) return sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
   await requireQuestionScope(ctx, existing);
   const requestedStatus = typeof body.status === "string" ? body.status.toUpperCase() : "";
+  if (typeof body.isActive === "boolean" && requestedStatus) {
+    if (body.isActive && ["DRAFT", "ARCHIVED", "PENDING_REVIEW"].includes(requestedStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: `A question cannot be active while status is ${requestedStatus}.`
+      });
+    }
+    if (!body.isActive && requestedStatus === "PUBLISHED") {
+      return sendJson(res, 400, {
+        success: false,
+        error: "Invalid Status Combination",
+        message: "A question cannot be inactive while status is PUBLISHED."
+      });
+    }
+  }
   const nextActive = requestedStatus ? requestedStatus === "PUBLISHED" : typeof body.isActive === "boolean" ? body.isActive : !(existing.status === "PUBLISHED" || existing.isActive);
   if (nextActive) {
     requirePermission(ctx, "content.question.publish");
@@ -73745,10 +73984,11 @@ async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
   }
   const finalStatus = requestedStatus || (nextActive ? "PUBLISHED" : "DRAFT");
   const now = (/* @__PURE__ */ new Date()).toISOString();
+  const approvalStatus = nextActive ? "APPROVED" : finalStatus === "ARCHIVED" ? existing.approvalStatus || "DRAFT" : finalStatus === "PENDING_REVIEW" ? "PENDING_REVIEW" : "DRAFT";
   const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
     isActive: nextActive,
     status: finalStatus,
-    approvalStatus: nextActive ? "APPROVED" : finalStatus === "ARCHIVED" ? "REJECTED" : "DRAFT",
+    approvalStatus,
     publishedAt: nextActive ? now : existing.publishedAt,
     publishedBy: nextActive ? ctx.userId : existing.publishedBy,
     updatedBy: ctx.userId,
@@ -73778,12 +74018,26 @@ async function handleToggleQuestionStatus(ctx, body, clientIp, res) {
 }
 async function handleRestoreQuestion(ctx, body, clientIp, res) {
   if (!assertPrivilegedDatabaseAccess(res)) return;
-  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : "";
-  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID is required." });
+  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : "";
+  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID or slug is required." });
   const existing = await findQuestionByIdOrSlug(id);
   if (!existing) return sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
   await requireQuestionScope(ctx, existing);
-  requireAnyPermission(ctx, ["content.question.archive", "content.question.create", "content.question.update"]);
+  const candidatePermissions = ["content.question.archive", "content.question.update", "content.question.create"];
+  const matchedPermission = candidatePermissions.find((p2) => hasContentPermission(ctx.permissions, p2));
+  if (!matchedPermission) {
+    throw new PermissionDeniedError(
+      `Access Denied: Requires one of [${candidatePermissions.join(", ")}].`
+    );
+  }
+  const currentStatus = String(existing.status || "").toUpperCase();
+  if (currentStatus !== "ARCHIVED") {
+    return sendJson(res, 409, {
+      success: false,
+      error: "Conflict",
+      message: "Only archived questions can be restored to draft."
+    });
+  }
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const { data: updated, error: updErr } = await supabaseServer.from("Problem").update({
     isActive: false,
@@ -73801,7 +74055,7 @@ async function handleRestoreQuestion(ctx, body, clientIp, res) {
     resourceType: "PROBLEM",
     resourceId: existing.id,
     resourceLabel: `${existing.title} (${existing.slug})`,
-    permissionUsed: "content.question.archive",
+    permissionUsed: matchedPermission,
     previousValues: { status: existing.status, isActive: existing.isActive },
     updatedValues: { status: "DRAFT", isActive: false },
     changeSummary: `Restored question "${existing.title}" from archived to draft`,
@@ -73816,8 +74070,8 @@ async function handleRestoreQuestion(ctx, body, clientIp, res) {
 async function handleDeleteQuestion(ctx, body, clientIp, res) {
   if (!assertPrivilegedDatabaseAccess(res)) return;
   requirePermission(ctx, "content.question.delete");
-  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : "";
-  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID is required." });
+  const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : typeof body.slug === "string" && body.slug.trim() ? body.slug.trim() : "";
+  if (!id) return sendJson(res, 400, { success: false, error: "Missing Question ID", message: "Question ID or slug is required." });
   const existing = await findQuestionByIdOrSlug(id);
   if (!existing) return sendJson(res, 404, { success: false, error: "Not Found", message: `Question "${id}" not found.` });
   await requireQuestionScope(ctx, existing);

@@ -16,6 +16,8 @@ import {
   Tag,
   Lock,
   Globe,
+  Archive,
+  RotateCcw,
   ChevronUp,
   ChevronDown,
   Play,
@@ -27,8 +29,6 @@ import {
   Clock,
   Cpu,
   Languages,
-  Archive,
-  RotateCcw,
   History as HistoryIcon,
 } from 'lucide-react'
 import {
@@ -49,6 +49,7 @@ import {
   runAdminQuestionTests,
   fetchAdminQuestionRevisions,
   restoreAdminQuestionRevision,
+  fetchBelts,
 } from '@/lib/superAdminService'
 import {
   fetchCmQuestions,
@@ -63,6 +64,7 @@ import {
   runCmQuestionTests,
   fetchCmQuestionRevisions,
   restoreCmQuestionRevision,
+  fetchCmBelts,
 } from '@/lib/contentManagerService'
 import { CODING_TOPICS } from '@/coding/topics'
 import { cn } from '@/lib/utils'
@@ -246,6 +248,24 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   const [totalPages, setTotalPages] = useState(1)
   const questionListRequestId = useRef(0)
 
+  // Internal Belts fallback if availableBelts prop is missing
+  const [internalBelts, setInternalBelts] = useState<Array<{ id: string; order: number; name: string; title: string }>>([])
+  const effectiveBelts = (availableBelts && availableBelts.length > 0) ? availableBelts : internalBelts
+
+  useEffect(() => {
+    if (!availableBelts || availableBelts.length === 0) {
+      const fetcher = isCmMode ? fetchCmBelts : fetchBelts
+      fetcher()
+        .then((res: any) => {
+          if (res.success && res.data) {
+            const bList = Array.isArray(res.data) ? res.data : (res.data.belts || [])
+            setInternalBelts(bList)
+          }
+        })
+        .catch(() => {})
+    }
+  }, [availableBelts, isCmMode])
+
   // Modals
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -405,10 +425,19 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   // Open Add modal
   const handleOpenAdd = () => {
     setIsEditing(false)
+    let initialBeltId: string | null = null
+    if (!learningUnitId && questionMode !== 'learn-coding') {
+      if (initialBelt && initialBelt !== 'ALL') {
+        const found = effectiveBelts.find((b) => b.order === Number(initialBelt) || b.id === String(initialBelt))
+        initialBeltId = found ? found.id : effectiveBelts[0]?.id || null
+      } else {
+        initialBeltId = effectiveBelts[0]?.id || null
+      }
+    }
     setFormData({
       ...DEFAULT_FORM,
       subdivision: initialTopic || DEFAULT_FORM.subdivision,
-      beltId: learningUnitId || questionMode === 'learn-coding' ? null : (initialBelt ? String(initialBelt) : (availableBelts?.[0]?.id || DEFAULT_FORM.beltId)),
+      beltId: initialBeltId,
       learningUnitId: learningUnitId || null,
       examples: [
         {
@@ -457,7 +486,9 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         slug: question.slug,
         difficulty: question.difficulty,
         subdivision: question.subdivision,
-        beltId: question.beltId ?? (learningUnitId ? null : undefined),
+        beltId: question.learningUnitId
+          ? null
+          : (effectiveBelts.find((b) => b.id === question.beltId || b.order === question.beltOrder)?.id || question.beltId || null),
         learningUnitId: question.learningUnitId ?? (learningUnitId || null),
         status: question.status || (question.isActive ? 'PUBLISHED' : 'DRAFT'),
         description: question.description || '',
@@ -652,6 +683,11 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     if (isCmMode && questionMode === 'learn-coding' && !(learningUnitId || formData.learningUnitId)) {
       errors.learningUnitId = 'Please select a Learning Unit for this Learn Coding question.'
     }
+    if (!learningUnitId && !formData.learningUnitId && questionMode !== 'learn-coding') {
+      if (!formData.beltId || !formData.beltId.trim()) {
+        errors.beltId = 'Please select a Practice Belt.'
+      }
+    }
     if (!formData.description.trim()) errors.description = 'Problem description is required.'
     if (!formData.testCases || formData.testCases.length === 0) {
       errors.testCases = 'At least 1 test case is required.'
@@ -667,7 +703,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors)
       // Switch to the tab with errors
-      if (errors.title || errors.slug || errors.description || errors.learningUnitId) setEditorTab('info')
+      if (errors.title || errors.slug || errors.description || errors.learningUnitId || errors.beltId) setEditorTab('info')
       else if (errors.testCases) setEditorTab('testcases')
       return
     }
@@ -1022,6 +1058,16 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       {stats.draft} Draft
                     </span>
                   )}
+                  {(stats.archived ?? 0) > 0 && (
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400 border border-neutral-700">
+                      {stats.archived} Archived
+                    </span>
+                  )}
+                  {(stats.pendingReview ?? 0) > 0 && (
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-blue-950/60 text-blue-400 border border-blue-800/80">
+                      {stats.pendingReview} In Review
+                    </span>
+                  )}
                 </div>
                 <p className="text-[11px] text-neutral-400 mt-0.5">
                   Interactive coding exercises with automated test cases attached to {unitTitle ? `"${unitTitle}"` : 'this lesson'}.
@@ -1363,11 +1409,11 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
       )}
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         <div className="bg-[#121212] border border-[#262626] rounded-xl p-4">
           <span className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Total</span>
           <div className="text-2xl font-bold text-white mt-1">{stats.total}</div>
-          <div className="text-xs text-neutral-500 mt-1">All Problem Arena</div>
+          <div className="text-xs text-neutral-500 mt-1">All Questions</div>
         </div>
         <div className="bg-[#121212] border border-[#262626] rounded-xl p-4">
           <span className="text-xs text-emerald-400 uppercase tracking-wider font-semibold">Published</span>
@@ -1375,9 +1421,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
           <div className="text-xs text-neutral-500 mt-1">Live to Students</div>
         </div>
         <div className="bg-[#121212] border border-[#262626] rounded-xl p-4">
-          <span className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Drafts</span>
-          <div className="text-2xl font-bold text-neutral-300 mt-1">{stats.draft}</div>
+          <span className="text-xs text-amber-400 uppercase tracking-wider font-semibold">Drafts</span>
+          <div className="text-2xl font-bold text-amber-300 mt-1">{stats.draft}</div>
           <div className="text-xs text-neutral-500 mt-1">Unpublished</div>
+        </div>
+        <div className="bg-[#121212] border border-[#262626] rounded-xl p-4">
+          <span className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Archived</span>
+          <div className="text-2xl font-bold text-neutral-400 mt-1">{stats.archived ?? 0}</div>
+          <div className="text-xs text-neutral-500 mt-1">Soft Deleted</div>
         </div>
         <div className="bg-[#121212] border border-[#262626] rounded-xl p-4">
           <span className="text-xs text-emerald-400 uppercase tracking-wider font-semibold">Easy</span>
@@ -1507,6 +1558,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
           <table className="w-full text-left text-sm text-neutral-300">
             <thead className="bg-[#181818] border-b border-[#262626] text-xs uppercase tracking-wider text-neutral-400 font-semibold">
               <tr>
+                <th className="py-3 px-4"># / Belt</th>
                 <th className="py-3 px-4">Title & Slug</th>
                 <th className="py-3 px-4">Difficulty</th>
                 <th className="py-3 px-4">Topic / Subdivision</th>
@@ -1519,14 +1571,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
             <tbody className="divide-y divide-[#262626]">
               {loading && questions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-neutral-500">
+                  <td colSpan={8} className="py-12 text-center text-neutral-500">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#ED2A2B]" />
                     Loading questions...
                   </td>
                 </tr>
               ) : error && questions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-red-400">
+                  <td colSpan={8} className="py-12 text-center text-red-400">
                     <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-60 text-red-400" />
                     <p className="font-semibold text-sm">Failed to load questions</p>
                     <p className="text-xs text-neutral-400 mt-1 max-w-md mx-auto">{error}</p>
@@ -1542,7 +1594,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 </tr>
           ) : questions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-neutral-500">
+                  <td colSpan={8} className="py-12 text-center text-neutral-500">
                     <FileCode className="w-8 h-8 mx-auto mb-2 opacity-40" />
                     No questions found matching your criteria.
                   </td>
@@ -1559,6 +1611,26 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       key={q.id}
                       className="hover:bg-[#181818]/70 transition-colors group"
                     >
+                      {/* # / Belt */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          {q.beltOrder ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-neutral-800 text-neutral-200 border border-neutral-700">
+                              Belt {q.beltOrder}
+                            </span>
+                          ) : q.learningUnitId ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-950/60 text-blue-300 border border-blue-800/60">
+                              Lesson
+                            </span>
+                          ) : (
+                            <span className="text-xs text-neutral-500">—</span>
+                          )}
+                          <span className="text-xs font-mono font-medium text-neutral-400">
+                            #{q.order ?? '—'}
+                          </span>
+                        </div>
+                      </td>
+
                       {/* Title & Slug */}
                       <td className="py-3.5 px-4">
                         <div className="font-medium text-white">{q.title}</div>
@@ -1618,12 +1690,12 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60">
                             <Clock className="w-3 h-3" /> Pending Review
                           </span>
-                        ) : (q.isActive || q.status === 'PUBLISHED') ? (
+                        ) : (q.status === 'PUBLISHED' || (q.status !== 'DRAFT' && q.isActive)) ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60">
                             <Globe className="w-3 h-3" /> Published
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-neutral-900 text-neutral-400 border border-neutral-700">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60">
                             <Lock className="w-3 h-3" /> Draft
                           </span>
                         )}
@@ -2003,25 +2075,26 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-medium text-neutral-400 mb-1">
-                            Belt Practice Assignment
+                            Belt Practice Assignment <span className="text-red-400">*</span>
                           </label>
                           <select
-                            value={formData.beltId || availableBelts?.[0]?.id || 'mock-belt-1'}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, beltId: e.target.value, learningUnitId: null }))}
-                            className="w-full bg-[#121212] border border-[#333] focus:border-[#ED2A2B] rounded-lg px-3 py-2 text-xs text-white outline-none"
+                            value={formData.beltId || ''}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, beltId: e.target.value || null, learningUnitId: null }))}
+                            className={cn(
+                              "w-full bg-[#121212] border rounded-lg px-3 py-2 text-xs text-white outline-none",
+                              formErrors.beltId ? "border-red-500" : "border-[#333] focus:border-[#ED2A2B]"
+                            )}
                           >
-                            {availableBelts && availableBelts.length > 0
-                              ? availableBelts.map((b) => (
-                                  <option key={b.id} value={b.id}>
-                                    Belt {b.order} — {b.title || b.name}
-                                  </option>
-                                ))
-                              : Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-                                  <option key={num} value={`mock-belt-${num}`}>
-                                    Belt {num}
-                                  </option>
-                                ))}
+                            <option value="">Select Belt...</option>
+                            {effectiveBelts.map((b) => (
+                              <option key={b.id} value={b.id}>
+                                Belt {b.order} — {b.title || b.name}
+                              </option>
+                            ))}
                           </select>
+                          {formErrors.beltId && (
+                            <p className="text-[11px] text-red-400 mt-1">{formErrors.beltId}</p>
+                          )}
                         </div>
                       </div>
                     )}

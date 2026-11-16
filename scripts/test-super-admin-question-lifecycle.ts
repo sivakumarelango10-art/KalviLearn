@@ -174,6 +174,39 @@ async function main() {
     }
   }
 
+  // Ensure Content Manager test user exists with active global assignment
+  const cmUserId = '00000000-0000-0000-0000-000000000099'
+  db.users.push({
+    id: cmUserId,
+    email: 'synthetic.content@kalvilearn.test',
+    role: 'CONTENT_MANAGER',
+    status: 'ACTIVE',
+    createdAt: new Date().toISOString(),
+  })
+  db.auth_users.push({
+    id: cmUserId,
+    email: 'synthetic.content@kalvilearn.test',
+  })
+  db.content_managers.push({
+    id: 'cm-profile-lifecycle-1',
+    user_id: cmUserId,
+    email: 'synthetic.content@kalvilearn.test',
+    name: 'Synthetic Content Manager',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  db.content_manager_assignments.push({
+    id: 'assignment-cm-lifecycle-1',
+    user_id: cmUserId,
+    userId: cmUserId,
+    status: 'ACTIVE',
+    is_active: true,
+    isActive: true,
+    scope_type: 'GLOBAL',
+    scopeType: 'GLOBAL',
+    createdAt: new Date().toISOString(),
+  })
+
   // Target question fixtures from the user's report:
   // 1. belt-1-q16-sign-product-v2: Sign Product (Variant 2) -> ARCHIVED, canonical: belt-1-q6-sign-product-v1
   // 2. belt-1-q20-three-way-comparison-v2: Three-Way Comparison (Variant 2) -> ARCHIVED, canonical: belt-1-q10-three-way-comparison-v1
@@ -301,6 +334,19 @@ async function main() {
     assert.strictEqual(restoreEntry.admin_email, 'sgjitbros@gmail.com')
   })
 
+  await runTest('3.4 Super Admin cannot restore question that is already DRAFT (returns 409 Conflict)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'restore_question', id: qSignProduct.id },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 409)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Conflict')
+  })
+
   // ─── 4. SUPER ADMIN UPDATE & PUBLISH WORKFLOW ──────────────────────────────
   console.log('\n--- 4. Super Admin Update & Publish Workflow ---')
 
@@ -334,6 +380,19 @@ async function main() {
   await runTest('4.2 Variant relationship is strictly preserved after update and publish', async () => {
     const updated = db.Problem.find((p: any) => p.id === qSignProduct.id)
     assert.strictEqual(updated.canonicalProblemId, 'belt-1-q6-sign-product-v1')
+  })
+
+  await runTest('4.3 Super Admin cannot restore question that is PUBLISHED (returns 409 Conflict)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'restore_question', id: qSignProduct.id },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 409)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Conflict')
   })
 
   // ─── 5. LISTING & STATUS FILTERING ──────────────────────────────────────────
@@ -444,6 +503,20 @@ async function main() {
     assert.strictEqual(updated.status, 'ARCHIVED')
     assert.strictEqual(updated.isActive, false)
     assert.strictEqual(updated.canonicalProblemId, 'belt-1-q10-three-way-comparison-v1')
+    assert.notStrictEqual(updated.approvalStatus, 'REJECTED', 'Approval history must be preserved; not REJECTED')
+  })
+
+  await runTest('6.4 Incompatible isActive and status combination returns 400 Bad Request', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'toggle_question_status', id: qThreeWay.id, isActive: true, status: 'DRAFT' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
   })
 
   // ─── 7. CONTENT MANAGER RESTORE & PUBLISH WORKFLOW ─────────────────────────
@@ -495,6 +568,20 @@ async function main() {
     assert.strictEqual(updated.canonicalProblemId, 'belt-2-q11-array-sum-v1')
   })
 
+  await runTest('7.4 Content Manager cannot restore PUBLISHED question (returns 409 Conflict)', async () => {
+    resetContentManagerRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'restore_question', id: qArraySum.id },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 409)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Conflict')
+  })
+
   // ─── 8. INVARIANT PRESERVATION ──────────────────────────────────────────────
   console.log('\n--- 8. Invariant Preservation ---')
 
@@ -503,6 +590,141 @@ async function main() {
     assert.strictEqual(checkPairSum.status, 'PUBLISHED')
     assert.strictEqual(checkPairSum.isActive, true)
     assert.strictEqual(checkPairSum.canonicalProblemId, null)
+  })
+
+  // ─── 9. TARGETED LOOKUP, PENDING_REVIEW & COMBINATION SAFETY ────────────────
+  console.log('\n--- 9. Targeted Lookup, PENDING_REVIEW & Status Combination Safety ---')
+
+  // Setup an archived problem for slug lookup test
+  const testSlugArchived = `targeted-archived-slug-${Date.now()}`
+  db.Problem.push({
+    id: `prob-slug-${Date.now()}`,
+    beltId: 'mock-belt-1',
+    order: 50,
+    slug: testSlugArchived,
+    title: 'Targeted Slug Test Problem',
+    difficulty: 'Easy',
+    subdivision: 'General',
+    status: 'ARCHIVED',
+    isActive: false,
+    canonicalProblemId: 'canonical-orig-1',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+
+  await runTest('9.1 Super Admin restores question targeted by slug (200 OK)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'restore_question', slug: testSlugArchived },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.status, 'DRAFT')
+    assert.strictEqual(out.data.data.isActive, false)
+    assert.strictEqual(out.data.data.approvalStatus, 'DRAFT')
+
+    const updated = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    assert.strictEqual(updated.status, 'DRAFT')
+    assert.strictEqual(updated.isActive, false)
+    assert.strictEqual(updated.approvalStatus, 'DRAFT')
+    assert.strictEqual(updated.canonicalProblemId, 'canonical-orig-1', 'Must preserve canonicalProblemId')
+  })
+
+  await runTest('9.2 Super Admin toggle_question_status rejects ARCHIVED + isActive=true (400)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'toggle_question_status', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+    assert.ok(out.data.message.includes('cannot be active while status is ARCHIVED'))
+  })
+
+  await runTest('9.3 Content Manager toggle_question_status rejects ARCHIVED + isActive=true (400)', async () => {
+    resetContentManagerRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'toggle_question_status', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+    assert.ok(out.data.message.includes('cannot be active while status is ARCHIVED'))
+  })
+
+  await runTest('9.4 Content Manager update_question rejects ARCHIVED + isActive=true (400)', async () => {
+    resetContentManagerRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'update_question', slug: testSlugArchived, status: 'ARCHIVED', isActive: true },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400)
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Invalid Status Combination')
+  })
+
+  await runTest('9.5 PENDING_REVIEW consistency: status and approvalStatus remain synchronized on update', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    // Super admin updates to PENDING_REVIEW
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: { action: 'update_question', slug: testSlugArchived, status: 'PENDING_REVIEW' },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+    assert.strictEqual(out.data.data.status, 'PENDING_REVIEW')
+    assert.strictEqual(out.data.data.approvalStatus, 'PENDING_REVIEW')
+    assert.strictEqual(out.data.data.isActive, false)
+
+    const updated = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    assert.strictEqual(updated.status, 'PENDING_REVIEW')
+    assert.strictEqual(updated.approvalStatus, 'PENDING_REVIEW')
+    assert.strictEqual(updated.isActive, false)
+  })
+
+  await runTest('9.6 Content Manager restore auditing records actual authorizing permission in permissionUsed', async () => {
+    resetContentManagerRateLimitsForTesting()
+    // Archive the test question first
+    const targetQ = db.Problem.find((p: any) => p.slug === testSlugArchived)
+    targetQ.status = 'ARCHIVED'
+    targetQ.isActive = false
+
+    const { req, res } = createMockReqRes({
+      url: '/api/content-manager/questions',
+      headers: { authorization: CONTENT_MANAGER_TOKEN },
+      body: { action: 'restore_question', slug: testSlugArchived },
+    })
+    await contentManagerHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 200)
+    assert.strictEqual(out.data.success, true)
+
+    // Inspect the audit log entry created for this restoration
+    const cmLogs = db.content_audit_logs || []
+    const restoreAudit = cmLogs.find(
+      (l: any) => l.action === 'RESTORE_QUESTION' && (l.resource_id === targetQ.id || l.resource_label?.includes(testSlugArchived))
+    )
+    assert.ok(restoreAudit, 'Must record audit log for RESTORE_QUESTION')
+    // Candidate permissions: ['content.question.archive', 'content.question.update', 'content.question.create']
+    assert.ok(
+      ['content.question.archive', 'content.question.update', 'content.question.create'].includes(restoreAudit.permission_used),
+      `permission_used must be an actual authorizing permission, got: ${restoreAudit.permission_used}`
+    )
   })
 
   console.log('\n======================================================================')

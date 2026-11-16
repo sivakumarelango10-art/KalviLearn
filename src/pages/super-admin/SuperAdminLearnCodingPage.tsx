@@ -650,6 +650,7 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
 
         <SuperAdminQuestionsPage
           initialBelt={selectedBelt.order}
+          availableBelts={belts}
           backRoute="/super-admin/content/learn-coding"
           backLabel="Back to Learn Coding"
           customTitle={`Practice Belt: ${selectedBelt.name} (${selectedBelt.title})`}

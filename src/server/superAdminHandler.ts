@@ -9,6 +9,12 @@ import { outputsMatch } from './judge/compare'
 import { normalizeLanguage } from './judge/questionId'
 import problemsData from '../data/problems.json'
 import {
+  buildBeltOrderMap,
+  compareProblemsHierarchically,
+  getProblemBeltOrder,
+  resolvePublicationStatus,
+} from './questionSorting'
+import {
   handleListContentManagers,
   handleSearchUsersForContentManager,
   handleCreateContentManager,
@@ -3506,25 +3512,39 @@ async function handleListQuestions(
   const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1
   const limit = Number.isFinite(requestedLimit) ? Math.min(100, Math.max(1, requestedLimit)) : 50
 
-  const { data: allProblems, error: problemsError } = await supabaseServer
-    .from('Problem')
-    .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, isActive, status, timeLimitMs, memoryLimitMb, examples, starterCodes, createdAt, updatedAt')
-    .order('createdAt', { ascending: false })
+  const [problemsRes, beltsRes] = await Promise.all([
+    supabaseServer
+      .from('Problem')
+      .select('id, beltId, learningUnitId, order, title, slug, difficulty, subdivision, canonicalProblemId, isActive, status, approvalStatus, timeLimitMs, memoryLimitMb, examples, starterCodes, createdAt, updatedAt'),
+    supabaseServer
+      .from('Belt')
+      .select('id, order, name, title'),
+  ])
 
-  if (problemsError) throw problemsError
+  if (problemsRes.error) throw problemsRes.error
 
-  const problems = allProblems || []
+  const beltOrderMap = buildBeltOrderMap(beltsRes?.data)
+  const problems = problemsRes.data || []
   const statsSubset = learningUnitId ? problems.filter((p: any) => p.learningUnitId === learningUnitId) : problems
   let totalPublished = 0
   let totalDraft = 0
+  let totalArchived = 0
+  let totalPendingReview = 0
   const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 }
   const topicCounts: Record<string, number> = {}
 
   for (const problem of statsSubset) {
-    const st = String(problem.status || '').toUpperCase()
-    const isPub = st === 'PUBLISHED' || (!['DRAFT', 'PENDING_REVIEW', 'ARCHIVED'].includes(st) && problem.isActive)
-    if (isPub) totalPublished++
-    else totalDraft++
+    const rawSt = String(problem.status || '').toUpperCase()
+    const rawAppSt = String(problem.approvalStatus || '').toUpperCase()
+    const isArchived = rawSt === 'ARCHIVED'
+    const isPending = rawSt === 'PENDING_REVIEW' || rawAppSt === 'PENDING_REVIEW'
+    const isPub = !isArchived && !isPending && (rawSt === 'PUBLISHED' || (rawSt !== 'DRAFT' && Boolean(problem.isActive)))
+    const isDraft = !isArchived && !isPending && !isPub
+
+    if (isArchived) totalArchived++
+    else if (isPending) totalPendingReview++
+    else if (isPub) totalPublished++
+    else if (isDraft) totalDraft++
 
     const diff = problem.difficulty || 'Easy'
     if (diff in difficultyCounts) difficultyCounts[diff]++
@@ -3539,26 +3559,24 @@ async function handleListQuestions(
     if (!learningUnitId && onlyBelts && problem.learningUnitId) return false
     if (difficulty !== 'ALL' && problem.difficulty !== difficulty) return false
     if (topic !== 'ALL' && (problem.subdivision || 'General') !== topic) return false
-    const st = String(problem.status || '').toUpperCase()
-    const isPub = st === 'PUBLISHED' || (!['DRAFT', 'PENDING_REVIEW', 'ARCHIVED'].includes(st) && problem.isActive)
+    const rawSt = String(problem.status || '').toUpperCase()
+    const isPub = rawSt === 'PUBLISHED' || (rawSt !== 'DRAFT' && rawSt !== 'PENDING_REVIEW' && rawSt !== 'ARCHIVED' && problem.isActive)
     if (status === 'PUBLISHED' && !isPub) return false
-    if (status === 'DRAFT' && (isPub || st === 'PENDING_REVIEW' || st === 'ARCHIVED')) return false
-    if (status === 'PENDING_REVIEW' && st !== 'PENDING_REVIEW' && problem.approvalStatus !== 'PENDING_REVIEW') return false
-    if (status === 'ARCHIVED' && st !== 'ARCHIVED') return false
+    if (status === 'DRAFT' && (isPub || rawSt === 'PENDING_REVIEW' || rawSt === 'ARCHIVED')) return false
+    if (status === 'PENDING_REVIEW' && rawSt !== 'PENDING_REVIEW' && String(problem.approvalStatus || '').toUpperCase() !== 'PENDING_REVIEW') return false
+    if (status === 'ARCHIVED' && rawSt !== 'ARCHIVED') return false
 
     if (belt !== 'ALL' && !learningUnitId) {
       if (problem.learningUnitId) return false
       const beltNum = parseInt(belt.replace(/[^0-9]/g, ''), 10)
       const hasBeltNumber = Number.isFinite(beltNum)
+      const problemBeltOrder = getProblemBeltOrder(problem, beltOrderMap)
+      const matchesBeltOrder = hasBeltNumber && problemBeltOrder === beltNum
       const matchesBeltId = problem.beltId === belt || (
-        hasBeltNumber && (
-          problem.beltId === 'mock-belt-' + beltNum ||
-          (typeof problem.beltId === 'string' && problem.beltId.includes(String(beltNum)))
-        )
+        hasBeltNumber && problem.beltId === 'mock-belt-' + beltNum
       )
       const matchesSlug = hasBeltNumber && typeof problem.slug === 'string' && problem.slug.startsWith('belt-' + beltNum + '-')
-      const matchesOrder = hasBeltNumber && problem.order === beltNum && !problem.slug?.includes('-q')
-      if (!matchesBeltId && !matchesSlug && !matchesOrder) return false
+      if (!matchesBeltOrder && !matchesBeltId && !matchesSlug) return false
     }
 
     if (search) {
@@ -3569,6 +3587,10 @@ async function handleListQuestions(
     }
     return true
   })
+
+  // Hierarchical sort BEFORE pagination slice:
+  // 1. Parent Belt numeric order -> 2. Problem numeric order -> 3. Variant sequence -> 4. Subdivision -> 5. Title / ID
+  filtered.sort((a: any, b: any) => compareProblemsHierarchically(a, b, beltOrderMap))
 
   const total = filtered.length
   const totalPages = Math.max(1, Math.ceil(total / limit))
@@ -3606,24 +3628,22 @@ async function handleListQuestions(
   const enrichedQuestions = pageProblems.map((problem: any) => {
     const testCaseCount = testCaseCounts.get(problem.id) || { total: 0, visible: 0, hidden: 0 }
     const examples = Array.isArray(problem.examples) ? problem.examples : []
-    const inferredBeltOrder = problem.beltOrder || (
-      problem.slug && problem.slug.match(/^belt-(d+)-/)
-        ? Number(problem.slug.match(/^belt-(d+)-/)[1])
-        : 1
-    )
-    const isPub = problem.status === 'PUBLISHED' || (problem.status !== 'DRAFT' && problem.isActive)
+    const inferredBeltOrder = getProblemBeltOrder(problem, beltOrderMap)
+    const resolvedStatus = resolvePublicationStatus(problem.status, problem.isActive, problem.approvalStatus)
 
     return {
       id: problem.id,
       slug: problem.slug,
       title: problem.title,
+      order: typeof problem.order === 'number' ? problem.order : (Number.parseInt(String(problem.order ?? 0), 10) || 0),
       difficulty: problem.difficulty,
       topic: problem.subdivision || 'General',
       subdivision: problem.subdivision,
       learningUnitId: problem.learningUnitId || null,
       beltId: problem.learningUnitId ? (problem.beltId || null) : (problem.beltId || 'mock-belt-' + inferredBeltOrder),
       beltOrder: inferredBeltOrder,
-      status: isPub ? 'PUBLISHED' : 'DRAFT',
+      status: resolvedStatus,
+      approvalStatus: problem.approvalStatus || 'APPROVED',
       isActive: Boolean(problem.isActive),
       timeLimitMs: problem.timeLimitMs || 2000,
       memoryLimitMb: problem.memoryLimitMb || 256,
@@ -3651,6 +3671,8 @@ async function handleListQuestions(
         total: statsSubset.length,
         published: totalPublished,
         draft: totalDraft,
+        archived: totalArchived,
+        pendingReview: totalPendingReview,
         easy: difficultyCounts.Easy || 0,
         medium: difficultyCounts.Medium || 0,
         hard: difficultyCounts.Hard || 0,
@@ -4110,14 +4132,50 @@ async function handleCreateQuestion(
     }
   }
 
-  const rawBelt = body.beltId || body.belt
-  let beltId: string | null = learningUnitId ? null : 'mock-belt-1'
-  if (typeof rawBelt === 'string' && rawBelt.trim()) {
-    beltId = rawBelt.trim().startsWith('mock-belt-') || rawBelt.trim().length > 10
-      ? rawBelt.trim()
-      : `mock-belt-${rawBelt.trim().replace(/[^0-9]/g, '') || '1'}`
-  } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
-    beltId = `mock-belt-${rawBelt}`
+  let beltId: string | null = null
+  if (learningUnitId) {
+    beltId = null
+  } else {
+    const rawBelt = body.beltId !== undefined ? body.beltId : body.belt
+    if (rawBelt !== undefined) {
+      if (typeof rawBelt === 'string' && !rawBelt.trim()) {
+        return sendJson(res, 400, {
+          success: false,
+          error: 'Missing Belt Selection',
+          message: 'A valid Practice Belt selection is required.',
+        })
+      }
+      const candidateStr = String(rawBelt).trim()
+      const { data: belts, error: beltErr } = await supabaseServer
+        .from('Belt')
+        .select('id, order, name, title')
+        .order('order', { ascending: true })
+      if (beltErr) throw beltErr
+      const matchedBelt = (belts || []).find((b: any) => b.id === candidateStr)
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: 'Invalid Belt ID',
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`,
+        })
+      }
+      beltId = matchedBelt.id
+    } else {
+      // Fallback for requests omitting beltId on practice questions
+      const { data: belts, error: beltErr } = await supabaseServer
+        .from('Belt')
+        .select('id, order, name, title')
+        .order('order', { ascending: true })
+      if (beltErr) throw beltErr
+      if (!belts || belts.length === 0) {
+        return sendJson(res, 400, {
+          success: false,
+          error: 'Missing Belt Selection',
+          message: 'No practice belts exist in the system.',
+        })
+      }
+      beltId = belts[0].id
+    }
   }
 
   const order = typeof body.order === 'number' && !isNaN(body.order) ? body.order : 1
@@ -4129,8 +4187,17 @@ async function handleCreateQuestion(
     explanation: ex.explanation || '',
   }))
 
+  const reqStatus = typeof body.status === 'string' && body.status.trim() ? body.status.trim().toUpperCase() : ''
+  const finalStatus = reqStatus || (isActive ? 'PUBLISHED' : 'DRAFT')
+  const approvalStatus = finalStatus === 'PUBLISHED'
+    ? 'APPROVED'
+    : finalStatus === 'PENDING_REVIEW'
+    ? 'PENDING_REVIEW'
+    : 'DRAFT'
+  const isFinalActive = finalStatus === 'PUBLISHED'
+
   // 1. Insert Problem
-  const problemRecord = {
+  const problemRecord: Record<string, any> = {
     id: problemId,
     beltId,
     learningUnitId,
@@ -4145,8 +4212,11 @@ async function handleCreateQuestion(
     explanation: constraints,
     timeLimitMs,
     memoryLimitMb,
-    status: isActive ? 'PUBLISHED' : 'DRAFT',
-    isActive,
+    status: finalStatus,
+    approvalStatus,
+    isActive: isFinalActive,
+    publishedAt: isFinalActive ? new Date().toISOString() : null,
+    publishedBy: isFinalActive ? adminId : null,
     examples: legacyExamples,
     starterCodes,
     createdBy: adminId,
@@ -4296,13 +4366,23 @@ async function handleUpdateQuestion(
     })
   }
 
-  const { data: allMatching, error: findErr } = await supabaseServer
+  let existing: any = null
+  const { data: byId } = await supabaseServer
     .from('Problem')
     .select('*')
+    .eq('id', id)
+    .maybeSingle()
+  if (byId) {
+    existing = byId
+  } else {
+    const { data: bySlug } = await supabaseServer
+      .from('Problem')
+      .select('*')
+      .eq('slug', id)
+      .maybeSingle()
+    if (bySlug) existing = bySlug
+  }
 
-  if (findErr) throw findErr
-
-  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
@@ -4326,18 +4406,37 @@ async function handleUpdateQuestion(
   if (typeof body.timeLimitMs === 'number' && body.timeLimitMs > 0) updates.timeLimitMs = body.timeLimitMs
   if (typeof body.memoryLimitMb === 'number' && body.memoryLimitMb > 0) updates.memoryLimitMb = body.memoryLimitMb
 
-  if (typeof body.status === 'string') {
-    updates.status = body.status.trim().toUpperCase()
-    updates.isActive = updates.status === 'PUBLISHED'
+  const reqStatus = typeof body.status === 'string' ? body.status.trim().toUpperCase() : ''
+  if (typeof body.isActive === 'boolean' && reqStatus) {
+    if (body.isActive && ['DRAFT', 'ARCHIVED', 'PENDING_REVIEW'].includes(reqStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: `A question cannot be active while status is ${reqStatus}.`,
+      })
+    }
+    if (!body.isActive && reqStatus === 'PUBLISHED') {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: 'A question cannot be inactive while status is PUBLISHED.',
+      })
+    }
+  }
+
+  if (reqStatus) {
+    updates.status = reqStatus
+    updates.isActive = reqStatus === 'PUBLISHED'
     if (updates.status === 'PUBLISHED') {
       updates.approvalStatus = 'APPROVED'
       updates.publishedAt = new Date().toISOString()
       updates.publishedBy = adminId
-    } else if (updates.status === 'ARCHIVED') {
-      updates.approvalStatus = 'REJECTED'
-    } else {
+    } else if (updates.status === 'PENDING_REVIEW') {
+      updates.approvalStatus = 'PENDING_REVIEW'
+    } else if (updates.status === 'DRAFT') {
       updates.approvalStatus = 'DRAFT'
     }
+    // If updates.status === 'ARCHIVED', do not overwrite approvalStatus (preserve history!)
   } else if (typeof body.isActive === 'boolean') {
     updates.isActive = body.isActive
     updates.status = body.isActive ? 'PUBLISHED' : 'DRAFT'
@@ -4347,6 +4446,12 @@ async function handleUpdateQuestion(
       updates.publishedBy = adminId
     } else {
       updates.approvalStatus = 'DRAFT'
+    }
+  } else if (body.submitForReview === true || body.approvalStatus === 'PENDING_REVIEW') {
+    updates.approvalStatus = 'PENDING_REVIEW'
+    if (existing.status !== 'PUBLISHED') {
+      updates.status = 'PENDING_REVIEW'
+      updates.isActive = false
     }
   }
 
@@ -4373,13 +4478,31 @@ async function handleUpdateQuestion(
   }
 
   if (body.beltId !== undefined || body.belt !== undefined) {
-    const rawBelt = body.beltId || body.belt
-    if (typeof rawBelt === 'string' && rawBelt.trim()) {
-      updates.beltId = rawBelt.trim()
-    } else if (typeof rawBelt === 'number' && !isNaN(rawBelt)) {
-      updates.beltId = `mock-belt-${rawBelt}`
-    } else if (rawBelt === null) {
+    const rawBelt = body.beltId !== undefined ? body.beltId : body.belt
+    if (rawBelt === null) {
       updates.beltId = null
+    } else if (typeof rawBelt === 'string' && !rawBelt.trim()) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Missing Belt Selection',
+        message: 'A valid Practice Belt selection is required.',
+      })
+    } else {
+      const candidateStr = String(rawBelt).trim()
+      const { data: belts, error: beltErr } = await supabaseServer
+        .from('Belt')
+        .select('id, order, name, title')
+        .order('order', { ascending: true })
+      if (beltErr) throw beltErr
+      const matchedBelt = (belts || []).find((b: any) => b.id === candidateStr)
+      if (!matchedBelt) {
+        return sendJson(res, 400, {
+          success: false,
+          error: 'Invalid Belt ID',
+          message: `Belt identifier "${candidateStr}" does not exist. Please select a valid Belt.`,
+        })
+      }
+      updates.beltId = matchedBelt.id
     }
   }
   if (typeof body.order === 'number' && !isNaN(body.order)) {
@@ -4790,19 +4913,31 @@ async function handleToggleQuestionStatus(
     })
   }
 
-  const { data: allMatching, error: findErr } = await supabaseServer
-    .from('Problem')
-    .select('id, slug, title, isActive, status')
+  const existing = await findQuestionByIdOrSlug(id)
 
-  if (findErr) throw findErr
-
-  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
       error: 'Question Not Found',
       message: `Question with identifier "${id}" was not found.`,
     })
+  }
+
+  if (typeof body.isActive === 'boolean' && requestedStatus) {
+    if (body.isActive && ['DRAFT', 'ARCHIVED', 'PENDING_REVIEW'].includes(requestedStatus)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: `A question cannot be active while status is ${requestedStatus}.`,
+      })
+    }
+    if (!body.isActive && requestedStatus === 'PUBLISHED') {
+      return sendJson(res, 400, {
+        success: false,
+        error: 'Invalid Status Combination',
+        message: 'A question cannot be inactive while status is PUBLISHED.',
+      })
+    }
   }
 
   let nextIsActive: boolean
@@ -4823,7 +4958,13 @@ async function handleToggleQuestionStatus(
   }
 
   const now = new Date().toISOString()
-  const approvalStatus = nextIsActive ? 'APPROVED' : nextStatus === 'ARCHIVED' ? 'REJECTED' : 'DRAFT'
+  const approvalStatus = nextIsActive
+    ? 'APPROVED'
+    : nextStatus === 'ARCHIVED'
+    ? (existing.approvalStatus || 'DRAFT')
+    : nextStatus === 'PENDING_REVIEW'
+    ? 'PENDING_REVIEW'
+    : 'DRAFT'
   const updatePayload: Record<string, any> = {
     isActive: nextIsActive,
     status: nextStatus,
@@ -4864,6 +5005,8 @@ async function handleToggleQuestionStatus(
     data: {
       ...updated,
       status: nextStatus,
+      isActive: nextIsActive,
+      approvalStatus,
     },
   })
 }
@@ -4886,18 +5029,22 @@ async function handleRestoreQuestion(
     })
   }
 
-  const { data: allMatching, error: findErr } = await supabaseServer
-    .from('Problem')
-    .select('id, slug, title, isActive, status, canonicalProblemId')
+  const existing = await findQuestionByIdOrSlug(id)
 
-  if (findErr) throw findErr
-
-  const existing = (allMatching || []).find((p: any) => p.id === id || p.slug === id)
   if (!existing) {
     return sendJson(res, 404, {
       success: false,
       error: 'Question Not Found',
       message: `Question with identifier "${id}" was not found.`,
+    })
+  }
+
+  const currentStatus = String(existing.status || '').toUpperCase()
+  if (currentStatus !== 'ARCHIVED') {
+    return sendJson(res, 409, {
+      success: false,
+      error: 'Conflict',
+      message: 'Only archived questions can be restored to draft.',
     })
   }
 
@@ -6444,7 +6591,7 @@ async function handleToggleLearningUnitStatus(
 async function handleListBelts(res: ServerResponse) {
   const [beltsRes, problemsRes] = await Promise.all([
     supabaseServer.from('Belt').select('*').order('order', { ascending: true }),
-    supabaseServer.from('Problem').select('id, beltId, isActive, slug'),
+    supabaseServer.from('Problem').select('id, beltId, isActive, slug, status, approvalStatus'),
   ])
 
   let rawBelts = beltsRes.data || []
@@ -6471,9 +6618,31 @@ async function handleListBelts(res: ServerResponse) {
       (p.slug && p.slug.startsWith(`belt-${bOrder}-`))
     )
 
-    const totalCount = beltProbs.length > 0 ? beltProbs.length : ((problemsData as any[])[bOrder - 1]?.problems?.length || 0)
-    const publishedCount = beltProbs.length > 0 ? beltProbs.filter((p: any) => p.isActive).length : totalCount
-    const draftCount = totalCount - publishedCount
+    let beltPub = 0
+    let beltDraft = 0
+    let beltArchived = 0
+    let beltPending = 0
+
+    for (const p of beltProbs) {
+      const rawSt = String(p.status || '').toUpperCase()
+      const rawAppSt = String(p.approvalStatus || '').toUpperCase()
+      const isArchived = rawSt === 'ARCHIVED'
+      const isPending = rawSt === 'PENDING_REVIEW' || rawAppSt === 'PENDING_REVIEW'
+      const isPub = !isArchived && !isPending && (rawSt === 'PUBLISHED' || (rawSt !== 'DRAFT' && Boolean(p.isActive)))
+      const isDraft = !isArchived && !isPending && !isPub
+
+      if (isArchived) beltArchived++
+      else if (isPending) beltPending++
+      else if (isPub) beltPub++
+      else if (isDraft) beltDraft++
+    }
+
+    const fallbackTotal = (problemsData as any[])[bOrder - 1]?.problems?.length || 0
+    const totalCount = beltProbs.length > 0 ? beltProbs.length : fallbackTotal
+    const publishedCount = beltProbs.length > 0 ? beltPub : totalCount
+    const draftCount = beltProbs.length > 0 ? beltDraft : 0
+    const archivedCount = beltArchived
+    const pendingReviewCount = beltPending
 
     return {
       id: b.id,
@@ -6485,6 +6654,8 @@ async function handleListBelts(res: ServerResponse) {
       problemCount: totalCount,
       publishedCount,
       draftCount,
+      archivedCount,
+      pendingReviewCount,
     }
   })
 
@@ -6500,6 +6671,8 @@ async function handleListBelts(res: ServerResponse) {
         totalProblems: belts.reduce((sum, b) => sum + b.problemCount, 0),
         publishedProblems: belts.reduce((sum, b) => sum + b.publishedCount, 0),
         draftProblems: belts.reduce((sum, b) => sum + b.draftCount, 0),
+        archivedProblems: belts.reduce((sum, b) => sum + (b.archivedCount || 0), 0),
+        pendingReviewProblems: belts.reduce((sum, b) => sum + (b.pendingReviewCount || 0), 0),
       },
     },
   })
