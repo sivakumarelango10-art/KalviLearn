@@ -366,6 +366,7 @@ async function main() {
       headers: { authorization: SUPER_ADMIN_TOKEN },
       body: {
         action: 'create_question',
+        beltId: 'mock-belt-1',
         title: 'Longest Consecutive Sequence Test',
         slug: testSlug,
         difficulty: 'Medium',
@@ -1626,6 +1627,7 @@ if lines:
       headers: { authorization: SUPER_ADMIN_TOKEN },
       body: {
         action: 'create_question',
+        beltId: 'mock-belt-1',
         title: 'Normalized Architecture Problem',
         slug: normSlug,
         difficulty: 'Medium',
@@ -1919,7 +1921,29 @@ if lines:
     }
   })
 
-  await runTest('17.3 Reject question creation with invalid beltId (400 Invalid Belt ID)', async () => {
+  await runTest('17.3 Reject question creation with missing beltId on practice question (400 Missing Belt Selection)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        // Omitted beltId on practice question
+        title: 'Missing Belt Practice Test',
+        slug: 'missing-belt-test-slug',
+        difficulty: 'Easy',
+        subdivision: 'General',
+        description: 'Should fail due to omitted beltId',
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 400, 'Must return 400 when practice beltId is omitted')
+    assert.strictEqual(out.data.success, false)
+    assert.strictEqual(out.data.error, 'Missing Belt Selection')
+  })
+
+  await runTest('17.4 Reject question creation with invalid beltId (400 Invalid Belt ID)', async () => {
     resetSuperAdminRateLimitsForTesting()
     const { req, res } = createMockReqRes({
       headers: { authorization: SUPER_ADMIN_TOKEN },
@@ -1942,7 +1966,7 @@ if lines:
     assert.ok(out.data.message.includes('mock-belt-999'))
   })
 
-  await runTest('17.4 Reject question creation with empty beltId string (400 Missing Belt Selection)', async () => {
+  await runTest('17.5 Reject question creation with empty beltId string (400 Missing Belt Selection)', async () => {
     resetSuperAdminRateLimitsForTesting()
     const { req, res } = createMockReqRes({
       headers: { authorization: SUPER_ADMIN_TOKEN },
@@ -1964,7 +1988,7 @@ if lines:
     assert.strictEqual(out.data.error, 'Missing Belt Selection')
   })
 
-  await runTest('17.5 Reject question update with invalid beltId (400 Invalid Belt ID)', async () => {
+  await runTest('17.6 Reject question update with invalid beltId (400 Invalid Belt ID)', async () => {
     resetSuperAdminRateLimitsForTesting()
     const targetQId = beltQuestionIds[0]
     const { req, res } = createMockReqRes({
@@ -1982,7 +2006,7 @@ if lines:
     assert.strictEqual(out.data.error, 'Invalid Belt ID')
   })
 
-  await runTest('17.6 Reject question update with empty beltId string (400 Missing Belt Selection)', async () => {
+  await runTest('17.7 Reject question update with empty or null beltId on practice question (400 Missing Belt Selection)', async () => {
     resetSuperAdminRateLimitsForTesting()
     const targetQId = beltQuestionIds[0]
     const { req, res } = createMockReqRes({
@@ -1998,9 +2022,24 @@ if lines:
     assert.strictEqual(out.statusCode, 400, 'Must return 400 for empty beltId on update')
     assert.strictEqual(out.data.success, false)
     assert.strictEqual(out.data.error, 'Missing Belt Selection')
+
+    // Also test beltId: null
+    const { req: nullReq, res: nullRes } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'update_question',
+        id: targetQId,
+        beltId: null,
+      },
+    })
+    await superAdminHandler(nullReq, nullRes)
+    const nullOut = nullRes.getOutput()
+    assert.strictEqual(nullOut.statusCode, 400, 'Must return 400 for null beltId on update')
+    assert.strictEqual(nullOut.data.success, false)
+    assert.strictEqual(nullOut.data.error, 'Missing Belt Selection')
   })
 
-  await runTest('17.7 Successfully update question to another valid Belt ID (200)', async () => {
+  await runTest('17.8 Successfully update question to another valid Belt ID in edit mode (200)', async () => {
     resetSuperAdminRateLimitsForTesting()
     const targetQId = beltQuestionIds[0]
     const belt2 = db.Belt.find((b: any) => b.order === 2)
@@ -2023,7 +2062,37 @@ if lines:
     assert.strictEqual(persisted.beltId, belt2.id)
   })
 
-  await runTest('17.8 Mock database enforces Problem_beltId_fkey foreign key constraint', async () => {
+  await runTest('17.9 Learning Unit question respects Learning Unit relationship with null beltId', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    const unit1 = db.LearningUnit[0]
+    assert.ok(unit1, 'Learning unit must exist')
+
+    const luSlug = `lu-fk-test-${Date.now()}`
+    const { req, res } = createMockReqRes({
+      headers: { authorization: SUPER_ADMIN_TOKEN },
+      body: {
+        action: 'create_question',
+        learningUnitId: unit1.id,
+        title: 'LU Belt Isolation Test',
+        slug: luSlug,
+        difficulty: 'Easy',
+        subdivision: 'General',
+        description: 'Verify Learning Unit question does not require beltId and sets it to null',
+        testCases: [{ input: '1', expectedOutput: '1' }],
+      },
+    })
+    await superAdminHandler(req, res)
+    const out = res.getOutput()
+    assert.strictEqual(out.statusCode, 201)
+    assert.strictEqual(out.data.data.beltId, null, 'Learning Unit question must have null beltId')
+
+    const persisted = db.Problem.find((p: any) => p.id === out.data.data.id)
+    assert.ok(persisted)
+    assert.strictEqual(persisted.beltId, null)
+    assert.strictEqual(persisted.learningUnitId, unit1.id)
+  })
+
+  await runTest('17.10 Mock database enforces Problem_beltId_fkey foreign key constraint', async () => {
     const rawInsert = await supabaseServer.from('Problem').insert({
       id: 'raw-fk-test-prob',
       beltId: 'fake-nonexistent-belt-id',
@@ -2045,7 +2114,7 @@ if lines:
     assert.ok(rawInsert.error.message.includes('Problem_beltId_fkey'), 'Message must reference Problem_beltId_fkey')
   })
 
-  await runTest('17.9 Dashboard statistics strictly segregate draft from archived records', async () => {
+  await runTest('17.11 Dashboard statistics strictly segregate draft from archived records', async () => {
     resetSuperAdminRateLimitsForTesting()
     const draftSlug = `stats-draft-prob-${Date.now()}`
     const archSlug = `stats-archived-prob-${Date.now()}`
@@ -2107,6 +2176,117 @@ if lines:
       s.published + s.draft + s.archived + (s.pendingReview || 0),
       'published + draft + archived + pendingReview must equal total'
     )
+  })
+
+  await runTest('17.12 Deterministic verification of exact production audit baseline (501 total: 58 published, 1 draft, 442 archived, 0 pending)', async () => {
+    resetSuperAdminRateLimitsForTesting()
+    // Backup current problems and simulate exact production snapshot
+    const backupProblems = [...db.Problem]
+    try {
+      db.Problem = []
+      const b1 = db.Belt[0]
+
+      // 58 Published problems
+      for (let i = 1; i <= 58; i++) {
+        db.Problem.push({
+          id: `prod-pub-${i}`,
+          beltId: b1.id,
+          order: i,
+          slug: `prod-pub-problem-${i}`,
+          title: `Published Problem ${i}`,
+          difficulty: i % 3 === 0 ? 'Hard' : (i % 2 === 0 ? 'Medium' : 'Easy'),
+          subdivision: 'General',
+          status: 'PUBLISHED',
+          approvalStatus: 'APPROVED',
+          isActive: true,
+          createdAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+          updatedAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+        })
+      }
+
+      // 1 Draft problem
+      db.Problem.push({
+        id: 'prod-draft-1',
+        beltId: b1.id,
+        order: 59,
+        slug: 'prod-draft-problem-1',
+        title: 'Draft Problem 1',
+        difficulty: 'Easy',
+        subdivision: 'General',
+        status: 'DRAFT',
+        approvalStatus: 'DRAFT',
+        isActive: false,
+        createdAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+        updatedAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+      })
+
+      // 442 Archived problems
+      for (let i = 1; i <= 442; i++) {
+        db.Problem.push({
+          id: `prod-arch-${i}`,
+          beltId: b1.id,
+          order: 60 + i,
+          slug: `prod-archived-problem-${i}`,
+          title: `Archived Problem ${i}`,
+          difficulty: 'Easy',
+          subdivision: 'General',
+          status: 'ARCHIVED',
+          approvalStatus: 'ARCHIVED',
+          isActive: false,
+          createdAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+          updatedAt: new Date('2026-09-01T00:00:00Z').toISOString(),
+        })
+      }
+
+      // Query list_questions without filter
+      const { req: allReq, res: allRes } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: { action: 'list_questions' },
+      })
+      await superAdminHandler(allReq, allRes)
+      const allOut = allRes.getOutput()
+      assert.strictEqual(allOut.statusCode, 200)
+      const stats = allOut.data.data.stats
+
+      assert.strictEqual(stats.total, 501, 'Total must be exactly 501')
+      assert.strictEqual(stats.published, 58, 'Published must be exactly 58')
+      assert.strictEqual(stats.draft, 1, 'Draft must be exactly 1')
+      assert.strictEqual(stats.archived, 442, 'Archived must be exactly 442')
+      assert.strictEqual(stats.pendingReview, 0, 'Pending review must be exactly 0')
+
+      // Filter by DRAFT
+      const { req: draftReq, res: draftRes } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: { action: 'list_questions', status: 'DRAFT' },
+      })
+      await superAdminHandler(draftReq, draftRes)
+      const draftOut = draftRes.getOutput()
+      assert.strictEqual(draftOut.statusCode, 200)
+      assert.strictEqual(draftOut.data.data.total, 1, 'DRAFT filter must return exactly 1 item')
+      assert.strictEqual(draftOut.data.data.questions[0].id, 'prod-draft-1')
+
+      // Filter by ARCHIVED
+      const { req: archReq, res: archRes } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: { action: 'list_questions', status: 'ARCHIVED' },
+      })
+      await superAdminHandler(archReq, archRes)
+      const archOut = archRes.getOutput()
+      assert.strictEqual(archOut.statusCode, 200)
+      assert.strictEqual(archOut.data.data.total, 442, 'ARCHIVED filter must return exactly 442 items')
+
+      // Filter by PUBLISHED
+      const { req: pubReq, res: pubRes } = createMockReqRes({
+        headers: { authorization: SUPER_ADMIN_TOKEN },
+        body: { action: 'list_questions', status: 'PUBLISHED' },
+      })
+      await superAdminHandler(pubReq, pubRes)
+      const pubOut = pubRes.getOutput()
+      assert.strictEqual(pubOut.statusCode, 200)
+      assert.strictEqual(pubOut.data.data.total, 58, 'PUBLISHED filter must return exactly 58 items')
+    } finally {
+      db.Problem = backupProblems
+    }
   })
 
 
