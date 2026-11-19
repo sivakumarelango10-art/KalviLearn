@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { formatErrorMessage } from './errorUtils'
+import { registerCacheClearer } from './cacheRegistry'
 
 export interface SuperAdminDashboardTelemetry {
   overview: {
@@ -311,6 +312,102 @@ async function callSuperAdminApi<T = unknown>(
   }
 }
 
+// ─── Reference Data Caching & Request Coalescing ─────────────────────────────
+interface CacheEntry<T> {
+  data: T
+  expiresAt: number
+  fetchedAt: number
+}
+
+const serviceCache = new Map<string, CacheEntry<unknown>>()
+const inFlightRequests = new Map<string, Promise<unknown>>()
+
+// Register with cache registry to guarantee clear on logout and account switch
+registerCacheClearer(() => {
+  invalidateSuperAdminCache()
+})
+
+/**
+ * Invalidate cached Super Admin reference data.
+ * If keyPattern is omitted, clears all cached responses.
+ */
+export function invalidateSuperAdminCache(keyPattern?: string | RegExp): void {
+  if (!keyPattern) {
+    serviceCache.clear()
+    return
+  }
+  for (const key of serviceCache.keys()) {
+    const match = typeof keyPattern === 'string' ? key.includes(keyPattern) : keyPattern.test(key)
+    if (match) {
+      serviceCache.delete(key)
+    }
+  }
+}
+
+/**
+ * Internal testing accessor for cache inspections and unit tests.
+ */
+export function _getSuperAdminCacheForTesting(): {
+  get: (key: string) => CacheEntry<unknown> | undefined
+  size: () => number
+  inFlightCount: () => number
+  cachedFetch: typeof cachedSuperAdminFetch
+} {
+  return {
+    get: (key: string) => serviceCache.get(key),
+    size: () => serviceCache.size,
+    inFlightCount: () => inFlightRequests.size,
+    cachedFetch: cachedSuperAdminFetch,
+  }
+}
+
+async function cachedSuperAdminFetch<T>(
+  cacheKey: string,
+  fetcher: () => Promise<T>,
+  ttlMs = 45_000,
+  forceRefresh = false
+): Promise<T> {
+  if (!forceRefresh) {
+    const cached = serviceCache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data as T
+    }
+  }
+
+  const existingInFlight = inFlightRequests.get(cacheKey)
+  if (existingInFlight && !forceRefresh) {
+    return existingInFlight as Promise<T>
+  }
+
+  let promise: Promise<T> | undefined
+  const task = (async () => {
+    const startedAt = Date.now()
+    try {
+      const res = await fetcher()
+      if (res && typeof res === 'object' && (res as any).success) {
+        // Prevent older slower concurrent requests from overwriting newer cache entries
+        const existing = serviceCache.get(cacheKey)
+        if (!existing || startedAt >= existing.fetchedAt) {
+          serviceCache.set(cacheKey, {
+            data: res,
+            expiresAt: Date.now() + ttlMs,
+            fetchedAt: startedAt,
+          })
+        }
+      }
+      return res
+    } finally {
+      if (inFlightRequests.get(cacheKey) === promise) {
+        inFlightRequests.delete(cacheKey)
+      }
+    }
+  })()
+
+  promise = task
+  inFlightRequests.set(cacheKey, promise)
+  return promise
+}
+
 // ─── 1. Dashboard ────────────────────────────────────────────────────────────
 
 export async function fetchSuperAdminDashboard(): Promise<{
@@ -328,16 +425,22 @@ export async function fetchSuperAdminDashboard(): Promise<{
 
 // ─── 2. Campuses ─────────────────────────────────────────────────────────────
 
-export async function fetchCampuses(): Promise<{
+export async function fetchCampuses(options?: { forceRefresh?: boolean }): Promise<{
   success: boolean
   data?: AdminCampus[]
   error?: string
 }> {
-  return callSuperAdminApi<AdminCampus[]>(
-    '/api/super-admin/campuses',
-    {},
-    'list_campuses',
-    'POST'
+  return cachedSuperAdminFetch(
+    'campuses',
+    () =>
+      callSuperAdminApi<AdminCampus[]>(
+        '/api/super-admin/campuses',
+        {},
+        'list_campuses',
+        'POST'
+      ),
+    60_000,
+    options?.forceRefresh
   )
 }
 
@@ -350,12 +453,14 @@ export async function createCampus(payload: {
   status?: 'ACTIVE' | 'INACTIVE'
   managerId?: string | null
 }): Promise<{ success: boolean; data?: AdminCampus; error?: string }> {
-  return callSuperAdminApi<AdminCampus>(
+  const res = await callSuperAdminApi<AdminCampus>(
     '/api/super-admin/campuses',
     payload,
     'create_campus',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('campuses')
+  return res
 }
 
 export async function updateCampus(
@@ -369,50 +474,65 @@ export async function updateCampus(
     managerId?: string | null
   }
 ): Promise<{ success: boolean; data?: AdminCampus; error?: string }> {
-  return callSuperAdminApi<AdminCampus>(
+  const res = await callSuperAdminApi<AdminCampus>(
     '/api/super-admin/campuses',
     { campusId, ...updates },
     'update_campus',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('campuses')
+  return res
 }
 
 export async function toggleCampusStatus(
   campusId: string,
   status: 'ACTIVE' | 'INACTIVE'
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/campuses',
     { campusId, status },
     'toggle_campus_status',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('campuses')
+  return res
 }
 
 export async function assignCampusManager(
   campusId: string,
   managerId: string | null
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/campuses',
     { campusId, managerId },
     'assign_campus_manager',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('campuses')
+    invalidateSuperAdminCache('campus_managers')
+  }
+  return res
 }
 
 // ─── 3. Campus Managers ──────────────────────────────────────────────────────
 
-export async function fetchCampusManagers(): Promise<{
+export async function fetchCampusManagers(options?: { forceRefresh?: boolean }): Promise<{
   success: boolean
   data?: AdminCampusManager[]
   error?: string
 }> {
-  return callSuperAdminApi<AdminCampusManager[]>(
-    '/api/super-admin/managers',
-    {},
-    'list_managers',
-    'POST'
+  return cachedSuperAdminFetch(
+    'campus_managers',
+    () =>
+      callSuperAdminApi<AdminCampusManager[]>(
+        '/api/super-admin/managers',
+        {},
+        'list_managers',
+        'POST'
+      ),
+    60_000,
+    options?.forceRefresh
   )
 }
 
@@ -421,50 +541,71 @@ export async function provisionCampusManager(payload: {
   name: string
   campusId?: string | null
 }): Promise<{ success: boolean; data?: unknown; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/managers',
     payload,
     'provision_manager',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('campus_managers')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 export async function assignManagerCampus(
   managerId: string,
   campusId: string | null
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/managers',
     { managerId, campusId },
     'assign_manager_campus',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('campus_managers')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 export async function toggleManagerStatus(
   managerId: string,
   status: 'ACTIVE' | 'INACTIVE'
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/managers',
     { managerId, status },
     'toggle_manager_status',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('campus_managers')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 // ─── 4. Mentors ──────────────────────────────────────────────────────────────
 
-export async function fetchSuperAdminMentors(): Promise<{
+export async function fetchSuperAdminMentors(options?: { forceRefresh?: boolean }): Promise<{
   success: boolean
   data?: AdminMentor[]
   error?: string
 }> {
-  return callSuperAdminApi<AdminMentor[]>(
-    '/api/super-admin/mentors',
-    {},
-    'list_mentors',
-    'POST'
+  return cachedSuperAdminFetch(
+    'mentors',
+    () =>
+      callSuperAdminApi<AdminMentor[]>(
+        '/api/super-admin/mentors',
+        {},
+        'list_mentors',
+        'POST'
+      ),
+    60_000,
+    options?.forceRefresh
   )
 }
 
@@ -474,12 +615,17 @@ export async function provisionMentor(payload: {
   campusId?: string | null
   maxStudents?: number
 }): Promise<{ success: boolean; data?: unknown; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/mentors',
     payload,
     'provision_mentor',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('mentors')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 export async function updateMentor(
@@ -491,24 +637,34 @@ export async function updateMentor(
     status?: 'ACTIVE' | 'INACTIVE'
   }
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/mentors',
     { mentorId, ...updates },
     'update_mentor',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('mentors')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 export async function toggleMentorStatus(
   mentorId: string,
   status: 'ACTIVE' | 'INACTIVE'
 ): Promise<{ success: boolean; error?: string }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/mentors',
     { mentorId, status },
     'toggle_mentor_status',
     'POST'
   )
+  if (res.success) {
+    invalidateSuperAdminCache('mentors')
+    invalidateSuperAdminCache('campuses')
+  }
+  return res
 }
 
 // ─── 5. Students ─────────────────────────────────────────────────────────────
@@ -1101,9 +1257,12 @@ export interface AdminCurriculumStats {
   draftUnits: number
 }
 
-export async function fetchCurriculumModules(params?: {
-  search?: string
-}): Promise<{
+export async function fetchCurriculumModules(
+  params?: {
+    search?: string
+  },
+  options?: { forceRefresh?: boolean }
+): Promise<{
   success: boolean
   message?: string
   error?: string
@@ -1112,14 +1271,27 @@ export async function fetchCurriculumModules(params?: {
     stats: AdminCurriculumStats
   }
 }> {
-  const query = new URLSearchParams()
-  if (params?.search) query.set('search', params.search)
-  const qs = query.toString() ? `?${query.toString()}` : ''
-  return callSuperAdminApi(
-    `/api/super-admin/curriculum${qs}`,
-    params,
-    'list_curriculum_modules',
-    'GET'
+  if (params?.search) {
+    const query = new URLSearchParams()
+    query.set('search', params.search)
+    return callSuperAdminApi(
+      `/api/super-admin/curriculum?${query.toString()}`,
+      params,
+      'list_curriculum_modules',
+      'GET'
+    )
+  }
+  return cachedSuperAdminFetch(
+    'curriculum_modules',
+    () =>
+      callSuperAdminApi(
+        '/api/super-admin/curriculum',
+        params,
+        'list_curriculum_modules',
+        'GET'
+      ),
+    60_000,
+    options?.forceRefresh
   )
 }
 
@@ -1133,12 +1305,14 @@ export async function createCurriculumModule(payload: {
   error?: string
   data?: AdminCurriculumModule
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminCurriculumModule>(
     '/api/super-admin/curriculum',
     payload,
     'create_curriculum_module',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function updateCurriculumModule(
@@ -1156,12 +1330,14 @@ export async function updateCurriculumModule(
   error?: string
   data?: AdminCurriculumModule
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminCurriculumModule>(
     '/api/super-admin/curriculum',
     { id, ...payload },
     'update_curriculum_module',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function deleteCurriculumModule(id: string): Promise<{
@@ -1170,12 +1346,14 @@ export async function deleteCurriculumModule(id: string): Promise<{
   error?: string
   data?: { id: string }
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<{ id: string }>(
     '/api/super-admin/curriculum',
     { id },
     'delete_curriculum_module',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function reorderCurriculumModules(
@@ -1185,12 +1363,14 @@ export async function reorderCurriculumModules(
   message?: string
   error?: string
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/curriculum',
     { moduleOrders },
     'reorder_curriculum_modules',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function createLearningUnit(payload: {
@@ -1217,12 +1397,14 @@ export async function createLearningUnit(payload: {
   error?: string
   data?: AdminLearningUnit
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminLearningUnit>(
     '/api/super-admin/curriculum',
     payload,
     'create_learning_unit',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function updateLearningUnit(
@@ -1234,12 +1416,14 @@ export async function updateLearningUnit(
   error?: string
   data?: AdminLearningUnit
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminLearningUnit>(
     '/api/super-admin/curriculum',
     { id, ...payload },
     'update_learning_unit',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function deleteLearningUnit(id: string): Promise<{
@@ -1248,12 +1432,14 @@ export async function deleteLearningUnit(id: string): Promise<{
   error?: string
   data?: { id: string }
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<{ id: string }>(
     '/api/super-admin/curriculum',
     { id },
     'delete_learning_unit',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function reorderLearningUnits(
@@ -1263,12 +1449,14 @@ export async function reorderLearningUnits(
   message?: string
   error?: string
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi(
     '/api/super-admin/curriculum',
     { unitOrders },
     'reorder_learning_units',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function toggleModuleStatus(
@@ -1280,12 +1468,14 @@ export async function toggleModuleStatus(
   error?: string
   data?: AdminCurriculumModule
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminCurriculumModule>(
     '/api/super-admin/curriculum',
     { id, isActive },
     'toggle_module_status',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 export async function toggleLearningUnitStatus(
@@ -1297,12 +1487,14 @@ export async function toggleLearningUnitStatus(
   error?: string
   data?: AdminLearningUnit
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminLearningUnit>(
     '/api/super-admin/curriculum',
     { id, isActive },
     'toggle_learning_unit_status',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('curriculum_modules')
+  return res
 }
 
 // ─── 10. Practice Belts Management ─────────────────────────────
@@ -1330,7 +1522,7 @@ export interface AdminBeltsStats {
   pendingReviewProblems?: number
 }
 
-export async function fetchBelts(): Promise<{
+export async function fetchBelts(options?: { forceRefresh?: boolean }): Promise<{
   success: boolean
   message?: string
   error?: string
@@ -1339,11 +1531,17 @@ export async function fetchBelts(): Promise<{
     stats: AdminBeltsStats
   }
 }> {
-  return callSuperAdminApi(
-    '/api/super-admin/belts',
-    {},
-    'list_belts',
-    'GET'
+  return cachedSuperAdminFetch(
+    'belts',
+    () =>
+      callSuperAdminApi(
+        '/api/super-admin/belts',
+        {},
+        'list_belts',
+        'GET'
+      ),
+    60_000,
+    options?.forceRefresh
   )
 }
 
@@ -1360,12 +1558,14 @@ export async function updateBelt(payload: {
   error?: string
   data?: AdminBelt
 }> {
-  return callSuperAdminApi(
+  const res = await callSuperAdminApi<AdminBelt>(
     '/api/super-admin/belts',
     payload,
     'update_belt',
     'POST'
   )
+  if (res.success) invalidateSuperAdminCache('belts')
+  return res
 }
 
 

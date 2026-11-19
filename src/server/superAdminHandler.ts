@@ -1455,51 +1455,53 @@ async function handleListStudents(
   const studentList = students || []
   const studentIds = studentList.map((s) => s.id)
   const userIds = studentList.map((s) => s.user_id).filter(Boolean)
-
-  // Fetch active mentor links
-  let mentorMap: Record<string, { id: string; name: string; email: string }> = {}
-  if (studentIds.length > 0) {
-    const { data: links } = await supabaseServer
-      .from('mentor_students')
-      .select('student_id, mentor:mentors(id, name, email)')
-      .in('student_id', studentIds)
-      .eq('status', 'ACTIVE')
-
-    if (links) {
-      for (const l of links) {
-        if (l.mentor) {
-          const m = Array.isArray(l.mentor) ? l.mentor[0] : l.mentor
-          if (m) mentorMap[l.student_id] = m
-        }
-      }
-    }
-  }
-
-  // Fetch campuses map
   const campusIds = Array.from(new Set(studentList.map((s) => s.campus_id).filter(Boolean)))
-  let campusMap: Record<string, { id: string; name: string; code: string }> = {}
-  if (campusIds.length > 0) {
-    const { data: campuses } = await supabaseServer.from('campuses').select('id, name, code').in('id', campusIds)
-    if (campuses) {
-      campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]))
+
+  // Concurrently execute all enrichment lookups in parallel instead of sequentially
+  const [linksRes, campusesRes, upRowsRes] = await Promise.all([
+    studentIds.length > 0
+      ? supabaseServer
+          .from('mentor_students')
+          .select('student_id, mentor:mentors(id, name, email)')
+          .in('student_id', studentIds)
+          .eq('status', 'ACTIVE')
+      : Promise.resolve({ data: [] }),
+    campusIds.length > 0
+      ? supabaseServer.from('campuses').select('id, name, code').in('id', campusIds)
+      : Promise.resolve({ data: [] }),
+    userIds.length > 0
+      ? supabaseServer
+          .from('UserProgress')
+          .select('userId, status, xpEarned')
+          .in('userId', userIds)
+      : Promise.resolve({ data: [] }),
+  ])
+
+  // Build mentor map
+  let mentorMap: Record<string, { id: string; name: string; email: string }> = {}
+  if (linksRes.data) {
+    for (const l of linksRes.data) {
+      if (l.mentor) {
+        const m = Array.isArray(l.mentor) ? l.mentor[0] : l.mentor
+        if (m) mentorMap[l.student_id] = m
+      }
     }
   }
 
-  // Fetch progression summary for users
-  let progressMap: Record<string, { solvedCount: number; totalXp: number }> = {}
-  if (userIds.length > 0) {
-    const { data: upRows } = await supabaseServer
-      .from('UserProgress')
-      .select('userId, status, xpEarned')
-      .in('userId', userIds)
+  // Build campus map
+  let campusMap: Record<string, { id: string; name: string; code: string }> = {}
+  if (campusesRes.data) {
+    campusMap = Object.fromEntries(campusesRes.data.map((c: any) => [c.id, c]))
+  }
 
-    if (upRows) {
-      for (const row of upRows) {
-        const uId = row.userId
-        if (!progressMap[uId]) progressMap[uId] = { solvedCount: 0, totalXp: 0 }
-        if (row.status === 'SOLVED') progressMap[uId].solvedCount++
-        progressMap[uId].totalXp += row.xpEarned || 0
-      }
+  // Build progression summary for users
+  let progressMap: Record<string, { solvedCount: number; totalXp: number }> = {}
+  if (upRowsRes.data) {
+    for (const row of upRowsRes.data) {
+      const uId = row.userId
+      if (!progressMap[uId]) progressMap[uId] = { solvedCount: 0, totalXp: 0 }
+      if (row.status === 'SOLVED') progressMap[uId].solvedCount++
+      progressMap[uId].totalXp += row.xpEarned || 0
     }
   }
 

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import {
   Terminal,
   ArrowLeft,
@@ -34,9 +35,12 @@ import {
   Type,
   LucideIcon,
 } from 'lucide-react'
-import { SuperAdminQuestionsPage } from './SuperAdminQuestionsPage'
 import { fetchBelts, AdminBelt } from '../../lib/superAdminService'
 import { cn } from '@/lib/utils'
+
+const SuperAdminQuestionsPage = React.lazy(() =>
+  import('./SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage }))
+)
 
 export interface PracticeTopicItem {
   id: string
@@ -347,6 +351,7 @@ const ALL_PRACTICE_TOPICS: PracticeTopicItem[] = [
 ]
 
 export const SuperAdminPracticeCodingPage: React.FC = () => {
+  useDocumentTitle('Practice Coding Topics')
   const { topicId: urlTopicId, beltId: urlBeltId } = useParams<{ topicId?: string; beltId?: string }>()
 
   const [topics, setTopics] = useState<PracticeTopicItem[]>(ALL_PRACTICE_TOPICS)
@@ -483,14 +488,23 @@ export const SuperAdminPracticeCodingPage: React.FC = () => {
         </div>
 
         {/* Scoped Questions Page with full Admin Preview, Student Preview & Test Runner */}
-        <SuperAdminQuestionsPage
-          initialTopic={selectedTopic.sourceTitle || selectedTopic.title}
-          backRoute="/super-admin/content/practice-coding"
-          backLabel="Back to Practice Coding"
-          customTitle={`Practice Topic: ${selectedTopic.title}`}
-          customDescription={`Manage questions, test cases, and difficulty parameters for "${selectedTopic.title}". Only questions for this topic are displayed.`}
-          availableBelts={availableBelts}
-        />
+        <React.Suspense
+          fallback={
+            <div className="flex flex-col items-center justify-center p-16 space-y-3">
+              <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-neutral-400">Loading topic questions studio...</span>
+            </div>
+          }
+        >
+          <SuperAdminQuestionsPage
+            initialTopic={selectedTopic.sourceTitle || selectedTopic.title}
+            backRoute="/super-admin/content/practice-coding"
+            backLabel="Back to Practice Coding"
+            customTitle={`Practice Topic: ${selectedTopic.title}`}
+            customDescription={`Manage questions, test cases, and difficulty parameters for "${selectedTopic.title}". Only questions for this topic are displayed.`}
+            availableBelts={availableBelts}
+          />
+        </React.Suspense>
       </div>
     )
   }
@@ -602,9 +616,12 @@ export const SuperAdminPracticeCodingPage: React.FC = () => {
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search aria-hidden="true" className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
-              type="text"
+              id="practice-coding-search"
+              name="practice-coding-search"
+              type="search"
+              aria-label="Search practice topics"
               placeholder="Search practice topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

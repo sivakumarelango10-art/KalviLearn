@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Building2,
   Plus,
@@ -24,8 +24,11 @@ import {
   AdminCampus,
   AdminCampusManager,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { formatCampusLocation } from '@/utils/formatCampusLocation'
 
 export const SuperAdminCampusesPage: React.FC = () => {
+  useDocumentTitle('Campus Management')
   const [campuses, setCampuses] = useState<AdminCampus[]>([])
   const [managers, setManagers] = useState<AdminCampusManager[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,10 +51,13 @@ export const SuperAdminCampusesPage: React.FC = () => {
   const [newStatus, setNewStatus] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE')
   const [newManagerId, setNewManagerId] = useState('')
 
-  const loadData = async () => {
+  const loadData = async (forceRefresh = false) => {
     setLoading(true)
     setError(null)
-    const [cRes, mRes] = await Promise.all([fetchCampuses(), fetchCampusManagers()])
+    const [cRes, mRes] = await Promise.all([
+      fetchCampuses({ forceRefresh }),
+      fetchCampusManagers({ forceRefresh }),
+    ])
     if (cRes.success && cRes.data) {
       setCampuses(cRes.data)
     } else {
@@ -138,16 +144,18 @@ export const SuperAdminCampusesPage: React.FC = () => {
     }
   }
 
-  const filtered = campuses.filter((c) => {
-    if (statusFilter !== 'ALL' && c.status !== statusFilter) return false
-    if (!search.trim()) return true
-    const s = search.toLowerCase()
-    return (
-      c.name.toLowerCase().includes(s) ||
-      c.code.toLowerCase().includes(s) ||
-      (c.city && c.city.toLowerCase().includes(s))
-    )
-  })
+  const filtered = useMemo(() => {
+    return campuses.filter((c) => {
+      if (statusFilter !== 'ALL' && c.status !== statusFilter) return false
+      if (!search.trim()) return true
+      const s = search.toLowerCase()
+      return (
+        c.name.toLowerCase().includes(s) ||
+        c.code.toLowerCase().includes(s) ||
+        (c.city && c.city.toLowerCase().includes(s))
+      )
+    })
+  }, [campuses, statusFilter, search])
 
   return (
     <div className="space-y-6">
@@ -164,7 +172,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={loadData}
+            onClick={() => loadData(true)}
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
@@ -209,9 +217,12 @@ export const SuperAdminCampusesPage: React.FC = () => {
       {/* Filters & Search */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
-            type="text"
+            id="campus-search"
+            name="campus-search"
+            type="search"
+            aria-label="Search campuses by name, code, or city"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by campus name, code, or city..."
@@ -256,16 +267,32 @@ export const SuperAdminCampusesPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
               {loading ? (
-                <tr>
-                  <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
-                    <span>Loading campuses...</span>
-                  </td>
-                </tr>
+                Array.from({ length: 4 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3.5 px-4"><div className="h-4 w-36 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-32 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-20 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4 text-right"><div className="h-4 w-12 bg-white/[0.08] rounded ml-auto" /></td>
+                  </tr>
+                ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    No campuses found matching your criteria.
+                    <Building2 className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+                    <p className="font-medium text-neutral-300">No campuses found</p>
+                    <p className="text-xs text-neutral-500 mt-1">Try adjusting your search query or filter criteria.</p>
+                    {search && (
+                      <button
+                        onClick={() => setSearch('')}
+                        className="mt-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/15 text-xs text-white transition-colors"
+                      >
+                        Clear search
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -282,7 +309,7 @@ export const SuperAdminCampusesPage: React.FC = () => {
                     <td className="py-3.5 px-4 text-neutral-400">
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-neutral-500" />
-                        <span>{campus.city ? `${campus.city}, ${campus.state || ''}` : 'Unspecified'}</span>
+                        <span>{formatCampusLocation(campus, 'Unspecified')}</span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4">

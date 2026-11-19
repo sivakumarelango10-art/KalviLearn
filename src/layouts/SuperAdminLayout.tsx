@@ -7,18 +7,18 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
-type SuperAdminNavItem = { label: string; path: string; icon: LucideIcon; badge?: string; disabled?: boolean }
+type SuperAdminNavItem = { label: string; path: string; icon: LucideIcon; disabled?: boolean }
 
 const NAV_ITEMS: SuperAdminNavItem[] = [
-  { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard, badge: 'LIVE' },
+  { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
   { label: 'Campuses', path: '/super-admin/campuses', icon: Building2 },
   { label: 'Campus Managers', path: '/super-admin/managers', icon: UserCog },
   { label: 'Mentors', path: '/super-admin/mentors', icon: Users },
   { label: 'Students', path: '/super-admin/students', icon: GraduationCap },
-  { label: 'Roles & Access', path: '/super-admin/roles', icon: ShieldCheck, badge: 'RBAC' },
-  { label: 'Content Managers', path: '/super-admin/content-managers', icon: FileCheck, badge: 'ACCESS' },
-  { label: 'Content', path: '/super-admin/content', icon: BookOpen, badge: 'CURRICULUM' },
-  { label: 'Audit Logs', path: '/super-admin/audit', icon: History, badge: 'APPEND-ONLY' },
+  { label: 'Roles & Access', path: '/super-admin/roles', icon: ShieldCheck },
+  { label: 'Content Managers', path: '/super-admin/content-managers', icon: FileCheck },
+  { label: 'Content Studio', path: '/super-admin/content', icon: BookOpen },
+  { label: 'Audit Logs', path: '/super-admin/audit', icon: History },
 ]
 
 export const SuperAdminLayout: React.FC = () => {
@@ -50,7 +50,6 @@ export const SuperAdminLayout: React.FC = () => {
               className={({ isActive }) => `flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${isActive ? 'border-[#681717] bg-[#1F0B0B] text-[#FF6266]' : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}>
               <Icon className="h-4 w-4 shrink-0" />
               <span className="min-w-0 flex-1">{item.label}</span>
-              {'badge' in item && <span className="rounded bg-white/[0.07] px-1.5 py-1 text-[9px] font-bold tracking-wide text-slate-400">{item.badge}</span>}
             </NavLink>
           )
         })}

@@ -20,8 +20,12 @@ import {
 } from 'lucide-react'
 import curriculumData from '@/data/curriculum.json'
 import { AdminBelt, AdminCurriculumModule, fetchBelts, updateBelt, fetchCurriculumModules } from '@/lib/superAdminService'
-import { SuperAdminQuestionsPage } from './SuperAdminQuestionsPage'
 import { cn } from '@/lib/utils'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+
+const SuperAdminQuestionsPage = React.lazy(() =>
+  import('./SuperAdminQuestionsPage').then((m) => ({ default: m.SuperAdminQuestionsPage }))
+)
 
 interface CurriculumExample {
   input?: string
@@ -107,6 +111,7 @@ function parseRichText(text?: string): React.ReactNode {
 }
 
 export const SuperAdminLearnCodingPage: React.FC = () => {
+  useDocumentTitle('Learn Coding Curriculum')
   const { topicId: urlTopicId, beltId: urlBeltId } = useParams<{ topicId?: string; beltId?: string }>()
 
   const [activeGroup, setActiveGroup] = useState<'all' | 'curriculum' | 'belts'>('all')
@@ -565,11 +570,20 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
               )}
 
               {/* Coding Questions for this Learning Unit */}
-              <SuperAdminQuestionsPage
-                learningUnitId={currentUnit.id}
-                isEmbedded={true}
-                unitTitle={currentUnit.title}
-              />
+              <React.Suspense
+                fallback={
+                  <div className="flex flex-col items-center justify-center p-12 space-y-3">
+                    <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs text-neutral-400">Loading questions studio...</span>
+                  </div>
+                }
+              >
+                <SuperAdminQuestionsPage
+                  learningUnitId={currentUnit.id}
+                  isEmbedded={true}
+                  unitTitle={currentUnit.title}
+                />
+              </React.Suspense>
             </div>
 
             {/* Previous Unit / Next Unit Navigation Footer */}
@@ -648,14 +662,23 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
           </div>
         </div>
 
-        <SuperAdminQuestionsPage
-          initialBelt={selectedBelt.order}
-          availableBelts={belts}
-          backRoute="/super-admin/content/learn-coding"
-          backLabel="Back to Learn Coding"
-          customTitle={`Practice Belt: ${selectedBelt.name} (${selectedBelt.title})`}
-          customDescription={`Manage challenges, hidden test cases, and difficulty for ${selectedBelt.name}: ${selectedBelt.description}`}
-        />
+        <React.Suspense
+          fallback={
+            <div className="flex flex-col items-center justify-center p-16 space-y-3">
+              <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-neutral-400">Loading belt questions studio...</span>
+            </div>
+          }
+        >
+          <SuperAdminQuestionsPage
+            initialBelt={selectedBelt.order}
+            availableBelts={belts}
+            backRoute="/super-admin/content/learn-coding"
+            backLabel="Back to Learn Coding"
+            customTitle={`Practice Belt: ${selectedBelt.name} (${selectedBelt.title})`}
+            customDescription={`Manage challenges, hidden test cases, and difficulty for ${selectedBelt.name}: ${selectedBelt.description}`}
+          />
+        </React.Suspense>
       </div>
     )
   }
@@ -792,9 +815,12 @@ export const SuperAdminLearnCodingPage: React.FC = () => {
         </div>
 
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search aria-hidden="true" className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
-            type="text"
+            id="learn-coding-search"
+            name="learn-coding-search"
+            type="search"
+            aria-label="Search modules, concepts, or belts"
             placeholder="Search modules, concepts, or belts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

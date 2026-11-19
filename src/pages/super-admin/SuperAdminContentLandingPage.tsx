@@ -14,8 +14,10 @@ import {
 import { fetchCurriculumModules, fetchBelts } from '@/lib/superAdminService'
 import { CODING_TOPICS } from '@/coding/topics'
 import { cn } from '@/lib/utils'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export const SuperAdminContentLandingPage: React.FC = () => {
+  useDocumentTitle('Content Studio')
   const navigate = useNavigate()
   const [, setLoading] = useState(true)
   const [stats, setStats] = useState({

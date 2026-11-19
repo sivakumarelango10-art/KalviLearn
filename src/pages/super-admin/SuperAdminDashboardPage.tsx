@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Activity, ArrowUpRight, Building2, CheckCircle2, GraduationCap,
@@ -8,10 +8,14 @@ import {
   fetchSuperAdminDashboard,
   SuperAdminDashboardTelemetry,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { formatCampusLocation } from '@/utils/formatCampusLocation'
+import { selectStudentDashboardMetrics } from '@/utils/studentMetrics'
 
 const number = (value?: number) => (value ?? 0).toLocaleString()
 
 export const SuperAdminDashboardPage: React.FC = () => {
+  useDocumentTitle('Super Admin Dashboard')
   const [telemetry, setTelemetry] = useState<SuperAdminDashboardTelemetry | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,18 +39,38 @@ export const SuperAdminDashboardPage: React.FC = () => {
   const overview = telemetry?.overview
   const roleDistribution = telemetry?.roleDistribution
   const totalUsers = overview?.totalUsers ?? 0
-  const roleItems = [
-    { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-[#8B0000]', text: 'text-rose-300' },
-    { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
-    { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-amber-300' },
-    { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
-  ]
-  const metrics = [
-    { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/campuses', description: 'Registered institutions' },
-    { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/managers', description: 'Campus operations' },
-    { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/mentors', description: 'Learning facilitators' },
-    { label: 'Students', value: overview?.totalStudents, active: overview?.activeStudents, icon: GraduationCap, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/students', description: 'Enrolled learners' },
-  ]
+  const studentMetrics = useMemo(
+    () => selectStudentDashboardMetrics(overview, roleDistribution),
+    [overview, roleDistribution]
+  )
+  const roleItems = useMemo(
+    () => [
+      { label: 'Super Admin', value: roleDistribution?.SUPERADMIN ?? 0, color: 'bg-[#8B0000]', text: 'text-rose-300' },
+      { label: 'Campus Managers', value: (roleDistribution?.CAMPUS_MANAGER ?? 0) + (roleDistribution?.ADMIN ?? 0), color: 'bg-violet-400', text: 'text-violet-300' },
+      { label: 'Mentors', value: roleDistribution?.MENTOR ?? 0, color: 'bg-amber-400', text: 'text-amber-300' },
+      { label: 'Students', value: roleDistribution?.STUDENT ?? 0, color: 'bg-emerald-400', text: 'text-emerald-300' },
+    ],
+    [roleDistribution]
+  )
+  const metrics = useMemo(
+    () => [
+      { label: 'Campuses', value: overview?.totalCampuses, active: overview?.activeCampuses, icon: Building2, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/campuses', description: 'Registered institutions' },
+      { label: 'Campus managers', value: overview?.totalManagers, active: overview?.activeManagers, icon: UserCog, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/managers', description: 'Campus operations' },
+      { label: 'Mentors', value: overview?.totalMentors, active: overview?.activeMentors, icon: Users, color: 'text-[#FF6266]', tint: 'bg-[#1F0B0B]', href: '/super-admin/mentors', description: 'Learning facilitators' },
+      {
+        label: 'Active students',
+        value: studentMetrics.activeStudents,
+        icon: GraduationCap,
+        color: 'text-[#FF6266]',
+        tint: 'bg-[#1F0B0B]',
+        href: '/super-admin/students',
+        description: studentMetrics.description,
+        footerLabel: studentMetrics.footerLabel,
+        explanation: studentMetrics.explanation,
+      },
+    ],
+    [overview, studentMetrics]
+  )
 
   return (
     <main className="min-h-full w-full bg-black px-4 py-4 text-slate-100 sm:px-6 lg:px-8">
@@ -77,18 +101,30 @@ export const SuperAdminDashboardPage: React.FC = () => {
         {error && <div role="alert" className="flex items-center justify-between rounded-xl border border-[#681717] bg-[#1F0B0B] px-4 py-3 text-sm text-[#FF8588]">{error}<button onClick={() => void loadData()} className="font-semibold underline underline-offset-2">Retry</button></div>}
 
         <section aria-label="Platform metrics" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
-          {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description }) => (
-            <Link key={label} to={href} className="group flex min-h-[122px] flex-col justify-between rounded-lg border border-white/[0.08] bg-[#101116] p-3 transition-colors hover:border-white/[0.14] hover:bg-[#121318]">
+          {metrics.map(({ label, value, active, icon: Icon, color, tint, href, description, footerLabel, explanation }) => (
+            <Link
+              key={label}
+              to={href}
+              className="group flex min-h-[122px] flex-col justify-between rounded-lg border border-white/[0.08] bg-[#101116] p-3 transition-colors hover:border-white/[0.14] hover:bg-[#121318]"
+            >
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-medium text-slate-400">{label}</p>
                   <p className="mt-1 text-xl font-semibold tracking-tight text-white tabular-nums">{loading ? '—' : number(value)}</p>
                   <p className="mt-0.5 text-[11px] text-slate-500">{description}</p>
+                  {explanation && (
+                    <p className="mt-1 text-[10px] leading-tight text-slate-500">
+                      {explanation}
+                    </p>
+                  )}
                 </div>
                 <span className={`rounded-lg p-2 ${tint} ${color}`}><Icon className="h-4 w-4" /></span>
               </div>
               <div className="mt-3 flex items-center justify-between border-t border-white/[0.07] pt-2.5">
-                <span className="flex items-center gap-2 text-xs text-slate-400"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{number(active)} active</span>
+                <span className="flex items-center gap-2 text-xs text-slate-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  {footerLabel ?? `${number(active)} active`}
+                </span>
                 <span className={`inline-flex items-center gap-1 text-xs font-semibold ${color}`}>Manage <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
               </div>
             </Link>
@@ -146,7 +182,7 @@ export const SuperAdminDashboardPage: React.FC = () => {
               <tbody className="divide-y divide-white/[0.05]">
                 {(!telemetry?.campuses || telemetry.campuses.length === 0) ? <tr><td colSpan={5} className="px-3 py-8 text-center text-sm text-slate-500">{loading ? 'Loading campuses…' : 'No campuses registered.'}</td></tr> : telemetry.campuses.map(c => <tr key={c.id} className="transition hover:bg-white/[0.025]">
                   <td className="px-3 py-3"><div className="font-medium text-slate-200">{c.name}</div><div className="mt-1 font-mono text-[11px] text-slate-500">{c.code}</div></td>
-                  <td className="px-3 py-3 text-xs text-slate-400">{c.city ? `${c.city}, ${c.state || ''}` : 'Not configured'}</td>
+                  <td className="px-3 py-3 text-xs text-slate-400">{formatCampusLocation(c, 'Not configured')}</td>
                   <td className="px-3 py-3"><span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${c.status === 'ACTIVE' ? 'bg-emerald-400/10 text-emerald-300' : 'bg-slate-400/10 text-slate-400'}`}><span className={`h-1.5 w-1.5 rounded-full ${c.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-slate-500'}`} />{c.status === 'ACTIVE' ? 'Active' : 'Inactive'}</span></td>
                   <td className="px-3 py-3 text-right text-sm font-medium tabular-nums text-slate-200">{number(c.totalStudents)}</td><td className="px-3 py-3 text-right text-sm font-medium tabular-nums text-slate-200">{number(c.totalMentors)}</td>
                 </tr>)}

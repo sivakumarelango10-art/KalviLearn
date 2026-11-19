@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import {
   BookOpen,
   ArrowLeft,
@@ -77,6 +78,7 @@ function parseRichText(text?: string): React.ReactNode {
 }
 
 export const SuperAdminCoursesPage: React.FC = () => {
+  useDocumentTitle('Curriculum Management')
   const [modules, setModules] = useState<AdminCurriculumModule[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -191,7 +193,13 @@ export const SuperAdminCoursesPage: React.FC = () => {
   }
 
   useEffect(() => {
-    loadCurriculum()
+    const timer = setTimeout(
+      () => {
+        void loadCurriculum()
+      },
+      searchQuery.trim() ? 250 : 0
+    )
+    return () => clearTimeout(timer)
   }, [searchQuery])
 
   // Active module & unit derived state
@@ -657,13 +665,16 @@ export const SuperAdminCoursesPage: React.FC = () => {
 
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search aria-hidden="true" className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
-                type="text"
+                id="curriculum-unit-search"
+                name="curriculum-unit-search"
+                type="search"
+                aria-label="Search learning units"
                 placeholder="Search learning units..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-950 border border-neutral-800 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-blue-500"
               />
             </div>
 
