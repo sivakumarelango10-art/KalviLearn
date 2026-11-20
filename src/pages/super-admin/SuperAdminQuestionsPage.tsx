@@ -712,8 +712,20 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
 
     setActionLoading(true)
     try {
-      const activeState = submitForReview ? false : (publishImmediate !== undefined ? publishImmediate : formData.isActive)
-      const resolvedStatus = submitForReview ? 'PENDING_REVIEW' : (publishImmediate === false ? 'DRAFT' : (formData.status || (activeState ? 'PUBLISHED' : 'DRAFT')))
+      const activeState = submitForReview
+        ? false
+        : publishImmediate === true
+        ? true
+        : publishImmediate === false
+        ? false
+        : formData.isActive
+      const resolvedStatus = submitForReview
+        ? 'PENDING_REVIEW'
+        : publishImmediate === true
+        ? 'PUBLISHED'
+        : publishImmediate === false
+        ? 'DRAFT'
+        : (formData.status || (activeState ? 'PUBLISHED' : 'DRAFT'))
       const payload = {
         title: formData.title.trim(),
         slug: formData.slug.trim(),
@@ -1197,8 +1209,8 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                             <Archive className="w-2.5 h-2.5" /> Archived
                           </span>
                         ) : q.status === 'PENDING_REVIEW' ? (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-950/40 text-blue-400 border border-blue-800/60 shrink-0">
-                            <Clock className="w-2.5 h-2.5" /> In Review
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60 shrink-0">
+                            <Clock className="w-2.5 h-2.5" /> Pending Review
                           </span>
                         ) : (q.isActive || q.status === 'PUBLISHED') ? (
                           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 shrink-0">
@@ -1524,7 +1536,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
               <option value="ALL">All Status</option>
               <option value="PUBLISHED">Published</option>
               <option value="DRAFT">Draft</option>
-              <option value="PENDING_REVIEW">In Review</option>
+              <option value="PENDING_REVIEW">Pending Review</option>
               <option value="ARCHIVED">Archived</option>
             </select>
           </div>
@@ -1676,12 +1688,12 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                       {/* Status */}
                       <td className="py-3.5 px-4 text-center">
                         {q.status === 'ARCHIVED' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-neutral-900 text-neutral-400 border border-neutral-700">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-950/40 text-rose-400 border border-rose-800/60">
                             <Archive className="w-3 h-3" /> Archived
                           </span>
                         ) : q.status === 'PENDING_REVIEW' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-950/40 text-blue-400 border border-blue-800/60">
-                            <Clock className="w-3 h-3" /> In Review
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-800/60">
+                            <Clock className="w-3 h-3" /> Pending Review
                           </span>
                         ) : (q.status === 'PUBLISHED' || (q.status !== 'DRAFT' && q.isActive)) ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/60">
@@ -3050,7 +3062,14 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                 </span>
                 {canPublishQ && (<button
                   type="button"
-                  onClick={() => setFormData((prev) => ({ ...prev, isActive: !prev.isActive }))}
+                  onClick={() => setFormData((prev) => {
+                    const nextActive = !prev.isActive
+                    return {
+                      ...prev,
+                      isActive: nextActive,
+                      status: nextActive ? 'PUBLISHED' : 'DRAFT',
+                    }
+                  })}
                   className="text-xs underline text-neutral-400 hover:text-white"
                 >
                   Toggle
@@ -3318,7 +3337,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
                     adminPreviewQuestion.status === 'ARCHIVED'
                       ? 'bg-rose-950/40 text-rose-400 border-rose-800/60'
                       : adminPreviewQuestion.status === 'PENDING_REVIEW'
-                      ? 'bg-blue-950/40 text-blue-400 border-blue-800/60'
+                      ? 'bg-amber-950/40 text-amber-400 border-amber-800/60'
                       : (adminPreviewQuestion.isActive || adminPreviewQuestion.status === 'PUBLISHED')
                       ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60'
                       : 'bg-neutral-900 text-neutral-400 border-neutral-700'

@@ -37,6 +37,9 @@ export const CampusManagerProtectedRoute: React.FC = () => {
 
   // Role check: Only CAMPUS_MANAGER and ADMIN can access Campus Manager portal
   if (user.role !== 'CAMPUS_MANAGER' && user.role !== 'ADMIN') {
+    if (user.role === 'CONTENT_MANAGER') {
+      return <Navigate to="/content-manager" replace />
+    }
     if (user.role === 'MENTOR') {
       return <Navigate to="/mentor" replace />
     }

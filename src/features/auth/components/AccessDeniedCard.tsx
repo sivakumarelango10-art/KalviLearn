@@ -49,7 +49,7 @@ export const AccessDeniedCard: React.FC<AccessDeniedCardProps> = ({
         <p className="text-xs text-neutral-500 leading-relaxed">
           {isInactive
             ? 'This account was found in the Kalvi database, but its operational status is currently marked as INACTIVE. Access to the dashboard is blocked.'
-            : 'This Google account is authenticated, but it was not found in the official Kalvi Learn mentor or student database.'}
+            : 'This Google account is authenticated, but it was not found in the official Kalvi Learn database.'}
         </p>
       </div>
 
@@ -58,8 +58,7 @@ export const AccessDeniedCard: React.FC<AccessDeniedCardProps> = ({
           <span>Please contact your Campus Administrator or Academic Director to reactivate this account.</span>
         ) : (
           <span>
-            Only authorized mentors and registered students with active enrollment (e.g.{' '}
-            <span className="font-mono text-neutral-700 font-semibold">@kalvium.community</span>) are permitted to access the platform.
+            Only authorized staff, campus managers, content managers, mentors, and registered students with active enrollment are permitted to access the platform.
           </span>
         )}
       </div>

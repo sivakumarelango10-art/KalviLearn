@@ -96,7 +96,10 @@ export const AuthCallbackPage: React.FC = () => {
         }
         setStatusMessage(`Authorizing profile for ${email}...`)
 
-        const result = await verifyUserInDatabase(email, { bypassCache: true })
+        const result = await verifyUserInDatabase(
+          { email, authUid: activeUser.id, accessToken: session.access_token },
+          { bypassCache: true }
+        )
 
         if (isCancelled) return
 

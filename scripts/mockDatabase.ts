@@ -15,6 +15,7 @@ export interface MockDbState {
   campuses: any[]
   users: any[]
   mentors: any[]
+  campus_managers: any[]
   content_managers: any[]
   students: any[]
   mentor_students: any[]
@@ -250,9 +251,46 @@ export function createInitialMockDb(): MockDbState {
         mentorId: null,
         authUid: null,
       },
+      {
+        id: '00000000-0000-4000-a000-000000000005',
+        email: 'synthetic.content@kalvilearn.test',
+        name: 'Automated Test Content Manager',
+        role: 'CONTENT_MANAGER',
+        status: 'ACTIVE',
+        campus_id: defaultCampusId,
+        createdAt: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        updatedAt: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        mentorId: null,
+        authUid: 'auth-cm-uid-5',
+      },
     ],
     mentors: [],
-    content_managers: [],
+    campus_managers: [
+      {
+        id: 'cmg-seed-0004',
+        user_id: '00000000-0000-4000-a000-000000000004',
+        name: 'Automated Test Manager',
+        email: 'synthetic.campus@kalvilearn.test',
+        manager_code: 'CMG-TEST01',
+        department: 'Campus Operations',
+        designation: 'Campus Manager',
+        created_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        updated_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+      },
+    ],
+    content_managers: [
+      {
+        id: 'cm-seed-0005',
+        user_id: '00000000-0000-4000-a000-000000000005',
+        name: 'Automated Test Content Manager',
+        email: 'synthetic.content@kalvilearn.test',
+        manager_code: 'CM-TEST01',
+        department: 'Curriculum & Coding',
+        designation: 'Content Manager',
+        created_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        updated_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+      },
+    ],
     students: [],
     mentor_students: [],
     admin_audit_logs: [],
@@ -355,8 +393,22 @@ export function createInitialMockDb(): MockDbState {
     })),
     auth_users: [
       { id: 'auth-superadmin-uid-1', email: 'sgjitbros@gmail.com' },
+      { id: 'auth-cm-uid-5', email: 'synthetic.content@kalvilearn.test' },
     ],
-    content_manager_assignments: [],
+    content_manager_assignments: [
+      {
+        id: 'cma-seed-0005',
+        user_id: '00000000-0000-4000-a000-000000000005',
+        previous_role: 'STUDENT',
+        scope_type: 'GLOBAL',
+        status: 'ACTIVE',
+        is_active: true,
+        granted_by: 'sgjitbros@gmail.com',
+        granted_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        created_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+        updated_at: new Date('2026-09-02T00:00:00.000Z').toISOString(),
+      },
+    ],
     content_manager_permissions: [],
     content_manager_scopes: [],
     content_audit_logs: [],
@@ -745,18 +797,18 @@ export function installMockSupabaseServer(supabaseServerInstance: any) {
             row.updatedAt = row.updatedAt || new Date().toISOString()
           }
 
-          if (tableName === 'content_managers') {
+          if (tableName === 'campus_managers' || tableName === 'content_managers') {
             if (tableRows.some((r) => r.user_id === row.user_id)) {
               insertError = {
                 code: '23505',
-                message: `duplicate key value violates unique constraint "content_managers_user_id_key"`,
+                message: `duplicate key value violates unique constraint "${tableName}_user_id_key"`,
               }
               break
             }
             if (row.manager_code && tableRows.some((r) => r.manager_code === row.manager_code)) {
               insertError = {
                 code: '23505',
-                message: `duplicate key value violates unique constraint "content_managers_manager_code_key"`,
+                message: `duplicate key value violates unique constraint "${tableName}_manager_code_key"`,
               }
               break
             }
