@@ -335,4 +335,3 @@ FROM public.users u
 JOIN public.content_manager_assignments cma ON cma.user_id = u.id
 JOIN public.content_managers cm ON cm.user_id = u.id
 WHERE lower(u.email) = 'dhanusree.inbox@gmail.com';
-

@@ -34,6 +34,7 @@ import {
   revokeContentManagerAccess,
   fetchContentManagerActivity,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PAGE_SIZE = 10
@@ -82,6 +83,7 @@ function StatusBadge({ status, reason }: { status: ContentManagerLifecycleStatus
 }
 
 export const SuperAdminContentManagersPage: React.FC = () => {
+  useDocumentTitle('Content Managers')
   const [activeTab, setActiveTab] = useState<'managers' | 'audit'>('managers')
   const [assignments, setAssignments] = useState<AdminContentManagerAssignment[]>([])
   const [stats, setStats] = useState<AdminContentManagerStats | null>(null)
@@ -532,13 +534,16 @@ export const SuperAdminContentManagersPage: React.FC = () => {
           {/* Toolbar */}
           <div className="bg-[#080808] p-3.5 rounded-xl border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+              <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
-                type="text"
+                id="cm-search"
+                name="cm-search"
+                type="search"
+                aria-label="Search Content Managers by name, email, or campus"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
                 placeholder="Search Content Managers by name, email, or campus..."
-                className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white"
+                className="w-full pl-9 pr-3 py-1.5 bg-black border border-white/10 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-[#FF6266]"
               />
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -1023,7 +1028,10 @@ export const SuperAdminContentManagersPage: React.FC = () => {
                         Select Registered User
                       </label>
                       <input
-                        type="text"
+                        id="cm-user-search"
+                        name="cm-user-search"
+                        type="search"
+                        aria-label="Search by email, name, or role"
                         value={userQuery}
                         onChange={(e) => handleUserSearch(e.target.value)}
                         placeholder="Search by email, name, or role..."

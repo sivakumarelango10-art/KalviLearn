@@ -67,6 +67,7 @@
     "test:question-sorting-and-drafts": "npx tsx scripts/test-question-sorting-and-drafts.ts",
     "test:super-admin-session": "npx tsx scripts/test-super-admin-session.ts",
     "test:curriculum": "npx tsx scripts/test-curriculum-management.ts",
+    "test:qa-fixes": "npx tsx scripts/test-qa-fixes.ts",
     "verify:curriculum:live": "npx tsx scripts/verify-supabase-curriculum-live.ts"
   },
   "dependencies": {
@@ -89,6 +90,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "happy-dom": "^21.0.4",
     "postcss": "^8.5.1",
     "prisma": "^6.19.3",
     "tailwindcss": "^3.4.17",

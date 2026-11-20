@@ -15,8 +15,10 @@ import {
   fetchAuditLogs,
   AdminAuditLogEntry,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export const SuperAdminAuditPage: React.FC = () => {
+  useDocumentTitle('Audit Logs')
   const [logs, setLogs] = useState<AdminAuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -162,16 +164,34 @@ export const SuperAdminAuditPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
               {loading ? (
-                <tr>
-                  <td colSpan={7} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-red-500 mb-2" />
-                    <span>Loading audit records...</span>
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3.5 px-4"><div className="h-4 w-32 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-20 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-36 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-36 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4 text-right"><div className="h-4 w-16 bg-white/[0.08] rounded ml-auto" /></td>
+                  </tr>
+                ))
               ) : logs.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-neutral-400">
-                    No audit log records found.
+                    <History className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+                    <p className="font-medium text-neutral-300">No audit records found</p>
+                    <p className="text-xs text-neutral-500 mt-1">Try adjusting your action or entity type filter.</p>
+                    {(actionFilter !== 'ALL' || targetTypeFilter !== 'ALL') && (
+                      <button
+                        onClick={() => {
+                          setActionFilter('ALL')
+                          setTargetTypeFilter('ALL')
+                        }}
+                        className="mt-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/15 text-xs text-white transition-colors"
+                      >
+                        Reset filters
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (

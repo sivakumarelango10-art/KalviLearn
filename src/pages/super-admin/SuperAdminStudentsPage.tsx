@@ -28,8 +28,10 @@ import {
   AdminCampus,
   AdminMentor,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export const SuperAdminStudentsPage: React.FC = () => {
+  useDocumentTitle('Student Management')
   const [students, setStudents] = useState<AdminStudent[]>([])
   const [campuses, setCampuses] = useState<AdminCampus[]>([])
   const [mentors, setMentors] = useState<AdminMentor[]>([])
@@ -241,9 +243,12 @@ export const SuperAdminStudentsPage: React.FC = () => {
       {/* Filters Bar */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <form onSubmit={handleSearchSubmit} className="relative w-full lg:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
-            type="text"
+            id="student-search"
+            name="student-search"
+            type="search"
+            aria-label="Search students by name, email, or code"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, or code..."
@@ -326,16 +331,37 @@ export const SuperAdminStudentsPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
               {loading ? (
-                <tr>
-                  <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
-                    <span>Loading student records...</span>
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3.5 px-4"><div className="h-4 w-32 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-20 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-36 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4 text-right"><div className="h-4 w-16 bg-white/[0.08] rounded ml-auto" /></td>
+                  </tr>
+                ))
               ) : students.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-neutral-400">
-                    No student records found matching your filters.
+                    <GraduationCap className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+                    <p className="font-medium text-neutral-300">No student records found</p>
+                    <p className="text-xs text-neutral-500 mt-1">Try adjusting your search query or filter criteria.</p>
+                    {(search || campusFilter !== 'ALL' || mentorFilter !== 'ALL' || statusFilter !== 'ALL') && (
+                      <button
+                        onClick={() => {
+                          setSearch('')
+                          setCampusFilter('ALL')
+                          setMentorFilter('ALL')
+                          setStatusFilter('ALL')
+                        }}
+                        className="mt-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/15 text-xs text-white transition-colors"
+                      >
+                        Reset filters
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (

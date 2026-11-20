@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import {
   BookOpen,
   Search,
@@ -194,6 +195,7 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
   availableBelts,
 }) => {
   const isCmMode = apiMode === 'content-manager'
+  useDocumentTitle(customTitle || (isCmMode ? 'Content Studio Questions' : 'Questions Management'))
   const permSet = new Set(grantedPermissions)
   const hasPerm = (p: string) => !isCmMode || permSet.has(p)
   const canCreateQ = hasPerm('content.question.create')
@@ -1452,9 +1454,12 @@ export const SuperAdminQuestionsPage: React.FC<SuperAdminQuestionsPageProps> = (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search */}
           <form onSubmit={handleSearchSubmit} className="md:col-span-4 relative">
-            <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search aria-hidden="true" className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
-              type="text"
+              id="question-search"
+              name="question-search"
+              type="search"
+              aria-label="Search questions by title or slug"
               placeholder="Search by title or slug..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}

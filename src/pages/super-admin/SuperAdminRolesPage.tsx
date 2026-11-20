@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   ShieldCheck,
   Search,
@@ -21,6 +21,7 @@ import {
   AdminUserRole,
 } from '@/lib/superAdminService'
 import { DeleteUserModal } from '@/components/super-admin/DeleteUserModal'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 const ROLE_COLORS: Record<string, string> = {
   SUPERADMIN: 'bg-[#1F0B0B] text-[#FF6266] border-[#681717]',
@@ -33,6 +34,7 @@ const ROLE_COLORS: Record<string, string> = {
 const SUPPORTED_ROLES = ['STUDENT', 'MENTOR', 'CAMPUS_MANAGER', 'ADMIN'] as const
 
 export const SuperAdminRolesPage: React.FC = () => {
+  useDocumentTitle('Roles & Permissions')
   const [users, setUsers] = useState<AdminUserRole[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -104,16 +106,18 @@ export const SuperAdminRolesPage: React.FC = () => {
     setDeleteSubmitting(false)
   }
 
-  const filtered = users.filter((u) => {
-    if (roleFilter !== 'ALL' && u.role !== roleFilter) return false
-    if (!search.trim()) return true
-    const s = search.toLowerCase()
-    return (
-      (u.name && u.name.toLowerCase().includes(s)) ||
-      u.email.toLowerCase().includes(s) ||
-      (u.campus && u.campus.name.toLowerCase().includes(s))
-    )
-  })
+  const filtered = useMemo(() => {
+    return users.filter((u) => {
+      if (roleFilter !== 'ALL' && u.role !== roleFilter) return false
+      if (!search.trim()) return true
+      const s = search.toLowerCase()
+      return (
+        (u.name && u.name.toLowerCase().includes(s)) ||
+        u.email.toLowerCase().includes(s) ||
+        (u.campus && u.campus.name.toLowerCase().includes(s))
+      )
+    })
+  }, [users, roleFilter, search])
 
   return (
     <div className="space-y-6">
@@ -192,9 +196,12 @@ export const SuperAdminRolesPage: React.FC = () => {
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
-            type="text"
+            id="role-user-search"
+            name="role-user-search"
+            type="search"
+            aria-label="Search users by name, email, or campus"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users by name, email, or campus..."
@@ -236,16 +243,30 @@ export const SuperAdminRolesPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
               {loading ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
-                    <span>Loading roles directory...</span>
-                  </td>
-                </tr>
+                Array.from({ length: 4 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3.5 px-4"><div className="h-4 w-32 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-40 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-24 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4 text-right"><div className="h-4 w-16 bg-white/[0.08] rounded ml-auto" /></td>
+                  </tr>
+                ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-neutral-400">
-                    No users found matching your filters.
+                    <ShieldCheck className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+                    <p className="font-medium text-neutral-300">No users found</p>
+                    <p className="text-xs text-neutral-500 mt-1">Try adjusting your search query or role filter.</p>
+                    {search && (
+                      <button
+                        onClick={() => setSearch('')}
+                        className="mt-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/15 text-xs text-white transition-colors"
+                      >
+                        Clear search
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (

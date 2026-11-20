@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Users,
   Plus,
@@ -23,8 +23,10 @@ import {
   AdminMentor,
   AdminCampus,
 } from '@/lib/superAdminService'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export const SuperAdminMentorsPage: React.FC = () => {
+  useDocumentTitle('Mentor Management')
   const [mentors, setMentors] = useState<AdminMentor[]>([])
   const [campuses, setCampuses] = useState<AdminCampus[]>([])
   const [loading, setLoading] = useState(true)
@@ -45,10 +47,13 @@ export const SuperAdminMentorsPage: React.FC = () => {
   const [provCampusId, setProvCampusId] = useState('')
   const [provMaxStudents, setProvMaxStudents] = useState(30)
 
-  const loadData = async () => {
+  const loadData = async (forceRefresh = false) => {
     setLoading(true)
     setError(null)
-    const [mRes, cRes] = await Promise.all([fetchSuperAdminMentors(), fetchCampuses()])
+    const [mRes, cRes] = await Promise.all([
+      fetchSuperAdminMentors({ forceRefresh }),
+      fetchCampuses({ forceRefresh }),
+    ])
     if (mRes.success && mRes.data) {
       setMentors(mRes.data)
     } else {
@@ -129,17 +134,19 @@ export const SuperAdminMentorsPage: React.FC = () => {
     }
   }
 
-  const filtered = mentors.filter((m) => {
-    if (statusFilter !== 'ALL' && m.status !== statusFilter) return false
-    if (campusFilter !== 'ALL' && m.campus_id !== campusFilter) return false
-    if (!search.trim()) return true
-    const s = search.toLowerCase()
-    return (
-      (m.name && m.name.toLowerCase().includes(s)) ||
-      (m.email && m.email.toLowerCase().includes(s)) ||
-      m.mentor_code.toLowerCase().includes(s)
-    )
-  })
+  const filtered = useMemo(() => {
+    return mentors.filter((m) => {
+      if (statusFilter !== 'ALL' && m.status !== statusFilter) return false
+      if (campusFilter !== 'ALL' && m.campus_id !== campusFilter) return false
+      if (!search.trim()) return true
+      const s = search.toLowerCase()
+      return (
+        (m.name && m.name.toLowerCase().includes(s)) ||
+        (m.email && m.email.toLowerCase().includes(s)) ||
+        m.mentor_code.toLowerCase().includes(s)
+      )
+    })
+  }, [mentors, statusFilter, campusFilter, search])
 
   return (
     <div className="space-y-6">
@@ -156,7 +163,7 @@ export const SuperAdminMentorsPage: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={loadData}
+            onClick={() => loadData(true)}
             disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#080808] border border-white/10 hover:border-white/15 text-neutral-300 hover:text-white text-xs font-medium transition-all"
           >
@@ -201,9 +208,12 @@ export const SuperAdminMentorsPage: React.FC = () => {
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#080808] p-3 rounded-xl border border-white/10">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
-            type="text"
+            id="mentor-search"
+            name="mentor-search"
+            type="search"
+            aria-label="Search mentors by name, email, or code"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by mentor name, email, or code..."
@@ -265,16 +275,31 @@ export const SuperAdminMentorsPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-neutral-800/80 text-neutral-200">
               {loading ? (
-                <tr>
-                  <td colSpan={7} className="py-12 text-center text-neutral-400">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#FF6266] mb-2" />
-                    <span>Loading mentors...</span>
-                  </td>
-                </tr>
+                Array.from({ length: 4 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3.5 px-4"><div className="h-4 w-32 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-20 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-36 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-28 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4"><div className="h-4 w-16 bg-white/[0.08] rounded" /></td>
+                    <td className="py-3.5 px-4 text-right"><div className="h-4 w-16 bg-white/[0.08] rounded ml-auto" /></td>
+                  </tr>
+                ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-neutral-400">
-                    No faculty mentors found.
+                    <Users className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+                    <p className="font-medium text-neutral-300">No faculty mentors found</p>
+                    <p className="text-xs text-neutral-500 mt-1">Try adjusting your search query or campus filter.</p>
+                    {search && (
+                      <button
+                        onClick={() => setSearch('')}
+                        className="mt-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/15 text-xs text-white transition-colors"
+                      >
+                        Clear search
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (

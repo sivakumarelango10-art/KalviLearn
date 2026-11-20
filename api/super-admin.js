@@ -117166,36 +117166,32 @@ async function handleListStudents(body, req, res) {
   const studentList = students || [];
   const studentIds = studentList.map((s) => s.id);
   const userIds = studentList.map((s) => s.user_id).filter(Boolean);
+  const campusIds = Array.from(new Set(studentList.map((s) => s.campus_id).filter(Boolean)));
+  const [linksRes, campusesRes, upRowsRes] = await Promise.all([
+    studentIds.length > 0 ? supabaseServer.from("mentor_students").select("student_id, mentor:mentors(id, name, email)").in("student_id", studentIds).eq("status", "ACTIVE") : Promise.resolve({ data: [] }),
+    campusIds.length > 0 ? supabaseServer.from("campuses").select("id, name, code").in("id", campusIds) : Promise.resolve({ data: [] }),
+    userIds.length > 0 ? supabaseServer.from("UserProgress").select("userId, status, xpEarned").in("userId", userIds) : Promise.resolve({ data: [] })
+  ]);
   let mentorMap = {};
-  if (studentIds.length > 0) {
-    const { data: links } = await supabaseServer.from("mentor_students").select("student_id, mentor:mentors(id, name, email)").in("student_id", studentIds).eq("status", "ACTIVE");
-    if (links) {
-      for (const l of links) {
-        if (l.mentor) {
-          const m = Array.isArray(l.mentor) ? l.mentor[0] : l.mentor;
-          if (m) mentorMap[l.student_id] = m;
-        }
+  if (linksRes.data) {
+    for (const l of linksRes.data) {
+      if (l.mentor) {
+        const m = Array.isArray(l.mentor) ? l.mentor[0] : l.mentor;
+        if (m) mentorMap[l.student_id] = m;
       }
     }
   }
-  const campusIds = Array.from(new Set(studentList.map((s) => s.campus_id).filter(Boolean)));
   let campusMap = {};
-  if (campusIds.length > 0) {
-    const { data: campuses } = await supabaseServer.from("campuses").select("id, name, code").in("id", campusIds);
-    if (campuses) {
-      campusMap = Object.fromEntries(campuses.map((c) => [c.id, c]));
-    }
+  if (campusesRes.data) {
+    campusMap = Object.fromEntries(campusesRes.data.map((c) => [c.id, c]));
   }
   let progressMap = {};
-  if (userIds.length > 0) {
-    const { data: upRows } = await supabaseServer.from("UserProgress").select("userId, status, xpEarned").in("userId", userIds);
-    if (upRows) {
-      for (const row of upRows) {
-        const uId = row.userId;
-        if (!progressMap[uId]) progressMap[uId] = { solvedCount: 0, totalXp: 0 };
-        if (row.status === "SOLVED") progressMap[uId].solvedCount++;
-        progressMap[uId].totalXp += row.xpEarned || 0;
-      }
+  if (upRowsRes.data) {
+    for (const row of upRowsRes.data) {
+      const uId = row.userId;
+      if (!progressMap[uId]) progressMap[uId] = { solvedCount: 0, totalXp: 0 };
+      if (row.status === "SOLVED") progressMap[uId].solvedCount++;
+      progressMap[uId].totalXp += row.xpEarned || 0;
     }
   }
   let enriched = studentList.map((s) => ({
